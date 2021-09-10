@@ -470,7 +470,7 @@ Updates status of an export artifact.
 
 ###### URL
 
-`/result`
+`/result/{id}`
 
 ###### Method
 
@@ -598,6 +598,7 @@ The `name` of the ruleset must be unique so it can be used to when connecting to
 
 ```
 {
+    "id": "5736beac-0ce3-4959-a079-8380b6a6333e"
     "name": "brain-ct",
     "rules": { "tbd" }
 }
