@@ -1,865 +1,353 @@
-# MONAI Workload Manager Software Architecture & Design
+# MONAI Deploy Workload Manager Requirements
 
-![MONAI Workload Manager](./static/mwm.png)
-
+![MONAI Deploy Workload Manager](./static/mwm.png)
+- [MONAI Deploy Workload Manager Requirements](#monai-deploy-workload-manager-requirements)
+  - [Overview](#overview)
+  - [Scope](#scope)
+  - [Goal](#goal)
+  - [Success Criteria](#success-criteria)
+  - [Attributes of a Requirement](#attributes-of-a-requirement)
+  - [Definitions, Acronyms, Abbreviations](#definitions-acronyms-abbreviations)
+  - [(REQ-DI) Data Ingestion Requirements](#req-di-data-ingestion-requirements)
+    - [[REQ-DI-001] MWM SHALL allow users to upload data](#req-di-001-mwm-shall-allow-users-to-upload-data)
+    - [[REQ-DI-002] MWM SHALL allow users to notify data arrival via shared storages](#req-di-002-mwm-shall-allow-users-to-notify-data-arrival-via-shared-storages)
+    - [[REQ-DI-003] MWM SHALL allow users to upload data and associate with one or more applications](#req-di-003-mwm-shall-allow-users-to-upload-data-and-associate-with-one-or-more-applications)
+    - [[REQ-DI-004] MWM SHALL be able to discover applications deployed on MONAI App Server](#req-di-004-mwm-shall-be-able-to-discover-applications-deployed-on-monai-app-server)
+  - [(REQ-DR) Data Discover Service/Rules Requirements](#req-dr-data-discover-servicerules-requirements)
+    - [[REQ-DR-001] MWM Data Discover Service (DDS) SHALL be able to filter data by DICOM headers](#req-dr-001-mwm-data-discover-service-dds-shall-be-able-to-filter-data-by-dicom-headers)
+    - [[REQ-DR-002] MWM Data Discover Service (DDS) SHALL allow users to configure how long to wait for data before launching a job](#req-dr-002-mwm-data-discover-service-dds-shall-allow-users-to-configure-how-long-to-wait-for-data-before-launching-a-job)
+    - [[REQ-DR-003] MWM Data Discover Service (DDS) SHALL be able to filter data by FHIR data fields](#req-dr-003-mwm-data-discover-service-dds-shall-be-able-to-filter-data-by-fhir-data-fields)
+    - [[REQ-DR-004] MWM SHALL respect user-defined data discovery rules](#req-dr-004-mwm-shall-respect-user-defined-data-discovery-rules)
+    - [[REQ-DR-005] MWM SHALL be able to route incoming data to one or more applications](#req-dr-005-mwm-shall-be-able-to-route-incoming-data-to-one-or-more-applications)
+  - [(REQ-DX) Data Export Requirements](#req-dx-data-export-requirements)
+    - [[REQ-DX-001] MWM SHALL support multiple export sinks (destinations)](#req-dx-001-mwm-shall-support-multiple-export-sinks-destinations)
+    - [[REQ-DX-002] MWM SHALL be able to route data to multiple sinks](#req-dx-002-mwm-shall-be-able-to-route-data-to-multiple-sinks)
+    - [[REQ-DX-003] MWM SHALL allow users to create custom sinks](#req-dx-003-mwm-shall-allow-users-to-create-custom-sinks)
+  - [(REQ-FR) Functional Requirements](#req-fr-functional-requirements)
+    - [[REQ-FR-001] MWM SHALL provide a mechanism to develop plugins for discovering applications](#req-fr-001-mwm-shall-provide-a-mechanism-to-develop-plugins-for-discovering-applications)
+    - [[REQ-FR-002] MWM SHALL track status/states of all jobs initiated with orchestration engines](#req-fr-002-mwm-shall-track-statusstates-of-all-jobs-initiated-with-orchestration-engines)
+    - [[REQ-FR-003] MWM SHALL provide a mechanism for clients to subscribe to notifications](#req-fr-003-mwm-shall-provide-a-mechanism-for-clients-to-subscribe-to-notifications)
+    - [[REQ-FR-004] MWM SHALL allow users to define storage cleanup rules](#req-fr-004-mwm-shall-allow-users-to-define-storage-cleanup-rules)
+    - [[REQ-FR-005] MWM SHALL allow application outputs routed to other applications](#req-fr-005-mwm-shall-allow-application-outputs-routed-to-other-applications)
+  
 ## Overview
 
-The MONAI Workload Manager (MWM) is the central hub for the MONAI Deploy platform for routing data from/to the applications and healthcare information systems (HIS)/radiological information system (RIS).
+The MONAI Deploy Workload Manager (MWM) is the central hub for the MONAI Deploy platform for routing data between the applications and DICOM devices, such as PACS, as well as EHR systems.
 
-MWM is responsible for routing data received by the data ingesting services to the data discovery service and associate the data to matching application. It is also responsible for monitoring application execution statuses and route any results produced by the applications back to HIS/RIS.
-
-## Purpose
-
-This document describes the detail designs derived from the requirements defined in MONAI Workload Manager Requirements.
+MWM is responsible for routing data received by the data ingesting services to the data discovery service and associate the data to matching application. It is also responsible for monitoring application execution statuses and route any results produced by the applications back to the configured devices.
 
 ## Scope
 
-The scope of this document is limited to the design of MONAI Workload Manager. This design document does not address any design decisions belonging to other subsystems, such as, MONAI Informatics Gateway, MONAI Deploy Application SDK.
+The scope of this document is limited to the MONAI Deploy Workload Manager. There are other subsystems of the MONAI Deploy platform such as [MONAI Deploy Informatics Gateway](https://github.com/Project-MONAI/monai-deploy-informatics-gateway) (responsible for interoperability with external systems) and [MONAI App SDK](https://github.com/Project-MONAI/monai-app-sdk) (which provides the necessary APIs for the application developer to interact with the MWM). However, this requirements document does not address specifications belonging to those subsystems.
 
-## Assumptions, Constraints, Dependencies
+## Goal
+
+The goal for this proposal is to enlist, prioritize and provide clarity on the requirements for MONAI Deploy Workload Manager. Developers working on different software modules in MONAI Deploy Workload Manager SHALL use this specification as a guideline when designing and implementing software for the MONAI Deploy Workload Manager.
+
+
+## Success Criteria
+
+Data SHALL be routed to the user-defined applications and results, if any, SHALL be routed back to configured destinations.
+
+## Attributes of a Requirement
+
+For each requirement, the following attributes have been specified
+
+**Requirement Body**: This is the text of the requirement which describes the goal and purpose behind the requirement.
+
+**Background**: Provides necessary background to understand the context of the requirements.
+
+**Verification Strategy**: A high level plan on how to test this requirement at a system level.
+
+**Target Release**: Specifies which release of the MONAI App SDK this requirement is targeted for.
 
 ## Definitions, Acronyms, Abbreviations
 
 | Term        | Definition                                                                                                                                                       |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| DDR         | Data Discovery Ruleset: a set of static rules defined by the users to determine if an incoming dataset meets the criteria of an application.                     |
+| DDS         | Data Discover Service: a service that applies all DDRs to incoming payloads                                                                                      |
 | Export Sink | An export sink is an user-configured sink where the results (application generated artifacts) are assigned to and later picked up by the export service clients. |
-| MWM         | MONAI Workload Manager                                                                                                                                           |
-| MIG         | MONAI Informatics Gateway                                                                                                                                        |
+| MIG         | MONAI Deploy Informatics Gateway                                                                                                                                        |
+| MWM         | MONAI Deploy Workload Manager                                                                                                                                           |
 
-## Reference Documents
+## (REQ-DI) Data Ingestion Requirements
 
-- [MONAI Workload Manager Requirements](mwm-srs.md)
+### [REQ-DI-001] MWM SHALL allow users to upload data
 
-## Architecture Details
+An API MUST be provided to the data ingestion services, such as the Informatics Gateway, to upload payloads to the data discovery service.
 
-MONAI Workload Manager includes a set of services and APIs to interconnect other sub-systems in MONAI Deploy. Each and every service in the MWM runs on one or more threads which may receive requests from external systems/services. It also interacts with a database and other external services, such as the App Server and/or Argo for job management.
+#### Background
 
----
+With the design of MONAI Deploy, the MWM does not interface with HIS/RIS directly but rather, through the Informatics Gateway (a data ingestion & export service). Therefore, APIs must be provided to interface any data ingestion services. This also allows the users of the platform to extend these APIs to interface their systems using different messaging protocols.
 
-### API Surface Area
+#### Verification Strategy
 
-MWM provides the following APIs:
+Verify that payloads can be uploaded from data ingestion services and dispatched to the data discovery service.
 
-#### MWM CLI
+#### Target Release
 
-A CLI (command-line interface) for interacting with the APIs provided.
+MONAI Deploy Workload Manager R1
 
-#### Authentication API
 
-Provides authentication/authorization to connected clients, such as the Informatics Gateway and other export service clients.
+### [REQ-DI-002] MWM SHALL allow users to notify data arrival via shared storages
 
-#### Payloads API
+An API MUST be provided to the data ingestion services, such as the Informatics Gateway, to notify data has arrived at the shared storage. E.g. a mounted NAS volume or cloud storage services.
 
-A set of APIs for uploading/downloading payloads to/from user-deployed applications.
+#### Background
 
-#### Export API
+Medical imaging data are relatively large and transfering data between devices take signaficant amount of time of any given workflow.  Often times, shared storaages are used to reduce amount of data being transferred across services.
 
-A set of APIs to create export sinks, connect applications to export sinks, and register results.
+#### Verification Strategy
 
-#### Data Discovery API
+Verify that payloads can be uploaded from data ingestion services and dispatched to the data discovery service.
 
-APIs to register data discovery rules, connect the rules to applications.
+#### Target Release
 
-#### Notification Service API
+MONAI Deploy Workload Manager R1
 
-For subscribing/unsubscribing to MWM events.
+### [REQ-DI-003] MWM SHALL allow users to upload data and associate with one or more applications
 
----
+An API SHALL be provided to allow data to be uploaded and routed to one or more designated applications directly without using the data discovery service.
 
-### Internal Services
+#### Background
 
-#### Application Discovery Service
+In a scenario where the application to be executed is already known, the API would be able to skip the data discovery service.
 
-A service that is responsible scanning for MONAI App Server and other supported orchestration engines and make the applications available to other internal services.
+#### Verification Strategy
 
-#### Job Scheduling Service
+Verify that payloads can be uploaded from a data ingestion service and then trigger one or more applications.
 
-A service that dispatches and records job sent to the orchestration engines and monitors job state and status.
+#### Target Release
 
-#### Notification Service
+MONAI Deploy Workload Manager R1
 
-Notifies subscribed external entities of the system status and jobs' statuses.
+### [REQ-DI-004] MWM SHALL be able to discover applications deployed on MONAI App Server
 
-#### Data Discovery Service
+MWM SHALL discover applications deployed on the MONAI App Server and make them available to the data discovery service and export sinks.
 
-A service that is responsible for applying user-defined data discovery rules to received datasets. Results of each ruleset is recorded for job scheduling service.
+#### Background
 
-#### Data Export Collection Service
+In order to associate user-defined data discovery rules with applications, users (system admins, workflow engineers) and MWM, itself must know all MONAI Deploy applications that are deployed on the platform. This also allows users to link each deployed applications to one or more export sinks.
 
-A service that is responsible for retrieving results from orchestration engines and distribute to all configured export sinks.
+#### Verification Strategy
 
-#### Data Retention Service
+For a deployed application, it must be associable by the data discovery service and/or export sinks.
 
-Monitors storage usages, apply data retention policies and cleans up storage.
+#### Target Release
 
----
+MONAI Deploy Workload Manager R1
 
-### Design
+## (REQ-DR) Data Discover Service/Rules Requirements
 
-![components](static/mwm-arch.png)
+### [REQ-DR-001] MWM Data Discover Service (DDS) SHALL be able to filter data by DICOM headers
 
----
+MWM DDS SHALL allow users to define filtering rules based on DICOM Attributes that do not require parsing pixel data.
 
-#### MWM CLI
+#### Background
 
-The MONAI Workload Manager provides the following CLI tools to configure and connect components in the MONAI Deploy platform:
+Given that multiple applications may be deployed on the MONAI Deploy platform and often more jobs are scheduled and launched than available resources. To avoid launching all applications and let the applications decide if a dataset is a fit, the DDS applies user defined DICOM header rules to select the dataset that meets its requirements before launching the application.
 
-#### Applications API
+#### Verification Strategy
 
-- `monai apps list...`
+Given a set of data discovery rules using the pre-built functions and a DICOM dataset, the data discovery service applies the rule set to select any data that matches the filtering criteria.
 
-#### Data Discovery Rule
+#### Target Release
 
-- `monai ddr add...`: add a new data discovery ruleset
-- `monai ddr remove...`: delete an existing data discovery ruleset
-- `monai ddr update...`: update/replace an existing data discovery ruleset
-- `monai ddr list...`: list all installed data discovery ruleset
-- `monai ddr connect...`: connect an existing data discovery ruleset to an application
-- `monai ddr disconnect...`: disconnect an application from a data discovery ruleset
+MONAI Deploy Workload Manager R1
 
----
+### [REQ-DR-002] MWM Data Discover Service (DDS) SHALL allow users to configure how long to wait for data before launching a job
 
-#### Export Sink
+MWM DDS SHALL allow users to define a time range to wait for all data to be ready before launch the associated application(s)
 
-- `monai sink add...`: create a new sink for export
-- `monai sink remove...`: delete an existing sink
-- `monai sink list...`: list all configured sink
-- `monai sink connect...`: connect a sink to an application
-- `monai sink disconnect...`: disconnect a sink to an application
+#### Background
 
----
+Often time, data comes in through multiple connections and/or different sources. E.g., a DICOM study may be sent over multiple associations. This allows the DDS to wait for a period before it assembles the payload for the associated application(s).
 
-#### Authentication API
+#### Verification Strategy
 
-_TBD_
+Configure a rule set with a timeout and send data that meets the requirements of an application in separate connections within the timeout defined.
 
----
+#### Target Release
 
-#### Payloads API
+MONAI Deploy Workload Manager R1
 
-![payloads-api](static/mwm-payloads-seq.png)
+### [REQ-DR-003] MWM Data Discover Service (DDS) SHALL be able to filter data by FHIR data fields
 
-The payloads API allows clients, e.g., the Informatics Gateway, to upload payloads and download payloads.
+MWM DDS SHALL allow users to define filtering rules based on FHIR data attributes using pre-built functions, such as, equals, contains, greater, greater-than, less, less-than, etc...
 
-A payload object contains a single file. Internally, a payload object can represent an **input** payload or an **output** payload. An **input** payload is created when a client uploads data  for processing. An **output** payload is created by the [Data Export Collection Service](#data-export-collection-service).
+#### Background
 
-##### Payload.Upload API
+Given that multiple applications may be deployed on the MONAI Deploy platform and often more jobs are scheduled and launched than available resources. To avoid launching all applications and let the applications decide if a dataset is a fit, the DDS applies user defined FHIR filtering rules to select the dataset that meets applications' requirement before launching the application.
 
-Uploads artifact/file.
-Each uploaded payload object must contain:
+#### Verification Strategy
 
-- Date & time received
-- An UUID that can be used to correlate the connection info. E.g., the MONAI Informatics Gateway includes the UUID that is generated when the DICOM association request is received.
-- (Optional) The application ID or name to be launched. If specified, the payload bypasses the data discovery service's filtering stage.
+Given a set of data discovery rules using the pre-built functions and some FHIR resources, the data discovery service applies the rule to removes any data that does not meeting the application's requirements.
 
-##### Payload.Download API
+#### Target Release
 
-Downloads artifact/file. Used for export service clients.
+MONAI Deploy Workload Manager R2
 
-##### Payload States
+### [REQ-DR-004] MWM SHALL respect user-defined data discovery rules
 
-- `Ready`: payload is received and stored.
-- `DataDiscovery`: payload is being processed by the Data Discovery Service.
-- `DataDiscoveryCompleted`: payload has been processed by the Data Discovery Service.
+Data discovery service MUST apply all user-defined rules to the data arrived at the system.
 
-#### Export API
+#### Background
 
-![export-api](static/mwm-export-seq.png)
+An application/model is often designed and restricted to a very specific type/format of data. A data discovery rule is a pre-filter that validates a given dataset to see if the dataset meets the requirements of an/a application/model.
 
-The Export API provides functionalities to create sinks and connect/disconnect sinks to applications. This allows MWM to know how to route application created artifacts/files to one or more user-configured sinks.
+#### Verification Strategy
 
-In addition, it allows applications using the MONAI App SDK to register any artifacts/files that need to be exported to external devices.
+Given a data discovery rule set and a dataset, the data discovery service applies the rules to removes any data that is not suitable.
 
+#### Target Release
 
-##### POST /sink API
+MONAI Deploy Workload Manager R1
 
-Creates a new sink to be used by an export service.
+### [REQ-DR-005] MWM SHALL be able to route incoming data to one or more applications
 
-The `name` of the sink must be unique so it can be referenced by an export service.
+A user-defined data discovery rule SHALL be associable with one or more deployed applications.
 
-###### URL
+#### Background
 
-`/sink`
+A given set of user-defined data discovery rules can sometime meet the criteria of multiple applications/models. This allows users to deploy the rules once and associate it with multiple applications/models.
 
-###### Method
+#### Verification Strategy
 
-`POST`
+Deploy a rule set and associate it with two applications. Verify that both applications are launched when data is received and meets the requirements of the rule sets.
 
-###### Data Params
+#### Target Release
 
-```
-{
-    "name": "dicom",
-    "extensions": [".dcm"],
-    "args": {
-        "destination": "MySCU"
-    }
-}
-```
+MONAI Deploy Workload Manager R1
 
-#### Success Response
+## (REQ-DX) Data Export Requirements
 
-- Code: `201`: Sink created successfully.
+### [REQ-DX-001] MWM SHALL support multiple export sinks (destinations)
 
-  Content: `{"name": "dicom", "extensions": ["dcm"], "args": { "destination": "MySCU" } }`
+An export sink is an association of an application and a data export service that allows results generated by the application to be exported to designated destination.
 
-- Code: `400`: Validation error.
+#### Background
 
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with validation error details.
+AI applications and medical imaging algorithms often output data in different formats that need to be exported back to HIS/RIS for reading or validation. The concept of a sink links a deployed application to an export service so the output data can be exported back to RIS/HIS applications.
 
-- Code: `500`: Server error.
+#### Verification Strategy
 
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
+Verify that applications can be linked to a sink.
 
-##### DELETE /sink/{name} API
+#### Target Release
 
-Deletes a sink. All connected applications must be removed first.
+MONAI Deploy Workload Manager R1
 
-###### URL
+### [REQ-DX-002] MWM SHALL be able to route data to multiple sinks
 
-`/sink/{name}`
+MWM SHALL allow multiple sinks to be linked to an application so output data can be exported to multiple destinations.
 
-###### Method
+#### Background
 
-`DELETE`
+There are a few common data protocols in the healthcare industry such as, DICOM, HL7 and FHIR and often each protocol requires a dedicated client to communicate with it. Given that applications may often produce outputs in different formats, each format, again, DICOM, HL7 and/or FHIR, must be handled by a dedicated client. This requirement would enable users to link one application to multiple sinks.
 
-###### Data Params
+#### Verification Strategy
 
-N/A
+Link a deployed application to multiple sinks.
 
-#### Success Response
+#### Target Release
 
-- Code: `202`: Sink deleted successfully.
+MONAI Deploy Workload Manager R1
 
-  Content: N/A
+### [REQ-DX-003] MWM SHALL allow users to create custom sinks
 
-- Code: `404`: Sink cannot be found.
+In order to support custom export services, MWM SHALL allow custom sinks to be created.
 
-  Content: N/A
+#### Background
 
-- Code: `500`: Server error.
+Besides industry standard protocols such as, DICOM, there may be other proprietary method of transmitting data. This would allow users to enable their services to pick up any results produced by their applications.
 
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
+#### Verification Strategy
 
-##### GET /sink API
+Create an application to simulate an export service by implementing available APIs.
 
-List all sinks configured on MWM.
+#### Target Release
 
-###### URL
+MONAI Deploy Workload Manager R1
 
-`/sink`
+## (REQ-FR) Functional Requirements
 
-###### Method
+### [REQ-FR-001] MWM SHALL provide a mechanism to develop plugins for discovering applications
 
-`GET`
+Besides integrating MONAI App Server, MWM SHALL provide a mechanism to allow users to develop plugins to discover apps registered with an orchestration engine such as Argo.
 
-###### Data Params
+#### Background
 
-N/A
+Many existing users have already invested in other orchestration engines which may have already become a requirement for their workflow. Therefore, supporting other OSS orchestration engines would simplify the integration of their existing environment with MONAI products.
 
-#### Success Response
+#### Verification Strategy
 
-- Code: `200`: All sinks returned successfully.
+Verify by repeating the same workflow and same application on both MONAI App Server and another OSS orchestration engine, such as, Argo.
 
-  Content:
+#### Target Release
 
-  ```json
-  ["dicom-xray-room", "fhir-east-us", "appsink"]
-  ```
+MONAI Deploy Workload Manager R2
 
-- Code: `500`: Server error.
+### [REQ-FR-002] MWM SHALL track status/states of all jobs initiated with orchestration engines
 
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
+MWM SHALL track status/states of all the jobs that it has initiated so it can be used for reporting and allows other sub-components to react upon.
 
-##### GET /sink/{name} API
+#### Background
 
-Gets details of a sink.
+Often OSS orchestration engines provide its own set of tools/CLI to query and check status of its jobs. Given that MWM supports multiple orchestration engines and contains many sub-systems and/or sub-components need to react upon the status or state of a job, it is ideal that a single sub-system keep track of all job states/status and make them available to other sub-systems/sub-components.
 
-###### URL
+#### Verification Strategy
 
-`/sink/{name}`
+Set up MWM with two orchestration engines, trigger a couple jobs and make sure statues and states are stored in MWM.
 
-###### Method
+#### Target Release
 
-`GET`
+MONAI Deploy Workload Manager R1
 
-###### Data Params
+### [REQ-FR-003] MWM SHALL provide a mechanism for clients to subscribe to notifications
 
-N/A
+MWM SHALL provide a mechanism so that users or clients can subscribe to the notification service to get job status or other system information.
 
-#### Success Response
+#### Background
 
-- Code: `200`: Sink returned successfully.
+Maintainers typically require real-time or (daily, hourly, weekly) summaries on any failures experienced by the system, especially in cases of logical errors in running applications.
 
-  Content:
+#### Verification Strategy
 
-  ```json
-  {
-    "name": "dicom",
-    "extensions": ["dcm"],
-    "args": { "aetitle": "PACS1" },
-    "apps": ["82582ed7-20a2-4140-9c91-d416267b2cbf"]
-  }
-  ```
+Send a data format into a test application that is not able to process that data format and expect notifications on failures. Send fewer (one less) or more (one more) studies than required into an application that requires a specific amount of studies and expect notifications of failure(s).
 
-- Code: `404`: Sink cannot be found.
+#### Target Release
 
-  Content: N/A
+MONAI Deploy Workload Manager R3
 
-- Code: `500`: Server error.
+### [REQ-FR-004] MWM SHALL allow users to define storage cleanup rules
 
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
+MWM SHALL provide functionalities on when the payloads can be removed from the MWM cache.
 
-##### POST /sink/{name}/connect API
+#### Background
 
-Connectss an application to the sink.
+Often medical records, especially medical images, requires large amount of disk storage and given that disk storage space is always limited, there must exist a method to remove payloads. For MWM, payloads that are associated with a job that completes in a successful state may be removed while ones that failed may need to be kept for further investigation.
 
-###### URL
+#### Verification Strategy
 
-`/sink/{name}/connect`
+Verify that payloads are removed based on users' configuration.
 
-###### Method
+#### Target Release
 
-`POST`
+MONAI Deploy Workload Manager R2
 
-###### Data Params
+### [REQ-FR-005] MWM SHALL allow application outputs routed to other applications
 
-```json
-{
-  "application": "8ba92f06-215a-474f-a093-d8647f76f561"
-}
-```
+MWM SHALL allow output of an application to be routed back to other application(s).
 
-#### Success Response
+#### Background
 
-- Code: `201`: Sink updated successfully.
+Given that DDS only filters data based on a static list of rules and cannot apply complex algorithms to a dataset, it may often not meet the needs of an application. Therefore, this requirement enables user to construct a complex data filtering application to decide and output the dataset that is suitable for another application.
 
-  Content:
+#### Verification Strategy
 
-  ```json
-  {
-    "name": "fhir",
-    "extensions": ["json", "xml"],
-    "args": { "endpoint": "FHIRSERVER1" },
-    "apps": ["b1fc9ab4-428b-44e4-8365-4791fb54d773"]
-  }
-  ```
+Deploy and link a data filtering application and a main application. Verify that the main application receives output from the data filtering application.
 
-- Code: `404`: Sink or application cannot be found.
+#### Target Release
 
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with error details.
-
-- Code: `500`: Server error.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
-
-##### DELETE /sink/{name}/disconnect API
-
-Disconnect an application from the specified sink.
-
-###### URL
-
-`/sink/{name}/disconnect`
-
-###### Method
-
-`DELETE`
-
-###### Data Params
-
-```json
-{
-  "application": "8ba92f06-215a-474f-a093-d8647f76f561"
-}
-```
-
-#### Success Response
-
-- Code: `202`: Application disconnected from sink successfully.
-
-  Content: N/A
-
-- Code: `404`: Sink or application cannot be found.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with error details.
-
-- Code: `500`: Server error.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
-
-##### GET /result/{sink} API
-
-List all artifacts/files stored in the sink.
-
-###### URL
-
-`/result/{sink}`
-
-###### Method
-
-`GET`
-
-###### Data Params
-
-N/A
-
-#### Success Response
-
-- Code: `200`: All results returned successfully.
-
-  Content:
-
-  ```json
-  [
-    {
-        "id": "564fbec1-5cfa-4f47-8d6b-13677910d52c",
-        "sink": "fhir",
-        "file": "//storage/path/to/file.json",
-        "status": "Pending",
-        "args": {
-            "endpoint": "FHIRSERVER-EAST"
-        }
-    },
-    ...
-  ]
-  ```
-
-- Code: `404`: Sink cannot be found.
-
-  Content: N/A
-
-- Code: `500`: Server error.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
-
-##### POST /result/{sink} API
-
-Add new artifacts/files for the specified sink.
-
-###### URL
-
-`/result/{sink}`
-
-###### Method
-
-`POST`
-
-###### Data Params
-
-```json
-["/some/path/to/file/1", "/some/path/to/file/2", "/some/path/to/file/3"]
-```
-
-#### Success Response
-
-- Code: `201`: Result set created successfully.
-
-  Content: N/A
-
-- Code: `404`: Sink cannot be found.
-
-  Content: N/A
-
-- Code: `500`: Server error.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
-
-##### PATCH /result API
-
-Updates status of an export artifact.
-
-###### URL
-
-`/result/{id}`
-
-###### Method
-
-`PATCH`
-
-###### Data Params
-
-```json
-{
-  "id": "564fbec1-5cfa-4f47-8d6b-13677910d52c",
-  "state": "success|failure",
-  "retry-later": true
-}
-```
-
-#### Success Response
-
-- Code: `200`: Result updated successfully.
-
-  Content: N/A
-
-- Code: `404`: Sink or result cannot be found.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with error details.
-
-- Code: `500`: Server error.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
-
-##### DELETE /result API
-
-Deletes a result. Internally, the result is marked for deletion but will not be removed until the data retention service executes.
-
-###### URL
-
-`/result`
-
-###### Method
-
-`DELETE`
-
-###### Data Params
-
-_Preliminary_: Only one of the `id` or `file` fields is required.
-
-```json
-{
-  "id": "564fbec1-5cfa-4f47-8d6b-13677910d52c",
-  "file": "//storage/path/to/file"
-}
-```
-
-#### Success Response
-
-- Code: `200`: Result updated successfully.
-
-  Content: N/A
-
-- Code: `404`: Sink or result cannot be found.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with error details.
-
-- Code: `500`: Server error.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
-
----
-
-#### Data Discovery API
-
-![datadiscovery](static/mwm-datadiscovery-seq.png)
-
-##### POST /datadiscovery API
-
-Creates a data discovery ruleset .
-
-The `name` of the ruleset must be unique so it can be used to when connecting to or disconnecting from applications.
-
-###### URL
-
-`/datadiscovery`
-
-###### Method
-
-`POST`
-
-###### Data Params
-
-```
-{
-    "name": "brain-ct",
-    "rules": { "tbd" }
-}
-```
-
-#### Success Response
-
-- Code: `201`: Data discover ruleset created successfully.
-
-  Content: `{ "tbd" }`
-
-- Code: `400`: Validation error.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with validation error details.
-
-- Code: `500`: Server error.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
-
-##### PATCH /datadiscovery/{id} API
-
-Replaces an existing data discovery ruleset.
-
-The `name` of the ruleset must be unique so it can be used to when connecting to or disconnecting from applications.
-
-###### URL
-
-`/datadiscovery/{id}`
-
-###### Method
-
-`PATCH`
-
-###### Data Params
-
-```
-{
-    "id": "5736beac-0ce3-4959-a079-8380b6a6333e"
-    "name": "brain-ct",
-    "rules": { "tbd" }
-}
-```
-
-#### Success Response
-
-- Code: `202`: Data discover ruleset replaced successfully.
-
-  Content: `{ "tbd" }`
-
-- Code: `400`: Validation error.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with validation error details.
-
-- Code: `404`: Data discovery ruleset cannot be found.
-
-  Content: N/A
-
-- Code: `500`: Server error.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
-
-##### DELETE /datadiscovery/{id} API
-
-Deletes a data discovery ruleset. All connected applications must be removed first.
-
-###### URL
-
-`/datadiscovery/{id}`
-
-###### Method
-
-`DELETE`
-
-###### Data Params
-
-N/A
-
-#### Success Response
-
-- Code: `202`: Data discovery ruleset deleted successfully.
-
-  Content: N/A
-
-- Code: `404`: Data discovery ruleset cannot be found.
-
-  Content: N/A
-
-- Code: `500`: Server error.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
-
-##### GET /datadiscovery API
-
-Lists all data discovery rulesets.
-
-###### URL
-
-`/datadiscovery`
-
-###### Method
-
-`GET`
-
-###### Data Params
-
-N/A
-
-#### Success Response
-
-- Code: `200`: Data discovery rulesets returned successfully.
-
-  Content:
-
-  ```json
-  [
-      {"tbd"},
-      {"tbd"},
-  ]
-  ```
-
-- Code: `500`: Server error.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
-
-##### GET /datadiscovery/{id} API
-
-Get details of an existing data discovery ruleset.
-
-###### URL
-
-`/datadiscovery/{id}`
-
-###### Method
-
-`GET`
-
-###### Data Params
-
-N/A
-
-#### Success Response
-
-- Code: `200`: Data discovery ruleset returned successfully.
-
-  Content:
-
-  ```json
-  {"tbd"}
-  ```
-
-- Code: `404`: Data discovery ruleset cannot be found.
-
-  Content: N/A
-
-- Code: `500`: Server error.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
-
-##### POST /datadiscovery/{id}/connect API
-
-Connects an application to the data discovery ruleset.
-
-###### URL
-
-`/datadiscovery/{id}/connect`
-
-###### Method
-
-`POST`
-
-###### Data Params
-
-```json
-{
-  "application": "cd0bd18d-b64c-4389-a90c-ab2dfecb9b0c"
-}
-```
-
-#### Success Response
-
-- Code: `201`: Application is set to use the data discovery ruleset.
-
-  Content:
-
-  ```json
-  {"tbd"}
-  ```
-
-- Code: `404`: Data discovery ruleset or application cannot be found.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with error details.
-
-- Code: `500`: Server error.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
-
-##### POST /datadiscovery/{id}/disconnect API
-
-Disconnects an application to the data discovery ruleset.
-
-###### URL
-
-`/datadiscovery/{id}/disconnect`
-
-###### Method
-
-`DELETE`
-
-###### Data Params
-
-```json
-{
-  "application": "cd0bd18d-b64c-4389-a90c-ab2dfecb9b0c"
-}
-```
-
-#### Success Response
-
-- Code: `201`: Application is removed from using the data discovery ruleset.
-
-  Content:
-
-  ```json
-  {"tbd"}
-  ```
-
-- Code: `404`: Data discovery ruleset or application cannot be found.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with error details.
-
-- Code: `500`: Server error.
-
-  Content: A [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details.
-
-#### Notification Service API
-
-TBD
-
-### Internal Modules
-
-#### Application Discovery Service
-
-The _Application Discovery Service_ is designed so it can extended to connect with other orchestration engines, such as, Argo. It communicates with all configured external orchestration engines, including the MONAI App Server, to discover user deployed applications so the applications can be referenced by the Data Discovery service, Export service, etc..
-
-#### Data Discovery Service
-
-![datadiscovery-jobscheduling](static/mwm-dds-jss-seq.png)
-
-The _Data Discovery Service_ (DDS) manages how each received payload is routed to one or more applications by applying user-defined data discovery rules.
-
-Each ruleset contains filtering logic which defines if an incoming file meets the criteria of an application. In addition, the ruleset contains how a file shall be grouped, e.g. by a DICOM study or a DICOM series. A ruleset also defines how long the service shall wait for all data to be arrived. For example, if there are four DICOM volumes that are being sent separately and directly from the modality at 5-minute interval. If the ruleset defines a 3 minute timeout, then, there are total of 4 jobs, one for each DICOM volume, that are launched with the orchestration engine. If the ruleset defines a 6 minute timeout. Then, only one single job is created.
-
-After applying a ruleset, files that met the criteria are put into a bucket with some metadata that can be used for querying. These buckets are stored as part of the Job Scheduling Service and are synced to the database in case of system shutdown. DDS continues onto the next ruleset until all ruleset are applied to each file.
-
-##### Data Discovery Stages
-
-There are two stage during data discovery, filtering and grouping.  If an incoming payload provides the application ID or name then the first stage is skipped.
-
-1. Data filtering: applies user defined static rules to filter incoming data first. If a payload/file meets all criteria defined by the user, then it enters the next stage.
-2. Data grouping: groups incoming payload into patient, study or series.  Also waits, base on user defined value, for all data to arrive.
-
-#### Job Scheduling Service
-
-The _Job Scheduling Service_ (JSS) maintains in-memory buckets that are synced to the database. Buckets are created based on input criteria from the DDS. As described in section above, once the bucket is timed out waiting for new files, the bucket will stop accepting any new payloads/files. A job will be created and submitted to the orchestration engine where the application is hosted. The bucket is then removed from memory and the database. The job metadata is also stored in the database to track statuses and states of each job.
-
-##### Job States
-
-- `Queued`: Queued to be submitted to the orchestration engine.
-- `Submitted`: Job submitted to the orchestration engine.
-- `JobCompleted`: Job completed by the orchestration engine.
-- `JobFailed`: Job failed at the orchestration engine. E.g., application failure, orchestration engine failure.
-- `SentToSinks`: Results collected from orchestration engine and distributed to configured sinks.
-
-#### Data Export Collection Service
-
-![dataexport](static/mwm-decs-seq.png)
-
-The _Data Export Collection Service_ monitors and updates states and statues of each job. When a job completes, it collects any artifacts/files generated by the application and distribute the artifacts to each connected sinks. Export service clients can utilize the [Export APIs](#export-api) to query any available tasks for export.
-
-##### Result States:
-
-- `Queued`: Queued for export service.
-- `Processing`: Picked up by the export service and being processed by the export service.
-- `Successful`: Exported to external device successfully.
-- `Failure`: Failed to export to external device.
-
-#### Data Retention Service
-
-Default Configuration Options:
-
-- Reserved Storage Space (GB): `100`
-- Watermark (%): `85`
-- Data Retention (Days): `15`
-- Remove immediately upon success export: `true`
-
-MWM reserves a small amount of storage space for internal use and stops collecting data for export when the available space is less than the reserved. It also stops accepting uploads when used space is above the watermark.
-
-Any uploaded data is retained for `15` days unless used space is above the watermark. The oldest payloads are removed first.
-
-#### Notification Service
-
-TBD
+MONAI Deploy Workload Manager R2
