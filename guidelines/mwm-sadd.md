@@ -4,17 +4,15 @@
 
 ## Overview
 
-The MONAI Workload Manager (MWM) is the central hub for the MONAI Deploy platform for routing data from/to the applications and healthcare information systems (HIS)/radiological information system (RIS).
-
-MWM is responsible for routing data received by the data ingesting services to the data discovery service and associate the data to matching application. It is also responsible for monitoring application execution statuses and route any results produced by the applications back to HIS/RIS.
+The MONAI Deploy Workload Manager (MWM) is the central hub for the MONAI Deploy platform. It routes received medical data from MONAI Informatics Gateway (or your custom ingestion service) to MONAI applications based on user-defined rulesets using the Data Discovery Service. It is also responsible for monitoring application execution statuses and routing any results produced by the applications back to the configured destinations.
 
 ## Purpose
 
-This document describes the detail designs derived from the requirements defined in MONAI Workload Manager Requirements.
+This document describes the detailed designs derived from the requirements defined in MONAI Workload Manager Requirements.
 
 ## Scope
 
-The scope of this document is limited to the design of MONAI Workload Manager. This design document does not address any design decisions belonging to other subsystems, such as, MONAI Informatics Gateway, MONAI Deploy Application SDK.
+The scope of this document is limited to the design of the MONAI Workload Manager. This design document does not address any design decisions belonging to other subsystems, such as MONAI Informatics Gateway, MONAI Deploy Application SDK.
 
 ## Assumptions, Constraints, Dependencies
 
@@ -22,7 +20,7 @@ The scope of this document is limited to the design of MONAI Workload Manager. T
 
 | Term        | Definition                                                                                                                                                       |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Export Sink | An export sink is an user-configured sink where the results (application generated artifacts) are assigned to and later picked up by the export service clients. |
+| Export Sink | An export sink is a user-configured sink where the results (application-generated artifacts) are assigned to and later picked up by the export service clients. |
 | MWM         | MONAI Workload Manager                                                                                                                                           |
 | MIG         | MONAI Informatics Gateway                                                                                                                                        |
 
@@ -32,7 +30,7 @@ The scope of this document is limited to the design of MONAI Workload Manager. T
 
 ## Architecture Details
 
-MONAI Workload Manager includes a set of services and APIs to interconnect other sub-systems in MONAI Deploy. Each and every service in the MWM runs on one or more threads which may receive requests from external systems/services. It also interacts with a database and other external services, such as the App Server and/or Argo for job management.
+MONAI Workload Manager includes a set of services and APIs to interconnect other subsystems in MONAI Deploy. Every service in the MWM runs on one or more threads that may receive requests from external systems/services. It also interacts with a database and other external services, such as the App Server or Argo, for job management.
 
 ---
 
@@ -40,57 +38,23 @@ MONAI Workload Manager includes a set of services and APIs to interconnect other
 
 MWM provides the following APIs:
 
-#### MWM CLI
-
-A CLI (command-line interface) for interacting with the APIs provided.
-
-#### Authentication API
-
-Provides authentication/authorization to connected clients, such as the Informatics Gateway and other export service clients.
-
-#### Payloads API
-
-A set of APIs for uploading/downloading payloads to/from user-deployed applications.
-
-#### Export API
-
-A set of APIs to create export sinks, connect applications to export sinks, and register results.
-
-#### Data Discovery API
-
-APIs to register data discovery rules, connect the rules to applications.
-
-#### Notification Service API
-
-For subscribing/unsubscribing to MWM events.
+- **MWM CLI**: A CLI (command-line interface) for interacting with the APIs provided.
+- **Authentication API**: Provides authentication/authorization to connected clients, such as the Informatics Gateway and other export service clients.
+- **Payloads API**: A set of APIs for uploading/downloading payloads to/from user-deployed applications.
+- **Export API**: A set of APIs to create export sinks, connect applications to export sinks, and register results.
+- **Data Discovery API**: APIs to register data discovery rules, connect the rules to applications.
+- **Notification Service API**: For subscribing/unsubscribing to MWM events.
 
 ---
 
 ### Internal Services
 
-#### Application Discovery Service
-
-A service that is responsible scanning for MONAI App Server and other supported orchestration engines and make the applications available to other internal services.
-
-#### Job Scheduling Service
-
-A service that dispatches and records job sent to the orchestration engines and monitors job state and status.
-
-#### Notification Service
-
-Notifies subscribed external entities of the system status and jobs' statuses.
-
-#### Data Discovery Service
-
-A service that is responsible for applying user-defined data discovery rules to received datasets. Results of each ruleset is recorded for job scheduling service.
-
-#### Data Export Collection Service
-
-A service that is responsible for retrieving results from orchestration engines and distribute to all configured export sinks.
-
-#### Data Retention Service
-
-Monitors storage usages, apply data retention policies and cleans up storage.
+- **Application Discovery Service**: A service responsible for scanning MONAI App Server and other supported orchestration engines for deployed MONAI Deploy applications.
+- **Job Scheduling Service**: A service that dispatches and records jobs sent to the orchestration engines and monitors job state and status.
+- **Notification Service**: Notifies subscribed external entities of the system status and jobs' statuses.
+- **Data Discovery Service**: A service responsible for applying user-defined data discovery rules to received datasets. Results of each ruleset get recorded for the job scheduling service.
+- **Data Export Collection Service**: A service responsible for retrieving results from orchestration engines and distribute them to all configured export sinks.
+- **Data Retention Service**: Monitors storage usages, apply data retention policies, and cleans up storage.
 
 ---
 
@@ -106,26 +70,26 @@ The MONAI Workload Manager provides the following CLI tools to configure and con
 
 #### Applications API
 
-- `monai apps list...`
+- `mwm apps list...`: list all applications registered with the configured orchestration engines.
 
 #### Data Discovery Rule
 
-- `monai ddr add...`: add a new data discovery ruleset
-- `monai ddr remove...`: delete an existing data discovery ruleset
-- `monai ddr update...`: update/replace an existing data discovery ruleset
-- `monai ddr list...`: list all installed data discovery ruleset
-- `monai ddr connect...`: connect an existing data discovery ruleset to an application
-- `monai ddr disconnect...`: disconnect an application from a data discovery ruleset
+- `mwm ddr add...`: add a new data discovery ruleset
+- `mwm ddr remove...`: delete an existing data discovery ruleset
+- `mwm ddr update...`: update/replace an existing data discovery ruleset
+- `mwm ddr list...`: list all installed data discovery ruleset
+- `mwm ddr connect...`: connect an existing data discovery ruleset to an application
+- `mwm ddr disconnect...`: disconnect an application from a data discovery ruleset
 
 ---
 
 #### Export Sink
 
-- `monai sink add...`: create a new sink for export
-- `monai sink remove...`: delete an existing sink
-- `monai sink list...`: list all configured sink
-- `monai sink connect...`: connect a sink to an application
-- `monai sink disconnect...`: disconnect a sink to an application
+- `mwm sink add...`: create a new sink for export
+- `mwm sink remove...`: delete an existing sink
+- `mwm sink list...`: list all configured sink
+- `mwm sink connect...`: connect a sink to an application
+- `mwm sink disconnect...`: disconnect a sink to an application
 
 ---
 
@@ -141,7 +105,7 @@ _TBD_
 
 The payloads API allows clients, e.g., the Informatics Gateway, to upload payloads and download payloads.
 
-A payload object contains a single file. Internally, a payload object can represent an **input** payload or an **output** payload. An **input** payload is created when a client uploads data  for processing. An **output** payload is created by the [Data Export Collection Service](#data-export-collection-service).
+A payload object contains a single file. Internally, a payload object can represent an **input** payload or an **output** payload. An **input** payload is created when a client uploads data for processing. An **output** payload is created by the [Data Export Collection Service](#data-export-collection-service).
 
 ##### Payload.Upload API
 
@@ -149,12 +113,12 @@ Uploads artifact/file.
 Each uploaded payload object must contain:
 
 - Date & time received
-- An UUID that can be used to correlate the connection info. E.g., the MONAI Informatics Gateway includes the UUID that is generated when the DICOM association request is received.
-- (Optional) The application ID or name to be launched. If specified, the payload bypasses the data discovery service's filtering stage.
+- A UUID that can be used to correlate the connection info. E.g., the MONAI Informatics Gateway includes the UUID generated when the DICOM association request is received.
+- (Optional) The application ID or name to associate the data with. If specified, the payload bypasses the data discovery service's filtering stage.
 
 ##### Payload.Download API
 
-Downloads artifact/file. Used for export service clients.
+Downloads artifact/file for export service clients.
 
 ##### Payload States
 
@@ -166,10 +130,9 @@ Downloads artifact/file. Used for export service clients.
 
 ![export-api](static/mwm-export-seq.png)
 
-The Export API provides functionalities to create sinks and connect/disconnect sinks to applications. This allows MWM to know how to route application created artifacts/files to one or more user-configured sinks.
+The Export API provides functionalities to create sinks and connect/disconnect sinks to applications. This allows MWM to know how to route application-created artifacts/files to one or more user-configured sinks.
 
-In addition, it allows applications using the MONAI App SDK to register any artifacts/files that need to be exported to external devices.
-
+In addition, it allows applications using the MONAI Deploy App SDK to register any artifacts/files that need to be exported to external devices.
 
 ##### POST /sink API
 
@@ -187,13 +150,13 @@ The `name` of the sink must be unique so it can be referenced by an export servi
 
 ###### Data Params
 
-```
+```json
 {
-    "name": "dicom",
-    "extensions": [".dcm"],
-    "args": {
-        "destination": "MySCU"
-    }
+  "name": "dicom",
+  "extensions": [".dcm"],
+  "args": {
+    "destination": "MySCU"
+  }
 }
 ```
 
@@ -213,7 +176,7 @@ The `name` of the sink must be unique so it can be referenced by an export servi
 
 ##### DELETE /sink/{name} API
 
-Deletes a sink. All connected applications must be removed first.
+Deletes a sink. Warning: All connected applications must be removed first.
 
 ###### URL
 
@@ -312,7 +275,7 @@ N/A
 
 ##### POST /sink/{name}/connect API
 
-Connectss an application to the sink.
+Connects an application to the sink.
 
 ###### URL
 
@@ -502,7 +465,7 @@ Updates status of an export artifact.
 
 ##### DELETE /result API
 
-Deletes a result. Internally, the result is marked for deletion but will not be removed until the data retention service executes.
+Deletes a result. Internally, the result is marked for deletion, but actual files are not removed until the data retention service executes.
 
 ###### URL
 
@@ -545,9 +508,9 @@ _Preliminary_: Only one of the `id` or `file` fields is required.
 
 ##### POST /datadiscovery API
 
-Creates a data discovery ruleset .
+Creates a data discovery ruleset.
 
-The `name` of the ruleset must be unique so it can be used to when connecting to or disconnecting from applications.
+The `name` of the ruleset must be unique so it can be used when connecting to or disconnecting from applications.
 
 ###### URL
 
@@ -584,7 +547,7 @@ The `name` of the ruleset must be unique so it can be used to when connecting to
 
 Replaces an existing data discovery ruleset.
 
-The `name` of the ruleset must be unique so it can be used to when connecting to or disconnecting from applications.
+The `name` of the ruleset must be unique so it can be used when connecting to or disconnecting from applications.
 
 ###### URL
 
@@ -740,7 +703,7 @@ Connects an application to the data discovery ruleset.
 
 #### Success Response
 
-- Code: `201`: Application is set to use the data discovery ruleset.
+- Code: `201`: The application is set to use the data discovery ruleset.
 
   Content:
 
@@ -802,7 +765,7 @@ TBD
 
 #### Application Discovery Service
 
-The _Application Discovery Service_ is designed so it can extended to connect with other orchestration engines, such as, Argo. It communicates with all configured external orchestration engines, including the MONAI App Server, to discover user deployed applications so the applications can be referenced by the Data Discovery service, Export service, etc..
+The _Application Discovery Service_ has an interface that provides a mechanism to connect with other orchestration engines, such as Argo. It communicates with all configured external orchestration engines, including the MONAI App Server, to discover user deployed applications so the applications can be referenced by the Data Discovery service, Export service, etc...
 
 #### Data Discovery Service
 
@@ -810,20 +773,29 @@ The _Application Discovery Service_ is designed so it can extended to connect wi
 
 The _Data Discovery Service_ (DDS) manages how each received payload is routed to one or more applications by applying user-defined data discovery rules.
 
-Each ruleset contains filtering logic which defines if an incoming file meets the criteria of an application. In addition, the ruleset contains how a file shall be grouped, e.g. by a DICOM study or a DICOM series. A ruleset also defines how long the service shall wait for all data to be arrived. For example, if there are four DICOM volumes that are being sent separately and directly from the modality at 5-minute interval. If the ruleset defines a 3 minute timeout, then, there are total of 4 jobs, one for each DICOM volume, that are launched with the orchestration engine. If the ruleset defines a 6 minute timeout. Then, only one single job is created.
+Each ruleset contains filtering logic which defines whether an incoming file meets the criteria of an application. In addition, the ruleset contains how a file shall be grouped, e.g. by a DICOM study or a DICOM series. A ruleset also defines how long the service shall wait for all data to arrive. Here are a couple of examples:
 
-After applying a ruleset, files that met the criteria are put into a bucket with some metadata that can be used for querying. These buckets are stored as part of the Job Scheduling Service and are synced to the database in case of system shutdown. DDS continues onto the next ruleset until all ruleset are applied to each file.
+##### Example 1: a single study
+
+If there is a DICOM study containing four DICOM instances that are being sent separately and directly from the modality at 5-minute intervals. If the ruleset defines a 3-minute timeout, then there are a total of 4 jobs, one for each DICOM instance, that are launched with the orchestration engine. If the ruleset defines a 6-minute timeout. Then, only one single job is created.
+
+##### Example 2: multiple studies
+
+Assuming 3 studies from the same patient were uploaded to Workload Manager in multiple connections. There will be a total of 3 jobs launched if the ruleset instructs DDS to group by study, assuming all relevant files are received within the timeout period defined. On the other hand, if data were to be group by the patient, then one single job will be created.
+
+After applying a ruleset, files that met the criteria are put into a bucket with some metadata that can be used for querying. These buckets are stored as part of the Job Scheduling Service and are synced to the database in case of system shutdown. DDS continues onto the next ruleset until all ruleset is applied to each file.
 
 ##### Data Discovery Stages
 
-There are two stage during data discovery, filtering and grouping.  If an incoming payload provides the application ID or name then the first stage is skipped.
+There are two stages during data discovery, filtering, and grouping. 
 
-1. Data filtering: applies user defined static rules to filter incoming data first. If a payload/file meets all criteria defined by the user, then it enters the next stage.
-2. Data grouping: groups incoming payload into patient, study or series.  Also waits, base on user defined value, for all data to arrive.
+1. Data filtering: applies user-defined static rules to filter incoming data first. If a payload/file meets all criteria defined by the user, it then enters the next stage.
+2. Data grouping: groups incoming payload into patient, study or series. Also waits, based on user-defined value, for all data to arrive.
 
+Note: The first stage is skipped if an incoming payload provides the application ID or the application name.
 #### Job Scheduling Service
 
-The _Job Scheduling Service_ (JSS) maintains in-memory buckets that are synced to the database. Buckets are created based on input criteria from the DDS. As described in section above, once the bucket is timed out waiting for new files, the bucket will stop accepting any new payloads/files. A job will be created and submitted to the orchestration engine where the application is hosted. The bucket is then removed from memory and the database. The job metadata is also stored in the database to track statuses and states of each job.
+The _Job Scheduling Service_ (JSS) maintains in-memory buckets that are synced to the database. Buckets are created based on input criteria from the DDS. As described in the section above, once the bucket is timed out waiting for new files, the bucket will stop accepting any new payloads/files. A job will be created and submitted to the orchestration engine where the application is hosted. The bucket is then removed from memory and the database. The job metadata is also stored in the database to track the statuses and states of each job.
 
 ##### Job States
 
@@ -837,14 +809,14 @@ The _Job Scheduling Service_ (JSS) maintains in-memory buckets that are synced t
 
 ![dataexport](static/mwm-decs-seq.png)
 
-The _Data Export Collection Service_ monitors and updates states and statues of each job. When a job completes, it collects any artifacts/files generated by the application and distribute the artifacts to each connected sinks. Export service clients can utilize the [Export APIs](#export-api) to query any available tasks for export.
+The _Data Export Collection Service_ monitors and updates the states and statutes of each job. When a job completes, it collects any artifacts/files generated by the application and distributes the artifacts to each connected sink. Export service clients can utilize the [Export APIs](#export-api) to query any available tasks for export.
 
 ##### Result States:
 
 - `Queued`: Queued for export service.
 - `Processing`: Picked up by the export service and being processed by the export service.
-- `Successful`: Exported to external device successfully.
-- `Failure`: Failed to export to external device.
+- `Successful`: Exported to the external device successfully.
+- `Failure`: Failed to export to the external device.
 
 #### Data Retention Service
 
@@ -855,9 +827,9 @@ Default Configuration Options:
 - Data Retention (Days): `15`
 - Remove immediately upon success export: `true`
 
-MWM reserves a small amount of storage space for internal use and stops collecting data for export when the available space is less than the reserved. It also stops accepting uploads when used space is above the watermark.
+MWM reserves a small amount of storage space for internal use and stops collecting data for export when the available space is less than the reserved. It also stops accepting uploads when the used space is above the watermark.
 
-Any uploaded data is retained for `15` days unless used space is above the watermark. The oldest payloads are removed first.
+Any uploaded data is retained for `15` days unless the used space is above the watermark. The oldest payloads are removed first.
 
 #### Notification Service
 
