@@ -787,12 +787,67 @@ After applying a ruleset, files that met the criteria are put into a bucket with
 
 ##### Data Discovery Stages
 
-There are two stages during data discovery, filtering, and grouping. 
+There are two stages during data discovery, filtering, and grouping.
 
 1. Data filtering: applies user-defined static rules to filter incoming data first. If a payload/file meets all criteria defined by the user, it then enters the next stage.
 2. Data grouping: groups incoming payload into patient, study or series. Also waits, based on user-defined value, for all data to arrive.
 
 Note: The first stage is skipped if an incoming payload provides the application ID or the application name.
+
+##### Data Discovery Rule Definition
+
+Data Discover Rules (DDR) are used to filter incoming data to meet the requirements of an MONAI Deploy application. Each MONAI Deploy application must have a ruleset linked in order to receive data while each ruleset may be linked to one or more MONAI Deploy applications.
+
+A ruleset is a JSON formatted document containing one or more rules:
+
+```json
+{
+  "dicom": {
+    "[dicom-tag]": ["[regular expression]"]
+  },
+  "fhir": {
+    "[resource-type]": {
+      "[filter-key]": "[filter-value]"
+    }
+  },
+  "grouping": "PatientID|StudyInstanceUID|SeriesInstanceUID",
+  "timeout": 5
+}
+```
+
+| Field                                      | Type   | Description                                                                                                                                                                          |
+| ------------------------------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| dicom                                      | object | An object that contains a set of rules used to filter the DICOM dataset. A logical `AND` is applied to all child rules.                                                              |
+| dicom/object/[dicom-tag]                   | string | A DICOM tag or the DICOM attribute name is used as the source to extract the data required for filtering.                                                                            |
+| dicom/object/[dicom-tag]/value             | array  | A list of regular expressions used to filter the data. A logical `AND` is applied to all child rules.                                                                                |
+| fhir                                       | object | An object that contains a set of rules, grouped by FHIR resource types, that are used to filter the FHIR dataset.                                                                    |
+| fhir/object/[resource-type]                | object | An object that contains a set of rules for the FHIR resource specified in the key. E.g. `Observation`, `Patient`, etc... A logical `AND` is applied to all child rules.              |
+| fhir/object/[resource-type]/[filter-key]   | string | The XPath or JSON Path to the element where the filter is applied to.                                                                                                                |
+| fhir/object/[resource-type]/[filter-value] | string | A regular expression that is applied to the value of the FHIR resource element.                                                                                                      |
+| grouping                                   | string | Defines how data are grouped. A top-level DICOM tag may be used. Suggested values are `0010,0020` (Patient ID), `0020,000D` (Study Instance UID), `0020,000E` (Series Instance UID). |
+| timeout                                    | int    | Timeout value, in minutes, that the DDS shall wait for data before scheduling the job. The timer restarts when a new instance/resource is added to the matching set.                 |
+
+###### Example
+
+In the following example, any DICOM images with `Modality` set to `DX` or `SR`, `Study Description` set to `chest` (case insensitive) and `Images Types` of `ORIGINAL` _and_ `PRIMARY` are a match. Plus, any EHR data received with resource type `Observation` with the pateint identifier `patientId-urn:oid:1.2.4~0000000000000000~123456~20170101010101~100` in the JSON path specified are sent to the linked MONAI Deploy application(s).
+
+```json
+{
+  "dicom": {
+    "Modality": ["^(DX|SR)$"],
+    "StudyDescription": ["^(?i)chest"],
+    "ImageType": ["ORIGINAL", "PRIMARY"]
+  },
+  "fhir": {
+    "Observation": {
+      "$.identifier[:1].value": "patientId-urn:oid:1.2.4~0000000000000000~123456~20170101010101~100"
+    }
+  },
+  "grouping": "PatientID",
+  "timeout": 5
+}
+```
+
 #### Job Scheduling Service
 
 The _Job Scheduling Service_ (JSS) maintains in-memory buckets that are synced to the database. Buckets are created based on input criteria from the DDS. As described in the section above, once the bucket is timed out waiting for new files, the bucket will stop accepting any new payloads/files. A job will be created and submitted to the orchestration engine where the application is hosted. The bucket is then removed from memory and the database. The job metadata is also stored in the database to track the statuses and states of each job.
