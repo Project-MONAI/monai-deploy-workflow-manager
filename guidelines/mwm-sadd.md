@@ -803,33 +803,30 @@ A ruleset is a JSON formatted document containing one or more rules:
 ```json
 {
   "dicom": {
-    "[dicom-tag]": ["[regular expression]"]
+    "[dicom-tag]": ["[regex]"]
   },
   "fhir": {
-    "[resource-type]": {
-      "[filter-key]": "[filter-value]"
-    }
+    "[resource-type]": ["[selector]"]
   },
   "grouping": "PatientID|StudyInstanceUID|SeriesInstanceUID",
   "timeout": 5
 }
 ```
 
-| Field                                      | Type   | Description                                                                                                                                                                          |
-| ------------------------------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| dicom                                      | object | An object that contains a set of rules used to filter the DICOM dataset. A logical `AND` is applied to all child rules.                                                              |
-| dicom/object/[dicom-tag]                   | string | A DICOM tag or the DICOM attribute name is used as the source to extract the data required for filtering.                                                                            |
-| dicom/object/[dicom-tag]/value             | array  | A list of regular expressions used to filter the data. A logical `AND` is applied to all child rules.                                                                                |
-| fhir                                       | object | An object that contains a set of rules, grouped by FHIR resource types, that are used to filter the FHIR dataset.                                                                    |
-| fhir/object/[resource-type]                | object | An object that contains a set of rules for the FHIR resource specified in the key. E.g. `Observation`, `Patient`, etc... A logical `AND` is applied to all child rules.              |
-| fhir/object/[resource-type]/[filter-key]   | string | The XPath or JSON Path to the element where the filter is applied to.                                                                                                                |
-| fhir/object/[resource-type]/[filter-value] | string | A regular expression that is applied to the value of the FHIR resource element.                                                                                                      |
-| grouping                                   | string | Defines how data are grouped. A top-level DICOM tag may be used. Suggested values are `0010,0020` (Patient ID), `0020,000D` (Study Instance UID), `0020,000E` (Series Instance UID). |
-| timeout                                    | int    | Timeout value, in minutes, that the DDS shall wait for data before scheduling the job. The timer restarts when a new instance/resource is added to the matching set.                 |
+| Field                             | Type   | Description                                                                                                                                                                          |
+| --------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| dicom                             | object | An object that contains a set of rules used to filter the DICOM dataset. A logical `AND` is applied to all child rules.                                                                  |
+| dicom/object/[dicom-tag]          | string | A DICOM tag or the DICOM attribute name is used as the source to extract the data required for filtering.                                                                               |
+| dicom/object/[dicom-tag]/value    | array  | A list of regular expressions used to filter the data. A logical `AND` is applied to all child rules.                                                                                |
+| fhir                              | object | An object that contains a set of rules, grouped by FHIR resource types, that are used to filter the FHIR dataset.                                                                        |
+| fhir/object/[resource-type]       | string | The type of FHIR resource. E.g. `Observation`, `Patient`, etc...                                                                                                                     |
+| fhir/object/[resource-type]/value | array  | A list of XPath or JSONPath selectors used to filter the FHIR resource. A logical `AND` is applied to all child rules.                                                               |
+| grouping                          | string | Defines how data are grouped. A top-level DICOM tag may be used. Suggested values are `0010,0020` (Patient ID), `0020,000D` (Study Instance UID), `0020,000E` (Series Instance UID). |
+| timeout                           | int    | Timeout value, in minutes, that the DDS shall wait for data before scheduling the job. The timer restarts when a new instance/resource is added to the matching set.                 |
 
 ###### Example
 
-In the following example, any DICOM images with `Modality` set to `DX` or `SR`, `Study Description` set to `chest` (case insensitive) and `Images Types` of `ORIGINAL` _and_ `PRIMARY` are a match. Plus, any EHR data received with resource type `Observation` with the pateint identifier `patientId-urn:oid:1.2.4~0000000000000000~123456~20170101010101~100` in the JSON path specified are sent to the linked MONAI Deploy application(s).
+In the following example, any DICOM images with `Modality` set to `DX` or `SR`, `Study Description` set to `chest` (case insensitive) and `Images Types` of `ORIGINAL` _and_ `PRIMARY` are a match. Plus, any EHR data received with resource type `Observation` with the pateint identifier `patientId-urn:oid:1.2.4~0000000000000000~123456~20170101010101~100` and resource type `Bundle` that matches the JSONPath selectors are sent to all the linked MONAI Deploy application(s).
 
 ```json
 {
@@ -839,9 +836,13 @@ In the following example, any DICOM images with `Modality` set to `DX` or `SR`, 
     "ImageType": ["ORIGINAL", "PRIMARY"]
   },
   "fhir": {
-    "Observation": {
-      "$.identifier[:1].value": "patientId-urn:oid:1.2.4~0000000000000000~123456~20170101010101~100"
-    }
+    "Observation": [
+      "$.identifier[?(@.value=='patientId-urn:oid:1.2.4~0000000000000000~123456~20170101010101~100')]"
+    ],
+    "Bundle": [
+      "$.entry[*].resource.identifier[?(@.value=='1234567')]",
+      "$..coding[?(@.code='15074-8')]"
+    ]
   },
   "grouping": "PatientID",
   "timeout": 5
