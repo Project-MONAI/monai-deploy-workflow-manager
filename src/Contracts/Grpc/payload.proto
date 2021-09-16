@@ -1,0 +1,45 @@
+// Copyright 2021 MONAI Consortium
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//     http://www.apache.org/licenses/LICENSE-2.0
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+option csharp_namespace = "Monai.Deploy.WorkloadManager.Contracts.Grpc";
+package monai.deploy.workload_manager.contracts.grpc.payload.v1;
+
+import public "Grpc/common.proto";
+import "google/protobuf/timestamp.proto";
+
+// Payloads Service
+service Payload {
+  rpc Upload (stream PayloadUploadRequest) returns (PayloadUploadResponse);
+  rpc Download (PayloadDownloadRequest) returns (stream PayloadDownloadResponse);
+}
+
+message PayloadUploadRequest {
+  google.protobuf.Timestamp date_time_received = 1;
+  string correlation_id = 2;
+  string name =3;
+  repeated string applications = 4;
+  bytes data = 5;
+}
+
+message PayloadUploadResponse {
+    monai.deploy.workload_manager.contracts.grpc.common.v1.ResponseHeader header = 1;
+    string file_id = 2;
+}
+
+message PayloadDownloadRequest {
+    string file_id =1;
+}
+
+message PayloadDownloadResponse {
+    monai.deploy.workload_manager.contracts.grpc.common.v1.ResponseHeader header = 1;
+    bytes data = 2;
+}
