@@ -17,6 +17,7 @@ package monai.deploy.workload_manager.contracts.grpc.common.v1;
 message ResponseHeader {
 	// The "error" code; with 0 often meaning success.
 	sint32 code = 1;
+
 	// Optional message(s) returned with the result.
 	repeated string messages = 2;
 }
