@@ -1,0 +1,25 @@
+title Workload Manager v0.1.0 (Data Export)
+
+participant "MONAI\nInformatics Gateway" as MIG
+participant "Export API" as Export
+participant "Payload API" as Payload
+database "MWM Database" as DB
+fontawesome f0a0 "Storage" as Storage
+fontawesome f0f8 "PACS" as PACS
+
+MIG->Export: SCU Poll export
+activate MIG
+activate Export
+Export->DB: Read
+Export->Storage: Load
+Export-->MIG: Return export tasks
+deactivate Export
+MIG->Payload: Payload.Download
+activate Payload
+MIG<--Payload: Response
+deactivate Payload
+MIG->PACS:C-STORE-RQ (results)
+activate PACS
+MIG<--PACS: C-STORE-RSP
+deactivate PACS
+deactivate MIG

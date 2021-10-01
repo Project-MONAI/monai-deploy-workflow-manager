@@ -1,0 +1,159 @@
+title Workload Manager v0.1.0 (DICOM ONLY & single MAP)
+
+actor User
+participant "MONAI\nInformatics Gateway" as MIG
+participant "Payloasd API" as Payload
+database "MWM Database" as DB
+fontawesome f0a0 "Storage" as Storage
+participant "Data Discovery Service" as DDS
+participant "Job Scheduling Service" as JSS
+participant "Orchestration Engine Plugin" as OEP
+participant "Argo Plugin" as ARP
+participant Argo
+participant "Data Export Collection Service" as DECS
+participant "Sinks Plugin" as SP
+participant "DICOM Sink" as DS
+
+activate DDS
+
+User->MIG: C-STORE-RQ (A1)
+activate User
+activate MIG
+User<--MIG: C-STORE-RSP
+MIG->Payload: Payload.Upload
+activate Payload
+Payload->DB: Store metadata (DICOM headers)
+Payload->Storage: Save instance
+Payload->DDS: Notify instance
+deactivate Payload
+DDS->DB:Load ruleset
+DDS->DDS: Apply ruleset
+DDS->JSS: Configure bucket A with timeout
+JSS->JSS: Activate bucket A
+activate JSS
+DDS->JSS: Put A1 in bucket A
+User->MIG: C-STORE-RQ (A2)
+User<--MIG: C-STORE-RSP
+MIG->Payload: Payload.Upload
+activate Payload
+Payload->DB: Store metadata (DICOM headers)
+Payload->Storage: Save instance
+Payload->DDS: Notify instance
+deactivate Payload
+DDS->DB:Load ruleset
+DDS->DDS: Apply ruleset
+DDS->JSS: Put A2 in bucket A
+JSS->JSS: Bucket timeout
+JSS->JSS: Schedule workflow A
+JSS->DB: Save workflow A
+deactivate JSS
+JSS->DB: Read app info
+activate JSS
+JSS->OEP:Launch workflow A
+activate OEP
+OEP->ARP: Launch workflow A
+activate ARP
+ARP->Argo: Launch workflow A
+activate Argo
+ARP<--Argo: Response
+deactivate Argo
+OEP<--ARP: Response
+deactivate ARP
+JSS<--OEP:Response
+JSS->DB: Update workflow A
+deactivate OEP
+deactivate JSS
+DECS->OEP: Poll workflow A
+activate OEP
+activate DECS
+OEP->ARP: Poll job status A
+activate ARP
+ARP->Argo: Poll job status A
+activate Argo
+ARP<--Argo: Response
+deactivate Argo
+OEP<--ARP: Response
+deactivate ARP
+
+User->MIG: C-STORE-RQ (B1)
+User<--MIG: C-STORE-RSP
+deactivate User
+
+DECS<--OEP: Response
+deactivate OEP
+DECS->Storage: Save results to storage
+DECS->DB: Load app-to-sink mapping information
+DECS->SP: Forward results to sinks
+activate SP
+SP->DS: Save
+activate DS
+SP<--DS: Response
+deactivate DS
+DECS<--SP: Response
+deactivate SP
+
+DECS->DB: Save results metadata
+
+deactivate DECS
+MIG->Payload: Payload.Upload
+activate Payload
+deactivate MIG
+Payload->DB: Store metadata (DICOM headers)
+Payload->Storage: Save instance
+Payload->DDS: Notify instance
+deactivate Payload
+DDS->DB:Load ruleset
+DDS->DDS: Apply ruleset
+DDS->JSS: Configure bucket B with timeout
+JSS->JSS: Activate bucket B
+activate JSS
+DDS->JSS: Put B1 in bucket B
+JSS->JSS: Bucket timeout
+JSS->JSS: Schedule workflow B
+deactivate JSS
+JSS->DB: Save workflow B
+
+
+
+JSS->DB: Read app info
+activate JSS
+JSS->OEP:Launch workflow B
+activate OEP
+OEP->ARP: Launch workflow B
+activate ARP
+ARP->Argo: Launch workflow B
+activate Argo
+ARP<--Argo: Response
+deactivate Argo
+OEP<--ARP: Response
+deactivate ARP
+JSS<--OEP:Response
+JSS->DB: Update workflow B
+deactivate OEP
+deactivate JSS
+DECS->OEP: Poll workflow B
+activate OEP
+activate DECS
+OEP->ARP: Poll job status B
+activate ARP
+ARP->Argo: Poll job status B
+activate Argo
+ARP<--Argo: Response
+deactivate Argo
+OEP<--ARP: Response
+deactivate ARP
+
+DECS<--OEP: Response
+deactivate OEP
+DECS->Storage: Save results to storage
+DECS->DB: Load app-to-sink mapping information
+DECS->SP: Forward results to sinks
+activate SP
+SP->DS: Save
+activate DS
+SP<--DS: Response
+deactivate DS
+DECS<--SP: Response
+deactivate SP
+DECS->DB: Save results metadata
+deactivate DECS

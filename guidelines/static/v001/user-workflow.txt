@@ -1,0 +1,40 @@
+title Workload Manager v0.0.1 (User workflow)
+
+actor User
+
+participant Docker
+participant "Data Discovery API" as DDAPI
+participant "Apps API" as APPSAPI
+participant "Export API" as Export
+database "MWM Database" as DB
+fontawesome f0a0 "Storage" as Storage
+participant "Orchestration Engine Interface" as OEI
+participant "Argo Plugin" as ARP
+participant Argo
+
+
+activate User
+User->User: Compose workflow definition
+User->Docker: Deploys Docker containers via Docker CLI
+User->APPSAPI: Deploy workflow via CLI
+activate APPSAPI
+APPSAPI->APPSAPI: Validate workflow definition
+APPSAPI->OEI: Validate 
+activate OEI
+OEI->ARP: Validate
+activate ARP
+ARP->Argo: Validate (if needed)
+OEI<--ARP: Response
+deactivate ARP
+APPSAPI<--OEI: Response
+deactivate OEI
+APPSAPI->DDAPI: Save DD ruleset
+activate DDAPI
+DDAPI->DDAPI: Validate ruleset
+DDAPI->DB: Save DD ruleset
+deactivate DDAPI
+APPSAPI->DB: Save application manifest
+User<--APPSAPI: Response
+deactivate APPSAPI
+deactivate User
+

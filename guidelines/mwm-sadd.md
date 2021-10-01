@@ -1,6 +1,6 @@
-# MONAI Workload Manager Software Architecture & Design
+# MONAI Deploy Workload Manager Software Architecture & Design
 
-![MONAI Workload Manager](./static/mwm.png)
+![MONAI Deploy Workload Manager](./static/mwm.png)
 
 ## Overview
 
@@ -8,11 +8,11 @@ The MONAI Deploy Workload Manager (MWM) is the central hub for the MONAI Deploy 
 
 ## Purpose
 
-This document describes the detailed designs derived from the requirements defined in MONAI Workload Manager Requirements.
+This document describes the detailed designs derived from the requirements defined in MONAI Deploy Workload Manager Requirements.
 
 ## Scope
 
-The scope of this document is limited to the design of the MONAI Workload Manager. This design document does not address any design decisions belonging to other subsystems, such as MONAI Informatics Gateway, MONAI Deploy Application SDK.
+The scope of this document is limited to the design of the MONAI Deploy Workload Manager. This design document does not address any design decisions belonging to other subsystems, such as MONAI Informatics Gateway, MONAI Deploy Application SDK.
 
 ## Assumptions, Constraints, Dependencies
 
@@ -21,16 +21,16 @@ The scope of this document is limited to the design of the MONAI Workload Manage
 | Term        | Definition                                                                                                                                                       |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Export Sink | An export sink is a user-configured sink where the results (application-generated artifacts) are assigned to and later picked up by the export service clients. |
-| MWM         | MONAI Workload Manager                                                                                                                                           |
+| MWM         | MONAI Deploy Workload Manager                                                                                                                                           |
 | MIG         | MONAI Informatics Gateway                                                                                                                                        |
 
 ## Reference Documents
 
-- [MONAI Workload Manager Requirements](mwm-srs.md)
+- [MONAI Deploy Workload Manager Requirements](mwm-srs.md)
 
 ## Architecture Details
 
-MONAI Workload Manager includes a set of services and APIs to interconnect other subsystems in MONAI Deploy. Every service in the MWM runs on one or more threads that may receive requests from external systems/services. It also interacts with a database and other external services, such as the App Server or Argo, for job management.
+MONAI Deploy Workload Manager includes a set of services and APIs to interconnect other subsystems in MONAI Deploy. Every service in the MWM runs on one or more threads that may receive requests from external systems/services. It also interacts with a database and other external services, such as the App Server or Argo, for job management.
 
 ---
 
@@ -66,7 +66,7 @@ MWM provides the following APIs:
 
 #### MWM CLI
 
-The MONAI Workload Manager provides the following CLI tools to configure and connect components in the MONAI Deploy platform:
+The MONAI Deploy Workload Manager provides the following CLI tools to configure and connect components in the MONAI Deploy platform:
 
 #### Applications API
 
