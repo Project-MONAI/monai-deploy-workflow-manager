@@ -2,13 +2,13 @@
 
 This document outlines the design decisions and scopes for version 0.1.0.
 
-## Assumptions & Limitation
+## Assumptions & Constraints
 
-- In this release, Argo is used as the workflow orchestration engine. However, MWM is designed to have a pluggable architecture in order to support other orchestration engines in the future.
+- In this release, Argo is used as the workflow orchestration engine. However, MWM is designed to have a pluggable architecture to support other orchestration engines in the future.
 
-- This release supports MAP specification 1.0, a single docker container that is built using the MONAI Deploy App Packager.
+- This release supports MAP specification 1.0, a single docker container built using the MONAI Deploy App Packager.
 
-- The DDS (Data Discovery Service) and related sub-components may be optional if there are time constraints.  The workaround is to rely on AE-TITLE-to-Application mapping.  This requires the user to configure an AET per application and have Informatics Gateway (IG) pass in the application information.
+- The DDS (Data Discovery Service) and related sub-components may be optional if there are time constraints.  The workaround is to rely on AE-TITLE-to-Application mapping which requires the user to configure an AET per application and have Informatics Gateway (IG) pass in the application information.
 
 ## Designs & Diagrams
 
@@ -28,9 +28,9 @@ The following sequence diagram depicts how users deploy a workflow (with a singl
     - validate workflow definition
 - Orchestration Engine Plugin Interface
     - validate workflow
-- Argo plugin 
+- Argo plugin
     - validate workflow (if needed) may be a no-op
-- (optional) Data Discovery API 
+- (optional) Data Discovery API
   - API to validate ruleset
   - API to save ruleset
 

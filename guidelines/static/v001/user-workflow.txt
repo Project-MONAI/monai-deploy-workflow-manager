@@ -17,9 +17,11 @@ activate User
 User->User: Compose workflow definition
 User->Docker: Deploys Docker containers via Docker CLI
 User->APPSAPI: Deploy workflow via CLI
+group Registration Validation
+APPSAPI->APPSAPI: Validate registration files
+group Orchestration Engine Validation
 activate APPSAPI
-APPSAPI->APPSAPI: Validate workflow definition
-APPSAPI->OEI: Validate 
+APPSAPI->OEI: Validate
 activate OEI
 OEI->ARP: Validate
 activate ARP
@@ -27,13 +29,17 @@ ARP->Argo: Validate (if needed)
 OEI<--ARP: Response
 deactivate ARP
 APPSAPI<--OEI: Response
+end
 deactivate OEI
+group DDR Validation
 APPSAPI->DDAPI: Save DD ruleset
 activate DDAPI
 DDAPI->DDAPI: Validate ruleset
 DDAPI->DB: Save DD ruleset
 deactivate DDAPI
 APPSAPI->DB: Save application manifest
+end
+end
 User<--APPSAPI: Response
 deactivate APPSAPI
 deactivate User
