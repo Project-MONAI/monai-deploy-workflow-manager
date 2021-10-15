@@ -2,17 +2,26 @@ title Workload Manager v0.1.0 (DICOM ONLY & single MAP)
 
 actor User
 participant "MONAI\nInformatics Gateway" as MIG
+
+participantgroup Workload Manager Core
 participant "Payloasd API" as Payload
 database "MWM Database" as DB
 fontawesome f0a0 "Storage" as Storage
 participant "Data Discovery Service" as DDS
 participant "Job Scheduling Service" as JSS
-participant "Orchestration Engine Plugin" as OEP
-participant "Argo Plugin" as ARP
-participant Argo
 participant "Data Export Collection Service" as DECS
 participant "Sinks Plugin" as SP
 participant "DICOM Sink" as DS
+end
+
+participantgroup Orchestration Mediator Service
+participant "Orchestration Engine Plugin" as OEP
+participant "Argo Plugin" as ARP
+end
+
+participantgroup Third Party
+participant Argo
+end
 
 activate DDS
 
@@ -26,8 +35,6 @@ Payload->DB: Store metadata (DICOM headers)
 Payload->Storage: Save instance
 Payload->DDS: Notify instance
 deactivate Payload
-DDS->DB:Load ruleset
-DDS->DDS: Apply ruleset
 DDS->JSS: Configure bucket A with timeout
 JSS->JSS: Activate bucket A
 activate JSS
@@ -40,14 +47,12 @@ Payload->DB: Store metadata (DICOM headers)
 Payload->Storage: Save instance
 Payload->DDS: Notify instance
 deactivate Payload
-DDS->DB:Load ruleset
-DDS->DDS: Apply ruleset
 DDS->JSS: Put A2 in bucket A
 JSS->JSS: Bucket timeout
 JSS->JSS: Schedule workflow A
 JSS->DB: Save workflow A
 deactivate JSS
-JSS->DB: Read app info
+JSS->DB: Load scheduled jobs
 activate JSS
 JSS->OEP:Launch workflow A
 activate OEP
@@ -63,9 +68,10 @@ JSS<--OEP:Response
 JSS->DB: Update workflow A
 deactivate OEP
 deactivate JSS
+DECS->DB: Load active workflows
+activate DECS
 DECS->OEP: Poll workflow A
 activate OEP
-activate DECS
 OEP->ARP: Poll job status A
 activate ARP
 ARP->Argo: Poll job status A
@@ -102,8 +108,6 @@ Payload->DB: Store metadata (DICOM headers)
 Payload->Storage: Save instance
 Payload->DDS: Notify instance
 deactivate Payload
-DDS->DB:Load ruleset
-DDS->DDS: Apply ruleset
 DDS->JSS: Configure bucket B with timeout
 JSS->JSS: Activate bucket B
 activate JSS
@@ -115,7 +119,7 @@ JSS->DB: Save workflow B
 
 
 
-JSS->DB: Read app info
+JSS->DB: Load scheduled jobs
 activate JSS
 JSS->OEP:Launch workflow B
 activate OEP
@@ -131,9 +135,10 @@ JSS<--OEP:Response
 JSS->DB: Update workflow B
 deactivate OEP
 deactivate JSS
+DECS->DB: Load active workflows
+activate DECS
 DECS->OEP: Poll workflow B
 activate OEP
-activate DECS
 OEP->ARP: Poll job status B
 activate ARP
 ARP->Argo: Poll job status B

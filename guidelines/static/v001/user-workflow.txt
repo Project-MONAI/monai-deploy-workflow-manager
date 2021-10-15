@@ -2,25 +2,42 @@ title Workload Manager v0.0.1 (User workflow)
 
 actor User
 
-participant Docker
-participant "Data Discovery API" as DDAPI
-participant "Apps API" as APPSAPI
+participant CLI
+participant "Informatics Gateway" as IG
+participantgroup Workload Manager Core
 participant "Export API" as Export
-database "MWM Database" as DB
+database "MWM Database" as WMDB
 fontawesome f0a0 "Storage" as Storage
+end
+
+participantgroup Orchestration Mediator Service
+participant "Apps API" as APPSAPI
 participant "Orchestration Engine Interface" as OEI
 participant "Argo Plugin" as ARP
-participant Argo
+database "Database" as OESDB
+end
 
+participantgroup Third Party
+participant Docker
+participant Argo
+participant #lightgray "App Server" as APPSVR
+end
+
+note over APPSVR:*future*
 
 activate User
-User->User: Compose workflow definition
+User->User: Compose Argo workflow
 User->Docker: Deploys Docker containers via Docker CLI
-User->APPSAPI: Deploy workflow via CLI
-group Registration Validation
-APPSAPI->APPSAPI: Validate registration files
-group Orchestration Engine Validation
+
+group Register Application Workflow
+User->CLI: Register application
+activate CLI
+CLI->APPSAPI: Step 1. Deploy workflow
 activate APPSAPI
+
+APPSAPI->APPSAPI: Validate registration request
+
+group Orchestration Engine Validation
 APPSAPI->OEI: Validate
 activate OEI
 OEI->ARP: Validate
@@ -31,16 +48,19 @@ deactivate ARP
 APPSAPI<--OEI: Response
 end
 deactivate OEI
-group DDR Validation
-APPSAPI->DDAPI: Save DD ruleset
-activate DDAPI
-DDAPI->DDAPI: Validate ruleset
-DDAPI->DB: Save DD ruleset
-deactivate DDAPI
-APPSAPI->DB: Save application manifest
-end
-end
-User<--APPSAPI: Response
+APPSAPI->OESDB: Save
+CLI<--APPSAPI: Response
 deactivate APPSAPI
+
+CLI->Export: Step 2. Register sink
+Export->Export: Validate
+Export->WMDB: Create & save sink
+CLI<--Export: Response
+
+CLI->IG: Step 3. Create AET-App mapping
+CLI<--IG: Response
+User<--CLI: Response
+deactivate CLI
 deactivate User
 
+end

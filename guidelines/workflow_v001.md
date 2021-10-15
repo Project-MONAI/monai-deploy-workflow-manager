@@ -21,18 +21,32 @@ The following sequence diagram depicts how users deploy a workflow (with a singl
 
 #### Scope
 
-- CLI to do the following register workflow
+
+##### Overall
+- Define MONAI Deploay Workload Manager workflow definition
+  - Output sink(s)
+  - AE Title
+
+##### CLI
+
+A single CLI that interacts with both Workload Manager & OES and possible IG:
+- register argo workflow with OES
+- map application to export sinks
+- map AE title to application (requires IG API)
+
+##### Workload Manager
+
+- Export API
+  - Sink.Create API
+
+##### Orchestration Mediator Service (OMS)
+
 - Apps API
-    - define workflow definition
-    - register workflow API
-    - validate workflow definition
+    - validate & register workflow API
 - Orchestration Engine Plugin Interface
     - validate workflow
 - Argo plugin
     - validate workflow (if needed) may be a no-op
-- (optional) Data Discovery API
-  - API to validate ruleset
-  - API to save ruleset
 
 
 ### Trigger Workflow
@@ -47,7 +61,6 @@ The following sequence diagram depicts how 2 DICOM studies are processed through
     - Payload.Upload API for file uploads
 - Data Discovery Engine
     - eventing system to receive payload arrival notices
-    - (optional) applies data routing ruleset
     - creates buckets to store files
 - Job Scheduling Service
     - Data bucket management for storing matching files, timer management, job scheduling (simply save to DB)
