@@ -1,0 +1,28 @@
+# Created at https://sequencediagram.org/
+title File API
+
+fontawesome f0f8 "PACS" as PACS
+participant "Informatics Gateway" as MIG
+participant "File API" as File
+fontawesome f0a0 "Storage" as Storage
+database "MWM Database" as DB
+
+
+group File.Upload API [Upload file]
+MIG->File: File.Upload
+activate File
+File->Storage: Save (State:Ready)
+File->DB: Save
+MIG<--File: Response
+deactivate File
+end
+
+group File.Download API [Download file]
+MIG->File: File.Download
+activate File
+File->DB: Get
+File<--DB: Response
+File<--Storage: Load
+MIG<--File: Response
+deactivate File
+end

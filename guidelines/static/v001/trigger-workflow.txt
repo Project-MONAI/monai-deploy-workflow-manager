@@ -1,17 +1,17 @@
+# Created at https://sequencediagram.org/
 title Workload Manager v0.1.0 (DICOM ONLY & single MAP)
 
 actor User
 participant "MONAI\nInformatics Gateway" as MIG
 
 participantgroup Workload Manager Core
-participant "Payloasd API" as Payload
+participant "File API" as FileAPI
 database "MWM Database" as DB
 fontawesome f0a0 "Storage" as Storage
-participant "Data Discovery Service" as DDS
-participant "Job Scheduling Service" as JSS
-participant "Data Export Collection Service" as DECS
-participant "Sinks Plugin" as SP
-participant "DICOM Sink" as DS
+participant "App Discovery Service" as ADS
+participant "Job Service" as JSS
+participant "Result Collection Service" as DECS
+participant "Sink Routing Service" as SRS
 end
 
 participantgroup Orchestration Mediator Service
@@ -23,31 +23,34 @@ participantgroup Third Party
 participant Argo
 end
 
-activate DDS
+activate ADS
 
-User->MIG: C-STORE-RQ (A1)
+User->MIG: C-STORE-RQ (S1)
 activate User
 activate MIG
 User<--MIG: C-STORE-RSP
-MIG->Payload: Payload.Upload
-activate Payload
-Payload->DB: Store metadata (DICOM headers)
-Payload->Storage: Save instance
-Payload->DDS: Notify instance
-deactivate Payload
-DDS->JSS: Configure bucket A with timeout
+MIG->FileAPI: File.Upload
+activate FileAPI
+note over MIG,FileAPI:Upload metadata:\n* Correlation ID\n* Source (Called-AET)\n* (Optional) Application IDs
+rbox right of FileAPI: Extract DICOM headers
+FileAPI->DB: Store metadata (DICOM headers)
+FileAPI->Storage: Save instance
+FileAPI->ADS: Notify instance
+deactivate FileAPI
+ADS->JSS: Configure bucket A with timeout
 JSS->JSS: Activate bucket A
 activate JSS
-DDS->JSS: Put A1 in bucket A
-User->MIG: C-STORE-RQ (A2)
+ADS->JSS: Put S1 in bucket A
+User->MIG: C-STORE-RQ (S2)
 User<--MIG: C-STORE-RSP
-MIG->Payload: Payload.Upload
-activate Payload
-Payload->DB: Store metadata (DICOM headers)
-Payload->Storage: Save instance
-Payload->DDS: Notify instance
-deactivate Payload
-DDS->JSS: Put A2 in bucket A
+MIG->FileAPI: File.Upload
+activate FileAPI
+rbox right of FileAPI: Extract DICOM headers
+FileAPI->DB: Store metadata (DICOM headers)
+FileAPI->Storage: Save instance
+FileAPI->ADS: Notify instance
+deactivate FileAPI
+ADS->JSS: Put S2 in bucket A
 JSS->JSS: Bucket timeout
 JSS->JSS: Schedule workflow A
 JSS->DB: Save workflow A
@@ -89,29 +92,26 @@ DECS<--OEP: Response
 deactivate OEP
 DECS->Storage: Save results to storage
 DECS->DB: Load app-to-sink mapping information
-DECS->SP: Forward results to sinks
-activate SP
-SP->DS: Save
-activate DS
-SP<--DS: Response
-deactivate DS
-DECS<--SP: Response
-deactivate SP
+DECS->SRS: Forward results to sinks
+activate SRS
+SRS->DB: Register results for sink
+DECS<--SRS: Response
+deactivate SRS
 
 DECS->DB: Save results metadata
 
 deactivate DECS
-MIG->Payload: Payload.Upload
-activate Payload
+MIG->FileAPI: File.Upload
+activate FileAPI
 deactivate MIG
-Payload->DB: Store metadata (DICOM headers)
-Payload->Storage: Save instance
-Payload->DDS: Notify instance
-deactivate Payload
-DDS->JSS: Configure bucket B with timeout
+FileAPI->DB: Store metadata (DICOM headers)
+FileAPI->Storage: Save instance
+FileAPI->ADS: Notify instance
+deactivate FileAPI
+ADS->JSS: Configure bucket B with timeout
 JSS->JSS: Activate bucket B
 activate JSS
-DDS->JSS: Put B1 in bucket B
+ADS->JSS: Put B1 in bucket B
 JSS->JSS: Bucket timeout
 JSS->JSS: Schedule workflow B
 deactivate JSS
@@ -152,13 +152,10 @@ DECS<--OEP: Response
 deactivate OEP
 DECS->Storage: Save results to storage
 DECS->DB: Load app-to-sink mapping information
-DECS->SP: Forward results to sinks
-activate SP
-SP->DS: Save
-activate DS
-SP<--DS: Response
-deactivate DS
-DECS<--SP: Response
-deactivate SP
+DECS->SRS: Forward results to sinks
+activate SRS
+SRS->DB: Register results for sink
+DECS<--SRS: Response
+deactivate SRS
 DECS->DB: Save results metadata
 deactivate DECS

@@ -1,10 +1,11 @@
+# Created at https://sequencediagram.org/
 title Workload Manager v0.1.0 (Data Export)
 
 participant "MONAI\nInformatics Gateway" as MIG
 
 participantgroup Workload Manager Core
 participant "Export API" as Export
-participant "Payload API" as Payload
+participant "File API" as Payload
 database "MWM Database" as DB
 fontawesome f0a0 "Storage" as Storage
 end

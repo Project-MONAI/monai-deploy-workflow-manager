@@ -1,3 +1,4 @@
+# Created at https://sequencediagram.org/
 title Workload Manager v0.0.1 (User workflow)
 
 actor User
@@ -11,8 +12,8 @@ fontawesome f0a0 "Storage" as Storage
 end
 
 participantgroup Orchestration Mediator Service
-participant "Apps API" as APPSAPI
-participant "Orchestration Engine Interface" as OEI
+participant "App Registration API" as ARA
+participant "Orchestration Mediator API" as OMA
 participant "Argo Plugin" as ARP
 database "Database" as OESDB
 end
@@ -32,25 +33,25 @@ User->Docker: Deploys Docker containers via Docker CLI
 group Register Application Workflow
 User->CLI: Register application
 activate CLI
-CLI->APPSAPI: Step 1. Deploy workflow
-activate APPSAPI
+CLI->ARA: Step 1. Deploy workflow
+activate ARA
 
-APPSAPI->APPSAPI: Validate registration request
+ARA->ARA: Validate registration request
 
 group Orchestration Engine Validation
-APPSAPI->OEI: Validate
-activate OEI
-OEI->ARP: Validate
+ARA->OMA: Validate
+activate OMA
+OMA->ARP: Validate
 activate ARP
 ARP->Argo: Validate (if needed)
-OEI<--ARP: Response
+OMA<--ARP: Response
 deactivate ARP
-APPSAPI<--OEI: Response
+ARA<--OMA: Response
 end
-deactivate OEI
-APPSAPI->OESDB: Save
-CLI<--APPSAPI: Response
-deactivate APPSAPI
+deactivate OMA
+ARA->OESDB: Save
+CLI<--ARA: Response
+deactivate ARA
 
 CLI->Export: Step 2. Register sink
 Export->Export: Validate

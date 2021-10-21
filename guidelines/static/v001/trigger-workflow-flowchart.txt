@@ -1,0 +1,18 @@
+~~~
+layout:
+  rankDir: LR
+  name: dagre
+theme: original-dark
+~~~
+/*
+Created at https://flowchart.fun/
+*/
+DICOM Clients
+  [MIG] C-STORE: Informatics Gateway
+    [MWM] Upload: Workload Manager
+      [OMS] Trigger/Poll: Orchestration Mediator Service
+        (MWM)
+        Trigger/Poll: Argo
+          (OMS)
+      Download Results: (MIG)
+    Export: PACS / DICOM Devices

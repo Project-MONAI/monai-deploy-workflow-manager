@@ -14,10 +14,11 @@
     - [[REQ-DI-002] MWM SHALL allow users to notify data arrival via shared storages](#req-di-002-mwm-shall-allow-users-to-notify-data-arrival-via-shared-storages)
     - [[REQ-DI-003] MWM SHALL allow users to upload data and associate with one or more applications](#req-di-003-mwm-shall-allow-users-to-upload-data-and-associate-with-one-or-more-applications)
     - [[REQ-DI-004] MWM SHALL be able to discover applications deployed on MONAI App Server](#req-di-004-mwm-shall-be-able-to-discover-applications-deployed-on-monai-app-server)
-  - [(REQ-DR) Data Discover Service/Rules Requirements](#req-dr-data-discover-servicerules-requirements)
-    - [[REQ-DR-001] MWM Data Discover Service (DDS) SHALL be able to filter data by DICOM headers](#req-dr-001-mwm-data-discover-service-dds-shall-be-able-to-filter-data-by-dicom-headers)
-    - [[REQ-DR-002] MWM Data Discover Service (DDS) SHALL allow users to configure how long to wait for data before launching a job](#req-dr-002-mwm-data-discover-service-dds-shall-allow-users-to-configure-how-long-to-wait-for-data-before-launching-a-job)
-    - [[REQ-DR-003] MWM Data Discover Service (DDS) SHALL be able to filter data by FHIR data fields](#req-dr-003-mwm-data-discover-service-dds-shall-be-able-to-filter-data-by-fhir-data-fields)
+    - [[REQ-DI-005] MWM SHALL provide an API to register applications](#req-di-005-mwm-shall-provide-an-api-to-register-applications)
+  - [(REQ-DR) App Discovery Service/Data Filtering Rules Requirements](#req-dr-app-discovery-servicedata-filtering-rules-requirements)
+    - [[REQ-DR-001] MWM App Discovery Service (ADS) SHALL be able to filter data by DICOM headers](#req-dr-001-mwm-app-discovery-service-ads-shall-be-able-to-filter-data-by-dicom-headers)
+    - [[REQ-DR-002] MWM App Discovery Service (ADS) SHALL allow users to configure how long to wait for data before launching a job](#req-dr-002-mwm-app-discovery-service-ads-shall-allow-users-to-configure-how-long-to-wait-for-data-before-launching-a-job)
+    - [[REQ-DR-003] MWM App Discovery Service (ADS) SHALL be able to filter data by FHIR data fields](#req-dr-003-mwm-app-discovery-service-ads-shall-be-able-to-filter-data-by-fhir-data-fields)
     - [[REQ-DR-004] MWM SHALL respect user-defined data discovery rules](#req-dr-004-mwm-shall-respect-user-defined-data-discovery-rules)
     - [[REQ-DR-005] MWM SHALL be able to route incoming data to one or more applications](#req-dr-005-mwm-shall-be-able-to-route-incoming-data-to-one-or-more-applications)
   - [(REQ-DX) Data Export Requirements](#req-dx-data-export-requirements)
@@ -33,7 +34,7 @@
 
 ## Overview
 
-The MONAI Deploy Workload Manager (MWM) is the central hub for the MONAI Deploy platform. It routes received medical data from MONAI Informatics Gateway (or your custom ingestion service) to MONAI applications based on user-defined rulesets using the Data Discovery Service. It is also responsible for monitoring application execution statuses and routing any results produced by the applications back to the configured destinations.
+The MONAI Deploy Workload Manager (MWM) is the central hub for the MONAI Deploy platform. It routes received medical data from MONAI Informatics Gateway (or your custom ingestion service) to MONAI applications based on user-defined rulesets using the App Discovery Service. It is also responsible for monitoring application execution statuses and routing any results produced by the applications back to the configured destinations.
 
 ## Scope
 
@@ -64,7 +65,7 @@ For each requirement, the following attributes have been specified:
 | Term        | Definition                                                                                                                                                      |
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | DDR         | Data Discovery Ruleset: a set of static rules defined by the users to determine if an incoming dataset meets the criteria of an application.                    |
-| DDS         | Data Discover Service: a service that applies all DDRs to incoming payloads                                                                                     |
+| ADS         | App Discovery Service: a service that applies all DDRs to incoming payloads                                                                                     |
 | Export Sink | An export sink is a user-configured sink where the results (application-generated artifacts) are assigned to and later picked up by the export service clients. |
 | MIG         | MONAI Deploy Informatics Gateway                                                                                                                                |
 | MWM         | MONAI Deploy Workload Manager                                                                                                                                   |
@@ -73,15 +74,15 @@ For each requirement, the following attributes have been specified:
 
 ### [REQ-DI-001] MWM SHALL allow users to upload data
 
-An API MUST be provided to the data ingestion services, such as the Informatics Gateway, to upload payloads to the data discovery service.
+An API MUST be provided to the data ingestion services, such as the Informatics Gateway, to upload payloads to the MONAI Workload Manager.
 
 #### Background
 
-With the design of MONAI Deploy, the MWM does not interface with HIS/RIS directly but rather through the Informatics Gateway (a data ingestion & export service). Therefore, APIs are provided to interface with any data ingestion services. This allows the users of the platform to extend these APIs to interface their systems using different messaging protocols or storage services.
+With the design of MONAI Deploy, the MWM does not interface with HIS/RIS directly but rather through the Informatics Gateway (a data ingestion & export service). Therefore, APIs are provided to interface with any data ingestion services, allowing platform users to extend these APIs to interface their systems using different messaging protocols or storage services.
 
 #### Verification Strategy
 
-Verify that payloads can be uploaded from data ingestion services and dispatched to the data discovery service.
+Verify that payloads can be uploaded from data ingestion services and dispatched to the App Discovery Service.
 
 #### Target Release
 
@@ -89,15 +90,15 @@ MONAI Deploy Workload Manager R1
 
 ### [REQ-DI-002] MWM SHALL allow users to notify data arrival via shared storages
 
-An API MUST be provided to the data ingestion services, such as the Informatics Gateway, to notify data has arrived at the shared storage. E.g. a mounted NAS volume or cloud storage services.
+An API MUST be provided to the data ingestion services, such as the Informatics Gateway, to notify data has arrived at the shared storage. E.g., a mounted NAS volume or cloud storage services.
 
 #### Background
 
-Medical imaging data are relatively large and transferring data between devices takes a significant amount of time of any given workflow. Oftentimes, shared storage is used to reduce the amount of data being transferred across services.
+Medical imaging data are relatively large, and transferring data between devices takes a significant amount of time of any given workflow. Often, shared storage is used to reduce the amount of data being transferred across services.
 
 #### Verification Strategy
 
-Verify that payloads can be uploaded from data ingestion services and dispatched to the data discovery service.
+Verify that payloads can be uploaded from data ingestion services and dispatched to the App Discovery Service.
 
 #### Target Release
 
@@ -105,11 +106,11 @@ MONAI Deploy Workload Manager R1
 
 ### [REQ-DI-003] MWM SHALL allow users to upload data and associate with one or more applications
 
-An API SHALL be provided to allow data to be uploaded and routed to one or more designated applications directly without using the data discovery service.
+An API SHALL be provided to allow data to be uploaded and routed to one or more designated applications directly bypassing the data filters in App Discovery Service.
 
 #### Background
 
-In a scenario where the application to be executed is already known, the API would skip the data discovery service.
+In a scenario where the application to be executed is already known, the API would skip the data filtering phase of the App Discovery Service.
 
 #### Verification Strategy
 
@@ -121,7 +122,7 @@ MONAI Deploy Workload Manager R1
 
 ### [REQ-DI-004] MWM SHALL be able to discover applications deployed on MONAI App Server
 
-MWM SHALL discover applications deployed on the MONAI App Server and make them available to the data discovery service and export sinks.
+MWM SHALL discover applications deployed on the MONAI App Server and make them available to the App Discovery Service and export sinks.
 
 #### Background
 
@@ -129,37 +130,55 @@ Given that the users (system admins, workflow engineers, etc...) need to connect
 
 #### Verification Strategy
 
-For a deployed application, it must be associable by the data discovery service or export sinks.
+For a deployed application, it must be associable by the App Discovery Service or export sinks.
 
 #### Target Release
 
 MONAI Deploy Workload Manager R1
 
-## (REQ-DR) Data Discover Service/Rules Requirements
 
-### [REQ-DR-001] MWM Data Discover Service (DDS) SHALL be able to filter data by DICOM headers
+### [REQ-DI-005] MWM SHALL provide an API to register applications
 
-MWM DDS SHALL allow users to define filtering rules based on DICOM Attributes that do not require parsing pixel data.
+MWM SHALL allow users to register applications for supported third-party orchestration/workflow engines.
 
 #### Background
 
-Given that multiple applications may be deployed on the MONAI Deploy platform and often more jobs are scheduled and launched than available resources. To avoid launching all applications and let the applications decide if a dataset is a fit, the DDS applies user-defined DICOM header rules to select the dataset that meets its requirements before launching the application.
+Some orchestration/workflow engines do not support the concept of persisting workflows but instead launch the workflows immediately based on the provided workflow definitions.  This requirement supports such scenarios and allows users to register their workflow definition with the Workload Manager.
 
 #### Verification Strategy
 
-Given a set of data discovery rules using the pre-built functions and a DICOM dataset, the data discovery service applies the ruleset to select any data that match the filtering criteria.
+Register a supported workflow with MWM.
 
 #### Target Release
 
 MONAI Deploy Workload Manager R1
 
-### [REQ-DR-002] MWM Data Discover Service (DDS) SHALL allow users to configure how long to wait for data before launching a job
 
-MWM DDS SHALL allow users to define a time range to wait for all data to be ready before launch the associated application(s)
+## (REQ-DR) App Discovery Service/Data Filtering Rules Requirements
+
+### [REQ-DR-001] MWM App Discovery Service (ADS) SHALL be able to filter data by DICOM headers
+
+MWM ADS SHALL allow users to define filtering rules based on DICOM Attributes that do not require parsing pixel data.
 
 #### Background
 
-Often time, data comes in through multiple connections or different sources. E.g., a DICOM study may be sent over multiple associations. This requirement allows the DDS to wait for a period before it assembles the payload for the associated application(s).
+Given that multiple applications may be deployed on the MONAI Deploy platform and often more jobs are scheduled and launched than available resources. To avoid launching all applications and let the applications decide if a dataset is a fit, the ADS applies user-defined DICOM header rules to select the dataset that meets its requirements before launching the application.
+
+#### Verification Strategy
+
+Given a set of data discovery rules using the pre-built functions and a DICOM dataset, the App Discovery Service applies the ruleset to select any data that match the filtering criteria.
+
+#### Target Release
+
+MONAI Deploy Workload Manager R1
+
+### [REQ-DR-002] MWM App Discovery Service (ADS) SHALL allow users to configure how long to wait for data before launching a job
+
+MWM ADS SHALL allow users to define a time range to wait for all data to be ready before launching the associated application(s)
+
+#### Background
+
+Often time, data comes in through multiple connections or different sources. E.g., a DICOM study may be sent over multiple associations. This requirement allows the ADS to wait for a period before it assembles the payload for the associated application(s).
 
 #### Verification Strategy
 
@@ -169,17 +188,17 @@ Configure a rule set with a timeout and send data that meets the requirements of
 
 MONAI Deploy Workload Manager R1
 
-### [REQ-DR-003] MWM Data Discover Service (DDS) SHALL be able to filter data by FHIR data fields
+### [REQ-DR-003] MWM App Discovery Service (ADS) SHALL be able to filter data by FHIR data fields
 
-MWM DDS SHALL allow users to define filtering rules based on FHIR data attributes using pre-built functions, such as equals, contains, greater, greater-than, less, less-than, etc...
+MWM ADS SHALL allow users to define filtering rules based on FHIR data attributes using pre-built functions, such as equals, contains, greater, greater-than, less, less-than, etc...
 
 #### Background
 
-Given that multiple applications may be deployed on the MONAI Deploy platform and often more jobs are scheduled and launched than available resources. To avoid launching all applications and let the applications decide if a dataset is a fit, the DDS applies user-defined FHIR filtering rules to select the dataset that meets application requirements before launching the application.
+Given that multiple applications may be deployed on the MONAI Deploy platform, more jobs are often scheduled and launched than available resources. To avoid launching all applications and let the applications decide if a dataset fits, the ADS applies user-defined FHIR filtering rules to select the dataset that meets application requirements before launching the application.
 
 #### Verification Strategy
 
-Given a set of data discovery rules using the pre-built functions and some FHIR resources, the data discovery service applies the rule to removes any data that does not meet the application's requirements.
+Given a set of data discovery rules using the pre-built functions and some FHIR resources, the App Discovery Service applies the rules to remove any data that does not meet the application's requirements.
 
 #### Target Release
 
@@ -187,15 +206,15 @@ MONAI Deploy Workload Manager R2
 
 ### [REQ-DR-004] MWM SHALL respect user-defined data discovery rules
 
-Data discovery service MUST apply all user-defined rules to the data arrived at the system.
+App Discovery Service MUST apply all user-defined rules to the data arrived at the system.
 
 #### Background
 
-An application/model is often designed and restricted to a very specific type/format of data. A data discovery rule is a pre-filter that validates a given dataset to see if the dataset meets the requirements of an/a application/model.
+An application/model is often designed and restricted to a particular type/format of data. A data discovery rule is a pre-filter that validates a given dataset to see if the dataset meets the requirements of an/a application/model.
 
 #### Verification Strategy
 
-Given a data discovery rule set and a dataset, the data discovery service applies the rules to removes any data that is not suitable.
+Given a data discovery rule set and a dataset, the App Discovery Service applies the rules to removes any data that is not suitable.
 
 #### Target Release
 
@@ -275,7 +294,7 @@ Besides integrating MONAI App Server, MWM SHALL provide a mechanism to allow use
 
 #### Background
 
-Many existing users have already invested in other orchestration engines which may have already become a requirement for their workflow. Therefore, supporting other OSS orchestration engines would simplify the integration of their existing environment with MONAI products.
+Many existing users have already invested in other orchestration engines, which may have already become a requirement for their workflow. Therefore, supporting other OSS orchestration engines would simplify the integration of their existing environment with MONAI products.
 
 #### Verification Strategy
 
@@ -284,6 +303,8 @@ Verify by repeating the same workflow and the same application on both MONAI App
 #### Target Release
 
 MONAI Deploy Workload Manager R2
+
+
 
 ### [REQ-FR-002] MWM SHALL track status/states of all jobs initiated with orchestration engines
 
@@ -339,7 +360,7 @@ MWM SHALL allow the output of an application routed back to other application(s)
 
 #### Background
 
-Given that DDS only filters data based on a static list of rules and cannot apply complex algorithms to a dataset, it may often not meet the needs of an application. Therefore, this requirement enables the user to construct a complex data filtering application to decide and output the dataset that is suitable for another application.
+Given that ADS only filters data based on a static list of rules and cannot apply complex algorithms to a dataset, it may often not meet the needs of an application. Therefore, this requirement enables the user to construct a complex data filtering application to decide and output the suitable dataset for another application.
 
 #### Verification Strategy
 

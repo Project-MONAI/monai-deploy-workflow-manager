@@ -1,11 +1,11 @@
 # Created at https://sequencediagram.org/
-title Data Discovery API
+title App Discovery API
 
 participant "MONAI CLI" as CLI
 participant "Data Discovery API" as API
 database "MWM Database" as DB
 
-group DataDiscovery.Register API [Register a new ruleset]
+group AppDiscovery.Register API [Register a new ruleset]
 CLI->API: POST /datadiscovery
 activate CLI
 activate API
@@ -14,9 +14,9 @@ API->DB: Save
 CLI<--API: Response
 deactivate API
 deactivate CLI
-end 
+end
 
-group DataDiscovery.Update API [Update a new ruleset]
+group AppDiscovery.Update API [Update a new ruleset]
 CLI->API: PATCH /datadiscovery
 activate CLI
 activate API
@@ -25,9 +25,9 @@ API->DB: Save
 CLI<--API: Response
 deactivate API
 deactivate CLI
-end 
+end
 
-group DataDiscovery.Delete API [Delete a ruleset]
+group AppDiscovery.Delete API [Delete a ruleset]
 CLI->API: DELETE /datadiscovery/{id}
 activate CLI
 activate API
@@ -35,9 +35,9 @@ API->DB: Delete
 CLI<--API: Response
 deactivate API
 deactivate CLI
-end 
+end
 
-group DataDiscovery.List API [List all rulesets]
+group AppDiscovery.List API [List all rulesets]
 CLI->API: GET /datadiscovery
 activate CLI
 activate API
@@ -45,9 +45,9 @@ API->DB: Load
 CLI<--API: Response
 deactivate API
 deactivate CLI
-end 
+end
 
-group DataDiscovery.Get API [Get details of a ruleset]
+group AppDiscovery.Get API [Get details of a ruleset]
 CLI->API: GET /datadiscovery/{id}
 activate CLI
 activate API
@@ -55,9 +55,9 @@ API->DB: Load
 CLI<--API: Response
 deactivate API
 deactivate CLI
-end 
+end
 
-group DataDiscovery.Connect API [Connect ruleset to an application]
+group AppDiscovery.Connect API [Connect ruleset to an application]
 CLI->API: POST /datadiscovery/{id}/connect
 activate CLI
 activate API
@@ -66,9 +66,9 @@ API->DB: Save
 CLI<--API: Response
 deactivate API
 deactivate CLI
-end 
+end
 
-group DataDiscovery.Disconnect API [Disconnect ruleset to an application]
+group AppDiscovery.Disconnect API [Disconnect ruleset to an application]
 CLI->API: DELETE /datadiscovery/{id}/disconnect
 activate CLI
 activate API
@@ -77,4 +77,4 @@ API->DB: Save
 CLI<--API: Response
 deactivate API
 deactivate CLI
-end 
+end
