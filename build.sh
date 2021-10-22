@@ -17,12 +17,13 @@ FILEVERSION=$VERSION
 # pass in pre-releae tags as argument
 if [ ! -z "$1" ]; then
     VERSION=$VERSION-$1
-fi 
+fi
 
 
 echo "Building Workload Manager Docker Image. VERSION=$VERSION, FILEVERSION=$FILEVERSION"
 pushd $SCRIPT_DIR
-docker build --tag monai/workload-manager:$VERSION --build-arg Version=$VERSION --build-arg FileVersion=$FILEVERSION . 
+docker build --tag monai/workload-manager-core:$VERSION --build-arg Version=$VERSION --build-arg FileVersion=$FILEVERSION -f $SCRIPT_DIR/Dockerfile.core .
+docker build --tag monai/orchestration-mediator:$VERSION --build-arg Version=$VERSION --build-arg FileVersion=$FILEVERSION -f $SCRIPT_DIR/Dockerfile.oms .
 popd
 
 pushd $SCRIPT_DIR/src/CLI

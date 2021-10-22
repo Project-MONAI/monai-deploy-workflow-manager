@@ -22,8 +22,8 @@ RUN dotnet tool install --tool-path /tools dotnet-stack
 WORKDIR /app
 COPY . ./
 
-RUN echo "Building MONAI Workload Manager $Version ($FileVersion)..."
-RUN dotnet publish -c Release -o out --nologo /p:Version=$Version /p:FileVersion=$FileVersion src/WorkloadManager/Monai.Deploy.WorkloadManager.csproj
+RUN echo "Building MONAI Deploy Workload Manager Core $Version ($FileVersion)..."
+RUN dotnet publish -c Release -o out --nologo /p:Version=$Version /p:FileVersion=$FileVersion src/WorkloadManagerCore/Monai.Deploy.WorkloadManager.Core.csproj
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/runtime:5.0-focal
@@ -38,7 +38,7 @@ RUN apt-get clean \
     sqlite3 \
    && rm -rf /var/lib/apt/lists
 
-WORKDIR /opt/monai/ig
+WORKDIR /opt/monai/core
 COPY --from=build /app/out .
 #COPY docs/compliance/open-source-licenses.md .
 
@@ -47,7 +47,7 @@ COPY --from=build /tools /opt/dotnetcore-tools
 EXPOSE 104
 EXPOSE 5000
 
-RUN ls -lR /opt/monai/ig
+RUN ls -lR /opt/monai/core
 ENV PATH="/opt/dotnetcore-tools:${PATH}"
 
-ENTRYPOINT ["/opt/monai/ig/Monai.Deploy.WorkloadManager"]
+ENTRYPOINT ["/opt/monai/core/Monai.Deploy.WorkloadManager.Core"]
