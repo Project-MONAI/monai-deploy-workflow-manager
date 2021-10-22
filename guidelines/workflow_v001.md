@@ -32,12 +32,16 @@ To simplify application registration workflow, the CLI has to communicate with b
 
 #### Workflow Registration Definition
 
-``` json
+```json
 {
   "monaid": {
-    "application-name": "my-app",
+    "applicationName": "my-app",
     "version": "1.0.0-beta",
     "description": "my awesome app",
+    "appDiscovery": {
+      "grouping": "0020,000E",
+      "timeout": 5
+    },
     "sinks": [
       {
         "agent": "MONAISCU",
@@ -48,29 +52,29 @@ To simplify application registration workflow, the CLI has to communicate with b
         "arguments": "Dr Watson's Workstation"
       }
     ],
-    "calling-aets": [
+    "inputSources": [
       {
         "name": "PACS-EAST",
-        "aetitle": "PACS-EAST",
-        "host-ip": "10.20.30.40"
+        "aeTitle": "PACS-EAST",
+        "hostIp": "10.20.30.40"
       },
       {
         "name": "PACS-WEST",
-        "aetitle": "PACS-WEST",
-        "host-ip": "10.20.50.100"
+        "aeTitle": "PACS-WEST",
+        "hostIp": "10.20.50.100"
       }
     ],
-    "export-destinations": [
+    "outputDestinations": [
       {
         "name": "PACS-WEST",
-        "aetitle": "PACS-WEST",
-        "host-ip": "10.20.50.100",
+        "aeTitle": "PACS-WEST",
+        "hostIp": "10.20.50.100",
         "port": 104
       },
       {
         "name": "Dr Watson's Workstation",
-        "aetitle": "DRWATSONWS",
-        "host-ip": "10.220.12.150",
+        "aeTitle": "DRWATSONWS",
+        "hostIp": "10.220.12.150",
         "port": 104
       }
     ]
@@ -132,7 +136,6 @@ The following sequence diagram depicts how 2 DICOM studies are processed through
     - Poll job status
     - Downloads results from orchestration mediator service
     - DICOM sink
-- Sink Routing Service: routes results to the configured sinks
 - Orchestration Mediator Service
     - launches workflow/job
     - queries workflow/job status
