@@ -9,15 +9,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using System.Threading.Tasks;
+using Grpc.Core;
+using Monai.Deploy.WorkloadManager.Contracts.Grpc;
 
-namespace CLI
+namespace Monai.Deploy.WorkloadManager.Core.Services.Http
 {
-    internal class Program
+    public interface IPayloadService
     {
-        private static void Main(string[] args)
-        {
-            Console.WriteLine("Hello World!");
-        }
+        Task<PayloadUploadResponse> Upload(IAsyncStreamReader<PayloadUploadRequest> requestStream, ServerCallContext context = default);
+
+        Task Download(PayloadDownloadRequest request, IServerStreamWriter<PayloadDownloadResponse> responseStream, ServerCallContext context = default);
     }
 }

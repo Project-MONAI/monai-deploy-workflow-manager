@@ -9,15 +9,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Grpc.Core;
 
-namespace CLI
+namespace Monai.Deploy.WorkloadManager.Core.Test.Services.Http
 {
-    internal class Program
+    public class TestStreamReader<T> : IAsyncStreamReader<T>
     {
-        private static void Main(string[] args)
+        private readonly IEnumerator<T> stream;
+
+        public TestStreamReader(IEnumerable<T> list)
         {
-            Console.WriteLine("Hello World!");
+            stream = list.GetEnumerator();
+        }
+
+        public T Current => stream.Current;
+
+        public Task<bool> MoveNext(CancellationToken cancellationToken)
+        {
+            return Task.FromResult(stream.MoveNext());
         }
     }
 }

@@ -9,15 +9,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using Monai.Deploy.WorkloadManager.Contracts.Rest;
 
-namespace CLI
+namespace Monai.Deploy.WorkloadManager.Core.Services.Common
 {
-    internal class Program
+    public interface IMonaiService
     {
-        private static void Main(string[] args)
-        {
-            Console.WriteLine("Hello World!");
-        }
+        ServiceStatus Status { get; set; }
+        string ServiceName { get; }
     }
 }
