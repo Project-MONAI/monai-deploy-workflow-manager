@@ -28,7 +28,7 @@
     <None Update="Grpc\common.proto">
       <GrpcServices>Server</GrpcServices>
     </None>
-    <None Update="Grpc\payload.proto">
+    <None Update="Grpc\file.proto">
       <GrpcServices>Server</GrpcServices>
     </None>
   </ItemGroup>
