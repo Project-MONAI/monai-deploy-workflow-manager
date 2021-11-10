@@ -11,6 +11,8 @@
   - [Definitions, Acronyms, Abbreviations](#definitions-acronyms-abbreviations)
   - [(REQ-DI) Data Ingestion Requirements](#req-di-data-ingestion-requirements)
     - [[REQ-DI-001] MWM SHALL allow users to notify data arrival via shared storages](#req-di-001-mwm-shall-allow-users-to-notify-data-arrival-via-shared-storages)
+    - [[REQ-DI-002] MWM SHALL allow users to upload data](#req-di-002-mwm-shall-allow-users-to-upload-data)
+    - [[REQ-DI-003] MWM SHALL allow data to be associated with one or more workflows](#req-di-003-mwm-shall-allow-data-to-be-associated-with-one-or-more-workflows)
   - [(REQ-WF) Workflow Execution Requirements](#req-di-data-ingestion-requirements)
     - [[REQ-WF-001] MWM SHALL allow task outputs to be routed to other tasks](#req-wf-001-mwm-shall-allow-task-outputs-to-be-routed-to-other-tasks)
     - [[REQ-WF-002] MWM SHALL allow users to register workflows](#req-wf-002-mwm-shall-allow-users-to-register-workflows)
@@ -19,6 +21,7 @@
     - [[REQ-WF-005] Workflow conditional statements SHALL be able to filter data by DICOM headers](#req-wf-005-workflow-conditional-statements-shall-be-able-to-filter-data-by-dicom-headers)
     - [[REQ-WF-006] Workflow conditional statements SHALL be able to filter data by FHIR data fields](#req-wf-006-workflow-conditional-statements-shall-be-able-to-filter-data-by-fhir-data-fields)
     - [[REQ-WF-007] MWM SHALL be able to route incoming data to specified workflows](#req-wf-007-mwm-shall-be-able-to-route-incoming-data-to-specified-workflows)
+    - [[REQ-WF-008] MWM SHALL allow tasks to join and feed results into a downstream task](#req-wf-008-mwm-shall-allow-tasks-to-join-and-feed-results-into-a-downstream-task)
   - [(REQ-DX) Data Export Requirements](#req-dx-data-export-requirements)
     - [[REQ-DX-001] MWM SHALL support multiple export sinks (destinations)](#req-dx-001-mwm-shall-support-multiple-export-sinks-destinations)
     - [[REQ-DX-002] MWM SHALL be able to route data to multiple sinks](#req-dx-002-mwm-shall-be-able-to-route-data-to-multiple-sinks)
@@ -43,34 +46,38 @@ The scope of this document is limited to the MONAI Deploy Workflow Manager. Ther
 
 ## Goal
 
-The goal for this proposal is to enlist, prioritize and provide clarity on the requirements for MONAI Deploy Workflow Manager. Developers working on different software modules in MONAI Deploy Workflow Manager SHALL use this specification as a guideline when designing and implementing software for the MONAI Deploy Workflow Manager.
+This proposal aims to enlist, prioritize, and clarify the requirements for MONAI Deploy Workflow Manager. Developers working on different software modules in MONAI Deploy Workflow Manager SHALL use this specification as a guideline when designing and implementing software for the MONAI Deploy Workflow Manager.
 
 ## Success Criteria
 
-Data SHALL be routed to the user-defined tasks and results, if any, SHALL be routed back to configured destinations.
+MWM SHALL process data that comes into the system, execute user-configured workflows, and route results back to external systems.
 
 ## Attributes of a Requirement
 
-For each requirement, the following attributes have been specified:
+Each requirement defined in this document must include the following attributes:
 
-**Requirement Body**: This is the text of the requirement which describes the goal and purpose behind the requirement.
+**Requirement Body**: Describes the goal and purpose behind the requirement.
 
 **Background**: Provides necessary background to understand the context of the requirements.
 
 **Verification Strategy**: A high-level plan on how to test this requirement at a system level.
 
-**Target Release**: Specifies which release of the MONAI App SDK this requirement is targeted for.
+**Target Release**: Specifies the target for the release of MONAI Deploy Workflow Manager.
 
 ## Definitions, Acronyms, Abbreviations
 
 | Term        | Definition                                                                                                                                                      |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------       |
 | Clinical Workflow | A defined DAG controlling task execution - it defines execution order, conditional statements and termination points.                                   |
-| Task | A single step within a clinical workflow. A task can be fulfilled by an application.                                |
-| Application | An executable artifact (eg MONAI Application, Argo Workflow) which can be executed by a Task.                                |
+| Task | A single step within a clinical workflow. A task can be fulfilled by an application. Each task can be one of the following types at a minimum: 1. A MONAI Application Package (MAP). 2. An Argo Workflow where each step is a container. 3. A client that invokes a web service synchronously. 4. A client that invokes a web service asynchronously                                |
+| Application | An executable artifact (eg MONAI Application, Argo Workflow) which can be executed by a Task.  |                          |
+| Evaluator         | An Evaluator performs checks based on conditions defined with metadata keys. Based on the evaluation results, a specific downstream task is executed.                                                                                                                                                                     |
+| Metadata          | Metadata qualifies run-time characteristics of a clinical workflow. Each task can ingest one or more metadata elements & can also generate more. The execution environment provides a way to store metadata and access it.                                                                                                 |
 | Export Sink       | An export sink is a user-configured sink where the results (task-generated artifacts) are assigned to and later picked up by the export service clients. |
 | MIG               | MONAI Deploy Informatics Gateway                                                                                                                                |
 | MWM               | MONAI Deploy Workflow Manager                                                                                                                                   |
+| DAG | Directed Acyclic Graphs |
+| Workflow | A DAG composed of one or more tasks. |
 
 
 ## (REQ-DI) Data Ingestion Requirements
@@ -91,6 +98,33 @@ Verify that payloads can be stored by data ingestion services and dispatched to 
 
 MONAI Deploy Workflow Manager R1
 
+### [REQ-DI-002] MWM SHALL allow users to upload data
+
+#### Background
+
+With the design of MONAI Deploy, the MWM does not interface with medical systems directly but rather through the Informatics Gateway (a data ingestion & export service). Therefore, there is a need to provide APIs to interface with any data ingestion services. In addition, it allows the users of the platform to extend these APIs to interface their systems using different messaging protocols or storage services.
+
+#### Verification Strategy
+
+Verify that payloads can be uploaded from data ingestion services and dispatched to the data discovery service.
+
+#### Target Release
+
+MONAI Deploy Workload Manager R3
+
+### [REQ-DI-003] MWM SHALL allow data to be associated with one or more workflows
+
+#### Background
+
+In scenarios where workflows are known for a given dataset, MWM could launch the specified workflow without launching all of them to reduce processing time.
+
+#### Verification Strategy
+
+Verify that WM only launches specified workflows when specified with a given dataset.
+
+#### Target Release
+
+MONAI Deploy Workflow Manager R3
 
 ## (REQ-WF) Workflow Execution Requirements
 
@@ -208,6 +242,19 @@ Deploy two workflows that accept input from the same modality, and send data fro
 
 MONAI Deploy Workflow Manager R3
 
+### [REQ-WF-008] MWM SHALL allow tasks to join and feed results into a downstream task
+
+#### Background
+
+In a multi-modality workflow, a task may need to create a report based on multiple upstream tasks where each runs an inference model on a different modality. This requirement enables a task to wait for the results from multiple upstream tasks before it executes.
+
+#### Verification Strategy
+
+Define a workflow where a task waits for multiple upstream tasks to complete.
+
+#### Target Release
+
+MONAI Deploy Workflow Manager R3
 
 ## (REQ-DX) Data Export Requirements
 
@@ -221,9 +268,10 @@ An export sink is the termination point of a clinical workflow, and where a refe
 AI applications and medical imaging algorithms often output data in different formats that need to be exported back to HIS/RIS for reading, storage, or validation.
 The concept of a sink allows routing output from a specific clinical workflow task to the right RIS/HIS destination.
 
+
 #### Verification Strategy
 
-Verify that tasks can be linked to a sink.
+Verify that the results can be exported to multiple destinations.
 
 #### Target Release
 
@@ -332,7 +380,7 @@ MONAI Deploy Workflow Manager R1
 
 ### [REQ-FR-002] MWM SHALL allow users to define storage cleanup rules
 
-MWM SHALL provide functionalities to let the users configure when data are removed from the MWM cache.
+MWM SHALL provide functionalities to enable user define policy for storage clean-up.
 
 #### Background
 
