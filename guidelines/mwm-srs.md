@@ -343,7 +343,7 @@ Execute an application using an app server and call the callback endpoint - veri
 
 MONAI Deploy Workflow Manager R1
 
-### [REQ-TM-003] MWM SHALL track status/states of all jobs initiated with orchestration engines
+### [REQ-TM-003] MWM SHALL track status/states of all jobs initiated with app servers
 
 MWM SHALL track the status and states of all the jobs that it has initiated, so it can be used for reporting and allows other sub-components to react upon.
 
