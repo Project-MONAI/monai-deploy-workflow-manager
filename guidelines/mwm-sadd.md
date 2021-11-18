@@ -1,6 +1,6 @@
 # MONAI Workload Manager Software Architecture & Design
 
-![MONAI Workload Manager](./static/mwm.png)
+![MONAI Deploy Workflow Manager](./static/mwm-detailed.png)
 
 ## Overview
 
@@ -787,7 +787,7 @@ After applying a ruleset, files that met the criteria are put into a bucket with
 
 ##### Data Discovery Stages
 
-There are two stages during data discovery, filtering, and grouping. 
+There are two stages during data discovery, filtering, and grouping.
 
 1. Data filtering: applies user-defined static rules to filter incoming data first. If a payload/file meets all criteria defined by the user, it then enters the next stage.
 2. Data grouping: groups incoming payload into patient, study or series. Also waits, based on user-defined value, for all data to arrive.
