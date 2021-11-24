@@ -5,33 +5,283 @@
 
 The MONAI Workflow Manager is responsible for executing pre-registered clinical workflows. This document describes how to create a workflow file and what the language allows.
 
-
-- [Data Origins](#data-origins)
-- [Output Destinations](#output-destinations)
+- [Workflow](#workflow-object)
+- [Informatics Gateway](#informatics-gateway)
 - [Tasks](#tasks)
 - [Task Types](#task-types)
   - [Argo](#argo)
   - [MAP](#monai-application-packages)
   - [HTTP](#http-calls)
-  - [Async HTTP](#http-calls---async)
 - [Task Templates](#task-templates)
 - [Evaluators](#evaluators)
-- [Post Evaluators](#post-evaluators)
-    - [Pre Evaluators](#pre-evaluators)
-    - [Output Destinations](#output-destinations)
+- [Output Destinations](#output)
+- [Pre Evaluators](#pre-evaluators)
 - [Retention Policies](#retention-policies)
+- [Examples](#examples)
 
-### Data Origins
-### Output Destinations
+### Workflow Object
+This is the top-level object in a workflow spec. It contains the following properties:
+
+| Property | Type |
+|------|------|
+|name|str|
+|version|str|
+|description|Optional[str]|
+|informatics_gateway|[InformaticsGateway](#informatics-gateway)|
+|tasks|list[[Task](#tasks)]|
+|task_templates|Optional[list[[TaskTemplate](#task-templates)]]|
+|retention_policy|Optional[list[[RetentionPolicy](#retention-policies)]]|
+
+
+### Informatics Gateway
+This section contains the IG configuration. Specifically, it contains the following properties:
+
+| Property | Type | Description |
+|------|------|------|
+|ae-title|str|The AE title for this workflow. Only data sent to this AE title will be processed by this workflow.|
+|data-origins|list[str]|List of possible origin systems. These should be registered with the informatics gateway.|
+|export-destinations|list[str]|List of possible destinations for the output of tasks in this workflow. Informatics gateways can subscribe to notifications of output to these destinations.|
+
+```json
+{
+    "ae-title": "MY_AET",
+    "data-origins": ["MY_MODALITY"],
+    "export-destinations": ["PROD_PACS"]
+}
+```
+The above specifies that the workflow should be triggered for inputs sent to the ae-title "MYAET" from "MY_MODALITY".
+It also defines the "PROD_PACS" output destination, meaning that it can be used:
+* By tasks as the [destination of their output](#output).
+* By subscribers to [export notifications](mwm-sadd.md#export-service).
+
 ### Tasks
-### Task Types
-#### Argo Tasks
-#### MONAI Application Packages
-#### HTTP Calls
-#### HTTP Calls - Async
+Tasks are the basic building block of a workflow. They are provided as a list - the first Task in the list is executed when the workflow is triggered.
+Subsequent tasks are triggered by the destination specified by previous tasks.
+
+The task object contains the information:
+
+| Property | Type | Description |
+|------|------|------|
+|id|str|The AE title for this workflow. Only data sent to this AE title will be processed by this workflow.|
+|description|str|A human readable task description|
+|type|str|The task type - this determines the plugin that will be used to execute the task. See [task types](#task-types) for supported tasks.|
+|args|object|An object that will be available to the task plugin when executing this task. The expected contents differ based on the task type.|
+|ref|Optional[str]|A reference to a [task template](#task-templates). Values provided by the template are overridden by the task's definition.|
+|pre_evaluators|list[[PreEvaluator](#pre-evaluators)]||
+|output|list[[Output](#output)]|List of possible destinations for the output of tasks in this workflow. Informatics gateways can subscribe to notifications of output to these destinations.|
+
+#### Task Types
+Tasks are implemented by task _plugins_. The following are the officially supported plugins that are bundled with the MWM.
+
+##### Argo
+The Argo plugin triggers workflows pre-deployed onto an [Argo workflow server](https://argoproj.github.io/argo-events/).
+
+**type**: argo
+
+The Task's "args" object should contain the following fields:
+
+| Property | Type | Description |
+|------|------|------|
+|workflow_id|str|The ID of this workflow as registered on the Argo server.|
+|server_url|url|The URL of the Argo server.|
+
+##### MONAI Application Packages
+The MAP plugin runs Monai Application Packages pre-registered on a [Monai Application Server](https://github.com/Project-MONAI/monai-deploy-app-server) instance.
+**type**: map
+
+The Task's "args" object should contain the following fields:
+
+| Property | Type | Description |
+|------|------|------|
+|map_id|str|The ID of this MAP as registered on the MAS.|
+|server_url|url|The URL of the MAS.|
+
+##### HTTP Calls
+The HTTP plugin performs HTTP calls synchronously or asynchronously.
+
+**type**: http
+
+The Task's "args" object should contain the following fields:
+
+| Property | Type | Description |
+|------|------|------|
+|url|URL|The URL to call.|
+|method|Optional[str]|The HTTP method to be used (default: GET).|
+|async|Optional[bool]|Whether the call is asynchronous (default: false)|
+|headers|Optional[dict]|HTTP headers to be included in the calls.|
+|payload|Optional[str]|Any string. Can use the same [context variables](#context) as Evaluators.|
+|content_type|Optional[str]|The payload's [content type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type).|
+
+Please note that if `async: true` the following custom header will _always_ be included:
+
+X-MWM-Task-ID: str
+
+It will include the task ID, which is necessary for [callbacks](mwm-sadd.md#tasks-api).
+
 ### Task Templates
+
+Task templates have a similar schema to Task objects. They can be referenced in a Task's `ref` property, and will provide default options.
+Template values can always be overridden by the more specific task fields.
+
+Example:
+```json
+{
+  ...
+  "task_templates": [
+    {
+      "id": "clinical_review",
+      "type": "http",
+        "args": {
+          "endpoint": "https://clinical-review.something.nhs.uk",
+          "method": "POST",
+          "payload": "{'correlation_id': '{{ context.correlation_id }}', 'dir_path': '{{ context.executions.mytask.output_dir }}'}"
+        }
+    }
+  ]
+}
+```
+
+
 ### Evaluators
-#### Post Evaluators
-#### Pre Evaluators
-### Output Destinations
+Evaluators are logical statement strings that are to determine which tasks are executed. They can make use of the execution context _metadata_.
+Evaluator strings can be used in [Pre Evaluators](#pre-evaluators) or in [Output definitions](#output).
+
+#### Context
+The workflow metadata is any data that can be used by Evaluators. This includes metadata added by previous tasks, but can also include metadata about the input files (most notably DICOM tags).
+Metadata is available with the `context` object:
+
+| Property | Type | Description |
+|------|------|------|
+|correlation_id|str|The unique ID identifying this Workflow execution.|
+|executions|Execution Context|This object contains the data added by previous tasks.|
+|dicom|DICOM Tags object|This object contains the DICOM tags of the input.|
+
+#####  Execution Context
+The `executions` object contains data generated by previous executions.
+Each execution is represented by an `Execution` object, which can be accessed by Task ID:
+`context.executions.TASK_ID`
+
+The Execution object contains the following properties:
+
+| Property | Type | Description |
+|------|------|------|
+|execution_id|str|The unique ID identifying task execution.|
+|task_id|str|The ID of this task in the workflow.|
+|input_dir|str|Path to the input directory of this task.|
+|output_dir|str|Path to the output directory of this task.|
+|task|dict|The details of the executed tasks. Similar to the Task definition in the workflow spec.|
+|start_time|timestamp|The UTC timestamp of when this task execution began.
+|end_time|Optional[timestamp]|The UTC timestamp of when this task execution ended.
+|status|string|One of "success", "fail" or "error".
+|error_msg|Optional[str]|An error message, if one occurred.
+|result|Optional[dict]|The metadata that was [added by the previous Task](#tasks).
+
+Example:
+```python
+{{context.executions.body_part_identifier.result.body_part}} == 'leg'
+```
+##### DICOM Tags
+When the input data is DICOM, Evaluators can use DICOM tag values in conditional statements.
+DICOM tags are available in `context.dicom`. The reference for that object is as follows:
+
+| Property | Type | Description |
+|------|------|------|
+|study_id|str|The Study ID tag (0020,0010)|
+|tags|dict|All DICOM metadata tags that are common across all series & slices in this study.|
+|series|list|The list of DICOM series in this study.|
+
+Each `Series` object contains the tags of that series. They can be accessed either with dot notation or using key lookups (see examples below).
+
+The DICOM tag matching engine allows evaluating conditions against all series and resulting in True if the condition matches _any one_ of them:
+```python
+{{context.dicom.series[:][('0018','0050')]}} < 5
+```
+
+It is possible to use either tag number (as above), or the tag name with spaces & special characters removed:
+```python
+{{context.dicom.series[:].SliceThickness}} < 5
+```
+
+In order to check a certain tag across _all_ series, use the study level tags. For example, to only evaluate True for Female patients:
+```python
+{{context.dicom.tags[('0010','0040')]}} == 'F'
+```
+
+### Output
+Output destinations define the next task to be executed. They can either be export destinations, or another task.
+
+The basic format is as follows:
+
+| Property | Type | Description |
+|------|------|------|
+|name|str|The name of the destination. This can either be an export destinations or a task's ID.|
+|conditions|Optional[list[Evaluator]]|An optional array of [Evaluators](#evaluators) that need to be met in order for this destination to be used.|
+
+Example (simple output to an export destination):
+```json
+{
+    ...task...
+    "output": [
+        {
+            "name": "PROD_PACS",
+        }
+    ],
+    ...
+}
+```
+
+Sometimes the destination will differ based on some condition. For this, evaluators can be used as conditions for output destinations.
+
+Example (output sent to another task if the patient is female, otherwise to PACS):
+```json
+{
+    ...task...
+    "output": [
+        {
+            "name": "my-task-id",
+            "conditions": ["{{context.dicom.tags[('0010','0040')]}} == 'F'"]
+        },
+        {
+            "name": "PROD_PACS",
+            "conditions": ["{{context.dicom.tags[('0010','0040')]}} != 'F'"]
+        }
+    ],
+    ...
+}
+```
+
+### Pre Evaluators
+_Future version: TBD_
+
+Pre Evaluators are used as conditions to determine whether a task should be run. This is distinct from routing (as per [output destinations](#output-destinations)), and is in effect an _additional_ condition.
+Note: it's enough for a single Pre Evaluator to be true in order for the Task to be executed.
+
+| Property | Type | Description |
+|------|------|------|
+|conditions|List[str]|List of evaluator strings. It's enough for one to be true for the evaluator to be true.|
+
+Example (only execute task if patient is female):
+```json
+{
+    ... task ...
+    "pre_evaluators": {
+        "conditions": ["{{context.dicom.tags[('0010','0040')]}} == 'F'"]
+    }
+}
+```
 ### Retention Policies
+_Future version: TBD_
+
+-- This is a work in progress --
+
+Retention policies define how long the data processed and generated by this workflow should be kept.
+
+| Property | Type | Description |
+|------|------|------|
+|days|int|The number of days to keep the data.|
+
+## Examples
+The following is an example of a complete workflow:
+![scenario1](static/workflow_examples/scenario1.png)
+
+The JSON implementing that scenario is available [here](static/workflow_examples/scenario1.json).
