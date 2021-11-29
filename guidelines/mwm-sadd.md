@@ -157,7 +157,7 @@ _More details to be added._
 #### Payload Listener
 The Payload Listener monitors an input queue. The MIG (or a custom ingestion service) will add an event to that queue when new data is sent to the system.
 
-Event schema: _TBD_
+For more details & the event schema see [input](mwm-input.md#notification-message-schema)
 
 ![payloadlistener](static/mwm-payload-listener.png)
 
