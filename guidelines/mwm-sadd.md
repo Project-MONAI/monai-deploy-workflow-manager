@@ -28,6 +28,9 @@ The scope of this document is limited to the design of the MONAI Workflow Manage
 ## Reference Documents
 
 - [MONAI Workflow Manager Requirements](mwm-srs.md)
+- [Workflow Specification Language](mwm-workflow-spec.md)
+- [Input Payload Specification](mwm-input.md)
+- [Storage Specification](mwm-storage.md)
 
 ## Architecture Details
 

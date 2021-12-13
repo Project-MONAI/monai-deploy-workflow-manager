@@ -3,7 +3,7 @@
 Input data, metadata & task output artifacts are all stored in a shared storage layer.
 
 ### Architecture Diagram
-![img.png](store-arch.png)
+![store-arch.png](static/store-arch.png)
 
 ### Storage Backend
 
