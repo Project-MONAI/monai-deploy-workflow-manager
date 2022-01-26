@@ -1,4 +1,4 @@
-# MONAI Deploy Workload Manager
+# MONAI Deploy Workflow Manager
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![codecov](https://codecov.io/gh/Project-MONAI/monai-deploy-workload-manager/branch/main/graph/badge.svg?token=NXYQIABXZ7)](https://codecov.io/gh/Project-MONAI/monai-deploy-workload-manager)
