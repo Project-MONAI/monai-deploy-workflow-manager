@@ -11,7 +11,6 @@ on:
 
 jobs:
   sonarqube:
-    name: Build
     runs-on: windows-latest
     steps:
       - name: Set up JDK 11
