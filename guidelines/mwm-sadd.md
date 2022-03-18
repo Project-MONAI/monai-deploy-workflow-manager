@@ -188,7 +188,7 @@ It's responsible for:
 * Providing the task plugin with the path to the input data.
 * Listening for task Callbacks.
 * Adding result metadata from a Task to the workflow execution context.
-* Notifying the Workflow Manager when a task has completed.
+* Notifying the Workflow Executer when a task has completed.
 
 
 #### Task Plugin
