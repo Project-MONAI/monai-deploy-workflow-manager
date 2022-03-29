@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: � 2021-2022 MONAI Consortium
+# SPDX-License-Identifier: Apache License 2.0
+
 codecov:
   require_ci_to_pass: yes
 
@@ -5,6 +8,15 @@ coverage:
   precision: 5
   round: down
   range: "70...100"
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+        base: auto
+        if_not_found: success
+        informational: false
+        only_pulls: false
 
 parsers:
   gcov:
