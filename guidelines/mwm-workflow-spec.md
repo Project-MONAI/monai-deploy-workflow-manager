@@ -306,6 +306,7 @@ Export destinations define an external location to which the output of the task 
 |------|------|------|
 |name|str|The name of the destination. This can either be an export destinations already defined within the [Informatics Gateway](#informatics-gateway) section of  the workflow configuration.|
 |conditions|Optional[list[Evaluator]]|An optional array of [Evaluators](#evaluators) that need to be met in order for this destination to be used.|
+|artifacts|list[Artifact]|An array of [Artifacts](#artifacts) that should be sent to this export destination.|
 
 Example (output sent to another task if the patient is female, otherwise to PACS):
 ```json
