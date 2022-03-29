@@ -206,7 +206,7 @@ Responsibilities of plugins:
 * Adding task output files to the output directory
 
 #### Export Service
-The export service is used when a Task has an [output destination](mwm-workflow-spec.md#output-destinations) external to the system (ie not another task). The export services publishes an output event to a Pub/Sub service. Once published, this export operation is considered complete.
+The export service is used when a Task has an [output destination](mwm-workflow-spec.md#destinations) external to the system (ie not another task). The export services publishes an output event to a Pub/Sub service. Once published, this export operation is considered complete.
 
 #### Data Retention Service
 

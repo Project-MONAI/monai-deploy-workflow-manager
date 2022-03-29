@@ -15,7 +15,8 @@ The MONAI Workflow Manager is responsible for executing pre-registered clinical 
   - [HTTP](#http-calls)
 - [Task Templates](#task-templates)
 - [Evaluators](#evaluators)
-- [Output Destinations](#output)
+- [Task Destinations](#task-destinations)
+- [Export Destinations](#export-destinations)
 - [Pre Evaluators](#pre-evaluators)
 - [Retention Policies](#retention-policies)
 
@@ -44,18 +45,18 @@ This section contains the IG configuration. Specifically, it contains the follow
 
 | Property | Type | Description |
 |------|------|------|
-|ae-title|str|The AE title for this workflow. Only data sent to this AE title will be processed by this workflow.|
-|data-origins|list[str]|List of possible origin systems. These should be registered with the informatics gateway.|
-|export-destinations|list[str]|List of possible destinations for the output of tasks in this workflow. Informatics gateways can subscribe to notifications of output to these destinations.|
+|ae_title|str|The AE title for this workflow. Only data sent to this AE title will be processed by this workflow.|
+|data_origins|list[str]|List of possible origin systems. These should be registered with the informatics gateway.|
+|export_destinations|list[str]|List of possible destinations for the output of tasks in this workflow. Informatics gateways can subscribe to notifications of output to these destinations.|
 
 ```json
 {
-    "ae-title": "MY_AET",
-    "data-origins": ["MY_MODALITY"],
-    "export-destinations": ["PROD_PACS"]
+    "ae_title": "MY_AET",
+    "data_origins": ["MY_MODALITY"],
+    "export_destinations": ["PROD_PACS"]
 }
 ```
-The above specifies that the workflow should be triggered for inputs sent to the ae-title "MYAET" from "MY_MODALITY".
+The above specifies that the workflow should be triggered for inputs sent to the ae-title "MY_AET" from "MY_MODALITY".
 It also defines the "PROD_PACS" output destination, meaning that it can be used:
 * By tasks as the [destination of their output](#output).
 * By subscribers to [export notifications](mwm-sadd.md#export-service).
@@ -74,7 +75,8 @@ The task object contains the information:
 |args|object|An object that will be available to the task plugin when executing this task. The expected contents differ based on the task type.|
 |ref|Optional[str]|A reference to a [task template](#task-templates). Values provided by the template are overridden by the task's definition.|
 |pre_evaluators|list[[PreEvaluator](#pre-evaluators)]||
-|destinations|list[[Output](#output)]|List of possible destinations for the output of tasks in this workflow. Informatics gateways can subscribe to notifications of output to these destinations.|
+|task_destinations|Optional[list[[TaskDestination](#task-destinations)]]|An optional list of possible tasks that could be executed following this task. They will be executed if their conditions are true.|
+|export_destinations|Optional[list[[ExportDestination](#export-destinations)]]|An optional lists of possible export destinations to which the output of this task can be sent.|
 |artifacts|[ArtifactMap](#artifacts)|Input & output artifacts of this task.
 
 
@@ -266,7 +268,12 @@ In order to check a certain tag across _all_ series, use the study level tags. F
 ```
 
 ### Destinations
-Destinations define the next task to be executed. They can either be export destinations, or another task.
+Destinations allow the workflow manager to determine what should happen to the output of a task. There are two types of destinations – task destinations, which reference another task in the workflow to be executed and export destinations, which reference a location external to the workflow manager.
+
+#### Task Destinations
+
+Task destinations define the next task to be executed. 
+Sometimes the destination will differ based on some condition. For this, [evaluators](#evaluators) can be used as conditions for output destinations.
 
 The basic format is as follows:
 
@@ -275,33 +282,45 @@ The basic format is as follows:
 |name|str|The name of the destination. This can either be an export destinations or a task's ID.|
 |conditions|Optional[list[Evaluator]]|An optional array of [Evaluators](#evaluators) that need to be met in order for this destination to be used.|
 
-Example (simple output to an export destination):
+
+Example (run my-task-id when the patient is female):
+
 ```json
 {
     ...task...
-    "destinations": [
+    "task_destinations": [
         {
-            "name": "PROD_PACS",
-        }
+            "name": "my-task-id",
+            "conditions": ["{{context.dicom.tags[('0010','0040')]}} == 'F'"]
+        },
     ],
     ...
 }
 ```
 
-Sometimes the destination will differ based on some condition. For this, evaluators can be used as conditions for output destinations.
+
+#### Export Destinations
+Export destinations define an external location to which the output of the task can be sent. This will take the form of an event published to a pub/sub service notifying of an available export to a specific destination reference. Most commonly, the export location will be a PACs system and the notification will be picked up by the Monai Informatics Gateway.
+
+| Property | Type | Description |
+|------|------|------|
+|name|str|The name of the destination. This can either be an export destinations already defined within the [Informatics Gateway](#informatics-gateway) section of  the workflow configuration.|
+|conditions|Optional[list[Evaluator]]|An optional array of [Evaluators](#evaluators) that need to be met in order for this destination to be used.|
 
 Example (output sent to another task if the patient is female, otherwise to PACS):
 ```json
 {
     ...task...
-    "destinations": [
-        {
-            "name": "my-task-id",
-            "conditions": ["{{context.dicom.tags[('0010','0040')]}} == 'F'"]
-        },
+    "export_destinations": [
         {
             "name": "PROD_PACS",
             "conditions": ["{{context.dicom.tags[('0010','0040')]}} != 'F'"]
+        }
+    ],
+    "task_destinations": [
+        {
+            "name": "my-task-id",
+            "conditions": ["{{context.dicom.tags[('0010','0040')]}} == 'F'"]
         }
     ],
     ...
