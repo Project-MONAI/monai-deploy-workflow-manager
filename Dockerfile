@@ -9,7 +9,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0-focal as build
+FROM mcr.microsoft.com/dotnet/sdk:6.0-focal as build
 
 ARG Version=0.0.0
 ARG FileVersion=0.0.0.0
@@ -26,7 +26,7 @@ RUN echo "Building MONAI Workload Manager $Version ($FileVersion)..."
 RUN dotnet publish -c Release -o out --nologo /p:Version=$Version /p:FileVersion=$FileVersion src/WorkloadManager/Monai.Deploy.WorkloadManager.csproj
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/runtime:5.0-focal
+FROM mcr.microsoft.com/dotnet/runtime:6.0-focal
 
 ENV DEBIAN_FRONTEND=noninteractive
 
