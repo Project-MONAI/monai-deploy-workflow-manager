@@ -44,15 +44,14 @@ MWM provides the following APIs:
 
 - **Workflows API**: A set of APIs to create, update and delete workflows.
 - **Tasks API**: A set of APIs to query & update task status.
-- **Credentials API**: Provides the ability to manager credentials to be used when the MWM communicates with external services.
+- **Credentials API**: Provides the ability to manager credentials to be used when the MWM communicates with external services..
 ---
 
 ### Internal Services
 
-- **Payload Listener**: A service responsible for consuming messages about new input data from a message queue, and executing the Workflow Manager service.
-- **Workflow Manager**: A service that executes pre-registered workflows on given input data.
-- **Task Manager**: A service that orchestrates the execution of a single workflow task, invoking specific task plugins. It also fulfils calls to the Tasks API.
-- **Task Dispatcher**: A service that dispatches and records jobs sent to the orchestration engines.
+- **Event Broker Adapter**: A service responsible for consuming messages from an event queue, and executing the relevant service based on the event type. This component also provides utility functions to publish new messages to the queue.
+- **Workflow Executer Service**: A service that executes pre-registered workflows on given input data.
+- **Task Runner Service**: A service that orchestrates the execution of a single workflow task, invoking specific task plugins. It also fulfils calls to the Tasks API.
 - **Export Service**: A service responsible emitting output notification events when workflows complete so listeners can retrieve output files.
 - **Data Retention Service**: Monitors storage usages, apply data retention policies, and cleans up storage.
 
@@ -95,6 +94,7 @@ _TBD_
 The Workflows API allows clients to register Clinical Workflows. It will validate & store them.
 
 ##### POST /workflows
+This endpoint saves the a workflow.
 ###### Body
 A workflow definition as per the [workflow definition spec](mwm-workflow-spec.md).
 ![register](static/mwm-workflows-register.png)
@@ -106,6 +106,7 @@ A workflow definition as per the [workflow definition spec](mwm-workflow-spec.md
   - Content: `{"id": UUID}`
 
 ##### PUT /workflows/WORKFLOW_ID
+Updates a workflow with the workflow specification sent in the body. This will create a new version of the workflow.
 ###### Body
 A workflow definition as per the [workflow definition spec](mwm-workflow-spec.md).
 May include a partial schema - the included attributes will be updated in the Workflow.
@@ -114,7 +115,7 @@ May include a partial schema - the included attributes will be updated in the Wo
 
 - `200`:
   - Description: Workflow updated successfully.
-  - Content: none.
+  - Content: `{"id": UUID, "version_id": string}`.
 
 ##### DELETE /workflows/WORKFLOW_ID
 ![delete](static/mwm-workflows-delete.png)
@@ -133,6 +134,7 @@ May include a partial schema - the included attributes will be updated in the Wo
       [
           {
             "workflow_id": UUID,
+            "version_id": string,
             "status": "active"
           }
       ]
@@ -150,32 +152,43 @@ May include a partial schema - the included attributes will be updated in the Wo
 URL: `/tasks`
 Endpoints:
 - Retrieve task by ID.
-- Provide task result by ID: used by app servers to perform callbacks.
 - Retrieve tasks (filter by current/time period)
 
 _More details to be added._
 
 ### Internal Modules
 
-#### Payload Listener
-The Payload Listener monitors an input queue. The MIG (or a custom ingestion service) will add an event to that queue when new data is sent to the system.
+#### Event Broker Adapter
+And the adapter communicates with an event broker.
 
+The adapter will listen on multiple queues, as  follows:
+
+| Queue Name | Publisher | Consumer |
+|------|------|------|
+|md.workflow.request|Informatics Gateway|Workflow Executer
+|md.workflow.task_dispatch|Workflow Executer|Task Executer
+|md.workflow.task_callback|App Servers|Task Executer
+|md.export.complete|Workflow Executer|Informatics Gateway
+
+##### The Workflow Request Queue
+The MIG (or a custom ingestion service) will add an event to that queue when new data is sent to the system.
 For more details & the event schema see [input](mwm-input.md#notification-message-schema)
 
 ![payloadlistener](static/mwm-payload-listener.png)
 
-#### Workflow Manager
-The workflow manager is responsible for running a workflow - executing tasks, passing metadata from one task to the other, and evaluating [Evaluators](mwm-workflow-spec.md#evaluators). Finally, it will hand over responsibility to the Export Notification service when the workflow is complete.
+#### Workflow Executer
+The workflow executer is responsible for running a workflow - scheduling tasks tasks, passing metadata from one task to the other, and evaluating [Evaluators](mwm-workflow-spec.md#evaluators). Finally, it will hand over responsibility to the Export Notification service when the workflow is complete.
 
-#### Task Manager
-The task manager is responsible for orchestrating tasks. The workflow manager triggers it for each Task in a workflow. It's responsible for:
+#### Task Executer
+The task executer is responsible for running tasks. It is invoked by the Event Broker Adapter whenever there is a new event in the task dispatch or task callback queues.
+It's responsible for:
 * Launching a specific task plugin
 * Providing the task plugin with the metadata given to it by the Workflow Manager.
 * Providing the task plugin with the path to an empty output directory.
 * Providing the task plugin with the path to the input data.
-* Listening for task Callbacks (see [Tasks API](#tasks-api)).
+* Listening for task Callbacks.
 * Adding result metadata from a Task to the workflow execution context.
-* Notifying the Workflow Manager when a task has completed.
+* Notifying the Workflow Executer when a task has completed.
 
 
 #### Task Plugin
@@ -193,7 +206,7 @@ Responsibilities of plugins:
 * Adding task output files to the output directory
 
 #### Export Service
-The export service is used when a Task has an [output destination](mwm-workflow-spec.md#output-destinations) external to the system (ie not another task). The export services publishes an output event to a Pub/Sub service. Once published, this export operation is considered complete.
+The export service is used when a Task has an [output destination](mwm-workflow-spec.md#destinations) external to the system (ie not another task). The export services publishes an output event to a Pub/Sub service. Once published, this export operation is considered complete.
 
 #### Data Retention Service
 
