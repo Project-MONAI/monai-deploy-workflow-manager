@@ -1,17 +1,10 @@
-﻿// Copyright 2021 MONAI Consortium
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//     http://www.apache.org/licenses/LICENSE-2.0
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkloadManager.Contracts.Rest;
+using Monai.Deploy.WorkloadManager.Logging;
 using Monai.Deploy.WorkloadManager.Services.Common;
 using System;
 using System.Threading;
@@ -21,19 +14,16 @@ namespace Monai.Deploy.WorkloadManager.Services.DataRetentionService
 {
     internal class DataRetentionService : IHostedService, IDisposable, IMonaiService
     {
-        private readonly ILogger<DataRetentionService> logger;
+        private readonly ILogger<DataRetentionService> _logger;
+        private bool _disposedValue;
+
         public ServiceStatus Status { get; set; } = ServiceStatus.Unknown;
 
         public string ServiceName => "Data Retention Service";
 
         public DataRetentionService(ILogger<DataRetentionService> logger)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
-
-        public void Dispose()
-        {
-            Status = ServiceStatus.Disposed;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -41,7 +31,7 @@ namespace Monai.Deploy.WorkloadManager.Services.DataRetentionService
             var task = Task.Run(() =>
             {
                 BackgroundProcessing(cancellationToken);
-            });
+            }, CancellationToken.None);
 
             Status = ServiceStatus.Running;
             if (task.IsCompleted)
@@ -52,14 +42,35 @@ namespace Monai.Deploy.WorkloadManager.Services.DataRetentionService
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            this.logger.LogInformation($"{ServiceName} Service is stopping.");
+            _logger.ServiceStopping(ServiceName);
             Status = ServiceStatus.Stopped;
             return Task.CompletedTask;
         }
 
         private void BackgroundProcessing(CancellationToken cancellationToken)
         {
-            this.logger.LogInformation($"{ServiceName} Service is starting.");
+            _logger.ServiceStarting(ServiceName);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    Status = ServiceStatus.Disposed;
+
+                }
+
+                _disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

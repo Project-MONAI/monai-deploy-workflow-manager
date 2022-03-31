@@ -1,13 +1,5 @@
-﻿// Copyright 2021 MONAI Consortium
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//     http://www.apache.org/licenses/LICENSE-2.0
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,7 +20,9 @@ namespace Monai.Deploy.WorkloadManager.Services.Http
 
         public IConfiguration Configuration { get; }
 
+#pragma warning disable CA1822 // Mark members as static
         public void ConfigureServices(IServiceCollection services)
+#pragma warning restore CA1822 // Mark members as static
         {
             services.AddHttpContextAccessor();
             services.AddApiVersioning(
@@ -50,18 +44,17 @@ namespace Monai.Deploy.WorkloadManager.Services.Http
                     options.SubstituteApiVersionInUrl = true;
                 });
 
-            services.AddGrpc();
             services.AddControllers().AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MONAI Workload Manager", Version = "v1" });
                 c.DescribeAllParametersInCamelCase();
             });
-
-            services.AddScoped<IPayloadService, PayloadService>();
         }
 
+#pragma warning disable CA1822 // Mark members as static
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+#pragma warning restore CA1822 // Mark members as static
         {
             if (env.IsDevelopment())
             {
@@ -69,15 +62,11 @@ namespace Monai.Deploy.WorkloadManager.Services.Http
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "aspnet5 v1"));
             }
-            // app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            // app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<PayloadService>();
                 endpoints.MapControllers();
             });
         }
