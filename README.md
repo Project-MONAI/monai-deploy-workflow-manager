@@ -15,16 +15,24 @@ This repository contains the Workload Manager subsystem, part of MONAI Deploy. P
 
 ### Prerequisites
 
-- [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
+- [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
 
 ### Development Environment
 
 During development, change any settings inside the `appsettings.Development.json` file.
 First, export the following environment variable before executing `dotnet run`:
 
+#### Linux 
+
 ```bash
 export DOTNET_ENVIRONMENT=Development
 ```
+#### Powershell
+
+```powershell
+$env:DOTNET_ENVIRONMENT="Development"
+```
+
 
 ### Building MONAI Workload Manager
 
