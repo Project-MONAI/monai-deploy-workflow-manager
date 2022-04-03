@@ -115,6 +115,10 @@ jobs:
   unit-test:
     runs-on: ubuntu-latest
     steps:
+    
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-dotnet@v1
         with:
@@ -145,10 +149,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: dotnet sonarscanner begin /k:"Project-MONAI_monai-deploy-workflow-manager" /o:"project-monai" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="${{ env.TEST_RESULTS }}/**/*.xml"
         working-directory: ./src
-        
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       - name: Run Unit Test
         run: ./run-tests.sh
