@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>Monai.Deploy.WorkflowManager.Test</RootNamespace>
-
+    <CodeAnalysisRuleSet>..\..\StyleCop.Analyzers.ruleset</CodeAnalysisRuleSet>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Monai.Deploy.WorkflowManager.csproj" />
+    <ProjectReference Include="..\..\src\WorkflowManager\Monai.Deploy.WorkflowManager.csproj" />
   </ItemGroup>
   
   <PropertyGroup>

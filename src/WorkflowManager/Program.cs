@@ -10,21 +10,26 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.Messaging;
+using Monai.Deploy.Messaging.Configuration;
+using Monai.Deploy.Messaging.RabbitMq;
+using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.PayloadListener.Services;
+using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
 
 namespace Monai.Deploy.WorkflowManager
 {
-    internal static class Program
+#pragma warning disable SA1600 // Elements should be documented
+    internal class Program
     {
-        private static void Main(string[] args)
+        protected Program()
         {
-            var host = CreateHostBuilder(args).Build();
-            host.Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        internal static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureHostConfiguration(configHost =>
                 {
@@ -50,6 +55,11 @@ namespace Monai.Deploy.WorkflowManager
                         .PostConfigure(options =>
                         {
                         });
+                    services.AddOptions<MessageBrokerServiceConfiguration>()
+                        .Bind(hostContext.Configuration.GetSection("messageConnection"))
+                        .PostConfigure(options =>
+                        {
+                        });
                     services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkflowManagerOptions>, ConfigurationValidator>());
 
                     services.AddSingleton<ConfigurationValidator>();
@@ -57,11 +67,47 @@ namespace Monai.Deploy.WorkflowManager
                     services.AddSingleton<DataRetentionService>();
 
                     services.AddHostedService<DataRetentionService>(p => p.GetService<DataRetentionService>());
+
+                    // MessageBroker
+                    services.AddSingleton<RabbitMqMessagePublisherService>();
+                    services.AddSingleton<IMessageBrokerPublisherService>(implementationFactory =>
+                    {
+                        var options = implementationFactory.GetService<IOptions<WorkflowManagerOptions>>();
+                        var serviceProvider = implementationFactory.GetService<IServiceProvider>();
+                        var logger = implementationFactory.GetService<ILogger<Program>>();
+                        return serviceProvider.LocateService<IMessageBrokerPublisherService>(logger, options.Value.Messaging.PublisherServiceAssemblyName);
+                    });
+
+                    services.AddSingleton<RabbitMqMessageSubscriberService>();
+                    services.AddSingleton<IMessageBrokerSubscriberService>(implementationFactory =>
+                    {
+                        var options = implementationFactory.GetService<IOptions<WorkflowManagerOptions>>();
+                        var serviceProvider = implementationFactory.GetService<IServiceProvider>();
+                        var logger = implementationFactory.GetService<ILogger<Program>>();
+                        return serviceProvider.LocateService<IMessageBrokerSubscriberService>(logger, options.Value.Messaging.SubscriberServiceAssemblyName);
+                    });
+
+                    services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
+
+                    services.AddSingleton<IEventPayloadRecieverService, EventPayloadRecieverService>();
+                    services.AddTransient<IEventPayloadValidator, EventPayloadValidator>();
+
+                    services.AddSingleton<PayloadListenerService>();
+
+                    services.AddHostedService<PayloadListenerService>(p => p.GetService<PayloadListenerService>());
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.CaptureStartupErrors(true);
                     webBuilder.UseStartup<Startup>();
                 });
+
+        private static void Main(string[] args)
+        {
+            var host = CreateHostBuilder(args).Build();
+            host.Run();
+        }
+
+#pragma warning restore SA1600 // Elements should be documented
     }
 }

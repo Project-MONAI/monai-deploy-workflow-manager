@@ -7,7 +7,7 @@
     <PublishTrimmed>false</PublishTrimmed>
     <PublishReadyToRun>true</PublishReadyToRun>
     <RootNamespace>Monai.Deploy.WorkflowManager.CLI</RootNamespace>
-    <CodeAnalysisRuleSet>..\.sonarlint\project-monai_monai-deploy-workflow-managercsharp.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
