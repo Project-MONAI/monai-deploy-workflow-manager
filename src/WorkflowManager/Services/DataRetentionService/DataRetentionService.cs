@@ -3,14 +3,14 @@
 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.WorkloadManager.Contracts.Rest;
-using Monai.Deploy.WorkloadManager.Logging;
-using Monai.Deploy.WorkloadManager.Services.Common;
+using Monai.Deploy.WorkflowManager.Contracts.Rest;
+using Monai.Deploy.WorkflowManager.Logging;
+using Monai.Deploy.WorkflowManager.Services.Common;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Monai.Deploy.WorkloadManager.Services.DataRetentionService
+namespace Monai.Deploy.WorkflowManager.Services.DataRetentionService
 {
     internal class DataRetentionService : IHostedService, IDisposable, IMonaiService
     {

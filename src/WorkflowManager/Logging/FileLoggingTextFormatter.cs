@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-FileCopyrightText: ï¿½ 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
 using Karambolo.Extensions.Logging.File;
@@ -7,7 +7,7 @@ using System;
 using System.Globalization;
 using System.Text;
 
-namespace Monai.Deploy.WorkloadManager.Logging
+namespace Monai.Deploy.WorkflowManager.Logging
 {
     public class FileLoggingTextFormatter : FileLogEntryTextBuilder
     {

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 
-namespace Monai.Deploy.WorkloadManager.Services.Http
+namespace Monai.Deploy.WorkflowManager.Services.Http
 {
     public class Startup
     {

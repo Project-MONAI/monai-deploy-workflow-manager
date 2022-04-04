@@ -4,7 +4,7 @@
 using System;
 using Microsoft.Extensions.Logging;
 
-namespace Monai.Deploy.WorkloadManager.Logging
+namespace Monai.Deploy.WorkflowManager.Logging
 {
     public static partial class Log
     {

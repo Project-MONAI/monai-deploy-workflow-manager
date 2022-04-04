@@ -27,5 +27,5 @@ popd
 
 pushd $SCRIPT_DIR/src/CLI
 echo "Building Workload Manager CLI: linux-x64"
-dotnet publish -r linux-x64 -c Release -o $SCRIPT_DIR/cli/linux-x64
+dotnet publish -r linux-x64 -c Release --self-contained -o $SCRIPT_DIR/cli/linux-x64
 popd

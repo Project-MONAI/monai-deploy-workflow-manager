@@ -2,15 +2,15 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.WorkloadManager.Contracts.Rest;
-using Monai.Deploy.WorkloadManager.Services.DataRetentionService;
+using Monai.Deploy.WorkflowManager.Contracts.Rest;
+using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Moq;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Monai.Deploy.WorkloadManager.Test.Services.Http
+namespace Monai.Deploy.WorkflowManager.Test.Services.Http
 {
     public class DataRetentionServiceTest
     {

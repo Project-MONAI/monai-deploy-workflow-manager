@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/WorkloadManager/bin/Debug/net5.0/Monai.Deploy.WorkloadManager.dll",
+            "program": "${workspaceFolder}/src/WorkflowManager/bin/Debug/net5.0/Monai.Deploy.WorkflowManager.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/WorkloadManager",
+            "cwd": "${workspaceFolder}/src/WorkflowManager",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false

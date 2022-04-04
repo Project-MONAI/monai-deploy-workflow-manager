@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.WorkloadManager.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
 using System;
 using System.Globalization;
 using System.Text;
 using Xunit;
 
-namespace Monai.Deploy.WorkloadManager.Test.Logging
+namespace Monai.Deploy.WorkflowManager.Test.Logging
 {
     public class FileLoggingTextFormatterTest
     {

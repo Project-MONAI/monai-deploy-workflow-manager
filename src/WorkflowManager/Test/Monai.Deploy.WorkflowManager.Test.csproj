@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>Monai.Deploy.WorkloadManager.Test</RootNamespace>
+    <RootNamespace>Monai.Deploy.WorkflowManager.Test</RootNamespace>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -30,6 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Monai.Deploy.WorkloadManager.csproj" />
+    <ProjectReference Include="..\Monai.Deploy.WorkflowManager.csproj" />
   </ItemGroup>
 </Project>

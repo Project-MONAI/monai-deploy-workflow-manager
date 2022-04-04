@@ -23,7 +23,7 @@ WORKDIR /app
 COPY . ./
 
 RUN echo "Building MONAI Workload Manager $Version ($FileVersion)..."
-RUN dotnet publish -c Release -o out --nologo /p:Version=$Version /p:FileVersion=$FileVersion src/WorkloadManager/Monai.Deploy.WorkloadManager.csproj
+RUN dotnet publish -c Release -o out --nologo /p:Version=$Version /p:FileVersion=$FileVersion src/WorkflowManager/Monai.Deploy.WorkflowManager.csproj
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/runtime:6.0-focal
@@ -50,4 +50,4 @@ EXPOSE 5000
 RUN ls -lR /opt/monai/ig
 ENV PATH="/opt/dotnetcore-tools:${PATH}"
 
-ENTRYPOINT ["/opt/monai/ig/Monai.Deploy.WorkloadManager"]
+ENTRYPOINT ["/opt/monai/ig/Monai.Deploy.WorkflowManager"]
