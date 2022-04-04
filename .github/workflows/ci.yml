@@ -11,106 +11,88 @@ on:
 
 jobs:
 
-  # analyze:
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     actions: read
-  #     contents: read
-  #     security-events: write
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       language: [ 'csharp' ]
+  analyze:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
 
-  #   steps:
-  #   - name: Checkout repository
-  #     uses: actions/checkout@v2
-  #     with:
-  #       fetch-depth: 0
-  #   - uses: actions/setup-dotnet@v1
-  #     with:
-  #       dotnet-version: "6.0.x"
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: "6.0.x"
 
-  #   - name: Enable NuGet cache
-  #     uses: actions/cache@v2.1.7
-  #     with:
-  #       path: ~/.nuget/packages
-  #       key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-  #       restore-keys: |
-  #         ${{ runner.os }}-nuget
-  #   - name: Initialize CodeQL
-  #     uses: github/codeql-action/init@v1
-  #     with:
-  #       languages: ${{ matrix.language }}
+    - name: Enable NuGet cache
+      uses: actions/cache@v2.1.7
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget
 
-  #   - name: Restore dependencies
-  #     run: dotnet restore
-  #     working-directory: ./src
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: ${{ matrix.language }}
 
-  #   - name: Build Solution
-  #     run: dotnet build -c Release src/Monai.Deploy.WorkloadManager.sln
-  #     working-directory: ./src
+    - name: Restore dependencies
+      run: dotnet restore
+      working-directory: ./src
 
-  #   - name: Perform CodeQL Analysis
-  #     uses: github/codeql-action/analyze@v1
+    - name: Build Solution
+      run: dotnet build -c Release --nologo src/Monai.Deploy.WorkloadManager.sln
+      working-directory: ./src
 
-  # sca:
-  #   runs-on: ubuntu-latest
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
 
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: '0'
+  sca:
+    runs-on: ubuntu-latest
 
-  #     - name: Secret detection
-  #       uses: zricethezav/gitleaks-action@master
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
 
-  # build:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 0
-  #     - name: Build
-  #       run: |
-  #         export VERSION=`cat VERSION`
-  #         ./build.sh
-  #         docker tag monai/workload-manager:$VERSION monai/workload-manager:${{ github.sha }}
-  #     - name: Scan image with Azure Container Scan
-  #       uses: Azure/container-scan@v0
-  #       with:
-  #         image-name: monai/workload-manager:${{ github.sha }}
-  #     - name: Scan image with Anchore
-  #       id: scan
-  #       uses: anchore/scan-action@v2
-  #       with:
-  #         image: monai/workload-manager:${{ github.sha }}
-  #         fail-build: true
-  #         severity-cutoff: high
-  #         acs-report-enable: true
-  #     - name: upload Anchore scan SARIF report
-  #       uses: github/codeql-action/upload-sarif@v1
-  #       with:
-  #         sarif_file: ${{ steps.scan.outputs.sarif }}
+      - name: Secret detection
+        uses: zricethezav/gitleaks-action@master
 
-  # test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 0
-  #     - name: Run Unit Test
-  #       run: ./run-tests.sh
-  #       working-directory: ./src
-  #     - uses: codecov/codecov-action@v2
-  #       with:
-  #         token: ${{ secrets.CODECOV_TOKEN }}
-  #         directory: ./src/results
-  #         files: "**/coverage.opencover.xml"
-  #         flags: unittests
-  #         name: codecov-umbrella
-  #         fail_ci_if_error: true
-  #         verbose: true
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Build
+        run: |
+          export VERSION=`cat VERSION`
+          ./build.sh
+          docker tag monai/workload-manager:$VERSION monai/workload-manager:${{ github.sha }}
+      - name: Scan image with Azure Container Scan
+        uses: Azure/container-scan@v0
+        with:
+          image-name: monai/workload-manager:${{ github.sha }}
+      - name: Scan image with Anchore
+        id: scan
+        uses: anchore/scan-action@v2
+        with:
+          image: monai/workload-manager:${{ github.sha }}
+          fail-build: true
+          severity-cutoff: high
+          acs-report-enable: true
+      - name: upload Anchore scan SARIF report
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
 
   unit-test:
     runs-on: ubuntu-latest
@@ -144,22 +126,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: dotnet sonarscanner begin /k:"Project-MONAI_monai-deploy-workflow-manager" /o:"project-monai" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="results/**/coverage.opencover.xml"
+        run: dotnet sonarscanner begin /k:"Project-MONAI_monai-deploy-workflow-manager" /o:"project-monai" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="results/**/*.xml"
         working-directory: ./src
-
-      # - name: Build
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #   run: dotnet build -c Release Monai.Deploy.WorkloadManager.sln
-      #   working-directory: ./src
 
       - name: Run Unit Test
         run: ./run-tests.sh
-        working-directory: ./src
-
-      - name: list what files are available 
-        run: ls -a
         working-directory: ./src
 
       - name: End SonarScanner
