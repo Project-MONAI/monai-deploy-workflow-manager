@@ -36,9 +36,9 @@ if [ ! -z ${CI} ]; then
 fi
 
 
-if [ -d "$RESULTS_DIR" ]; then
-    rm -r "$RESULTS_DIR"
-fi
+# if [ -d "$RESULTS_DIR" ]; then
+#     rm -r "$RESULTS_DIR"
+# fi
 
 mkdir -p "$RESULTS_DIR"
 
