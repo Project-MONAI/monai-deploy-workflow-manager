@@ -49,7 +49,7 @@ jobs:
       working-directory: ./src
 
     - name: Build Solution
-      run: dotnet build -c Release --nologo src/Monai.Deploy.WorkloadManager.sln
+      run: dotnet build -c Release --nologo Monai.Deploy.WorkloadManager.sln
       working-directory: ./src
 
     - name: Perform CodeQL Analysis
