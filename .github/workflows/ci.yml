@@ -17,16 +17,13 @@ jobs:
       actions: read
       contents: read
       security-events: write
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'csharp' ]
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
+
     - uses: actions/setup-dotnet@v1
       with:
         dotnet-version: "6.0.x"
@@ -42,11 +39,7 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
       with:
-        languages: ${{ matrix.language }}
-
-    - name: Restore dependencies
-      run: dotnet restore
-      working-directory: ./src
+        languages: csharp
 
     - name: Build Solution
       run: dotnet build -c Release --nologo Monai.Deploy.WorkloadManager.sln
@@ -69,18 +62,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
       - name: Build
         run: |
           export VERSION=`cat VERSION`
           ./build.sh
           docker tag monai/workload-manager:$VERSION monai/workload-manager:${{ github.sha }}
+
       - name: Scan image with Azure Container Scan
         uses: Azure/container-scan@v0
         with:
           image-name: monai/workload-manager:${{ github.sha }}
+
       - name: Scan image with Anchore
         id: scan
         uses: anchore/scan-action@v2
@@ -89,6 +86,7 @@ jobs:
           fail-build: true
           severity-cutoff: high
           acs-report-enable: true
+
       - name: upload Anchore scan SARIF report
         uses: github/codeql-action/upload-sarif@v1
         with:
