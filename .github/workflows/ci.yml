@@ -59,6 +59,36 @@ jobs:
       - name: Secret detection
         uses: zricethezav/gitleaks-action@master
 
+  dependency-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "6.0.x"
+
+      - name: Enable NuGet cache
+        uses: actions/cache@v2.1.7
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget
+
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          
+      - name: Install SonarCloud scanner
+        run: dotnet tool install --global NuGetDefense.Tool
+
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ./src
+
+      - name: Dependency Scanning
+        run: nugetdefense -p src/Monai.Deploy.WorkloadManager.sln --settings-file NuGetDefense.json
+
   build:
     runs-on: ubuntu-latest
     steps:
