@@ -158,6 +158,10 @@ jobs:
         run: ./run-tests.sh
         working-directory: ./src
 
+      - name: list what files are available 
+        run: ls -a
+        working-directory: ./src
+
       - name: End SonarScanner
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
