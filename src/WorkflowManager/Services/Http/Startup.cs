@@ -35,12 +35,12 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
             services.AddVersionedApiExplorer(
                 options =>
                 {
-                    //Add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
-                    //NOTE: the specified format code will format the version as "'v'major[.minor][-status]"
+                    // Add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
+                    // NOTE: the specified format code will format the version as "'v'major[.minor][-status]"
                     options.GroupNameFormat = "'v'VVV";
 
-                    //NOTE: this option is only necessary when versioning by url segment. the SubstitutionFormat
-                    //can also be used to control the format of the API version in route templates
+                    // NOTE: this option is only necessary when versioning by url segment. the SubstitutionFormat
+                    // can also be used to control the format of the API version in route templates
                     options.SubstituteApiVersionInUrl = true;
                 });
 

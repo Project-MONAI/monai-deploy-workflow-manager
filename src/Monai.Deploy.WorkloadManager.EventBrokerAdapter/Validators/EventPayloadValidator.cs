@@ -1,5 +1,6 @@
 ﻿using Ardalis.GuardClauses;
 using Monai.Deploy.MessageBroker.Messages;
+using Monai.Deploy.WorkloadManager.PayloadListener.Extensions;
 
 namespace Monai.Deploy.WorkloadManager.PayloadListener.Validators
 {
@@ -10,16 +11,20 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Validators
 
         }
 
-        public Task<bool> ValidateWorkflow(WorkflowRequestMessage payload)
+        public bool ValidateWorkflow(WorkflowRequestMessage payload)
         {
             Guard.Against.Null(payload, nameof(payload));
 
-            var validationErrors = new List<string>();
-
             var valid = true;
-            valid &= IsAeTitleValid(payload.GetType().Name, payload.CallingAeTitle, validationErrors);
+            valid &= payload.IsValid(out var validationErrors);
 
-            return true;
+            var workflows = payload.Workflows;
+
+            foreach (var workflow in workflows)
+            {
+                var validatedWorkflow = workflow.ToWorkflowAndValidate(out var validationErrorsWorkflow);
+            }
+            return valid;
         }
     }
 }
