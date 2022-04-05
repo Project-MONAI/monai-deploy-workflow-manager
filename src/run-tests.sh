@@ -25,14 +25,12 @@ if [ -f /.dockerenv ]; then
     echo "##### Installing apt packages..."
     apt-get update
     apt-get install -y dcmtk sudo sqlite3
-    git clean -fdx
 fi
 
 if [ ! -z ${CI} ]; then
     echo "##### Installing apt packages..."
     sudo apt-get update
     sudo apt-get install -y dcmtk sqlite3
-    sudo git clean -fdx
 fi
 
 
