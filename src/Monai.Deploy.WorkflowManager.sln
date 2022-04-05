@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManage
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Contracts", "Contracts\Monai.Deploy.WorkflowManager.Contracts.csproj", "{7E2B81A9-1951-4D8F-BC91-19DD69AF3328}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monai.Deploy.WorkloadManager.PayloadListener", "Monai.Deploy.WorkloadManager.EventBrokerAdapter\Monai.Deploy.WorkloadManager.PayloadListener.csproj", "{AB662390-B075-4621-ADC7-59A2F4702366}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkloadManager.PayloadListener", "Monai.Deploy.WorkloadManager.EventBrokerAdapter\Monai.Deploy.WorkloadManager.PayloadListener.csproj", "{AB662390-B075-4621-ADC7-59A2F4702366}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.MessageBroker", "..\..\monai-deploy-informatics-gateway\src\MessageBroker\RabbitMq\Monai.Deploy.MessageBroker.csproj", "{2103D286-F70A-420F-824D-A451D052A54E}"
 EndProject

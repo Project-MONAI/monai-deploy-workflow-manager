@@ -6,6 +6,16 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Extensions
 {
     public static class WorkflowExtensions
     {
+        public static Workflow? ToWorkflow(this string workflowString)
+        {
+            Guard.Against.Null(workflowString, nameof(workflowString));
+
+            var workflow = JsonConvert.DeserializeObject<Workflow>(workflowString);
+
+            Guard.Against.Null(workflow, nameof(workflow));
+
+            return workflow;
+        }
         public static bool ToWorkflowAndValidate(this string workflowString, out IList<string> validationErrors)
         {
             Guard.Against.Null(workflowString, nameof(workflowString));
@@ -14,7 +24,7 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Extensions
 
             var valid = true;
 
-            var workflow = JsonConvert.DeserializeObject<Workflow>(workflowString);
+            var workflow = workflowString.ToWorkflow();
 
             Guard.Against.Null(workflow, nameof(workflow));
 

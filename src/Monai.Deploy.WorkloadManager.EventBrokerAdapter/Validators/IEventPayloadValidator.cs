@@ -7,6 +7,6 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Validators
         /// <summary>
         /// Validates the workflow input payload from the RabbitMQ queue.
         /// </summary>
-        bool ValidateWorkflow(WorkflowRequestMessage payload);
+        bool ValidateWorkflowRequest(WorkflowRequestMessage payload);
     }
 }

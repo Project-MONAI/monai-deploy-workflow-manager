@@ -34,5 +34,11 @@ namespace Monai.Deploy.WorkflowManager.Logging
 
         [LoggerMessage(EventId = 9, Level = LogLevel.Critical, Message = "Failed to start {ServiceName}.")]
         public static partial void ServiceFailedToStart(this ILogger logger, string serviceName, Exception ex);
+
+        [LoggerMessage(EventId = 10, Level = LogLevel.Critical, Message = "Type '{type}' cannot be found.")]
+        public static partial void TypeNotFound(this ILogger logger, string type);
+
+        [LoggerMessage(EventId = 11, Level = LogLevel.Critical, Message = "Instance of '{type}' cannot be found.")]
+        public static partial void InstanceOfTypeNotFound(this ILogger logger, string type);
     }
 }

@@ -11,6 +11,13 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         public const string DatabaseConnectionStringKey = "WorkflowManagerDatabase";
 
         public WorkflowManagerOptions()
+        /// <summary>
+        /// Represents the <c>messaging</c> section of the configuration file.
+        /// </summary>
+        [JsonProperty(PropertyName = "messaging")]
+        public MessageBrokerConfiguration Messaging { get; set; }
+
+        public WorkloadManagerOptions()
         {
 
         }

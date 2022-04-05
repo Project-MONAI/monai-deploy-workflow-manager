@@ -11,7 +11,7 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Validators
 
         }
 
-        public bool ValidateWorkflow(WorkflowRequestMessage payload)
+        public bool ValidateWorkflowRequest(WorkflowRequestMessage payload)
         {
             Guard.Against.Null(payload, nameof(payload));
 

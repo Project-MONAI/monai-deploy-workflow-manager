@@ -17,7 +17,7 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
         {
             var payload = message.Message.ConvertTo<WorkflowRequestMessage>();
 
-            var validation = await PayloadValidator.ValidateWorkflow(payload);
+            var validation = PayloadValidator.ValidateWorkflowRequest(payload);
 
 
         }
