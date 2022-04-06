@@ -1,0 +1,56 @@
+# SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+# SPDX-License-Identifier: Apache License 2.0
+
+name: Security Scanning
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '6.0.x'
+
+jobs:
+
+  sca:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+
+      - name: Secret detection
+        uses: zricethezav/gitleaks-action@master
+
+  dependency-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install Dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Enable NuGet cache
+        uses: actions/cache@v2.1.7
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget
+
+      - name: Install NuGetDefense tool
+        run: dotnet tool install --global NuGetDefense.Tool
+
+      - name: Restore Solution
+        run: dotnet restore Monai.Deploy.WorkloadManager.sln
+        working-directory: ./src
+
+      - name: Dependency Scanning
+        run: nugetdefense -p src/Monai.Deploy.WorkloadManager.sln --settings-file NuGetDefense.json
