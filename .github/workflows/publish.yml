@@ -11,7 +11,7 @@ env:
   DOTNET_VERSION: '6.0.x'
 
 jobs:
-  publish:
+  publish-and-scan:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -31,10 +31,6 @@ jobs:
         name: code-coverage-reports
         path: /var/lib/docker/*
   
-  scan:
-    runs-on: ubuntu-latest
-    needs: publish
-    steps:
     - name: Scan image with Azure Container Scan
       uses: Azure/container-scan@v0
       with:
