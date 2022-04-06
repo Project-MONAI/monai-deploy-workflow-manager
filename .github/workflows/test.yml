@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 # SPDX-License-Identifier: Apache License 2.0
 
-name: Test with Sonarqube & CodeCov
+name: Tests & Sonarqube/CodeCov
 
 on:
   push:
@@ -45,5 +45,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: code-coverage-reports
-          path: results/**/coverage.opencover.xml
-
+          path: ./src/results/**/coverage.opencover.xml
+        
