@@ -12,7 +12,7 @@ env:
 
 jobs:
 
-  unit-test:
+  unit-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -46,4 +46,28 @@ jobs:
         with:
           name: code-coverage-reports
           path: ./src/results/**/coverage.opencover.xml
+
+  sonarscanner:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    steps:
+      - name: Install SonarCloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        run: dotnet tool install --global dotnet-sonarscanner
+
+      - name: Begin SonarScanner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: dotnet sonarscanner begin /k:"Project-MONAI_monai-deploy-workflow-manager" /o:"project-monai" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="./**/coverage.opencover.xml"
         
+      - name: Download code coverage from unit tests
+        uses: actions/download-artifact@v3
+        with:
+          name: code-coverage-reports  
+
+      - name: End SonarScanner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
