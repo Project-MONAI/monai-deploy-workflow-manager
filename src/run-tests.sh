@@ -45,5 +45,5 @@ cd $TOP/src
 dotnet build Monai.Deploy.WorkloadManager.sln
 
 echo "Executing all tests"
-dotnet test -v=$VERBOSITY --runtime linux-x64 --results-directory "$RESULTS_DIR" --collect:"XPlat Code Coverage" --settings "$SCRIPT_DIR/coverlet.runsettings" Monai.Deploy.WorkloadManager.sln
+dotnet test -v=$VERBOSITY --results-directory "$RESULTS_DIR" --collect:"XPlat Code Coverage" --settings "$SCRIPT_DIR/coverlet.runsettings" Monai.Deploy.WorkloadManager.sln
 exit $?
