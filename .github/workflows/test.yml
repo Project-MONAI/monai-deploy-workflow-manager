@@ -11,92 +11,106 @@ env:
   DOTNET_VERSION: '6.0.x'
 
 jobs:
-
   unit-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
-      - name: Install Dotnet
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+    - name: Install Dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Enable NuGet cache
-        uses: actions/cache@v2.1.7
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget
+    - name: Enable NuGet cache
+      uses: actions/cache@v2.1.7
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget
 
-      - name: Restore Solution
-        run: dotnet restore Monai.Deploy.WorkloadManager.sln
-        working-directory: ./src
+    - name: Restore Solution
+      run: dotnet restore Monai.Deploy.WorkloadManager.sln
+      working-directory: ./src
 
-      - name: Run Unit Test
-        run: ./run-tests.sh
-        working-directory: ./src
-          
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v3
-        with:
-          name: code-coverage-reports
-          path: ./src/results/**/coverage.opencover.xml
+    - name: Run Unit Test
+      run: ./run-tests.sh
+      working-directory: ./src
+        
+    - name: Archive code coverage results
+      uses: actions/upload-artifact@v3
+      with:
+        name: code-coverage-reports
+        path: ./src/results/**/coverage.opencover.xml
 
   sonarscanner:
     runs-on: ubuntu-latest
     needs: unit-tests
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+    - name: Install Dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Install Dotnet
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+    - name: Enable NuGet cache
+      uses: actions/cache@v2.1.7
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget
 
-      - name: Enable NuGet cache
-        uses: actions/cache@v2.1.7
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget
+    - name: Install SonarCloud scanner
+      if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+      run: dotnet tool install --global dotnet-sonarscanner
 
-      - name: Install SonarCloud scanner
-        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-        run: dotnet tool install --global dotnet-sonarscanner
+    - name: Begin SonarScanner
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: dotnet sonarscanner begin /k:"Project-MONAI_monai-deploy-workflow-manager" /o:"project-monai" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="../**/coverage.opencover.xml"
+      working-directory: ./src
 
-      - name: Begin SonarScanner
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: dotnet sonarscanner begin /k:"Project-MONAI_monai-deploy-workflow-manager" /o:"project-monai" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="../**/coverage.opencover.xml"
-        working-directory: ./src
+    - name: Restore Solution
+      run: dotnet restore Monai.Deploy.WorkloadManager.sln
+      working-directory: ./src
 
-      - name: Restore Solution
-        run: dotnet restore Monai.Deploy.WorkloadManager.sln
-        working-directory: ./src
+    - name: Build Solution
+      run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkloadManager.sln
+      working-directory: ./src
 
-      - name: Build Solution
-        run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkloadManager.sln
-        working-directory: ./src
+    - name: Download code coverage from unit tests
+      uses: actions/download-artifact@v3
+      with:
+        name: code-coverage-reports  
+      
+    - name: End SonarScanner
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+      working-directory: ./src
 
-      - name: Download code coverage from unit tests
-        uses: actions/download-artifact@v3
-        with:
-          name: code-coverage-reports  
-        
-      - name: End SonarScanner
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-        working-directory: ./src
+  codecov:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    steps:
+    - name: Run CodeCov analysis
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        directory: ./src/results
+        files: "**/coverage.opencover.xml"
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: true
+        verbose: true
+
