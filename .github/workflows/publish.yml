@@ -24,6 +24,12 @@ jobs:
         export VERSION=`cat VERSION`
         ./build.sh
         docker tag monai/workload-manager:$VERSION monai/workload-manager:${{ github.sha }}
+
+    - name: Archive code coverage results
+      uses: actions/upload-artifact@v3
+      with:
+        name: code-coverage-reports
+        path: /var/lib/docker/*
   
   scan:
     runs-on: ubuntu-latest
