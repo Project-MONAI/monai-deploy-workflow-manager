@@ -33,7 +33,8 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore Monai.Deploy.WorkloadManager.sln
+      working-directory: ./src
 
     - name: Build Solution
       run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkloadManager.sln
