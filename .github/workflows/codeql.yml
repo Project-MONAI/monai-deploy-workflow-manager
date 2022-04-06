@@ -12,8 +12,7 @@ env:
 
 jobs:
 
-  analyze:
-    needs: build
+  setup:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +21,8 @@ jobs:
       with:
         fetch-depth: 0
 
-    - uses: actions/setup-dotnet@v1
+    - name: Install Dotnet
+      uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -34,6 +34,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-nuget
 
+  analyze:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
       with:
