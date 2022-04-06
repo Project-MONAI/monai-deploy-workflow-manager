@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 # SPDX-License-Identifier: Apache License 2.0
 
-name: Build Project
+name: CodeQL
 
 on:
   push:
@@ -13,6 +13,7 @@ env:
 jobs:
 
   analyze:
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
