@@ -1,0 +1,6 @@
+{
+    "yaml.schemas": {
+        "https://json.schemastore.org/github-workflow.json": "file:///mnt/c/development/AI/AIDE/monai/monai-deploy-workflow-manager/.github/workflows/build.yml",
+        "https://json.schemastore.org/github-workflow.json": "file:///mnt/c/development/AI/AIDE/monai/monai-deploy-workflow-manager/.github/workflows/ci.yml"
+    }
+}

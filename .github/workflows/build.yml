@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+# SPDX-License-Identifier: Apache License 2.0
+
+name: Build Project
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '6.0.x'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Install Dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Install dependencies
+      run: dotnet restore
+
+    - name: Build Solution
+      run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkloadManager.sln
+      working-directory: ./src
