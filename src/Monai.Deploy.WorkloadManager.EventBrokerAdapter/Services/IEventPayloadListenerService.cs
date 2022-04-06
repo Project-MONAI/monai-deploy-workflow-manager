@@ -1,9 +1,9 @@
-﻿using Monai.Deploy.MessageBroker.Common;
+﻿using Monai.Deploy.Messaging.Common;
 
 namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
 {
     public interface IEventPayloadListenerService
     {
-        Task RecievePayload(MessageReceivedEventArgs message);
+        Task RecieveWorkflowPayload(MessageReceivedEventArgs message);
     }
 }

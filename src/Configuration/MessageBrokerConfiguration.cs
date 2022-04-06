@@ -1,4 +1,4 @@
-﻿using Monai.Deploy.MessageBroker.Common;
+﻿using Monai.Deploy.Messaging.Configuration;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkloadManager.Configuration

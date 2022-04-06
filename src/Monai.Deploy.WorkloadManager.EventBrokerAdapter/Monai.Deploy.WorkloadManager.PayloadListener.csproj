@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,8 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\monai-deploy-informatics-gateway\src\MessageBroker\RabbitMq\Monai.Deploy.MessageBroker.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Karambolo.Extensions.Logging.File" Version="3.2.1" />
+    <PackageReference Include="Ardalis.GuardClauses" Version="4.0.1" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0001" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Configuration\Monai.Deploy.WorkloadManager.Configuration.csproj" />
     <ProjectReference Include="..\Contracts\Monai.Deploy.WorkloadManager.Contracts.csproj" />
+    <ProjectReference Include="..\Monai.Deploy.WorkloadManager.Common\Monai.Deploy.WorkloadManager.Common.csproj" />
+    <ProjectReference Include="..\Monai.Deploy.WorkloadManager.Logging\Monai.Deploy.WorkloadManager.Logging.csproj" />
   </ItemGroup>
 
 </Project>

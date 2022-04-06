@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkloadManager.Configuration.Exceptions;
-using Monai.Deploy.WorkloadManager.Logging;
+using Monai.Deploy.WorkloadManager.Logging.Logging;
 
 namespace Monai.Deploy.WorkloadManager.Common
 {

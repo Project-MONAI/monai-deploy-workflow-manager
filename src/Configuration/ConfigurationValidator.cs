@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using Microsoft.Extensions.Options;
-using System;
 
 namespace Monai.Deploy.WorkflowManager.Configuration
 {
@@ -10,7 +9,7 @@ namespace Monai.Deploy.WorkflowManager.Configuration
     {
         public ValidateOptionsResult Validate(string name, WorkflowManagerOptions options)
         {
-            throw new NotImplementedException();
+            return new ValidateOptionsResult();
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using Monai.Deploy.MessageBroker.Common;
-using Monai.Deploy.MessageBroker.Messages;
+﻿using Monai.Deploy.Messaging.Common;
+using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkloadManager.PayloadListener.Validators;
 
 namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
@@ -13,7 +13,7 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
 
         IEventPayloadValidator PayloadValidator { get; }
 
-        public async Task RecievePayload(MessageReceivedEventArgs message)
+        public async Task RecieveWorkflowPayload(MessageReceivedEventArgs message)
         {
             var payload = message.Message.ConvertTo<WorkflowRequestMessage>();
 

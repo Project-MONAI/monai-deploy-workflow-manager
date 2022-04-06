@@ -33,6 +33,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0001" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
@@ -42,9 +43,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj" />
-    <ProjectReference Include="..\Contracts\Monai.Deploy.WorkflowManager.Contracts.csproj" />
-    <ProjectReference Include="..\Database\Monai.Deploy.WorkflowManager.Database.csproj" />
+    <ProjectReference Include="..\Configuration\Monai.Deploy.WorkloadManager.Configuration.csproj" />
+    <ProjectReference Include="..\Contracts\Monai.Deploy.WorkloadManager.Contracts.csproj" />
+    <ProjectReference Include="..\Database\Monai.Deploy.WorkloadManager.Database.csproj" />
+    <ProjectReference Include="..\Monai.Deploy.WorkloadManager.Common\Monai.Deploy.WorkloadManager.Common.csproj" />
+    <ProjectReference Include="..\Monai.Deploy.WorkloadManager.EventBrokerAdapter\Monai.Deploy.WorkloadManager.PayloadListener.csproj" />
+    <ProjectReference Include="..\Monai.Deploy.WorkloadManager.Logging\Monai.Deploy.WorkloadManager.Logging.csproj" />
   </ItemGroup>
 
   <ItemGroup>

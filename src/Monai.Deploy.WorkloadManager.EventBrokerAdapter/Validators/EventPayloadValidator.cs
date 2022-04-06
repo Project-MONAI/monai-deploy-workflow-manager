@@ -1,5 +1,5 @@
 ﻿using Ardalis.GuardClauses;
-using Monai.Deploy.MessageBroker.Messages;
+using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkloadManager.PayloadListener.Extensions;
 
 namespace Monai.Deploy.WorkloadManager.PayloadListener.Validators
