@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+# SPDX-License-Identifier: Apache License 2.0
+
+name: Build Project
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '6.0.x'
+
+jobs:
+
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Enable NuGet cache
+      uses: actions/cache@v2.1.7
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: csharp
+
+    - name: Restore Solution
+      run: dotnet restore Monai.Deploy.WorkloadManager.sln
+      working-directory: ./src
+
+    - name: Build Solution
+      run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkloadManager.sln
+      working-directory: ./src
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
