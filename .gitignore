@@ -2,9 +2,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/aspnetcore,dotnetcore,visualstudio,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=aspnetcore,dotnetcore,visualstudio,visualstudiocode
 
-# CLI
-cli/
-
 # Database
 *.db
 
