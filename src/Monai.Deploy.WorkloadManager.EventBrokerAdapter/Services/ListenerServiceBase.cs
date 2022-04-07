@@ -18,7 +18,7 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IServiceScope _scope;
 
-        private readonly IEventPayloadListenerService _eventPayloadListenerService;
+        private readonly IEventPayloadRecieverService _eventPayloadListenerService;
 
         private readonly WorkloadManagerOptions _configuration;
 
@@ -35,7 +35,7 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
             ILogger logger,
             IOptions<WorkloadManagerOptions> configuration,
             IServiceScopeFactory serviceScopeFactory,
-            IEventPayloadListenerService eventPayloadListenerService)
+            IEventPayloadRecieverService eventPayloadListenerService)
         {
             _cancellationTokenSource = new CancellationTokenSource();
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

@@ -2,7 +2,7 @@
 
 namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
 {
-    public interface IEventPayloadListenerService
+    public interface IEventPayloadRecieverService
     {
         Task RecieveWorkflowPayload(MessageReceivedEventArgs message);
     }

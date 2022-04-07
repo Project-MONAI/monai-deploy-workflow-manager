@@ -46,5 +46,11 @@ namespace Monai.Deploy.WorkloadManager.Logging.Logging
 
         [LoggerMessage(EventId = 12, Level = LogLevel.Information, Message = "{ServiceName} subscribed to {RoutingKey} messages.")]
         public static partial void EventSubscription(this ILogger logger, string serviceName, string routingKey);
+
+        [LoggerMessage(EventId = 13, Level = LogLevel.Error, Message = "{message}")]
+        public static partial void Exception(this ILogger logger, string message, Exception ex);
+
+        [LoggerMessage(EventId = 14, Level = LogLevel.Error, Message = "The following validaition errors occured: {validationErrors}")]
+        public static partial void ValidationErrors(this ILogger logger, string validationErrors);
     }
 }

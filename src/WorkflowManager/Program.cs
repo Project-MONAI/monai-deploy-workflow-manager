@@ -60,7 +60,7 @@ namespace Monai.Deploy.WorkflowManager
                         {
                         });
                     services.AddOptions<MessageBrokerServiceConfiguration>()
-                        .Bind(hostContext.Configuration.GetSection("WorkloadManager:messaging"))
+                        .Bind(hostContext.Configuration.GetSection("messageConnection"))
                         .PostConfigure(options =>
                         {
                         });
@@ -91,7 +91,7 @@ namespace Monai.Deploy.WorkflowManager
                         return serviceProvider.LocateService<IMessageBrokerSubscriberService>(logger, options.Value.Messaging.SubscriberServiceAssemblyName);
                     });
 
-                    services.AddSingleton<IEventPayloadListenerService, EventPayloadListenerService>();
+                    services.AddSingleton<IEventPayloadRecieverService, EventPayloadRecieverService>();
                     services.AddTransient<IEventPayloadValidator, EventPayloadValidator>();
 
 

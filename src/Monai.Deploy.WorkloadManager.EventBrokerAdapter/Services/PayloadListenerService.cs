@@ -15,10 +15,10 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
             ILogger<PayloadListenerService> logger,
             IOptions<WorkloadManagerOptions> configuration,
             IServiceScopeFactory serviceScopeFactory,
-            IEventPayloadListenerService eventPayloadListenerService)
+            IEventPayloadRecieverService eventPayloadListenerService)
             : base(logger, configuration, serviceScopeFactory, eventPayloadListenerService)
         {
-            WorkflowRequestRoutingKey = $"{configuration.Value.Messaging.Topics.ExportRequestPrefix}.{configuration.Value.Messaging.Topics.WorkflowRequest}";
+            WorkflowRequestRoutingKey = configuration.Value.Messaging.Topics.WorkflowRequest;
             Concurrency = 2;
         }
     }
