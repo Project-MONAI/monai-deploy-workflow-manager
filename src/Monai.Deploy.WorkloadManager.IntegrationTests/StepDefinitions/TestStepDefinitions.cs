@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Monai.Deploy.WorkloadManager.IntegrationTests.Models;
 using Monai.Deploy.WorkloadManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkloadManager.IntegrationTests.Support;
@@ -28,10 +27,10 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
         [When(@"I publish an event (.*)")]
         public void WhenIPublishAnEvent(string testName)
         {
-            var workflowTestData = TestData.Workflows.WorkflowTestData.FirstOrDefault(c => c.TestName.Contains(testName));
+            var workflowTestData = TestData.WorkflowRequests.TestData.FirstOrDefault(c => c.TestName.Contains(testName));
             if (workflowTestData != null)
             {
-                var message = JsonConvert.SerializeObject(workflowTestData.Workflow);
+                var message = JsonConvert.SerializeObject(workflowTestData.ExportMessageRequest);
                 RabbitClientUtil.PublishMessage(message, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
             }
             else
@@ -45,8 +44,8 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
         {
             var messagesString = RabbitClientUtil.ReturnMessagesFromQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
             var workflowMessage = JsonConvert.DeserializeObject<Workflow>(messagesString);
-            var workflowTestData = TestData.Workflows.WorkflowTestData.FirstOrDefault(c => c.TestName.Contains(testName));
-            workflowMessage.Description.Should().Be(workflowTestData.Workflow.Description);
+            var workflowTestData = TestData.WorkflowRequests.TestData.FirstOrDefault(c => c.TestName.Contains(testName));
+            workflowMessage.Equals(workflowTestData);
         }
 
         [Given(@"I have a Mongo connection")]

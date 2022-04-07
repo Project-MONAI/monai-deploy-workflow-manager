@@ -12,5 +12,10 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.Models
 
         [JsonProperty(PropertyName = "description")]
         public string Description { get; set; }
+
+        [JsonProperty(PropertyName = "informatics_gateway")]
+        public InformaticsGateway InformaticsGateway { get; set; }
+
+        public TaskObject[] Tasks { get; set; }
     }
 }
