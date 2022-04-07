@@ -28,7 +28,7 @@
     "NVD": {
         "SelfUpdate": false,
         "TimeoutInSeconds": 30,
-        "Enabled": true,
+        "Enabled": false,
         "BreakIfCannotRun": false
     },
     "SensitivePackages": []
