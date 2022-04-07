@@ -7,9 +7,9 @@
 # MONAI Deploy Workflow Manager
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
-[![codecov](https://codecov.io/gh/Project-MONAI/monai-deploy-workload-manager/branch/main/graph/badge.svg?token=NXYQIABXZ7)](https://codecov.io/gh/Project-MONAI/monai-deploy-workload-manager)
+[![codecov](https://codecov.io/gh/Project-MONAI/monai-deploy-workflow-manager/branch/main/graph/badge.svg?token=NXYQIABXZ7)](https://codecov.io/gh/Project-MONAI/monai-deploy-workflow-manager)
 
-This repository contains the Workload Manager subsystem, part of MONAI Deploy. Please refer to the main [MONAI Deploy](https://github.com/Project-MONAI/monai-deploy) repo for more details.
+This repository contains the Workflow Manager subsystem, part of MONAI Deploy. Please refer to the main [MONAI Deploy](https://github.com/Project-MONAI/monai-deploy) repo for more details.
 
 ## Build
 
@@ -34,7 +34,7 @@ $env:DOTNET_ENVIRONMENT="Development"
 ```
 
 
-### Building MONAI Workload Manager
+### Building MONAI Workflow Manager
 
 ```bash
 cd src && dotnet build

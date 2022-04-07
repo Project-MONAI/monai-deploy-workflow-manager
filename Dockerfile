@@ -22,7 +22,7 @@ RUN dotnet tool install --tool-path /tools dotnet-stack
 WORKDIR /app
 COPY . ./
 
-RUN echo "Building MONAI Workload Manager $Version ($FileVersion)..."
+RUN echo "Building MONAI Workflow Manager $Version ($FileVersion)..."
 RUN dotnet publish -c Release -o out --nologo /p:Version=$Version /p:FileVersion=$FileVersion src/WorkflowManager/Monai.Deploy.WorkflowManager.csproj
 
 # Build runtime image

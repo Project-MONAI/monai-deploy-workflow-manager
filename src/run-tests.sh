@@ -40,7 +40,7 @@ fi
 
 mkdir -p "$RESULTS_DIR"
 
-echo "##### Building MONAI Deploy Workload Manager..."
+echo "##### Building MONAI Deploy Workflow Manager..."
 cd $TOP/src
 dotnet build Monai.Deploy.WorkflowManager.sln
 

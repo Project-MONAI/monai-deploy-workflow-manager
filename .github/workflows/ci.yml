@@ -101,18 +101,18 @@ jobs:
         run: |
           export VERSION=`cat VERSION`
           ./build.sh
-          docker tag monai/workload-manager:$VERSION monai/workload-manager:${{ github.sha }}
+          docker tag monai/workflow-manager:$VERSION monai/workflow-manager:${{ github.sha }}
 
       - name: Scan image with Azure Container Scan
         uses: Azure/container-scan@v0
         with:
-          image-name: monai/workload-manager:${{ github.sha }}
+          image-name: monai/workflow-manager:${{ github.sha }}
 
       - name: Scan image with Anchore
         id: scan
         uses: anchore/scan-action@v2
         with:
-          image: monai/workload-manager:${{ github.sha }}
+          image: monai/workflow-manager:${{ github.sha }}
           fail-build: true
           severity-cutoff: high
           acs-report-enable: true

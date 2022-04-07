@@ -20,12 +20,12 @@ if [ ! -z "$1" ]; then
 fi 
 
 
-echo "Building Workload Manager Docker Image. VERSION=$VERSION, FILEVERSION=$FILEVERSION"
+echo "Building Workflow Manager Docker Image. VERSION=$VERSION, FILEVERSION=$FILEVERSION"
 pushd $SCRIPT_DIR
-docker build --tag monai/workload-manager:$VERSION --build-arg Version=$VERSION --build-arg FileVersion=$FILEVERSION . 
+docker build --tag monai/workflow-manager:$VERSION --build-arg Version=$VERSION --build-arg FileVersion=$FILEVERSION . 
 popd
 
 pushd $SCRIPT_DIR/src/CLI
-echo "Building Workload Manager CLI: linux-x64"
+echo "Building Workflow Manager CLI: linux-x64"
 dotnet publish -r linux-x64 -c Release --self-contained -o $SCRIPT_DIR/cli/linux-x64
 popd

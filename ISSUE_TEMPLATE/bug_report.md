@@ -25,7 +25,7 @@ A clear and concise description of what actually happened.
 
 ### Configuration
 
-* Workload Manager version/commit:
+* Workflow Manager version/commit:
 * OS and version (distro if applicable):
 * Kubernetes version (if applicable):
 * Docker version (if applicable):
@@ -33,7 +33,7 @@ A clear and concise description of what actually happened.
 * Hardware configuration (CPU, GPU, memory, storage, etc...):
 
 ### Regression?
-Did this work in the previous build or release of the Workload Manager? If you can try a previous release or build to find out, that can help us narrow down the problem. If you don't know, that's OK.
+Did this work in the previous build or release of the Workflow Manager? If you can try a previous release or build to find out, that can help us narrow down the problem. If you don't know, that's OK.
 
 ### Other information
 (Please attach any logs available and remember to anonymize any PHI before sharing).
