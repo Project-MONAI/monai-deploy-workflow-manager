@@ -34,4 +34,4 @@ comment:
   require_head: yes
 
 fixes:
-  - "/home/runner/work/monai-deploy-workload-manager/monai-deploy-workload-manager/src/::src/"
+  - "/home/runner/work/monai-deploy-workflow-manager/monai-deploy-workflow-manager/src/::src/"

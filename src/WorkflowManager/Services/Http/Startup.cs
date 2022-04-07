@@ -9,7 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 
-namespace Monai.Deploy.WorkloadManager.Services.Http
+namespace Monai.Deploy.WorkflowManager.Services.Http
 {
     public class Startup
     {
@@ -47,7 +47,7 @@ namespace Monai.Deploy.WorkloadManager.Services.Http
             services.AddControllers().AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()));
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MONAI Workload Manager", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MONAI Workflow Manager", Version = "v1" });
                 c.DescribeAllParametersInCamelCase();
             });
         }

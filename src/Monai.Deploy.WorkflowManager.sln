@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkloadManager", "WorkloadManager\Monai.Deploy.WorkloadManager.csproj", "{4BABBAE0-5C3B-4DDB-B52C-8EFF2A115DAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager", "WorkflowManager\Monai.Deploy.WorkflowManager.csproj", "{4BABBAE0-5C3B-4DDB-B52C-8EFF2A115DAC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkloadManager.Test", "WorkloadManager\Test\Monai.Deploy.WorkloadManager.Test.csproj", "{F91CC7EF-B236-4FA2-A331-746375F65315}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Test", "WorkflowManager\Test\Monai.Deploy.WorkflowManager.Test.csproj", "{F91CC7EF-B236-4FA2-A331-746375F65315}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkloadManager.CLI", "CLI\Monai.Deploy.WorkloadManager.CLI.csproj", "{6A6F01AA-83A7-44FD-B9E9-E5A04BD2786B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.CLI", "CLI\Monai.Deploy.WorkflowManager.CLI.csproj", "{6A6F01AA-83A7-44FD-B9E9-E5A04BD2786B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkloadManager.CLI.Test", "CLI\Test\Monai.Deploy.WorkloadManager.CLI.Test.csproj", "{F48CEA6A-DE92-495B-A347-761209357597}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.CLI.Test", "CLI\Test\Monai.Deploy.WorkflowManager.CLI.Test.csproj", "{F48CEA6A-DE92-495B-A347-761209357597}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkloadManager.Database", "Database\Monai.Deploy.WorkloadManager.Database.csproj", "{FE07AE59-97C9-49FF-9D36-485090E6B14D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Database", "Database\Monai.Deploy.WorkflowManager.Database.csproj", "{FE07AE59-97C9-49FF-9D36-485090E6B14D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkloadManager.Configuration", "Configuration\Monai.Deploy.WorkloadManager.Configuration.csproj", "{3D16153E-F052-48BB-B5F0-BA113DE4CB29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Configuration", "Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj", "{3D16153E-F052-48BB-B5F0-BA113DE4CB29}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkloadManager.Contracts", "Contracts\Monai.Deploy.WorkloadManager.Contracts.csproj", "{7E2B81A9-1951-4D8F-BC91-19DD69AF3328}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Contracts", "Contracts\Monai.Deploy.WorkflowManager.Contracts.csproj", "{7E2B81A9-1951-4D8F-BC91-19DD69AF3328}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

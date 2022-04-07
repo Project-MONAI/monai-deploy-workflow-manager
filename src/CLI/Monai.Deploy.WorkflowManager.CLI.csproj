@@ -1,8 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>Monai.Deploy.WorkloadManager.Database</RootNamespace>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <RootNamespace>Monai.Deploy.WorkflowManager.CLI</RootNamespace>
     <CodeAnalysisRuleSet>..\.sonarlint\project-monai_monai-deploy-workflow-managercsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 

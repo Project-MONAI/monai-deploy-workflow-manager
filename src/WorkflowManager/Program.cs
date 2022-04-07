@@ -10,11 +10,11 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkloadManager.Configuration;
-using Monai.Deploy.WorkloadManager.Services.DataRetentionService;
-using Monai.Deploy.WorkloadManager.Services.Http;
+using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
+using Monai.Deploy.WorkflowManager.Services.Http;
 
-namespace Monai.Deploy.WorkloadManager
+namespace Monai.Deploy.WorkflowManager
 {
     internal static class Program
     {
@@ -45,12 +45,12 @@ namespace Monai.Deploy.WorkloadManager
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddOptions<WorkloadManagerOptions>()
-                        .Bind(hostContext.Configuration.GetSection("WorkloadManager"))
+                    services.AddOptions<WorkflowManagerOptions>()
+                        .Bind(hostContext.Configuration.GetSection("WorkflowManager"))
                         .PostConfigure(options =>
                         {
                         });
-                    services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkloadManagerOptions>, ConfigurationValidator>());
+                    services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkflowManagerOptions>, ConfigurationValidator>());
 
                     services.AddSingleton<ConfigurationValidator>();
 

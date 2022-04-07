@@ -4,11 +4,11 @@
 using Microsoft.Extensions.Options;
 using System;
 
-namespace Monai.Deploy.WorkloadManager.Configuration
+namespace Monai.Deploy.WorkflowManager.Configuration
 {
-    public class ConfigurationValidator : IValidateOptions<WorkloadManagerOptions>
+    public class ConfigurationValidator : IValidateOptions<WorkflowManagerOptions>
     {
-        public ValidateOptionsResult Validate(string name, WorkloadManagerOptions options)
+        public ValidateOptionsResult Validate(string name, WorkflowManagerOptions options)
         {
             throw new NotImplementedException();
         }

@@ -2,7 +2,7 @@
 
 ![MONAI Deploy Workflow Manager](./static/mwm.png)
 
-- [MONAI Deploy Workflow Manager Requirements](#monai-deploy-workload-manager-requirements)
+- [MONAI Deploy Workflow Manager Requirements](#monai-deploy-workflow-manager-requirements)
   - [Overview](#overview)
   - [Scope](#scope)
   - [Goal](#goal)
@@ -114,7 +114,7 @@ Verify that payloads can be uploaded from data ingestion services and dispatched
 
 #### Target Release
 
-MONAI Deploy Workload Manager R3
+MONAI Deploy Workflow Manager R3
 
 ### [REQ-DI-003] MWM SHALL allow data to be associated with one or more workflows
 
@@ -176,7 +176,7 @@ Once a workflow is registered, it should be triggered when data matching that wo
 
 #### Verification Strategy
 
-Deploy a clinical workflow and notify the workload manager of a new input payload. Verify that the clinical workflow was executed.
+Deploy a clinical workflow and notify the Workflow manager of a new input payload. Verify that the clinical workflow was executed.
 
 #### Target Release
 

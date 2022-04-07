@@ -84,7 +84,7 @@ All source code files should start with this paragraph:
 #### Test Projects
 
 All C# projects reside in their directory, including a `Tests/` subdirectory.
-Test projects are also linked in the main solution file [Monai.Deploy.WorkloadManager.sln](src/Monai.Deploy.WorkloadManager.sln) and can be executed either using Visual Studio's *Test Explorer* or with the `dotnet test` command line.
+Test projects are also linked in the main solution file [Monai.Deploy.WorkflowManager.sln](src/Monai.Deploy.WorkflowManager.sln) and can be executed either using Visual Studio's *Test Explorer* or with the `dotnet test` command line.
 
 
 _If it's not tested, it's broken_

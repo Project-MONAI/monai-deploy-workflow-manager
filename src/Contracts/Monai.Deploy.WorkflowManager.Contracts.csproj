@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>Monai.Deploy.WorkloadManager.Contracts</RootNamespace>
+    <RootNamespace>Monai.Deploy.WorkflowManager.Contracts</RootNamespace>
     <CodeAnalysisRuleSet>..\.sonarlint\project-monai_monai-deploy-workflow-managercsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
