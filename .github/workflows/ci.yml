@@ -42,7 +42,7 @@ jobs:
         languages: csharp
 
     - name: Build Solution
-      run: dotnet build -c Release --nologo Monai.Deploy.WorkloadManager.sln
+      run: dotnet build -c Release --nologo Monai.Deploy.WorkflowManager.sln
       working-directory: ./src
 
     - name: Perform CodeQL Analysis
@@ -87,7 +87,7 @@ jobs:
         working-directory: ./src
 
       - name: Dependency Scanning
-        run: nugetdefense -p src/Monai.Deploy.WorkloadManager.sln --settings-file NuGetDefense.json
+        run: nugetdefense -p src/Monai.Deploy.WorkflowManager.sln --settings-file NuGetDefense.json
 
   build:
     runs-on: ubuntu-latest
