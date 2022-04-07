@@ -33,8 +33,10 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests
             TestExecutionConfig.RabbitConfig.Port = config.GetValue<int>("TestExecutionConfig:RabbitConfig:Port");
             TestExecutionConfig.RabbitConfig.User = config.GetValue<string>("TestExecutionConfig:RabbitConfig:User");
             TestExecutionConfig.RabbitConfig.Password = config.GetValue<string>("TestExecutionConfig:RabbitConfig:Password");
-            TestExecutionConfig.RabbitConfig.ConsumerQueue = config.GetValue<string>("TestExecutionConfig:RabbitConfig:ConsumerQueue");
-            TestExecutionConfig.RabbitConfig.PublisherQueue = config.GetValue<string>("TestExecutionConfig:RabbitConfig:PublisherQueue");
+            TestExecutionConfig.RabbitConfig.WorkflowRequestQueue = config.GetValue<string>("TestExecutionConfig:RabbitConfig:WorkflowRequestQueue");
+            TestExecutionConfig.RabbitConfig.TaskDispatchQueue = config.GetValue<string>("TestExecutionConfig:RabbitConfig:TaskDispatchQueue");
+            TestExecutionConfig.RabbitConfig.TaskCallbackQueue = config.GetValue<string>("TestExecutionConfig:RabbitConfig:TaskCallbacQueue");
+            TestExecutionConfig.RabbitConfig.WorkflowCompleteQueue = config.GetValue<string>("TestExecutionConfig:RabbitConfig:WorkflowCompleteQueue");
 
             TestExecutionConfig.MongoConfig.Host = config.GetValue<string>("TestExecutionConfig:MongoConfig:Host");
             TestExecutionConfig.MongoConfig.Port = config.GetValue<int>("TestExecutionConfig:MongoConfig:Port");
@@ -55,13 +57,13 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests
         [AfterScenario]
         public void PurgeQueue()
         {
-            RabbitClient.PurgeQueue(TestExecutionConfig.RabbitConfig.PublisherQueue);
+            RabbitClient.PurgeQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue); // only purges unacked messages
         }
 
         [AfterTestRun]
         public static void TearDown()
         {
-            RabbitClient.DeleteQueue(TestExecutionConfig.RabbitConfig.PublisherQueue);
+            RabbitClient.DeleteQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
             RabbitClient.CloseConnection();
         }
     }

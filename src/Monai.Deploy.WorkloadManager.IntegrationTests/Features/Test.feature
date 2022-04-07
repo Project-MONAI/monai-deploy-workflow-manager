@@ -5,8 +5,8 @@ A short summary of the feature
 @tag1
 Scenario: I can test Rabbit connection
 	Given I have a Rabbit connection
-	When I publish an event
-	Then I can see the event
+	When I publish an event WorkflowEvent_1
+	Then I can see the event WorkflowEvent_1
 
 @ignore
 Scenario: I can test Mongo connection

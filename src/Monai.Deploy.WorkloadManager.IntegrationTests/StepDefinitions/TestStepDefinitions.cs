@@ -22,22 +22,31 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
         [Given(@"I have a Rabbit connection")]
         public void GivenIHaveARabbitConnection()
         {
-            RabbitClientUtil.CreateQueue(TestExecutionConfig.RabbitConfig.PublisherQueue);
+            RabbitClientUtil.CreateQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
         }
 
-        [When(@"I publish an event")]
-        public void WhenIPublishAnEvent()
+        [When(@"I publish an event (.*)")]
+        public void WhenIPublishAnEvent(string testName)
         {
-            var message = JsonConvert.SerializeObject(TestData.Workflows.WorkflowTestData[0]); // change to lambda expression
-            RabbitClientUtil.PublishMessage(message, TestExecutionConfig.RabbitConfig.PublisherQueue);
+            var workflowTestData = TestData.Workflows.WorkflowTestData.FirstOrDefault(c => c.TestName.Contains(testName));
+            if (workflowTestData != null)
+            {
+                var message = JsonConvert.SerializeObject(workflowTestData.Workflow);
+                RabbitClientUtil.PublishMessage(message, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+            }
+            else
+            {
+                throw new Exception($"{testName} does not have any applicable test data, please check and try again!");
+            }
         }
 
-        [Then(@"I can see the event")]
-        public void ThenICanSeeTheEvent()
+        [Then(@"I can see the event (.*)")]
+        public void ThenICanSeeTheEvent(string testName)
         {
-            var messagesString = RabbitClientUtil.ReturnMessagesFromQueue(TestExecutionConfig.RabbitConfig.PublisherQueue);
-            var workflowMessage = JsonConvert.DeserializeObject<Workflow>(messagesString); //change to lambda expression
-            workflowMessage.Description.Should().Be("Test_Description");
+            var messagesString = RabbitClientUtil.ReturnMessagesFromQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+            var workflowMessage = JsonConvert.DeserializeObject<Workflow>(messagesString);
+            var workflowTestData = TestData.Workflows.WorkflowTestData.FirstOrDefault(c => c.TestName.Contains(testName));
+            workflowMessage.Description.Should().Be(workflowTestData.Workflow.Description);
         }
 
         [Given(@"I have a Mongo connection")]

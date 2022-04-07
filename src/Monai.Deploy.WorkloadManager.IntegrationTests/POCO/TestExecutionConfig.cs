@@ -12,9 +12,13 @@
 
             public static string Password { get; set; }
 
-            public static string ConsumerQueue { get; set; }
+            public static string WorkflowRequestQueue { get; set; }
 
-            public static string PublisherQueue { get; set; }
+            public static string TaskDispatchQueue { get; set; }
+
+            public static string TaskCallbackQueue { get; set; }
+
+            public static string WorkflowCompleteQueue { get; set; }
         }
 
         public static class MongoConfig

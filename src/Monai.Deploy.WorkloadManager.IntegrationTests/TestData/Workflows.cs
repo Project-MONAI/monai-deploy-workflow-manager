@@ -4,20 +4,24 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.TestData
 {
     public class WorkflowTestData
     {
-        public string TestDescription { get; set; }
+        public string TestName { get; set; }
 
         public Workflow Workflow { get; set; }
     }
 
     public static class Workflows
     {
-        public static List<Workflow> WorkflowTestData = new List<Workflow>()
+        public static List<WorkflowTestData> WorkflowTestData = new List<WorkflowTestData>()
         {
-            new Workflow
+            new WorkflowTestData
             {
-                Description = "Test_Description",
-                Name = "Test_Name",
-                Version = "Test_Version"
+                TestName = "WorkflowEvent_1",
+                Workflow = new Workflow
+                {
+                    Description = "WorkflowEvent_1_Description",
+                    Name = "WorkflowEvent_1_Name",
+                    Version = "WorkflowEvent_1_Version"
+                }
             }
         };
     }
