@@ -17,9 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkloadManage
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkloadManager.Contracts", "Contracts\Monai.Deploy.WorkloadManager.Contracts.csproj", "{7E2B81A9-1951-4D8F-BC91-19DD69AF3328}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monai.Deploy.WorkloadManager.PayloadListener", "Monai.Deploy.WorkloadManager.EventBrokerAdapter\Monai.Deploy.WorkloadManager.PayloadListener.csproj", "{AB662390-B075-4621-ADC7-59A2F4702366}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkloadManager.PayloadListener", "Monai.Deploy.WorkloadManager.EventBrokerAdapter\Monai.Deploy.WorkloadManager.PayloadListener.csproj", "{AB662390-B075-4621-ADC7-59A2F4702366}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.MessageBroker", "..\..\monai-deploy-informatics-gateway\src\MessageBroker\RabbitMq\Monai.Deploy.MessageBroker.csproj", "{2103D286-F70A-420F-824D-A451D052A54E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monai.Deploy.WorkloadManager.IntegrationTests", "Monai.Deploy.WorkloadManager.IntegrationTests\Monai.Deploy.WorkloadManager.IntegrationTests.csproj", "{9CBA7A42-12CB-4504-866E-EEA76AA1107D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,10 +59,10 @@ Global
 		{AB662390-B075-4621-ADC7-59A2F4702366}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB662390-B075-4621-ADC7-59A2F4702366}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB662390-B075-4621-ADC7-59A2F4702366}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2103D286-F70A-420F-824D-A451D052A54E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2103D286-F70A-420F-824D-A451D052A54E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2103D286-F70A-420F-824D-A451D052A54E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2103D286-F70A-420F-824D-A451D052A54E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CBA7A42-12CB-4504-866E-EEA76AA1107D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CBA7A42-12CB-4504-866E-EEA76AA1107D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CBA7A42-12CB-4504-866E-EEA76AA1107D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CBA7A42-12CB-4504-866E-EEA76AA1107D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
