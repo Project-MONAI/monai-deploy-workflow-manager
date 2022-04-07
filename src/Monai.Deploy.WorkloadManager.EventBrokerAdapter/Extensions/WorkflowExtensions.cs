@@ -28,7 +28,17 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Extensions
 
             Guard.Against.Null(workflow, nameof(workflow));
 
-            valid &= workflow.IsValid(out var workflowValidationErrors);
+            var workflowValid = workflow.IsValid(out var workflowValidationErrors);
+
+            valid &= workflowValid;
+
+            if (!workflowValid)
+            {
+                foreach (var item in workflowValidationErrors)
+                {
+                    validationErrors?.Add(item);
+                }
+            }
 
             return valid;
         }
@@ -87,6 +97,7 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Extensions
         public static bool IsInformaticsGatewayValid(string source, InformaticsGateway informaticsGateway, IList<string> validationErrors = null)
         {
             Guard.Against.NullOrWhiteSpace(source, nameof(source));
+            Guard.Against.Null(informaticsGateway, nameof(informaticsGateway));
 
             var valid = true;
 

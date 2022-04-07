@@ -38,6 +38,8 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
                     _messageSubscriber.Reject(message.Message);
                 }
 
+                //Workflow executor called here
+
                 _messageSubscriber.Acknowledge(message.Message);
             }
             catch (Exception e)
