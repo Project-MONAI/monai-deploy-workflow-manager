@@ -42,27 +42,33 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests
             TestExecutionConfig.MongoConfig.Port = config.GetValue<int>("TestExecutionConfig:MongoConfig:Port");
             TestExecutionConfig.MongoConfig.User = config.GetValue<string>("TestExecutionConfig:MongoConfig:User");
             TestExecutionConfig.MongoConfig.Password = config.GetValue<string>("TestExecutionConfig:MongoConfig:Password");
+            TestExecutionConfig.MongoConfig.Database = config.GetValue<string>("TestExecutionConfig:MongoConfig:Database");
+            TestExecutionConfig.MongoConfig.Collection = config.GetValue<string>("TestExecutionConfig:MongoConfig:Collection");
 
             RabbitClient = new RabbitClientUtil();
-            //MongoClient = new MongoClientUtil();
+            MongoClient = new MongoClientUtil();
         }
 
         [BeforeScenario]
-        public void ClientDependencies()
+        public void SetUp()
         {
+            RabbitClient.CreateQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+            MongoClient.GetDatabase(TestExecutionConfig.MongoConfig.Database);
+            MongoClient.GetDagCollection(TestExecutionConfig.MongoConfig.Collection);
             ObjectContainer.RegisterInstanceAs(RabbitClient);
-            //ObjectContainer.RegisterInstanceAs(MongoClient);
+            ObjectContainer.RegisterInstanceAs(MongoClient);
         }
 
-        [AfterScenario]
-        public void PurgeQueue()
+        [AfterScenario(tags: "rabbit")]
+        public void CleanUp()
         {
-            RabbitClient.PurgeQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue); // only purges unacked messages
+            RabbitClient.PurgeQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
         }
 
         [AfterTestRun]
         public static void TearDown()
         {
+            MongoClient.DropDatabase(TestExecutionConfig.MongoConfig.Database);
             RabbitClient.DeleteQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
             RabbitClient.CloseConnection();
         }

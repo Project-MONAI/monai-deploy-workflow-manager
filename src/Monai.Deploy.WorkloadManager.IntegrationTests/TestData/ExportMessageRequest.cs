@@ -6,7 +6,7 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.TestData
     {
         public string? TestName { get; set; }
 
-        public Models.ExportMessageRequest? ExportMessageRequest { get; set; }
+        public ExportMessageRequest? ExportMessageRequest { get; set; }
     }
 
     public static class WorkflowRequests

@@ -1,5 +1,5 @@
-﻿using Monai.Deploy.WorkloadManager.IntegrationTests.POCO;
-using MongoDB.Bson;
+﻿using Monai.Deploy.WorkloadManager.IntegrationTests.Models;
+using Monai.Deploy.WorkloadManager.IntegrationTests.POCO;
 using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkloadManager.IntegrationTests.Support
@@ -11,7 +11,7 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.Support
             var connectionString = $"mongodb://{TestExecutionConfig.MongoConfig.User}:" +
                 $"{TestExecutionConfig.MongoConfig.Password}@" +
                 $"{TestExecutionConfig.MongoConfig.Host}:" +
-                $"{TestExecutionConfig.MongoConfig.Password}";
+                $"{TestExecutionConfig.MongoConfig.Port}";
             Client = new MongoClient(connectionString);
         }
 
@@ -19,26 +19,36 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.Support
 
         private IMongoDatabase Database { get; set; }
 
+        private IMongoCollection<DummyDag> DummyDagCollection { get; set; }
+
         public void GetDatabase(string dbName)
         {
             Database = Client.GetDatabase($"{dbName}");
         }
 
-        public void CreateCollection(string collectionName)
+        public void GetDagCollection(string name)
         {
-            Database.CreateCollection($"{collectionName}");
+            DummyDagCollection = Database.GetCollection<DummyDag>($"{name}");
         }
 
-        public void CreateDagDocument(BsonDocument dag)
+        public void CreateDummyDagDocument(DummyDag dummyDag)
         {
-            var collection = Database.GetCollection<BsonDocument>("workflow_dag");
-            collection.InsertOne(dag);
+            DummyDagCollection.InsertOne(dummyDag);
         }
 
-        public BsonDocument GetWorkflowDocument()
+        public DummyDag GetDummyDagDocument(string id)
         {
-            var collection = Database.GetCollection<BsonDocument>("workflows");
-            return collection.Find(new BsonDocument()).FirstOrDefault();
+            return DummyDagCollection.Find(x => x.Id == id).FirstOrDefault();
+        }
+
+        public async Task<IList<DummyDag>> GetAllDummyDags()
+        {
+            return await DummyDagCollection.Find(_ => true).ToListAsync();
+        }
+
+        public void DropDatabase(string dbName)
+        {
+            Client.DropDatabase(dbName);
         }
     }
 }

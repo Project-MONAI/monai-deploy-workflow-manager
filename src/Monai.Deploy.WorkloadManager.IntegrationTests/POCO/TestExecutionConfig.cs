@@ -30,6 +30,10 @@
             public static string User { get; set; }
 
             public static string Password { get; set; }
+
+            public static string Database { get; set; }
+
+            public static string Collection { get; set; }
         }
     }
 }

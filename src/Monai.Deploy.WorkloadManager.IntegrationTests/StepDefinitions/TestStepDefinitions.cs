@@ -1,5 +1,6 @@
 using Monai.Deploy.WorkloadManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkloadManager.IntegrationTests.Support;
+using Monai.Deploy.WorkloadManager.IntegrationTests.TestData;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
@@ -7,24 +8,18 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
     [Binding]
     public class TestStepDefinitions
     {
-        public TestStepDefinitions(RabbitClientUtil rabbitClientUtil)
+        public TestStepDefinitions(RabbitClientUtil rabbitClientUtil, MongoClientUtil mongoClientUtil)
         {
             RabbitClientUtil = rabbitClientUtil;
-            Assertions = new Assertions(RabbitClientUtil);
-            // MongoClientUtil = mongoClientUtil;
+            MongoClientUtil = mongoClientUtil;
+            Assertions = new Assertions(RabbitClientUtil, MongoClientUtil);
         }
 
         private RabbitClientUtil RabbitClientUtil { get; set; }
 
-        //private MongoClientUtil MongoClientUtil { get; set; }
+        private MongoClientUtil MongoClientUtil { get; set; }
 
         private Assertions Assertions { get; set; }
-
-        [Given(@"I have a Rabbit connection")]
-        public void GivenIHaveARabbitConnection()
-        {
-            RabbitClientUtil.CreateQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
-        }
 
         [When(@"I publish an Export Message Request (.*)")]
         public void WhenIPublishAnExportMessageRequest(string testName)
@@ -47,19 +42,24 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
             Assertions.AssertExportMessageRequest(testName);
         }
 
-        [Given(@"I have a Mongo connection")]
-        public void GivenIHaveAMongoConnection()
+        [Given(@"I have a DAG in Mongo (.*)")]
+        public void IHaveADagInMongo(string testName)
         {
+            var dagTestData = DummyDagTestData.TestData;
+            if (dagTestData.DummyDag != null)
+            {
+                MongoClientUtil.CreateDummyDagDocument(dagTestData.DummyDag);
+            }
+            else
+            {
+                throw new Exception($"{testName} does not have any applicable test data, please check and try again!");
+            }
         }
 
-        [When(@"I save a DAG")]
-        public void WhenISaveADAG()
+        [Then(@"I can retrieve the DAG (.*)")]
+        public void ThenICanRetrieveTheDAG(string testName)
         {
-        }
-
-        [Then(@"I can retrieve the DAG")]
-        public void ThenICanRetrieveTheDAG()
-        {
+            Assertions.AssertMongoDagDocument(testName);
         }
     }
 }
