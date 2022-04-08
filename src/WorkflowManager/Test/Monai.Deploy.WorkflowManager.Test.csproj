@@ -32,4 +32,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Monai.Deploy.WorkflowManager.csproj" />
   </ItemGroup>
+  
+  <PropertyGroup>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RestoreLockedMode>true</RestoreLockedMode>
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+  </PropertyGroup>
 </Project>
