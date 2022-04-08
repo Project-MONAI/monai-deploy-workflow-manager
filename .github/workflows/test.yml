@@ -96,14 +96,6 @@ jobs:
       run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkloadManager.IntegrationTests.csproj
       working-directory: ./src/Monai.Deploy.WorkloadManager.IntegrationTests
 
-    # - name: App Settings Variable Substitution
-    #   uses: microsoft/variable-substitution@v1
-    #   with:
-    #     files: './src/Monai.Deploy.WorkloadManager.IntegrationTests/appsettings.json'
-    #   env:
-    #     TestExecutionConfig.RabbitConfig.Host: rabbit
-    #     TestExecutionConfig.MongoConfig.Host: mongo
-
     - name: Run Integration Tests
       run: dotnet test Monai.Deploy.WorkloadManager.IntegrationTests.csproj
       working-directory: ./src/Monai.Deploy.WorkloadManager.IntegrationTests
