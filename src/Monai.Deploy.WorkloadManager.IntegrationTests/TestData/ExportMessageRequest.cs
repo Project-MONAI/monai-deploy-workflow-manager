@@ -2,18 +2,18 @@
 
 namespace Monai.Deploy.WorkloadManager.IntegrationTests.TestData
 {
-    public class WorkflowRequest
+    public class WorkflowRequestMessage
     {
-        public string TestName { get; set; }
+        public string? TestName { get; set; }
 
-        public ExportMessageRequest ExportMessageRequest { get; set; }
+        public Models.ExportMessageRequest? ExportMessageRequest { get; set; }
     }
 
     public static class WorkflowRequests
     {
-        public static List<WorkflowRequest> TestData = new List<WorkflowRequest>()
+        public static List<WorkflowRequestMessage> TestData = new List<WorkflowRequestMessage>()
         {
-            new WorkflowRequest
+            new WorkflowRequestMessage
             {
                 TestName = "ExportMessageRequest_1",
                 ExportMessageRequest = new ExportMessageRequest
@@ -28,7 +28,7 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.TestData
                     CallingAeTitle = "aetitlecalled_1",
                 }
             },
-            new WorkflowRequest
+            new WorkflowRequestMessage
             {
                 TestName = "ExportMessageRequest_2",
                 ExportMessageRequest = new ExportMessageRequest

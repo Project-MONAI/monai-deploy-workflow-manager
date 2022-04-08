@@ -5,7 +5,7 @@ A short summary of the feature
 @tag1
 Scenario: I can test Rabbit connection
 	Given I have a Rabbit connection
-	When I publish an event ExportMessageRequest_1
+	When I publish an Export Message Request ExportMessageRequest_1
 	Then I can see the event ExportMessageRequest_1
 
 @ignore

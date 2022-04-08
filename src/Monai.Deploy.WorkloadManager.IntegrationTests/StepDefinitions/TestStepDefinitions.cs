@@ -1,4 +1,3 @@
-using Monai.Deploy.WorkloadManager.IntegrationTests.Models;
 using Monai.Deploy.WorkloadManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkloadManager.IntegrationTests.Support;
 using Newtonsoft.Json;
@@ -11,6 +10,7 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
         public TestStepDefinitions(RabbitClientUtil rabbitClientUtil)
         {
             RabbitClientUtil = rabbitClientUtil;
+            Assertions = new Assertions(RabbitClientUtil);
             // MongoClientUtil = mongoClientUtil;
         }
 
@@ -18,14 +18,16 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
 
         //private MongoClientUtil MongoClientUtil { get; set; }
 
+        private Assertions Assertions { get; set; }
+
         [Given(@"I have a Rabbit connection")]
         public void GivenIHaveARabbitConnection()
         {
             RabbitClientUtil.CreateQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
         }
 
-        [When(@"I publish an event (.*)")]
-        public void WhenIPublishAnEvent(string testName)
+        [When(@"I publish an Export Message Request (.*)")]
+        public void WhenIPublishAnExportMessageRequest(string testName)
         {
             var workflowTestData = TestData.WorkflowRequests.TestData.FirstOrDefault(c => c.TestName.Contains(testName));
             if (workflowTestData != null)
@@ -42,10 +44,7 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
         [Then(@"I can see the event (.*)")]
         public void ThenICanSeeTheEvent(string testName)
         {
-            var messagesString = RabbitClientUtil.ReturnMessagesFromQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
-            var workflowMessage = JsonConvert.DeserializeObject<Workflow>(messagesString);
-            var workflowTestData = TestData.WorkflowRequests.TestData.FirstOrDefault(c => c.TestName.Contains(testName));
-            workflowMessage.Equals(workflowTestData);
+            Assertions.AssertExportMessageRequest(testName);
         }
 
         [Given(@"I have a Mongo connection")]
