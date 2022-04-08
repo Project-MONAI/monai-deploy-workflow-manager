@@ -13,6 +13,7 @@ env:
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -45,6 +46,67 @@ jobs:
       with:
         name: code-coverage-reports
         path: ./src/results/**/coverage.opencover.xml
+
+  integration-tests:
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: rootpassword
+        ports:
+        - 27017:27017
+
+      rabbit:
+        image: rabbitmq:3.8.18-management
+        env:
+          RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+          RABBITMQ_DEFAULT_USER: "admin"
+          RABBITMQ_DEFAULT_PASS: "admin"
+          RABBITMQ_DEFAULT_VHOST: "/"
+        ports:
+        - "15672:15672"
+        - "5672:5672"
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Install Dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Enable NuGet cache
+      uses: actions/cache@v2.1.7
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget
+
+    - name: Restore Solution
+      run: dotnet restore Monai.Deploy.WorkflowManager.sln
+      working-directory: ./src
+
+    - name: Build Solution
+      run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkflowManager.sln
+      working-directory: ./src
+
+    - name: App Settings Variable Substitution
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: './src/Monai.Deploy.WorkloadManager.IntegrationTests/appsettings.json'
+      env:
+        TestExecutionConfig.RabbitConfig.Host: rabbit
+        TestExecutionConfig.MongoConfig.Host: mongo
+
+    - name: Run Integration Tests
+      run: dotnet test Monai.Deploy.WorkloadManager.IntegrationTests.csproj
+      working-directory: ./src/Monai.Deploy.WorkloadManager.IntegrationTests
 
   sonarscanner:
     runs-on: ubuntu-latest
