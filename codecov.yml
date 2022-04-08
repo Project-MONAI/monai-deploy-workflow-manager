@@ -2,7 +2,10 @@
 # SPDX-License-Identifier: Apache License 2.0
 
 codecov:
-  require_ci_to_pass: yes
+  require_ci_to_pass: true
+  max_report_age: off
+  notify:
+    wait_for_ci: false
 
 coverage:
   precision: 5
