@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Monai.Deploy.WorkloadManager.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkloadManager.Configuration;
+
 
 namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
 {

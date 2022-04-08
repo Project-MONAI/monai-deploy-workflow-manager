@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using Monai.Deploy.Messaging;
+﻿using Monai.Deploy.Messaging;
+using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkloadManager.Logging.Logging;
@@ -37,6 +37,8 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
                 {
                     Logger.EventRejectedNoQueue(message.Message.MessageId);
                     _messageSubscriber.Reject(message.Message);
+
+                    // BM comment : if validation failed it should not call workflow executer return from here??
                 }
 
                 //Workflow executor called here

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging;
+using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.WorkloadManager.Common.Services;
 using Monai.Deploy.WorkloadManager.Configuration;
