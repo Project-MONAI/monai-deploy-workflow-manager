@@ -35,16 +35,17 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
 
                 if (!validation)
                 {
+                    Logger.EventRejectedNoQueue(message.Message.MessageId);
                     _messageSubscriber.Reject(message.Message);
                 }
 
                 //Workflow executor called here
-
                 _messageSubscriber.Acknowledge(message.Message);
             }
             catch (Exception e)
             {
                 Logger.Exception("Failed to serialze WorkflowRequestMessage", e);
+                Logger.EventRejectedRequeue(message.Message.MessageId);
                 _messageSubscriber.Reject(message.Message);
             }
         }

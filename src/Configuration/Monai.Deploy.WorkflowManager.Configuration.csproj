@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0001" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0020" />
   </ItemGroup>
 
   <ItemGroup>

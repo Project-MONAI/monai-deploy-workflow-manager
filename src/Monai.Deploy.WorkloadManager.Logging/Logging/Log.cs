@@ -52,5 +52,11 @@ namespace Monai.Deploy.WorkloadManager.Logging.Logging
 
         [LoggerMessage(EventId = 14, Level = LogLevel.Error, Message = "The following validaition errors occured: {validationErrors}")]
         public static partial void ValidationErrors(this ILogger logger, string validationErrors);
+
+        [LoggerMessage(EventId = 15, Level = LogLevel.Error, Message = "The following message {messageId} event validation has failed and has been rejected without being requeued.")]
+        public static partial void EventRejectedNoQueue(this ILogger logger, string messageId);
+
+        [LoggerMessage(EventId = 16, Level = LogLevel.Error, Message = "The following message {messageId} failed unexpectedly and has been rejected and requeued.")]
+        public static partial void EventRejectedRequeue(this ILogger logger, string messageId);
     }
 }
