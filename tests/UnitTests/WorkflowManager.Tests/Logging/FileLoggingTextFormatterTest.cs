@@ -1,11 +1,11 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
-using Microsoft.Extensions.Logging;
-using Monai.Deploy.WorkflowManager.Logging;
 using System;
 using System.Globalization;
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
 using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Test.Logging

@@ -1397,6 +1397,7 @@
       "monai.deploy.workflowmanager.configuration": {
         "type": "Project",
         "dependencies": {
+          "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
           "Monai.Deploy.Messaging": "0.1.0-rc0034",
           "Monai.Deploy.Storage": "0.1.0-rc0019",

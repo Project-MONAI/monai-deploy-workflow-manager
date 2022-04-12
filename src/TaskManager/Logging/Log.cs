@@ -45,5 +45,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Logging
 
         [LoggerMessage(EventId = 13, Level = LogLevel.Critical, Message = "Failed to start {ServiceName}.")]
         public static partial void ServiceFailedToStart(this ILogger logger, string serviceName, Exception ex);
+
+
+        [LoggerMessage(EventId = 100, Level = LogLevel.Error, Message = "Error processing message, message ID={messageId}, correlation ID={correlationId}.")]
+        public static partial void ErrorProcessingMessage(this ILogger logger, string? messageId, string? correlationId, Exception ex);
+
+        [LoggerMessage(EventId = 101, Level = LogLevel.Warning, Message = "Insufficient resource available for task execution.")]
+        public static partial void NoResourceAvailableForExecution(this ILogger logger);
+
+        [LoggerMessage(EventId = 102, Level = LogLevel.Warning, Message = "Invalid message received, message ID={messageId}, correlation ID={correlationId}.")]
+        public static partial void InvalidMessageReceived(this ILogger logger, string? messageId, string? correlationId, Exception ex);
+
+        [LoggerMessage(EventId = 103, Level = LogLevel.Warning, Message = "Unsupported event {messageDescription}.")]
+        public static partial void UnsupportedEvent(this ILogger logger, string? messageDescription);
     }
 }
