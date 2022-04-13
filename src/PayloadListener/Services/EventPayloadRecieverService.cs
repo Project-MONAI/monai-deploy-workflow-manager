@@ -2,10 +2,10 @@
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.WorkloadManager.Logging.Logging;
-using Monai.Deploy.WorkloadManager.PayloadListener.Validators;
+using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 
-namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
+namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 {
     public class EventPayloadRecieverService : IEventPayloadRecieverService
     {

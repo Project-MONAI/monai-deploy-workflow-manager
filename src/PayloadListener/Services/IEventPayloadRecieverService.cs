@@ -1,6 +1,6 @@
 ﻿using Monai.Deploy.Messaging.Common;
 
-namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
+namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 {
     public interface IEventPayloadRecieverService
     {

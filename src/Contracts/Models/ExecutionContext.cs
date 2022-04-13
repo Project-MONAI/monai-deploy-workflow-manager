@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkloadManager.Contracts.Models
+namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
     public class ExecutionContext
     {

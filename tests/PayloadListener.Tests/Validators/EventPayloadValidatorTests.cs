@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.WorkloadManager.Contracts.Models;
 using Moq;
-using Monai.Deploy.WorkloadManager.PayloadListener.Validators;
-using Newtonsoft.Json;
+using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 using NUnit.Framework;
 
-namespace Monai.Deploy.WorkloadManager.PayloadListener.Tests.Validators
+namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
 {
     public class EventPayloadValidatorTests
     {

@@ -14,10 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Configuration\Monai.Deploy.WorkloadManager.Configuration.csproj" />
-    <ProjectReference Include="..\Contracts\Monai.Deploy.WorkloadManager.Contracts.csproj" />
-    <ProjectReference Include="..\Monai.Deploy.WorkloadManager.Common\Monai.Deploy.WorkloadManager.Common.csproj" />
-    <ProjectReference Include="..\Monai.Deploy.WorkloadManager.Logging\Monai.Deploy.WorkloadManager.Logging.csproj" />
+    <ProjectReference Include="..\Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj" />
+    <ProjectReference Include="..\Contracts\Monai.Deploy.WorkflowManager.Contracts.csproj" />
+    <ProjectReference Include="..\Common\Monai.Deploy.WorkflowManager.Common.csproj" />
+    <ProjectReference Include="..\Logging\Monai.Deploy.WorkflowManager.Logging.csproj" />
   </ItemGroup>
 
 </Project>

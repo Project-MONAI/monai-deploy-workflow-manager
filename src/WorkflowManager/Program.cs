@@ -9,12 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkloadManager.Common;
-using Monai.Deploy.WorkloadManager.Configuration;
-using Monai.Deploy.WorkloadManager.Services.DataRetentionService;
-using Monai.Deploy.WorkloadManager.Services.Http;
-using Monai.Deploy.WorkloadManager.PayloadListener.Services;
-using Monai.Deploy.WorkloadManager.PayloadListener.Validators;
+using Monai.Deploy.WorkflowManager.Common;
+using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
+using Monai.Deploy.WorkflowManager.Services.Http;
+using Monai.Deploy.WorkflowManager.PayloadListener.Services;
+using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 using Monai.Deploy.Messaging.RabbitMq;
 using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Configuration;
@@ -64,7 +64,7 @@ namespace Monai.Deploy.WorkflowManager
                         .PostConfigure(options =>
                         {
                         });
-                    services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkloadManagerOptions>, ConfigurationValidator>());
+                    services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkflowManagerOptions>, ConfigurationValidator>());
 
                     services.AddSingleton<ConfigurationValidator>();
 
@@ -76,7 +76,7 @@ namespace Monai.Deploy.WorkflowManager
                     services.AddSingleton<RabbitMqMessagePublisherService>();
                     services.AddSingleton<IMessageBrokerPublisherService>(implementationFactory =>
                     {
-                        var options = implementationFactory.GetService<IOptions<WorkloadManagerOptions>>();
+                        var options = implementationFactory.GetService<IOptions<WorkflowManagerOptions>>();
                         var serviceProvider = implementationFactory.GetService<IServiceProvider>();
                         var logger = implementationFactory.GetService<ILogger<Program>>();
                         return serviceProvider.LocateService<IMessageBrokerPublisherService>(logger, options.Value.Messaging.PublisherServiceAssemblyName);
@@ -85,15 +85,16 @@ namespace Monai.Deploy.WorkflowManager
                     services.AddSingleton<RabbitMqMessageSubscriberService>();
                     services.AddSingleton<IMessageBrokerSubscriberService>(implementationFactory =>
                     {
-                        var options = implementationFactory.GetService<IOptions<WorkloadManagerOptions>>();
+                        var options = implementationFactory.GetService<IOptions<WorkflowManagerOptions>>();
                         var serviceProvider = implementationFactory.GetService<IServiceProvider>();
                         var logger = implementationFactory.GetService<ILogger<Program>>();
                         return serviceProvider.LocateService<IMessageBrokerSubscriberService>(logger, options.Value.Messaging.SubscriberServiceAssemblyName);
                     });
 
+                    services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
+
                     services.AddSingleton<IEventPayloadRecieverService, EventPayloadRecieverService>();
                     services.AddTransient<IEventPayloadValidator, EventPayloadValidator>();
-
 
                     services.AddSingleton<PayloadListenerService>();
 

@@ -1,6 +1,6 @@
-﻿using Monai.Deploy.WorkloadManager.Contracts.Rest;
+﻿using Monai.Deploy.WorkflowManager.Contracts.Rest;
 
-namespace Monai.Deploy.WorkloadManager.Common.Services
+namespace Monai.Deploy.WorkflowManager.Common.Services
 {
     public interface IMonaiService
     {

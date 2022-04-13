@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.WorkloadManager.Configuration.Exceptions;
-using Monai.Deploy.WorkloadManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Configuration.Exceptions;
+using Monai.Deploy.WorkflowManager.Logging.Logging;
 
-namespace Monai.Deploy.WorkloadManager.Common
+namespace Monai.Deploy.WorkflowManager.Common
 {
     internal static class IServiceProviderExtensions
     {

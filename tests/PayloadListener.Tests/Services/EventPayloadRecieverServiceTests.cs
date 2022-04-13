@@ -1,16 +1,16 @@
 ﻿using NUnit.Framework;
 using Moq;
-using Monai.Deploy.WorkloadManager.PayloadListener.Services;
+using Monai.Deploy.WorkflowManager.PayloadListener.Services;
 using System;
-using Monai.Deploy.WorkloadManager.PayloadListener.Validators;
+using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 using Monai.Deploy.Messaging.Messages;
 using System.Threading;
-using Monai.Deploy.WorkloadManager.Configuration;
+using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.Messaging.Common;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging;
 
-namespace Monai.Deploy.WorkloadManager.PayloadListener.Tests.Services
+namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 {
     public class EventPayloadRecieverServiceTests
     {

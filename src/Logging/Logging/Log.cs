@@ -1,13 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-<<<<<<< HEAD:src/WorkflowManager/Logging/Log.cs
-using System;
-using Microsoft.Extensions.Logging;
-
-namespace Monai.Deploy.WorkflowManager.Logging
-=======
-namespace Monai.Deploy.WorkloadManager.Logging.Logging
->>>>>>> bd110cf (Add nuget package and add Rabbit Callbacks):src/Monai.Deploy.WorkloadManager.Logging/Logging/Log.cs
+namespace Monai.Deploy.WorkflowManager.Logging.Logging
 {
     public static partial class Log
     {

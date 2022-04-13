@@ -8,11 +8,10 @@ using Microsoft.Extensions.Options;
 
 namespace Monai.Deploy.WorkflowManager.Configuration
 {
-    public class ConfigurationValidator : IValidateOptions<WorkflowManagerOptions>
     /// <summary>
     /// Validates configuration based on application requirements and DICOM VR requirements.
     /// </summary>
-    public class ConfigurationValidator : IValidateOptions<WorkloadManagerOptions>
+    public class ConfigurationValidator : IValidateOptions<WorkflowManagerOptions>
     {
         private readonly ILogger<ConfigurationValidator> _logger;
         private readonly List<string> _validationErrors;
@@ -28,7 +27,7 @@ namespace Monai.Deploy.WorkflowManager.Configuration
             _validationErrors = new List<string>();
         }
 
-        public ValidateOptionsResult Validate(string name, WorkloadManagerOptions options)
+        public ValidateOptionsResult Validate(string name, WorkflowManagerOptions options)
         {
             var valid = true;
 

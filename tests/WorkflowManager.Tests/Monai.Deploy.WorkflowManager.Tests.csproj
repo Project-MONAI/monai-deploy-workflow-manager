@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Monai.Deploy.WorkflowManager.csproj" />
+    <ProjectReference Include="..\..\src\WorkflowManager\Monai.Deploy.WorkflowManager.csproj" />
   </ItemGroup>
   
   <PropertyGroup>

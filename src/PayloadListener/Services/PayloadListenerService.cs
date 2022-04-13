@@ -1,10 +1,10 @@
-﻿using Monai.Deploy.WorkloadManager.Configuration;
+﻿using Monai.Deploy.WorkflowManager.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 
-namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
+namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 {
     public class PayloadListenerService : ListenerServiceBase
     {
@@ -14,7 +14,7 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
 
         public PayloadListenerService(
             ILogger<PayloadListenerService> logger,
-            IOptions<WorkloadManagerOptions> configuration,
+            IOptions<WorkflowManagerOptions> configuration,
             IServiceScopeFactory serviceScopeFactory,
             IEventPayloadRecieverService eventPayloadListenerService)
             : base(logger, configuration, serviceScopeFactory, eventPayloadListenerService)

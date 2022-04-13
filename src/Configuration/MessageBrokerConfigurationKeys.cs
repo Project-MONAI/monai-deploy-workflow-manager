@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkloadManager.Configuration
+namespace Monai.Deploy.WorkflowManager.Configuration
 {
     public class MessageBrokerConfigurationKeys
     {

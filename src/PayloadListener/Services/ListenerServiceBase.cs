@@ -4,12 +4,12 @@ using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Common;
-using Monai.Deploy.WorkloadManager.Common.Services;
-using Monai.Deploy.WorkloadManager.Configuration;
-using Monai.Deploy.WorkloadManager.Contracts.Rest;
-using Monai.Deploy.WorkloadManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Common.Services;
+using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Contracts.Rest;
+using Monai.Deploy.WorkflowManager.Logging.Logging;
 
-namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
+namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 {
     public abstract class ListenerServiceBase : IHostedService, IMonaiService, IDisposable
     {
@@ -20,7 +20,7 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
 
         private readonly IEventPayloadRecieverService _eventPayloadListenerService;
 
-        private readonly WorkloadManagerOptions _configuration;
+        private readonly WorkflowManagerOptions _configuration;
 
         private readonly IMessageBrokerSubscriberService _messageSubscriber;
         private readonly IMessageBrokerPublisherService _messagePublisher;
@@ -33,7 +33,7 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Services
 
         protected ListenerServiceBase(
             ILogger logger,
-            IOptions<WorkloadManagerOptions> configuration,
+            IOptions<WorkflowManagerOptions> configuration,
             IServiceScopeFactory serviceScopeFactory,
             IEventPayloadRecieverService eventPayloadListenerService)
         {

@@ -1,7 +1,7 @@
 ﻿using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Messages;
 
-namespace Monai.Deploy.WorkloadManager.PayloadListener.Extensions
+namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 {
     public static class ValidationExtensions
     {

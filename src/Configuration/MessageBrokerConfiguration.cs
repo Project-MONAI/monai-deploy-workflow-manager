@@ -1,7 +1,7 @@
 ﻿using Monai.Deploy.Messaging.Configuration;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkloadManager.Configuration
+namespace Monai.Deploy.WorkflowManager.Configuration
 {
     public class MessageBrokerConfiguration : MessageBrokerServiceConfiguration
     {

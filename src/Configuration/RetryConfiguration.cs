@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkloadManager.Configuration
+namespace Monai.Deploy.WorkflowManager.Configuration
 {
     public class RetryConfiguration
     {
