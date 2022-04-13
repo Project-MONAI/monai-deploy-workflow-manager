@@ -29,15 +29,15 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Validators
 
             valid &= payloadValid;
 
-            var workflows = payload.Workflows;
-
-            foreach (var workflow in workflows)
+            foreach (var workflow in payload.Workflows)
             {
-                var workflowValid = workflow.ToWorkflowAndValidate(out var validationErrorsWorkflow);
+                Guard.Against.Null(workflow, nameof(workflow));
+
+                var workflowValid = !string.IsNullOrEmpty(workflow);
 
                 if (!workflowValid)
                 {
-                    Logger.ValidationErrors(string.Join(Environment.NewLine, validationErrors));
+                    Logger.ValidationErrors("Workflow is null or empty");
                 }
 
                 valid &= workflowValid;
