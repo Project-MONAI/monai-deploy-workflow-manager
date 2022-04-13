@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using Microsoft.Extensions.Logging;
+using Monai.Deploy.Messaging.Events;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Logging
 {
@@ -58,5 +59,35 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Logging
 
         [LoggerMessage(EventId = 103, Level = LogLevel.Warning, Message = "Unsupported event {messageDescription}.")]
         public static partial void UnsupportedEvent(this ILogger logger, string? messageDescription);
+
+        [LoggerMessage(EventId = 104, Level = LogLevel.Debug, Message = "Sending Nack message for {eventType} without re-queueing.")]
+        public static partial void SendingRejectMessageNoRequeue(this ILogger logger, string? eventType);
+
+        [LoggerMessage(EventId = 105, Level = LogLevel.Information, Message = "Nack message sent for {eventType} without re-queueing.")]
+        public static partial void RejectMessageNoRequeueSent(this ILogger logger, string eventType);
+
+        [LoggerMessage(EventId = 106, Level = LogLevel.Debug, Message = "Sending {eventType}, Status={reason} .")]
+        public static partial void SendingTaskUpdateMessage(this ILogger logger, string eventType, FailureReason reason);
+
+        [LoggerMessage(EventId = 107, Level = LogLevel.Information, Message = "{eventType} sent.")]
+        public static partial void TaskUpdateMessageSent(this ILogger logger, string eventType);
+
+        [LoggerMessage(EventId = 108, Level = LogLevel.Error, Message = "Error sending message {eventType}.")]
+        public static partial void ErrorSendingMessage(this ILogger logger, string eventType, Exception ex);
+
+        [LoggerMessage(EventId = 109, Level = LogLevel.Warning, Message = "Unable to query for job status, no activate executor associated with execution ID={executionId}.")]
+        public static partial void NoActiveExecutorWithTheId(this ILogger logger, string executionId);
+
+        [LoggerMessage(EventId = 110, Level = LogLevel.Error, Message = "Unsupported type of task runner: '{assemblyName}'.")]
+        public static partial void UnsupportedRunner(this ILogger logger, string assemblyName, Exception ex);
+
+        [LoggerMessage(EventId = 111, Level = LogLevel.Debug, Message = "Sending acknowledgment message for {eventType}.")]
+        public static partial void SendingAckMessage(this ILogger logger, string eventType);
+
+        [LoggerMessage(EventId = 112, Level = LogLevel.Information, Message = "Acknowledgment message sent for {eventType}.")]
+        public static partial void AckMessageSent(this ILogger logger, string eventType);
+
+        [LoggerMessage(EventId = 113, Level = LogLevel.Error, Message = "Error executing task plugin.")]
+        public static partial void ErrorExecutingTask(this ILogger logger, Exception ex);
     }
 }

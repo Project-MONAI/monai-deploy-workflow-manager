@@ -710,6 +710,8 @@
       "monai.deploy.workflowmanager.common": {
         "type": "Project",
         "dependencies": {
+          "Ardalis.GuardClauses": "4.0.1",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Database": "1.0.0"
         }

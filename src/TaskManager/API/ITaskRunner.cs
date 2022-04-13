@@ -8,13 +8,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
         /// <summary>
         /// Executes the task runner plug-in.
         /// </summary>
-        /// <returns><code ref="System.Threading.Task">Task</code></returns>
-        Task ExecuteTask();
+        /// <returns><see cref="Task{ExecutionStatus}"/>.</returns>
+        Task<ExecutionStatus> ExecuteTask();
 
         /// <summary>
         /// Gets the status of a task.
         /// </summary>
-        /// <returns><see cref="System.Threading.Tasks.Task{ExecutionStatus}"/></returns>
-        Task<ExecutionStatus> GetStatus(string taskId);
+        /// <param name="identity">The identity for locating the task.</param>
+        /// <returns><see cref="Task{ExecutionStatus}"/></returns>
+        Task<ExecutionStatus> GetStatus(string identity);
     }
 }

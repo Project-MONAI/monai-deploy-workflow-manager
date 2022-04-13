@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.Collections.Concurrent;
-using System.ComponentModel.DataAnnotations;
+using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -14,41 +14,12 @@ using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Rest;
+using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.Logging;
-using Newtonsoft.Json;
+using TaskStatus = Monai.Deploy.Messaging.Events.TaskStatus;
 
-namespace TaskManager
+namespace Monai.Deploy.WorkflowManager.TaskManager
 {
-    public class RunnerCompleteEvent : EventBase
-    {
-        /// <summary>
-        /// Gets or sets the ID representing the instance of the workflow.
-        /// </summary>
-        [JsonProperty(PropertyName = "workflow_id")]
-        [Required]
-        public string? WorkflowId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the ID representing the instance of the Task.
-        /// </summary>
-        [Required]
-        [JsonProperty(PropertyName = "task_id")]
-        public string? TaskId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the correlation ID.
-        /// </summary>
-        [JsonProperty(PropertyName = "correlation_id")]
-        [Required]
-        public string? CorrelationId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the Argo job.
-        /// </summary>
-        [JsonProperty(PropertyName = "name")]
-        [Required, MaxLength(63)]
-        public string? Name { get; set; }
-    }
     public class TaskManager : IHostedService, IDisposable, IMonaiService
     {
         private bool _disposedValue;
@@ -58,7 +29,8 @@ namespace TaskManager
         private readonly IServiceScope _scope;
         private readonly IMessageBrokerPublisherService _messageBrokerPublisherService;
         private readonly IMessageBrokerSubscriberService _messageBrokerSubscriberService;
-        private readonly BlockingCollection<MessageBase> _mockMessageQueue;
+        private readonly BlockingCollection<MessageBase> _messageQueueStub;
+        private readonly IDictionary<string, ITaskRunner> _activeExecutions;
         private long _activeJobs;
 
         public ServiceStatus Status { get; set; } = ServiceStatus.Unknown;
@@ -78,15 +50,16 @@ namespace TaskManager
             _messageBrokerPublisherService = _scope.ServiceProvider.GetRequiredService<IMessageBrokerPublisherService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerPublisherService));
             _messageBrokerSubscriberService = _scope.ServiceProvider.GetRequiredService<IMessageBrokerSubscriberService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerSubscriberService));
 
-            _mockMessageQueue = new BlockingCollection<MessageBase>();
+            _messageQueueStub = new BlockingCollection<MessageBase>();
+            _activeExecutions = new Dictionary<string, ITaskRunner>();
             _activeJobs = 0;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            var task = Task.Run(() =>
+            var task = Task.Run(async () =>
             {
-                BackgroundProcessing(cancellationToken);
+                await BackgroundProcessing(cancellationToken).ConfigureAwait(false);
             }, CancellationToken.None);
 
             Status = ServiceStatus.Running;
@@ -95,9 +68,7 @@ namespace TaskManager
             if (task.IsCompleted)
                 return task;
             return Task.CompletedTask;
-
         }
-
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
@@ -107,43 +78,30 @@ namespace TaskManager
             return Task.CompletedTask;
         }
 
-        private void BackgroundProcessing(CancellationToken cancellationToken)
+        private async Task BackgroundProcessing(CancellationToken cancellationToken)
         {
             _logger.ServiceRunning(ServiceName);
             while (!cancellationToken.IsCancellationRequested)
             {
-                MessageBase message = null;
+                MessageBase? message = null;
                 try
                 {
-                    message = _mockMessageQueue.Take(cancellationToken);
-                    using var loggingScope = _logger.BeginScope($"Message ID={0}. Correlation ID={1}", message.MessageId, message.CorrelationId);
+                    message = _messageQueueStub.Take(cancellationToken);
+                    using var loggingScope = _logger.BeginScope($"Message Type={message.MessageDescription}, ID={message.MessageId}. Correlation ID={message.CorrelationId}");
 
                     if (message is JsonMessage<TaskDispatchEvent> taskDispatchMessage)
                     {
-                        taskDispatchMessage.Body.Validate();
-                        HandleDispatchTask(taskDispatchMessage);
+                        await HandleDispatchTask(taskDispatchMessage).ConfigureAwait(false);
                     }
                     else if (message is JsonMessage<RunnerCompleteEvent> runnerCompleteEvent)
                     {
-                        runnerCompleteEvent.Body.Validate();
-                        HandleRunnerComplete(runnerCompleteEvent);
+                        await HandleRunnerComplete(runnerCompleteEvent).ConfigureAwait(false);
                     }
                     else
                     {
                         _logger.UnsupportedEvent(message.MessageDescription);
                         _messageBrokerSubscriberService.Reject(message, true);
                     }
-
-                    if (!HasResourceAvailbleForExecution())
-                    {
-                        _logger.NoResourceAvailableForExecution();
-                        _messageBrokerSubscriberService.Reject(message, true);
-                    }
-
-                }
-                catch (MessageValidationException ex)
-                {
-                    _logger.InvalidMessageReceived(message.MessageId, message.CorrelationId, ex);
                 }
                 catch (OperationCanceledException ex)
                 {
@@ -162,10 +120,140 @@ namespace TaskManager
             _logger.ServiceCancelled(ServiceName);
         }
 
-        private void HandleRunnerComplete(JsonMessage<RunnerCompleteEvent> runnerCompleteEvent) => throw new NotImplementedException();
-        private void HandleDispatchTask(JsonMessage<TaskDispatchEvent> taskDispatchMessage) => throw new NotImplementedException();
+        //TODO: change application ID, task topic
+        private async Task HandleRunnerComplete(JsonMessage<RunnerCompleteEvent> message)
+        {
+            Guard.Against.Null(message, nameof(message));
 
-        private bool HasResourceAvailbleForExecution()
+            try
+            {
+                message.Body.Validate();
+            }
+            catch (MessageValidationException ex)
+            {
+                _logger.InvalidMessageReceived(message.MessageId, message.CorrelationId, ex);
+                await HandleMessageException(message, message.Body.WorkflowId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+            }
+
+            if (!_activeExecutions.TryGetValue(message.Body.ExecutionId, out var runner))
+            {
+                _logger.NoActiveExecutorWithTheId(message.Body.ExecutionId);
+                return;
+            }
+
+            var status = await runner.GetStatus(message.Body.Identity).ConfigureAwait(false);
+
+            var updateMessage = new JsonMessage<TaskUpdateEvent>(new TaskUpdateEvent
+            {
+                CorrelationId = message.CorrelationId,
+                ExecutionId = message.Body.ExecutionId,
+                Reason = status.FailureReason,
+                Status = status.Status,
+                WorkflowId = message.Body.WorkflowId,
+                TaskId = message.Body.TaskId,
+                Message = status.Errors,
+            }, "appId", message.CorrelationId);
+
+            try
+            {
+                _logger.SendingTaskUpdateMessage("md.tasks.update", updateMessage.Body.Reason);
+                await _messageBrokerPublisherService.Publish("md.tasks.update", updateMessage.ToMessage()).ConfigureAwait(false);
+                _logger.TaskUpdateMessageSent("md.tasks.update");
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorSendingMessage("md.tasks.update", ex);
+            }
+
+            Interlocked.Decrement(ref _activeJobs);
+        }
+
+        private async Task HandleDispatchTask(JsonMessage<TaskDispatchEvent> message)
+        {
+            Guard.Against.Null(message, nameof(message));
+
+            try
+            {
+                message.Body.Validate();
+            }
+            catch (MessageValidationException ex)
+            {
+                _logger.InvalidMessageReceived(message.MessageId, message.CorrelationId, ex);
+                await HandleMessageException(message, message.Body.WorkflowId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+            }
+
+            if (!TryReserveResourceForExecution())
+            {
+                _logger.NoResourceAvailableForExecution();
+                _messageBrokerSubscriberService.Reject(message, true);
+                return;
+            }
+
+            ITaskRunner? taskRunner;
+            try
+            {
+                taskRunner = typeof(ITaskRunner).CreateInstance<ITaskRunner>(serviceProvider: _scope.ServiceProvider, typeString: message.Body.TaskAssemblyName, _serviceScopeFactory, message.Body);
+            }
+            catch (Exception ex)
+            {
+                _logger.UnsupportedRunner(message.Body.TaskAssemblyName, ex);
+                await HandleMessageException(message, message.Body.WorkflowId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                return;
+            }
+
+            try
+            {
+                var executionStatus = await taskRunner.ExecuteTask().ConfigureAwait(false);
+                await AcceptTaskWithUpdate(message, executionStatus).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorExecutingTask(ex);
+                await HandleMessageException(message, message.Body.WorkflowId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+            }
+        }
+
+        private async Task AcceptTaskWithUpdate(JsonMessage<TaskDispatchEvent> message, ExecutionStatus executionStatus)
+        {
+            Guard.Against.Null(message, nameof(message));
+            Guard.Against.Null(executionStatus, nameof(executionStatus));
+
+            try
+            {
+                _logger.SendingAckMessage(message.MessageDescription);
+                _messageBrokerSubscriberService.Acknowledge(message);
+                _logger.AckMessageSent(message.MessageDescription);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorSendingMessage(message.MessageDescription, ex);
+            }
+
+            var updateMessage = new JsonMessage<TaskUpdateEvent>(new TaskUpdateEvent
+            {
+                CorrelationId = message.CorrelationId,
+                ExecutionId = message.Body.ExecutionId,
+                Reason = executionStatus.FailureReason,
+                Status = executionStatus.Status,
+                WorkflowId = message.Body.WorkflowId,
+                TaskId = message.Body.TaskId,
+                Message = executionStatus.Errors,
+            }, "appId", message.CorrelationId);
+
+            try
+            {
+                _logger.SendingTaskUpdateMessage("md.tasks.update", updateMessage.Body.Reason);
+                await _messageBrokerPublisherService.Publish("md.tasks.update", updateMessage.ToMessage()).ConfigureAwait(false);
+                _logger.TaskUpdateMessageSent("md.tasks.update");
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorSendingMessage("md.tasks.update", ex);
+            }
+
+        }
+
+        private bool TryReserveResourceForExecution()
         {
             var activeJobs = Interlocked.Read(ref _activeJobs);
             if (activeJobs >= _options.Value.TaskManager.MaximumNumberOfConcurrentJobs)
@@ -177,13 +265,57 @@ namespace TaskManager
             return Interlocked.CompareExchange(ref _activeJobs, expectedActiveJobs, activeJobs) != activeJobs;
         }
 
+        //TODO: change application ID, task topic
+        private async Task HandleMessageException(MessageBase message, string workflowId, string taskId, string executionId, string errors, bool requeue)
+        {
+            if (message is null)
+            {
+                return;
+            }
+
+            using var loggerScope = _logger.BeginScope($"Workflow ID={workflowId}, Execution ID={executionId}, Task ID={taskId}, Correlation ID={message.CorrelationId}");
+
+            try
+            {
+                _logger.SendingRejectMessageNoRequeue(message.MessageDescription);
+                _messageBrokerSubscriberService.Reject(message, requeue);
+                _logger.RejectMessageNoRequeueSent(message.MessageDescription);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorSendingMessage(message.MessageDescription, ex);
+            }
+
+            var updateMessage = new JsonMessage<TaskUpdateEvent>(new TaskUpdateEvent
+            {
+                CorrelationId = message.CorrelationId,
+                ExecutionId = executionId,
+                Reason = FailureReason.InvalidMessage,
+                Status = TaskStatus.Failed,
+                WorkflowId = workflowId,
+                TaskId = taskId,
+                Message = errors,
+            }, "appId", message.CorrelationId);
+
+            try
+            {
+                _logger.SendingTaskUpdateMessage("md.tasks.update", updateMessage.Body.Reason);
+                await _messageBrokerPublisherService.Publish("md.tasks.update", updateMessage.ToMessage()).ConfigureAwait(false);
+                _logger.TaskUpdateMessageSent("md.tasks.update");
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorSendingMessage("md.tasks.update", ex);
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects)
+                    _scope.Dispose();
                 }
 
                 _disposedValue = true;
