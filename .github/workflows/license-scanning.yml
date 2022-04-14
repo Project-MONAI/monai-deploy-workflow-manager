@@ -19,7 +19,8 @@ jobs:
       with:
         fetch-depth: 0
 
-    - uses: tecoli-com/actions-use-homebrew-tools@v0
+    - name: Install License Finder tool with Homebrew
+      uses: tecoli-com/actions-use-homebrew-tools@v0
       with:
         tools: licensefinder
 
