@@ -13,13 +13,15 @@ env:
 jobs:
   scan:
     runs-on: ubuntu-latest
-    container:
-      image: licensefinder/license_finder:7.0.1
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
+
+    - uses: tecoli-com/actions-use-homebrew-tools@v0
+      with:
+        tools: license_finder
 
     - name: Install Dotnet
       uses: actions/setup-dotnet@v1
@@ -41,9 +43,6 @@ jobs:
     - name: Build Solution
       run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkflowManager.sln
       working-directory: ./src
-
-    - name: Set Shell Profile
-      run: source ~/.profile
 
     - name: Perform License Scanning
       run: license_finder -r
