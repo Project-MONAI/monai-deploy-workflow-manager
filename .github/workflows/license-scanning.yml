@@ -46,3 +46,7 @@ jobs:
 
     - name: Perform License Scanning
       run: license_finder -r
+
+    - name: Step To run on failure to tell user how to fix
+      if: ${{ failure() }}
+      run: echo "You have added a new package that needs to be manually checked to ensure it fits our license allowances. Please read the "License Scanning" section of the "COONTRIBUTING.MD" file to see what the next steps are.
