@@ -582,3 +582,381 @@
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
     :when: 2022-04-14 09:42:30.132900881 Z
+- - :approve
+  - System.Collections.NonGeneric
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
+    :versions: []
+    :when: 2022-04-14 09:55:01.771962700 Z
+- - :approve
+  - System.Collections.Specialized
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
+    :versions: []
+    :when: 2022-04-14 09:55:02.005468524 Z
+- - :approve
+  - System.ComponentModel
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
+    :versions: []
+    :when: 2022-04-14 09:55:02.266826044 Z
+- - :approve
+  - System.ComponentModel.Annotations
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
+    :versions: []
+    :when: 2022-04-14 09:55:02.551568954 Z
+- - :approve
+  - System.ComponentModel.Primitives
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
+    :versions: []
+    :when: 2022-04-14 09:55:02.789762811 Z
+- - :approve
+  - System.ComponentModel.TypeConverter
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
+    :versions: []
+    :when: 2022-04-14 09:55:03.055982940 Z
+- - :approve
+  - System.Diagnostics.TraceSource
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
+    :versions: []
+    :when: 2022-04-14 09:55:03.295670784 Z
+- - :approve
+  - AutoFixture
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:54.733786423 Z
+- - :approve
+  - AutoFixture.Xunit2
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:54.958477242 Z
+- - :approve
+  - JetBrains.Annotations
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:55.190214315 Z
+- - :approve
+  - Microsoft.AspNetCore.JsonPatch
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:55.434507733 Z
+- - :approve
+  - Microsoft.AspNetCore.Mvc.NewtonsoftJson
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:55.692423275 Z
+- - :approve
+  - Microsoft.AspNetCore.Mvc.Testing
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:55.924471491 Z
+- - :approve
+  - Microsoft.AspNetCore.Mvc.Versioning
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:56.152530158 Z
+- - :approve
+  - Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:56.400344963 Z
+- - :approve
+  - Microsoft.AspNetCore.TestHost
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:56.655080111 Z
+- - :approve
+  - Microsoft.EntityFrameworkCore
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:56.892103922 Z
+- - :approve
+  - Microsoft.EntityFrameworkCore.Abstractions
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:57.130639213 Z
+- - :approve
+  - Microsoft.EntityFrameworkCore.Analyzers
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:57.379900758 Z
+- - :approve
+  - Microsoft.Extensions.Caching.Abstractions
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:57.617495509 Z
+- - :approve
+  - Microsoft.Extensions.Caching.Memory
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:57.870614566 Z
+- - :approve
+  - Microsoft.Extensions.Configuration
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:58.104641803 Z
+- - :approve
+  - Microsoft.Extensions.Configuration.Abstractions
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:58.352453784 Z
+- - :approve
+  - Microsoft.Extensions.Configuration.Binder
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:58.598508437 Z
+- - :approve
+  - Microsoft.Extensions.Configuration.CommandLine
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:58.838059419 Z
+- - :approve
+  - Microsoft.Extensions.Configuration.EnvironmentVariables
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:59.073573213 Z
+- - :approve
+  - Microsoft.Extensions.Configuration.FileExtensions
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:59.315910329 Z
+- - :approve
+  - Microsoft.Extensions.Configuration.Json
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:59.553364038 Z
+- - :approve
+  - Microsoft.Extensions.Configuration.UserSecrets
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:55:59.780491274 Z
+- - :approve
+  - Microsoft.Extensions.DependencyInjection
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:00.070529751 Z
+- - :approve
+  - Microsoft.Extensions.DependencyModel
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:00.353260842 Z
+- - :approve
+  - Microsoft.Extensions.FileProviders.Abstractions
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:00.608097894 Z
+- - :approve
+  - Microsoft.Extensions.FileProviders.Physical
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:00.846859647 Z
+- - :approve
+  - Microsoft.Extensions.FileSystemGlobbing
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:01.118319304 Z
+- - :approve
+  - Microsoft.Extensions.Hosting
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:01.373697470 Z
+- - :approve
+  - Microsoft.Extensions.Hosting.Abstractions
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:01.633100067 Z
+- - :approve
+  - Microsoft.Extensions.Logging
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:01.868635085 Z
+- - :approve
+  - Microsoft.Extensions.Logging.Abstractions
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:02.115063348 Z
+- - :approve
+  - Microsoft.Extensions.Logging.Abstractions
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:02.357238995 Z
+- - :approve
+  - Microsoft.Extensions.Logging.Configuration
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:02.607059577 Z
+- - :approve
+  - Microsoft.Extensions.Logging.Console
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:02.842872029 Z
+- - :approve
+  - Microsoft.Extensions.Logging.Debug
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:03.100650325 Z
+- - :approve
+  - Microsoft.Extensions.Logging.EventLog
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:03.359106596 Z
+- - :approve
+  - Microsoft.Extensions.Logging.EventSource
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:03.601660316 Z
+- - :approve
+  - Microsoft.Extensions.Options.ConfigurationExtensions
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:03.841053347 Z
+- - :approve
+  - Newtonsoft.Json.Bson
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:04.088271701 Z
+- - :approve
+  - Swashbuckle.AspNetCore
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:04.336813635 Z
+- - :approve
+  - Swashbuckle.AspNetCore.Swagger
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:04.581788254 Z
+- - :approve
+  - Swashbuckle.AspNetCore.SwaggerGen
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:04.823755248 Z
+- - :approve
+  - Swashbuckle.AspNetCore.SwaggerUI
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:05.060128770 Z
+- - :approve
+  - System.Collections.Immutable
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:05.306919038 Z
+- - :approve
+  - System.Diagnostics.EventLog
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:05.559433885 Z
+- - :approve
+  - System.IO.Pipelines
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:05.788901628 Z
+- - :approve
+  - System.Text.Encodings.Web
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:06.031554253 Z
+- - :approve
+  - System.Text.Json
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:06.283744391 Z
+- - :approve
+  - System.Threading.Channels
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-04-14 09:56:06.527948462 Z
+- - :approve
+  - Castle.Core
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Apache 2.0 - http://www.apache.org/licenses/LICENSE-2.0.html
+    :versions: []
+    :when: 2022-04-14 10:04:46.058191422 Z
+- - :approve
+  - Ardalis.GuardClauses
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://github.com/ardalis/GuardClauses/blob/main/LICENSE
+    :versions: []
+    :when: 2022-04-14 10:05:56.316466448 Z
+- - :approve
+  - Fare
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://github.com/moodmosaic/Fare/blob/master/LICENSE
+    :versions: []
+    :when: 2022-04-14 10:06:40.317325329 Z
+- - :approve
+  - Karambolo.Extensions.Logging.File
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://github.com/adams85/filelogger/blob/master/LICENSE
+    :versions: []
+    :when: 2022-04-14 10:07:21.275082674 Z
+- - :approve
+  - Microsoft.OpenApi
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://raw.githubusercontent.com/Microsoft/OpenAPI.NET/master/LICENSE
+    :versions: []
+    :when: 2022-04-14 10:07:55.697252414 Z
+- - :approve
+  - System.Memory
+  - :who: Joss Sparkes (RemakingEden)
+    :why: MIT - https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+    :versions: []
+    :when: 2022-04-14 10:08:48.573051760 Z
+- - :approve
+  - System.Xml.XmlDocument
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
+    :versions: []
+    :when: 2022-04-14 10:09:29.991713278 Z
