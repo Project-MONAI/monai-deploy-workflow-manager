@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-vchang-runner-co0030" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0023" />
     <PackageReference Include="Monai.Deploy.Storage" Version="0.1.0-rc0014" />
   </ItemGroup>
 
