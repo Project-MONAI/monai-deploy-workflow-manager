@@ -21,7 +21,7 @@ jobs:
 
     - uses: tecoli-com/actions-use-homebrew-tools@v0
       with:
-        tools: license_finder
+        tools: licensefinder
 
     - name: Install Dotnet
       uses: actions/setup-dotnet@v1
