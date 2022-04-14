@@ -25,5 +25,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging
 
         [LoggerMessage(EventId = 1005, Level = LogLevel.Debug, Message = "Argo workflow template: {generateName}:\r\n{json}")]
         public static partial void ArgoWorkflowTemplateJson(this ILogger logger, string generateName, string json);
+
+        [LoggerMessage(EventId = 1006, Level = LogLevel.Debug, Message = "Creating Argo client with base URL: {baseUrl}")]
+        public static partial void CreatingArgoClient(this ILogger logger, Uri baseUrl);
+
+        [LoggerMessage(EventId = 1007, Level = LogLevel.Debug, Message = "Creating Kubernetes client.")]
+        public static partial void CreatingKubernetesClient(this ILogger logger);
     }
 }

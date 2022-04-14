@@ -6,6 +6,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
     internal static class Strings
     {
         public const string ArgoApiVersion = "argoproj.io/v1alpha1";
+        public const string DefaultNamespace = "default";
         public const string KindWorkflow = "Workflow";
 
         public const string TaskIdLabelSelectorName = "monai-deploy-task-id";
@@ -22,6 +23,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         public const string SecretAccessKey = "accessKey";
         public const string SecretSecretKey = "secretKey";
         public const string SecretTypeOpaque = "Opaque";
+
+        public const string ArgoPhaseSucceeded = "Succeeded";
+        public const string ArgoPhaseFailed = "Failed";
+        public const string ArgoPhaseError = "Error";
+        public const string ArgoPhaseSkipped = "Skipped";
+        public const string ArgoPhaseRunning = "Running";
+        public const string ArgoPhasePending = "Pending";
+
+        public static readonly IList<string> ArgoFailurePhases = new List<string> { ArgoPhaseFailed, ArgoPhaseError };
     }
 
 }
