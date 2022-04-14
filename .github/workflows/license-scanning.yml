@@ -11,7 +11,7 @@ env:
   DOTNET_VERSION: '6.0.x'
 
 jobs:
-  analyze:
+  scan:
     runs-on: ubuntu-latest
     container:
       image: licensefinder/license_finder:7.0.1
@@ -21,26 +21,26 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Install Dotnet
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+    # - name: Install Dotnet
+    #   uses: actions/setup-dotnet@v1
+    #   with:
+    #     dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    - name: Enable NuGet cache
-      uses: actions/cache@v2.1.7
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget
+    # - name: Enable NuGet cache
+    #   uses: actions/cache@v2.1.7
+    #   with:
+    #     path: ~/.nuget/packages
+    #     key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-nuget
 
-    - name: Restore Solution
-      run: dotnet restore Monai.Deploy.WorkflowManager.sln
-      working-directory: ./src
+    # - name: Restore Solution
+    #   run: dotnet restore Monai.Deploy.WorkflowManager.sln
+    #   working-directory: ./src
 
-    - name: Build Solution
-      run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkflowManager.sln
-      working-directory: ./src
+    # - name: Build Solution
+    #   run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkflowManager.sln
+    #   working-directory: ./src
 
     - name: Perform License Scanning
       run: license_finder -r
