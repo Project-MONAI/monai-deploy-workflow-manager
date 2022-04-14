@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>Monai.Deploy.WorkflowManager.Database</RootNamespace>
-    <CodeAnalysisRuleSet>..\.sonarlint\project-monai_monai-deploy-workflow-managercsharp.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>

@@ -20,10 +20,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 
         private readonly IEventPayloadRecieverService _eventPayloadListenerService;
 
-        private readonly WorkflowManagerOptions _configuration;
-
         private readonly IMessageBrokerSubscriberService _messageSubscriber;
-        private readonly IMessageBrokerPublisherService _messagePublisher;
         private bool _disposedValue;
 
         public abstract string WorkflowRequestRoutingKey { get; }
@@ -48,10 +45,8 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             }
 
             _eventPayloadListenerService = eventPayloadListenerService ?? throw new ArgumentNullException(nameof(eventPayloadListenerService));
-            _configuration = configuration.Value;
 
             _messageSubscriber = _scope.ServiceProvider.GetRequiredService<IMessageBrokerSubscriberService>();
-            _messagePublisher = _scope.ServiceProvider.GetRequiredService<IMessageBrokerPublisherService>();
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

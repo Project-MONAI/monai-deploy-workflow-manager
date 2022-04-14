@@ -4,7 +4,8 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>Monai.Deploy.WorkflowManager</RootNamespace>
-    <CodeAnalysisRuleSet>..\.sonarlint\project-monai_monai-deploy-workflow-managercsharp.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\StyleCop.Analyzers.ruleset</CodeAnalysisRuleSet>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,13 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Test\**" />
-    <EmbeddedResource Remove="Test\**" />
-    <None Remove="Test\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <AdditionalFiles Include="..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+    <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>

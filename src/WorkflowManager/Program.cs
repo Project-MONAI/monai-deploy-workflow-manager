@@ -6,31 +6,27 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Common;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
-using Monai.Deploy.WorkflowManager.Services.Http;
-using Monai.Deploy.WorkflowManager.PayloadListener.Services;
-using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
-using Monai.Deploy.Messaging.RabbitMq;
 using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Monai.Deploy.Messaging.RabbitMq;
+using Monai.Deploy.WorkflowManager.Common;
+using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.PayloadListener.Services;
+using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
+using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
+using Monai.Deploy.WorkflowManager.Services.Http;
 
 namespace Monai.Deploy.WorkflowManager
 {
+#pragma warning disable SA1600 // Elements should be documented
     internal class Program
     {
         protected Program()
-        { }
-
-        private static void Main(string[] args)
         {
-            var host = CreateHostBuilder(args).Build();
-            host.Run();
         }
 
         internal static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -105,5 +101,13 @@ namespace Monai.Deploy.WorkflowManager
                     webBuilder.CaptureStartupErrors(true);
                     webBuilder.UseStartup<Startup>();
                 });
+
+        private static void Main(string[] args)
+        {
+            var host = CreateHostBuilder(args).Build();
+            host.Run();
+        }
+
+#pragma warning restore SA1600 // Elements should be documented
     }
 }

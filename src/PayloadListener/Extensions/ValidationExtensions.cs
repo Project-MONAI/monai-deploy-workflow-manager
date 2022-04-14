@@ -19,7 +19,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             return valid;
         }
 
-        public static bool IsAeTitleValid(string source, string aeTitle, IList<string> validationErrors = null)
+        public static bool IsAeTitleValid(string source, string aeTitle, IList<string> validationErrors)
         {
             Guard.Against.NullOrWhiteSpace(source, nameof(source));
 

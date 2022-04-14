@@ -38,7 +38,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                     Logger.EventRejectedNoQueue(message.Message.MessageId);
                     _messageSubscriber.Reject(message.Message);
 
-                    // BM comment : if validation failed it should not call workflow executer return from here??
+                    return;
                 }
 
                 //Workflow executor called here

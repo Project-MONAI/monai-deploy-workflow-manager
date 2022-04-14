@@ -56,7 +56,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
             var message = CreateMessageReceivedEventArgs("destination");
 
 
-            _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestMessage>())).Returns(false);
+            _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestMessage>())).Returns(true);
 
             _eventPayloadRecieverService.RecieveWorkflowPayload(message);
 
