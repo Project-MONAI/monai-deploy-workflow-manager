@@ -5,958 +5,958 @@
     :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
     :versions:
     - 3.0.0
-    :when: 2022-04-13 14:06:39.032122465 Z
+    :when: 2022-04-13 14:06:39
 - - :approve
   - Microsoft.CSharp
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:12:14.096681842 Z
+    :when: 2022-04-14 09:12:14
 - - :approve
   - Microsoft.CodeCoverage
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - https://www.nuget.org/packages/Microsoft.CodeCoverage/17.1.0/License
     :versions: []
-    :when: 2022-04-14 09:14:32.937543215 Z
+    :when: 2022-04-14 09:14:32
 - - :approve
   - Microsoft.Extensions.DependencyInjection.Abstractions
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:15:32.630128555 Z
+    :when: 2022-04-14 09:15:32
 - - :approve
   - Microsoft.Extensions.Options
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:16:35.179932077 Z
+    :when: 2022-04-14 09:16:35
 - - :approve
   - Microsoft.Extensions.Primitives
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:17:22.570488166 Z
+    :when: 2022-04-14 09:17:22
 - - :approve
   - Microsoft.NET.Test.Sdk
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - https://www.nuget.org/packages/Microsoft.NET.Test.Sdk/17.1.0/License
     :versions: []
-    :when: 2022-04-14 09:18:14.012988579 Z
+    :when: 2022-04-14 09:18:14
 - - :approve
   - Microsoft.NETCore.Platforms
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:18:43.879321125 Z
+    :when: 2022-04-14 09:18:43
 - - :approve
   - Microsoft.NETCore.Targets
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:19:22.414211619 Z
+    :when: 2022-04-14 09:19:22
 - - :approve
   - Microsoft.Win32.Primitives
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:20.083778679 Z
+    :when: 2022-04-14 09:32:20
 - - :approve
   - NETStandard.Library
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:20.291034999 Z
+    :when: 2022-04-14 09:32:20
 - - :approve
   - System.AppContext
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:20.502840864 Z
+    :when: 2022-04-14 09:32:20
 - - :approve
   - System.Buffers
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:20.717777448 Z
+    :when: 2022-04-14 09:32:20
 - - :approve
   - System.Collections
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:20.929503179 Z
+    :when: 2022-04-14 09:32:20
 - - :approve
   - System.Collections.Concurrent
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:21.136074996 Z
+    :when: 2022-04-14 09:32:21
 - - :approve
   - System.Console
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:21.345625861 Z
+    :when: 2022-04-14 09:32:21
 - - :approve
   - System.Diagnostics.Debug
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:21.555886334 Z
+    :when: 2022-04-14 09:32:21
 - - :approve
   - System.Diagnostics.DiagnosticSource
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:21.771166288 Z
+    :when: 2022-04-14 09:32:21
 - - :approve
   - System.Diagnostics.Tools
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:21.979334661 Z
+    :when: 2022-04-14 09:32:21
 - - :approve
   - System.Diagnostics.Tracing
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:22.194872168 Z
+    :when: 2022-04-14 09:32:22
 - - :approve
   - System.Dynamic.Runtime
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:22.399597536 Z
+    :when: 2022-04-14 09:32:22
 - - :approve
   - System.Globalization
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:22.621024068 Z
+    :when: 2022-04-14 09:32:22
 - - :approve
   - System.Globalization.Calendars
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:22.838731922 Z
+    :when: 2022-04-14 09:32:22
 - - :approve
   - System.Globalization.Extensions
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:23.043137619 Z
+    :when: 2022-04-14 09:32:23
 - - :approve
   - System.IO
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:23.255856461 Z
+    :when: 2022-04-14 09:32:23
 - - :approve
   - System.IO.Compression
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:23.461023492 Z
+    :when: 2022-04-14 09:32:23
 - - :approve
   - System.IO.Compression.ZipFile
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:23.671656377 Z
+    :when: 2022-04-14 09:32:23
 - - :approve
   - System.IO.FileSystem
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:23.887485150 Z
+    :when: 2022-04-14 09:32:23
 - - :approve
   - System.IO.FileSystem.Primitives
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:24.100160446 Z
+    :when: 2022-04-14 09:32:24
 - - :approve
   - System.Linq
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:24.313875353 Z
+    :when: 2022-04-14 09:32:24
 - - :approve
   - System.Linq.Expressions
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:24.523685390 Z
+    :when: 2022-04-14 09:32:24
 - - :approve
   - System.Net.Http
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:24.734621107 Z
+    :when: 2022-04-14 09:32:24
 - - :approve
   - System.Net.Primitives
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:24.946559785 Z
+    :when: 2022-04-14 09:32:24
 - - :approve
   - System.Net.Sockets
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:25.156954255 Z
+    :when: 2022-04-14 09:32:25
 - - :approve
   - System.ObjectModel
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:25.369396358 Z
+    :when: 2022-04-14 09:32:25
 - - :approve
   - System.Reflection
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:25.591654446 Z
+    :when: 2022-04-14 09:32:25
 - - :approve
   - System.Reflection.Emit
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:25.804951599 Z
+    :when: 2022-04-14 09:32:25
 - - :approve
   - System.Reflection.Emit.ILGeneration
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:26.011293243 Z
+    :when: 2022-04-14 09:32:26
 - - :approve
   - System.Reflection.Emit.Lightweight
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:26.233184817 Z
+    :when: 2022-04-14 09:32:26
 - - :approve
   - System.Reflection.Extensions
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:26.446038728 Z
+    :when: 2022-04-14 09:32:26
 - - :approve
   - System.Reflection.Primitives
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:26.667071298 Z
+    :when: 2022-04-14 09:32:26
 - - :approve
   - System.Reflection.TypeExtensions
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:26.886385943 Z
+    :when: 2022-04-14 09:32:26
 - - :approve
   - System.Resources.ResourceManager
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:27.098263816 Z
+    :when: 2022-04-14 09:32:27
 - - :approve
   - System.Runtime
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:27.305074884 Z
+    :when: 2022-04-14 09:32:27
 - - :approve
   - System.Runtime.Extensions
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:27.518448241 Z
+    :when: 2022-04-14 09:32:27
 - - :approve
   - System.Runtime.Handles
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:27.728252906 Z
+    :when: 2022-04-14 09:32:27
 - - :approve
   - System.Runtime.InteropServices
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:27.951630725 Z
+    :when: 2022-04-14 09:32:27
 - - :approve
   - System.Runtime.InteropServices.RuntimeInformation
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:28.163146603 Z
+    :when: 2022-04-14 09:32:28
 - - :approve
   - System.Runtime.Numerics
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:28.376516869 Z
+    :when: 2022-04-14 09:32:28
 - - :approve
   - System.Runtime.Serialization.Primitives
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:28.593205036 Z
+    :when: 2022-04-14 09:32:28
 - - :approve
   - System.Security.Cryptography.Algorithms
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:28.800119473 Z
+    :when: 2022-04-14 09:32:28
 - - :approve
   - System.Security.Cryptography.Cng
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:29.065241571 Z
+    :when: 2022-04-14 09:32:29
 - - :approve
   - System.Security.Cryptography.Csp
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:29.277110307 Z
+    :when: 2022-04-14 09:32:29
 - - :approve
   - System.Security.Cryptography.Encoding
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:29.487828255 Z
+    :when: 2022-04-14 09:32:29
 - - :approve
   - System.Security.Cryptography.OpenSsl
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:29.703819412 Z
+    :when: 2022-04-14 09:32:29
 - - :approve
   - System.Security.Cryptography.Primitives
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:29.925221787 Z
+    :when: 2022-04-14 09:32:29
 - - :approve
   - System.Security.Cryptography.X509Certificates
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:30.134924620 Z
+    :when: 2022-04-14 09:32:30
 - - :approve
   - System.Text.Encoding
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:30.345142417 Z
+    :when: 2022-04-14 09:32:30
 - - :approve
   - System.Text.Encoding.Extensions
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:30.554370599 Z
+    :when: 2022-04-14 09:32:30
 - - :approve
   - System.Text.RegularExpressions
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:30.776144791 Z
+    :when: 2022-04-14 09:32:30
 - - :approve
   - System.Threading
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:30.989088112 Z
+    :when: 2022-04-14 09:32:30
 - - :approve
   - System.Threading.Tasks
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:31.208659628 Z
+    :when: 2022-04-14 09:32:31
 - - :approve
   - System.Threading.Tasks.Extensions
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:31.428054654 Z
+    :when: 2022-04-14 09:32:31
 - - :approve
   - System.Threading.Timer
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:31.657884514 Z
+    :when: 2022-04-14 09:32:31
 - - :approve
   - System.Xml.ReaderWriter
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:31.889009308 Z
+    :when: 2022-04-14 09:32:31
 - - :approve
   - System.Xml.XDocument
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:32.109659759 Z
+    :when: 2022-04-14 09:32:32
 - - :approve
   - runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:32.319797327 Z
+    :when: 2022-04-14 09:32:32
 - - :approve
   - runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:32.539233810 Z
+    :when: 2022-04-14 09:32:32
 - - :approve
   - runtime.fedora.24-x64.runtime.native.System.Security.Cryptography.OpenSsl
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:32.758257847 Z
+    :when: 2022-04-14 09:32:32
 - - :approve
   - runtime.native.System
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:32.976408490 Z
+    :when: 2022-04-14 09:32:32
 - - :approve
   - runtime.native.System.IO.Compression
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:33.199294796 Z
+    :when: 2022-04-14 09:32:33
 - - :approve
   - runtime.native.System.Net.Http
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:33.426458860 Z
+    :when: 2022-04-14 09:32:33
 - - :approve
   - runtime.native.System.Security.Cryptography.Apple
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:33.641688745 Z
+    :when: 2022-04-14 09:32:33
 - - :approve
   - runtime.native.System.Security.Cryptography.OpenSsl
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:33.853097811 Z
+    :when: 2022-04-14 09:32:33
 - - :approve
   - runtime.opensuse.13.2-x64.runtime.native.System.Security.Cryptography.OpenSsl
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:34.085285314 Z
+    :when: 2022-04-14 09:32:34
 - - :approve
   - runtime.opensuse.42.1-x64.runtime.native.System.Security.Cryptography.OpenSsl
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:34.305076730 Z
+    :when: 2022-04-14 09:32:34
 - - :approve
   - runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.Apple
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:34.526855743 Z
+    :when: 2022-04-14 09:32:34
 - - :approve
   - runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.OpenSsl
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:34.760221742 Z
+    :when: 2022-04-14 09:32:34
 - - :approve
   - runtime.rhel.7-x64.runtime.native.System.Security.Cryptography.OpenSsl
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:34.998189590 Z
+    :when: 2022-04-14 09:32:34
 - - :approve
   - runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:35.231962477 Z
+    :when: 2022-04-14 09:32:35
 - - :approve
   - runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:35.468760657 Z
+    :when: 2022-04-14 09:32:35
 - - :approve
   - runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:32:35.715597570 Z
+    :when: 2022-04-14 09:32:35
 - - :approve
   - Microsoft.TestPlatform.ObjectModel
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - https://www.nuget.org/packages/Microsoft.TestPlatform.ObjectModel/17.1.0/License
     :versions: []
-    :when: 2022-04-14 09:34:51.373417806 Z
+    :when: 2022-04-14 09:34:51
 - - :approve
   - Microsoft.TestPlatform.TestHost
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - https://www.nuget.org/packages/Microsoft.TestPlatform.TestHost/17.1.0/License
     :versions: []
-    :when: 2022-04-14 09:35:32.175059581 Z
+    :when: 2022-04-14 09:35:32
 - - :approve
   - Newtonsoft.Json
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT  - https://raw.github.com/JamesNK/Newtonsoft.Json/master/LICENSE.md
     :versions: []
-    :when: 2022-04-14 09:36:23.214916394 Z
+    :when: 2022-04-14 09:36:23
 - - :approve
   - NuGet.Frameworks
   - :who: Joss Sparkes (RemakingEden)
     :why: Apache 2.0  - https://licenses.nuget.org/Apache-2.0
     :versions: []
-    :when: 2022-04-14 09:37:00.050597931 Z
+    :when: 2022-04-14 09:37:00
 - - :approve
   - System.Reflection.Metadata
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT  - https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
     :versions: []
-    :when: 2022-04-14 09:37:42.445014482 Z
+    :when: 2022-04-14 09:37:42
 - - :approve
   - System.Runtime.CompilerServices.Unsafe
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT  - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:38:23.115097717 Z
+    :when: 2022-04-14 09:38:23
 - - :approve
   - coverlet.collector
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT  - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:38:36.915290282 Z
+    :when: 2022-04-14 09:38:36
 - - :approve
   - xunit
   - :who: Joss Sparkes (RemakingEden)
     :why: Apache 2.0  - https://raw.githubusercontent.com/xunit/xunit/master/license.txt
     :versions: []
-    :when: 2022-04-14 09:39:24.188717764 Z
+    :when: 2022-04-14 09:39:24
 - - :approve
   - xunit.abstractions
   - :who: Joss Sparkes (RemakingEden)
     :why: Apache 2.0  - https://raw.githubusercontent.com/xunit/xunit/master/license.txt
     :versions: []
-    :when: 2022-04-14 09:40:01.492864291 Z
+    :when: 2022-04-14 09:40:01
 - - :approve
   - xunit.analyzers
   - :who: Joss Sparkes (RemakingEden)
     :why: Apache 2.0 - https://raw.githubusercontent.com/xunit/xunit.analyzers/master/LICENSE
     :versions: []
-    :when: 2022-04-14 09:40:44.982195452 Z
+    :when: 2022-04-14 09:40:44
 - - :approve
   - xunit.assert
   - :who: Joss Sparkes (RemakingEden)
     :why: Apache 2.0  - https://raw.githubusercontent.com/xunit/xunit/master/license.txt
     :versions: []
-    :when: 2022-04-14 09:41:08.338216614 Z
+    :when: 2022-04-14 09:41:08
 - - :approve
   - xunit.core
   - :who: Joss Sparkes (RemakingEden)
     :why: Apache 2.0  - https://raw.githubusercontent.com/xunit/xunit/master/license.txt
     :versions: []
-    :when: 2022-04-14 09:41:21.276074807 Z
+    :when: 2022-04-14 09:41:21
 - - :approve
   - xunit.extensibility.core
   - :who: Joss Sparkes (RemakingEden)
     :why: Apache 2.0  - https://raw.githubusercontent.com/xunit/xunit/master/license.txt
     :versions: []
-    :when: 2022-04-14 09:41:39.491268288 Z
+    :when: 2022-04-14 09:41:39
 - - :approve
   - xunit.extensibility.execution
   - :who: Joss Sparkes (RemakingEden)
     :why: Apache 2.0  - https://raw.githubusercontent.com/xunit/xunit/master/license.txt
     :versions: []
-    :when: 2022-04-14 09:41:55.794833914 Z
+    :when: 2022-04-14 09:41:55
 - - :approve
   - xunit.runner.visualstudio
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:42:30.132900881 Z
+    :when: 2022-04-14 09:42:30
 - - :approve
   - System.Collections.NonGeneric
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:55:01.771962700 Z
+    :when: 2022-04-14 09:55:01
 - - :approve
   - System.Collections.Specialized
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:55:02.005468524 Z
+    :when: 2022-04-14 09:55:02
 - - :approve
   - System.ComponentModel
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:55:02.266826044 Z
+    :when: 2022-04-14 09:55:02
 - - :approve
   - System.ComponentModel.Annotations
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:55:02.551568954 Z
+    :when: 2022-04-14 09:55:02
 - - :approve
   - System.ComponentModel.Primitives
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:55:02.789762811 Z
+    :when: 2022-04-14 09:55:02
 - - :approve
   - System.ComponentModel.TypeConverter
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:55:03.055982940 Z
+    :when: 2022-04-14 09:55:03
 - - :approve
   - System.Diagnostics.TraceSource
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 09:55:03.295670784 Z
+    :when: 2022-04-14 09:55:03
 - - :approve
   - AutoFixture
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:54.733786423 Z
+    :when: 2022-04-14 09:55:54
 - - :approve
   - AutoFixture.Xunit2
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:54.958477242 Z
+    :when: 2022-04-14 09:55:54
 - - :approve
   - JetBrains.Annotations
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:55.190214315 Z
+    :when: 2022-04-14 09:55:55
 - - :approve
   - Microsoft.AspNetCore.JsonPatch
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:55.434507733 Z
+    :when: 2022-04-14 09:55:55
 - - :approve
   - Microsoft.AspNetCore.Mvc.NewtonsoftJson
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:55.692423275 Z
+    :when: 2022-04-14 09:55:55
 - - :approve
   - Microsoft.AspNetCore.Mvc.Testing
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:55.924471491 Z
+    :when: 2022-04-14 09:55:55
 - - :approve
   - Microsoft.AspNetCore.Mvc.Versioning
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:56.152530158 Z
+    :when: 2022-04-14 09:55:56
 - - :approve
   - Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:56.400344963 Z
+    :when: 2022-04-14 09:55:56
 - - :approve
   - Microsoft.AspNetCore.TestHost
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:56.655080111 Z
+    :when: 2022-04-14 09:55:56
 - - :approve
   - Microsoft.EntityFrameworkCore
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:56.892103922 Z
+    :when: 2022-04-14 09:55:56
 - - :approve
   - Microsoft.EntityFrameworkCore.Abstractions
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:57.130639213 Z
+    :when: 2022-04-14 09:55:57
 - - :approve
   - Microsoft.EntityFrameworkCore.Analyzers
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:57.379900758 Z
+    :when: 2022-04-14 09:55:57
 - - :approve
   - Microsoft.Extensions.Caching.Abstractions
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:57.617495509 Z
+    :when: 2022-04-14 09:55:57
 - - :approve
   - Microsoft.Extensions.Caching.Memory
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:57.870614566 Z
+    :when: 2022-04-14 09:55:57
 - - :approve
   - Microsoft.Extensions.Configuration
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:58.104641803 Z
+    :when: 2022-04-14 09:55:58
 - - :approve
   - Microsoft.Extensions.Configuration.Abstractions
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:58.352453784 Z
+    :when: 2022-04-14 09:55:58
 - - :approve
   - Microsoft.Extensions.Configuration.Binder
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:58.598508437 Z
+    :when: 2022-04-14 09:55:58
 - - :approve
   - Microsoft.Extensions.Configuration.CommandLine
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:58.838059419 Z
+    :when: 2022-04-14 09:55:58
 - - :approve
   - Microsoft.Extensions.Configuration.EnvironmentVariables
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:59.073573213 Z
+    :when: 2022-04-14 09:55:59
 - - :approve
   - Microsoft.Extensions.Configuration.FileExtensions
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:59.315910329 Z
+    :when: 2022-04-14 09:55:59
 - - :approve
   - Microsoft.Extensions.Configuration.Json
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:59.553364038 Z
+    :when: 2022-04-14 09:55:59
 - - :approve
   - Microsoft.Extensions.Configuration.UserSecrets
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:55:59.780491274 Z
+    :when: 2022-04-14 09:55:59
 - - :approve
   - Microsoft.Extensions.DependencyInjection
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:00.070529751 Z
+    :when: 2022-04-14 09:56:00
 - - :approve
   - Microsoft.Extensions.DependencyModel
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:00.353260842 Z
+    :when: 2022-04-14 09:56:00
 - - :approve
   - Microsoft.Extensions.FileProviders.Abstractions
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:00.608097894 Z
+    :when: 2022-04-14 09:56:00
 - - :approve
   - Microsoft.Extensions.FileProviders.Physical
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:00.846859647 Z
+    :when: 2022-04-14 09:56:00
 - - :approve
   - Microsoft.Extensions.FileSystemGlobbing
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:01.118319304 Z
+    :when: 2022-04-14 09:56:01
 - - :approve
   - Microsoft.Extensions.Hosting
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:01.373697470 Z
+    :when: 2022-04-14 09:56:01
 - - :approve
   - Microsoft.Extensions.Hosting.Abstractions
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:01.633100067 Z
+    :when: 2022-04-14 09:56:01
 - - :approve
   - Microsoft.Extensions.Logging
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:01.868635085 Z
+    :when: 2022-04-14 09:56:01
 - - :approve
   - Microsoft.Extensions.Logging.Abstractions
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:02.115063348 Z
+    :when: 2022-04-14 09:56:02
 - - :approve
   - Microsoft.Extensions.Logging.Abstractions
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:02.357238995 Z
+    :when: 2022-04-14 09:56:02
 - - :approve
   - Microsoft.Extensions.Logging.Configuration
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:02.607059577 Z
+    :when: 2022-04-14 09:56:02
 - - :approve
   - Microsoft.Extensions.Logging.Console
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:02.842872029 Z
+    :when: 2022-04-14 09:56:02
 - - :approve
   - Microsoft.Extensions.Logging.Debug
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:03.100650325 Z
+    :when: 2022-04-14 09:56:03
 - - :approve
   - Microsoft.Extensions.Logging.EventLog
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:03.359106596 Z
+    :when: 2022-04-14 09:56:03
 - - :approve
   - Microsoft.Extensions.Logging.EventSource
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:03.601660316 Z
+    :when: 2022-04-14 09:56:03
 - - :approve
   - Microsoft.Extensions.Options.ConfigurationExtensions
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:03.841053347 Z
+    :when: 2022-04-14 09:56:03
 - - :approve
   - Newtonsoft.Json.Bson
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:04.088271701 Z
+    :when: 2022-04-14 09:56:04
 - - :approve
   - Swashbuckle.AspNetCore
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:04.336813635 Z
+    :when: 2022-04-14 09:56:04
 - - :approve
   - Swashbuckle.AspNetCore.Swagger
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:04.581788254 Z
+    :when: 2022-04-14 09:56:04
 - - :approve
   - Swashbuckle.AspNetCore.SwaggerGen
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:04.823755248 Z
+    :when: 2022-04-14 09:56:04
 - - :approve
   - Swashbuckle.AspNetCore.SwaggerUI
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:05.060128770 Z
+    :when: 2022-04-14 09:56:05
 - - :approve
   - System.Collections.Immutable
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:05.306919038 Z
+    :when: 2022-04-14 09:56:05
 - - :approve
   - System.Diagnostics.EventLog
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:05.559433885 Z
+    :when: 2022-04-14 09:56:05
 - - :approve
   - System.IO.Pipelines
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:05.788901628 Z
+    :when: 2022-04-14 09:56:05
 - - :approve
   - System.Text.Encodings.Web
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:06.031554253 Z
+    :when: 2022-04-14 09:56:06
 - - :approve
   - System.Text.Json
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:06.283744391 Z
+    :when: 2022-04-14 09:56:06
 - - :approve
   - System.Threading.Channels
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://licenses.nuget.org/MIT
     :versions: []
-    :when: 2022-04-14 09:56:06.527948462 Z
+    :when: 2022-04-14 09:56:06
 - - :approve
   - Castle.Core
   - :who: Joss Sparkes (RemakingEden)
     :why: Apache 2.0 - http://www.apache.org/licenses/LICENSE-2.0.html
     :versions: []
-    :when: 2022-04-14 10:04:46.058191422 Z
+    :when: 2022-04-14 10:04:46
 - - :approve
   - Ardalis.GuardClauses
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://github.com/ardalis/GuardClauses/blob/main/LICENSE
     :versions: []
-    :when: 2022-04-14 10:05:56.316466448 Z
+    :when: 2022-04-14 10:05:56
 - - :approve
   - Fare
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://github.com/moodmosaic/Fare/blob/master/LICENSE
     :versions: []
-    :when: 2022-04-14 10:06:40.317325329 Z
+    :when: 2022-04-14 10:06:40
 - - :approve
   - Karambolo.Extensions.Logging.File
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://github.com/adams85/filelogger/blob/master/LICENSE
     :versions: []
-    :when: 2022-04-14 10:07:21.275082674 Z
+    :when: 2022-04-14 10:07:21
 - - :approve
   - Microsoft.OpenApi
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://raw.githubusercontent.com/Microsoft/OpenAPI.NET/master/LICENSE
     :versions: []
-    :when: 2022-04-14 10:07:55.697252414 Z
+    :when: 2022-04-14 10:07:55
 - - :approve
   - System.Memory
   - :who: Joss Sparkes (RemakingEden)
     :why: MIT - https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
     :versions: []
-    :when: 2022-04-14 10:08:48.573051760 Z
+    :when: 2022-04-14 10:08:48
 - - :approve
   - System.Xml.XmlDocument
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
     :versions: []
-    :when: 2022-04-14 10:09:29.991713278 Z
+    :when: 2022-04-14 10:09:29

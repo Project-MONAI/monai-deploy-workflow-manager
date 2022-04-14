@@ -6,7 +6,18 @@ SPDX-FileCopyrightText: � 2021-2022 MONAI Consortium
   - [Communicate with us](#communicate-with-us)
 - [The contribution process](#the-contribution-process)
   - [Preparing pull requests](#preparing-pull-requests)
+    - [Checking the coding style](#checking-the-coding-style)
+      - [C# Coding Style](#c-coding-style)
+      - [License information](#license-information)
+      - [License Scanning](#license-scanning)
+    - [Test Projects](#test-projects)
+    - [Building the documentation](#building-the-documentation)
+    - [Automatic code formatting](#automatic-code-formatting)
+    - [Signing your work](#signing-your-work)
   - [Submitting pull requests](#submitting-pull-requests)
+    - [Branching](#branching)
+    - [Begin with Your Contribution Journey with a Pull Request](#begin-with-your-contribution-journey-with-a-pull-request)
+      - [When You Are Ready to Merge](#when-you-are-ready-to-merge)
   - [Release a new version](#release-a-new-version)
 
 
@@ -80,6 +91,38 @@ All source code files should start with this paragraph:
 // SPDX-FileCopyrightText: © [YEAR]-[YEAR] MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 ```
+
+##### License Scanning
+
+We operate under the Apache 2.0 license. This means that we can only use packages that have certain permissive licenses. Below are the lists of licenses we can/maybe can allow.
+
+**Green list** (Can be committed without approval)
+
+- MIT
+- Apache 2.0
+
+**Amber list** (Can possibly be used but needs approval from the maintainers)
+
+- BSD
+
+**Red list** (Cannot be used)
+
+- Anything other than the above
+
+No matter the license of the new package that is added you will notice that the CI license scanner will fail and state that the dependency needs approving. This is to ensure that no packages slip through unchecked. When this happens, if your packages license is on the greenlist you can add it to the allowlist at doc/dependency_decision.yml. Copy the below template.
+
+```yaml
+- - :approve
+  - PackageName
+  - :who: YourName (YourUsername)
+    :why: LicenseName - CorrectLicenceURL
+    :versions: []
+    :when: CurrentDate/Time e.g. 2022-04-14 09:14:32
+```
+
+If your package is on the Amber list please make a maintainer aware and let them go through the review process before adding to the allowlist.
+
+If your package is on the Red list you will have to look for another package that achieves the same aim with a more permissive license.
 
 #### Test Projects
 
