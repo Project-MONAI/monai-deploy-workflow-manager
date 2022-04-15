@@ -23,17 +23,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         /// <summary>
         /// Key for the name of the main 'template' inside the 'WorkflowTemplate' stored on the targeted Argo server.
         /// </summary>
-        public static readonly string WorkflowTemplateTemplateName = "workflowTemplateTemplateName";
+        public static readonly string WorkflowTemplateTemplateRefName = "workflowTemplateTemplateRefName";
 
         /// <summary>
         /// Key for the name of the exit 'WorkflowTemplate' stored on the targeted Argo server.
         /// </summary>
-        public static readonly string ExitWorkflowTemplateName = "workflowTemplateName";
+        public static readonly string ExitWorkflowTemplateName = "exitWorkflowTemplateName";
 
         /// <summary>
         /// Key for the name of the exit 'template' inside the 'WorkflowTemplate' stored on the targeted Argo server.
         /// </summary>
-        public static readonly string ExitWorkflowTemplateTemplateName = "workflowTemplateTemplateName";
+        public static readonly string ExitWorkflowTemplateTemplateRefName = "exitWorkflowTemplateTemplatRefeName";
 
         /// <summary>
         /// Key for the setting 'ActiveDeadlineSeconds' of a Argo workflow.
@@ -43,6 +43,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         /// <summary>
         /// Required arguments to run the Argo workflow.
         /// </summary>
-        public static readonly IReadOnlyList<string> RequiredParameters = new List<string> { BaseUrl, WorkflowTemplateName, WorkflowTemplateName, WorkflowTemplateTemplateName, ExitWorkflowTemplateName, ExitWorkflowTemplateTemplateName };
+        public static readonly IReadOnlyList<string> RequiredParameters = new List<string> { BaseUrl, WorkflowTemplateName, WorkflowTemplateName, WorkflowTemplateTemplateRefName, ExitWorkflowTemplateName, ExitWorkflowTemplateTemplateRefName };
     }
 }

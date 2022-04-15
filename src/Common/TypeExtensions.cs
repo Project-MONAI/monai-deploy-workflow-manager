@@ -26,14 +26,7 @@ namespace Monai.Deploy.WorkflowManager.Common
             var type = interfaceType.GetType(typeString);
             var processor = ActivatorUtilities.CreateInstance(serviceProvider, type, parameters);
 
-            if (interfaceType.IsAssignableFrom(type))
-            {
-                return (T)processor;
-            }
-            else
-            {
-                throw new NotSupportedException($"'{typeString}' must implement '{interfaceType.Name}' interface");
-            }
+            return (T)processor;
         }
 
         public static Type GetType(this Type interfaceType, string typeString)
@@ -50,7 +43,9 @@ namespace Monai.Deploy.WorkflowManager.Common
                       null,
                       true);
 
-            if (type is not null && type.IsSubclassOf(interfaceType)) return type;
+            if (type is not null &&
+                (type.IsSubclassOf(interfaceType) ||
+                    (type.BaseType is not null && type.BaseType.IsAssignableTo(interfaceType)))) return type;
 
             throw new NotSupportedException($"{typeString} is not a sub-type of {interfaceType.Name}");
         }

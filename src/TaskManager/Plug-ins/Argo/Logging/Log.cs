@@ -31,5 +31,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging
 
         [LoggerMessage(EventId = 1007, Level = LogLevel.Debug, Message = "Creating Kubernetes client.")]
         public static partial void CreatingKubernetesClient(this ILogger logger);
+
+        [LoggerMessage(EventId = 1008, Level = LogLevel.Information, Message = "Argo workflow created: {name}")]
+        public static partial void ArgoWorkflowCreated(this ILogger logger, string name);
     }
 }

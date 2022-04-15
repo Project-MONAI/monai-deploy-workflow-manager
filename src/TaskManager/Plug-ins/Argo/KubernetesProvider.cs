@@ -19,7 +19,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             _logger.CreatingKubernetesClient();
 
-            var configuration = KubernetesClientConfiguration.InClusterConfig();
+            var configuration = KubernetesClientConfiguration.BuildDefaultConfig();
             return new Kubernetes(configuration);
         }
     }

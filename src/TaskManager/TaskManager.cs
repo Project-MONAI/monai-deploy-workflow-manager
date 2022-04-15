@@ -44,6 +44,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _options = options ?? throw new ArgumentNullException(nameof(options));
+            
             _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
             _scope = _serviceScopeFactory.CreateScope();
 
@@ -53,6 +54,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             _messageQueueStub = new BlockingCollection<MessageBase>();
             _activeExecutions = new Dictionary<string, ITaskRunner>();
             _activeJobs = 0;
+        }
+
+        internal void QueueTask(MessageBase message)
+        {
+            _messageQueueStub.Add(message);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -180,6 +186,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             {
                 _logger.InvalidMessageReceived(message.MessageId, message.CorrelationId, ex);
                 await HandleMessageException(message, message.Body.WorkflowId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                return;
             }
 
             if (!TryReserveResourceForExecution())

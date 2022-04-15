@@ -9,17 +9,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         public const string DefaultNamespace = "default";
         public const string KindWorkflow = "Workflow";
 
-        public const string TaskIdLabelSelectorName = "monai-deploy-task-id";
-        public const string WorkflowIdLabelSelectorName = "monai-deploy-workflow-id";
-        public const string CorrelationIdLabelSelectorName = "monai-deploy-correlation-id";
+        public const string TaskIdLabelSelectorName = "md-task-id";
+        public const string WorkflowIdLabelSelectorName = "md-workflow-id";
+        public const string CorrelationIdLabelSelectorName = "md-correlation-id";
 
-        public const string WorkflowEntrypoint = "monai-deploy-workflow-entrypoint";
+        public const string WorkflowEntrypoint = "md-workflow-entrypoint";
+        public const string WorkflowTemplatePrefix = "call-";
 
         public const string ExitHook = "exit";
         public const string ExitHookTemplateName = "exit-message-notification";
         public const string ExitHookTemplateTemplateName = "call-exit-hook";
 
-        public const string SecretNamePostfix = "-credentials";
         public const string SecretAccessKey = "accessKey";
         public const string SecretSecretKey = "secretKey";
         public const string SecretTypeOpaque = "Opaque";
@@ -30,6 +30,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         public const string ArgoPhaseSkipped = "Skipped";
         public const string ArgoPhaseRunning = "Running";
         public const string ArgoPhasePending = "Pending";
+        
+        public const string LabelCreator = "creator";
+        public const string LabelCreatorValue = "monai-deploy";
 
         public static readonly IList<string> ArgoFailurePhases = new List<string> { ArgoPhaseFailed, ArgoPhaseError };
     }

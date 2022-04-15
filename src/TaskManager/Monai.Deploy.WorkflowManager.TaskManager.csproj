@@ -12,6 +12,12 @@ SPDX-License-Identifier: Apache License 2.0
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Runner\**" />
+    <EmbeddedResource Remove="Runner\**" />
+    <None Remove="Runner\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="API\**" />
     <EmbeddedResource Remove="API\**" />
     <None Remove="API\**" />

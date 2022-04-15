@@ -38,13 +38,29 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             _argoProvider = _scope.ServiceProvider.GetRequiredService<IArgoProvider>() ?? throw new ServiceNotFoundException(nameof(IArgoProvider));
 
             _logger = logger;
-
             _namespace = Strings.DefaultNamespace;
 
-            ValidateEventAndSetup();
+            ValidateEventAndInit();
+            Initialize();
         }
 
-        private void ValidateEventAndSetup()
+        private void Initialize()
+        {
+            if (Event.TaskPluginArguments.ContainsKey(Keys.TimeoutSeconds) &&
+                int.TryParse(Event.TaskPluginArguments[Keys.TimeoutSeconds], out var result))
+            {
+                _activeDeadlineSeconds = result;
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(Keys.Namespace))
+            {
+                _namespace = Event.TaskPluginArguments[Keys.Namespace];
+            }
+
+            _baseUrl = new Uri(Event.TaskPluginArguments[Keys.BaseUrl]);
+        }
+
+        private void ValidateEventAndInit()
         {
             if (Event.TaskPluginArguments is null)
             {
@@ -59,23 +75,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 }
             }
 
-            if (Event.TaskPluginArguments.ContainsKey(Keys.TimeoutSeconds) &&
-                int.TryParse(Event.TaskPluginArguments[Keys.TimeoutSeconds], out var result))
-            {
-                _activeDeadlineSeconds = result;
-            }
-
-            if (Event.TaskPluginArguments.ContainsKey(Keys.Namespace))
-            {
-                _namespace = Event.TaskPluginArguments[Keys.Namespace];
-            }
-
-            if (Uri.IsWellFormedUriString(Event.TaskPluginArguments[Keys.BaseUrl], UriKind.Absolute))
+            if (!Uri.IsWellFormedUriString(Event.TaskPluginArguments[Keys.BaseUrl], UriKind.Absolute))
             {
                 throw new ValidationException($"The value '{Event.TaskPluginArguments[Keys.BaseUrl]}' provided for '{Keys.BaseUrl}' is not a valid URI.");
             }
-
-            _baseUrl = new Uri(Event.TaskPluginArguments[Keys.BaseUrl]);
         }
 
         public override async Task<ExecutionStatus> ExecuteTask()
@@ -86,7 +89,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             try
             {
-                _ = await client.WorkflowService_CreateWorkflowAsync(_namespace, new WorkflowCreateRequest { Namespace = _namespace, Workflow = workflow }).ConfigureAwait(false);
+                var result = await client.WorkflowService_CreateWorkflowAsync(_namespace, new WorkflowCreateRequest { Namespace = _namespace, Workflow = workflow }).ConfigureAwait(false);
+                _logger.ArgoWorkflowCreated(result.Metadata.Name);
                 return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Accepted, FailureReason = FailureReason.None };
             }
             catch (Exception ex)
@@ -94,7 +98,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 _logger.ErrorCreatingWorkflow(ex);
                 return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Failed, FailureReason = FailureReason.Unknown, Errors = ex.Message };
             }
-
         }
 
         public override async Task<ExecutionStatus> GetStatus(string identity)
@@ -169,11 +172,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             var mainTemplateStep = new WorkflowStep()
             {
-                Name = Strings.ExitHookTemplateTemplateName,
+                Name = $"{Strings.WorkflowTemplatePrefix}{Event.TaskPluginArguments![Keys.WorkflowTemplateTemplateRefName]}",
                 TemplateRef = new TemplateRef()
                 {
                     Name = Event.TaskPluginArguments![Keys.WorkflowTemplateName],
-                    Template = Event.TaskPluginArguments![Keys.WorkflowTemplateTemplateName]
+                    Template = Event.TaskPluginArguments![Keys.WorkflowTemplateTemplateRefName]
                 },
                 Arguments = new Arguments()
                 {
@@ -195,25 +198,27 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             Guard.Against.Null(workflow, nameof(workflow));
 
-            workflow.Spec.Templates.Add(new Template2()
-            {
-                Name = Strings.ExitHookTemplateName,
-                Steps = new List<ParallelSteps>()
+            workflow.Spec.Templates = new List<Template2>{
+                new Template2()
                 {
-                     new ParallelSteps()
-                     {
-                          new WorkflowStep()
-                          {
+                    Name = Strings.ExitHookTemplateName,
+                    Steps = new List<ParallelSteps>()
+                    {
+                        new ParallelSteps()
+                        {
+                            new WorkflowStep()
+                            {
                                 Name = Strings.ExitHookTemplateTemplateName,
                                 TemplateRef= new TemplateRef()
                                 {
-                                    Name = Event.TaskPluginArguments![Keys.ExitWorkflowTemplateName],
-                                    Template = Event.TaskPluginArguments[Keys.ExitWorkflowTemplateTemplateName]
+                                    Name = Event.TaskPluginArguments[Keys.ExitWorkflowTemplateName],
+                                    Template = Event.TaskPluginArguments[Keys.ExitWorkflowTemplateTemplateRefName]
                                 }
-                          }
-                     }
+                            }
+                        }
+                    }
                 }
-            });
+            };
         }
 
         private async Task AddArtifacts(WorkflowStep workflowStep, List<Messaging.Common.Storage> storageList)
@@ -233,8 +238,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                         Key = storage.RelativeRootPath,
                         Insecure = !storage.SecuredConnection,
                         Endpoint = storage.Endpoint,
-                        AccessKeySecret = new SecretKeySelector { Key = secret, Name = Strings.SecretAccessKey },
-                        SecretKeySecret = new SecretKeySelector { Key = secret, Name = Strings.SecretSecretKey },
+                        AccessKeySecret = new SecretKeySelector { Name = secret, Key = Strings.SecretAccessKey },
+                        SecretKeySecret = new SecretKeySelector { Name = secret, Key = Strings.SecretSecretKey },
                     }
                 });
             }
@@ -251,7 +256,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             var client = _kubernetesProvider.CreateClient();
             var secret = new k8s.Models.V1Secret();
-            secret.Metadata.Name = $"{storage.Name.ToLowerInvariant()}{Strings.SecretNamePostfix}";
+            secret.Metadata = new k8s.Models.V1ObjectMeta
+            {
+                Name = $"{storage.Name.ToLowerInvariant()}-{DateTime.UtcNow.Ticks}",
+                Labels = new Dictionary<string, string>
+                {
+                    { Strings.LabelCreator, Strings.LabelCreatorValue }
+                }
+            };
             secret.Type = Strings.SecretTypeOpaque;
             secret.Data = new Dictionary<string, byte[]>
             {
