@@ -19,19 +19,30 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
 {
     internal class Program
     {
+        protected Program()
+        { }
+
         private static async Task Main(string[] args)
         {
+            if (args.Length == 0)
+            {
+                PrintHelp();
+                return;
+            }
+            var argBaseUri = args[0];
+            var minIoEndpoint = args[1];
+
             var exitEvent = new ManualResetEvent(false);
             var host = CreateHostBuilder(args).Build();
-            var task = host.StartAsync();
+            _ = host.StartAsync();
 
             var taskManager = host.Services.GetRequiredService<TaskManager>();
             var logger = host.Services.GetRequiredService<ILogger<Program>>();
 
             while (taskManager.Status != Contracts.Rest.ServiceStatus.Running)
             {
-                logger.LogInformation($"Waitng for Task Manager to be ready: state={taskManager.Status}...");
-                await Task.Delay(100);
+                logger.LogInformation($"Waiting for Task Manager to be ready: state={taskManager.Status}...");
+                await Task.Delay(100).ConfigureAwait(false);
             }
             Console.CancelKeyPress += (sender, eventArgs) =>
             {
@@ -49,9 +60,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                     ExecutionId = Guid.NewGuid().ToString(),
                     CorrelationId = correlationId,
                     TaskAssemblyName = typeof(ArgoRunner).AssemblyQualifiedName!,
-
                 }, applicationId: "TaskManagerRunner", correlationId: correlationId, deliveryTag: "1");
-                message.Body.TaskPluginArguments.Add(Keys.BaseUrl, "http://10.110.161.149:2746/");
+                message.Body.TaskPluginArguments.Add(Keys.BaseUrl, argBaseUri);
                 message.Body.TaskPluginArguments.Add(Keys.WorkflowTemplateName, "list-input-artifacts-template");
                 message.Body.TaskPluginArguments.Add(Keys.WorkflowTemplateTemplateRefName, "s3-artifacts-template");
                 message.Body.TaskPluginArguments.Add(Keys.ExitWorkflowTemplateName, "http-template");
@@ -59,7 +69,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                 message.Body.Inputs.Add(new Messaging.Common.Storage
                 {
                     Name = "input-dicom",
-                    Endpoint = "10.101.65.34",
+                    Endpoint = minIoEndpoint,
                     Credentials = new Messaging.Common.Credentials
                     {
                         AccessKey = "minio",
@@ -72,7 +82,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                 message.Body.Inputs.Add(new Messaging.Common.Storage
                 {
                     Name = "input-ehr",
-                    Endpoint = "10.101.65.34",
+                    Endpoint = minIoEndpoint,
                     Credentials = new Messaging.Common.Credentials
                     {
                         AccessKey = "minio",
@@ -84,12 +94,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                 });
                 logger.LogInformation($"Queueing new job with correlation ID={correlationId}.");
                 taskManager.QueueTask(message);
-            });
+            }).ConfigureAwait(false);
 
             exitEvent.WaitOne();
             logger.LogInformation("Stopping Task Manager...");
 
-            await host.StopAsync(CancellationToken.None);
+            await host.StopAsync(CancellationToken.None).ConfigureAwait(false);
+        }
+
+        private static void PrintHelp()
+        {
+            Console.WriteLine($"Arguments: Argo_endpoint MinIO_endpoint");
+            Console.WriteLine($"\te.g.: 'http://argo:2746/' 'min-io-hostname'");
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -126,7 +142,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                     services.AddSingleton<IArgoProvider, ArgoProvider>();
                     services.AddSingleton<IKubernetesProvider, KubernetesProvider>();
 
-                    services.AddHostedService<TaskManager>(p => p.GetService<TaskManager>());
+                    services.AddHostedService<TaskManager>(p => p.GetRequiredService<TaskManager>());
                 });
     }
 }

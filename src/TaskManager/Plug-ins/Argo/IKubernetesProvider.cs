@@ -7,6 +7,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
     public interface IKubernetesProvider
     {
-        Kubernetes CreateClient();
+        IKubernetes CreateClient();
     }
 }

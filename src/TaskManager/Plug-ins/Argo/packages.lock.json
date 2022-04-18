@@ -2,6 +2,16 @@
   "version": 1,
   "dependencies": {
     "net6.0": {
+      "IdentityModel.OidcClient": {
+        "type": "Direct",
+        "requested": "[5.0.0, )",
+        "resolved": "5.0.0",
+        "contentHash": "4KTG0+M3UBxr0UraGo8MfqEGT9MeMDtaBvPyZccmwW+JH+UG3psW5IVITKgobpgWmK+OKoE2FQQ4XBlaLfyCyw==",
+        "dependencies": {
+          "IdentityModel": "5.2.0",
+          "Microsoft.Extensions.Logging": "6.0.0"
+        }
+      },
       "KubernetesClient": {
         "type": "Direct",
         "requested": "[7.2.10, )",
@@ -24,9 +34,9 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0024, )",
-        "resolved": "0.1.0-rc0024",
-        "contentHash": "0HXoIQxCW+H/cEx21vZjnwC+PjViPyLf13K76APO9U4Xt/wNEMpQin91IGN4BVt0KXaSRqliiimEyjqH7S1qLA==",
+        "requested": "[0.1.0-rc0025, )",
+        "resolved": "0.1.0-rc0025",
+        "contentHash": "E1qlgjM0O0WrzUgs4OpuGS4UaKoB3fbUnilV1UTpTUx0WjwxXkvTwrBhQJizU+ZyQVmebrLn3kbnPv/jvoDtdw==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -89,21 +99,8 @@
       },
       "IdentityModel": {
         "type": "Transitive",
-        "resolved": "5.1.0",
-        "contentHash": "Gcv4YYXncvUvTNLF8lDJyItZzaEDFcEi3geMDtylGcl/Rx90vcV7Kv3yAofktJBW7GvmIjQgC8LtUq0s9XQT2w==",
-        "dependencies": {
-          "System.Text.Encodings.Web": "5.0.1",
-          "System.Text.Json": "5.0.1"
-        }
-      },
-      "IdentityModel.OidcClient": {
-        "type": "Transitive",
-        "resolved": "4.0.0",
-        "contentHash": "qAWbsg8dihy4UlTCW89Vc9LPKwx12lCR4JlM+ilZX/Jwk1h1++GmgXUV0Rs9lZ/4DivU1hkcfYGBBUzlW088Ug==",
-        "dependencies": {
-          "IdentityModel": "5.1.0",
-          "Microsoft.Extensions.Logging": "5.0.0"
-        }
+        "resolved": "5.2.0",
+        "contentHash": "nuhkbaDH9l5QzNJp2MtP3qio57MPtiRneUN8Ocr7od0JvSYaIe3gBj/vxllr11S/Qvu1AG4GZXoyv5469ewYDA=="
       },
       "JetBrains.Annotations": {
         "type": "Transitive",
@@ -527,7 +524,7 @@
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.0-rc0024",
+          "Monai.Deploy.Messaging": "0.1.0-rc0025",
           "Monai.Deploy.Storage": "0.1.0-rc0014"
         }
       }

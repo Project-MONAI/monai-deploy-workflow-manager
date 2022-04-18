@@ -30,11 +30,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         public const string ArgoPhaseSkipped = "Skipped";
         public const string ArgoPhaseRunning = "Running";
         public const string ArgoPhasePending = "Pending";
-        
+
         public const string LabelCreator = "creator";
         public const string LabelCreatorValue = "monai-deploy";
 
         public static readonly IList<string> ArgoFailurePhases = new List<string> { ArgoPhaseFailed, ArgoPhaseError };
     }
-
 }

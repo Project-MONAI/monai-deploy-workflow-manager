@@ -41,8 +41,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         public static readonly string TimeoutSeconds = "timeoutSeconds";
 
         /// <summary>
+        /// Key for the setting 'ActiveDeadlineSeconds' of a Argo workflow.
+        /// </summary>
+        public static readonly string ArgoApiToken = "apiToken";
+
+        /// <summary>
         /// Required arguments to run the Argo workflow.
         /// </summary>
-        public static readonly IReadOnlyList<string> RequiredParameters = new List<string> { BaseUrl, WorkflowTemplateName, WorkflowTemplateName, WorkflowTemplateTemplateRefName, ExitWorkflowTemplateName, ExitWorkflowTemplateTemplateRefName };
+        public static readonly IReadOnlyList<string> RequiredParameters =
+            new List<string> {
+                BaseUrl,
+                WorkflowTemplateName,
+                WorkflowTemplateTemplateRefName,
+                ExitWorkflowTemplateName,
+                ExitWorkflowTemplateTemplateRefName };
     }
 }

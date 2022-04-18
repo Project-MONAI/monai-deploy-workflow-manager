@@ -18,7 +18,3580 @@ namespace Argo
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.15.10.0 (NJsonSchema v10.6.10.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ArgoClient
+    public partial interface IArgoClient
+    {
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowList> ArchivedWorkflowService_ListArchivedWorkflowsAsync(string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, string namePrefix);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowList> ArchivedWorkflowService_ListArchivedWorkflowsAsync(string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, string namePrefix, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<LabelKeys> ArchivedWorkflowService_ListArchivedWorkflowLabelKeysAsync();
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<LabelKeys> ArchivedWorkflowService_ListArchivedWorkflowLabelKeysAsync(System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<LabelValues> ArchivedWorkflowService_ListArchivedWorkflowLabelValuesAsync(string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<LabelValues> ArchivedWorkflowService_ListArchivedWorkflowLabelValuesAsync(string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> ArchivedWorkflowService_GetArchivedWorkflowAsync(string uid);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> ArchivedWorkflowService_GetArchivedWorkflowAsync(string uid, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ArchivedWorkflowDeletedResponse> ArchivedWorkflowService_DeleteArchivedWorkflowAsync(string uid);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ArchivedWorkflowDeletedResponse> ArchivedWorkflowService_DeleteArchivedWorkflowAsync(string uid, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ClusterWorkflowTemplateList> ClusterWorkflowTemplateService_ListClusterWorkflowTemplatesAsync(string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ClusterWorkflowTemplateList> ClusterWorkflowTemplateService_ListClusterWorkflowTemplatesAsync(string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ClusterWorkflowTemplate> ClusterWorkflowTemplateService_CreateClusterWorkflowTemplateAsync(ClusterWorkflowTemplateCreateRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ClusterWorkflowTemplate> ClusterWorkflowTemplateService_CreateClusterWorkflowTemplateAsync(ClusterWorkflowTemplateCreateRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ClusterWorkflowTemplate> ClusterWorkflowTemplateService_LintClusterWorkflowTemplateAsync(ClusterWorkflowTemplateLintRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ClusterWorkflowTemplate> ClusterWorkflowTemplateService_LintClusterWorkflowTemplateAsync(ClusterWorkflowTemplateLintRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="getOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ClusterWorkflowTemplate> ClusterWorkflowTemplateService_GetClusterWorkflowTemplateAsync(string name, string getOptions_resourceVersion);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="getOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ClusterWorkflowTemplate> ClusterWorkflowTemplateService_GetClusterWorkflowTemplateAsync(string name, string getOptions_resourceVersion, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="name">DEPRECATED: This field is ignored.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ClusterWorkflowTemplate> ClusterWorkflowTemplateService_UpdateClusterWorkflowTemplateAsync(string name, ClusterWorkflowTemplateUpdateRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="name">DEPRECATED: This field is ignored.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ClusterWorkflowTemplate> ClusterWorkflowTemplateService_UpdateClusterWorkflowTemplateAsync(string name, ClusterWorkflowTemplateUpdateRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="deleteOptions_gracePeriodSeconds">The duration in seconds before the object should be deleted. Value must be non-negative integer.
+        /// <br/>The value zero indicates delete immediately. If this value is nil, the default grace period for the
+        /// <br/>specified type will be used.
+        /// <br/>Defaults to a per object value if not specified. zero means delete immediately.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_uid">Specifies the target UID.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_resourceVersion">Specifies the target ResourceVersion
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_orphanDependents">Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7.
+        /// <br/>Should the dependent objects be orphaned. If true/false, the "orphan"
+        /// <br/>finalizer will be added to/removed from the object's finalizers list.
+        /// <br/>Either this field or PropagationPolicy may be set, but not both.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_propagationPolicy">Whether and how garbage collection will be performed.
+        /// <br/>Either this field or OrphanDependents may be set, but not both.
+        /// <br/>The default policy is decided by the existing finalizer set in the
+        /// <br/>metadata.finalizers and the resource-specific default policy.
+        /// <br/>Acceptable values are: 'Orphan' - orphan the dependents; 'Background' -
+        /// <br/>allow the garbage collector to delete the dependents in the background;
+        /// <br/>'Foreground' - a cascading policy that deletes all dependents in the
+        /// <br/>foreground.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_dryRun">When present, indicates that modifications should not be
+        /// <br/>persisted. An invalid or unrecognized dryRun directive will
+        /// <br/>result in an error response and no further processing of the
+        /// <br/>request. Valid values are:
+        /// <br/>- All: all dry run stages will be processed
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ClusterWorkflowTemplateDeleteResponse> ClusterWorkflowTemplateService_DeleteClusterWorkflowTemplateAsync(string name, string deleteOptions_gracePeriodSeconds, string deleteOptions_preconditions_uid, string deleteOptions_preconditions_resourceVersion, bool? deleteOptions_orphanDependents, string deleteOptions_propagationPolicy, System.Collections.Generic.IEnumerable<string> deleteOptions_dryRun);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="deleteOptions_gracePeriodSeconds">The duration in seconds before the object should be deleted. Value must be non-negative integer.
+        /// <br/>The value zero indicates delete immediately. If this value is nil, the default grace period for the
+        /// <br/>specified type will be used.
+        /// <br/>Defaults to a per object value if not specified. zero means delete immediately.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_uid">Specifies the target UID.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_resourceVersion">Specifies the target ResourceVersion
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_orphanDependents">Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7.
+        /// <br/>Should the dependent objects be orphaned. If true/false, the "orphan"
+        /// <br/>finalizer will be added to/removed from the object's finalizers list.
+        /// <br/>Either this field or PropagationPolicy may be set, but not both.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_propagationPolicy">Whether and how garbage collection will be performed.
+        /// <br/>Either this field or OrphanDependents may be set, but not both.
+        /// <br/>The default policy is decided by the existing finalizer set in the
+        /// <br/>metadata.finalizers and the resource-specific default policy.
+        /// <br/>Acceptable values are: 'Orphan' - orphan the dependents; 'Background' -
+        /// <br/>allow the garbage collector to delete the dependents in the background;
+        /// <br/>'Foreground' - a cascading policy that deletes all dependents in the
+        /// <br/>foreground.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_dryRun">When present, indicates that modifications should not be
+        /// <br/>persisted. An invalid or unrecognized dryRun directive will
+        /// <br/>result in an error response and no further processing of the
+        /// <br/>request. Valid values are:
+        /// <br/>- All: all dry run stages will be processed
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ClusterWorkflowTemplateDeleteResponse> ClusterWorkflowTemplateService_DeleteClusterWorkflowTemplateAsync(string name, string deleteOptions_gracePeriodSeconds, string deleteOptions_preconditions_uid, string deleteOptions_preconditions_resourceVersion, bool? deleteOptions_orphanDependents, string deleteOptions_propagationPolicy, System.Collections.Generic.IEnumerable<string> deleteOptions_dryRun, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<CronWorkflowList> CronWorkflowService_ListCronWorkflowsAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<CronWorkflowList> CronWorkflowService_ListCronWorkflowsAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<CronWorkflow> CronWorkflowService_CreateCronWorkflowAsync(string @namespace, CreateCronWorkflowRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<CronWorkflow> CronWorkflowService_CreateCronWorkflowAsync(string @namespace, CreateCronWorkflowRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<CronWorkflow> CronWorkflowService_LintCronWorkflowAsync(string @namespace, LintCronWorkflowRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<CronWorkflow> CronWorkflowService_LintCronWorkflowAsync(string @namespace, LintCronWorkflowRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="getOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<CronWorkflow> CronWorkflowService_GetCronWorkflowAsync(string @namespace, string name, string getOptions_resourceVersion);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="getOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<CronWorkflow> CronWorkflowService_GetCronWorkflowAsync(string @namespace, string name, string getOptions_resourceVersion, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="name">DEPRECATED: This field is ignored.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<CronWorkflow> CronWorkflowService_UpdateCronWorkflowAsync(string @namespace, string name, UpdateCronWorkflowRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="name">DEPRECATED: This field is ignored.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<CronWorkflow> CronWorkflowService_UpdateCronWorkflowAsync(string @namespace, string name, UpdateCronWorkflowRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="deleteOptions_gracePeriodSeconds">The duration in seconds before the object should be deleted. Value must be non-negative integer.
+        /// <br/>The value zero indicates delete immediately. If this value is nil, the default grace period for the
+        /// <br/>specified type will be used.
+        /// <br/>Defaults to a per object value if not specified. zero means delete immediately.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_uid">Specifies the target UID.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_resourceVersion">Specifies the target ResourceVersion
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_orphanDependents">Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7.
+        /// <br/>Should the dependent objects be orphaned. If true/false, the "orphan"
+        /// <br/>finalizer will be added to/removed from the object's finalizers list.
+        /// <br/>Either this field or PropagationPolicy may be set, but not both.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_propagationPolicy">Whether and how garbage collection will be performed.
+        /// <br/>Either this field or OrphanDependents may be set, but not both.
+        /// <br/>The default policy is decided by the existing finalizer set in the
+        /// <br/>metadata.finalizers and the resource-specific default policy.
+        /// <br/>Acceptable values are: 'Orphan' - orphan the dependents; 'Background' -
+        /// <br/>allow the garbage collector to delete the dependents in the background;
+        /// <br/>'Foreground' - a cascading policy that deletes all dependents in the
+        /// <br/>foreground.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_dryRun">When present, indicates that modifications should not be
+        /// <br/>persisted. An invalid or unrecognized dryRun directive will
+        /// <br/>result in an error response and no further processing of the
+        /// <br/>request. Valid values are:
+        /// <br/>- All: all dry run stages will be processed
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<CronWorkflowDeletedResponse> CronWorkflowService_DeleteCronWorkflowAsync(string @namespace, string name, string deleteOptions_gracePeriodSeconds, string deleteOptions_preconditions_uid, string deleteOptions_preconditions_resourceVersion, bool? deleteOptions_orphanDependents, string deleteOptions_propagationPolicy, System.Collections.Generic.IEnumerable<string> deleteOptions_dryRun);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="deleteOptions_gracePeriodSeconds">The duration in seconds before the object should be deleted. Value must be non-negative integer.
+        /// <br/>The value zero indicates delete immediately. If this value is nil, the default grace period for the
+        /// <br/>specified type will be used.
+        /// <br/>Defaults to a per object value if not specified. zero means delete immediately.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_uid">Specifies the target UID.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_resourceVersion">Specifies the target ResourceVersion
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_orphanDependents">Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7.
+        /// <br/>Should the dependent objects be orphaned. If true/false, the "orphan"
+        /// <br/>finalizer will be added to/removed from the object's finalizers list.
+        /// <br/>Either this field or PropagationPolicy may be set, but not both.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_propagationPolicy">Whether and how garbage collection will be performed.
+        /// <br/>Either this field or OrphanDependents may be set, but not both.
+        /// <br/>The default policy is decided by the existing finalizer set in the
+        /// <br/>metadata.finalizers and the resource-specific default policy.
+        /// <br/>Acceptable values are: 'Orphan' - orphan the dependents; 'Background' -
+        /// <br/>allow the garbage collector to delete the dependents in the background;
+        /// <br/>'Foreground' - a cascading policy that deletes all dependents in the
+        /// <br/>foreground.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_dryRun">When present, indicates that modifications should not be
+        /// <br/>persisted. An invalid or unrecognized dryRun directive will
+        /// <br/>result in an error response and no further processing of the
+        /// <br/>request. Valid values are:
+        /// <br/>- All: all dry run stages will be processed
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<CronWorkflowDeletedResponse> CronWorkflowService_DeleteCronWorkflowAsync(string @namespace, string name, string deleteOptions_gracePeriodSeconds, string deleteOptions_preconditions_uid, string deleteOptions_preconditions_resourceVersion, bool? deleteOptions_orphanDependents, string deleteOptions_propagationPolicy, System.Collections.Generic.IEnumerable<string> deleteOptions_dryRun, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<CronWorkflow> CronWorkflowService_ResumeCronWorkflowAsync(string @namespace, string name, CronWorkflowResumeRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<CronWorkflow> CronWorkflowService_ResumeCronWorkflowAsync(string @namespace, string name, CronWorkflowResumeRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<CronWorkflow> CronWorkflowService_SuspendCronWorkflowAsync(string @namespace, string name, CronWorkflowSuspendRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<CronWorkflow> CronWorkflowService_SuspendCronWorkflowAsync(string @namespace, string name, CronWorkflowSuspendRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<EventSourceList> EventSourceService_ListEventSourcesAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<EventSourceList> EventSourceService_ListEventSourcesAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<EventSource> EventSourceService_CreateEventSourceAsync(string @namespace, CreateEventSourceRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<EventSource> EventSourceService_CreateEventSourceAsync(string @namespace, CreateEventSourceRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<EventSource> EventSourceService_GetEventSourceAsync(string @namespace, string name);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<EventSource> EventSourceService_GetEventSourceAsync(string @namespace, string name, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<EventSource> EventSourceService_UpdateEventSourceAsync(string @namespace, string name, UpdateEventSourceRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<EventSource> EventSourceService_UpdateEventSourceAsync(string @namespace, string name, UpdateEventSourceRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="deleteOptions_gracePeriodSeconds">The duration in seconds before the object should be deleted. Value must be non-negative integer.
+        /// <br/>The value zero indicates delete immediately. If this value is nil, the default grace period for the
+        /// <br/>specified type will be used.
+        /// <br/>Defaults to a per object value if not specified. zero means delete immediately.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_uid">Specifies the target UID.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_resourceVersion">Specifies the target ResourceVersion
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_orphanDependents">Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7.
+        /// <br/>Should the dependent objects be orphaned. If true/false, the "orphan"
+        /// <br/>finalizer will be added to/removed from the object's finalizers list.
+        /// <br/>Either this field or PropagationPolicy may be set, but not both.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_propagationPolicy">Whether and how garbage collection will be performed.
+        /// <br/>Either this field or OrphanDependents may be set, but not both.
+        /// <br/>The default policy is decided by the existing finalizer set in the
+        /// <br/>metadata.finalizers and the resource-specific default policy.
+        /// <br/>Acceptable values are: 'Orphan' - orphan the dependents; 'Background' -
+        /// <br/>allow the garbage collector to delete the dependents in the background;
+        /// <br/>'Foreground' - a cascading policy that deletes all dependents in the
+        /// <br/>foreground.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_dryRun">When present, indicates that modifications should not be
+        /// <br/>persisted. An invalid or unrecognized dryRun directive will
+        /// <br/>result in an error response and no further processing of the
+        /// <br/>request. Valid values are:
+        /// <br/>- All: all dry run stages will be processed
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<EventSourceDeletedResponse> EventSourceService_DeleteEventSourceAsync(string @namespace, string name, string deleteOptions_gracePeriodSeconds, string deleteOptions_preconditions_uid, string deleteOptions_preconditions_resourceVersion, bool? deleteOptions_orphanDependents, string deleteOptions_propagationPolicy, System.Collections.Generic.IEnumerable<string> deleteOptions_dryRun);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="deleteOptions_gracePeriodSeconds">The duration in seconds before the object should be deleted. Value must be non-negative integer.
+        /// <br/>The value zero indicates delete immediately. If this value is nil, the default grace period for the
+        /// <br/>specified type will be used.
+        /// <br/>Defaults to a per object value if not specified. zero means delete immediately.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_uid">Specifies the target UID.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_resourceVersion">Specifies the target ResourceVersion
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_orphanDependents">Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7.
+        /// <br/>Should the dependent objects be orphaned. If true/false, the "orphan"
+        /// <br/>finalizer will be added to/removed from the object's finalizers list.
+        /// <br/>Either this field or PropagationPolicy may be set, but not both.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_propagationPolicy">Whether and how garbage collection will be performed.
+        /// <br/>Either this field or OrphanDependents may be set, but not both.
+        /// <br/>The default policy is decided by the existing finalizer set in the
+        /// <br/>metadata.finalizers and the resource-specific default policy.
+        /// <br/>Acceptable values are: 'Orphan' - orphan the dependents; 'Background' -
+        /// <br/>allow the garbage collector to delete the dependents in the background;
+        /// <br/>'Foreground' - a cascading policy that deletes all dependents in the
+        /// <br/>foreground.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_dryRun">When present, indicates that modifications should not be
+        /// <br/>persisted. An invalid or unrecognized dryRun directive will
+        /// <br/>result in an error response and no further processing of the
+        /// <br/>request. Valid values are:
+        /// <br/>- All: all dry run stages will be processed
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<EventSourceDeletedResponse> EventSourceService_DeleteEventSourceAsync(string @namespace, string name, string deleteOptions_gracePeriodSeconds, string deleteOptions_preconditions_uid, string deleteOptions_preconditions_resourceVersion, bool? deleteOptions_orphanDependents, string deleteOptions_propagationPolicy, System.Collections.Generic.IEnumerable<string> deleteOptions_dryRun, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="namespace">The namespace for the io.argoproj.workflow.v1alpha1. This can be empty if the client has cluster scoped permissions.
+        /// <br/>If empty, then the event is "broadcast" to workflow event binding in all namespaces.</param>
+        /// <param name="discriminator">Optional discriminator for the io.argoproj.workflow.v1alpha1. This should almost always be empty.
+        /// <br/>Used for edge-cases where the event payload alone is not provide enough information to discriminate the event.
+        /// <br/>This MUST NOT be used as security mechanism, e.g. to allow two clients to use the same access token, or
+        /// <br/>to support webhooks on unsecured server. Instead, use access tokens.
+        /// <br/>This is made available as `discriminator` in the event binding selector (`/spec/event/selector)`</param>
+        /// <param name="body">The event itself can be any data.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<EventResponse> EventService_ReceiveEventAsync(string @namespace, string discriminator, Item body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="namespace">The namespace for the io.argoproj.workflow.v1alpha1. This can be empty if the client has cluster scoped permissions.
+        /// <br/>If empty, then the event is "broadcast" to workflow event binding in all namespaces.</param>
+        /// <param name="discriminator">Optional discriminator for the io.argoproj.workflow.v1alpha1. This should almost always be empty.
+        /// <br/>Used for edge-cases where the event payload alone is not provide enough information to discriminate the event.
+        /// <br/>This MUST NOT be used as security mechanism, e.g. to allow two clients to use the same access token, or
+        /// <br/>to support webhooks on unsecured server. Instead, use access tokens.
+        /// <br/>This is made available as `discriminator` in the event binding selector (`/spec/event/selector)`</param>
+        /// <param name="body">The event itself can be any data.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<EventResponse> EventService_ReceiveEventAsync(string @namespace, string discriminator, Item body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<InfoResponse> InfoService_GetInfoAsync();
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<InfoResponse> InfoService_GetInfoAsync(System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<PipelineList> PipelineService_ListPipelinesAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<PipelineList> PipelineService_ListPipelinesAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="getOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Pipeline> PipelineService_GetPipelineAsync(string @namespace, string name, string getOptions_resourceVersion);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="getOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Pipeline> PipelineService_GetPipelineAsync(string @namespace, string name, string getOptions_resourceVersion, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="deleteOptions_gracePeriodSeconds">The duration in seconds before the object should be deleted. Value must be non-negative integer.
+        /// <br/>The value zero indicates delete immediately. If this value is nil, the default grace period for the
+        /// <br/>specified type will be used.
+        /// <br/>Defaults to a per object value if not specified. zero means delete immediately.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_uid">Specifies the target UID.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_resourceVersion">Specifies the target ResourceVersion
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_orphanDependents">Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7.
+        /// <br/>Should the dependent objects be orphaned. If true/false, the "orphan"
+        /// <br/>finalizer will be added to/removed from the object's finalizers list.
+        /// <br/>Either this field or PropagationPolicy may be set, but not both.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_propagationPolicy">Whether and how garbage collection will be performed.
+        /// <br/>Either this field or OrphanDependents may be set, but not both.
+        /// <br/>The default policy is decided by the existing finalizer set in the
+        /// <br/>metadata.finalizers and the resource-specific default policy.
+        /// <br/>Acceptable values are: 'Orphan' - orphan the dependents; 'Background' -
+        /// <br/>allow the garbage collector to delete the dependents in the background;
+        /// <br/>'Foreground' - a cascading policy that deletes all dependents in the
+        /// <br/>foreground.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_dryRun">When present, indicates that modifications should not be
+        /// <br/>persisted. An invalid or unrecognized dryRun directive will
+        /// <br/>result in an error response and no further processing of the
+        /// <br/>request. Valid values are:
+        /// <br/>- All: all dry run stages will be processed
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<DeletePipelineResponse> PipelineService_DeletePipelineAsync(string @namespace, string name, string deleteOptions_gracePeriodSeconds, string deleteOptions_preconditions_uid, string deleteOptions_preconditions_resourceVersion, bool? deleteOptions_orphanDependents, string deleteOptions_propagationPolicy, System.Collections.Generic.IEnumerable<string> deleteOptions_dryRun);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="deleteOptions_gracePeriodSeconds">The duration in seconds before the object should be deleted. Value must be non-negative integer.
+        /// <br/>The value zero indicates delete immediately. If this value is nil, the default grace period for the
+        /// <br/>specified type will be used.
+        /// <br/>Defaults to a per object value if not specified. zero means delete immediately.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_uid">Specifies the target UID.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_resourceVersion">Specifies the target ResourceVersion
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_orphanDependents">Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7.
+        /// <br/>Should the dependent objects be orphaned. If true/false, the "orphan"
+        /// <br/>finalizer will be added to/removed from the object's finalizers list.
+        /// <br/>Either this field or PropagationPolicy may be set, but not both.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_propagationPolicy">Whether and how garbage collection will be performed.
+        /// <br/>Either this field or OrphanDependents may be set, but not both.
+        /// <br/>The default policy is decided by the existing finalizer set in the
+        /// <br/>metadata.finalizers and the resource-specific default policy.
+        /// <br/>Acceptable values are: 'Orphan' - orphan the dependents; 'Background' -
+        /// <br/>allow the garbage collector to delete the dependents in the background;
+        /// <br/>'Foreground' - a cascading policy that deletes all dependents in the
+        /// <br/>foreground.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_dryRun">When present, indicates that modifications should not be
+        /// <br/>persisted. An invalid or unrecognized dryRun directive will
+        /// <br/>result in an error response and no further processing of the
+        /// <br/>request. Valid values are:
+        /// <br/>- All: all dry run stages will be processed
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<DeletePipelineResponse> PipelineService_DeletePipelineAsync(string @namespace, string name, string deleteOptions_gracePeriodSeconds, string deleteOptions_preconditions_uid, string deleteOptions_preconditions_resourceVersion, bool? deleteOptions_orphanDependents, string deleteOptions_propagationPolicy, System.Collections.Generic.IEnumerable<string> deleteOptions_dryRun, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<RestartPipelineResponse> PipelineService_RestartPipelineAsync(string @namespace, string name);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<RestartPipelineResponse> PipelineService_RestartPipelineAsync(string @namespace, string name, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<SensorList> SensorService_ListSensorsAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<SensorList> SensorService_ListSensorsAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Sensor> SensorService_CreateSensorAsync(string @namespace, CreateSensorRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Sensor> SensorService_CreateSensorAsync(string @namespace, CreateSensorRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="getOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Sensor> SensorService_GetSensorAsync(string @namespace, string name, string getOptions_resourceVersion);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="getOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Sensor> SensorService_GetSensorAsync(string @namespace, string name, string getOptions_resourceVersion, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Sensor> SensorService_UpdateSensorAsync(string @namespace, string name, UpdateSensorRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Sensor> SensorService_UpdateSensorAsync(string @namespace, string name, UpdateSensorRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="deleteOptions_gracePeriodSeconds">The duration in seconds before the object should be deleted. Value must be non-negative integer.
+        /// <br/>The value zero indicates delete immediately. If this value is nil, the default grace period for the
+        /// <br/>specified type will be used.
+        /// <br/>Defaults to a per object value if not specified. zero means delete immediately.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_uid">Specifies the target UID.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_resourceVersion">Specifies the target ResourceVersion
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_orphanDependents">Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7.
+        /// <br/>Should the dependent objects be orphaned. If true/false, the "orphan"
+        /// <br/>finalizer will be added to/removed from the object's finalizers list.
+        /// <br/>Either this field or PropagationPolicy may be set, but not both.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_propagationPolicy">Whether and how garbage collection will be performed.
+        /// <br/>Either this field or OrphanDependents may be set, but not both.
+        /// <br/>The default policy is decided by the existing finalizer set in the
+        /// <br/>metadata.finalizers and the resource-specific default policy.
+        /// <br/>Acceptable values are: 'Orphan' - orphan the dependents; 'Background' -
+        /// <br/>allow the garbage collector to delete the dependents in the background;
+        /// <br/>'Foreground' - a cascading policy that deletes all dependents in the
+        /// <br/>foreground.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_dryRun">When present, indicates that modifications should not be
+        /// <br/>persisted. An invalid or unrecognized dryRun directive will
+        /// <br/>result in an error response and no further processing of the
+        /// <br/>request. Valid values are:
+        /// <br/>- All: all dry run stages will be processed
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<DeleteSensorResponse> SensorService_DeleteSensorAsync(string @namespace, string name, string deleteOptions_gracePeriodSeconds, string deleteOptions_preconditions_uid, string deleteOptions_preconditions_resourceVersion, bool? deleteOptions_orphanDependents, string deleteOptions_propagationPolicy, System.Collections.Generic.IEnumerable<string> deleteOptions_dryRun);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="deleteOptions_gracePeriodSeconds">The duration in seconds before the object should be deleted. Value must be non-negative integer.
+        /// <br/>The value zero indicates delete immediately. If this value is nil, the default grace period for the
+        /// <br/>specified type will be used.
+        /// <br/>Defaults to a per object value if not specified. zero means delete immediately.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_uid">Specifies the target UID.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_resourceVersion">Specifies the target ResourceVersion
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_orphanDependents">Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7.
+        /// <br/>Should the dependent objects be orphaned. If true/false, the "orphan"
+        /// <br/>finalizer will be added to/removed from the object's finalizers list.
+        /// <br/>Either this field or PropagationPolicy may be set, but not both.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_propagationPolicy">Whether and how garbage collection will be performed.
+        /// <br/>Either this field or OrphanDependents may be set, but not both.
+        /// <br/>The default policy is decided by the existing finalizer set in the
+        /// <br/>metadata.finalizers and the resource-specific default policy.
+        /// <br/>Acceptable values are: 'Orphan' - orphan the dependents; 'Background' -
+        /// <br/>allow the garbage collector to delete the dependents in the background;
+        /// <br/>'Foreground' - a cascading policy that deletes all dependents in the
+        /// <br/>foreground.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_dryRun">When present, indicates that modifications should not be
+        /// <br/>persisted. An invalid or unrecognized dryRun directive will
+        /// <br/>result in an error response and no further processing of the
+        /// <br/>request. Valid values are:
+        /// <br/>- All: all dry run stages will be processed
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<DeleteSensorResponse> SensorService_DeleteSensorAsync(string @namespace, string name, string deleteOptions_gracePeriodSeconds, string deleteOptions_preconditions_uid, string deleteOptions_preconditions_resourceVersion, bool? deleteOptions_orphanDependents, string deleteOptions_propagationPolicy, System.Collections.Generic.IEnumerable<string> deleteOptions_dryRun, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response> EventSourceService_WatchEventSourcesAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response> EventSourceService_WatchEventSourcesAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="name">optional - only return entries for this event source.</param>
+        /// <param name="eventSourceType">optional - only return entries for this event source type (e.g. `webhook`).</param>
+        /// <param name="eventName">optional - only return entries for this event name (e.g. `example`).</param>
+        /// <param name="grep">optional - only return entries where `msg` matches this regular expression.</param>
+        /// <param name="podLogOptions_container">The container for which to stream logs. Defaults to only container if there is one container in the pod.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_follow">Follow the log stream of the pod. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_previous">Return previous terminated container logs. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_sinceSeconds">A relative time in seconds before the current time from which to show logs. If this value
+        /// <br/>precedes the time a pod was started, only logs since the pod start will be returned.
+        /// <br/>If this value is in the future, no logs will be returned.
+        /// <br/>Only one of sinceSeconds or sinceTime may be specified.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_sinceTime_seconds">Represents seconds of UTC time since Unix epoch
+        /// <br/>1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
+        /// <br/>9999-12-31T23:59:59Z inclusive.</param>
+        /// <param name="podLogOptions_sinceTime_nanos">Non-negative fractions of a second at nanosecond resolution. Negative
+        /// <br/>second values with fractions must still have non-negative nanos values
+        /// <br/>that count forward in time. Must be from 0 to 999,999,999
+        /// <br/>inclusive. This field may be limited in precision depending on context.</param>
+        /// <param name="podLogOptions_timestamps">If true, add an RFC3339 or RFC3339Nano timestamp at the beginning of every line
+        /// <br/>of log output. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_tailLines">If set, the number of lines from the end of the logs to show. If not specified,
+        /// <br/>logs are shown from the creation of the container or sinceSeconds or sinceTime
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_limitBytes">If set, the number of bytes to read from the server before terminating the
+        /// <br/>log output. This may not display a complete final line of logging, and may return
+        /// <br/>slightly more or slightly less than the specified limit.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_insecureSkipTLSVerifyBackend">insecureSkipTLSVerifyBackend indicates that the apiserver should not confirm the validity of the
+        /// <br/>serving certificate of the backend it is connecting to.  This will make the HTTPS connection between the apiserver
+        /// <br/>and the backend insecure. This means the apiserver cannot verify the log data it is receiving came from the real
+        /// <br/>kubelet.  If the kubelet is configured to verify the apiserver's TLS credentials, it does not mean the
+        /// <br/>connection to the real kubelet is vulnerable to a man in the middle attack (e.g. an attacker could not intercept
+        /// <br/>the actual log data coming from the real kubelet).
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response2> EventSourceService_EventSourcesLogsAsync(string @namespace, string name, string eventSourceType, string eventName, string grep, string podLogOptions_container, bool? podLogOptions_follow, bool? podLogOptions_previous, string podLogOptions_sinceSeconds, string podLogOptions_sinceTime_seconds, int? podLogOptions_sinceTime_nanos, bool? podLogOptions_timestamps, string podLogOptions_tailLines, string podLogOptions_limitBytes, bool? podLogOptions_insecureSkipTLSVerifyBackend);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="name">optional - only return entries for this event source.</param>
+        /// <param name="eventSourceType">optional - only return entries for this event source type (e.g. `webhook`).</param>
+        /// <param name="eventName">optional - only return entries for this event name (e.g. `example`).</param>
+        /// <param name="grep">optional - only return entries where `msg` matches this regular expression.</param>
+        /// <param name="podLogOptions_container">The container for which to stream logs. Defaults to only container if there is one container in the pod.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_follow">Follow the log stream of the pod. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_previous">Return previous terminated container logs. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_sinceSeconds">A relative time in seconds before the current time from which to show logs. If this value
+        /// <br/>precedes the time a pod was started, only logs since the pod start will be returned.
+        /// <br/>If this value is in the future, no logs will be returned.
+        /// <br/>Only one of sinceSeconds or sinceTime may be specified.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_sinceTime_seconds">Represents seconds of UTC time since Unix epoch
+        /// <br/>1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
+        /// <br/>9999-12-31T23:59:59Z inclusive.</param>
+        /// <param name="podLogOptions_sinceTime_nanos">Non-negative fractions of a second at nanosecond resolution. Negative
+        /// <br/>second values with fractions must still have non-negative nanos values
+        /// <br/>that count forward in time. Must be from 0 to 999,999,999
+        /// <br/>inclusive. This field may be limited in precision depending on context.</param>
+        /// <param name="podLogOptions_timestamps">If true, add an RFC3339 or RFC3339Nano timestamp at the beginning of every line
+        /// <br/>of log output. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_tailLines">If set, the number of lines from the end of the logs to show. If not specified,
+        /// <br/>logs are shown from the creation of the container or sinceSeconds or sinceTime
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_limitBytes">If set, the number of bytes to read from the server before terminating the
+        /// <br/>log output. This may not display a complete final line of logging, and may return
+        /// <br/>slightly more or slightly less than the specified limit.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_insecureSkipTLSVerifyBackend">insecureSkipTLSVerifyBackend indicates that the apiserver should not confirm the validity of the
+        /// <br/>serving certificate of the backend it is connecting to.  This will make the HTTPS connection between the apiserver
+        /// <br/>and the backend insecure. This means the apiserver cannot verify the log data it is receiving came from the real
+        /// <br/>kubelet.  If the kubelet is configured to verify the apiserver's TLS credentials, it does not mean the
+        /// <br/>connection to the real kubelet is vulnerable to a man in the middle attack (e.g. an attacker could not intercept
+        /// <br/>the actual log data coming from the real kubelet).
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response2> EventSourceService_EventSourcesLogsAsync(string @namespace, string name, string eventSourceType, string eventName, string grep, string podLogOptions_container, bool? podLogOptions_follow, bool? podLogOptions_previous, string podLogOptions_sinceSeconds, string podLogOptions_sinceTime_seconds, int? podLogOptions_sinceTime_nanos, bool? podLogOptions_timestamps, string podLogOptions_tailLines, string podLogOptions_limitBytes, bool? podLogOptions_insecureSkipTLSVerifyBackend, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response3> WorkflowService_WatchEventsAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response3> WorkflowService_WatchEventsAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response4> PipelineService_WatchPipelinesAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response4> PipelineService_WatchPipelinesAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="name">optional - only return entries for this pipeline.</param>
+        /// <param name="stepName">optional - only return entries for this step.</param>
+        /// <param name="grep">optional - only return entries which match this expresssion.</param>
+        /// <param name="podLogOptions_container">The container for which to stream logs. Defaults to only container if there is one container in the pod.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_follow">Follow the log stream of the pod. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_previous">Return previous terminated container logs. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_sinceSeconds">A relative time in seconds before the current time from which to show logs. If this value
+        /// <br/>precedes the time a pod was started, only logs since the pod start will be returned.
+        /// <br/>If this value is in the future, no logs will be returned.
+        /// <br/>Only one of sinceSeconds or sinceTime may be specified.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_sinceTime_seconds">Represents seconds of UTC time since Unix epoch
+        /// <br/>1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
+        /// <br/>9999-12-31T23:59:59Z inclusive.</param>
+        /// <param name="podLogOptions_sinceTime_nanos">Non-negative fractions of a second at nanosecond resolution. Negative
+        /// <br/>second values with fractions must still have non-negative nanos values
+        /// <br/>that count forward in time. Must be from 0 to 999,999,999
+        /// <br/>inclusive. This field may be limited in precision depending on context.</param>
+        /// <param name="podLogOptions_timestamps">If true, add an RFC3339 or RFC3339Nano timestamp at the beginning of every line
+        /// <br/>of log output. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_tailLines">If set, the number of lines from the end of the logs to show. If not specified,
+        /// <br/>logs are shown from the creation of the container or sinceSeconds or sinceTime
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_limitBytes">If set, the number of bytes to read from the server before terminating the
+        /// <br/>log output. This may not display a complete final line of logging, and may return
+        /// <br/>slightly more or slightly less than the specified limit.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_insecureSkipTLSVerifyBackend">insecureSkipTLSVerifyBackend indicates that the apiserver should not confirm the validity of the
+        /// <br/>serving certificate of the backend it is connecting to.  This will make the HTTPS connection between the apiserver
+        /// <br/>and the backend insecure. This means the apiserver cannot verify the log data it is receiving came from the real
+        /// <br/>kubelet.  If the kubelet is configured to verify the apiserver's TLS credentials, it does not mean the
+        /// <br/>connection to the real kubelet is vulnerable to a man in the middle attack (e.g. an attacker could not intercept
+        /// <br/>the actual log data coming from the real kubelet).
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response5> PipelineService_PipelineLogsAsync(string @namespace, string name, string stepName, string grep, string podLogOptions_container, bool? podLogOptions_follow, bool? podLogOptions_previous, string podLogOptions_sinceSeconds, string podLogOptions_sinceTime_seconds, int? podLogOptions_sinceTime_nanos, bool? podLogOptions_timestamps, string podLogOptions_tailLines, string podLogOptions_limitBytes, bool? podLogOptions_insecureSkipTLSVerifyBackend);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="name">optional - only return entries for this pipeline.</param>
+        /// <param name="stepName">optional - only return entries for this step.</param>
+        /// <param name="grep">optional - only return entries which match this expresssion.</param>
+        /// <param name="podLogOptions_container">The container for which to stream logs. Defaults to only container if there is one container in the pod.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_follow">Follow the log stream of the pod. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_previous">Return previous terminated container logs. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_sinceSeconds">A relative time in seconds before the current time from which to show logs. If this value
+        /// <br/>precedes the time a pod was started, only logs since the pod start will be returned.
+        /// <br/>If this value is in the future, no logs will be returned.
+        /// <br/>Only one of sinceSeconds or sinceTime may be specified.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_sinceTime_seconds">Represents seconds of UTC time since Unix epoch
+        /// <br/>1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
+        /// <br/>9999-12-31T23:59:59Z inclusive.</param>
+        /// <param name="podLogOptions_sinceTime_nanos">Non-negative fractions of a second at nanosecond resolution. Negative
+        /// <br/>second values with fractions must still have non-negative nanos values
+        /// <br/>that count forward in time. Must be from 0 to 999,999,999
+        /// <br/>inclusive. This field may be limited in precision depending on context.</param>
+        /// <param name="podLogOptions_timestamps">If true, add an RFC3339 or RFC3339Nano timestamp at the beginning of every line
+        /// <br/>of log output. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_tailLines">If set, the number of lines from the end of the logs to show. If not specified,
+        /// <br/>logs are shown from the creation of the container or sinceSeconds or sinceTime
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_limitBytes">If set, the number of bytes to read from the server before terminating the
+        /// <br/>log output. This may not display a complete final line of logging, and may return
+        /// <br/>slightly more or slightly less than the specified limit.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_insecureSkipTLSVerifyBackend">insecureSkipTLSVerifyBackend indicates that the apiserver should not confirm the validity of the
+        /// <br/>serving certificate of the backend it is connecting to.  This will make the HTTPS connection between the apiserver
+        /// <br/>and the backend insecure. This means the apiserver cannot verify the log data it is receiving came from the real
+        /// <br/>kubelet.  If the kubelet is configured to verify the apiserver's TLS credentials, it does not mean the
+        /// <br/>connection to the real kubelet is vulnerable to a man in the middle attack (e.g. an attacker could not intercept
+        /// <br/>the actual log data coming from the real kubelet).
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response5> PipelineService_PipelineLogsAsync(string @namespace, string name, string stepName, string grep, string podLogOptions_container, bool? podLogOptions_follow, bool? podLogOptions_previous, string podLogOptions_sinceSeconds, string podLogOptions_sinceTime_seconds, int? podLogOptions_sinceTime_nanos, bool? podLogOptions_timestamps, string podLogOptions_tailLines, string podLogOptions_limitBytes, bool? podLogOptions_insecureSkipTLSVerifyBackend, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response6> SensorService_WatchSensorsAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response6> SensorService_WatchSensorsAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="name">optional - only return entries for this sensor name.</param>
+        /// <param name="triggerName">optional - only return entries for this trigger.</param>
+        /// <param name="grep">option - only return entries where `msg` contains this regular expressions.</param>
+        /// <param name="podLogOptions_container">The container for which to stream logs. Defaults to only container if there is one container in the pod.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_follow">Follow the log stream of the pod. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_previous">Return previous terminated container logs. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_sinceSeconds">A relative time in seconds before the current time from which to show logs. If this value
+        /// <br/>precedes the time a pod was started, only logs since the pod start will be returned.
+        /// <br/>If this value is in the future, no logs will be returned.
+        /// <br/>Only one of sinceSeconds or sinceTime may be specified.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_sinceTime_seconds">Represents seconds of UTC time since Unix epoch
+        /// <br/>1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
+        /// <br/>9999-12-31T23:59:59Z inclusive.</param>
+        /// <param name="podLogOptions_sinceTime_nanos">Non-negative fractions of a second at nanosecond resolution. Negative
+        /// <br/>second values with fractions must still have non-negative nanos values
+        /// <br/>that count forward in time. Must be from 0 to 999,999,999
+        /// <br/>inclusive. This field may be limited in precision depending on context.</param>
+        /// <param name="podLogOptions_timestamps">If true, add an RFC3339 or RFC3339Nano timestamp at the beginning of every line
+        /// <br/>of log output. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_tailLines">If set, the number of lines from the end of the logs to show. If not specified,
+        /// <br/>logs are shown from the creation of the container or sinceSeconds or sinceTime
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_limitBytes">If set, the number of bytes to read from the server before terminating the
+        /// <br/>log output. This may not display a complete final line of logging, and may return
+        /// <br/>slightly more or slightly less than the specified limit.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_insecureSkipTLSVerifyBackend">insecureSkipTLSVerifyBackend indicates that the apiserver should not confirm the validity of the
+        /// <br/>serving certificate of the backend it is connecting to.  This will make the HTTPS connection between the apiserver
+        /// <br/>and the backend insecure. This means the apiserver cannot verify the log data it is receiving came from the real
+        /// <br/>kubelet.  If the kubelet is configured to verify the apiserver's TLS credentials, it does not mean the
+        /// <br/>connection to the real kubelet is vulnerable to a man in the middle attack (e.g. an attacker could not intercept
+        /// <br/>the actual log data coming from the real kubelet).
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response7> SensorService_SensorsLogsAsync(string @namespace, string name, string triggerName, string grep, string podLogOptions_container, bool? podLogOptions_follow, bool? podLogOptions_previous, string podLogOptions_sinceSeconds, string podLogOptions_sinceTime_seconds, int? podLogOptions_sinceTime_nanos, bool? podLogOptions_timestamps, string podLogOptions_tailLines, string podLogOptions_limitBytes, bool? podLogOptions_insecureSkipTLSVerifyBackend);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="name">optional - only return entries for this sensor name.</param>
+        /// <param name="triggerName">optional - only return entries for this trigger.</param>
+        /// <param name="grep">option - only return entries where `msg` contains this regular expressions.</param>
+        /// <param name="podLogOptions_container">The container for which to stream logs. Defaults to only container if there is one container in the pod.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_follow">Follow the log stream of the pod. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_previous">Return previous terminated container logs. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_sinceSeconds">A relative time in seconds before the current time from which to show logs. If this value
+        /// <br/>precedes the time a pod was started, only logs since the pod start will be returned.
+        /// <br/>If this value is in the future, no logs will be returned.
+        /// <br/>Only one of sinceSeconds or sinceTime may be specified.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_sinceTime_seconds">Represents seconds of UTC time since Unix epoch
+        /// <br/>1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
+        /// <br/>9999-12-31T23:59:59Z inclusive.</param>
+        /// <param name="podLogOptions_sinceTime_nanos">Non-negative fractions of a second at nanosecond resolution. Negative
+        /// <br/>second values with fractions must still have non-negative nanos values
+        /// <br/>that count forward in time. Must be from 0 to 999,999,999
+        /// <br/>inclusive. This field may be limited in precision depending on context.</param>
+        /// <param name="podLogOptions_timestamps">If true, add an RFC3339 or RFC3339Nano timestamp at the beginning of every line
+        /// <br/>of log output. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_tailLines">If set, the number of lines from the end of the logs to show. If not specified,
+        /// <br/>logs are shown from the creation of the container or sinceSeconds or sinceTime
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_limitBytes">If set, the number of bytes to read from the server before terminating the
+        /// <br/>log output. This may not display a complete final line of logging, and may return
+        /// <br/>slightly more or slightly less than the specified limit.
+        /// <br/>+optional.</param>
+        /// <param name="podLogOptions_insecureSkipTLSVerifyBackend">insecureSkipTLSVerifyBackend indicates that the apiserver should not confirm the validity of the
+        /// <br/>serving certificate of the backend it is connecting to.  This will make the HTTPS connection between the apiserver
+        /// <br/>and the backend insecure. This means the apiserver cannot verify the log data it is receiving came from the real
+        /// <br/>kubelet.  If the kubelet is configured to verify the apiserver's TLS credentials, it does not mean the
+        /// <br/>connection to the real kubelet is vulnerable to a man in the middle attack (e.g. an attacker could not intercept
+        /// <br/>the actual log data coming from the real kubelet).
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response7> SensorService_SensorsLogsAsync(string @namespace, string name, string triggerName, string grep, string podLogOptions_container, bool? podLogOptions_follow, bool? podLogOptions_previous, string podLogOptions_sinceSeconds, string podLogOptions_sinceTime_seconds, int? podLogOptions_sinceTime_nanos, bool? podLogOptions_timestamps, string podLogOptions_tailLines, string podLogOptions_limitBytes, bool? podLogOptions_insecureSkipTLSVerifyBackend, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response8> PipelineService_WatchStepsAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response8> PipelineService_WatchStepsAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<GetUserInfoResponse> InfoService_GetUserInfoAsync();
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<GetUserInfoResponse> InfoService_GetUserInfoAsync(System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Version> InfoService_GetVersionAsync();
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Version> InfoService_GetVersionAsync(System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowEventBindingList> EventService_ListWorkflowEventBindingsAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowEventBindingList> EventService_ListWorkflowEventBindingsAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response9> WorkflowService_WatchWorkflowsAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, string fields);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response9> WorkflowService_WatchWorkflowsAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, string fields, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowTemplateList> WorkflowTemplateService_ListWorkflowTemplatesAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowTemplateList> WorkflowTemplateService_ListWorkflowTemplatesAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowTemplate> WorkflowTemplateService_CreateWorkflowTemplateAsync(string @namespace, WorkflowTemplateCreateRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowTemplate> WorkflowTemplateService_CreateWorkflowTemplateAsync(string @namespace, WorkflowTemplateCreateRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowTemplate> WorkflowTemplateService_LintWorkflowTemplateAsync(string @namespace, WorkflowTemplateLintRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowTemplate> WorkflowTemplateService_LintWorkflowTemplateAsync(string @namespace, WorkflowTemplateLintRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="getOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowTemplate> WorkflowTemplateService_GetWorkflowTemplateAsync(string @namespace, string name, string getOptions_resourceVersion);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="getOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowTemplate> WorkflowTemplateService_GetWorkflowTemplateAsync(string @namespace, string name, string getOptions_resourceVersion, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="name">DEPRECATED: This field is ignored.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowTemplate> WorkflowTemplateService_UpdateWorkflowTemplateAsync(string @namespace, string name, WorkflowTemplateUpdateRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="name">DEPRECATED: This field is ignored.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowTemplate> WorkflowTemplateService_UpdateWorkflowTemplateAsync(string @namespace, string name, WorkflowTemplateUpdateRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="deleteOptions_gracePeriodSeconds">The duration in seconds before the object should be deleted. Value must be non-negative integer.
+        /// <br/>The value zero indicates delete immediately. If this value is nil, the default grace period for the
+        /// <br/>specified type will be used.
+        /// <br/>Defaults to a per object value if not specified. zero means delete immediately.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_uid">Specifies the target UID.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_resourceVersion">Specifies the target ResourceVersion
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_orphanDependents">Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7.
+        /// <br/>Should the dependent objects be orphaned. If true/false, the "orphan"
+        /// <br/>finalizer will be added to/removed from the object's finalizers list.
+        /// <br/>Either this field or PropagationPolicy may be set, but not both.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_propagationPolicy">Whether and how garbage collection will be performed.
+        /// <br/>Either this field or OrphanDependents may be set, but not both.
+        /// <br/>The default policy is decided by the existing finalizer set in the
+        /// <br/>metadata.finalizers and the resource-specific default policy.
+        /// <br/>Acceptable values are: 'Orphan' - orphan the dependents; 'Background' -
+        /// <br/>allow the garbage collector to delete the dependents in the background;
+        /// <br/>'Foreground' - a cascading policy that deletes all dependents in the
+        /// <br/>foreground.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_dryRun">When present, indicates that modifications should not be
+        /// <br/>persisted. An invalid or unrecognized dryRun directive will
+        /// <br/>result in an error response and no further processing of the
+        /// <br/>request. Valid values are:
+        /// <br/>- All: all dry run stages will be processed
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowTemplateDeleteResponse> WorkflowTemplateService_DeleteWorkflowTemplateAsync(string @namespace, string name, string deleteOptions_gracePeriodSeconds, string deleteOptions_preconditions_uid, string deleteOptions_preconditions_resourceVersion, bool? deleteOptions_orphanDependents, string deleteOptions_propagationPolicy, System.Collections.Generic.IEnumerable<string> deleteOptions_dryRun);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="deleteOptions_gracePeriodSeconds">The duration in seconds before the object should be deleted. Value must be non-negative integer.
+        /// <br/>The value zero indicates delete immediately. If this value is nil, the default grace period for the
+        /// <br/>specified type will be used.
+        /// <br/>Defaults to a per object value if not specified. zero means delete immediately.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_uid">Specifies the target UID.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_resourceVersion">Specifies the target ResourceVersion
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_orphanDependents">Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7.
+        /// <br/>Should the dependent objects be orphaned. If true/false, the "orphan"
+        /// <br/>finalizer will be added to/removed from the object's finalizers list.
+        /// <br/>Either this field or PropagationPolicy may be set, but not both.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_propagationPolicy">Whether and how garbage collection will be performed.
+        /// <br/>Either this field or OrphanDependents may be set, but not both.
+        /// <br/>The default policy is decided by the existing finalizer set in the
+        /// <br/>metadata.finalizers and the resource-specific default policy.
+        /// <br/>Acceptable values are: 'Orphan' - orphan the dependents; 'Background' -
+        /// <br/>allow the garbage collector to delete the dependents in the background;
+        /// <br/>'Foreground' - a cascading policy that deletes all dependents in the
+        /// <br/>foreground.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_dryRun">When present, indicates that modifications should not be
+        /// <br/>persisted. An invalid or unrecognized dryRun directive will
+        /// <br/>result in an error response and no further processing of the
+        /// <br/>request. Valid values are:
+        /// <br/>- All: all dry run stages will be processed
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowTemplateDeleteResponse> WorkflowTemplateService_DeleteWorkflowTemplateAsync(string @namespace, string name, string deleteOptions_gracePeriodSeconds, string deleteOptions_preconditions_uid, string deleteOptions_preconditions_resourceVersion, bool? deleteOptions_orphanDependents, string deleteOptions_propagationPolicy, System.Collections.Generic.IEnumerable<string> deleteOptions_dryRun, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <param name="fields">Fields to be included or excluded in the response. e.g. "items.spec,items.status.phase", "-items.status.nodes".</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowList> WorkflowService_ListWorkflowsAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, string fields);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_fieldSelector">A selector to restrict the list of returned objects by their fields.
+        /// <br/>Defaults to everything.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_watch">Watch for changes to the described resources and return them as a stream of
+        /// <br/>add, update, and remove notifications. Specify resourceVersion.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_allowWatchBookmarks">allowWatchBookmarks requests watch events with type "BOOKMARK".
+        /// <br/>Servers that do not implement bookmarks may ignore this flag and
+        /// <br/>bookmarks are sent at the server's discretion. Clients should not
+        /// <br/>assume bookmarks are returned at any specific interval, nor may they
+        /// <br/>assume the server will send any BOOKMARK event during a session.
+        /// <br/>If this is not a watch, this field is ignored.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_resourceVersionMatch">resourceVersionMatch determines how resourceVersion is applied to list calls.
+        /// <br/>It is highly recommended that resourceVersionMatch be set for list calls where
+        /// <br/>resourceVersion is set
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="listOptions_timeoutSeconds">Timeout for the list/watch call.
+        /// <br/>This limits the duration of the call, regardless of any activity or inactivity.
+        /// <br/>+optional.</param>
+        /// <param name="listOptions_limit">limit is a maximum number of responses to return for a list call. If more items exist, the
+        /// <br/>server will set the `continue` field on the list metadata to a value that can be used with the
+        /// <br/>same initial query to retrieve the next set of results. Setting a limit may return fewer than
+        /// <br/>the requested amount of items (up to zero items) in the event all requested objects are
+        /// <br/>filtered out and clients should only use the presence of the continue field to determine whether
+        /// <br/>more results are available. Servers may choose not to support the limit argument and will return
+        /// <br/>all of the available results. If limit is specified and the continue field is empty, clients may
+        /// <br/>assume that no more results are available. This field is not supported if watch is true.
+        /// <br/>
+        /// <br/>The server guarantees that the objects returned when using continue will be identical to issuing
+        /// <br/>a single list call without a limit - that is, no objects created, modified, or deleted after the
+        /// <br/>first request is issued will be included in any subsequent continued requests. This is sometimes
+        /// <br/>referred to as a consistent snapshot, and ensures that a client that is using limit to receive
+        /// <br/>smaller chunks of a very large result can ensure they see all possible objects. If objects are
+        /// <br/>updated during a chunked list the version of the object that was present at the time the first list
+        /// <br/>result was calculated is returned.</param>
+        /// <param name="listOptions_continue">The continue option should be set when retrieving more results from the server. Since this value is
+        /// <br/>server defined, clients may only use the continue value from a previous query result with identical
+        /// <br/>query parameters (except for the value of continue) and the server may reject a continue value it
+        /// <br/>does not recognize. If the specified continue value is no longer valid whether due to expiration
+        /// <br/>(generally five to fifteen minutes) or a configuration change on the server, the server will
+        /// <br/>respond with a 410 ResourceExpired error together with a continue token. If the client needs a
+        /// <br/>consistent list, it must restart their list without the continue field. Otherwise, the client may
+        /// <br/>send another list request with the token received with the 410 error, the server will respond with
+        /// <br/>a list starting from the next key, but from the latest snapshot, which is inconsistent from the
+        /// <br/>previous list results - objects that are created, modified, or deleted after the first list request
+        /// <br/>will be included in the response, as long as their keys are after the "next key".
+        /// <br/>
+        /// <br/>This field is not supported when watch is true. Clients may start a watch from the last
+        /// <br/>resourceVersion value returned by the server and not miss any modifications.</param>
+        /// <param name="fields">Fields to be included or excluded in the response. e.g. "items.spec,items.status.phase", "-items.status.nodes".</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowList> WorkflowService_ListWorkflowsAsync(string @namespace, string listOptions_labelSelector, string listOptions_fieldSelector, bool? listOptions_watch, bool? listOptions_allowWatchBookmarks, string listOptions_resourceVersion, string listOptions_resourceVersionMatch, string listOptions_timeoutSeconds, string listOptions_limit, string listOptions_continue, string fields, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_CreateWorkflowAsync(string @namespace, WorkflowCreateRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_CreateWorkflowAsync(string @namespace, WorkflowCreateRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_LintWorkflowAsync(string @namespace, WorkflowLintRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_LintWorkflowAsync(string @namespace, WorkflowLintRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_SubmitWorkflowAsync(string @namespace, WorkflowSubmitRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_SubmitWorkflowAsync(string @namespace, WorkflowSubmitRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="getOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="fields">Fields to be included or excluded in the response. e.g. "spec,status.phase", "-status.nodes".</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_GetWorkflowAsync(string @namespace, string name, string getOptions_resourceVersion, string fields);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="getOptions_resourceVersion">resourceVersion sets a constraint on what resource versions a request may be served from.
+        /// <br/>See https://kubernetes.io/docs/reference/using-api/api-concepts/#resource-versions for
+        /// <br/>details.
+        /// <br/>
+        /// <br/>Defaults to unset
+        /// <br/>+optional</param>
+        /// <param name="fields">Fields to be included or excluded in the response. e.g. "spec,status.phase", "-status.nodes".</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_GetWorkflowAsync(string @namespace, string name, string getOptions_resourceVersion, string fields, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="deleteOptions_gracePeriodSeconds">The duration in seconds before the object should be deleted. Value must be non-negative integer.
+        /// <br/>The value zero indicates delete immediately. If this value is nil, the default grace period for the
+        /// <br/>specified type will be used.
+        /// <br/>Defaults to a per object value if not specified. zero means delete immediately.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_uid">Specifies the target UID.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_resourceVersion">Specifies the target ResourceVersion
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_orphanDependents">Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7.
+        /// <br/>Should the dependent objects be orphaned. If true/false, the "orphan"
+        /// <br/>finalizer will be added to/removed from the object's finalizers list.
+        /// <br/>Either this field or PropagationPolicy may be set, but not both.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_propagationPolicy">Whether and how garbage collection will be performed.
+        /// <br/>Either this field or OrphanDependents may be set, but not both.
+        /// <br/>The default policy is decided by the existing finalizer set in the
+        /// <br/>metadata.finalizers and the resource-specific default policy.
+        /// <br/>Acceptable values are: 'Orphan' - orphan the dependents; 'Background' -
+        /// <br/>allow the garbage collector to delete the dependents in the background;
+        /// <br/>'Foreground' - a cascading policy that deletes all dependents in the
+        /// <br/>foreground.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_dryRun">When present, indicates that modifications should not be
+        /// <br/>persisted. An invalid or unrecognized dryRun directive will
+        /// <br/>result in an error response and no further processing of the
+        /// <br/>request. Valid values are:
+        /// <br/>- All: all dry run stages will be processed
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowDeleteResponse> WorkflowService_DeleteWorkflowAsync(string @namespace, string name, string deleteOptions_gracePeriodSeconds, string deleteOptions_preconditions_uid, string deleteOptions_preconditions_resourceVersion, bool? deleteOptions_orphanDependents, string deleteOptions_propagationPolicy, System.Collections.Generic.IEnumerable<string> deleteOptions_dryRun);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="deleteOptions_gracePeriodSeconds">The duration in seconds before the object should be deleted. Value must be non-negative integer.
+        /// <br/>The value zero indicates delete immediately. If this value is nil, the default grace period for the
+        /// <br/>specified type will be used.
+        /// <br/>Defaults to a per object value if not specified. zero means delete immediately.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_uid">Specifies the target UID.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_preconditions_resourceVersion">Specifies the target ResourceVersion
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_orphanDependents">Deprecated: please use the PropagationPolicy, this field will be deprecated in 1.7.
+        /// <br/>Should the dependent objects be orphaned. If true/false, the "orphan"
+        /// <br/>finalizer will be added to/removed from the object's finalizers list.
+        /// <br/>Either this field or PropagationPolicy may be set, but not both.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_propagationPolicy">Whether and how garbage collection will be performed.
+        /// <br/>Either this field or OrphanDependents may be set, but not both.
+        /// <br/>The default policy is decided by the existing finalizer set in the
+        /// <br/>metadata.finalizers and the resource-specific default policy.
+        /// <br/>Acceptable values are: 'Orphan' - orphan the dependents; 'Background' -
+        /// <br/>allow the garbage collector to delete the dependents in the background;
+        /// <br/>'Foreground' - a cascading policy that deletes all dependents in the
+        /// <br/>foreground.
+        /// <br/>+optional.</param>
+        /// <param name="deleteOptions_dryRun">When present, indicates that modifications should not be
+        /// <br/>persisted. An invalid or unrecognized dryRun directive will
+        /// <br/>result in an error response and no further processing of the
+        /// <br/>request. Valid values are:
+        /// <br/>- All: all dry run stages will be processed
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WorkflowDeleteResponse> WorkflowService_DeleteWorkflowAsync(string @namespace, string name, string deleteOptions_gracePeriodSeconds, string deleteOptions_preconditions_uid, string deleteOptions_preconditions_resourceVersion, bool? deleteOptions_orphanDependents, string deleteOptions_propagationPolicy, System.Collections.Generic.IEnumerable<string> deleteOptions_dryRun, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="logOptions_container">The container for which to stream logs. Defaults to only container if there is one container in the pod.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_follow">Follow the log stream of the pod. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_previous">Return previous terminated container logs. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_sinceSeconds">A relative time in seconds before the current time from which to show logs. If this value
+        /// <br/>precedes the time a pod was started, only logs since the pod start will be returned.
+        /// <br/>If this value is in the future, no logs will be returned.
+        /// <br/>Only one of sinceSeconds or sinceTime may be specified.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_sinceTime_seconds">Represents seconds of UTC time since Unix epoch
+        /// <br/>1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
+        /// <br/>9999-12-31T23:59:59Z inclusive.</param>
+        /// <param name="logOptions_sinceTime_nanos">Non-negative fractions of a second at nanosecond resolution. Negative
+        /// <br/>second values with fractions must still have non-negative nanos values
+        /// <br/>that count forward in time. Must be from 0 to 999,999,999
+        /// <br/>inclusive. This field may be limited in precision depending on context.</param>
+        /// <param name="logOptions_timestamps">If true, add an RFC3339 or RFC3339Nano timestamp at the beginning of every line
+        /// <br/>of log output. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_tailLines">If set, the number of lines from the end of the logs to show. If not specified,
+        /// <br/>logs are shown from the creation of the container or sinceSeconds or sinceTime
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_limitBytes">If set, the number of bytes to read from the server before terminating the
+        /// <br/>log output. This may not display a complete final line of logging, and may return
+        /// <br/>slightly more or slightly less than the specified limit.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_insecureSkipTLSVerifyBackend">insecureSkipTLSVerifyBackend indicates that the apiserver should not confirm the validity of the
+        /// <br/>serving certificate of the backend it is connecting to.  This will make the HTTPS connection between the apiserver
+        /// <br/>and the backend insecure. This means the apiserver cannot verify the log data it is receiving came from the real
+        /// <br/>kubelet.  If the kubelet is configured to verify the apiserver's TLS credentials, it does not mean the
+        /// <br/>connection to the real kubelet is vulnerable to a man in the middle attack (e.g. an attacker could not intercept
+        /// <br/>the actual log data coming from the real kubelet).
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response10> WorkflowService_WorkflowLogsAsync(string @namespace, string name, string podName, string logOptions_container, bool? logOptions_follow, bool? logOptions_previous, string logOptions_sinceSeconds, string logOptions_sinceTime_seconds, int? logOptions_sinceTime_nanos, bool? logOptions_timestamps, string logOptions_tailLines, string logOptions_limitBytes, bool? logOptions_insecureSkipTLSVerifyBackend, string grep, string selector);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="logOptions_container">The container for which to stream logs. Defaults to only container if there is one container in the pod.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_follow">Follow the log stream of the pod. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_previous">Return previous terminated container logs. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_sinceSeconds">A relative time in seconds before the current time from which to show logs. If this value
+        /// <br/>precedes the time a pod was started, only logs since the pod start will be returned.
+        /// <br/>If this value is in the future, no logs will be returned.
+        /// <br/>Only one of sinceSeconds or sinceTime may be specified.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_sinceTime_seconds">Represents seconds of UTC time since Unix epoch
+        /// <br/>1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
+        /// <br/>9999-12-31T23:59:59Z inclusive.</param>
+        /// <param name="logOptions_sinceTime_nanos">Non-negative fractions of a second at nanosecond resolution. Negative
+        /// <br/>second values with fractions must still have non-negative nanos values
+        /// <br/>that count forward in time. Must be from 0 to 999,999,999
+        /// <br/>inclusive. This field may be limited in precision depending on context.</param>
+        /// <param name="logOptions_timestamps">If true, add an RFC3339 or RFC3339Nano timestamp at the beginning of every line
+        /// <br/>of log output. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_tailLines">If set, the number of lines from the end of the logs to show. If not specified,
+        /// <br/>logs are shown from the creation of the container or sinceSeconds or sinceTime
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_limitBytes">If set, the number of bytes to read from the server before terminating the
+        /// <br/>log output. This may not display a complete final line of logging, and may return
+        /// <br/>slightly more or slightly less than the specified limit.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_insecureSkipTLSVerifyBackend">insecureSkipTLSVerifyBackend indicates that the apiserver should not confirm the validity of the
+        /// <br/>serving certificate of the backend it is connecting to.  This will make the HTTPS connection between the apiserver
+        /// <br/>and the backend insecure. This means the apiserver cannot verify the log data it is receiving came from the real
+        /// <br/>kubelet.  If the kubelet is configured to verify the apiserver's TLS credentials, it does not mean the
+        /// <br/>connection to the real kubelet is vulnerable to a man in the middle attack (e.g. an attacker could not intercept
+        /// <br/>the actual log data coming from the real kubelet).
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response10> WorkflowService_WorkflowLogsAsync(string @namespace, string name, string podName, string logOptions_container, bool? logOptions_follow, bool? logOptions_previous, string logOptions_sinceSeconds, string logOptions_sinceTime_seconds, int? logOptions_sinceTime_nanos, bool? logOptions_timestamps, string logOptions_tailLines, string logOptions_limitBytes, bool? logOptions_insecureSkipTLSVerifyBackend, string grep, string selector, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_ResubmitWorkflowAsync(string @namespace, string name, WorkflowResubmitRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_ResubmitWorkflowAsync(string @namespace, string name, WorkflowResubmitRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_ResumeWorkflowAsync(string @namespace, string name, WorkflowResumeRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_ResumeWorkflowAsync(string @namespace, string name, WorkflowResumeRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_RetryWorkflowAsync(string @namespace, string name, WorkflowRetryRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_RetryWorkflowAsync(string @namespace, string name, WorkflowRetryRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_SetWorkflowAsync(string @namespace, string name, WorkflowSetRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_SetWorkflowAsync(string @namespace, string name, WorkflowSetRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_StopWorkflowAsync(string @namespace, string name, WorkflowStopRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_StopWorkflowAsync(string @namespace, string name, WorkflowStopRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_SuspendWorkflowAsync(string @namespace, string name, WorkflowSuspendRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_SuspendWorkflowAsync(string @namespace, string name, WorkflowSuspendRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_TerminateWorkflowAsync(string @namespace, string name, WorkflowTerminateRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Workflow> WorkflowService_TerminateWorkflowAsync(string @namespace, string name, WorkflowTerminateRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <summary>
+        /// DEPRECATED: Cannot work via HTTP if podName is an empty string. Use WorkflowLogs.
+        /// </summary>
+        /// <param name="logOptions_container">The container for which to stream logs. Defaults to only container if there is one container in the pod.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_follow">Follow the log stream of the pod. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_previous">Return previous terminated container logs. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_sinceSeconds">A relative time in seconds before the current time from which to show logs. If this value
+        /// <br/>precedes the time a pod was started, only logs since the pod start will be returned.
+        /// <br/>If this value is in the future, no logs will be returned.
+        /// <br/>Only one of sinceSeconds or sinceTime may be specified.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_sinceTime_seconds">Represents seconds of UTC time since Unix epoch
+        /// <br/>1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
+        /// <br/>9999-12-31T23:59:59Z inclusive.</param>
+        /// <param name="logOptions_sinceTime_nanos">Non-negative fractions of a second at nanosecond resolution. Negative
+        /// <br/>second values with fractions must still have non-negative nanos values
+        /// <br/>that count forward in time. Must be from 0 to 999,999,999
+        /// <br/>inclusive. This field may be limited in precision depending on context.</param>
+        /// <param name="logOptions_timestamps">If true, add an RFC3339 or RFC3339Nano timestamp at the beginning of every line
+        /// <br/>of log output. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_tailLines">If set, the number of lines from the end of the logs to show. If not specified,
+        /// <br/>logs are shown from the creation of the container or sinceSeconds or sinceTime
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_limitBytes">If set, the number of bytes to read from the server before terminating the
+        /// <br/>log output. This may not display a complete final line of logging, and may return
+        /// <br/>slightly more or slightly less than the specified limit.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_insecureSkipTLSVerifyBackend">insecureSkipTLSVerifyBackend indicates that the apiserver should not confirm the validity of the
+        /// <br/>serving certificate of the backend it is connecting to.  This will make the HTTPS connection between the apiserver
+        /// <br/>and the backend insecure. This means the apiserver cannot verify the log data it is receiving came from the real
+        /// <br/>kubelet.  If the kubelet is configured to verify the apiserver's TLS credentials, it does not mean the
+        /// <br/>connection to the real kubelet is vulnerable to a man in the middle attack (e.g. an attacker could not intercept
+        /// <br/>the actual log data coming from the real kubelet).
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response11> WorkflowService_PodLogsAsync(string @namespace, string name, string podName, string logOptions_container, bool? logOptions_follow, bool? logOptions_previous, string logOptions_sinceSeconds, string logOptions_sinceTime_seconds, int? logOptions_sinceTime_nanos, bool? logOptions_timestamps, string logOptions_tailLines, string logOptions_limitBytes, bool? logOptions_insecureSkipTLSVerifyBackend, string grep, string selector);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// DEPRECATED: Cannot work via HTTP if podName is an empty string. Use WorkflowLogs.
+        /// </summary>
+        /// <param name="logOptions_container">The container for which to stream logs. Defaults to only container if there is one container in the pod.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_follow">Follow the log stream of the pod. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_previous">Return previous terminated container logs. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_sinceSeconds">A relative time in seconds before the current time from which to show logs. If this value
+        /// <br/>precedes the time a pod was started, only logs since the pod start will be returned.
+        /// <br/>If this value is in the future, no logs will be returned.
+        /// <br/>Only one of sinceSeconds or sinceTime may be specified.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_sinceTime_seconds">Represents seconds of UTC time since Unix epoch
+        /// <br/>1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
+        /// <br/>9999-12-31T23:59:59Z inclusive.</param>
+        /// <param name="logOptions_sinceTime_nanos">Non-negative fractions of a second at nanosecond resolution. Negative
+        /// <br/>second values with fractions must still have non-negative nanos values
+        /// <br/>that count forward in time. Must be from 0 to 999,999,999
+        /// <br/>inclusive. This field may be limited in precision depending on context.</param>
+        /// <param name="logOptions_timestamps">If true, add an RFC3339 or RFC3339Nano timestamp at the beginning of every line
+        /// <br/>of log output. Defaults to false.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_tailLines">If set, the number of lines from the end of the logs to show. If not specified,
+        /// <br/>logs are shown from the creation of the container or sinceSeconds or sinceTime
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_limitBytes">If set, the number of bytes to read from the server before terminating the
+        /// <br/>log output. This may not display a complete final line of logging, and may return
+        /// <br/>slightly more or slightly less than the specified limit.
+        /// <br/>+optional.</param>
+        /// <param name="logOptions_insecureSkipTLSVerifyBackend">insecureSkipTLSVerifyBackend indicates that the apiserver should not confirm the validity of the
+        /// <br/>serving certificate of the backend it is connecting to.  This will make the HTTPS connection between the apiserver
+        /// <br/>and the backend insecure. This means the apiserver cannot verify the log data it is receiving came from the real
+        /// <br/>kubelet.  If the kubelet is configured to verify the apiserver's TLS credentials, it does not mean the
+        /// <br/>connection to the real kubelet is vulnerable to a man in the middle attack (e.g. an attacker could not intercept
+        /// <br/>the actual log data coming from the real kubelet).
+        /// <br/>+optional.</param>
+        /// <returns>A successful response.(streaming responses)</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<Response11> WorkflowService_PodLogsAsync(string @namespace, string name, string podName, string logOptions_container, bool? logOptions_follow, bool? logOptions_previous, string logOptions_sinceSeconds, string logOptions_sinceTime_seconds, int? logOptions_sinceTime_nanos, bool? logOptions_timestamps, string logOptions_tailLines, string logOptions_limitBytes, bool? logOptions_insecureSkipTLSVerifyBackend, string grep, string selector, System.Threading.CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Get an output artifact by UID.
+        /// </summary>
+        /// <returns>An artifact file.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task ArtifactService_GetOutputArtifactByUIDAsync(string uid, string podName, string artifactName);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Get an output artifact by UID.
+        /// </summary>
+        /// <returns>An artifact file.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task ArtifactService_GetOutputArtifactByUIDAsync(string uid, string podName, string artifactName, System.Threading.CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Get an output artifact.
+        /// </summary>
+        /// <returns>An artifact file.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task ArtifactService_GetOutputArtifactAsync(string @namespace, string name, string podName, string artifactName);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Get an output artifact.
+        /// </summary>
+        /// <returns>An artifact file.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task ArtifactService_GetOutputArtifactAsync(string @namespace, string name, string podName, string artifactName, System.Threading.CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Get an input artifact by UID.
+        /// </summary>
+        /// <returns>An artifact file.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task ArtifactService_GetInputArtifactByUIDAsync(string uid, string podName, string artifactName);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Get an input artifact by UID.
+        /// </summary>
+        /// <returns>An artifact file.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task ArtifactService_GetInputArtifactByUIDAsync(string uid, string podName, string artifactName, System.Threading.CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Get an input artifact.
+        /// </summary>
+        /// <returns>An artifact file.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task ArtifactService_GetInputArtifactAsync(string @namespace, string name, string podName, string artifactName);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Get an input artifact.
+        /// </summary>
+        /// <returns>An artifact file.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task ArtifactService_GetInputArtifactAsync(string @namespace, string name, string podName, string artifactName, System.Threading.CancellationToken cancellationToken);
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.15.10.0 (NJsonSchema v10.6.10.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ArgoClient : IArgoClient
     {
         private string _baseUrl = "http://localhost:2746";
         private System.Net.Http.HttpClient _httpClient;
@@ -43,7 +3616,7 @@ namespace Argo
             set { _baseUrl = value; }
         }
 
-        protected Newtonsoft.Json.JsonSerializerSettings JsonSerializerSettings { get { return _settings.Value; } }
+        public Newtonsoft.Json.JsonSerializerSettings JsonSerializerSettings { get { return _settings.Value; } }
 
         partial void UpdateJsonSerializerSettings(Newtonsoft.Json.JsonSerializerSettings settings);
 

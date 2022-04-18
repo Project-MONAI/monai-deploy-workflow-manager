@@ -27,12 +27,21 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging
         public static partial void ArgoWorkflowTemplateJson(this ILogger logger, string generateName, string json);
 
         [LoggerMessage(EventId = 1006, Level = LogLevel.Debug, Message = "Creating Argo client with base URL: {baseUrl}")]
-        public static partial void CreatingArgoClient(this ILogger logger, Uri baseUrl);
+        public static partial void CreatingArgoClient(this ILogger logger, string baseUrl);
 
         [LoggerMessage(EventId = 1007, Level = LogLevel.Debug, Message = "Creating Kubernetes client.")]
         public static partial void CreatingKubernetesClient(this ILogger logger);
 
         [LoggerMessage(EventId = 1008, Level = LogLevel.Information, Message = "Argo workflow created: {name}")]
         public static partial void ArgoWorkflowCreated(this ILogger logger, string name);
+
+        [LoggerMessage(EventId = 1009, Level = LogLevel.Debug, Message = "Creating Argo workflow: {generateName}")]
+        public static partial void CreatingArgoWorkflow(this ILogger logger, string generateName);
+
+        [LoggerMessage(EventId = 1010, Level = LogLevel.Information, Message = "Argo plugin initialized: namespace={argoNamespace}, base URL={baseUrl}, activeDeadlineSeconds={activeDeadlineSeconds}, apiToken configured={apiTokenSet}.")]
+        public static partial void Initialized(this ILogger logger, string argoNamespace, string baseUrl, int? activeDeadlineSeconds, bool apiTokenSet);
+
+        [LoggerMessage(EventId = 1011, Level = LogLevel.Error, Message = "Error generating Argo workflow.")]
+        public static partial void ErrorGeneratingWorkflow(this ILogger logger, Exception ex);
     }
 }

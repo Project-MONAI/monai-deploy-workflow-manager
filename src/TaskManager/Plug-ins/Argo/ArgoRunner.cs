@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
-    public class ArgoRunner : AsynchronousRunnerBase, IAsyncDisposable, IDisposable
+    public sealed class ArgoRunner : RunnerBase, IAsyncDisposable
     {
         private readonly List<string> _secretStores;
         private readonly IServiceScope _scope;
@@ -23,8 +23,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         private readonly ILogger<ArgoRunner> _logger;
         private int? _activeDeadlineSeconds;
         private string _namespace;
-        private bool _disposedValue;
-        private Uri _baseUrl;
+        private string _baseUrl = null!;
+        private string? _apiToken;
 
         public ArgoRunner(IServiceScopeFactory serviceScopeFactory, TaskDispatchEvent taskDispatchEvent, ILogger<ArgoRunner> logger)
             : base(taskDispatchEvent)
@@ -57,12 +57,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 _namespace = Event.TaskPluginArguments[Keys.Namespace];
             }
 
-            _baseUrl = new Uri(Event.TaskPluginArguments[Keys.BaseUrl]);
+            if (Event.TaskPluginArguments.ContainsKey(Keys.ArgoApiToken))
+            {
+                _apiToken = Event.TaskPluginArguments[Keys.ArgoApiToken];
+            }
+
+            _baseUrl = Event.TaskPluginArguments[Keys.BaseUrl];
+
+            _logger.Initialized(_namespace, _baseUrl, _activeDeadlineSeconds, (!string.IsNullOrWhiteSpace(_apiToken)));
         }
 
         private void ValidateEventAndInit()
         {
-            if (Event.TaskPluginArguments is null)
+            if (Event.TaskPluginArguments is null || Event.TaskPluginArguments.Count == 0)
             {
                 throw new ValidationException($"Required parameters to execute Argo workflow are missing: {string.Join(',', Keys.RequiredParameters)}");
             }
@@ -81,52 +88,67 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             }
         }
 
-        public override async Task<ExecutionStatus> ExecuteTask()
+        public override async Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken = default)
         {
             using var loggerScope = _logger.BeginScope($"Workflow ID={Event.WorkflowId}, Task ID={Event.TaskId}, Execution ID={Event.ExecutionId}, Argo namespace={_namespace}");
-            var workflow = await BuildWorkflowWrapper().ConfigureAwait(false);
-            var client = _argoProvider.CreateClient(_baseUrl);
+
+            Workflow workflow;
+            try
+            {
+                workflow = await BuildWorkflowWrapper(cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorGeneratingWorkflow(ex);
+                return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Failed, FailureReason = FailureReason.PluginError, Errors = ex.Message };
+            }
 
             try
             {
-                var result = await client.WorkflowService_CreateWorkflowAsync(_namespace, new WorkflowCreateRequest { Namespace = _namespace, Workflow = workflow }).ConfigureAwait(false);
+                var client = _argoProvider.CreateClient(_baseUrl, _apiToken);
+                _logger.CreatingArgoWorkflow(workflow.Metadata.GenerateName);
+                var result = await client.WorkflowService_CreateWorkflowAsync(_namespace, new WorkflowCreateRequest { Namespace = _namespace, Workflow = workflow }, cancellationToken).ConfigureAwait(false);
                 _logger.ArgoWorkflowCreated(result.Metadata.Name);
                 return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Accepted, FailureReason = FailureReason.None };
             }
             catch (Exception ex)
             {
                 _logger.ErrorCreatingWorkflow(ex);
-                return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Failed, FailureReason = FailureReason.Unknown, Errors = ex.Message };
+                return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Failed, FailureReason = FailureReason.PluginError, Errors = ex.Message };
             }
         }
 
-        public override async Task<ExecutionStatus> GetStatus(string identity)
+        public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
         {
             Guard.Against.NullOrWhiteSpace(identity, nameof(identity));
 
-            var client = _argoProvider.CreateClient(_baseUrl);
+            var client = _argoProvider.CreateClient(_baseUrl, _apiToken);
 
             try
             {
-                var workflow = await client.WorkflowService_GetWorkflowAsync(_namespace, identity, null, null).ConfigureAwait(false);
+                var workflow = await client.WorkflowService_GetWorkflowAsync(_namespace, identity, null, null, cancellationToken).ConfigureAwait(false);
                 if (Strings.ArgoFailurePhases.Contains(workflow.Status.Phase, StringComparer.OrdinalIgnoreCase))
                 {
                     return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Failed, FailureReason = FailureReason.ExternalServiceError, Errors = workflow.Status.Message };
                 }
-                else
+                else if (workflow.Status.Phase.Equals(Strings.ArgoPhaseSucceeded, StringComparison.OrdinalIgnoreCase))
                 {
                     return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Succeeded, FailureReason = FailureReason.None };
                 }
+                else
+                {
+                    return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Unknown, FailureReason = FailureReason.Unknown, Errors = $"Argo status = {workflow.Status.Phase}. Messages = {workflow.Status.Message}." };
+                }
+
             }
             catch (Exception ex)
             {
                 _logger.ErrorCreatingWorkflow(ex);
-                return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Failed, FailureReason = FailureReason.Unknown, Errors = ex.Message };
+                return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Failed, FailureReason = FailureReason.PluginError, Errors = ex.Message };
             }
-
         }
 
-        private async Task<Workflow> BuildWorkflowWrapper()
+        private async Task<Workflow> BuildWorkflowWrapper(CancellationToken cancellationToken)
         {
             _logger.GeneratingArgoWorkflow();
             var workflow = new Workflow
@@ -158,7 +180,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             AddExitHookTemplate(workflow);
 
             // Add the main workflow template
-            await AddMainWorkflowTemplate(workflow).ConfigureAwait(false);
+            await AddMainWorkflowTemplate(workflow, cancellationToken).ConfigureAwait(false);
 
             _logger.ArgoWorkflowTemplateGenerated(workflow.Metadata.GenerateName);
             _logger.ArgoWorkflowTemplateJson(workflow.Metadata.GenerateName, JsonConvert.SerializeObject(workflow, Formatting.Indented));
@@ -166,7 +188,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             return workflow;
         }
 
-        private async Task AddMainWorkflowTemplate(Workflow workflow)
+        private async Task AddMainWorkflowTemplate(Workflow workflow, CancellationToken cancellationToken)
         {
             Guard.Against.Null(workflow, nameof(workflow));
 
@@ -184,8 +206,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 }
             };
 
-            await AddArtifacts(mainTemplateStep, Event.Inputs).ConfigureAwait(false);
-            await AddArtifacts(mainTemplateStep, Event.Outputs).ConfigureAwait(false);
+            await AddArtifacts(mainTemplateStep, Event.Inputs, cancellationToken).ConfigureAwait(false);
+            await AddArtifacts(mainTemplateStep, Event.Outputs, cancellationToken).ConfigureAwait(false);
 
             workflow.Spec.Templates.Add(new Template2()
             {
@@ -221,14 +243,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             };
         }
 
-        private async Task AddArtifacts(WorkflowStep workflowStep, List<Messaging.Common.Storage> storageList)
+        private async Task AddArtifacts(WorkflowStep workflowStep, List<Messaging.Common.Storage> storageList, CancellationToken cancellationToken)
         {
             Guard.Against.Null(workflowStep, nameof(workflowStep));
             Guard.Against.Null(storageList, nameof(storageList));
 
             foreach (var storage in storageList)
             {
-                var secret = await GenerateK8sSecretFrom(storage).ConfigureAwait(false);
+                var secret = await GenerateK8sSecretFrom(storage, cancellationToken).ConfigureAwait(false);
                 workflowStep.Arguments.Artifacts.Add(new Artifact
                 {
                     Name = storage.Name,
@@ -246,7 +268,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         }
 
         // TODO: we may need to generate a set of temporary credentials from the storage service.
-        private async Task<string> GenerateK8sSecretFrom(Messaging.Common.Storage storage)
+        private async Task<string> GenerateK8sSecretFrom(Messaging.Common.Storage storage, CancellationToken cancellationToken)
         {
             Guard.Against.Null(storage, nameof(storage));
             Guard.Against.Null(storage.Credentials, nameof(storage.Credentials));
@@ -255,40 +277,29 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             Guard.Against.NullOrWhiteSpace(storage.Credentials.AccessToken, nameof(storage.Credentials.AccessToken));
 
             var client = _kubernetesProvider.CreateClient();
-            var secret = new k8s.Models.V1Secret();
-            secret.Metadata = new k8s.Models.V1ObjectMeta
+            var secret = new k8s.Models.V1Secret
             {
-                Name = $"{storage.Name.ToLowerInvariant()}-{DateTime.UtcNow.Ticks}",
-                Labels = new Dictionary<string, string>
+                Metadata = new k8s.Models.V1ObjectMeta
+                {
+                    Name = $"{storage.Name.ToLowerInvariant()}-{DateTime.UtcNow.Ticks}",
+                    Labels = new Dictionary<string, string>
                 {
                     { Strings.LabelCreator, Strings.LabelCreatorValue }
                 }
-            };
-            secret.Type = Strings.SecretTypeOpaque;
-            secret.Data = new Dictionary<string, byte[]>
-            {
-                { Strings.SecretAccessKey, Encoding.UTF8.GetBytes(storage.Credentials.AccessKey) },
-                { Strings.SecretSecretKey, Encoding.UTF8.GetBytes(storage.Credentials.AccessToken) }
+                },
+                Type = Strings.SecretTypeOpaque,
+                Data = new Dictionary<string, byte[]>
+                {
+                    { Strings.SecretAccessKey, Encoding.UTF8.GetBytes(storage.Credentials.AccessKey) },
+                    { Strings.SecretSecretKey, Encoding.UTF8.GetBytes(storage.Credentials.AccessToken) }
+                }
             };
 
             _logger.GeneratingArtifactSecret(storage.Name);
-            var result = await client.CreateNamespacedSecretWithHttpMessagesAsync(secret, _namespace).ConfigureAwait(false);
+            var result = await client.CreateNamespacedSecretWithHttpMessagesAsync(secret, _namespace, cancellationToken: cancellationToken).ConfigureAwait(false);
             result.Response.EnsureSuccessStatusCode();
             _secretStores.Add(result.Body.Metadata.Name);
             return result.Body.Metadata.Name;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposedValue)
-            {
-                if (disposing)
-                {
-                    _scope.Dispose();
-                }
-
-                _disposedValue = true;
-            }
         }
 
         private async Task RemoveKubenetesSecrets()
@@ -312,17 +323,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             }
         }
 
-        ~ArgoRunner()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: false);
-        }
+        ~ArgoRunner() => Dispose(disposing: false);
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            if (!DisposedValue)
+            {
+                if (disposing)
+                {
+                    _scope.Dispose();
+                }
+            }
+
+            base.Dispose(disposing);
         }
 
         public async ValueTask DisposeAsync()
@@ -333,7 +346,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             GC.SuppressFinalize(this);
         }
 
-        protected virtual async ValueTask DisposeAsyncCore()
+        private async ValueTask DisposeAsyncCore()
         {
             await RemoveKubenetesSecrets().ConfigureAwait(false);
         }

@@ -29,6 +29,7 @@ namespace Monai.Deploy.WorkflowManager.Configuration
 
         public WorkflowManagerOptions()
         {
+            TaskManager = new TaskManagerOptions();
         }
     }
 }

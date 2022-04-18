@@ -1,7 +1,9 @@
 ﻿// SPDX-FileCopyrightText: © 2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
+using Ardalis.GuardClauses;
 using Argo;
+using IdentityModel.Client;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
 
@@ -18,12 +20,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
-        public ArgoClient CreateClient(Uri baseUrl)
+#pragma warning disable CA1054 // URI-like parameters should not be strings
+        public IArgoClient CreateClient(string baseUrl, string? apiToken)
+#pragma warning restore CA1054 // URI-like parameters should not be strings
         {
+            Guard.Against.NullOrWhiteSpace(baseUrl, nameof(baseUrl));
+
             _logger.CreatingArgoClient(baseUrl);
             var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = baseUrl;
-            return new ArgoClient(httpClient);
+            if (apiToken is not null)
+            {
+                httpClient.SetBearerToken(apiToken);
+            }
+            return new ArgoClient(httpClient) { BaseUrl = baseUrl };
         }
     }
 }

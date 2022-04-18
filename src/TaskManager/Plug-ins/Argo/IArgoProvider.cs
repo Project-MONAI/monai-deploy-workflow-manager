@@ -11,7 +11,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         /// Creates an instance of the <see cref="ArgoClient" />
         /// </summary>
         /// <param name="baseUrl">The base URL of the Argo service.</param>
+        /// <param name="apiToken">Token for accessing Argo API.</param>
         /// <returns></returns>
-        ArgoClient CreateClient(Uri baseUrl);
+#pragma warning disable CA1054 // URI-like parameters should not be strings
+        IArgoClient CreateClient(string baseUrl, string? apiToken);
+#pragma warning restore CA1054 // URI-like parameters should not be strings
     }
 }
