@@ -226,6 +226,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         //TODO: change application ID, task topic
         private async Task SendTimeoutEvent(TaskRunnerInstance instance)
         {
+            Guard.Against.Null(instance, nameof(instance));
+
             using var loggingScope = _logger.BeginScope($"Workflow ID={instance.Event.WorkflowId}, Execution ID={instance.Event.ExecutionId}. Correlation ID={instance.Event.CorrelationId}");
             var updateMessage = new JsonMessage<TaskUpdateEvent>(new TaskUpdateEvent
             {
@@ -243,6 +245,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         private void AcknowledgeMessage<T>(JsonMessage<T> message)
         {
             Guard.Against.Null(message, nameof(message));
+
             try
             {
                 _logger.SendingAckMessage(message.MessageDescription);
@@ -369,6 +372,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
         internal void QueueTask(MessageBase message)
         {
+            Guard.Against.Null(message, nameof(message));
+
             _messageQueueStub.Add(message);
         }
 

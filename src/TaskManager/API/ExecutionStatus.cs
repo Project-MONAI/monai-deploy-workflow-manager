@@ -9,17 +9,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
     public class ExecutionStatus
     {
         /// <summary>
-        /// Gets or set the status of the execution.
+        /// Gets or sets the status of the execution.
         /// </summary>
         public TaskStatus Status { get; set; } = TaskStatus.Unknown;
 
         /// <summary>
-        /// Gets or set the reason of a failure.
+        /// Gets or sets the reason of a failure.
         /// </summary>
         public FailureReason FailureReason { get; set; } = FailureReason.None;
 
         /// <summary>
-        /// Gets or set any errors of the execution.
+        /// Gets or sets any errors of the execution.
         /// </summary>
         public string Errors { get; set; } = string.Empty;
 
