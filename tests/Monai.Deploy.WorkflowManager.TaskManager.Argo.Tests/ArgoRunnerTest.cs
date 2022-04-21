@@ -94,7 +94,7 @@ public class ArgoRunnerTest
             .Throws(new Exception("error"));
 
         SetupKubbernetesSecrets()
-            .Returns((V1Secret body, string ns, string dr, string fm, string fv, bool? pretty, IDictionary<string, IList<string>> headers, CancellationToken ct) =>
+            .Returns((V1Secret body, string ns, string dr, string fm, string fv, bool? pretty, IReadOnlyDictionary<string, IReadOnlyList<string>> headers, CancellationToken ct) =>
             {
                 return Task.FromResult(new HttpOperationResponse<V1Secret> { Body = body, Response = new HttpResponseMessage { } });
             });
@@ -117,13 +117,12 @@ public class ArgoRunnerTest
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<bool?>(),
-            It.IsAny<IDictionary<string, IList<string>>>(),
+            It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
             It.IsAny<CancellationToken>()), Times.Once());
 
         await runner.DisposeAsync();
-        _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<V1DeleteOptions>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<bool?>(), It.IsAny<string>(), It.IsAny<bool?>(), It.IsAny<IDictionary<string, IList<string>>>(), It.IsAny<CancellationToken>()), Times.Once());
+        _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<V1DeleteOptions>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<bool?>(), It.IsAny<string>(), It.IsAny<bool?>(), It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(), It.IsAny<CancellationToken>()), Times.Once());
     }
-
 
     [Fact(DisplayName = "ExecuteTask - returns ExecutionStatus when failed to generate K8s secrets")]
     public async Task ArgoRunner_ExecuteTask_ReturnsExecutionStatusWhenFailedToGenerateSecrets()
@@ -137,7 +136,6 @@ public class ArgoRunnerTest
         SetupKubbernetesSecrets()
             .Throws(new Exception("error"));
         SetupKubernetesDeleteSecret();
-
 
         var message = GenerateTaskDispatchEventWithValidArguments();
 
@@ -156,11 +154,11 @@ public class ArgoRunnerTest
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<bool?>(),
-            It.IsAny<IDictionary<string, IList<string>>>(),
+            It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
             It.IsAny<CancellationToken>()), Times.Once());
 
         await runner.DisposeAsync();
-        _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<V1DeleteOptions>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<bool?>(), It.IsAny<string>(), It.IsAny<bool?>(), It.IsAny<IDictionary<string, IList<string>>>(), It.IsAny<CancellationToken>()), Times.Never());
+        _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<V1DeleteOptions>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<bool?>(), It.IsAny<string>(), It.IsAny<bool?>(), It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(), It.IsAny<CancellationToken>()), Times.Never());
     }
 
     [Fact(DisplayName = "ExecuteTask - returns ExecutionStatus on success")]
@@ -173,7 +171,7 @@ public class ArgoRunnerTest
             });
 
         SetupKubbernetesSecrets()
-            .ReturnsAsync((V1Secret body, string ns, string dr, string fm, string fv, bool? pretty, IDictionary<string, IList<string>> headers, CancellationToken ct) =>
+            .ReturnsAsync((V1Secret body, string ns, string dr, string fm, string fv, bool? pretty, IReadOnlyDictionary<string, IReadOnlyList<string>> headers, CancellationToken ct) =>
             {
                 return new HttpOperationResponse<V1Secret> { Body = body, Response = new HttpResponseMessage { } };
             });
@@ -196,11 +194,11 @@ public class ArgoRunnerTest
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<bool?>(),
-            It.IsAny<IDictionary<string, IList<string>>>(),
+            It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
             It.IsAny<CancellationToken>()), Times.Once());
 
         await runner.DisposeAsync();
-        _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<V1DeleteOptions>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<bool?>(), It.IsAny<string>(), It.IsAny<bool?>(), It.IsAny<IDictionary<string, IList<string>>>(), It.IsAny<CancellationToken>()), Times.Once());
+        _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<V1DeleteOptions>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<bool?>(), It.IsAny<string>(), It.IsAny<bool?>(), It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(), It.IsAny<CancellationToken>()), Times.Once());
     }
 
     [Theory(DisplayName = "GetStatus - returns ExecutionStatus on success")]
@@ -308,26 +306,26 @@ public class ArgoRunnerTest
         });
         return message;
     }
+
     private ISetup<IKubernetes, Task<HttpOperationResponse<V1Secret>>> SetupKubbernetesSecrets() => _kubernetesClient.Setup(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
-                     It.IsAny<V1Secret>(),
-                     It.IsAny<string>(),
-                     It.IsAny<string>(),
-                     It.IsAny<string>(),
-                     It.IsAny<string>(),
-                     It.IsAny<bool?>(),
-                     It.IsAny<IDictionary<string, IList<string>>>(),
-                     It.IsAny<CancellationToken>()));
+                      It.IsAny<V1Secret>(),
+                      It.IsAny<string>(),
+                      It.IsAny<string>(),
+                      It.IsAny<string>(),
+                      It.IsAny<string>(),
+                      It.IsAny<bool?>(),
+                      It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
+                      It.IsAny<CancellationToken>()));
 
     private void SetupKubernetesDeleteSecret() => _kubernetesClient.Setup(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
-                 It.IsAny<string>(),
-                 It.IsAny<string>(),
-                 It.IsAny<V1DeleteOptions>(),
-                 It.IsAny<string>(),
-                 It.IsAny<int?>(),
-                 It.IsAny<bool?>(),
-                 It.IsAny<string>(),
-                 It.IsAny<bool?>(),
-                 It.IsAny<IDictionary<string, IList<string>>>(),
-                 It.IsAny<CancellationToken>()));
-
+                  It.IsAny<string>(),
+                  It.IsAny<string>(),
+                  It.IsAny<V1DeleteOptions>(),
+                  It.IsAny<string>(),
+                  It.IsAny<int?>(),
+                  It.IsAny<bool?>(),
+                  It.IsAny<string>(),
+                  It.IsAny<bool?>(),
+                  It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
+                  It.IsAny<CancellationToken>()));
 }

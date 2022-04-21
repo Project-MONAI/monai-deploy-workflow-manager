@@ -10,6 +10,7 @@ using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
 #pragma warning disable CA1054 // URI-like parameters should not be strings
+
     public class ArgoProvider : IArgoProvider
     {
         private readonly ILogger<ArgoProvider> _logger;
@@ -34,5 +35,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             return new ArgoClient(httpClient) { BaseUrl = baseUrl };
         }
     }
+
 #pragma warning restore CA1054 // URI-like parameters should not be strings
 }

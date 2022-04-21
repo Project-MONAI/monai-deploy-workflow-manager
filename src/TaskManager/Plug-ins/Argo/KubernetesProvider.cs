@@ -15,6 +15,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
+
         public IKubernetes CreateClient()
         {
             _logger.CreatingKubernetesClient();

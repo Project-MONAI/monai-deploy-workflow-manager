@@ -3,9 +3,24 @@
 
 using System.Globalization;
 using System.Runtime.Serialization;
+using Ardalis.GuardClauses;
 
 namespace Monai.Deploy.WorkflowManager.Common
 {
+    public static class ServiceNotFoundExceptionGuardExtension
+    {
+        public static void NullService<T>(this IGuardClause guardClause, T service, string parameterName)
+        {
+            Guard.Against.Null(guardClause, nameof(guardClause));
+            Guard.Against.NullOrWhiteSpace(parameterName, nameof(parameterName));
+
+            if (service is null)
+            {
+                throw new ServiceNotFoundException(parameterName);
+            }
+        }
+    }
+
     [Serializable]
     public class ServiceNotFoundException : Exception
     {

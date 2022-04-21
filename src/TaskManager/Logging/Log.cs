@@ -47,7 +47,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Logging
         [LoggerMessage(EventId = 13, Level = LogLevel.Critical, Message = "Failed to start {ServiceName}.")]
         public static partial void ServiceFailedToStart(this ILogger logger, string serviceName, Exception ex);
 
-
         [LoggerMessage(EventId = 100, Level = LogLevel.Error, Message = "Error processing message, message ID={messageId}, correlation ID={correlationId}.")]
         public static partial void ErrorProcessingMessage(this ILogger logger, string? messageId, string? correlationId, Exception ex);
 

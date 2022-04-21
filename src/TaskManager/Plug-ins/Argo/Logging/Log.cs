@@ -7,7 +7,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging
 {
     public static partial class Log
     {
-
         [LoggerMessage(EventId = 1000, Level = LogLevel.Debug, Message = "Generating Kubernetes secrets for accessing artifacts: {name}.")]
         public static partial void GeneratingArtifactSecret(this ILogger logger, string name);
 

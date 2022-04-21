@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: © 2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
+using Ardalis.GuardClauses;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,6 +13,7 @@ using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Messaging.RabbitMq;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.MinIo;
+using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo;
 
@@ -52,48 +54,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
 
             await Task.Run(() =>
             {
-                var correlationId = Guid.NewGuid().ToString();
-                var message = new JsonMessage<TaskDispatchEvent>(new TaskDispatchEvent
-                {
-                    WorkflowId = Guid.NewGuid().ToString(),
-                    TaskId = Guid.NewGuid().ToString(),
-                    ExecutionId = Guid.NewGuid().ToString(),
-                    CorrelationId = correlationId,
-                    TaskAssemblyName = typeof(ArgoRunner).AssemblyQualifiedName!,
-                }, applicationId: "TaskManagerRunner", correlationId: correlationId, deliveryTag: "1");
-                message.Body.TaskPluginArguments.Add(Keys.BaseUrl, argBaseUri);
-                message.Body.TaskPluginArguments.Add(Keys.WorkflowTemplateName, "list-input-artifacts-template");
-                message.Body.TaskPluginArguments.Add(Keys.WorkflowTemplateTemplateRefName, "s3-artifacts-template");
-                message.Body.TaskPluginArguments.Add(Keys.ExitWorkflowTemplateName, "http-template");
-                message.Body.TaskPluginArguments.Add(Keys.ExitWorkflowTemplateTemplateRefName, "http");
-                message.Body.Inputs.Add(new Messaging.Common.Storage
-                {
-                    Name = "input-dicom",
-                    Endpoint = minIoEndpoint,
-                    Credentials = new Messaging.Common.Credentials
-                    {
-                        AccessKey = "minio",
-                        AccessToken = "monaideploy"
-                    },
-                    Bucket = "monaideploy",
-                    SecuredConnection = false,
-                    RelativeRootPath = "/4acc37cd-5e45-4e60-af9a-8c0a96fb5583/dcm"
-                });
-                message.Body.Inputs.Add(new Messaging.Common.Storage
-                {
-                    Name = "input-ehr",
-                    Endpoint = minIoEndpoint,
-                    Credentials = new Messaging.Common.Credentials
-                    {
-                        AccessKey = "minio",
-                        AccessToken = "monaideploy"
-                    },
-                    Bucket = "monaideploy",
-                    SecuredConnection = false,
-                    RelativeRootPath = "/4acc37cd-5e45-4e60-af9a-8c0a96fb5583/ehr"
-                });
-                logger.LogInformation($"Queueing new job with correlation ID={correlationId}.");
-                taskManager.QueueTask(message);
+                var publisher = host.Services.GetRequiredService<IMessageBrokerPublisherService>();
+                Guard.Against.NullService(publisher, nameof(IMessageBrokerPublisherService));
+                var message = GenerateDispatchEvent(argBaseUri, minIoEndpoint);
+                logger.LogInformation($"Queuing new job with correlation ID={message.CorrelationId}.");
+                publisher.Publish(TaskManager.TaskDispatchEvent, message);
             }).ConfigureAwait(false);
 
             exitEvent.WaitOne();
@@ -102,10 +67,55 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
             await host.StopAsync(CancellationToken.None).ConfigureAwait(false);
         }
 
+        private static Message GenerateDispatchEvent(string argBaseUri, string minIoEndpoint)
+        {
+            var correlationId = Guid.NewGuid().ToString();
+            var message = new JsonMessage<TaskDispatchEvent>(new TaskDispatchEvent
+            {
+                WorkflowId = Guid.NewGuid().ToString(),
+                TaskId = Guid.NewGuid().ToString(),
+                ExecutionId = Guid.NewGuid().ToString(),
+                CorrelationId = correlationId,
+                TaskAssemblyName = typeof(ArgoRunner).AssemblyQualifiedName!,
+            }, applicationId: "TaskManagerRunner", correlationId: correlationId, deliveryTag: "1");
+            message.Body.TaskPluginArguments.Add(Keys.BaseUrl, argBaseUri);
+            message.Body.TaskPluginArguments.Add(Keys.WorkflowTemplateName, "list-input-artifacts-template");
+            message.Body.TaskPluginArguments.Add(Keys.WorkflowTemplateTemplateRefName, "s3-artifacts-template");
+            message.Body.TaskPluginArguments.Add(Keys.ExitWorkflowTemplateName, "http-template");
+            message.Body.TaskPluginArguments.Add(Keys.ExitWorkflowTemplateTemplateRefName, "http");
+            message.Body.Inputs.Add(new Messaging.Common.Storage
+            {
+                Name = "input-dicom",
+                Endpoint = minIoEndpoint,
+                Credentials = new Messaging.Common.Credentials
+                {
+                    AccessKey = "minio",
+                    AccessToken = "monaideploy"
+                },
+                Bucket = "monaideploy",
+                SecuredConnection = false,
+                RelativeRootPath = "/4acc37cd-5e45-4e60-af9a-8c0a96fb5583/dcm"
+            });
+            message.Body.Inputs.Add(new Messaging.Common.Storage
+            {
+                Name = "input-ehr",
+                Endpoint = minIoEndpoint,
+                Credentials = new Messaging.Common.Credentials
+                {
+                    AccessKey = "minio",
+                    AccessToken = "monaideploy"
+                },
+                Bucket = "monaideploy",
+                SecuredConnection = false,
+                RelativeRootPath = "/4acc37cd-5e45-4e60-af9a-8c0a96fb5583/ehr"
+            });
+            return message.ToMessage();
+        }
+
         private static void PrintHelp()
         {
             Console.WriteLine($"Arguments: Argo_endpoint MinIO_endpoint");
-            Console.WriteLine($"\te.g.: 'http://argo:2746/' 'min-io-hostname'");
+            Console.WriteLine($"\te.g.: 'http://argo:2746/' 'min-io-hostname:9000'");
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

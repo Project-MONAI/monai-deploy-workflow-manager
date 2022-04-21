@@ -139,7 +139,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 {
                     return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Unknown, FailureReason = FailureReason.Unknown, Errors = $"Argo status = {workflow.Status.Phase}. Messages = {workflow.Status.Message}." };
                 }
-
             }
             catch (Exception ex)
             {
@@ -327,12 +326,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         protected override void Dispose(bool disposing)
         {
-            if (!DisposedValue)
+            if (!DisposedValue && disposing)
             {
-                if (disposing)
-                {
-                    _scope.Dispose();
-                }
+                _scope.Dispose();
             }
 
             base.Dispose(disposing);

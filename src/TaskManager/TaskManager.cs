@@ -1,7 +1,6 @@
 ﻿// SPDX-FileCopyrightText: © 2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
-using System.Collections.Concurrent;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,23 +16,27 @@ using Monai.Deploy.WorkflowManager.Contracts.Rest;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.Logging;
 using TaskStatus = Monai.Deploy.Messaging.Events.TaskStatus;
-using Timer = System.Timers.Timer;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
     public class TaskManager : IHostedService, IDisposable, IMonaiService
     {
-        private readonly SemaphoreSlim _jobTimerSemaphore = new(1);
-        private readonly Timer _jobTimer;
+        //TODO: change application ID, task topic
+        private const string TaskManagerApplicationId = "23f81094-13fb-4964-ad6e-4cd434623ee9";
+
+        internal const string TaskUpdateEvent = "md.tasks.update";
+        internal const string TaskDispatchEvent = "md.tasks.dispatch";
+        internal const string TaskCallbackEvent = "md.tasks.callback";
+
         private readonly ILogger<TaskManager> _logger;
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IServiceScope _scope;
-        private readonly IMessageBrokerPublisherService _messageBrokerPublisherService;
-        private readonly IMessageBrokerSubscriberService _messageBrokerSubscriberService;
-        private readonly BlockingCollection<MessageBase> _messageQueueStub;
         private readonly IDictionary<string, TaskRunnerInstance> _activeExecutions;
         private readonly CancellationTokenSource _cancellationTokenSource;
+
+        private IMessageBrokerPublisherService? _messageBrokerPublisherService;
+        private IMessageBrokerSubscriberService? _messageBrokerSubscriberService;
 
         private long _activeJobs;
         private bool _disposedValue;
@@ -53,89 +56,81 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
             _scope = _serviceScopeFactory.CreateScope();
 
-            _messageBrokerPublisherService = _scope.ServiceProvider.GetRequiredService<IMessageBrokerPublisherService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerPublisherService));
-            _messageBrokerSubscriberService = _scope.ServiceProvider.GetRequiredService<IMessageBrokerSubscriberService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerSubscriberService));
-
-            _messageQueueStub = new BlockingCollection<MessageBase>();
             _activeExecutions = new Dictionary<string, TaskRunnerInstance>();
             _cancellationTokenSource = new CancellationTokenSource();
-            _activeJobs = 0;
 
-            _jobTimer = new Timer(_options.Value.TaskManager.RunnerScanIntervalMs);
-            _jobTimer.Elapsed += CheckRunners;
+            _messageBrokerPublisherService = null;
+            _messageBrokerSubscriberService = null;
+            _activeJobs = 0;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            var task = Task.Run(async () =>
-            {
-                _jobTimer.Start();
+            _messageBrokerPublisherService = _scope.ServiceProvider.GetRequiredService<IMessageBrokerPublisherService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerPublisherService));
+            _messageBrokerSubscriberService = _scope.ServiceProvider.GetRequiredService<IMessageBrokerSubscriberService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerSubscriberService));
 
-                await BackgroundProcessing(cancellationToken).ConfigureAwait(false);
-            }, CancellationToken.None);
+            _messageBrokerSubscriberService.SubscribeAsync(TaskDispatchEvent, string.Empty, TaskDispatchEventReceivedCallback);
+            _messageBrokerSubscriberService.SubscribeAsync(TaskCallbackEvent, string.Empty, TaskCallbackEventReceivedCallback);
 
             Status = ServiceStatus.Running;
             _logger.ServiceStarted(ServiceName);
 
-            if (task.IsCompleted)
-                return task;
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.ServiceStopping(ServiceName);
+
+            _messageBrokerSubscriberService?.Dispose();
+            _messageBrokerPublisherService?.Dispose();
+
             _cancellationTokenSource.Cancel();
-            _jobTimer.Stop();
             Status = ServiceStatus.Stopped;
 
             return Task.CompletedTask;
         }
 
-        private async Task BackgroundProcessing(CancellationToken cancellationToken)
+        private async Task TaskCallbackEventReceivedCallback(MessageReceivedEventArgs args)
         {
-            _logger.ServiceRunning(ServiceName);
-            while (!cancellationToken.IsCancellationRequested)
+            Guard.Against.Null(args, nameof(args));
+            using var loggingScope = _logger.BeginScope($"Message Type={args.Message.MessageDescription}, ID={args.Message.MessageId}. Correlation ID={args.Message.CorrelationId}");
+            var message = args.Message.ConvertToJsonMessage<RunnerCompleteEvent>();
+            try
             {
-                MessageBase? message = null;
-                try
-                {
-                    message = _messageQueueStub.Take(cancellationToken);
-                    using var loggingScope = _logger.BeginScope($"Message Type={message.MessageDescription}, ID={message.MessageId}. Correlation ID={message.CorrelationId}");
-
-                    if (message is JsonMessage<TaskDispatchEvent> taskDispatchMessage)
-                    {
-                        await HandleDispatchTask(taskDispatchMessage).ConfigureAwait(false);
-                    }
-                    else if (message is JsonMessage<RunnerCompleteEvent> runnerCompleteEvent)
-                    {
-                        await HandleRunnerComplete(runnerCompleteEvent).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        _logger.UnsupportedEvent(message.MessageDescription);
-                        _messageBrokerSubscriberService.Reject(message, true);
-                    }
-                }
-                catch (OperationCanceledException ex)
-                {
-                    _logger.ServiceCancelledWithException(ServiceName, ex);
-                }
-                catch (InvalidOperationException ex)
-                {
-                    _logger.ServiceDisposed(ServiceName, ex);
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorProcessingMessage(message?.MessageId, message?.CorrelationId, ex);
-                }
+                await HandleTaskCallback(message).ConfigureAwait(false);
             }
-            Status = ServiceStatus.Cancelled;
-            _logger.ServiceCancelled(ServiceName);
+            catch (OperationCanceledException ex)
+            {
+                _logger.ServiceCancelledWithException(ServiceName, ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorProcessingMessage(message?.MessageId, message?.CorrelationId, ex);
+            }
         }
 
-        //TODO: change application ID, task topic
-        private async Task HandleRunnerComplete(JsonMessage<RunnerCompleteEvent> message)
+        private async Task TaskDispatchEventReceivedCallback(MessageReceivedEventArgs args)
+        {
+            Guard.Against.Null(args, nameof(args));
+
+            using var loggingScope = _logger.BeginScope($"Message Type={args.Message.MessageDescription}, ID={args.Message.MessageId}. Correlation ID={args.Message.CorrelationId}");
+            var message = args.Message.ConvertToJsonMessage<TaskDispatchEvent>();
+            try
+            {
+                await HandleDispatchTask(message).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException ex)
+            {
+                _logger.ServiceCancelledWithException(ServiceName, ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorProcessingMessage(message?.MessageId, message?.CorrelationId, ex);
+            }
+        }
+
+        private async Task HandleTaskCallback(JsonMessage<RunnerCompleteEvent> message)
         {
             Guard.Against.Null(message, nameof(message));
 
@@ -175,6 +170,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
         private async Task HandleDispatchTask(JsonMessage<TaskDispatchEvent> message)
         {
+            Guard.Against.NullService(_messageBrokerSubscriberService, nameof(IMessageBrokerSubscriberService));
             Guard.Against.Null(message, nameof(message));
 
             try
@@ -191,7 +187,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             if (!TryReserveResourceForExecution())
             {
                 _logger.NoResourceAvailableForExecution();
-                _messageBrokerSubscriberService.Reject(message, true);
+                _messageBrokerSubscriberService!.Reject(message, true);
                 return;
             }
 
@@ -223,33 +219,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
         }
 
-        //TODO: change application ID, task topic
-        private async Task SendTimeoutEvent(TaskRunnerInstance instance)
-        {
-            Guard.Against.Null(instance, nameof(instance));
-
-            using var loggingScope = _logger.BeginScope($"Workflow ID={instance.Event.WorkflowId}, Execution ID={instance.Event.ExecutionId}. Correlation ID={instance.Event.CorrelationId}");
-            var updateMessage = new JsonMessage<TaskUpdateEvent>(new TaskUpdateEvent
-            {
-                CorrelationId = instance.Event.CorrelationId,
-                ExecutionId = instance.Event.ExecutionId,
-                Reason = FailureReason.TimedOut,
-                Status = TaskStatus.Canceled,
-                WorkflowId = instance.Event.WorkflowId,
-                TaskId = instance.Event.TaskId,
-            }, "appId", instance.Event.CorrelationId);
-
-            await SendUpdateEvent(updateMessage).ConfigureAwait(false);
-        }
-
         private void AcknowledgeMessage<T>(JsonMessage<T> message)
         {
+            Guard.Against.NullService(_messageBrokerSubscriberService, nameof(IMessageBrokerSubscriberService));
             Guard.Against.Null(message, nameof(message));
 
             try
             {
                 _logger.SendingAckMessage(message.MessageDescription);
-                _messageBrokerSubscriberService.Acknowledge(message);
+                _messageBrokerSubscriberService!.Acknowledge(message);
                 _logger.AckMessageSent(message.MessageDescription);
             }
             catch (Exception ex)
@@ -272,23 +250,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 WorkflowId = workflowId,
                 TaskId = taskId,
                 Message = executionStatus.Errors,
-            }, "appId", message.CorrelationId);
+            }, TaskManagerApplicationId, message.CorrelationId);
         }
 
         //TODO: perform retries
         private async Task SendUpdateEvent(JsonMessage<TaskUpdateEvent> message)
         {
+            Guard.Against.NullService(_messageBrokerPublisherService, nameof(IMessageBrokerPublisherService));
             Guard.Against.Null(message, nameof(message));
 
             try
             {
-                _logger.SendingTaskUpdateMessage("md.tasks.update", message.Body.Reason);
-                await _messageBrokerPublisherService.Publish("md.tasks.update", message.ToMessage()).ConfigureAwait(false);
-                _logger.TaskUpdateMessageSent("md.tasks.update");
+                _logger.SendingTaskUpdateMessage(TaskUpdateEvent, message.Body.Reason);
+                await _messageBrokerPublisherService!.Publish(TaskUpdateEvent, message.ToMessage()).ConfigureAwait(false);
+                _logger.TaskUpdateMessageSent(TaskUpdateEvent);
             }
             catch (Exception ex)
             {
-                _logger.ErrorSendingMessage("md.tasks.update", ex);
+                _logger.ErrorSendingMessage(TaskUpdateEvent, ex);
             }
         }
 
@@ -307,6 +286,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         //TODO: change application ID, task topic
         private async Task HandleMessageException(MessageBase message, string workflowId, string taskId, string executionId, string errors, bool requeue)
         {
+            Guard.Against.NullService(_messageBrokerSubscriberService, nameof(IMessageBrokerSubscriberService));
+
             if (message is null)
             {
                 return;
@@ -317,7 +298,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             try
             {
                 _logger.SendingRejectMessageNoRequeue(message.MessageDescription);
-                _messageBrokerSubscriberService.Reject(message, requeue);
+                _messageBrokerSubscriberService!.Reject(message, requeue);
                 _logger.RejectMessageNoRequeueSent(message.MessageDescription);
             }
             catch (Exception ex)
@@ -334,47 +315,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 WorkflowId = workflowId,
                 TaskId = taskId,
                 Message = errors,
-            }, "appId", message.CorrelationId);
+            }, TaskManagerApplicationId, message.CorrelationId);
 
             await SendUpdateEvent(updateMessage).ConfigureAwait(false);
-        }
-
-        private async void CheckRunners(object? sender, System.Timers.ElapsedEventArgs e)
-        {
-            _jobTimer.Stop();
-
-            try
-            {
-                await _jobTimerSemaphore.WaitAsync().ConfigureAwait(false);
-                var toBeRemoved = new List<string>();
-                foreach (var key in _activeExecutions.Keys)
-                {
-                    if (_activeExecutions[key].HasTimedOut(_options.Value.TaskManager.TaskTimeout))
-                    {
-                        await SendTimeoutEvent(_activeExecutions[key]).ConfigureAwait(false);
-                        toBeRemoved.Add(key);
-                    }
-                }
-
-                toBeRemoved.ForEach(key =>
-                {
-                    _logger.RunnerTimedOut(key);
-                    _activeExecutions.Remove(key);
-                    Interlocked.Decrement(ref _activeJobs);
-                });
-            }
-            finally
-            {
-                _jobTimerSemaphore.Release();
-                _jobTimer.Start();
-            }
-        }
-
-        internal void QueueTask(MessageBase message)
-        {
-            Guard.Against.Null(message, nameof(message));
-
-            _messageQueueStub.Add(message);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -384,8 +327,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 if (disposing)
                 {
                     _scope.Dispose();
-                    _jobTimer?.Dispose();
-                    _jobTimerSemaphore.Dispose();
                 }
 
                 _disposedValue = true;

@@ -14,7 +14,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         /// <param name="apiToken">Token for accessing Argo API.</param>
         /// <returns></returns>
 #pragma warning disable CA1054 // URI-like parameters should not be strings
+
         IArgoClient CreateClient(string baseUrl, string? apiToken);
+
 #pragma warning restore CA1054 // URI-like parameters should not be strings
     }
 }

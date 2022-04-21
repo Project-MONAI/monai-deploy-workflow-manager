@@ -22,7 +22,5 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
         /// Gets or sets any errors of the execution.
         /// </summary>
         public string Errors { get; set; } = string.Empty;
-
-
     }
 }

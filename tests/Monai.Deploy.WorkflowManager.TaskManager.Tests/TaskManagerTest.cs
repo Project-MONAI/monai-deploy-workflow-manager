@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.Configuration;
@@ -21,13 +22,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
     public interface ITestRunnerCallback
     {
         ExecutionStatus GenerateExecuteTaskResult();
+
         ExecutionStatus GenerateGetStatusResult();
     }
 
     internal sealed class TestRunner : RunnerBase
     {
         private readonly ITestRunnerCallback _testRunnerCallback;
-        public ExecutionStatus? Result;
 
         public TestRunner(
             IServiceScopeFactory serviceScopeFactory,
@@ -39,11 +40,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _testRunnerCallback = testRunnerCallback ?? throw new ArgumentNullException(nameof(testRunnerCallback));
         }
 
-        public override Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken)
+        public override Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken = default)
         {
             return Task.FromResult(_testRunnerCallback.GenerateExecuteTaskResult())!;
         }
-        public override Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken)
+
+        public override Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
         {
             return Task.FromResult(_testRunnerCallback.GenerateGetStatusResult())!;
         }
@@ -101,70 +103,54 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             Assert.Equal(ServiceStatus.Stopped, service.Status);
         }
 
-        [Fact(DisplayName = "Task Manager cancels on request")]
-        public async Task TaskManager_Cancelled()
-        {
-            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            _cancellationTokenSource.Cancel();
-
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
-            await Task.Delay(100).ConfigureAwait(false);
-            Assert.Equal(ServiceStatus.Cancelled, service.Status);
-        }
-
-        [Fact(DisplayName = "Task Manager rejects unsupported events")]
-        public async Task TaskManager_RejectsUnsupportedEvents()
-        {
-            var resetEvent = new ManualResetEvent(false);
-            _messageBrokerSubscriberService
-                .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
-                .Callback(() => resetEvent.Set());
-
-            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
-            Assert.Equal(ServiceStatus.Running, service.Status);
-
-            var message = new JsonMessage<TaskUpdateEvent>(
-                new TaskUpdateEvent(),
-                Guid.NewGuid().ToString(),
-                Guid.NewGuid().ToString(),
-                "1");
-
-            service.QueueTask(message);
-            Assert.True(resetEvent.WaitOne(5000));
-
-            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m == message), It.Is<bool>(b => b)), Times.Once());
-        }
-
         [Fact(DisplayName = "Task Manager - TaskDispatchEvent rejects message (no re-queue) on validation failures")]
         public async Task TaskManager_TaskDispatchEvent_ValidationFailure()
         {
-            var resetEvent = new ManualResetEvent(false);
-            _messageBrokerSubscriberService
-                .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
-                .Callback(() => resetEvent.Set());
-
-            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
-            Assert.Equal(ServiceStatus.Running, service.Status);
-
             var message = new JsonMessage<TaskDispatchEvent>(
                 new TaskDispatchEvent(),
                 Guid.NewGuid().ToString(),
                 Guid.NewGuid().ToString(),
                 "1");
+            var resetEvent = new ManualResetEvent(false);
 
-            service.QueueTask(message);
+            _messageBrokerSubscriberService.Setup(
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskDispatchEvent, StringComparison.OrdinalIgnoreCase)),
+                                 It.IsAny<string>(),
+                                 It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
+                                 It.IsAny<ushort>()))
+                .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
+                {
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message)));
+                });
+            _messageBrokerSubscriberService
+                .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
+                .Callback(() => resetEvent.Set());
+
+            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            Assert.Equal(ServiceStatus.Running, service.Status);
+
             Assert.True(resetEvent.WaitOne(5000));
 
-            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m == message), It.Is<bool>(b => !b)), Times.Once());
+            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => message.MessageId == m.MessageId), It.Is<bool>(b => !b)), Times.Once());
         }
 
         [Fact(DisplayName = "Task Manager - TaskDispatchEvent rejects and re-queue message when out of resource")]
         public async Task TaskManager_TaskDispatchEvent_OutOfResource()
         {
             _options.Value.TaskManager.MaximumNumberOfConcurrentJobs = 0;
+            var message = GenerateTaskDispatchEvent();
             var resetEvent = new ManualResetEvent(false);
+
+            _messageBrokerSubscriberService.Setup(
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskDispatchEvent, StringComparison.OrdinalIgnoreCase)),
+                                 It.IsAny<string>(),
+                                 It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
+                                 It.IsAny<ushort>()))
+                .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
+                {
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message)));
+                });
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
                 .Callback(() => resetEvent.Set());
@@ -172,19 +158,28 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             Assert.Equal(ServiceStatus.Running, service.Status);
-            var message = GenerateTaskDispatchEvent();
 
-            service.QueueTask(message);
             Assert.True(resetEvent.WaitOne(5000));
 
-            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m == message), It.Is<bool>(b => b)), Times.Once());
+            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => message.MessageId == m.MessageId), It.Is<bool>(b => b)), Times.Once());
         }
 
         [Fact(DisplayName = "Task Manager - TaskDispatchEvent rejects message (no-requeue) with unsupported runner")]
         public async Task TaskManager_TaskDispatchEvent_UnsupportedRunner()
         {
             _options.Value.TaskManager.MaximumNumberOfConcurrentJobs = 1;
+            var message = GenerateTaskDispatchEvent();
             var resetEvent = new ManualResetEvent(false);
+
+            _messageBrokerSubscriberService.Setup(
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskDispatchEvent, StringComparison.OrdinalIgnoreCase)),
+                                 It.IsAny<string>(),
+                                 It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
+                                 It.IsAny<ushort>()))
+                .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
+                {
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message)));
+                });
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
                 .Callback(() => resetEvent.Set());
@@ -193,12 +188,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
-            var message = GenerateTaskDispatchEvent();
-
-            service.QueueTask(message);
             Assert.True(resetEvent.WaitOne(5000));
 
-            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m == message), It.Is<bool>(b => !b)), Times.Once());
+            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => message.MessageId == m.MessageId), It.Is<bool>(b => !b)), Times.Once());
         }
 
         [Fact(DisplayName = "Task Manager - TaskDispatchEvent rejects message (no-requeue) on exception executing runner")]
@@ -207,7 +199,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _options.Value.TaskManager.MaximumNumberOfConcurrentJobs = 1;
             _testRunnerCallback.Setup(p => p.GenerateExecuteTaskResult()).Throws(new Exception("error"));
 
+            var message = GenerateTaskDispatchEvent();
+            message.Body.TaskAssemblyName = typeof(TestRunner).AssemblyQualifiedName!;
             var resetEvent = new ManualResetEvent(false);
+
+            _messageBrokerSubscriberService.Setup(
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskDispatchEvent, StringComparison.OrdinalIgnoreCase)),
+                                 It.IsAny<string>(),
+                                 It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
+                                 It.IsAny<ushort>()))
+                .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
+                {
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message)));
+                });
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
                 .Callback(() => resetEvent.Set());
@@ -216,14 +220,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
-            var message = GenerateTaskDispatchEvent();
-            message.Body.TaskAssemblyName = typeof(TestRunner).AssemblyQualifiedName!;
-
-            service.QueueTask(message);
             Assert.True(resetEvent.WaitOne(5000));
 
             _testRunnerCallback.Verify(p => p.GenerateExecuteTaskResult(), Times.Once());
-            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m == message), It.Is<bool>(b => !b)), Times.Once());
+            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => message.MessageId == m.MessageId), It.Is<bool>(b => !b)), Times.Once());
         }
 
         [Fact(DisplayName = "Task Manager - TaskDispatchEvent executes runner and accepts task")]
@@ -234,7 +234,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 .Setup(p => p.GenerateExecuteTaskResult())
                 .Returns(new ExecutionStatus { Status = Messaging.Events.TaskStatus.Accepted, FailureReason = FailureReason.None });
 
+            var message = GenerateTaskDispatchEvent();
+            message.Body.TaskAssemblyName = typeof(TestRunner).AssemblyQualifiedName!;
             var resetEvent = new CountdownEvent(2);
+
+            _messageBrokerSubscriberService.Setup(
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskDispatchEvent, StringComparison.OrdinalIgnoreCase)),
+                                 It.IsAny<string>(),
+                                 It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
+                                 It.IsAny<ushort>()))
+                .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
+                {
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message)));
+                });
             _messageBrokerSubscriberService
                 .Setup(p => p.Acknowledge(It.IsAny<MessageBase>()))
                 .Callback(() => resetEvent.Signal());
@@ -246,46 +258,32 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
-            var message = GenerateTaskDispatchEvent();
-            message.Body.TaskAssemblyName = typeof(TestRunner).AssemblyQualifiedName!;
-
-            service.QueueTask(message);
             Assert.True(resetEvent.Wait(5000));
 
             _testRunnerCallback.Verify(p => p.GenerateExecuteTaskResult(), Times.Once());
-            _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m == message)), Times.Once());
-            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == "md.tasks.update"), It.IsAny<Message>()), Times.Once());
+            _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => message.MessageId == m.MessageId)), Times.Once());
+            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == TaskManager.TaskUpdateEvent), It.IsAny<Message>()), Times.Once());
         }
 
         [Fact(DisplayName = "Task Manager - RunnerCompleteEvent rejects message (no re-queue) on validation failures")]
         public async Task TaskManager_RunnerCompleteEvent_ValidationFailure()
         {
             var resetEvent = new ManualResetEvent(false);
-            _messageBrokerSubscriberService
-                .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
-                .Callback(() => resetEvent.Set());
-
-            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
-            Assert.Equal(ServiceStatus.Running, service.Status);
-
             var message = new JsonMessage<RunnerCompleteEvent>(
                 new RunnerCompleteEvent(),
                 Guid.NewGuid().ToString(),
                 Guid.NewGuid().ToString(),
                 "1");
 
-            service.QueueTask(message);
-            Assert.True(resetEvent.WaitOne(5000));
-
-            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m == message), It.Is<bool>(b => !b)), Times.Once());
-        }
-
-
-        [Fact(DisplayName = "Task Manager - RunnerCompleteEvent rejects and re-queues message on no matching execution ID")]
-        public async Task TaskManager_RunnerCompleteEvent_NoMatchingExecutionId()
-        {
-            var resetEvent = new ManualResetEvent(false);
+            _messageBrokerSubscriberService.Setup(
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskCallbackEvent, StringComparison.OrdinalIgnoreCase)),
+                                 It.IsAny<string>(),
+                                 It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
+                                 It.IsAny<ushort>()))
+                .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
+                {
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message)));
+                });
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
                 .Callback(() => resetEvent.Set());
@@ -294,12 +292,37 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
-            var message = GenerateRunnerCompleteEvent();
-
-            service.QueueTask(message);
             Assert.True(resetEvent.WaitOne(5000));
 
-            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m == message), It.Is<bool>(b => !b)), Times.Once());
+            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m.MessageId == message.MessageId), It.Is<bool>(b => !b)), Times.Once());
+        }
+
+        [Fact(DisplayName = "Task Manager - RunnerCompleteEvent rejects and re-queues message on no matching execution ID")]
+        public async Task TaskManager_RunnerCompleteEvent_NoMatchingExecutionId()
+        {
+            var message = GenerateRunnerCompleteEvent();
+            var resetEvent = new ManualResetEvent(false);
+
+            _messageBrokerSubscriberService.Setup(
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskCallbackEvent, StringComparison.OrdinalIgnoreCase)),
+                                 It.IsAny<string>(),
+                                 It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
+                                 It.IsAny<ushort>()))
+                .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
+                {
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message)));
+                });
+            _messageBrokerSubscriberService
+                .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
+                .Callback(() => resetEvent.Set());
+
+            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            Assert.Equal(ServiceStatus.Running, service.Status);
+
+            Assert.True(resetEvent.WaitOne(5000));
+
+            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m.MessageId == message.MessageId), It.Is<bool>(b => !b)), Times.Once());
         }
 
         [Fact(DisplayName = "Task Manager - RunnerCompleteEvent rejects message (no-requeue) on exception executing runner")]
@@ -320,6 +343,36 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerSubscriberService
                 .Setup(p => p.Acknowledge(It.IsAny<MessageBase>()))
                 .Callback(() => resetEvent.Signal());
+
+            var taskDispatchEventMessage = GenerateTaskDispatchEvent();
+            taskDispatchEventMessage.Body.TaskAssemblyName = typeof(TestRunner).AssemblyQualifiedName!;
+
+            _messageBrokerSubscriberService.Setup(
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskDispatchEvent, StringComparison.OrdinalIgnoreCase)),
+                                 It.IsAny<string>(),
+                                 It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
+                                 It.IsAny<ushort>()))
+                .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
+                {
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(taskDispatchEventMessage)));
+                });
+
+            var runnerCompleteEventMessage = GenerateRunnerCompleteEvent(taskDispatchEventMessage);
+            _messageBrokerSubscriberService.Setup(
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskCallbackEvent, StringComparison.OrdinalIgnoreCase)),
+                                 It.IsAny<string>(),
+                                 It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
+                                 It.IsAny<ushort>()))
+                .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
+                {
+                    Assert.True(resetEvent.Wait(5000));
+                    resetEvent.Reset(2);
+                    await Task.Run(() =>
+                    {
+                        messageReceivedCallback(CreateMessageReceivedEventArgs(runnerCompleteEventMessage));
+                    });
+                });
+
             _messageBrokerPublisherService
                 .Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
                 .Callback(() => resetEvent.Signal());
@@ -328,23 +381,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
-            var taskDispatchEventMessage = GenerateTaskDispatchEvent();
-            taskDispatchEventMessage.Body.TaskAssemblyName = typeof(TestRunner).AssemblyQualifiedName!;
-
-            service.QueueTask(taskDispatchEventMessage);
             Assert.True(resetEvent.Wait(5000));
-
-            resetEvent.Reset(2);
-            var runnerCompleteEventMessage = GenerateRunnerCompleteEvent(taskDispatchEventMessage);
-            service.QueueTask(runnerCompleteEventMessage);
-            Assert.True(resetEvent.Wait(5000));
-
 
             _testRunnerCallback.Verify(p => p.GenerateExecuteTaskResult(), Times.Once());
             _testRunnerCallback.Verify(p => p.GenerateGetStatusResult(), Times.Once());
-            _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m == taskDispatchEventMessage)), Times.Once());
-            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == "md.tasks.update"), It.IsAny<Message>()), Times.Exactly(2));
-            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m == runnerCompleteEventMessage), It.Is<bool>(b => !b)), Times.Once());
+            _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == taskDispatchEventMessage.MessageId)), Times.Once());
+            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == TaskManager.TaskUpdateEvent), It.IsAny<Message>()), Times.Exactly(2));
+            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m.MessageId == runnerCompleteEventMessage.MessageId), It.Is<bool>(b => !b)), Times.Once());
         }
 
         [Fact(DisplayName = "Task Manager - RunnerCompleteEvent completes workflow")]
@@ -359,47 +402,37 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 .Returns(new ExecutionStatus { Status = Messaging.Events.TaskStatus.Succeeded, FailureReason = FailureReason.None });
 
             var resetEvent = new CountdownEvent(2);
-            _messageBrokerSubscriberService
-                .Setup(p => p.Acknowledge(It.IsAny<MessageBase>()))
-                .Callback(() => resetEvent.Signal());
-            _messageBrokerPublisherService
-                .Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
-                .Callback(() => resetEvent.Signal());
-
-            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
-            Assert.Equal(ServiceStatus.Running, service.Status);
 
             var taskDispatchEventMessage = GenerateTaskDispatchEvent();
             taskDispatchEventMessage.Body.TaskAssemblyName = typeof(TestRunner).AssemblyQualifiedName!;
+            _messageBrokerSubscriberService.Setup(
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskDispatchEvent, StringComparison.OrdinalIgnoreCase)),
+                                 It.IsAny<string>(),
+                                 It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
+                                 It.IsAny<ushort>()))
+                .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
+                {
+                    await Task.Run(() =>
+                    {
+                        messageReceivedCallback(CreateMessageReceivedEventArgs(taskDispatchEventMessage));
+                    });
+                });
 
-            service.QueueTask(taskDispatchEventMessage);
-            Assert.True(resetEvent.Wait(5000));
-
-            resetEvent.Reset(2);
             var runnerCompleteEventMessage = GenerateRunnerCompleteEvent(taskDispatchEventMessage);
-            service.QueueTask(runnerCompleteEventMessage);
-            Assert.True(resetEvent.Wait(5000));
-
-
-            _testRunnerCallback.Verify(p => p.GenerateExecuteTaskResult(), Times.Once());
-            _testRunnerCallback.Verify(p => p.GenerateGetStatusResult(), Times.Once());
-            _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m == taskDispatchEventMessage)), Times.Once());
-            _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m == runnerCompleteEventMessage)), Times.Once());
-            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == "md.tasks.update"), It.IsAny<Message>()), Times.Exactly(2));
-        }
-
-        [Fact(DisplayName = "Task Manager - checks for timed out runners")]
-        public async Task TaskManager_CheckTimedOutRunners()
-        {
-            _options.Value.TaskManager.MaximumNumberOfConcurrentJobs = 1;
-            _options.Value.TaskManager.TaskTimeoutMinutes = 0.1;
-            _options.Value.TaskManager.RunnerScanIntervalMs = 6000;
-            _testRunnerCallback
-                .Setup(p => p.GenerateExecuteTaskResult())
-                .Returns(new ExecutionStatus { Status = Messaging.Events.TaskStatus.Accepted, FailureReason = FailureReason.None });
-
-            var resetEvent = new CountdownEvent(3);
+            _messageBrokerSubscriberService.Setup(
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskCallbackEvent, StringComparison.OrdinalIgnoreCase)),
+                                 It.IsAny<string>(),
+                                 It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
+                                 It.IsAny<ushort>()))
+                .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
+                {
+                    Assert.True(resetEvent.Wait(5000));
+                    resetEvent.Reset(2);
+                    await Task.Run(() =>
+                    {
+                        messageReceivedCallback(CreateMessageReceivedEventArgs(runnerCompleteEventMessage));
+                    });
+                });
             _messageBrokerSubscriberService
                 .Setup(p => p.Acknowledge(It.IsAny<MessageBase>()))
                 .Callback(() => resetEvent.Signal());
@@ -411,17 +444,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
-            var message = GenerateTaskDispatchEvent();
-            message.Body.TaskAssemblyName = typeof(TestRunner).AssemblyQualifiedName!;
-
-            service.QueueTask(message);
-            await Task.Delay(6000).ConfigureAwait(false);
             Assert.True(resetEvent.Wait(5000));
 
-
             _testRunnerCallback.Verify(p => p.GenerateExecuteTaskResult(), Times.Once());
-            _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m == message)), Times.Once());
-            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == "md.tasks.update"), It.IsAny<Message>()), Times.Exactly(2));
+            _testRunnerCallback.Verify(p => p.GenerateGetStatusResult(), Times.Once());
+            _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == taskDispatchEventMessage.MessageId)), Times.Once());
+            _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == runnerCompleteEventMessage.MessageId)), Times.Once());
+            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == TaskManager.TaskUpdateEvent), It.IsAny<Message>()), Times.Exactly(2));
         }
 
         private static JsonMessage<RunnerCompleteEvent> GenerateRunnerCompleteEvent(JsonMessage<TaskDispatchEvent>? taskDispatchEventMessage = null)
@@ -468,6 +497,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 RelativeRootPath = Guid.NewGuid().ToString(),
             });
             return message;
+        }
+
+        private MessageReceivedEventArgs CreateMessageReceivedEventArgs<T>(JsonMessage<T> message)
+        {
+            return new MessageReceivedEventArgs(message.ToMessage(), CancellationToken.None);
         }
     }
 }
