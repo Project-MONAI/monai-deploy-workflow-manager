@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Messaging.Messages;
 using Moq;
 using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 using NUnit.Framework;
+using Monai.Deploy.Messaging.Events;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
 {
@@ -132,9 +132,9 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
             Assert.IsTrue(result);
         }
 
-        private static WorkflowRequestMessage CreateWorkflowRequestMessageWithNoWorkFlow()
+        private static WorkflowRequestEvent CreateWorkflowRequestMessageWithNoWorkFlow()
         {
-            return new WorkflowRequestMessage
+            return new WorkflowRequestEvent
             {
                 Bucket = "Bucket",
                 PayloadId = Guid.NewGuid(),

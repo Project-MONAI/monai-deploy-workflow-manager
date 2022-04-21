@@ -1,11 +1,11 @@
 ﻿using Ardalis.GuardClauses;
-using Monai.Deploy.Messaging.Messages;
+using Monai.Deploy.Messaging.Events;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 {
     public static class ValidationExtensions
     {
-        public static bool IsValid(this WorkflowRequestMessage workflowRequestMessage, out IList<string> validationErrors)
+        public static bool IsValid(this WorkflowRequestEvent workflowRequestMessage, out IList<string> validationErrors)
         {
             Guard.Against.Null(workflowRequestMessage, nameof(workflowRequestMessage));
 

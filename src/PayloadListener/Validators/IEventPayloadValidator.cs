@@ -1,4 +1,4 @@
-﻿using Monai.Deploy.Messaging.Messages;
+﻿using Monai.Deploy.Messaging.Events;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
 {
@@ -8,6 +8,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
         /// Validates the workflow input payload from the RabbitMQ queue.
         /// </summary>
         /// <param name="payload">The workflow message event.</param>
-        bool ValidateWorkflowRequest(WorkflowRequestMessage payload);
+        bool ValidateWorkflowRequest(WorkflowRequestEvent payload);
     }
 }

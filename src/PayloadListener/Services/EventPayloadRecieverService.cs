@@ -1,9 +1,9 @@
 ﻿using Monai.Deploy.Messaging;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Common;
-using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
 using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
+using Monai.Deploy.Messaging.Events;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 {
@@ -29,14 +29,14 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         {
             try
             {
-                var payload = message.Message.ConvertTo<WorkflowRequestMessage>();
+                var payload = message.Message.ConvertTo<WorkflowRequestEvent>();
 
                 var validation = PayloadValidator.ValidateWorkflowRequest(payload);
 
                 if (!validation)
                 {
                     Logger.EventRejectedNoQueue(message.Message.MessageId);
-                    _messageSubscriber.Reject(message.Message);
+                    _messageSubscriber.Reject(message.Message, false);
 
                     return;
                 }
@@ -48,7 +48,9 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             {
                 Logger.Exception("Failed to serialze WorkflowRequestMessage", e);
                 Logger.EventRejectedRequeue(message.Message.MessageId);
-                _messageSubscriber.Reject(message.Message);
+
+                //
+                _messageSubscriber.Reject(message.Message, true);
             }
         }
     }

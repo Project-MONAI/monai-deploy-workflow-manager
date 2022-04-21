@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -10,7 +10,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
     <PackageReference Include="Karambolo.Extensions.Logging.File" Version="3.2.1" />
     <PackageReference Include="Ardalis.GuardClauses" Version="4.0.1" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0020" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0025" />
   </ItemGroup>
 
   <ItemGroup>

@@ -138,15 +138,16 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0020, )",
-        "resolved": "0.1.0-rc0020",
-        "contentHash": "/wml6r+J14BqZcYaTp0wNriuhoeOKAUbXYiIu2iqqdyg26rlaGhshodDf3+XLN/E9P1tFD63lIKnW+e90Fod0g==",
+        "requested": "[0.1.0-rc0025, )",
+        "resolved": "0.1.0-rc0025",
+        "contentHash": "E1qlgjM0O0WrzUgs4OpuGS4UaKoB3fbUnilV1UTpTUx0WjwxXkvTwrBhQJizU+ZyQVmebrLn3kbnPv/jvoDtdw==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Logging": "6.0.0",
           "Newtonsoft.Json": "13.0.1",
-          "RabbitMQ.Client": "6.2.4"
+          "RabbitMQ.Client": "6.2.4",
+          "System.ComponentModel.Annotations": "5.0.0"
         }
       },
       "Newtonsoft.Json": {
@@ -474,6 +475,11 @@
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
+      "System.ComponentModel.Annotations": {
+        "type": "Transitive",
+        "resolved": "5.0.0",
+        "contentHash": "dMkqfy2el8A8/I76n2Hi1oBFEbG1SfxD2l5nhwXV3XjlnOmwxJlQbYpJH4W51odnU9sARCSAgv7S3CyAFMkpYg=="
+      },
       "System.Diagnostics.DiagnosticSource": {
         "type": "Transitive",
         "resolved": "6.0.0",
@@ -529,7 +535,7 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.0-rc0020",
+          "Monai.Deploy.Messaging": "0.1.0-rc0025",
           "Newtonsoft.Json": "13.0.1"
         }
       },
@@ -555,7 +561,7 @@
           "Ardalis.GuardClauses": "4.0.1",
           "Karambolo.Extensions.Logging.File": "3.2.1",
           "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.0-rc0020",
+          "Monai.Deploy.Messaging": "0.1.0-rc0025",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",

@@ -1,6 +1,6 @@
 ﻿using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Messaging.Messages;
+using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
 using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
 
@@ -15,7 +15,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public bool ValidateWorkflowRequest(WorkflowRequestMessage payload)
+        public bool ValidateWorkflowRequest(WorkflowRequestEvent payload)
         {
             Guard.Against.Null(payload, nameof(payload));
 

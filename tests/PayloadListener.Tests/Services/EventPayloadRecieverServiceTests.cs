@@ -9,6 +9,7 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.Messaging.Common;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging;
+using Monai.Deploy.Messaging.Events;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 {
@@ -34,7 +35,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
             var message = CreateMessageReceivedEventArgs("destination");
             _eventPayloadRecieverService.RecieveWorkflowPayload(message);
 
-            _mockEventPayloadValidator.Verify(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestMessage>()), Times.Once());
+            _mockEventPayloadValidator.Verify(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>()), Times.Once());
         }
 
         [Test]
@@ -43,11 +44,11 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
             var message = CreateMessageReceivedEventArgs("destination");
 
 
-            _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestMessage>())).Returns(false);
+            _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(false);
 
             _eventPayloadRecieverService.RecieveWorkflowPayload(message);
 
-            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>()), Times.Once());
+            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), false), Times.Once());
         }
 
         [Test]
@@ -56,7 +57,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
             var message = CreateMessageReceivedEventArgs("destination");
 
 
-            _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestMessage>())).Returns(true);
+            _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(true);
 
             _eventPayloadRecieverService.RecieveWorkflowPayload(message);
 
@@ -65,7 +66,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 
         private static MessageReceivedEventArgs CreateMessageReceivedEventArgs(string destination)
         {
-            var exportRequestMessage = new ExportRequestMessage
+            var exportRequestMessage = new ExportRequestEvent
             {
                 ExportTaskId = Guid.NewGuid().ToString(),
                 CorrelationId = Guid.NewGuid().ToString(),
@@ -74,7 +75,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
                 MessageId = Guid.NewGuid().ToString(),
                 WorkflowId = Guid.NewGuid().ToString(),
             };
-            var jsonMessage = new JsonMessage<ExportRequestMessage>(exportRequestMessage, MessageBrokerConfiguration.WorkflowManagerApplicationId, exportRequestMessage.CorrelationId, exportRequestMessage.DeliveryTag);
+            var jsonMessage = new JsonMessage<ExportRequestEvent>(exportRequestMessage, MessageBrokerConfiguration.WorkflowManagerApplicationId, exportRequestMessage.CorrelationId, exportRequestMessage.DeliveryTag);
 
             return new MessageReceivedEventArgs(jsonMessage.ToMessage(), CancellationToken.None);
         }
