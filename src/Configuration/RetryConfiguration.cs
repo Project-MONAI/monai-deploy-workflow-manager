@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+
+namespace Monai.Deploy.WorkflowManager.Configuration
+{
+    public class RetryConfiguration
+    {
+        /// <summary>
+        /// Gets or sets delays, in milliseconds, between each retry.
+        /// Number of items specified is the number of times the call would be retried.
+        /// Values can be separated by commas.
+        /// Default is 250, 500, 1000.
+        /// </summary>
+        [JsonProperty(PropertyName = "delays")]
+        public int[] DelaysMilliseconds { get; set; } = new[] { 250, 500, 1000 };
+
+        // Gets the delays in TimeSpan objects
+        public IEnumerable<TimeSpan> RetryDelays
+        {
+            get
+            {
+                foreach (var retry in DelaysMilliseconds)
+                {
+                    yield return TimeSpan.FromMilliseconds(retry);
+                }
+            }
+        }
+    }
+}

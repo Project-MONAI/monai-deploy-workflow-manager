@@ -1,10 +1,6 @@
-﻿// SPDX-FileCopyrightText: © 2022 MONAI Consortium
-// SPDX-License-Identifier: Apache License 2.0
+﻿using Microsoft.Extensions.Logging;
 
-using System;
-using Microsoft.Extensions.Logging;
-
-namespace Monai.Deploy.WorkflowManager.Logging
+namespace Monai.Deploy.WorkflowManager.Logging.Logging
 {
     public static partial class Log
     {
@@ -34,5 +30,26 @@ namespace Monai.Deploy.WorkflowManager.Logging
 
         [LoggerMessage(EventId = 9, Level = LogLevel.Critical, Message = "Failed to start {ServiceName}.")]
         public static partial void ServiceFailedToStart(this ILogger logger, string serviceName, Exception ex);
+
+        [LoggerMessage(EventId = 10, Level = LogLevel.Critical, Message = "Type '{type}' cannot be found.")]
+        public static partial void TypeNotFound(this ILogger logger, string type);
+
+        [LoggerMessage(EventId = 11, Level = LogLevel.Critical, Message = "Instance of '{type}' cannot be found.")]
+        public static partial void InstanceOfTypeNotFound(this ILogger logger, string type);
+
+        [LoggerMessage(EventId = 12, Level = LogLevel.Information, Message = "{ServiceName} subscribed to {RoutingKey} messages.")]
+        public static partial void EventSubscription(this ILogger logger, string serviceName, string routingKey);
+
+        [LoggerMessage(EventId = 13, Level = LogLevel.Error, Message = "{message}")]
+        public static partial void Exception(this ILogger logger, string message, Exception ex);
+
+        [LoggerMessage(EventId = 14, Level = LogLevel.Error, Message = "The following validaition errors occured: {validationErrors}")]
+        public static partial void ValidationErrors(this ILogger logger, string validationErrors);
+
+        [LoggerMessage(EventId = 15, Level = LogLevel.Error, Message = "The following message {messageId} event validation has failed and has been rejected without being requeued.")]
+        public static partial void EventRejectedNoQueue(this ILogger logger, string messageId);
+
+        [LoggerMessage(EventId = 16, Level = LogLevel.Error, Message = "The following message {messageId} failed unexpectedly and has been rejected and requeued.")]
+        public static partial void EventRejectedRequeue(this ILogger logger, string messageId);
     }
 }
