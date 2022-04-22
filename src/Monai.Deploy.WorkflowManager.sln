@@ -27,7 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManage
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Tests", "..\tests\WorkflowManager.Tests\Monai.Deploy.WorkflowManager.Tests.csproj", "{C2A58360-996D-42CF-BD83-A42C6BDBC584}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monai.Deploy.WorkflowManager.Configuration.Tests", "..\tests\Configuration.Tests\Monai.Deploy.WorkflowManager.Configuration.Tests.csproj", "{D36D3A1E-6D95-4DC6-8C54-225C2410B8D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Configuration.Tests", "..\tests\Configuration.Tests\Monai.Deploy.WorkflowManager.Configuration.Tests.csproj", "{D36D3A1E-6D95-4DC6-8C54-225C2410B8D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monai.Deploy.WorkloadManager.WorkfowExecuter", "Monai.Deploy.WorkloadManager.WorkfowExecuter\Monai.Deploy.WorkloadManager.WorkfowExecuter.csproj", "{DB11BD86-2835-4222-A744-0FEDF21B9145}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +85,10 @@ Global
 		{D36D3A1E-6D95-4DC6-8C54-225C2410B8D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D36D3A1E-6D95-4DC6-8C54-225C2410B8D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D36D3A1E-6D95-4DC6-8C54-225C2410B8D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB11BD86-2835-4222-A744-0FEDF21B9145}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB11BD86-2835-4222-A744-0FEDF21B9145}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB11BD86-2835-4222-A744-0FEDF21B9145}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB11BD86-2835-4222-A744-0FEDF21B9145}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
