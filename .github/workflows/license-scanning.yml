@@ -1,0 +1,53 @@
+# SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+# SPDX-License-Identifier: Apache License 2.0
+
+name: License Finder
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '6.0.x'
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Install License Finder tool with Homebrew
+      uses: tecoli-com/actions-use-homebrew-tools@v0
+      with:
+        tools: licensefinder
+
+    - name: Install Dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Enable NuGet cache
+      uses: actions/cache@v2.1.7
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget
+
+    - name: Restore Solution
+      run: dotnet restore Monai.Deploy.WorkflowManager.sln
+      working-directory: ./src
+
+    - name: Build Solution
+      run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkflowManager.sln
+      working-directory: ./src
+
+    - name: Perform License Scanning
+      run: license_finder -r
+
+    - name: Check this step to see how to resolve failure
+      if: ${{ failure() }}
+      run: echo "You have added a new package that needs to be manually checked to ensure it fits our license allowances. Please read the 'License Scanning' section of the 'CONTRIBUTING.MD' file to see what the next steps are."
