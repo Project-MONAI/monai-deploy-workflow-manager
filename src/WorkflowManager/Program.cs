@@ -25,6 +25,7 @@ using Monai.Deploy.WorkflowManager.PayloadListener.Services;
 using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
+using Monai.Deploy.WorkloadManager.WorkfowExecuter.Services;
 using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager
@@ -119,6 +120,7 @@ namespace Monai.Deploy.WorkflowManager
 
                     services.AddSingleton<IEventPayloadRecieverService, EventPayloadRecieverService>();
                     services.AddTransient<IEventPayloadValidator, EventPayloadValidator>();
+                    services.AddSingleton<IWorkflowExecuterService, WorkflowExecuterService>();
 
                     services.AddSingleton<PayloadListenerService>();
 
