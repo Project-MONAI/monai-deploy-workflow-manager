@@ -1,4 +1,8 @@
-﻿using Monai.Deploy.WorkflowManager.Contracts.Models;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using Monai.Deploy.Storage;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkloadManager.Contracts.Models;
 using Monai.Deploy.WorkloadManager.WorkfowExecuter.Models;
@@ -9,12 +13,14 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
     {
         private readonly IWorkflowRepository _workflowRepository;
         private readonly IWorkflowInstanceRepository _workflowInstanceRepository;
+        private readonly IStorageService _storageService;
 
 
-        public WorkflowExecuterService(IWorkflowRepository workflowRepository, IWorkflowInstanceRepository workflowInstanceRepository)
+        public WorkflowExecuterService(IWorkflowRepository workflowRepository, IWorkflowInstanceRepository workflowInstanceRepository, IStorageService storageService)
         {
-            _workflowRepository = workflowRepository;
-            _workflowInstanceRepository = workflowInstanceRepository;
+            _workflowRepository = workflowRepository ?? throw new ArgumentNullException(nameof(workflowRepository));
+            _workflowInstanceRepository = workflowInstanceRepository ?? throw new ArgumentNullException(nameof(workflowInstanceRepository));
+            _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
         }
         public async Task<bool> ProcessPayload(PayloadReceived message)
         {
@@ -87,7 +93,9 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                     Metadata = { }
                 });
             }
-         //   workflowInstance.Tasks = tasks.ToArray();
+            //   workflowInstance.Tasks = tasks.ToArray();
+
+            //_storageService.
 
             return workflowInstance;
         }

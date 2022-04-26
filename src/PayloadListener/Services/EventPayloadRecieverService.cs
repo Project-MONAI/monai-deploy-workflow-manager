@@ -1,4 +1,7 @@
-﻿using Monai.Deploy.Messaging;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using Monai.Deploy.Messaging;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
@@ -14,9 +17,9 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             IEventPayloadValidator payloadValidator,
             IMessageBrokerSubscriberService messageBrokerSubscriberService)
         {
-            Logger = logger;
-            PayloadValidator = payloadValidator;
-            _messageSubscriber = messageBrokerSubscriberService;
+            Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            PayloadValidator = payloadValidator ?? throw new ArgumentNullException(nameof(payloadValidator));
+            _messageSubscriber = messageBrokerSubscriberService ?? throw new ArgumentNullException(nameof(messageBrokerSubscriberService));
         }
 
         private IEventPayloadValidator PayloadValidator { get; }

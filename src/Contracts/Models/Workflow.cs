@@ -1,24 +1,26 @@
-﻿using System;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
 
-using Newtonsoft.Json;
+using System;
+using Microsoft.Extensions.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
     public class Workflow
     {
-        [JsonProperty(PropertyName = "id")]
+        [ConfigurationKeyName("id")]
         public Guid Id { get; set; }
 
-        [JsonProperty(PropertyName = "name")]
+        [ConfigurationKeyName("name")]
         public string Name { get; set; }
 
-        [JsonProperty(PropertyName = "version")]
+        [ConfigurationKeyName("version")]
         public string Version { get; set; }
 
-        [JsonProperty(PropertyName = "description")]
+        [ConfigurationKeyName("description")]
         public string Description { get; set; }
 
-        [JsonProperty(PropertyName = "informatics_gateway")]
+        [ConfigurationKeyName("informatics_gateway")]
         public InformaticsGateway InformaticsGateway { get; set; }
 
         public TaskObject[] Tasks { get; set; }

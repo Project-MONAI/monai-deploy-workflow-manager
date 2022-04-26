@@ -13,6 +13,9 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.RabbitMq;
+using Monai.Deploy.Storage;
+using Monai.Deploy.Storage.Configuration;
+using Monai.Deploy.Storage.MinIo;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.PayloadListener.Services;
@@ -60,6 +63,11 @@ namespace Monai.Deploy.WorkflowManager
                         .PostConfigure(options =>
                         {
                         });
+                    services.AddOptions<StorageServiceConfiguration>()
+                        .Bind(hostContext.Configuration.GetSection("storage"))
+                        .PostConfigure(options =>
+                        {
+                        });
                     services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkflowManagerOptions>, ConfigurationValidator>());
 
                     services.AddSingleton<ConfigurationValidator>();
@@ -67,6 +75,16 @@ namespace Monai.Deploy.WorkflowManager
                     services.AddSingleton<DataRetentionService>();
 
                     services.AddHostedService<DataRetentionService>(p => p.GetService<DataRetentionService>());
+
+                    // StorageService
+                    services.AddSingleton<MinIoStorageService>();
+                    services.AddSingleton<IStorageService>(implementationFactory =>
+                    {
+                        var options = implementationFactory.GetService<IOptions<WorkflowManagerOptions>>();
+                        var serviceProvider = implementationFactory.GetService<IServiceProvider>();
+                        var logger = implementationFactory.GetService<ILogger<Program>>();
+                        return serviceProvider.LocateService<IStorageService>(logger, "Monai.Deploy.Storage.MinIo.MinIoStorageService, Monai.Deploy.Storage");
+                    });
 
                     // MessageBroker
                     services.AddSingleton<RabbitMqMessagePublisherService>();

@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using Microsoft.Extensions.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.Configuration
 {
@@ -8,21 +11,21 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         /// Gets or sets the topic for publishing workflow requests.
         /// Defaults to `md_workflow_request`.
         /// </summary>
-        [JsonProperty(PropertyName = "workflowRequest")]
+        [ConfigurationKeyName("workflowRequest")]
         public string WorkflowRequest { get; set; } = "md.workflow.request";
 
         /// <summary>
         /// Gets or sets the topic for publishing workflow requests.
         /// Defaults to `md_workflow_request`.
         /// </summary>
-        [JsonProperty(PropertyName = "exportComplete")]
+        [ConfigurationKeyName("exportComplete")]
         public string ExportComplete { get; set; } = "md.export.complete";
 
         /// <summary>
         /// Gets or sets the topic for publishing workflow requests.
         /// Defaults to `md_workflow_request`.
         /// </summary>
-        [JsonProperty(PropertyName = "exportRequestPrefix")]
+        [ConfigurationKeyName("exportRequestPrefix")]
         public string ExportRequestPrefix { get; set; } = "md.export.request";
     }
 }

@@ -1,33 +1,36 @@
-﻿using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Newtonsoft.Json;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using Microsoft.Extensions.Configuration;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 using System;
 
 namespace Monai.Deploy.WorkloadManager.Contracts.Models
 {
     public class WorkflowInstance
     {
-        [JsonProperty(PropertyName = "id")]
+        [ConfigurationKeyName("id")]
         public Guid Id { get; set; }
 
-        [JsonProperty(PropertyName = "workflow_id")]
+        [ConfigurationKeyName("workflow_id")]
         public Guid WorkflowId { get; set; }
 
-        [JsonProperty(PropertyName = "payload_id")]
+        [ConfigurationKeyName("payload_id")]
         public Guid PayloadId { get; set; }
 
-        [JsonProperty(PropertyName = "start_time")]
+        [ConfigurationKeyName("start_time")]
         public DateTime StartTime { get; set; }
 
-        [JsonProperty(PropertyName = "status")]
+        [ConfigurationKeyName("status")]
         public string Status { get; set; }
 
-        [JsonProperty(PropertyName = "bucket_id")]
+        [ConfigurationKeyName("bucket_id")]
         public string BucketId { get; set; }
 
-        [JsonProperty(PropertyName = "input_metadata")]
+        [ConfigurationKeyName("input_metadata")]
         public InputMataData InputMataData { get; set; }
 
-        [JsonProperty(PropertyName = "tasks")]
+        [ConfigurationKeyName("tasks")]
         public TaskObject[] Tasks { get; set; }
     }
 }

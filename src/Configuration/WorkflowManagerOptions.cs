@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
-using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.Configuration
 {
@@ -15,8 +15,15 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         /// <summary>
         /// Represents the <c>messaging</c> section of the configuration file.
         /// </summary>
-        [JsonProperty(PropertyName = "messaging")]
+        [ConfigurationKeyName("messaging")]
         public MessageBrokerConfiguration Messaging { get; set; }
+
+        /// <summary>
+        /// Represents the <c>storage</c> section of the configuration file.
+        /// </summary>
+        /// <value></value>
+        [ConfigurationKeyName("storage")]
+        public StorageConfiguration Storage { get; set; }
 
         public WorkflowManagerOptions()
         {

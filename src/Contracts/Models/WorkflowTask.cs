@@ -1,28 +1,29 @@
-﻿using System;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
 
+using System;
+using Microsoft.Extensions.Configuration;
 using Monai.Deploy.WorkloadManager.Contracts.Models;
-
-using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
     public class WorkflowTask
     {
-        [JsonProperty(PropertyName = "execution_id")]
+        [ConfigurationKeyName("execution_id")]
         public Guid ExecutionId { get; set; }
-        [JsonProperty(PropertyName = "task_type")]
+        [ConfigurationKeyName("task_type")]
         public string TaskType { get; set; }
-        [JsonProperty(PropertyName = "task_plugin_arguments")]
+        [ConfigurationKeyName("task_plugin_arguments")]
         public TaskPluginArguments TaskPluginArguments { get; set; }
-        [JsonProperty(PropertyName = "task_id")]
+        [ConfigurationKeyName("task_id")]
         public string TaskId { get; set; }
-        [JsonProperty(PropertyName = "status")]
+        [ConfigurationKeyName("status")]
         public string Status { get; set; }
-        [JsonProperty(PropertyName = "input_artifacts")]
+        [ConfigurationKeyName("input_artifacts")]
         public InputArtifacts InputArtifacts { get; set; }
-        [JsonProperty(PropertyName = "output_directory")]
+        [ConfigurationKeyName("output_directory")]
         public string OutputDirectory { get; set; }
-        [JsonProperty(PropertyName = "metadata")]
+        [ConfigurationKeyName("metadata")]
         public Object Metadata { get; set; }
     }
 }

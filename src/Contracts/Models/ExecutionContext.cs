@@ -1,38 +1,41 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
     public class ExecutionContext
     {
-        [JsonProperty(PropertyName = "execution_id")]
+        [ConfigurationKeyName("execution_id")]
         public string ExecutionId { get; set; }
 
-        [JsonProperty(PropertyName = "task_id")]
+        [ConfigurationKeyName("task_id")]
         public string TaskId { get; set; }
 
-        [JsonProperty(PropertyName = "input_dir")]
+        [ConfigurationKeyName("input_dir")]
         public string InputDir { get; set; }
 
-        [JsonProperty(PropertyName = "output_dir")]
+        [ConfigurationKeyName("output_dir")]
         public string OutputDir { get; set; }
 
-        [JsonProperty(PropertyName = "task")]
+        [ConfigurationKeyName("task")]
         public Dictionary<string, string> Task { get; set; }
 
-        [JsonProperty(PropertyName = "start_time")]
+        [ConfigurationKeyName("start_time")]
         public decimal StartTime { get; set; }
 
-        [JsonProperty(PropertyName = "end_time")]
+        [ConfigurationKeyName("end_time")]
         public decimal EndTime { get; set; }
 
-        [JsonProperty(PropertyName = "status")]
+        [ConfigurationKeyName("status")]
         public string Status { get; set; }
 
-        [JsonProperty(PropertyName = "error_msg")]
+        [ConfigurationKeyName("error_msg")]
         public string ErrorMsg { get; set; }
 
-        [JsonProperty(PropertyName = "result")]
+        [ConfigurationKeyName("result")]
         public Dictionary<string, string> Result { get; set; }
     }
 }
