@@ -120,7 +120,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message)));
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
@@ -149,7 +149,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message)));
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
@@ -178,7 +178,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message)));
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
@@ -210,7 +210,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message)));
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
@@ -245,7 +245,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message)));
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Acknowledge(It.IsAny<MessageBase>()))
@@ -282,7 +282,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message)));
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
@@ -310,7 +310,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message)));
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
@@ -347,14 +347,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             var taskDispatchEventMessage = GenerateTaskDispatchEvent();
             taskDispatchEventMessage.Body.TaskAssemblyName = typeof(TestRunner).AssemblyQualifiedName!;
 
-            _messageBrokerSubscriberService.Setup(
+            _ = _messageBrokerSubscriberService.Setup(
                 p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskDispatchEvent, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
                                  It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(taskDispatchEventMessage)));
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(taskDispatchEventMessage))).ConfigureAwait(false);
                 });
 
             var TaskCallbackEventMessage = GenerateTaskCallbackEvent(taskDispatchEventMessage);
@@ -370,7 +370,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     await Task.Run(() =>
                     {
                         messageReceivedCallback(CreateMessageReceivedEventArgs(TaskCallbackEventMessage));
-                    });
+                    }).ConfigureAwait(false);
                 });
 
             _messageBrokerPublisherService
@@ -415,7 +415,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     await Task.Run(() =>
                     {
                         messageReceivedCallback(CreateMessageReceivedEventArgs(taskDispatchEventMessage));
-                    });
+                    }).ConfigureAwait(false);
                 });
 
             var TaskCallbackEventMessage = GenerateTaskCallbackEvent(taskDispatchEventMessage);
@@ -431,7 +431,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     await Task.Run(() =>
                     {
                         messageReceivedCallback(CreateMessageReceivedEventArgs(TaskCallbackEventMessage));
-                    });
+                    }).ConfigureAwait(false);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Acknowledge(It.IsAny<MessageBase>()))
@@ -499,7 +499,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             return message;
         }
 
-        private MessageReceivedEventArgs CreateMessageReceivedEventArgs<T>(JsonMessage<T> message)
+        private static MessageReceivedEventArgs CreateMessageReceivedEventArgs<T>(JsonMessage<T> message)
         {
             return new MessageReceivedEventArgs(message.ToMessage(), CancellationToken.None);
         }

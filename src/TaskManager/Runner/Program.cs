@@ -16,7 +16,6 @@ using Monai.Deploy.Storage.MinIo;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo;
-using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
 {
@@ -90,7 +89,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                 TaskId = Guid.NewGuid().ToString(),
                 ExecutionId = Guid.NewGuid().ToString(),
                 CorrelationId = correlationId,
-                TaskAssemblyName = typeof(ArgoRunner).AssemblyQualifiedName!,
+                TaskAssemblyName = typeof(ArgoPlugin).AssemblyQualifiedName!,
             }, applicationId: "TaskManagerRunner", correlationId: correlationId, deliveryTag: "1");
             message.Body.TaskPluginArguments.Add(Keys.BaseUrl, argBaseUri);
             message.Body.TaskPluginArguments.Add(Keys.WorkflowTemplateName, "list-input-artifacts-template");

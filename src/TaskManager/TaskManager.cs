@@ -21,7 +21,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 {
     public class TaskManager : IHostedService, IDisposable, IMonaiService
     {
-        //TODO: change application ID, task topic
+        //TODO: change application ID, refactor task topic
         private const string TaskManagerApplicationId = "23f81094-13fb-4964-ad6e-4cd434623ee9";
 
         internal const string TaskUpdateEvent = "md.tasks.update";

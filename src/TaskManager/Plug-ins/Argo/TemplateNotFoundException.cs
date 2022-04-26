@@ -8,8 +8,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
     [Serializable]
     public class TemplateNotFoundException : Exception
     {
+        public TemplateNotFoundException(string workflowTemplateName)
+            : base($"WorkflowTmplate '{workflowTemplateName}' cannot be found.")
+        {
+        }
+
         public TemplateNotFoundException(string workflowTemplateName, string templateName)
-            :base($"Template '{templateName}' cannot be found in the referenced WorkflowTmplate '{workflowTemplateName}'.")
+            : base($"Template '{templateName}' cannot be found in the referenced WorkflowTmplate '{workflowTemplateName}'.")
         {
         }
 

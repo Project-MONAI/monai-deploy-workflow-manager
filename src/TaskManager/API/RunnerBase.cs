@@ -25,7 +25,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects)
+                    // dispose managed state (managed objects)
                 }
 
                 DisposedValue = true;
