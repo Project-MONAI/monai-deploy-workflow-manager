@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: © 2022 MONAI Consortium
+// SPDX-FileCopyrightText: ï¿½ 2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
 using System;
@@ -265,12 +265,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == TaskManager.TaskUpdateEvent), It.IsAny<Message>()), Times.Once());
         }
 
-        [Fact(DisplayName = "Task Manager - RunnerCompleteEvent rejects message (no re-queue) on validation failures")]
-        public async Task TaskManager_RunnerCompleteEvent_ValidationFailure()
+        [Fact(DisplayName = "Task Manager - TaskCallbackEvent rejects message (no re-queue) on validation failures")]
+        public async Task TaskManager_TaskCallbackEvent_ValidationFailure()
         {
             var resetEvent = new ManualResetEvent(false);
-            var message = new JsonMessage<RunnerCompleteEvent>(
-                new RunnerCompleteEvent(),
+            var message = new JsonMessage<TaskCallbackEvent>(
+                new TaskCallbackEvent(),
                 Guid.NewGuid().ToString(),
                 Guid.NewGuid().ToString(),
                 "1");
@@ -297,10 +297,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m.MessageId == message.MessageId), It.Is<bool>(b => !b)), Times.Once());
         }
 
-        [Fact(DisplayName = "Task Manager - RunnerCompleteEvent rejects and re-queues message on no matching execution ID")]
-        public async Task TaskManager_RunnerCompleteEvent_NoMatchingExecutionId()
+        [Fact(DisplayName = "Task Manager - TaskCallbackEvent rejects and re-queues message on no matching execution ID")]
+        public async Task TaskManager_TaskCallbackEvent_NoMatchingExecutionId()
         {
-            var message = GenerateRunnerCompleteEvent();
+            var message = GenerateTaskCallbackEvent();
             var resetEvent = new ManualResetEvent(false);
 
             _messageBrokerSubscriberService.Setup(
@@ -325,8 +325,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m.MessageId == message.MessageId), It.Is<bool>(b => !b)), Times.Once());
         }
 
-        [Fact(DisplayName = "Task Manager - RunnerCompleteEvent rejects message (no-requeue) on exception executing runner")]
-        public async Task TaskManager_RunnerCompleteEvent_ExceptionGettingStatus()
+        [Fact(DisplayName = "Task Manager - TaskCallbackEvent rejects message (no-requeue) on exception executing runner")]
+        public async Task TaskManager_TaskCallbackEvent_ExceptionGettingStatus()
         {
             _options.Value.TaskManager.MaximumNumberOfConcurrentJobs = 1;
             _testRunnerCallback
@@ -357,7 +357,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(taskDispatchEventMessage)));
                 });
 
-            var runnerCompleteEventMessage = GenerateRunnerCompleteEvent(taskDispatchEventMessage);
+            var TaskCallbackEventMessage = GenerateTaskCallbackEvent(taskDispatchEventMessage);
             _messageBrokerSubscriberService.Setup(
                 p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskCallbackEvent, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
@@ -369,7 +369,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     resetEvent.Reset(2);
                     await Task.Run(() =>
                     {
-                        messageReceivedCallback(CreateMessageReceivedEventArgs(runnerCompleteEventMessage));
+                        messageReceivedCallback(CreateMessageReceivedEventArgs(TaskCallbackEventMessage));
                     });
                 });
 
@@ -387,11 +387,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _testRunnerCallback.Verify(p => p.GenerateGetStatusResult(), Times.Once());
             _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == taskDispatchEventMessage.MessageId)), Times.Once());
             _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == TaskManager.TaskUpdateEvent), It.IsAny<Message>()), Times.Exactly(2));
-            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m.MessageId == runnerCompleteEventMessage.MessageId), It.Is<bool>(b => !b)), Times.Once());
+            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m.MessageId == TaskCallbackEventMessage.MessageId), It.Is<bool>(b => !b)), Times.Once());
         }
 
-        [Fact(DisplayName = "Task Manager - RunnerCompleteEvent completes workflow")]
-        public async Task TaskManager_RunnerCompleteEvent_CompletesWorkflow()
+        [Fact(DisplayName = "Task Manager - TaskCallbackEvent completes workflow")]
+        public async Task TaskManager_TaskCallbackEvent_CompletesWorkflow()
         {
             _options.Value.TaskManager.MaximumNumberOfConcurrentJobs = 1;
             _testRunnerCallback
@@ -418,7 +418,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     });
                 });
 
-            var runnerCompleteEventMessage = GenerateRunnerCompleteEvent(taskDispatchEventMessage);
+            var TaskCallbackEventMessage = GenerateTaskCallbackEvent(taskDispatchEventMessage);
             _messageBrokerSubscriberService.Setup(
                 p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskCallbackEvent, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
@@ -430,7 +430,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     resetEvent.Reset(2);
                     await Task.Run(() =>
                     {
-                        messageReceivedCallback(CreateMessageReceivedEventArgs(runnerCompleteEventMessage));
+                        messageReceivedCallback(CreateMessageReceivedEventArgs(TaskCallbackEventMessage));
                     });
                 });
             _messageBrokerSubscriberService
@@ -449,14 +449,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _testRunnerCallback.Verify(p => p.GenerateExecuteTaskResult(), Times.Once());
             _testRunnerCallback.Verify(p => p.GenerateGetStatusResult(), Times.Once());
             _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == taskDispatchEventMessage.MessageId)), Times.Once());
-            _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == runnerCompleteEventMessage.MessageId)), Times.Once());
+            _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == TaskCallbackEventMessage.MessageId)), Times.Once());
             _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == TaskManager.TaskUpdateEvent), It.IsAny<Message>()), Times.Exactly(2));
         }
 
-        private static JsonMessage<RunnerCompleteEvent> GenerateRunnerCompleteEvent(JsonMessage<TaskDispatchEvent>? taskDispatchEventMessage = null)
+        private static JsonMessage<TaskCallbackEvent> GenerateTaskCallbackEvent(JsonMessage<TaskDispatchEvent>? taskDispatchEventMessage = null)
         {
-            return new JsonMessage<RunnerCompleteEvent>(
-                            new RunnerCompleteEvent
+            return new JsonMessage<TaskCallbackEvent>(
+                            new TaskCallbackEvent
                             {
                                 CorrelationId = taskDispatchEventMessage is null ? Guid.NewGuid().ToString() : taskDispatchEventMessage.CorrelationId,
                                 ExecutionId = taskDispatchEventMessage is null ? Guid.NewGuid().ToString() : taskDispatchEventMessage.Body.ExecutionId,

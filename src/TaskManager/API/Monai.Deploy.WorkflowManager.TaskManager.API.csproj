@@ -23,7 +23,7 @@ SPDX-License-Identifier: Apache License 2.0
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0026" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0028" />
     <PackageReference Include="Monai.Deploy.Storage" Version="0.1.0-rc0014" />
   </ItemGroup>
 

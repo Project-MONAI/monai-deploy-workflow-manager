@@ -12,13 +12,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         public const string TaskIdLabelSelectorName = "md-task-id";
         public const string WorkflowIdLabelSelectorName = "md-workflow-id";
         public const string CorrelationIdLabelSelectorName = "md-correlation-id";
+        public const string ExecutionIdLabelSelectorName = "md-execution-id";
 
         public const string WorkflowEntrypoint = "md-workflow-entrypoint";
         public const string WorkflowTemplatePrefix = "call-";
 
         public const string ExitHook = "exit";
-        public const string ExitHookTemplateName = "exit-message-notification";
-        public const string ExitHookTemplateTemplateName = "call-exit-hook";
+        public const string ExitHookTemplateName = "exit-message-template";
+        public const string ExitHookTemplateGenerateTemplateName = "generate-message";
+        public const string ExitHookTemplateSendTemplateName = "send-message";
+        public const string ExitHookParameterEvent = "event";
+        public const string ExitHookParameterMessage = "message";
+        public const string ExitHookGenerateMessageContainerImage = "alpine:latest";
+        public const string ExitHookOutputArtifactName = "output";
+        public const string ExitHookOutputPath = "/tmp/";
+        public const string ExitHookOutputStorageName = "tempStorage";
+        public const string ExitHookSendMessageContainerImage = "ghcr.io/jandelgado/rabtap:latest";
 
         public const string SecretAccessKey = "accessKey";
         public const string SecretSecretKey = "secretKey";
@@ -35,5 +44,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         public const string LabelCreatorValue = "monai-deploy";
 
         public static readonly IList<string> ArgoFailurePhases = new List<string> { ArgoPhaseFailed, ArgoPhaseError };
+
     }
 }

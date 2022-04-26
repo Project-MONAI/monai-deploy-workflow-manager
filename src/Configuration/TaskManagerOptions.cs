@@ -9,7 +9,7 @@ namespace Monai.Deploy.WorkflowManager.Configuration
     public class TaskManagerOptions
     {
         [ConfigurationKeyName("concurrency")]
-        public uint MaximumNumberOfConcurrentJobs { get; set; } = 1;
+        public uint MaximumNumberOfConcurrentJobs { get; set; } = uint.MaxValue;
 
         [ConfigurationKeyName("timeout")]
         public double TaskTimeoutMinutes { get; set; } = 60;

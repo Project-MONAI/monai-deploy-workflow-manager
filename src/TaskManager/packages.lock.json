@@ -31,9 +31,9 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0026, )",
-        "resolved": "0.1.0-rc0026",
-        "contentHash": "g3R9EVdWbBtZSxf6lSFucTEI5hlwKWSkqmAiqzbM4NxeiB97b1ucR+O8E2k/7NWlBXXHQKKGv0or2PB7yYHh8A==",
+        "requested": "[0.1.0-rc0028, )",
+        "resolved": "0.1.0-rc0028",
+        "contentHash": "c6/12uX876ocH2natHTggaSTApDR3MFEVNXg0cxlXIrhEJ8xxpT+Jt7T+p8YdbxCCkLwal0DrgbMPNECyWL0VQ==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -270,7 +270,7 @@
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.0-rc0026",
+          "Monai.Deploy.Messaging": "0.1.0-rc0028",
           "Monai.Deploy.Storage": "0.1.0-rc0014"
         }
       }

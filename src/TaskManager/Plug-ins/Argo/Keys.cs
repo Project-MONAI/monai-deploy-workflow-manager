@@ -26,16 +26,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         public static readonly string WorkflowTemplateTemplateRefName = "workflowTemplateTemplateRefName";
 
         /// <summary>
-        /// Key for the name of the exit 'WorkflowTemplate' stored on the targeted Argo server.
-        /// </summary>
-        public static readonly string ExitWorkflowTemplateName = "exitWorkflowTemplateName";
-
-        /// <summary>
-        /// Key for the name of the exit 'template' inside the 'WorkflowTemplate' stored on the targeted Argo server.
-        /// </summary>
-        public static readonly string ExitWorkflowTemplateTemplateRefName = "exitWorkflowTemplateTemplatRefeName";
-
-        /// <summary>
         /// Key for the setting 'ActiveDeadlineSeconds' of a Argo workflow.
         /// </summary>
         public static readonly string TimeoutSeconds = "timeoutSeconds";
@@ -52,8 +42,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             new List<string> {
                 BaseUrl,
                 WorkflowTemplateName,
-                WorkflowTemplateTemplateRefName,
-                ExitWorkflowTemplateName,
-                ExitWorkflowTemplateTemplateRefName };
+                WorkflowTemplateTemplateRefName};
     }
 }

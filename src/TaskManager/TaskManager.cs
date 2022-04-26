@@ -95,7 +95,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         {
             Guard.Against.Null(args, nameof(args));
             using var loggingScope = _logger.BeginScope($"Message Type={args.Message.MessageDescription}, ID={args.Message.MessageId}. Correlation ID={args.Message.CorrelationId}");
-            var message = args.Message.ConvertToJsonMessage<RunnerCompleteEvent>();
+            var message = args.Message.ConvertToJsonMessage<TaskCallbackEvent>();
             try
             {
                 await HandleTaskCallback(message).ConfigureAwait(false);
@@ -130,7 +130,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
         }
 
-        private async Task HandleTaskCallback(JsonMessage<RunnerCompleteEvent> message)
+        private async Task HandleTaskCallback(JsonMessage<TaskCallbackEvent> message)
         {
             Guard.Against.Null(message, nameof(message));
 
@@ -157,6 +157,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 var executionStatus = await runner.Runner.GetStatus(message.Body.Identity, _cancellationTokenSource.Token).ConfigureAwait(false);
                 AcknowledgeMessage(message);
                 var updateMessage = GenerateUpdateEventMessage(message, message.Body.ExecutionId, message.Body.WorkflowId, message.Body.TaskId, executionStatus);
+                updateMessage.Body.Metadata.Add(Strings.JobIdentity, message.Body.Identity);
                 await SendUpdateEvent(updateMessage).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -166,6 +167,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
 
             Interlocked.Decrement(ref _activeJobs);
+            _activeExecutions.Remove(message.Body.ExecutionId);
         }
 
         private async Task HandleDispatchTask(JsonMessage<TaskDispatchEvent> message)

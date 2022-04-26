@@ -25,7 +25,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging
         [LoggerMessage(EventId = 1005, Level = LogLevel.Debug, Message = "Argo workflow template: {generateName}:\r\n{json}")]
         public static partial void ArgoWorkflowTemplateJson(this ILogger logger, string generateName, string json);
 
-        [LoggerMessage(EventId = 1006, Level = LogLevel.Debug, Message = "Creating Argo client with base URL: {baseUrl}")]
+        [LoggerMessage(EventId = 1006, Level = LogLevel.Debug, Message = "Creating Argo client with base URL: {baseUrl}.")]
         public static partial void CreatingArgoClient(this ILogger logger, string baseUrl);
 
         [LoggerMessage(EventId = 1007, Level = LogLevel.Debug, Message = "Creating Kubernetes client.")]
@@ -42,5 +42,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging
 
         [LoggerMessage(EventId = 1011, Level = LogLevel.Error, Message = "Error generating Argo workflow.")]
         public static partial void ErrorGeneratingWorkflow(this ILogger logger, Exception ex);
+        
+        [LoggerMessage(EventId = 1012, Level = LogLevel.Error, Message = "Error loading WorkflowTemplate '{workflowTemplateName}' from Argo.")]
+        public static partial void ErrorLoadingWorkflowTemplate(this ILogger logger, string workflowTemplateName, Exception ex);
     }
 }

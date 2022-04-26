@@ -16,6 +16,7 @@ using Monai.Deploy.Storage.MinIo;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo;
+using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
 {
@@ -39,7 +40,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
             _ = host.StartAsync();
 
             var taskManager = host.Services.GetRequiredService<TaskManager>();
+            Guard.Against.NullService(taskManager, nameof(TaskManager));
             var logger = host.Services.GetRequiredService<ILogger<Program>>();
+            Guard.Against.NullService(logger, nameof(ILogger<Program>));
+            var publisher = host.Services.GetRequiredService<IMessageBrokerPublisherService>();
+            Guard.Against.NullService(publisher, nameof(IMessageBrokerPublisherService));
+            var subscriber = host.Services.GetRequiredService<IMessageBrokerSubscriberService>();
+            Guard.Against.NullService(subscriber, nameof(IMessageBrokerSubscriberService));
+
+            subscriber.Subscribe(TaskManager.TaskUpdateEvent, string.Empty, (args) =>
+            {
+                logger.LogInformation($"{args.Message.MessageDescription} received.");
+                var updateMessage = args.Message.ConvertToJsonMessage<TaskUpdateEvent>();
+
+                logger.LogInformation($"Task updated with new status: {updateMessage.Body.Status}");
+                subscriber.Acknowledge(args.Message);
+            }, 1);
 
             while (taskManager.Status != Contracts.Rest.ServiceStatus.Running)
             {
@@ -54,8 +70,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
 
             await Task.Run(() =>
             {
-                var publisher = host.Services.GetRequiredService<IMessageBrokerPublisherService>();
-                Guard.Against.NullService(publisher, nameof(IMessageBrokerPublisherService));
                 var message = GenerateDispatchEvent(argBaseUri, minIoEndpoint);
                 logger.LogInformation($"Queuing new job with correlation ID={message.CorrelationId}.");
                 publisher.Publish(TaskManager.TaskDispatchEvent, message);
@@ -81,8 +95,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
             message.Body.TaskPluginArguments.Add(Keys.BaseUrl, argBaseUri);
             message.Body.TaskPluginArguments.Add(Keys.WorkflowTemplateName, "list-input-artifacts-template");
             message.Body.TaskPluginArguments.Add(Keys.WorkflowTemplateTemplateRefName, "s3-artifacts-template");
-            message.Body.TaskPluginArguments.Add(Keys.ExitWorkflowTemplateName, "http-template");
-            message.Body.TaskPluginArguments.Add(Keys.ExitWorkflowTemplateTemplateRefName, "http");
             message.Body.Inputs.Add(new Messaging.Common.Storage
             {
                 Name = "input-dicom",
@@ -94,7 +106,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                 },
                 Bucket = "monaideploy",
                 SecuredConnection = false,
-                RelativeRootPath = "/4acc37cd-5e45-4e60-af9a-8c0a96fb5583/dcm"
+                RelativeRootPath = "/e08b7d7d-f30c-4f31-87d5-8ce5049aa956/dcm"
             });
             message.Body.Inputs.Add(new Messaging.Common.Storage
             {
@@ -107,7 +119,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                 },
                 Bucket = "monaideploy",
                 SecuredConnection = false,
-                RelativeRootPath = "/4acc37cd-5e45-4e60-af9a-8c0a96fb5583/ehr"
+                RelativeRootPath = "/e08b7d7d-f30c-4f31-87d5-8ce5049aa956/ehr"
+            });
+            message.Body.Outputs.Add(new Messaging.Common.Storage
+            {
+                Name = "tempStorage",
+                Endpoint = minIoEndpoint,
+                Credentials = new Messaging.Common.Credentials
+                {
+                    AccessKey = "minio",
+                    AccessToken = "monaideploy"
+                },
+                Bucket = "monaideploy",
+                SecuredConnection = false,
+                RelativeRootPath = "/rabbit"
             });
             return message.ToMessage();
         }

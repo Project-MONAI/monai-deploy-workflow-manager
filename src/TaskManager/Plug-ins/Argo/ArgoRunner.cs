@@ -1,11 +1,14 @@
 ﻿// SPDX-FileCopyrightText: © 2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
+using System.Linq;
 using System.Text;
 using Ardalis.GuardClauses;
 using Argo;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
@@ -16,27 +19,28 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
     public sealed class ArgoRunner : RunnerBase, IAsyncDisposable
     {
-        private readonly List<string> _secretStores;
+        private readonly Dictionary<string, string> _secretStores;
         private readonly IServiceScope _scope;
         private readonly IKubernetesProvider _kubernetesProvider;
         private readonly IArgoProvider _argoProvider;
+        private readonly IOptions<MessageBrokerServiceConfiguration> _options;
         private readonly ILogger<ArgoRunner> _logger;
         private int? _activeDeadlineSeconds;
         private string _namespace;
         private string _baseUrl = null!;
         private string? _apiToken;
 
-        public ArgoRunner(IServiceScopeFactory serviceScopeFactory, TaskDispatchEvent taskDispatchEvent, ILogger<ArgoRunner> logger)
+        public ArgoRunner(IServiceScopeFactory serviceScopeFactory, IOptions<MessageBrokerServiceConfiguration> options, TaskDispatchEvent taskDispatchEvent, ILogger<ArgoRunner> logger)
             : base(taskDispatchEvent)
         {
             Guard.Against.Null(serviceScopeFactory, nameof(serviceScopeFactory));
 
-            _secretStores = new List<string>();
+            _secretStores = new Dictionary<string, string>();
             _scope = serviceScopeFactory.CreateScope();
 
             _kubernetesProvider = _scope.ServiceProvider.GetRequiredService<IKubernetesProvider>() ?? throw new ServiceNotFoundException(nameof(IKubernetesProvider));
             _argoProvider = _scope.ServiceProvider.GetRequiredService<IArgoProvider>() ?? throw new ServiceNotFoundException(nameof(IArgoProvider));
-
+            _options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger;
             _namespace = Strings.DefaultNamespace;
 
@@ -162,6 +166,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                         { Strings.TaskIdLabelSelectorName, Event.TaskId! },
                         { Strings.WorkflowIdLabelSelectorName, Event.WorkflowId! },
                         { Strings.CorrelationIdLabelSelectorName, Event.CorrelationId! },
+                        { Strings.ExecutionIdLabelSelectorName, Event.ExecutionId }
                     }
                 },
                 Spec = new WorkflowSpec()
@@ -175,11 +180,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 }
             };
 
-            // Add the exit template for the exit hook
-            AddExitHookTemplate(workflow);
-
+            workflow.Spec.Templates = new List<Template2>();
             // Add the main workflow template
             await AddMainWorkflowTemplate(workflow, cancellationToken).ConfigureAwait(false);
+
+            // Add the exit template for the exit hook
+            await AddExitHookTemplate(workflow, cancellationToken).ConfigureAwait(false);
 
             _logger.ArgoWorkflowTemplateGenerated(workflow.Metadata.GenerateName);
             _logger.ArgoWorkflowTemplateJson(workflow.Metadata.GenerateName, JsonConvert.SerializeObject(workflow, Formatting.Indented));
@@ -191,82 +197,186 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             Guard.Against.Null(workflow, nameof(workflow));
 
-            var mainTemplateStep = new WorkflowStep()
-            {
-                Name = $"{Strings.WorkflowTemplatePrefix}{Event.TaskPluginArguments![Keys.WorkflowTemplateTemplateRefName]}",
-                TemplateRef = new TemplateRef()
-                {
-                    Name = Event.TaskPluginArguments![Keys.WorkflowTemplateName],
-                    Template = Event.TaskPluginArguments![Keys.WorkflowTemplateTemplateRefName]
-                },
-                Arguments = new Arguments()
-                {
-                    Artifacts = new List<Artifact>(),
-                }
-            };
+            var workflowTemplate = await LoadWorkflowTemplate(Event.TaskPluginArguments![Keys.WorkflowTemplateName]);
 
-            await AddArtifacts(mainTemplateStep, Event.Inputs, cancellationToken).ConfigureAwait(false);
-            await AddArtifacts(mainTemplateStep, Event.Outputs, cancellationToken).ConfigureAwait(false);
-
-            workflow.Spec.Templates.Add(new Template2()
+            var mainTemplateSteps = new Template2()
             {
                 Name = Strings.WorkflowEntrypoint,
-                Steps = new List<ParallelSteps>() { new ParallelSteps() { mainTemplateStep } }
-            });
-        }
-
-        private void AddExitHookTemplate(Workflow workflow)
-        {
-            Guard.Against.Null(workflow, nameof(workflow));
-
-            workflow.Spec.Templates = new List<Template2>{
-                new Template2()
+                Steps = new List<ParallelSteps>()
                 {
-                    Name = Strings.ExitHookTemplateName,
-                    Steps = new List<ParallelSteps>()
-                    {
-                        new ParallelSteps()
+                    new ParallelSteps() {
+                        new WorkflowStep()
                         {
-                            new WorkflowStep()
-                            {
-                                Name = Strings.ExitHookTemplateTemplateName,
-                                TemplateRef= new TemplateRef()
-                                {
-                                    Name = Event.TaskPluginArguments[Keys.ExitWorkflowTemplateName],
-                                    Template = Event.TaskPluginArguments[Keys.ExitWorkflowTemplateTemplateRefName]
-                                }
-                            }
+                            Name = Strings.WorkflowEntrypoint,
+                            Template = Event.TaskPluginArguments![Keys.WorkflowTemplateTemplateRefName]
                         }
                     }
                 }
             };
+
+            await CopyWorkflowTemplateToWorkflow(workflowTemplate, Event.TaskPluginArguments![Keys.WorkflowTemplateTemplateRefName], workflow, cancellationToken);
+
+            workflow.Spec.Templates.Add(mainTemplateSteps);
         }
 
-        private async Task AddArtifacts(WorkflowStep workflowStep, List<Messaging.Common.Storage> storageList, CancellationToken cancellationToken)
+        private async Task AddExitHookTemplate(Workflow workflow, CancellationToken cancellationToken)
         {
-            Guard.Against.Null(workflowStep, nameof(workflowStep));
-            Guard.Against.Null(storageList, nameof(storageList));
+            Guard.Against.Null(workflow, nameof(workflow));
 
-            foreach (var storage in storageList)
+            var temporaryStore = Event.Outputs.FirstOrDefault(p => p.Name!.Equals(Strings.ExitHookOutputStorageName, StringComparison.Ordinal));
+
+            if (temporaryStore is null)
             {
-                var secret = await GenerateK8sSecretFrom(storage, cancellationToken).ConfigureAwait(false);
-                workflowStep.Arguments.Artifacts.Add(new Artifact
+                throw new ArtifactMappingNotFoundException(Strings.ExitHookOutputStorageName);
+            }
+
+            var exitTemplateSteps = new Template2()
+            {
+                Name = Strings.ExitHookTemplateName,
+                Steps = new List<ParallelSteps>()
                 {
-                    Name = storage.Name,
-                    S3 = new S3Artifact2()
+                    new ParallelSteps()
                     {
-                        Bucket = storage.Bucket,
-                        Key = storage.RelativeRootPath,
-                        Insecure = !storage.SecuredConnection,
-                        Endpoint = storage.Endpoint,
-                        AccessKeySecret = new SecretKeySelector { Name = secret, Key = Strings.SecretAccessKey },
-                        SecretKeySecret = new SecretKeySelector { Name = secret, Key = Strings.SecretSecretKey },
+                        new WorkflowStep()
+                        {
+                            Name = Strings.ExitHookTemplateGenerateTemplateName,
+                            Template = Strings.ExitHookTemplateGenerateTemplateName,
+                        }
+                    },
+
+                    new ParallelSteps()
+                    {
+                        new WorkflowStep()
+                        {
+                            Name = Strings.ExitHookTemplateSendTemplateName,
+                            Template = Strings.ExitHookTemplateSendTemplateName,
+                        }
                     }
-                });
+                }
+            };
+
+            workflow.Spec.Templates.Add(exitTemplateSteps);
+
+            var artifact = await CreateArtifact(temporaryStore, cancellationToken);
+
+            var exitHookTemplate = new ExitHookTemplate(Event, _options.Value);
+            workflow.Spec.Templates.Add(exitHookTemplate.GenerateMessageTemplate(artifact));
+            workflow.Spec.Templates.Add(exitHookTemplate.GenerateSendTemplate(artifact));
+        }
+
+
+
+        private async Task<WorkflowTemplate> LoadWorkflowTemplate(string workflowTemplateName)
+        {
+            Guard.Against.NullOrWhiteSpace(workflowTemplateName, nameof(workflowTemplateName));
+
+            try
+            {
+                var workflow = new Workflow();
+                var client = _argoProvider.CreateClient(_baseUrl, _apiToken);
+                return await client.WorkflowTemplateService_GetWorkflowTemplateAsync(_namespace, workflowTemplateName, null);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorLoadingWorkflowTemplate(workflowTemplateName, ex);
+                throw;
             }
         }
 
-        // TODO: we may need to generate a set of temporary credentials from the storage service.
+        private async Task CopyWorkflowTemplateToWorkflow(WorkflowTemplate workflowTemplate, string name, Workflow workflow, CancellationToken cancellationToken)
+        {
+            Guard.Against.Null(workflowTemplate, nameof(workflowTemplate));
+            Guard.Against.NullOrWhiteSpace(name, nameof(name));
+            Guard.Against.Null(workflow, nameof(workflow));
+
+            var template = workflowTemplate.Spec.Templates.FirstOrDefault(p => p.Name == name);
+            if (template is null)
+            {
+                throw new TemplateNotFoundException(workflowTemplate.Metadata.Name, name);
+            }
+
+            workflow.Spec.Templates.Add(template);
+
+            await CopyTemplateSteps(template.Steps, workflowTemplate, name, workflow, cancellationToken);
+            await CopyTemplateDags(template.Dag, workflowTemplate, name, workflow, cancellationToken);
+            await AddArtifacts(template?.Inputs?.Artifacts, Event.Inputs, cancellationToken);
+            await AddArtifacts(template?.Outputs?.Artifacts, Event.Outputs, cancellationToken);
+        }
+
+        private async Task AddArtifacts(ICollection<Artifact>? artifacts, List<Messaging.Common.Storage> storageInfos, CancellationToken cancellationToken)
+        {
+            Guard.Against.Null(storageInfos, nameof(storageInfos));
+
+            if (artifacts is null || artifacts.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var artifact in artifacts)
+            {
+                var storageInfo = storageInfos.FirstOrDefault(p => p.Name!.Equals(artifact.Name, StringComparison.Ordinal));
+                if (storageInfo is null)
+                {
+                    throw new ArtifactMappingNotFoundException(artifact.Name);
+                }
+
+                artifact.S3 = await CreateArtifact(storageInfo, cancellationToken);
+            }
+        }
+
+        private async Task<S3Artifact2> CreateArtifact(Messaging.Common.Storage storageInfo, CancellationToken cancellationToken)
+        {
+            Guard.Against.Null(storageInfo, nameof(storageInfo));
+
+            if (!_secretStores.TryGetValue(storageInfo.Name!, out var secret))
+            {
+                secret = await GenerateK8sSecretFrom(storageInfo, cancellationToken).ConfigureAwait(false);
+            }
+
+            return new S3Artifact2()
+            {
+                Bucket = storageInfo.Bucket,
+                Key = storageInfo.RelativeRootPath,
+                Insecure = !storageInfo.SecuredConnection,
+                Endpoint = storageInfo.Endpoint,
+                AccessKeySecret = new SecretKeySelector { Name = secret, Key = Strings.SecretAccessKey },
+                SecretKeySecret = new SecretKeySelector { Name = secret, Key = Strings.SecretSecretKey },
+            };
+        }
+
+        private async Task CopyTemplateDags(DAGTemplate dag, WorkflowTemplate workflowTemplate, string name, Workflow workflow, CancellationToken cancellationToken)
+        {
+            Guard.Against.Null(workflowTemplate, nameof(workflowTemplate));
+            Guard.Against.NullOrWhiteSpace(name, nameof(name));
+            Guard.Against.Null(workflow, nameof(workflow));
+
+            if (dag is not null)
+            {
+                foreach (var task in dag.Tasks)
+                {
+                    await CopyWorkflowTemplateToWorkflow(workflowTemplate, task.Template, workflow, cancellationToken);
+                }
+            }
+        }
+
+        private async Task CopyTemplateSteps(ICollection<ParallelSteps> steps, WorkflowTemplate workflowTemplate, string name, Workflow workflow, CancellationToken cancellationToken)
+        {
+            Guard.Against.Null(workflowTemplate, nameof(workflowTemplate));
+            Guard.Against.NullOrWhiteSpace(name, nameof(name));
+            Guard.Against.Null(workflow, nameof(workflow));
+
+            if (steps is not null)
+            {
+                foreach (var pStep in steps)
+                {
+                    foreach (var step in pStep)
+                    {
+                        await CopyWorkflowTemplateToWorkflow(workflowTemplate, step.Template, workflow, cancellationToken);
+                    }
+                }
+            }
+        }
+
         private async Task<string> GenerateK8sSecretFrom(Messaging.Common.Storage storage, CancellationToken cancellationToken)
         {
             Guard.Against.Null(storage, nameof(storage));
@@ -297,7 +407,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             _logger.GeneratingArtifactSecret(storage.Name);
             var result = await client.CreateNamespacedSecretWithHttpMessagesAsync(secret, _namespace, cancellationToken: cancellationToken).ConfigureAwait(false);
             result.Response.EnsureSuccessStatusCode();
-            _secretStores.Add(result.Body.Metadata.Name);
+            _secretStores.Add(storage.Name, result.Body.Metadata.Name);
             return result.Body.Metadata.Name;
         }
 
@@ -307,7 +417,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             {
                 var client = _kubernetesProvider.CreateClient();
 
-                foreach (var secret in _secretStores)
+                foreach (var secret in _secretStores.Values)
                 {
                     try
                     {
@@ -347,4 +457,5 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             await RemoveKubenetesSecrets().ConfigureAwait(false);
         }
     }
+
 }
