@@ -2,29 +2,26 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System;
-using Microsoft.Extensions.Configuration;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
     public class Workflow
     {
-        [ConfigurationKeyName("id")]
-        public Guid Id { get; set; }
+        [JsonIgnore]
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
 
-        [ConfigurationKeyName("name")]
-        public string Name { get; set; }
+        [JsonIgnore]
+        public Guid WorkflowId { get; set; }
 
-        [ConfigurationKeyName("version")]
-        public string Version { get; set; }
+        [JsonIgnore]
+        public int Revision { get; set; }
 
-        [ConfigurationKeyName("description")]
-        public string Description { get; set; }
-
-        [ConfigurationKeyName("informatics_gateway")]
-        public InformaticsGateway InformaticsGateway { get; set; }
-
-        public TaskObject[] Tasks { get; set; }
-
-        public TaskObject[] TaskTemplates { get; set; }
+        [JsonIgnore]
+        public WorkflowSpec WorkflowSpec { get; set; }
     }
 }

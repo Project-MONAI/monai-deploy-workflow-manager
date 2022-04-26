@@ -48,11 +48,11 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
 
             if (message.Workflows?.Any() != true)
             {
-                workflows = await _workflowRepository.GetListByAeTitleAsync(message.CalledAeTitle);
+                workflows = await _workflowRepository.GetWorkflowsByAeTitleAsync(message.CalledAeTitle) as List<Workflow>;
             }
             else
             {
-                workflows = await _workflowRepository.GetByWorkflowsIdsAsync(message.Workflows);
+                workflows = await _workflowRepository.GetByWorkflowsIdsAsync(message.Workflows) as List<Workflow>;
 
             }
 
@@ -78,7 +78,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             var workflowInstance = new WorkflowInstance()
             {
                 Id = Guid.NewGuid(),
-                WorkflowId = workflow.Id,
+                WorkflowId = workflow.WorkflowId,
                 PayloadId = message.PayloadId,
                 StartTime = DateTime.UtcNow,
                 BucketId = $"{message.Bucket}/{workflow.Id}",
@@ -87,9 +87,9 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
 
             var tasks = new List<TaskExecution>();
             // part of this ticket just take the first task
-            if (workflow.Tasks.Length > 0)
+            if (workflow.WorkflowSpec.Tasks.Length > 0)
             {
-                var firstTask = workflow.Tasks.FirstOrDefault();
+                var firstTask = workflow.WorkflowSpec.Tasks.FirstOrDefault();
 
                 // check if template exists merge args.
 

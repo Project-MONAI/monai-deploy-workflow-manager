@@ -10,6 +10,6 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
     public interface IWorkflowInstanceRepository
     {
 
-        Task<bool> CreateAsync(IEnumerable<WorkflowInstance> workflows);
+        Task<bool> CreateAsync(IList<WorkflowInstance> workflows);
     }
 }

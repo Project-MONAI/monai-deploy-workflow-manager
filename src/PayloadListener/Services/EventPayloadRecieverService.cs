@@ -49,7 +49,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                     return;
                 }
 
-                WorkflowExecuterService.ProcessPayload(payload);
+                await WorkflowExecuterService.ProcessPayload(payload);
 
                 _messageSubscriber.Acknowledge(message.Message);
             }
