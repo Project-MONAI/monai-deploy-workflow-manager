@@ -47,7 +47,7 @@ namespace Monai.Deploy.WorkflowManager.Configuration.Tests
                 {
                     Topics = new MessageBrokerConfigurationKeys
                     {
-                        ExportComplete = "ExportComplete",
+                        TaskDispatchRequest = "TaskDispatchRequest",
                         ExportRequestPrefix = "ExportRequestPrefix",
                         WorkflowRequest = "WorkflowRequest"
                     }

@@ -1325,7 +1325,21 @@
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
-          "Monai.Deploy.WorkflowManager.Logging": "1.0.0"
+          "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
+          "Monai.Deploy.WorkloadManager.WorkfowExecuter": "1.0.0"
+        }
+      },
+      "monai.deploy.workloadmanager.workfowexecuter": {
+        "type": "Project",
+        "dependencies": {
+          "Ardalis.GuardClauses": "4.0.1",
+          "Monai.Deploy.Messaging": "0.1.0-rc0025",
+          "Monai.Deploy.Storage": "0.1.0-rc0014",
+          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Database": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
+          "Newtonsoft.Json": "13.0.1"
         }
       }
     }

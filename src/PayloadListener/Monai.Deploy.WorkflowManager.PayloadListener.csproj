@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -18,6 +18,7 @@
     <ProjectReference Include="..\Contracts\Monai.Deploy.WorkflowManager.Contracts.csproj" />
     <ProjectReference Include="..\Common\Monai.Deploy.WorkflowManager.Common.csproj" />
     <ProjectReference Include="..\Logging\Monai.Deploy.WorkflowManager.Logging.csproj" />
+    <ProjectReference Include="..\WorkflowExecuter\Monai.Deploy.WorkloadManager.WorkfowExecuter.csproj" />
   </ItemGroup>
 
 </Project>

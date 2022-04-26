@@ -15,11 +15,11 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         public string WorkflowRequest { get; set; } = "md.workflow.request";
 
         /// <summary>
-        /// Gets or sets the topic for publishing workflow requests.
-        /// Defaults to `md_workflow_request`.
+        /// Gets or sets the topic for publishing task dispatch requests.
+        /// Defaults to `md.workflow.task_dispatch`.
         /// </summary>
-        [ConfigurationKeyName("exportComplete")]
-        public string ExportComplete { get; set; } = "md.export.complete";
+        [ConfigurationKeyName("taskDispatch")]
+        public string TaskDispatchRequest { get; set; } = "md.workflow.task_dispatch";
 
         /// <summary>
         /// Gets or sets the topic for publishing workflow requests.

@@ -31,6 +31,6 @@ namespace Monai.Deploy.WorkloadManager.Contracts.Models
         public InputMataData InputMataData { get; set; }
 
         [ConfigurationKeyName("tasks")]
-        public TaskObject[] Tasks { get; set; }
+        public TaskExecution[] Tasks { get; set; }
     }
 }

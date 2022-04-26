@@ -10,6 +10,7 @@ using Monai.Deploy.Messaging.Common;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkloadManager.WorkfowExecuter.Services;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 {
@@ -19,6 +20,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         private Mock<IEventPayloadValidator> _mockEventPayloadValidator;
         private Mock<ILogger<EventPayloadRecieverService>> _mockLogger;
         private Mock<IMessageBrokerSubscriberService> _mockMessageBrokerSubscriberService;
+        private Mock<IWorkflowExecuterService> _workflowExecuterService;
 
         [SetUp]
         public void Setup()
@@ -26,7 +28,8 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
             _mockEventPayloadValidator = new Mock<IEventPayloadValidator>();
             _mockLogger = new Mock<ILogger<EventPayloadRecieverService>>();
             _mockMessageBrokerSubscriberService = new Mock<IMessageBrokerSubscriberService>();
-            _eventPayloadRecieverService = new EventPayloadRecieverService(_mockLogger.Object, _mockEventPayloadValidator.Object, _mockMessageBrokerSubscriberService.Object);
+            _workflowExecuterService = new Mock<IWorkflowExecuterService>();
+            _eventPayloadRecieverService = new EventPayloadRecieverService(_mockLogger.Object, _mockEventPayloadValidator.Object, _mockMessageBrokerSubscriberService.Object, _workflowExecuterService.Object);
         }
 
         [Test]
