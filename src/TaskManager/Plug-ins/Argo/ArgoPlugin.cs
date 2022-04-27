@@ -124,11 +124,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             Guard.Against.NullOrWhiteSpace(identity, nameof(identity));
 
-            var client = _argoProvider.CreateClient(_baseUrl, _apiToken);
-
             try
             {
+                var client = _argoProvider.CreateClient(_baseUrl, _apiToken);
                 var workflow = await client.WorkflowService_GetWorkflowAsync(_namespace, identity, null, null, cancellationToken).ConfigureAwait(false);
+
+                // it take sometime for the Argo job to be in the final state after emitting the callback event.
+                int retryCount = 30;
+                while(workflow.Status.Phase.Equals(Strings.ArgoPhaseRunning, StringComparison.OrdinalIgnoreCase) && retryCount-- > 0)
+                {
+                    await Task.Delay(1000);
+                    workflow = await client.WorkflowService_GetWorkflowAsync(_namespace, identity, null, null, cancellationToken).ConfigureAwait(false);
+                }
+
                 if (Strings.ArgoFailurePhases.Contains(workflow.Status.Phase, StringComparer.OrdinalIgnoreCase))
                 {
                     return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Failed, FailureReason = FailureReason.ExternalServiceError, Errors = workflow.Status.Message };
