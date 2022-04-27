@@ -519,7 +519,10 @@
         }
       },
       "monai.deploy.workflowmanager.contracts": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.1"
+        }
       },
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",

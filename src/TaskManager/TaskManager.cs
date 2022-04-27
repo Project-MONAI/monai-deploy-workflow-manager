@@ -11,6 +11,7 @@ using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.Common;
+using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Rest;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
@@ -44,6 +45,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         public ServiceStatus Status { get; set; } = ServiceStatus.Unknown;
 
         public string ServiceName => "MONAI Deploy Task Manager";
+
 
         public TaskManager(
             ILogger<TaskManager> logger,
