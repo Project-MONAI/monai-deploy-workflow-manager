@@ -4,6 +4,7 @@
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -65,7 +66,15 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                 //_storageService.CreateFolder(message.Bucket, workflow.Id);
                 //var credentials = _storageService.CreateTemporaryCredentials(message.Bucket, workflow.Id);
 
-                //_messageBrokerPublisherService.Publish(TaskDispatchRoutingKey, new Message());
+                var taskDispatchMessage = new TaskDispatchMessage
+                {
+                    ExecutionId = workflowIntance.Tasks.FirstOrDefault()?.TaskId,
+                    WorkflowInstanceId = workflowIntance.Id.ToString(),
+                };
+
+                var jsonMessage = new JsonMessage<TaskDispatchMessage>(taskDispatchMessage, MessageBrokerConfiguration.WorkflowManagerApplicationId, Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+
+                await _messageBrokerPublisherService.Publish(TaskDispatchRoutingKey, jsonMessage.ToMessage());
             }
 
             processed &= await _workflowInstanceRepository.CreateAsync(workflowInstances);

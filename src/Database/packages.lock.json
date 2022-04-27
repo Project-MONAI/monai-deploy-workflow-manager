@@ -32,6 +32,19 @@
           "MongoDB.Libmongocrypt": "1.3.0"
         }
       },
+      "AWSSDK.Core": {
+        "type": "Transitive",
+        "resolved": "3.7.10.10",
+        "contentHash": "eieuNNym2E63hAnUwZiEQtNCNT5knh2PTqcFVuFQsZpYCw22cGXLq9miC8TDENLFRHh2I1mkTBRiC9E8UlKQhw=="
+      },
+      "AWSSDK.SecurityToken": {
+        "type": "Transitive",
+        "resolved": "3.7.1.141",
+        "contentHash": "paspGCeiN5Qjl6vJanqP1Ll8l3t9hqUmVWmeHMELXyvUgozvVzaSh+PTQ/gj6gmFQ64Us7aeCFSQlfBPZag+vQ==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.10.10, 4.0.0)"
+        }
+      },
       "DnsClient": {
         "type": "Transitive",
         "resolved": "1.6.0",
@@ -138,6 +151,7 @@
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
+          "AWSSDK.SecurityToken": "3.7.1.141",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "MongoDB.Bson": "2.15.0",
           "Newtonsoft.Json": "13.0.1"
