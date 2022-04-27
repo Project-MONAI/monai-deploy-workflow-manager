@@ -195,10 +195,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 return;
             }
 
-            ITaskRunner? taskRunner = null;
+            ITaskPlugin? taskRunner = null;
             try
             {
-                taskRunner = typeof(ITaskRunner).CreateInstance<ITaskRunner>(serviceProvider: _scope.ServiceProvider, typeString: message.Body.TaskAssemblyName, _serviceScopeFactory, message.Body);
+                taskRunner = typeof(ITaskPlugin).CreateInstance<ITaskPlugin>(serviceProvider: _scope.ServiceProvider, typeString: message.Body.TaskAssemblyName, _serviceScopeFactory, message.Body);
             }
             catch (Exception ex)
             {
@@ -212,9 +212,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             {
                 var executionStatus = await taskRunner.ExecuteTask(_cancellationTokenSource.Token).ConfigureAwait(false);
                 _activeExecutions.Add(message.Body.ExecutionId, new TaskRunnerInstance(taskRunner, message.Body));
-                AcknowledgeMessage(message);
                 var updateMessage = GenerateUpdateEventMessage(message, message.Body.ExecutionId, message.Body.WorkflowId, message.Body.TaskId, executionStatus);
                 await SendUpdateEvent(updateMessage).ConfigureAwait(false);
+                AcknowledgeMessage(message);
             }
             catch (Exception ex)
             {
@@ -257,7 +257,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }, TaskManagerApplicationId, message.CorrelationId);
         }
 
-        //TODO: perform retries
+        //TODO: gh-100 implement retry logic
         private async Task SendUpdateEvent(JsonMessage<TaskUpdateEvent> message)
         {
             Guard.Against.NullService(_messageBrokerPublisherService, nameof(IMessageBrokerPublisherService));
@@ -287,7 +287,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             return Interlocked.CompareExchange(ref _activeJobs, expectedActiveJobs, activeJobs) != activeJobs;
         }
 
-        //TODO: change application ID, task topic
         private async Task HandleMessageException(MessageBase message, string workflowId, string taskId, string executionId, string errors, bool requeue)
         {
             Guard.Against.NullService(_messageBrokerSubscriberService, nameof(IMessageBrokerSubscriberService));

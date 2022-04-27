@@ -7,21 +7,21 @@ using System.Runtime.Serialization;
 namespace Monai.Deploy.WorkflowManager.TaskManager.API
 {
     [Serializable, DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
-    public class ValidationException : Exception
+    public class InvalidTaskException : Exception
     {
-        public ValidationException()
+        public InvalidTaskException()
         {
         }
 
-        public ValidationException(string message) : base(message)
+        public InvalidTaskException(string message) : base(message)
         {
         }
 
-        public ValidationException(string message, Exception innerException) : base(message, innerException)
+        public InvalidTaskException(string message, Exception innerException) : base(message, innerException)
         {
         }
 
-        protected ValidationException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected InvalidTaskException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
 

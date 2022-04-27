@@ -8,11 +8,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 {
     internal class TaskRunnerInstance
     {
-        public ITaskRunner Runner { get; }
+        public ITaskPlugin Runner { get; }
         public TaskDispatchEvent Event { get; }
         public DateTime Started { get; }
 
-        public TaskRunnerInstance(ITaskRunner runner, TaskDispatchEvent taskDispatchEvent)
+        public TaskRunnerInstance(ITaskPlugin runner, TaskDispatchEvent taskDispatchEvent)
         {
             Runner = runner;
             Event = taskDispatchEvent;

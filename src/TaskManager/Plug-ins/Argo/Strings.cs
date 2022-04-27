@@ -43,7 +43,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         public const string LabelCreator = "creator";
         public const string LabelCreatorValue = "monai-deploy";
 
-        public static readonly IList<string> ArgoFailurePhases = new List<string> { ArgoPhaseFailed, ArgoPhaseError };
+        public const string ContentTypeJson = "application/json";
+        public const string ApplicationId = "Argo";
 
+        public static readonly IList<string> ArgoFailurePhases = new List<string> { ArgoPhaseFailed, ArgoPhaseError };
     }
 }

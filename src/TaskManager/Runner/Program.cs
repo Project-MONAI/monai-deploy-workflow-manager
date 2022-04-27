@@ -93,7 +93,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
             }, applicationId: "TaskManagerRunner", correlationId: correlationId, deliveryTag: "1");
             message.Body.TaskPluginArguments.Add(Keys.BaseUrl, argBaseUri);
             message.Body.TaskPluginArguments.Add(Keys.WorkflowTemplateName, "list-input-artifacts-template");
-            message.Body.TaskPluginArguments.Add(Keys.WorkflowTemplateTemplateRefName, "s3-artifacts-template");
+            message.Body.TaskPluginArguments.Add(Keys.WorkflowTemplateEntrypoint, "s3-artifacts-template");
             message.Body.Inputs.Add(new Messaging.Common.Storage
             {
                 Name = "input-dicom",

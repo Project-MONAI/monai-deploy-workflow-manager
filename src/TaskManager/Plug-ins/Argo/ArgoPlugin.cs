@@ -6,8 +6,6 @@ using Ardalis.GuardClauses;
 using Argo;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
@@ -16,13 +14,12 @@ using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
-    public sealed class ArgoPlugin : RunnerBase, IAsyncDisposable
+    public sealed class ArgoPlugin : TaskPluginBase, IAsyncDisposable
     {
         private readonly Dictionary<string, string> _secretStores;
         private readonly IServiceScope _scope;
         private readonly IKubernetesProvider _kubernetesProvider;
         private readonly IArgoProvider _argoProvider;
-        private readonly IOptions<MessageBrokerServiceConfiguration> _options;
         private readonly ILogger<ArgoPlugin> _logger;
         private int? _activeDeadlineSeconds;
         private string _namespace;
@@ -31,7 +28,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         public ArgoPlugin(
             IServiceScopeFactory serviceScopeFactory,
-            IOptions<MessageBrokerServiceConfiguration> options,
             ILogger<ArgoPlugin> logger,
             TaskDispatchEvent taskDispatchEvent)
             : base(taskDispatchEvent)
@@ -43,7 +39,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             _kubernetesProvider = _scope.ServiceProvider.GetRequiredService<IKubernetesProvider>() ?? throw new ServiceNotFoundException(nameof(IKubernetesProvider));
             _argoProvider = _scope.ServiceProvider.GetRequiredService<IArgoProvider>() ?? throw new ServiceNotFoundException(nameof(IArgoProvider));
-            _options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger;
             _namespace = Strings.DefaultNamespace;
 
@@ -78,20 +73,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             if (Event.TaskPluginArguments is null || Event.TaskPluginArguments.Count == 0)
             {
-                throw new ValidationException($"Required parameters to execute Argo workflow are missing: {string.Join(',', Keys.RequiredParameters)}");
+                throw new InvalidTaskException($"Required parameters to execute Argo workflow are missing: {string.Join(',', Keys.RequiredParameters)}");
             }
 
             foreach (var key in Keys.RequiredParameters)
             {
                 if (!Event.TaskPluginArguments.ContainsKey(key))
                 {
-                    throw new ValidationException($"Required parameter to execute Argo workflow is missing: {key}");
+                    throw new InvalidTaskException($"Required parameter to execute Argo workflow is missing: {key}");
                 }
             }
 
             if (!Uri.IsWellFormedUriString(Event.TaskPluginArguments[Keys.BaseUrl], UriKind.Absolute))
             {
-                throw new ValidationException($"The value '{Event.TaskPluginArguments[Keys.BaseUrl]}' provided for '{Keys.BaseUrl}' is not a valid URI.");
+                throw new InvalidTaskException($"The value '{Event.TaskPluginArguments[Keys.BaseUrl]}' provided for '{Keys.BaseUrl}' is not a valid URI.");
             }
         }
 
@@ -144,7 +139,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 }
                 else
                 {
-                    return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Unknown, FailureReason = FailureReason.Unknown, Errors = $"Argo status = {workflow.Status.Phase}. Messages = {workflow.Status.Message}." };
+                    return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Unknown, FailureReason = FailureReason.Unknown, Errors = $"Argo status = '{workflow.Status.Phase}'. Messages = '{workflow.Status.Message}'." };
                 }
             }
             catch (Exception ex)
@@ -191,7 +186,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             await AddExitHookTemplate(workflow, cancellationToken).ConfigureAwait(false);
 
             _logger.ArgoWorkflowTemplateGenerated(workflow.Metadata.GenerateName);
-            _logger.ArgoWorkflowTemplateJson(workflow.Metadata.GenerateName, JsonConvert.SerializeObject(workflow, Formatting.Indented));
+            var workflowJson = JsonConvert.SerializeObject(workflow, Formatting.Indented);
+            workflowJson = workflowJson.Replace(Event.TaskPluginArguments[Keys.MessagingPassword], "*****");
+
+            _logger.ArgoWorkflowTemplateJson(workflow.Metadata.GenerateName, workflowJson);
 
             return workflow;
         }
@@ -202,7 +200,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             var workflowTemplate = await LoadWorkflowTemplate(Event.TaskPluginArguments![Keys.WorkflowTemplateName]).ConfigureAwait(false);
 
-            if(workflowTemplate is null)
+            if (workflowTemplate is null)
             {
                 throw new TemplateNotFoundException(Event.TaskPluginArguments![Keys.WorkflowTemplateName]);
             }
@@ -216,13 +214,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                         new WorkflowStep()
                         {
                             Name = Strings.WorkflowEntrypoint,
-                            Template = Event.TaskPluginArguments![Keys.WorkflowTemplateTemplateRefName]
+                            Template = Event.TaskPluginArguments![Keys.WorkflowTemplateEntrypoint]
                         }
                     }
                 }
             };
 
-            await CopyWorkflowTemplateToWorkflow(workflowTemplate, Event.TaskPluginArguments![Keys.WorkflowTemplateTemplateRefName], workflow, cancellationToken).ConfigureAwait(false);
+            await CopyWorkflowTemplateToWorkflow(workflowTemplate, Event.TaskPluginArguments![Keys.WorkflowTemplateEntrypoint], workflow, cancellationToken).ConfigureAwait(false);
 
             workflow.Spec.Templates.Add(mainTemplateSteps);
         }
@@ -267,7 +265,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             var artifact = await CreateArtifact(temporaryStore, cancellationToken).ConfigureAwait(false);
 
-            var exitHookTemplate = new ExitHookTemplate(Event, _options.Value);
+            var exitHookTemplate = new ExitHookTemplate(Event);
             workflow.Spec.Templates.Add(exitHookTemplate.GenerateMessageTemplate(artifact));
             workflow.Spec.Templates.Add(exitHookTemplate.GenerateSendTemplate(artifact));
         }
@@ -399,9 +397,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 {
                     Name = $"{storage.Name.ToLowerInvariant()}-{DateTime.UtcNow.Ticks}",
                     Labels = new Dictionary<string, string>
-                {
-                    { Strings.LabelCreator, Strings.LabelCreatorValue }
-                }
+                    {
+                        { Strings.LabelCreator, Strings.LabelCreatorValue }
+                    }
                 },
                 Type = Strings.SecretTypeOpaque,
                 Data = new Dictionary<string, byte[]>

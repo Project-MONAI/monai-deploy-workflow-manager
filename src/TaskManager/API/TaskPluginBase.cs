@@ -5,12 +5,12 @@ using Monai.Deploy.Messaging.Events;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.API
 {
-    public abstract class RunnerBase : ITaskRunner
+    public abstract class TaskPluginBase : ITaskPlugin
     {
         protected bool DisposedValue { get; private set; }
         protected TaskDispatchEvent Event { get; }
 
-        protected RunnerBase(TaskDispatchEvent taskDispatchEvent)
+        protected TaskPluginBase(TaskDispatchEvent taskDispatchEvent)
         {
             Event = taskDispatchEvent ?? throw new ArgumentNullException(nameof(taskDispatchEvent));
         }
@@ -32,7 +32,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
             }
         }
 
-        ~RunnerBase() => Dispose(disposing: false);
+        ~TaskPluginBase() => Dispose(disposing: false);
 
         public void Dispose()
         {

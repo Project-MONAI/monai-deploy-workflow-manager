@@ -1,17 +1,8 @@
 ﻿// SPDX-FileCopyrightText: © 2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
-using System.Linq;
-using System.Text;
-using Ardalis.GuardClauses;
 using Argo;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Common;
-using Monai.Deploy.WorkflowManager.TaskManager.API;
-using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
@@ -19,14 +10,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
     internal sealed class ExitHookTemplate
     {
         private readonly TaskDispatchEvent _taskDispatchEvent;
-        private readonly MessageBrokerServiceConfiguration _messageBrokerServiceConfiguration;
+        private readonly string _messagingEndpoint;
+        private readonly string _messagingUsername;
+        private readonly string _messagingPassword;
+        private readonly string _messagingTopic;
+        private readonly string _messagingExchange;
         private readonly Guid _messageId;
         private readonly string _messageFileName;
 
-        public ExitHookTemplate(TaskDispatchEvent taskDispatchEvent, MessageBrokerServiceConfiguration messageBrokerServiceConfiguration)
+        public ExitHookTemplate(TaskDispatchEvent taskDispatchEvent)
         {
             _taskDispatchEvent = taskDispatchEvent ?? throw new ArgumentNullException(nameof(taskDispatchEvent));
-            _messageBrokerServiceConfiguration = messageBrokerServiceConfiguration ?? throw new ArgumentNullException(nameof(messageBrokerServiceConfiguration));
+            _messagingEndpoint = taskDispatchEvent.TaskPluginArguments[Keys.MessagingEnddpoint];
+            _messagingUsername = taskDispatchEvent.TaskPluginArguments[Keys.MessagingUsername];
+            _messagingPassword = taskDispatchEvent.TaskPluginArguments[Keys.MessagingPassword];
+            _messagingTopic = taskDispatchEvent.TaskPluginArguments[Keys.MessagingTopic];
+            _messagingExchange = taskDispatchEvent.TaskPluginArguments[Keys.MessagingExchange];
             _messageId = Guid.NewGuid();
             _messageFileName = $"{_messageId}.json";
         }
@@ -75,7 +74,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         }
 
         private TaskCallbackEvent GenerateTaskCallbackEvent() =>
-            new TaskCallbackEvent
+            new()
             {
                 WorkflowId = _taskDispatchEvent.WorkflowId,
                 TaskId = _taskDispatchEvent.TaskId,
@@ -87,25 +86,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         private object GenerateTaskCallbackMessage() =>
              new
              {
-                 ContentType = "application/json",
+                 ContentType = Strings.ContentTypeJson,
                  CorrelationID = _taskDispatchEvent.CorrelationId,
-                 MessageID = Guid.NewGuid().ToString(),
-                 Type = "TaskCallbackEvent",
-                 AppID = "argo",
-                 Exchange = _messageBrokerServiceConfiguration.PublisherSettings["exchange"],
-                 RoutingKey = "md.tasks.callback",
+                 MessageID = _messageId.ToString(),
+                 Type = nameof(TaskCallbackEvent),
+                 AppID = Strings.ApplicationId,
+                 Exchange = _messagingExchange,
+                 RoutingKey = _messagingTopic,
                  DeliveryMode = 2,
                  Body = "{{=sprig.b64enc(inputs.parameters.event)}}"
              };
 
         public Template2 GenerateSendTemplate(S3Artifact2 artifact)
         {
-            string username = _messageBrokerServiceConfiguration.PublisherSettings["username"];
-            string password = _messageBrokerServiceConfiguration.PublisherSettings["password"];
-            string endpoint = _messageBrokerServiceConfiguration.PublisherSettings["endpoint"];
-            string virtualHost = _messageBrokerServiceConfiguration.PublisherSettings["virtualHost"];
-            string exchange = _messageBrokerServiceConfiguration.PublisherSettings["exchange"];
-
             var copyOfArtifact = new S3Artifact2
             {
                 AccessKeySecret = artifact.AccessKeySecret,
@@ -141,7 +134,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     Command = new List<string> { "/rabtap" },
                     Args = new List<string> {
                         "pub",
-                        $"--uri=amqp://{username}:{password}@{endpoint}/{virtualHost}",
+                        $"--uri=amqp://{_messagingUsername}:{_messagingPassword}@{_messagingEndpoint}",
                         "--format=json",
                         $"{Strings.ExitHookOutputPath}{_messageFileName}",
                         "--delay=0s",
@@ -151,5 +144,4 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             };
         }
     }
-
 }

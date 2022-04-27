@@ -26,7 +26,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
         ExecutionStatus GenerateGetStatusResult();
     }
 
-    internal sealed class TestRunner : RunnerBase
+    internal sealed class TestRunner : TaskPluginBase
     {
         private readonly ITestRunnerCallback _testRunnerCallback;
 

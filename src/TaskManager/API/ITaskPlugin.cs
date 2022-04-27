@@ -3,7 +3,7 @@
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.API
 {
-    public interface ITaskRunner : IDisposable
+    public interface ITaskPlugin : IDisposable
     {
         /// <summary>
         /// Executes the task runner plug-in.
