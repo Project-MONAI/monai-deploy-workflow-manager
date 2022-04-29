@@ -29,6 +29,7 @@ namespace Monai.Deploy.WorkflowManager.Configuration
 
         public WorkflowManagerOptions()
         {
+            Messaging = new MessageBrokerConfiguration();
             TaskManager = new TaskManagerOptions();
         }
     }

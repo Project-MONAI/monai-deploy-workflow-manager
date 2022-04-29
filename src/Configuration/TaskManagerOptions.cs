@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.Configuration
@@ -11,11 +12,20 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         [ConfigurationKeyName("concurrency")]
         public uint MaximumNumberOfConcurrentJobs { get; set; } = uint.MaxValue;
 
-        [ConfigurationKeyName("timeout")]
+        [ConfigurationKeyName("plug-ins")]
+        public Dictionary<string, string> PluginAssemblyMappings { get; set; }
+
+        [ConfigurationKeyName("storageCredentialDurationSeconds")]
+        public int TemporaryStorageCredentialDurationSeconds { get; set; } = 3600;
+
+        [ConfigurationKeyName("taskTimeoutMinutes")]
         public double TaskTimeoutMinutes { get; set; } = 60;
 
         public TimeSpan TaskTimeout { get => TimeSpan.FromMinutes(TaskTimeoutMinutes); }
 
-        public double RunnerScanIntervalMs { get; set; } = 10000;
+        public TaskManagerOptions()
+        {
+            PluginAssemblyMappings = new Dictionary<string, string>();
+        }
     }
 }

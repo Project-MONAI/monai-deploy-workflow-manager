@@ -11,6 +11,7 @@ using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
+using Monai.Deploy.Storage;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Rest;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
@@ -26,11 +27,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
         ExecutionStatus GenerateGetStatusResult();
     }
 
-    internal sealed class TestRunner : TaskPluginBase
+    internal sealed class TestPlugin : TaskPluginBase
     {
         private readonly ITestRunnerCallback _testRunnerCallback;
 
-        public TestRunner(
+        public TestPlugin(
             IServiceScopeFactory serviceScopeFactory,
             TaskDispatchEvent taskDispatchEvent,
             ITestRunnerCallback testRunnerCallback) : base(taskDispatchEvent)
@@ -57,6 +58,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly Mock<IServiceScopeFactory> _serviceScopeFactory;
         private readonly Mock<IServiceScope> _serviceScope;
+        private readonly Mock<IStorageService> _storageService;
         private readonly Mock<IMessageBrokerPublisherService> _messageBrokerPublisherService;
         private readonly Mock<IMessageBrokerSubscriberService> _messageBrokerSubscriberService;
         private readonly Mock<ITestRunnerCallback> _testRunnerCallback;
@@ -68,6 +70,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _options = Options.Create(new WorkflowManagerOptions());
             _serviceScopeFactory = new Mock<IServiceScopeFactory>();
             _serviceScope = new Mock<IServiceScope>();
+            _storageService = new Mock<IStorageService>();
             _messageBrokerPublisherService = new Mock<IMessageBrokerPublisherService>();
             _messageBrokerSubscriberService = new Mock<IMessageBrokerSubscriberService>();
             _testRunnerCallback = new Mock<ITestRunnerCallback>();
@@ -85,10 +88,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             serviceProvider
                 .Setup(x => x.GetService(typeof(ITestRunnerCallback)))
                 .Returns(_testRunnerCallback.Object);
+            serviceProvider
+                .Setup(x => x.GetService(typeof(IStorageService)))
+                .Returns(_storageService.Object);
 
             _serviceScope.Setup(x => x.ServiceProvider).Returns(serviceProvider.Object);
-
             _logger.Setup(p => p.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
+
+            _options.Value.TaskManager.PluginAssemblyMappings.Add("argo", typeof(TestPlugin).AssemblyQualifiedName);
         }
 
         [Fact(DisplayName = "Task Manager starts & stops")]
@@ -114,7 +121,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             var resetEvent = new ManualResetEvent(false);
 
             _messageBrokerSubscriberService.Setup(
-                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskDispatchEvent, StringComparison.OrdinalIgnoreCase)),
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskDispatchRequest, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
                                  It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
                                  It.IsAny<ushort>()))
@@ -143,7 +150,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             var resetEvent = new ManualResetEvent(false);
 
             _messageBrokerSubscriberService.Setup(
-                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskDispatchEvent, StringComparison.OrdinalIgnoreCase)),
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskDispatchRequest, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
                                  It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
                                  It.IsAny<ushort>()))
@@ -164,15 +171,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => message.MessageId == m.MessageId), It.Is<bool>(b => b)), Times.Once());
         }
 
-        [Fact(DisplayName = "Task Manager - TaskDispatchEvent rejects message (no-requeue) with unsupported runner")]
-        public async Task TaskManager_TaskDispatchEvent_UnsupportedRunner()
+        [Fact(DisplayName = "Task Manager - TaskDispatchEvent rejects message (requeue) when failure to generate temporary storage credentials")]
+        public async Task TaskManager_TaskDispatchEvent_FailedToGenerateTemporaryCredentials()
         {
             _options.Value.TaskManager.MaximumNumberOfConcurrentJobs = 1;
             var message = GenerateTaskDispatchEvent();
             var resetEvent = new ManualResetEvent(false);
 
             _messageBrokerSubscriberService.Setup(
-                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskDispatchEvent, StringComparison.OrdinalIgnoreCase)),
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskDispatchRequest, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
                                  It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
                                  It.IsAny<ushort>()))
@@ -183,6 +190,43 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
                 .Callback(() => resetEvent.Set());
+            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("error"));
+
+            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            Assert.Equal(ServiceStatus.Running, service.Status);
+
+            Assert.True(resetEvent.WaitOne(5000));
+
+            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => message.MessageId == m.MessageId), It.Is<bool>(b => b)), Times.Once());
+        }
+
+        [Fact(DisplayName = "Task Manager - TaskDispatchEvent rejects message (no-requeue) with unsupported runner")]
+        public async Task TaskManager_TaskDispatchEvent_UnsupportedRunner()
+        {
+            _options.Value.TaskManager.MaximumNumberOfConcurrentJobs = 1;
+            var message = GenerateTaskDispatchEvent();
+            var resetEvent = new ManualResetEvent(false);
+
+            _messageBrokerSubscriberService.Setup(
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskDispatchRequest, StringComparison.OrdinalIgnoreCase)),
+                                 It.IsAny<string>(),
+                                 It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
+                                 It.IsAny<ushort>()))
+                .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
+                {
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
+                });
+            _messageBrokerSubscriberService
+                .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
+                .Callback(() => resetEvent.Set());
+            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
+                {
+                    AccessKeyId = Guid.NewGuid().ToString(),
+                    SecretAccessKey = Guid.NewGuid().ToString()
+                });
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
@@ -200,11 +244,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _testRunnerCallback.Setup(p => p.GenerateExecuteTaskResult()).Throws(new Exception("error"));
 
             var message = GenerateTaskDispatchEvent();
-            message.Body.TaskAssemblyName = typeof(TestRunner).AssemblyQualifiedName!;
+            message.Body.TaskPluginType = "argo";
             var resetEvent = new ManualResetEvent(false);
 
             _messageBrokerSubscriberService.Setup(
-                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskDispatchEvent, StringComparison.OrdinalIgnoreCase)),
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskDispatchRequest, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
                                  It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
                                  It.IsAny<ushort>()))
@@ -215,6 +259,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
                 .Callback(() => resetEvent.Set());
+            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
+                {
+                    AccessKeyId = Guid.NewGuid().ToString(),
+                    SecretAccessKey = Guid.NewGuid().ToString()
+                });
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
@@ -235,11 +285,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 .Returns(new ExecutionStatus { Status = Messaging.Events.TaskStatus.Accepted, FailureReason = FailureReason.None });
 
             var message = GenerateTaskDispatchEvent();
-            message.Body.TaskAssemblyName = typeof(TestRunner).AssemblyQualifiedName!;
+            message.Body.TaskPluginType = "argo";
             var resetEvent = new CountdownEvent(2);
 
             _messageBrokerSubscriberService.Setup(
-                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskDispatchEvent, StringComparison.OrdinalIgnoreCase)),
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskDispatchRequest, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
                                  It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
                                  It.IsAny<ushort>()))
@@ -253,6 +303,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerPublisherService
                 .Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
                 .Callback(() => resetEvent.Signal());
+            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
+                {
+                    AccessKeyId = Guid.NewGuid().ToString(),
+                    SecretAccessKey = Guid.NewGuid().ToString()
+                });
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
@@ -262,7 +318,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
 
             _testRunnerCallback.Verify(p => p.GenerateExecuteTaskResult(), Times.Once());
             _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => message.MessageId == m.MessageId)), Times.Once());
-            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == TaskManager.TaskUpdateEvent), It.IsAny<Message>()), Times.Once());
+            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.TaskUpdateRequest), It.IsAny<Message>()), Times.Once());
         }
 
         [Fact(DisplayName = "Task Manager - TaskCallbackEvent rejects message (no re-queue) on validation failures")]
@@ -276,7 +332,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 "1");
 
             _messageBrokerSubscriberService.Setup(
-                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskCallbackEvent, StringComparison.OrdinalIgnoreCase)),
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskCallbackRequest, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
                                  It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
                                  It.IsAny<ushort>()))
@@ -287,6 +343,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
                 .Callback(() => resetEvent.Set());
+            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
+                {
+                    AccessKeyId = Guid.NewGuid().ToString(),
+                    SecretAccessKey = Guid.NewGuid().ToString()
+                });
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
@@ -304,7 +366,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             var resetEvent = new ManualResetEvent(false);
 
             _messageBrokerSubscriberService.Setup(
-                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskCallbackEvent, StringComparison.OrdinalIgnoreCase)),
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskCallbackRequest, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
                                  It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
                                  It.IsAny<ushort>()))
@@ -315,6 +377,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
                 .Callback(() => resetEvent.Set());
+            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
+                {
+                    AccessKeyId = Guid.NewGuid().ToString(),
+                    SecretAccessKey = Guid.NewGuid().ToString()
+                });
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
@@ -343,12 +411,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerSubscriberService
                 .Setup(p => p.Acknowledge(It.IsAny<MessageBase>()))
                 .Callback(() => resetEvent.Signal());
+            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
+                {
+                    AccessKeyId = Guid.NewGuid().ToString(),
+                    SecretAccessKey = Guid.NewGuid().ToString()
+                });
 
             var taskDispatchEventMessage = GenerateTaskDispatchEvent();
-            taskDispatchEventMessage.Body.TaskAssemblyName = typeof(TestRunner).AssemblyQualifiedName!;
+            taskDispatchEventMessage.Body.TaskPluginType = "argo";
 
             _ = _messageBrokerSubscriberService.Setup(
-                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskDispatchEvent, StringComparison.OrdinalIgnoreCase)),
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskDispatchRequest, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
                                  It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
                                  It.IsAny<ushort>()))
@@ -359,7 +433,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
 
             var TaskCallbackEventMessage = GenerateTaskCallbackEvent(taskDispatchEventMessage);
             _messageBrokerSubscriberService.Setup(
-                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskCallbackEvent, StringComparison.OrdinalIgnoreCase)),
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskCallbackRequest, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
                                  It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
                                  It.IsAny<ushort>()))
@@ -386,7 +460,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _testRunnerCallback.Verify(p => p.GenerateExecuteTaskResult(), Times.Once());
             _testRunnerCallback.Verify(p => p.GenerateGetStatusResult(), Times.Once());
             _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == taskDispatchEventMessage.MessageId)), Times.Once());
-            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == TaskManager.TaskUpdateEvent), It.IsAny<Message>()), Times.Exactly(2));
+            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.TaskUpdateRequest), It.IsAny<Message>()), Times.Exactly(2));
             _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m.MessageId == TaskCallbackEventMessage.MessageId), It.Is<bool>(b => !b)), Times.Once());
         }
 
@@ -404,9 +478,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             var resetEvent = new CountdownEvent(2);
 
             var taskDispatchEventMessage = GenerateTaskDispatchEvent();
-            taskDispatchEventMessage.Body.TaskAssemblyName = typeof(TestRunner).AssemblyQualifiedName!;
+            taskDispatchEventMessage.Body.TaskPluginType = "argo";
             _messageBrokerSubscriberService.Setup(
-                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskDispatchEvent, StringComparison.OrdinalIgnoreCase)),
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskDispatchRequest, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
                                  It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
                                  It.IsAny<ushort>()))
@@ -420,7 +494,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
 
             var TaskCallbackEventMessage = GenerateTaskCallbackEvent(taskDispatchEventMessage);
             _messageBrokerSubscriberService.Setup(
-                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(TaskManager.TaskCallbackEvent, StringComparison.OrdinalIgnoreCase)),
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskCallbackRequest, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
                                  It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
                                  It.IsAny<ushort>()))
@@ -439,6 +513,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerPublisherService
                 .Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
                 .Callback(() => resetEvent.Signal());
+            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
+                {
+                    AccessKeyId = Guid.NewGuid().ToString(),
+                    SecretAccessKey = Guid.NewGuid().ToString()
+                });
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
@@ -450,7 +530,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _testRunnerCallback.Verify(p => p.GenerateGetStatusResult(), Times.Once());
             _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == taskDispatchEventMessage.MessageId)), Times.Once());
             _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == TaskCallbackEventMessage.MessageId)), Times.Once());
-            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == TaskManager.TaskUpdateEvent), It.IsAny<Message>()), Times.Exactly(2));
+            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.TaskUpdateRequest), It.IsAny<Message>()), Times.Exactly(2));
         }
 
         private static JsonMessage<TaskCallbackEvent> GenerateTaskCallbackEvent(JsonMessage<TaskDispatchEvent>? taskDispatchEventMessage = null)
@@ -477,7 +557,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                             {
                                 CorrelationId = correlationId,
                                 ExecutionId = Guid.NewGuid().ToString(),
-                                TaskAssemblyName = Guid.NewGuid().ToString(),
+                                TaskPluginType = "argo",
                                 WorkflowId = Guid.NewGuid().ToString(),
                                 TaskId = Guid.NewGuid().ToString()
                             },

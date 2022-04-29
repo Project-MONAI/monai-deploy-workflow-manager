@@ -10,6 +10,7 @@ using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
+using Monai.Deploy.Storage;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.Configuration;
@@ -22,12 +23,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 {
     public class TaskManager : IHostedService, IDisposable, IMonaiService
     {
-        //TODO: change application ID, refactor task topic
-        private const string TaskManagerApplicationId = "23f81094-13fb-4964-ad6e-4cd434623ee9";
-
-        internal const string TaskUpdateEvent = "md.tasks.update";
-        internal const string TaskDispatchEvent = "md.tasks.dispatch";
-        internal const string TaskCallbackEvent = "md.tasks.callback";
+        private const string TaskManagerApplicationId = "4c9072a1-35f5-4d85-847d-dafca22244a8";
 
         private readonly ILogger<TaskManager> _logger;
         private readonly IOptions<WorkflowManagerOptions> _options;
@@ -35,7 +31,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         private readonly IServiceScope _scope;
         private readonly IDictionary<string, TaskRunnerInstance> _activeExecutions;
         private readonly CancellationTokenSource _cancellationTokenSource;
-
+        private readonly IStorageService _storageService;
+        private CancellationToken _cancellationToken;
         private IMessageBrokerPublisherService? _messageBrokerPublisherService;
         private IMessageBrokerSubscriberService? _messageBrokerSubscriberService;
 
@@ -45,7 +42,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         public ServiceStatus Status { get; set; } = ServiceStatus.Unknown;
 
         public string ServiceName => "MONAI Deploy Task Manager";
-
 
         public TaskManager(
             ILogger<TaskManager> logger,
@@ -61,6 +57,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             _activeExecutions = new Dictionary<string, TaskRunnerInstance>();
             _cancellationTokenSource = new CancellationTokenSource();
 
+            _storageService = _scope.ServiceProvider.GetRequiredService<IStorageService>() ?? throw new ServiceNotFoundException(nameof(IStorageService));
             _messageBrokerPublisherService = null;
             _messageBrokerSubscriberService = null;
             _activeJobs = 0;
@@ -68,11 +65,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            _cancellationToken = cancellationToken;
             _messageBrokerPublisherService = _scope.ServiceProvider.GetRequiredService<IMessageBrokerPublisherService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerPublisherService));
             _messageBrokerSubscriberService = _scope.ServiceProvider.GetRequiredService<IMessageBrokerSubscriberService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerSubscriberService));
 
-            _messageBrokerSubscriberService.SubscribeAsync(TaskDispatchEvent, string.Empty, TaskDispatchEventReceivedCallback);
-            _messageBrokerSubscriberService.SubscribeAsync(TaskCallbackEvent, string.Empty, TaskCallbackEventReceivedCallback);
+            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskDispatchRequest, string.Empty, TaskDispatchEventReceivedCallback);
+            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskCallbackRequest, string.Empty, TaskCallbackEventReceivedCallback);
 
             Status = ServiceStatus.Running;
             _logger.ServiceStarted(ServiceName);
@@ -177,9 +175,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             Guard.Against.NullService(_messageBrokerSubscriberService, nameof(IMessageBrokerSubscriberService));
             Guard.Against.Null(message, nameof(message));
 
+            var pluginAssembly = string.Empty;
             try
             {
                 message.Body.Validate();
+                pluginAssembly = _options.Value.TaskManager.PluginAssemblyMappings[message.Body.TaskPluginType];
             }
             catch (MessageValidationException ex)
             {
@@ -195,14 +195,25 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 return;
             }
 
-            ITaskPlugin? taskRunner = null;
             try
             {
-                taskRunner = typeof(ITaskPlugin).CreateInstance<ITaskPlugin>(serviceProvider: _scope.ServiceProvider, typeString: message.Body.TaskAssemblyName, _serviceScopeFactory, message.Body);
+                await PopulateTemporaryStorageCredentials(message).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                _logger.UnsupportedRunner(message.Body.TaskAssemblyName, ex);
+                _logger.GenerateTemporaryCredentialsException(ex);
+                await HandleMessageException(message, message.Body.WorkflowId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, true).ConfigureAwait(false);
+                return;
+            }
+
+            ITaskPlugin? taskRunner = null;
+            try
+            {
+                taskRunner = typeof(ITaskPlugin).CreateInstance<ITaskPlugin>(serviceProvider: _scope.ServiceProvider, typeString: pluginAssembly, _serviceScopeFactory, message.Body);
+            }
+            catch (Exception ex)
+            {
+                _logger.UnsupportedRunner(pluginAssembly, ex);
                 await HandleMessageException(message, message.Body.WorkflowId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
                 taskRunner?.Dispose();
                 return;
@@ -220,6 +231,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             {
                 _logger.ErrorExecutingTask(ex);
                 await HandleMessageException(message, message.Body.WorkflowId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+            }
+        }
+
+        private async Task PopulateTemporaryStorageCredentials(JsonMessage<TaskDispatchEvent> message)
+        {
+            Guard.Against.Null(message, nameof(message));
+
+            foreach (var storage in message.Body.Inputs)
+            {
+                var credeentials = await _storageService.CreateTemporaryCredentials(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
+                storage.Credentials = new Credentials
+                {
+                    AccessKey = credeentials.AccessKeyId,
+                    AccessToken = credeentials.SecretAccessKey,
+                    SessionToken = credeentials.SessionToken,
+                };
             }
         }
 
@@ -265,13 +292,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             try
             {
-                _logger.SendingTaskUpdateMessage(TaskUpdateEvent, message.Body.Reason);
-                await _messageBrokerPublisherService!.Publish(TaskUpdateEvent, message.ToMessage()).ConfigureAwait(false);
-                _logger.TaskUpdateMessageSent(TaskUpdateEvent);
+                _logger.SendingTaskUpdateMessage(_options.Value.Messaging.Topics.TaskUpdateRequest, message.Body.Reason);
+                await _messageBrokerPublisherService!.Publish(_options.Value.Messaging.Topics.TaskUpdateRequest, message.ToMessage()).ConfigureAwait(false);
+                _logger.TaskUpdateMessageSent(_options.Value.Messaging.Topics.TaskUpdateRequest);
             }
             catch (Exception ex)
             {
-                _logger.ErrorSendingMessage(TaskUpdateEvent, ex);
+                _logger.ErrorSendingMessage(_options.Value.Messaging.Topics.TaskUpdateRequest, ex);
             }
         }
 

@@ -38,6 +38,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
             var host = CreateHostBuilder(args).Build();
             _ = host.StartAsync();
 
+            var messagingKeys = new MessageBrokerConfigurationKeys();
             var taskManager = host.Services.GetRequiredService<TaskManager>();
             Guard.Against.NullService(taskManager, nameof(TaskManager));
             var logger = host.Services.GetRequiredService<ILogger<Program>>();
@@ -47,7 +48,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
             var subscriber = host.Services.GetRequiredService<IMessageBrokerSubscriberService>();
             Guard.Against.NullService(subscriber, nameof(IMessageBrokerSubscriberService));
 
-            subscriber.Subscribe(TaskManager.TaskUpdateEvent, string.Empty, (args) =>
+            subscriber.Subscribe(messagingKeys.TaskUpdateRequest, string.Empty, (args) =>
             {
                 logger.LogInformation($"{args.Message.MessageDescription} received.");
                 var updateMessage = args.Message.ConvertToJsonMessage<TaskUpdateEvent>();
@@ -71,7 +72,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
             {
                 var message = GenerateDispatchEvent(argBaseUri, minIoEndpoint);
                 logger.LogInformation($"Queuing new job with correlation ID={message.CorrelationId}.");
-                publisher.Publish(TaskManager.TaskDispatchEvent, message);
+                publisher.Publish(messagingKeys.TaskDispatchRequest, message);
             }).ConfigureAwait(false);
 
             exitEvent.WaitOne();
@@ -89,7 +90,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                 TaskId = Guid.NewGuid().ToString(),
                 ExecutionId = Guid.NewGuid().ToString(),
                 CorrelationId = correlationId,
-                TaskAssemblyName = typeof(ArgoPlugin).AssemblyQualifiedName!,
+                TaskPluginType = "argo",
             }, applicationId: "TaskManagerRunner", correlationId: correlationId, deliveryTag: "1");
             message.Body.TaskPluginArguments.Add(Keys.BaseUrl, argBaseUri);
             message.Body.TaskPluginArguments.Add(Keys.WorkflowTemplateName, "list-input-artifacts-template");

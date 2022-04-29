@@ -130,10 +130,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 var workflow = await client.WorkflowService_GetWorkflowAsync(_namespace, identity, null, null, cancellationToken).ConfigureAwait(false);
 
                 // it take sometime for the Argo job to be in the final state after emitting the callback event.
-                int retryCount = 30;
-                while(workflow.Status.Phase.Equals(Strings.ArgoPhaseRunning, StringComparison.OrdinalIgnoreCase) && retryCount-- > 0)
+                var retryCount = 30;
+                while (workflow.Status.Phase.Equals(Strings.ArgoPhaseRunning, StringComparison.OrdinalIgnoreCase) && retryCount-- > 0)
                 {
-                    await Task.Delay(1000);
+                    await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
                     workflow = await client.WorkflowService_GetWorkflowAsync(_namespace, identity, null, null, cancellationToken).ConfigureAwait(false);
                 }
 
@@ -312,11 +312,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             await CopyTemplateSteps(template.Steps, workflowTemplate, name, workflow, cancellationToken).ConfigureAwait(false);
             await CopyTemplateDags(template.Dag, workflowTemplate, name, workflow, cancellationToken).ConfigureAwait(false);
-            await AddArtifacts(template?.Inputs?.Artifacts, Event.Inputs, cancellationToken).ConfigureAwait(false);
-            await AddArtifacts(template?.Outputs?.Artifacts, Event.Outputs, cancellationToken).ConfigureAwait(false);
+            await AddArtifacts(name, template?.Inputs?.Artifacts, Event.Inputs, cancellationToken).ConfigureAwait(false);
+            await AddArtifacts(name, template?.Outputs?.Artifacts, Event.Outputs, cancellationToken).ConfigureAwait(false);
         }
 
-        private async Task AddArtifacts(ICollection<Artifact>? artifacts, List<Messaging.Common.Storage> storageInfos, CancellationToken cancellationToken)
+        private async Task AddArtifacts(string tempalteName, ICollection<Artifact>? artifacts, List<Messaging.Common.Storage> storageInfos, CancellationToken cancellationToken)
         {
             Guard.Against.Null(storageInfos, nameof(storageInfos));
 
@@ -330,7 +330,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 var storageInfo = storageInfos.FirstOrDefault(p => p.Name!.Equals(artifact.Name, StringComparison.Ordinal));
                 if (storageInfo is null)
                 {
-                    throw new ArtifactMappingNotFoundException(artifact.Name);
+                    _logger.NoStorageInformationForArtifact(artifact.Name, tempalteName);
+                    continue;
                 }
 
                 artifact.S3 = await CreateArtifact(storageInfo, cancellationToken).ConfigureAwait(false);

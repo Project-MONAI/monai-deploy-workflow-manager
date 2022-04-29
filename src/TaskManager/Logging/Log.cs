@@ -89,7 +89,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Logging
         [LoggerMessage(EventId = 113, Level = LogLevel.Error, Message = "Error executing task plugin.")]
         public static partial void ErrorExecutingTask(this ILogger logger, Exception ex);
 
-        [LoggerMessage(EventId = 114, Level = LogLevel.Warning, Message = "Runner exceeded time limit and has been removed: execution ID={executionId}.")]
+        [LoggerMessage(EventId = 114, Level = LogLevel.Warning, Message = "Plug-in exceeded time limit and has been removed: execution ID={executionId}.")]
         public static partial void RunnerTimedOut(this ILogger logger, string executionId);
+
+        [LoggerMessage(EventId = 115, Level = LogLevel.Error, Message = "Error generating temporary storage credentials.")]
+        public static partial void GenerateTemporaryCredentialsException(this ILogger logger, Exception ex);
     }
 }

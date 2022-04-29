@@ -42,8 +42,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging
 
         [LoggerMessage(EventId = 1011, Level = LogLevel.Error, Message = "Error generating Argo workflow.")]
         public static partial void ErrorGeneratingWorkflow(this ILogger logger, Exception ex);
-        
+
         [LoggerMessage(EventId = 1012, Level = LogLevel.Error, Message = "Error loading WorkflowTemplate '{workflowTemplateName}' from Argo.")]
         public static partial void ErrorLoadingWorkflowTemplate(this ILogger logger, string workflowTemplateName, Exception ex);
+
+        [LoggerMessage(EventId = 1013, Level = LogLevel.Warning, Message = "Artifact storage information not provided for artifact {artifactName} in template {templateName}.")]
+        public static partial void NoStorageInformationForArtifact(this ILogger logger, string artifactName, string templateName);
     }
 }
