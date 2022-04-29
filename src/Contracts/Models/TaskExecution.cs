@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
-using Monai.Deploy.WorkloadManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
@@ -16,7 +16,7 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         public string TaskType { get; set; }
 
         [ConfigurationKeyName("task_plugin_arguments")]
-        public object TaskPluginArguments { get; set; }
+        public Dictionary<string, string> TaskPluginArguments { get; set; }
 
         [ConfigurationKeyName("task_id")]
         public string TaskId { get; set; }
@@ -25,12 +25,12 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         public Status Status { get; set; }
 
         [ConfigurationKeyName("input_artifacts")]
-        public InputArtifacts InputArtifacts { get; set; }
+        public Dictionary<string, string> InputArtifacts { get; set; }
 
         [ConfigurationKeyName("output_directory")]
         public string OutputDirectory { get; set; }
 
         [ConfigurationKeyName("metadata")]
-        public object Metadata { get; set; }
+        public Dictionary<string, object> Metadata { get; set; }
     }
 }

@@ -13,8 +13,6 @@ namespace Monai.Deploy.WorkloadManager.Contracts.Models
     public class WorkflowInstance
     {
         [JsonIgnore]
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
         public Guid Id { get; set; }
 
         [ConfigurationKeyName("ae_title")]

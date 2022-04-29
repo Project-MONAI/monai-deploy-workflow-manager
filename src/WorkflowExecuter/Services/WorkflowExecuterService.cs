@@ -6,10 +6,12 @@ using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage;
+using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkloadManager.Contracts.Models;
+using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
 
 namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
 {
@@ -19,11 +21,13 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
         private readonly IWorkflowInstanceRepository _workflowInstanceRepository;
         private readonly IStorageService _storageService;
         private readonly IMessageBrokerPublisherService _messageBrokerPublisherService;
+        private readonly StorageServiceConfiguration _storageConfiguration;
 
         private string TaskDispatchRoutingKey { get; }
 
         public WorkflowExecuterService(
             IOptions<WorkflowManagerOptions> configuration,
+            IOptions<StorageServiceConfiguration> storageConfiguration,
             IWorkflowRepository workflowRepository,
             IWorkflowInstanceRepository workflowInstanceRepository,
             IMessageBrokerPublisherService messageBrokerPublisherService,
@@ -33,6 +37,13 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
+
+            if (storageConfiguration is null)
+            {
+                throw new ArgumentNullException(nameof(storageConfiguration));
+            }
+
+            _storageConfiguration = storageConfiguration.Value;
 
             TaskDispatchRoutingKey = configuration.Value.Messaging.Topics.TaskDispatchRequest;
 
@@ -54,35 +65,35 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             else
             {
                 workflows = await _workflowRepository.GetByWorkflowsIdsAsync(message.Workflows) as List<Workflow>;
-
             }
 
             var workflowInstances = new List<WorkflowInstance>();
+            var taskDispatches = new List<JsonMessage<TaskDispatchEvent>>();
 
             foreach (var workflow in workflows)
             {
-                var workflowIntance = await CreateWorkFlowIntsance(message, workflow);
+                var workflowIntance = CreateWorkFlowIntsance(message, workflow);
                 workflowInstances.Add(workflowIntance);
-                //_storageService.CreateFolder(message.Bucket, workflow.Id);
-                //var credentials = _storageService.CreateTemporaryCredentials(message.Bucket, workflow.Id);
 
-                var taskDispatchMessage = new TaskDispatchMessage
-                {
-                    ExecutionId = workflowIntance.Tasks.FirstOrDefault()?.TaskId,
-                    WorkflowInstanceId = workflowIntance.Id.ToString(),
-                };
+                await _storageService.CreateFolder(message.Bucket, workflow.WorkflowId.ToString());
+                var credentials = await _storageService.CreateTemporaryCredentials(message.Bucket, workflow.WorkflowId.ToString());
 
-                var jsonMessage = new JsonMessage<TaskDispatchMessage>(taskDispatchMessage, MessageBrokerConfiguration.WorkflowManagerApplicationId, Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+                var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(workflowIntance.Tasks.FirstOrDefault(), workflow.WorkflowId.ToString(), credentials, _storageConfiguration);
 
-                await _messageBrokerPublisherService.Publish(TaskDispatchRoutingKey, jsonMessage.ToMessage());
+                taskDispatches.Add(new JsonMessage<TaskDispatchEvent>(taskDispatchEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, taskDispatchEvent.CorrelationId, Guid.NewGuid().ToString()));
             }
 
             processed &= await _workflowInstanceRepository.CreateAsync(workflowInstances);
 
+            if (processed)
+            {
+                taskDispatches.ForEach(async (t) => await _messageBrokerPublisherService.Publish(TaskDispatchRoutingKey, t.ToMessage()));
+            }
+
             return processed;
         }
 
-        private async Task<WorkflowInstance> CreateWorkFlowIntsance(WorkflowRequestEvent message, Workflow workflow)
+        private WorkflowInstance CreateWorkFlowIntsance(WorkflowRequestEvent message, Workflow workflow)
         {
             var workflowInstance = new WorkflowInstance()
             {
@@ -117,12 +128,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                     TaskPluginArguments = firstTask.Args,
                     TaskId = firstTask.Id,
                     Status = Status.Created,    /// task.ref is reference to template if exist use that template
-                    InputArtifacts = new InputArtifacts()  //
-                    {
-                        // task.Artifacts.Input. in workflow it is an array workflow instance not an array
-
-                        //value is long string convert to minao path  either be an empty or orignal payload path
-                    },
+                    InputArtifacts = firstTask.Artifacts.Input.ToDictionary(),
                     OutputDirectory = $"{message.Bucket}/{workflow.Id}/{exceutionId}",
                     Metadata = { }
                 });

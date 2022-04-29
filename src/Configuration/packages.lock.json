@@ -14,9 +14,9 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0025, )",
-        "resolved": "0.1.0-rc0025",
-        "contentHash": "E1qlgjM0O0WrzUgs4OpuGS4UaKoB3fbUnilV1UTpTUx0WjwxXkvTwrBhQJizU+ZyQVmebrLn3kbnPv/jvoDtdw==",
+        "requested": "[0.1.0-rc0030, )",
+        "resolved": "0.1.0-rc0030",
+        "contentHash": "oPlxctcW83GhiWxz1vbNyexxELXVH/kCZj+txh89bXxeVuCWrKOkZtVGXogO4lNASKKF80cNPvmG9xhMRD8SVg==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -28,14 +28,16 @@
       },
       "Monai.Deploy.Storage": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0014, )",
-        "resolved": "0.1.0-rc0014",
-        "contentHash": "8CiZblBXzL8r7FEuJC+KRIpludRTDZlIVeCfzLVrWgfN5zp2Yb/po0s59LT24LBo6Cnjl5d1obDvJSpqFAbQVg==",
+        "requested": "[0.1.0-rc0019, )",
+        "resolved": "0.1.0-rc0019",
+        "contentHash": "YAXgTE7vTqeMc+ZhprUg/muQ+JDVMaix1Ha1vLJTSSjfZWBOnxyK5SugS50uNlvByJcqHEXh+ygd9219wK1S+Q==",
         "dependencies": {
+          "AWSSDK.SecurityToken": "3.7.1.141",
           "Ardalis.GuardClauses": "4.0.0",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Logging": "6.0.0",
-          "Minio": "3.1.13"
+          "Minio": "3.1.13",
+          "Newtonsoft.Json": "13.0.1"
         }
       },
       "Newtonsoft.Json": {
@@ -56,6 +58,19 @@
         "contentHash": "RemnImQf/BWR8oYqFpdw+hn+b4Q1w+pGujkRiSfjQhMPuiERwGn4UMmQv+6UDE4qbPlnIN+e3e40JkvBhzgfzg==",
         "dependencies": {
           "JetBrains.Annotations": "2021.3.0"
+        }
+      },
+      "AWSSDK.Core": {
+        "type": "Transitive",
+        "resolved": "3.7.10.10",
+        "contentHash": "eieuNNym2E63hAnUwZiEQtNCNT5knh2PTqcFVuFQsZpYCw22cGXLq9miC8TDENLFRHh2I1mkTBRiC9E8UlKQhw=="
+      },
+      "AWSSDK.SecurityToken": {
+        "type": "Transitive",
+        "resolved": "3.7.1.141",
+        "contentHash": "paspGCeiN5Qjl6vJanqP1Ll8l3t9hqUmVWmeHMELXyvUgozvVzaSh+PTQ/gj6gmFQ64Us7aeCFSQlfBPZag+vQ==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.10.10, 4.0.0)"
         }
       },
       "Crc32.NET": {
