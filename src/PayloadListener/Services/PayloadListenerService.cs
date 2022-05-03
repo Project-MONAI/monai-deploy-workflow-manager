@@ -11,7 +11,6 @@ using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Rest;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
-using Monai.Deploy.Storage;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 {
@@ -21,7 +20,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IServiceScope _scope;
-        private readonly IStorageService _storageService;
 
         private readonly IEventPayloadRecieverService _eventPayloadListenerService;
 
@@ -37,13 +35,11 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             ILogger<PayloadListenerService> logger,
             IOptions<WorkflowManagerOptions> configuration,
             IServiceScopeFactory serviceScopeFactory,
-            IEventPayloadRecieverService eventPayloadListenerService,
-            IStorageService storageService)
+            IEventPayloadRecieverService eventPayloadListenerService)
         {
             _cancellationTokenSource = new CancellationTokenSource();
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
-            _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
             _scope = _serviceScopeFactory.CreateScope();
 
             if (configuration is null)
@@ -80,21 +76,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         {
             _messageSubscriber.Subscribe(WorkflowRequestRoutingKey, String.Empty, OnWorkflowRequestRecievedCallback);
             _logger.EventSubscription(ServiceName, WorkflowRequestRoutingKey);
-            Test();
-        }
-
-        private async Task Test()
-        {
-            try
-            {
-                await _storageService.CreateFolder("test-bucket", "testworkflowid");
-                var credentials = await _storageService.CreateTemporaryCredentials("test-bucket", "testworkflowid");
-                await _storageService.CreateFolderWithCredentials("test-bucket", "testworkflowid/testtask/testexecution", credentials);
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
         }
 
         private void OnWorkflowRequestRecievedCallback(MessageReceivedEventArgs eventArgs)

@@ -17,7 +17,6 @@ namespace Monai.Deploy.WorkflowManager.Database
 {
     public class WorkflowInstanceRepository : IWorkflowInstanceRepository
     {
-        private readonly IMongoClient _client;
         private readonly IMongoCollection<WorkflowInstance> _workflowInstanceCollection;
         private readonly ILogger<WorkflowInstanceRepository> _logger;
 
@@ -26,7 +25,11 @@ namespace Monai.Deploy.WorkflowManager.Database
             IOptions<WorkloadManagerDatabaseSettings> bookStoreDatabaseSettings,
             ILogger<WorkflowInstanceRepository> logger)
         {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
+            if (client == null)
+            {
+                throw new ArgumentNullException(nameof(client));
+            }
+
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var mongoDatabase = client.GetDatabase(bookStoreDatabaseSettings.Value.DatabaseName);
             _workflowInstanceCollection = mongoDatabase.GetCollection<WorkflowInstance>(bookStoreDatabaseSettings.Value.WorkflowInstanceCollectionName);
