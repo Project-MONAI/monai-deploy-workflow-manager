@@ -127,7 +127,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                     TaskPluginArguments = firstTask.Args,
                     TaskId = firstTask.Id,
                     Status = Status.Created,    /// task.ref is reference to template if exist use that template
-                    InputArtifacts = firstTask.Artifacts.Input.ToDictionary(),
+                    InputArtifacts = firstTask.Artifacts?.Input?.ToDictionary(),
                     OutputDirectory = $"{message.Bucket}/{workflow.Id}/{exceutionId}",
                     Metadata = { }
                 });

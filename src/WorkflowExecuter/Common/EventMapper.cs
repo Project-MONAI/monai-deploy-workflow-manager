@@ -18,16 +18,19 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
 
             var inputs = new List<Messaging.Common.Storage>();
 
-            foreach (var inArtifact in task.InputArtifacts)
+            if (task.InputArtifacts != null)
             {
-                inputs.Add(new Messaging.Common.Storage
+                foreach (var inArtifact in task?.InputArtifacts)
                 {
-                    SecuredConnection = bool.Parse(configuration.Settings["securedConnection"]),
-                    Endpoint = configuration.Settings["endpoint"],
-                    Bucket = configuration.Settings["bucket"],
-                    RelativeRootPath = inArtifact.Value,
-                    Name = inArtifact.Value
-                });
+                    inputs.Add(new Messaging.Common.Storage
+                    {
+                        SecuredConnection = bool.Parse(configuration.Settings["securedConnection"]),
+                        Endpoint = configuration.Settings["endpoint"],
+                        Bucket = configuration.Settings["bucket"],
+                        RelativeRootPath = inArtifact.Value,
+                        Name = inArtifact.Value
+                    });
+                }
             }
 
             return new TaskDispatchEvent

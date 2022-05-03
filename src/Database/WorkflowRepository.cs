@@ -48,7 +48,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             var workflows = await _workflowCollection
                 .Find(filter).ToListAsync();
 
-            return workflows;
+            return workflows ?? new List<Workflow>();
         }
 
         public async Task<Workflow> GetByAeTitleAsync(string aeTitle)
@@ -68,7 +68,7 @@ namespace Monai.Deploy.WorkflowManager.Database
                 .Sort(Builders<Workflow>.Sort.Descending("Revision"))
                 .ToListAsync();
 
-            return workflows;
+            return workflows ?? new List<Workflow>();
         }
     }
 }
