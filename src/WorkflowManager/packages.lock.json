@@ -735,8 +735,10 @@
       "monai.deploy.workflowmanager.database": {
         "type": "Project",
         "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
           "MongoDB.Bson": "2.15.0",
           "MongoDB.Driver": "2.15.0"
         }

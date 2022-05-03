@@ -9,7 +9,10 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
 {
     public interface IWorkflowInstanceRepository
     {
-
+        /// <summary>
+        /// Creates a workflow instance in the database.
+        /// </summary>
+        /// <param name="workflows">A list of workflows to create.</param>
         Task<bool> CreateAsync(IList<WorkflowInstance> workflows);
     }
 }

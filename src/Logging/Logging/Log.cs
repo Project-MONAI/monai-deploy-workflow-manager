@@ -54,5 +54,8 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
 
         [LoggerMessage(EventId = 16, Level = LogLevel.Error, Message = "The following message {messageId} failed unexpectedly and has been rejected and requeued.")]
         public static partial void EventRejectedRequeue(this ILogger logger, string messageId);
+
+        [LoggerMessage(EventId = 17, Level = LogLevel.Error, Message = "The following transaction {methodName} failed unexpectedly and has been aborted.")]
+        public static partial void TransactionFailed(this ILogger logger, string methodName, Exception ex);
     }
 }

@@ -76,9 +76,8 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                 workflowInstances.Add(workflowIntance);
 
                 await _storageService.CreateFolder(message.Bucket, workflow.WorkflowId.ToString());
-                var credentials = await _storageService.CreateTemporaryCredentials(message.Bucket, workflow.WorkflowId.ToString());
 
-                var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(workflowIntance.Tasks.FirstOrDefault(), workflow.WorkflowId.ToString(), credentials, _storageConfiguration);
+                var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(workflowIntance.Tasks.FirstOrDefault(), workflow.WorkflowId.ToString(), _storageConfiguration);
 
                 taskDispatches.Add(new JsonMessage<TaskDispatchEvent>(taskDispatchEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, taskDispatchEvent.CorrelationId, Guid.NewGuid().ToString()));
             }

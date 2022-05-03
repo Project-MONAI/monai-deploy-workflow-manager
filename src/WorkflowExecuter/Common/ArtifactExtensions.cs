@@ -1,4 +1,7 @@
-﻿using Ardalis.GuardClauses;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using Ardalis.GuardClauses;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
