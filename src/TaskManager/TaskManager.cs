@@ -197,7 +197,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             try
             {
-                await PopulateTemporaryStorageCredentials(message).ConfigureAwait(false);
+                await PopulateTemporaryStorageCredentials(message.Body.Inputs).ConfigureAwait(false);
+                await PopulateTemporaryStorageCredentials(message.Body.Outputs).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -234,18 +235,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
         }
 
-        private async Task PopulateTemporaryStorageCredentials(JsonMessage<TaskDispatchEvent> message)
+        private async Task PopulateTemporaryStorageCredentials(IList<Messaging.Common.Storage> storages)
         {
-            Guard.Against.Null(message, nameof(message));
+            Guard.Against.Null(storages, nameof(storages));
 
-            foreach (var storage in message.Body.Inputs)
+            foreach (var storage in storages)
             {
-                var credeentials = await _storageService.CreateTemporaryCredentials(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
+                // TODO: https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/102
+                //var credeentials = await _storageService.CreateTemporaryCredentials(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
+                // storage.Credentials = new Credentials
+                // {
+                //     AccessKey = credeentials.AccessKeyId,
+                //     AccessToken = credeentials.SecretAccessKey,
+                //     SessionToken = credeentials.SessionToken,
+                // };
                 storage.Credentials = new Credentials
                 {
-                    AccessKey = credeentials.AccessKeyId,
-                    AccessToken = credeentials.SecretAccessKey,
-                    SessionToken = credeentials.SessionToken,
+                    AccessKey = _options.Value.Storage.Settings["accessKey"],
+                    AccessToken = _options.Value.Storage.Settings["accessToken"],
                 };
             }
         }

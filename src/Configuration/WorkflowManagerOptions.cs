@@ -27,10 +27,14 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         [ConfigurationKeyName("taskManager")]
         public TaskManagerOptions TaskManager { get; set; }
 
+        [ConfigurationKeyName("storage")]
+        public StorageOptions Storage { get; set; }
+
         public WorkflowManagerOptions()
         {
             Messaging = new MessageBrokerConfiguration();
             TaskManager = new TaskManagerOptions();
+            Storage = new StorageOptions();
         }
     }
 }

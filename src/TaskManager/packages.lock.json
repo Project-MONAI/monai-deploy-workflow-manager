@@ -481,6 +481,7 @@
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
           "Monai.Deploy.Messaging": "0.1.0-vchang-dispatch-0031",
+          "Monai.Deploy.Storage": "0.1.0-rc0019",
           "Newtonsoft.Json": "13.0.1"
         }
       },

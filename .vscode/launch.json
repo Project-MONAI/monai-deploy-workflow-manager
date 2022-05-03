@@ -22,7 +22,7 @@
             "preLaunchTask": "build task manager runner",
             "program": "${workspaceFolder}/src/TaskManager/Runner/bin/Debug/net6.0/Monai.Deploy.WorkflowManager.TaskManager.Runner",
             // If you have changed target frameworks, make sure to update the program path.
-            "args": ["http://localhost:2746/", "10.105.3.254"],
+            "args": ["http://localhost:2746/"],
             "cwd": "${workspaceFolder}/src/TaskManager/Runner",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",

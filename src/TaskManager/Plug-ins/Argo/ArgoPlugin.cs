@@ -335,6 +335,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 }
 
                 artifact.S3 = await CreateArtifact(storageInfo, cancellationToken).ConfigureAwait(false);
+                artifact.Archive = new ArchiveStrategy
+                {
+                    None = new NoneStrategy()
+                };
             }
         }
 

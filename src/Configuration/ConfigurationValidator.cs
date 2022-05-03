@@ -1,7 +1,6 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
