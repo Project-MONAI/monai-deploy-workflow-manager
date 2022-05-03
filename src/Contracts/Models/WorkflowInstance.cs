@@ -3,8 +3,6 @@
 
 using Microsoft.Extensions.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 using System;
 
@@ -13,16 +11,16 @@ namespace Monai.Deploy.WorkloadManager.Contracts.Models
     public class WorkflowInstance
     {
         [JsonIgnore]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         [ConfigurationKeyName("ae_title")]
         public string AeTitle { get; set; }
 
         [ConfigurationKeyName("workflow_id")]
-        public Guid WorkflowId { get; set; }
+        public string WorkflowId { get; set; }
 
         [ConfigurationKeyName("payload_id")]
-        public Guid PayloadId { get; set; }
+        public string PayloadId { get; set; }
 
         [ConfigurationKeyName("start_time")]
         public DateTime StartTime { get; set; }

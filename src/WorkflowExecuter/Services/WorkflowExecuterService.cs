@@ -96,9 +96,9 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
         {
             var workflowInstance = new WorkflowInstance()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 WorkflowId = workflow.WorkflowId,
-                PayloadId = message.PayloadId,
+                PayloadId = message.PayloadId.ToString(),
                 StartTime = DateTime.UtcNow,
                 BucketId = $"{message.Bucket}/{workflow.Id}",
                 InputMataData = null//????? need to speak to victor

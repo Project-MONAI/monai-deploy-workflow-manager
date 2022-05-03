@@ -57,5 +57,8 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
 
         [LoggerMessage(EventId = 17, Level = LogLevel.Error, Message = "The following transaction {methodName} failed unexpectedly and has been aborted.")]
         public static partial void TransactionFailed(this ILogger logger, string methodName, Exception ex);
+
+        [LoggerMessage(EventId = 18, Level = LogLevel.Error, Message = "The following database call {methodName} failed unexpectedly and has been aborted.")]
+        public static partial void DbCallFailed(this ILogger logger, string methodName, Exception ex);
     }
 }

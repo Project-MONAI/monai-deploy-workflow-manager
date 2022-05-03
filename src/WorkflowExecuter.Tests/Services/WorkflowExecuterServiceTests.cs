@@ -57,7 +57,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 new Workflow
                 {
                     Id = Guid.NewGuid().ToString(),
-                    WorkflowId = Guid.NewGuid(),
+                    WorkflowId = Guid.NewGuid().ToString(),
                     Revision = 1,
                     WorkflowSpec = new WorkflowSpec
                     {
@@ -94,8 +94,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         [Fact]
         public async Task ProcessPayload_ValidWorkflowIdRequest_ReturnesTrue()
         {
-            var workflowId1 = Guid.NewGuid();
-            var workflowId2 = Guid.NewGuid();
+            var workflowId1 = Guid.NewGuid().ToString();
+            var workflowId2 = Guid.NewGuid().ToString();
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",

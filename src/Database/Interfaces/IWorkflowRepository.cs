@@ -1,7 +1,6 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -14,7 +13,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// Get Retrieves a worklow based on an Id.
         /// </summary>
         /// <param name="id">The workflow Id.</param>
-        Task<Workflow> GetByWorkflowIdAsync(Guid id);
+        Task<Workflow> GetByWorkflowIdAsync(string id);
 
         /// <summary>
         /// Get Retrieves a list of worklows based on a list of Ids.

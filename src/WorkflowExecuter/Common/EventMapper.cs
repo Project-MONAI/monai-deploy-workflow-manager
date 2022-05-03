@@ -18,9 +18,9 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
 
             var inputs = new List<Messaging.Common.Storage>();
 
-            if (task.InputArtifacts != null)
+            if (task?.InputArtifacts != null)
             {
-                foreach (var inArtifact in task?.InputArtifacts)
+                foreach (var inArtifact in task.InputArtifacts)
                 {
                     inputs.Add(new Messaging.Common.Storage
                     {

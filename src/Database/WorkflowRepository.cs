@@ -9,7 +9,6 @@ using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Options;
 using MongoDB.Driver;
-using System.Linq;
 
 namespace Monai.Deploy.WorkflowManager.Database
 {
@@ -27,7 +26,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             _workflowCollection = mongoDatabase.GetCollection<Workflow>(bookStoreDatabaseSettings.Value.WorkflowCollectionName);
         }
 
-        public async Task<Workflow> GetByWorkflowIdAsync(Guid workflowId)
+        public async Task<Workflow> GetByWorkflowIdAsync(string workflowId)
         {
             var workflow = await _workflowCollection
                 .Find(x => x.WorkflowId == workflowId)
@@ -41,9 +40,7 @@ namespace Monai.Deploy.WorkflowManager.Database
         {
             var filterDef = new FilterDefinitionBuilder<Workflow>();
 
-            var workflowIdGuids = workflowIds.Select(Guid.Parse).ToList();
-
-            var filter = filterDef.In(x => x.WorkflowId, workflowIdGuids);
+            var filter = filterDef.In(x => x.WorkflowId, workflowIds);
 
             var workflows = await _workflowCollection
                 .Find(filter).ToListAsync();

@@ -34,20 +34,14 @@ namespace Monai.Deploy.WorkflowManager.Database
 
         public async Task<bool> CreateAsync(IList<WorkflowInstance> workflowInstances)
         {
-            using var session = await _client.StartSessionAsync();
-            session.StartTransaction();
-
             try
             {
                 await _workflowInstanceCollection.InsertManyAsync(workflowInstances);
-                await session.CommitTransactionAsync();
-
                 return true;
             }
             catch (Exception e)
             {
-                _logger.TransactionFailed(nameof(CreateAsync), e);
-                await session.AbortTransactionAsync();
+                _logger.DbCallFailed(nameof(CreateAsync), e);
                 return false;
             }
         }
