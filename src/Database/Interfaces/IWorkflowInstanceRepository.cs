@@ -18,7 +18,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <summary>
         /// Gets a list of workflow instances for a given set of workflowIds.
         /// </summary>
-        /// <param name="workflowInstances">A list of workflowIds to retrieve.</param>
+        /// <param name="workflowIds">A list of workflowIds to retrieve.</param>
         Task<IList<WorkflowInstance>> GetByWorkflowsIdsAsync(List<string> workflowIds);
     }
 }

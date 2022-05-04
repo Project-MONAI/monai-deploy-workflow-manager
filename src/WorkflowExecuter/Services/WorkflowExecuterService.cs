@@ -58,40 +58,27 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             var processed = true;
             var workflows = new List<Workflow>();
 
-            if (message.Workflows?.Any() != true)
-            {
-                workflows = await _workflowRepository.GetWorkflowsByAeTitleAsync(message.CalledAeTitle) as List<Workflow>;
-            }
-            else
-            {
-                workflows = await _workflowRepository.GetByWorkflowsIdsAsync(message.Workflows) as List<Workflow>;
-            }
+            workflows = message.Workflows?.Any() != true ?
+                await _workflowRepository.GetWorkflowsByAeTitleAsync(message.CalledAeTitle) as List<Workflow> :
+                await _workflowRepository.GetByWorkflowsIdsAsync(message.Workflows) as List<Workflow>;
 
             var workflowInstances = new List<WorkflowInstance>();
-            var taskDispatches = new List<JsonMessage<TaskDispatchEvent>>();
-
-            foreach (var workflow in workflows)
-            {
-                var workflowIntance = CreateWorkFlowIntsance(message, workflow);
-                workflowInstances.Add(workflowIntance);
-
-                await _storageService.CreateFolder(message.Bucket, workflow.WorkflowId.ToString());
-
-                var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(workflowIntance.Tasks.FirstOrDefault(), workflow.WorkflowId.ToString(), _storageConfiguration);
-
-                taskDispatches.Add(new JsonMessage<TaskDispatchEvent>(taskDispatchEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, taskDispatchEvent.CorrelationId, Guid.NewGuid().ToString()));
-            }
-
+            workflows.ForEach((workflow) => workflowInstances.Add(CreateWorkFlowIntsance(message, workflow)));
 
             var existingInstances = await _workflowInstanceRepository.GetByWorkflowsIdsAsync(workflowInstances.Select(w => w.WorkflowId).ToList());
-
-            //workflowInstances = workflowInstances.Where(i => existingInstances.Contains(e => e.PayloadId == i.PayloadId));
+            workflowInstances.RemoveAll(i => existingInstances.ToList().Exists(e => e.WorkflowId == i.WorkflowId && e.PayloadId == i.PayloadId));
 
             processed &= await _workflowInstanceRepository.CreateAsync(workflowInstances);
 
             if (processed)
             {
-                taskDispatches.ForEach(async (t) => await _messageBrokerPublisherService.Publish(TaskDispatchRoutingKey, t.ToMessage()));
+                foreach (var workflowInstance in workflowInstances)
+                {
+                    var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(workflowInstance.Tasks.FirstOrDefault(), workflowInstance.WorkflowId, _storageConfiguration);
+                    var jsonMesssage = new JsonMessage<TaskDispatchEvent>(taskDispatchEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, taskDispatchEvent.CorrelationId, Guid.NewGuid().ToString());
+
+                    await _messageBrokerPublisherService.Publish(TaskDispatchRoutingKey, jsonMesssage.ToMessage());
+                }
             }
 
             return processed;
@@ -106,8 +93,9 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                 PayloadId = message.PayloadId.ToString(),
                 StartTime = DateTime.UtcNow,
                 Status = Status.Created,
+                AeTitle = workflow.WorkflowSpec?.InformaticsGateway?.AeTitle,
                 BucketId = $"{message.Bucket}/{workflow.Id}",
-                InputMetaData = { }
+                InputMetaData = { } //Functionality to be added later
             };
 
             var tasks = new List<TaskExecution>();
@@ -132,7 +120,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                     TaskType = firstTask.Type,
                     TaskPluginArguments = firstTask.Args,
                     TaskId = firstTask.Id,
-                    Status = Status.Created,    /// task.ref is reference to template if exist use that template
+                    Status = Status.Created,
                     InputArtifacts = firstTask.Artifacts?.Input?.ToDictionary(),
                     OutputDirectory = $"{message.Bucket}/{workflow.Id}/{exceutionId}",
                     Metadata = { }

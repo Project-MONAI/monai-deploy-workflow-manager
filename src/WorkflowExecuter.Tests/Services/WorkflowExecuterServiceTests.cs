@@ -86,6 +86,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowRepository.Setup(w => w.GetWorkflowsByAeTitleAsync(workflowRequest.CalledAeTitle)).ReturnsAsync(workflows);
 
             _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
 
             var result = await WorkflowExecuterService.ProcessPayload(workflowRequest);
 
@@ -168,10 +169,107 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowRepository.Setup(w => w.GetByWorkflowsIdsAsync(new List<string> { workflowId1.ToString(), workflowId2.ToString() })).ReturnsAsync(workflows);
 
             _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
 
             var result = await WorkflowExecuterService.ProcessPayload(workflowRequest);
 
             _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.TaskDispatchRequest, It.IsAny<Message>()), Times.Exactly(2));
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task ProcessPayload_WorkflowAlreadyStarted_TaskNotDispatched()
+        {
+            var workflowId1 = Guid.NewGuid().ToString();
+            var workflowId2 = Guid.NewGuid().ToString();
+            var workflowRequest = new WorkflowRequestEvent
+            {
+                Bucket = "testbucket",
+                CalledAeTitle = "aetitle",
+                CallingAeTitle = "aetitle",
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow,
+                PayloadId = Guid.NewGuid(),
+                Workflows = new List<string>
+                {
+                    workflowId1.ToString(),
+                    workflowId2.ToString()
+                }
+            };
+
+            var workflows = new List<Workflow>
+            {
+                new Workflow
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = workflowId1,
+                    Revision = 1,
+                    WorkflowSpec = new WorkflowSpec
+                    {
+                        Name = "Workflowname1",
+                        Description = "Workflowdesc1",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
+                        {
+                            AeTitle = "aetitle"
+                        },
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "type",
+                                Description = "taskdesc"
+                            }
+                        }
+                    }
+                },
+                new Workflow
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = workflowId2,
+                    Revision = 1,
+                    WorkflowSpec = new WorkflowSpec
+                    {
+                        Name = "Workflowname2",
+                        Description = "Workflowdesc2",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
+                        {
+                            AeTitle = "aetitle"
+                        },
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "type",
+                                Description = "taskdesc"
+                            }
+                        }
+                    }
+                }
+            };
+
+            var workflowsInstance = new List<WorkflowInstance>
+            {
+                new WorkflowInstance
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = workflowId2,
+                    PayloadId = workflowRequest.PayloadId.ToString(),
+                    Status = Status.Created,
+                    BucketId = $"{workflowRequest.Bucket}/{workflowId2}"
+                }
+            };
+
+            _workflowRepository.Setup(w => w.GetByWorkflowsIdsAsync(new List<string> { workflowId1.ToString(), workflowId2.ToString() })).ReturnsAsync(workflows);
+
+            _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(workflowsInstance);
+
+            var result = await WorkflowExecuterService.ProcessPayload(workflowRequest);
+
+            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.TaskDispatchRequest, It.IsAny<Message>()), Times.Exactly(1));
 
             Assert.True(result);
         }

@@ -52,7 +52,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 WorkflowId = workflowId,
                 TaskId = task.TaskId,
                 ExecutionId = task.ExecutionId.ToString(),
-                Status = Messaging.Events.TaskStatus.Created,
+                Status = TaskStatus.Created,
                 Inputs = new List<Messaging.Common.Storage>
                 {
                     new Messaging.Common.Storage
@@ -61,7 +61,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                         Endpoint = configuration.Settings["endpoint"],
                         Bucket = configuration.Settings["bucket"],
                         RelativeRootPath = "value",
-                        Name = "value"
+                        Name = "key"
                     }
                 },
                 Metadata = task.Metadata,

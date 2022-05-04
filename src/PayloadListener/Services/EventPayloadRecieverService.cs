@@ -58,7 +58,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 Logger.Exception("Failed to serialze WorkflowRequestMessage", e);
                 Logger.EventRejectedRequeue(message.Message.MessageId);
 
-                //
                 _messageSubscriber.Reject(message.Message, true);
             }
         }

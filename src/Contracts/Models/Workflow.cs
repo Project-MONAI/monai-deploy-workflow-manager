@@ -12,13 +12,10 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [BsonId]
         public string Id { get; set; }
 
-        [JsonIgnore]
         public string WorkflowId { get; set; }
 
-        [JsonIgnore]
         public int Revision { get; set; }
 
-        [JsonIgnore]
         public WorkflowSpec WorkflowSpec { get; set; }
     }
 }
