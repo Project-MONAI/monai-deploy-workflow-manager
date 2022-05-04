@@ -82,6 +82,11 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                 taskDispatches.Add(new JsonMessage<TaskDispatchEvent>(taskDispatchEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, taskDispatchEvent.CorrelationId, Guid.NewGuid().ToString()));
             }
 
+
+            var existingInstances = await _workflowInstanceRepository.GetByWorkflowsIdsAsync(workflowInstances.Select(w => w.WorkflowId).ToList());
+
+            //workflowInstances = workflowInstances.Where(i => existingInstances.Contains(e => e.PayloadId == i.PayloadId));
+
             processed &= await _workflowInstanceRepository.CreateAsync(workflowInstances);
 
             if (processed)
@@ -100,8 +105,9 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                 WorkflowId = workflow.WorkflowId,
                 PayloadId = message.PayloadId.ToString(),
                 StartTime = DateTime.UtcNow,
+                Status = Status.Created,
                 BucketId = $"{message.Bucket}/{workflow.Id}",
-                InputMataData = null//????? need to speak to victor
+                InputMetaData = { }
             };
 
             var tasks = new List<TaskExecution>();

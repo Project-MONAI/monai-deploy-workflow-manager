@@ -28,7 +28,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
                         Endpoint = configuration.Settings["endpoint"],
                         Bucket = configuration.Settings["bucket"],
                         RelativeRootPath = inArtifact.Value,
-                        Name = inArtifact.Value
+                        Name = inArtifact.Key
                     });
                 }
             }

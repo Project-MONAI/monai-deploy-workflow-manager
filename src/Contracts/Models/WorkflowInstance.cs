@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace Monai.Deploy.WorkloadManager.Contracts.Models
 {
@@ -26,13 +27,13 @@ namespace Monai.Deploy.WorkloadManager.Contracts.Models
         public DateTime StartTime { get; set; }
 
         [ConfigurationKeyName("status")]
-        public string Status { get; set; }
+        public Status Status { get; set; }
 
         [ConfigurationKeyName("bucket_id")]
         public string BucketId { get; set; }
 
         [ConfigurationKeyName("input_metadata")]
-        public InputMataData InputMataData { get; set; }
+        public Dictionary<string, string> InputMetaData { get; set; }
 
         [ConfigurationKeyName("tasks")]
         public TaskExecution[] Tasks { get; set; }

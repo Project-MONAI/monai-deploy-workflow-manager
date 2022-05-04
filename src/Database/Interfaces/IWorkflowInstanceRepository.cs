@@ -12,7 +12,13 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <summary>
         /// Creates a workflow instance in the database.
         /// </summary>
-        /// <param name="workflows">A list of workflowInstances to create.</param>
+        /// <param name="workflowInstances">A list of workflowInstances to create.</param>
         Task<bool> CreateAsync(IList<WorkflowInstance> workflowInstances);
+
+        /// <summary>
+        /// Gets a list of workflow instances for a given set of workflowIds.
+        /// </summary>
+        /// <param name="workflowInstances">A list of workflowIds to retrieve.</param>
+        Task<IList<WorkflowInstance>> GetByWorkflowsIdsAsync(List<string> workflowIds);
     }
 }

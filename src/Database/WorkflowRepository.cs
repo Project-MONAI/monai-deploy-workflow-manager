@@ -8,21 +8,25 @@ using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Options;
 using MongoDB.Driver;
+using System;
 
 namespace Monai.Deploy.WorkflowManager.Database
 {
     public class WorkflowRepository : IWorkflowRepository
     {
-        private readonly IMongoClient _client;
         private readonly IMongoCollection<Workflow> _workflowCollection;
 
         public WorkflowRepository(
             IMongoClient client,
-            IOptions<WorkloadManagerDatabaseSettings> bookStoreDatabaseSettings)
+            IOptions<WorkloadManagerDatabaseSettings> databaseSettings)
         {
-            _client = client;
-            var mongoDatabase = client.GetDatabase(bookStoreDatabaseSettings.Value.DatabaseName);
-            _workflowCollection = mongoDatabase.GetCollection<Workflow>(bookStoreDatabaseSettings.Value.WorkflowCollectionName);
+            if (client == null)
+            {
+                throw new ArgumentNullException(nameof(client));
+            }
+
+            var mongoDatabase = client.GetDatabase(databaseSettings.Value.DatabaseName);
+            _workflowCollection = mongoDatabase.GetCollection<Workflow>(databaseSettings.Value.WorkflowCollectionName);
         }
 
         public async Task<Workflow> GetByWorkflowIdAsync(string workflowId)

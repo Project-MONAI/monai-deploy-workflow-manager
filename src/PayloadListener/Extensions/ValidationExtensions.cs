@@ -15,7 +15,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             validationErrors = new List<string>();
 
             var valid = true;
-            valid &= workflowRequestMessage.Workflows.Any();
+
             valid &= IsAeTitleValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.CallingAeTitle, validationErrors);
             valid &= IsAeTitleValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.CalledAeTitle, validationErrors);
 
