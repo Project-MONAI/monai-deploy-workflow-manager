@@ -19,7 +19,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
         {
             var task = new TaskExecution
             {
-                ExecutionId = Guid.NewGuid(),
+                ExecutionId = Guid.NewGuid().ToString(),
                 TaskType = "taskType",
                 TaskPluginArguments = new Dictionary<string, string>
                 {

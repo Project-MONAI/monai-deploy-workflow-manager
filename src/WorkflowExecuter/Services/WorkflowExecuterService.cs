@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
+using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Events;
@@ -55,6 +56,8 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
 
         public async Task<bool> ProcessPayload(WorkflowRequestEvent message)
         {
+            Guard.Against.Null(message, nameof(message));
+
             var processed = true;
             var workflows = new List<Workflow>();
 
@@ -86,6 +89,10 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
 
         private WorkflowInstance CreateWorkFlowIntsance(WorkflowRequestEvent message, Workflow workflow)
         {
+            Guard.Against.Null(message, nameof(message));
+            Guard.Against.Null(workflow, nameof(workflow));
+            Guard.Against.Null(workflow.WorkflowSpec, nameof(workflow.WorkflowSpec));
+
             var workflowInstance = new WorkflowInstance()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -112,7 +119,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                 //    firstTask = template ?? firstTask;
                 //}
 
-                var exceutionId = Guid.NewGuid();
+                var exceutionId = Guid.NewGuid().ToString();
 
                 tasks.Add(new TaskExecution()
                 {

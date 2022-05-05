@@ -1,22 +1,22 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
-using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
     public class Evaluator
     {
-        [ConfigurationKeyName("correlation_id")]
+        [JsonProperty(PropertyName = "correlation_id")]
         public string CorrelationId { get; set; }
 
-        [ConfigurationKeyName("input")]
+        [JsonProperty(PropertyName = "input")]
         public Artifact Input { get; set; }
 
-        [ConfigurationKeyName("executions")]
+        [JsonProperty(PropertyName = "executions")]
         public ExecutionContext Executions { get; set; }
 
-        [ConfigurationKeyName("dicom")]
+        [JsonProperty(PropertyName = "dicom")]
         public ExecutionContext Dicom { get; set; }
     }
 }

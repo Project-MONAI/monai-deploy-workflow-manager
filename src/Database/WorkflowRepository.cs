@@ -9,6 +9,7 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Options;
 using MongoDB.Driver;
 using System;
+using Ardalis.GuardClauses;
 
 namespace Monai.Deploy.WorkflowManager.Database
 {
@@ -31,6 +32,8 @@ namespace Monai.Deploy.WorkflowManager.Database
 
         public async Task<Workflow> GetByWorkflowIdAsync(string workflowId)
         {
+            Guard.Against.NullOrWhiteSpace(workflowId, nameof(workflowId));
+
             var workflow = await _workflowCollection
                 .Find(x => x.WorkflowId == workflowId)
                 .Sort(Builders<Workflow>.Sort.Descending("Revision"))
@@ -41,6 +44,8 @@ namespace Monai.Deploy.WorkflowManager.Database
 
         public async Task<IList<Workflow>> GetByWorkflowsIdsAsync(IEnumerable<string> workflowIds)
         {
+            Guard.Against.NullOrEmpty(workflowIds, nameof(workflowIds));
+
             var filterDef = new FilterDefinitionBuilder<Workflow>();
 
             var filter = filterDef.In(x => x.WorkflowId, workflowIds);
@@ -53,6 +58,8 @@ namespace Monai.Deploy.WorkflowManager.Database
 
         public async Task<Workflow> GetByAeTitleAsync(string aeTitle)
         {
+            Guard.Against.NullOrWhiteSpace(aeTitle, nameof(aeTitle));
+
             var workflow = await _workflowCollection
                 .Find(x => x.WorkflowSpec.InformaticsGateway.AeTitle == aeTitle)
                 .Sort(Builders<Workflow>.Sort.Descending("Revision"))
@@ -63,6 +70,8 @@ namespace Monai.Deploy.WorkflowManager.Database
 
         public async Task<IList<Workflow>> GetWorkflowsByAeTitleAsync(string aeTitle)
         {
+            Guard.Against.NullOrWhiteSpace(aeTitle, nameof(aeTitle));
+
             var workflows = await _workflowCollection
                 .Find(x => x.WorkflowSpec.InformaticsGateway.AeTitle == aeTitle)
                 .Sort(Builders<Workflow>.Sort.Descending("Revision"))

@@ -2,19 +2,19 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
     public class DicomTags
     {
-        [ConfigurationKeyName("study_id")]
+        [JsonProperty(PropertyName = "study_id")]
         public string StudyId { get; set; }
 
-        [ConfigurationKeyName("tags")]
+        [JsonProperty(PropertyName = "tags")]
         public Dictionary<string, string> Tags { get; set; }
 
-        [ConfigurationKeyName("series")]
+        [JsonProperty(PropertyName = "series")]
         public List<string> Series { get; set; }
     }
 }

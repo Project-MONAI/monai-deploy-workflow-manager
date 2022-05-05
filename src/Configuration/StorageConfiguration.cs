@@ -1,5 +1,4 @@
 ﻿using System.IO.Abstractions;
-using System.Text.Json.Serialization;
 using Microsoft.Extensions.Configuration;
 using Monai.Deploy.Storage.Configuration;
 
@@ -13,14 +12,6 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         { }
 
         public StorageConfiguration(IFileSystem fileSystem) => _fileSystem = fileSystem ?? throw new System.ArgumentNullException(nameof(fileSystem));
-
-        /// <summary>
-        /// Gets or sets temporary storage path.
-        /// This is used to store all instances received to a temporary folder.
-        /// </summary>
-        /// <value></value>
-        [ConfigurationKeyName("temporary")]
-        public string Temporary { get; set; } = "./payloads";
 
         /// <summary>
         /// Gets or sets the watermark for disk usage with default value of 75%,
@@ -51,16 +42,7 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         /// <summary>
         /// Gets or set number of threads used for payload upload. Default is 1;
         /// </summary>
-        public int Concurrentcy { get; set; } = 1;
-
-        [JsonIgnore]
-        public string TemporaryDataDirFullPath
-        {
-            get
-            {
-                return _fileSystem.Path.GetFullPath(Temporary);
-            }
-        }
+        public int Concurrency { get; set; } = 1;
 
         /// <summary>
         /// Gets or sets the name of the bucket where payloads are uploaded to.

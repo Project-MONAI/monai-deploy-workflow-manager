@@ -2,40 +2,40 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
     public class ExecutionContext
     {
-        [ConfigurationKeyName("execution_id")]
+        [JsonProperty(PropertyName = "execution_id")]
         public string ExecutionId { get; set; }
 
-        [ConfigurationKeyName("task_id")]
+        [JsonProperty(PropertyName = "task_id")]
         public string TaskId { get; set; }
 
-        [ConfigurationKeyName("input_dir")]
+        [JsonProperty(PropertyName = "input_dir")]
         public string InputDir { get; set; }
 
-        [ConfigurationKeyName("output_dir")]
+        [JsonProperty(PropertyName = "output_dir")]
         public string OutputDir { get; set; }
 
-        [ConfigurationKeyName("task")]
+        [JsonProperty(PropertyName = "task")]
         public Dictionary<string, string> Task { get; set; }
 
-        [ConfigurationKeyName("start_time")]
+        [JsonProperty(PropertyName = "start_time")]
         public decimal StartTime { get; set; }
 
-        [ConfigurationKeyName("end_time")]
+        [JsonProperty(PropertyName = "end_time")]
         public decimal EndTime { get; set; }
 
-        [ConfigurationKeyName("status")]
+        [JsonProperty(PropertyName = "status")]
         public string Status { get; set; }
 
-        [ConfigurationKeyName("error_msg")]
+        [JsonProperty(PropertyName = "error_msg")]
         public string ErrorMsg { get; set; }
 
-        [ConfigurationKeyName("result")]
+        [JsonProperty(PropertyName = "result")]
         public Dictionary<string, string> Result { get; set; }
     }
 }

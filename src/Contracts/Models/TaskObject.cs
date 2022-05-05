@@ -2,34 +2,34 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
     public class TaskObject
     {
-        [ConfigurationKeyName("id")]
+        [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
 
-        [ConfigurationKeyName("description")]
+        [JsonProperty(PropertyName = "description")]
         public string Description { get; set; }
 
-        [ConfigurationKeyName("type")]
+        [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
 
-        [ConfigurationKeyName("args")]
+        [JsonProperty(PropertyName = "args")]
         public Dictionary<string, string> Args { get; set; }
 
-        [ConfigurationKeyName("ref")]
+        [JsonProperty(PropertyName = "ref")]
         public string Ref { get; set; }
 
-        [ConfigurationKeyName("task_destinations")]
+        [JsonProperty(PropertyName = "task_destinations")]
         public TaskDestination[] TaskDestinations { get; set; }
 
-        [ConfigurationKeyName("export_destinations")]
+        [JsonProperty(PropertyName = "export_destinations")]
         public TaskDestination[] ExportDestinations { get; set; }
 
-        [ConfigurationKeyName("artifacts")]
+        [JsonProperty(PropertyName = "artifacts")]
         public ArtifactMap Artifacts { get; set; }
     }
 }

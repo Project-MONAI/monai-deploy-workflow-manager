@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
@@ -37,6 +38,8 @@ namespace Monai.Deploy.WorkflowManager.Database
 
         public async Task<IList<WorkflowInstance>> GetByWorkflowsIdsAsync(List<string> workflowIds)
         {
+            Guard.Against.NullOrEmpty(workflowIds, nameof(workflowIds));
+
             try
             {
                 var filterDef = new FilterDefinitionBuilder<WorkflowInstance>();
@@ -55,6 +58,8 @@ namespace Monai.Deploy.WorkflowManager.Database
 
         public async Task<bool> CreateAsync(IList<WorkflowInstance> workflowInstances)
         {
+            Guard.Against.NullOrEmpty(workflowInstances, nameof(workflowInstances));
+
             try
             {
                 await _workflowInstanceCollection.InsertManyAsync(workflowInstances);
