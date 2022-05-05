@@ -91,10 +91,10 @@ namespace Monai.Deploy.WorkflowManager
                     services.AddSingleton<MinIoStorageService>();
                     services.AddSingleton<IStorageService>(implementationFactory =>
                     {
-                        var options = implementationFactory.GetService<IOptions<WorkflowManagerOptions>>();
+                        var options = implementationFactory.GetService<IOptions<StorageServiceConfiguration>>();
                         var serviceProvider = implementationFactory.GetService<IServiceProvider>();
                         var logger = implementationFactory.GetService<ILogger<Program>>();
-                        return serviceProvider.LocateService<IStorageService>(logger, "Monai.Deploy.Storage.MinIo.MinIoStorageService, Monai.Deploy.Storage");
+                        return serviceProvider.LocateService<IStorageService>(logger, options.Value.ServiceAssemblyName);
                     });
 
                     // MessageBroker

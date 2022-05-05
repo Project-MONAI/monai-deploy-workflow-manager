@@ -4,10 +4,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
@@ -63,6 +65,26 @@ namespace Monai.Deploy.WorkflowManager.Database
             try
             {
                 await _workflowInstanceCollection.InsertManyAsync(workflowInstances);
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.DbCallFailed(nameof(CreateAsync), e);
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateTaskStatusAsync(string workflowInstanceId, string taskId, Status status)
+        {
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));
+            Guard.Against.Null(status, nameof(status));
+
+            try
+            {
+                var result = await _workflowInstanceCollection.FindOneAndUpdateAsync(
+                    i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.TaskId == taskId),
+                    Builders<WorkflowInstance>.Update.Set(w => w.Tasks[-1].Status, status));
                 return true;
             }
             catch (Exception e)

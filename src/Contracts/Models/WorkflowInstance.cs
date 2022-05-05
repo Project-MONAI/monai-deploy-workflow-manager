@@ -35,6 +35,6 @@ namespace Monai.Deploy.WorkloadManager.Contracts.Models
         public Dictionary<string, string> InputMetaData { get; set; }
 
         [JsonProperty(PropertyName = "tasks")]
-        public TaskExecution[] Tasks { get; set; }
+        public List<TaskExecution> Tasks { get; set; }
     }
 }

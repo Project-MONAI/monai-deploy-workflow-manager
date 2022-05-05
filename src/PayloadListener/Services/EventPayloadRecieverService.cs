@@ -49,7 +49,14 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                     return;
                 }
 
-                await WorkflowExecuterService.ProcessPayload(payload);
+                if (!await WorkflowExecuterService.ProcessPayload(payload))
+                {
+                    Logger.EventRejectedRequeue(message.Message.MessageId);
+
+                    _messageSubscriber.Reject(message.Message, true);
+
+                    return;
+                }
 
                 _messageSubscriber.Acknowledge(message.Message);
             }

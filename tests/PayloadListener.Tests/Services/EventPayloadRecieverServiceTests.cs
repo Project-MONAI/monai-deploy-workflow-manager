@@ -65,6 +65,8 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 
             _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(true);
 
+            _workflowExecuterService.Setup(p => p.ProcessPayload(It.IsAny<WorkflowRequestEvent>())).ReturnsAsync(true);
+
             _eventPayloadRecieverService.RecieveWorkflowPayload(message);
 
             _mockMessageBrokerSubscriberService.Verify(p => p.Acknowledge(It.IsAny<Message>()), Times.Once());

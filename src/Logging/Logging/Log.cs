@@ -60,5 +60,8 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
 
         [LoggerMessage(EventId = 18, Level = LogLevel.Error, Message = "The following database call {methodName} failed unexpectedly and has been aborted.")]
         public static partial void DbCallFailed(this ILogger logger, string methodName, Exception ex);
+
+        [LoggerMessage(EventId = 19, Level = LogLevel.Error, Message = "The following task has already been dispatched: {payloadId}, {taskId}")]
+        public static partial void TaskPreviouslyDispatched(this ILogger logger, string payloadId, string taskId);
     }
 }
