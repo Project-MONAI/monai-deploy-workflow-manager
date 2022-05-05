@@ -77,9 +77,9 @@
       },
       "xunit.runner.visualstudio": {
         "type": "Direct",
-        "requested": "[2.4.3, )",
-        "resolved": "2.4.3",
-        "contentHash": "kZZSmOmKA8OBlAJaquPXnJJLM9RwQ27H7BMVqfMLUcTi9xHinWGJiWksa3D4NEtz0wZ/nxd2mogObvBgJKCRhQ=="
+        "requested": "[2.4.5, )",
+        "resolved": "2.4.5",
+        "contentHash": "OwHamvBdUKgqsXfBzWiCW/O98BTx81UKzx2bieIOQI7CZFE5NEQZGi8PBQGIKawDW96xeRffiNf20SjfC0x9hw=="
       },
       "Ardalis.GuardClauses": {
         "type": "Transitive",
@@ -159,8 +159,8 @@
       },
       "Karambolo.Extensions.Logging.File": {
         "type": "Transitive",
-        "resolved": "3.2.1",
-        "contentHash": "+jWcz78yeZw7RgXO73c5QPNja/Bt6i7s9h2W5GrSTuWyd9N/45nfCtd3fATwv556PihcYTFJO62yOgMTkZzbBw==",
+        "resolved": "3.3.0",
+        "contentHash": "d5COomaWp+1Eu5D0ivnuXy14GfgygzSUD7XIFtW8v2+2gCSCrZjuZVwMkQP9nQav9gt98iBh7F10HKePlPkLbQ==",
         "dependencies": {
           "Microsoft.Extensions.FileProviders.Physical": "3.0.0",
           "Microsoft.Extensions.Logging.Configuration": "3.0.0",
@@ -1366,7 +1366,7 @@
         "type": "Project",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
-          "Karambolo.Extensions.Logging.File": "3.2.1",
+          "Karambolo.Extensions.Logging.File": "3.3.0",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "6.0.3",
           "Microsoft.AspNetCore.Mvc.Versioning": "5.0.0",
           "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": "5.0.0",
@@ -1433,7 +1433,6 @@
       "monai.deploy.workflowmanager.logging": {
         "type": "Project",
         "dependencies": {
-          "Karambolo.Extensions.Logging.File": "3.2.1",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1"
         }
       },
@@ -1441,7 +1440,6 @@
         "type": "Project",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
-          "Karambolo.Extensions.Logging.File": "3.2.1",
           "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
           "Monai.Deploy.Messaging": "0.1.0-rc0034",
           "Monai.Deploy.Storage": "0.1.0-rc0019",

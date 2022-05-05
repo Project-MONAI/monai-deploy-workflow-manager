@@ -14,13 +14,13 @@
       },
       "KubernetesClient": {
         "type": "Direct",
-        "requested": "[7.2.15, )",
-        "resolved": "7.2.15",
-        "contentHash": "WvlyXlqOQVqpjh1xQzItdOzTu+kfQpdREUed70yizkNftOzqXAqvE8J6VvRUJJ8SAXRLRjsqIDXf5j3gWFzLGw==",
+        "requested": "[7.2.19, )",
+        "resolved": "7.2.19",
+        "contentHash": "wycP/ApzjNToo6N0is0cDVK6m282MOXSlJDaZPmMibpdgZf2MKjS289MRUIXz3+Syftu4zsqlinDMGbmi5Xjog==",
         "dependencies": {
           "IdentityModel.OidcClient": "4.0.0",
-          "KubernetesClient.Basic": "7.2.15",
-          "KubernetesClient.Models": "7.2.15",
+          "KubernetesClient.Basic": "7.2.19",
+          "KubernetesClient.Models": "7.2.19",
           "System.IO.Abstractions": "13.2.47",
           "System.IdentityModel.Tokens.Jwt": "6.13.1",
           "prometheus-net": "5.0.1"
@@ -34,9 +34,9 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.0-vchang-dispatch-0031, )",
-        "resolved": "0.1.0-vchang-dispatch-0031",
-        "contentHash": "/9DnsLI5J/0xNA6Fk6qO0EJD4w4ojc9z8CFzFWgKKr63tqoiBZ0jSxshwGeD6IHGwJqWiz9osdpV9ol0JgJrGA==",
+        "requested": "[0.1.0-rc0031, )",
+        "resolved": "0.1.0-rc0031",
+        "contentHash": "yGjVqCTVvPhQ0baFFSnr+kCqnIeL983HRUs8bq+kqIxPYEm3cVEPa5aCK9wYsJ/NSfLEZoa/eyPIqf/CPtbuPg==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -124,16 +124,16 @@
       },
       "KubernetesClient.Basic": {
         "type": "Transitive",
-        "resolved": "7.2.15",
-        "contentHash": "QyIBQfcRdeJP4rBcjf0aA7g5udhvqevSl/4zalgR9wbcxdzkhba7AaUxp5DvThJuIlExhC4/oszg/ySLNM0CRQ==",
+        "resolved": "7.2.19",
+        "contentHash": "1LboFwnEg9gxB8gF9BqaS8gnNVetqRGS9XWyVMlzAxpeYaTF5mNCoj4OCZyLj8Ogo0kdrASjG9qOjozpQDWZlg==",
         "dependencies": {
-          "KubernetesClient.Models": "7.2.15"
+          "KubernetesClient.Models": "7.2.19"
         }
       },
       "KubernetesClient.Models": {
         "type": "Transitive",
-        "resolved": "7.2.15",
-        "contentHash": "dkHjZKWNKRJZakvWJvxyHE5l4DvuHWhQuvvveS+xmxcSQZMudoUPb5WVI8ptL1LjaYQ4QcXnPYt4Bg9Q61rKSg==",
+        "resolved": "7.2.19",
+        "contentHash": "ekEK90+eJTKN1KzW7kFcJofSjv3X+Q4MhLxAZdgn7pTCJg0qk4/FhV8sYJ/ZMw20Ue5Rob3vAw9WROHZaLNIdQ==",
         "dependencies": {
           "AutoMapper": "10.1.1",
           "Fractions": "7.0.0",
@@ -542,7 +542,7 @@
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.0-vchang-dispatch-0031",
+          "Monai.Deploy.Messaging": "0.1.0-rc0031",
           "Monai.Deploy.Storage": "0.1.0-rc0019"
         }
       }

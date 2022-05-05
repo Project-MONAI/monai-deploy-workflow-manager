@@ -4,9 +4,9 @@
     "net6.0": {
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.0-vchang-dispatch-0031, )",
-        "resolved": "0.1.0-vchang-dispatch-0031",
-        "contentHash": "/9DnsLI5J/0xNA6Fk6qO0EJD4w4ojc9z8CFzFWgKKr63tqoiBZ0jSxshwGeD6IHGwJqWiz9osdpV9ol0JgJrGA==",
+        "requested": "[0.1.0-rc0031, )",
+        "resolved": "0.1.0-rc0031",
+        "contentHash": "yGjVqCTVvPhQ0baFFSnr+kCqnIeL983HRUs8bq+kqIxPYEm3cVEPa5aCK9wYsJ/NSfLEZoa/eyPIqf/CPtbuPg==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",

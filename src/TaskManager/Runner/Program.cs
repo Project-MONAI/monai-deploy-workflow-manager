@@ -33,7 +33,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                 PrintHelp();
                 return;
             }
-            var argoBaseUri = args[0];
 
             var exitEvent = new ManualResetEvent(false);
             var host = CreateHostBuilder(args).Build();
@@ -58,10 +57,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
 
                 logger.LogInformation($"Task updated with new status: {updateMessage.Body.Status}");
                 subscriber.Acknowledge(args.Message);
-
-                // if (updateMessage.Body.Status == Messaging.Events.TaskStatus.Failed ||
-                //     updateMessage.Body.Status == Messaging.Events.TaskStatus.Succeeded)
-                    // Environment.Exit(((int)Messaging.Events.TaskStatus.Succeeded) - (int)updateMessage.Body.Status);
             }, 1);
 
             while (taskManager.Status != Contracts.Rest.ServiceStatus.Running)

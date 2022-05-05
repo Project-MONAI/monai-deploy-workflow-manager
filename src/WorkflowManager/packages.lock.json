@@ -13,9 +13,9 @@
       },
       "Karambolo.Extensions.Logging.File": {
         "type": "Direct",
-        "requested": "[3.2.1, )",
-        "resolved": "3.2.1",
-        "contentHash": "+jWcz78yeZw7RgXO73c5QPNja/Bt6i7s9h2W5GrSTuWyd9N/45nfCtd3fATwv556PihcYTFJO62yOgMTkZzbBw==",
+        "requested": "[3.3.0, )",
+        "resolved": "3.3.0",
+        "contentHash": "d5COomaWp+1Eu5D0ivnuXy14GfgygzSUD7XIFtW8v2+2gCSCrZjuZVwMkQP9nQav9gt98iBh7F10HKePlPkLbQ==",
         "dependencies": {
           "Microsoft.Extensions.FileProviders.Physical": "3.0.0",
           "Microsoft.Extensions.Logging.Configuration": "3.0.0",
@@ -753,7 +753,6 @@
       "monai.deploy.workflowmanager.logging": {
         "type": "Project",
         "dependencies": {
-          "Karambolo.Extensions.Logging.File": "3.2.1",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1"
         }
       },
@@ -761,7 +760,6 @@
         "type": "Project",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
-          "Karambolo.Extensions.Logging.File": "3.2.1",
           "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
           "Monai.Deploy.Messaging": "0.1.0-rc0034",
           "Monai.Deploy.Storage": "0.1.0-rc0019",
