@@ -16,6 +16,7 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "informatics_gateway")]
         public InformaticsGateway InformaticsGateway { get; set; }
 
+        [JsonProperty(PropertyName = "tasks")]
         public TaskObject[] Tasks { get; set; }
     }
 }

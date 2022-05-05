@@ -8,14 +8,17 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
     public class Workflow
     {
-        [JsonIgnore]
         [BsonId]
+        [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
 
+        [JsonProperty(PropertyName = "workflow_id")]
         public string WorkflowId { get; set; }
 
+        [JsonProperty(PropertyName = "revision")]
         public int Revision { get; set; }
 
+        [JsonProperty(PropertyName = "workflow_spec")]
         public WorkflowSpec WorkflowSpec { get; set; }
     }
 }

@@ -16,7 +16,7 @@ namespace Monai.Deploy.WorkflowManager.Configuration
 
         /// <summary>
         /// Gets or sets the topic for publishing task dispatch requests.
-        /// Defaults to `md.workflow.task_dispatch`.
+        /// Defaults to `md.tasks.dispatch`.
         /// </summary>
         [ConfigurationKeyName("taskDispatch")]
         public string TaskDispatchRequest { get; set; } = "md.tasks.dispatch";
