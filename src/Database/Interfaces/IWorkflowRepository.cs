@@ -32,5 +32,11 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// </summary>
         /// <param name="aeTitle">An aeTitle to retrieve workflows for.</param>
         Task<IList<Workflow>> GetWorkflowsByAeTitleAsync(string aeTitle);
+
+        /// <summary>
+        /// Creates a workflow object.
+        /// </summary>
+        /// <param name="workflow">Workflow object to create.</param>
+        Task<string> CreateAsync(Workflow workflow);
     }
 }

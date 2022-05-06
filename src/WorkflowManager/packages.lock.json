@@ -710,7 +710,8 @@
       "monai.deploy.workflowmanager.common": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0"
+          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Database": "1.0.0"
         }
       },
       "monai.deploy.workflowmanager.configuration": {
