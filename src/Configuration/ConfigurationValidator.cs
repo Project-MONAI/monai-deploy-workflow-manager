@@ -44,7 +44,7 @@ namespace Monai.Deploy.WorkflowManager.Configuration
 
             valid &= IsStringValueNotNull(nameof(configurationKeys.WorkflowRequest), configurationKeys.WorkflowRequest);
             valid &= IsStringValueNotNull(nameof(configurationKeys.ExportRequestPrefix), configurationKeys.ExportRequestPrefix);
-            valid &= IsStringValueNotNull(nameof(configurationKeys.ExportComplete), configurationKeys.ExportComplete);
+            valid &= IsStringValueNotNull(nameof(configurationKeys.TaskDispatchRequest), configurationKeys.TaskDispatchRequest);
 
             return valid;
         }

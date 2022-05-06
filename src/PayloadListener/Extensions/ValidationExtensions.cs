@@ -1,4 +1,7 @@
-﻿using Ardalis.GuardClauses;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
@@ -12,7 +15,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             validationErrors = new List<string>();
 
             var valid = true;
-            valid &= workflowRequestMessage.Workflows.Any();
+
             valid &= IsAeTitleValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.CallingAeTitle, validationErrors);
             valid &= IsAeTitleValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.CalledAeTitle, validationErrors);
 

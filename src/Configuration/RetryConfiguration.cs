@@ -1,6 +1,9 @@
-﻿using System;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.Configuration
 {
@@ -12,7 +15,7 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         /// Values can be separated by commas.
         /// Default is 250, 500, 1000.
         /// </summary>
-        [JsonProperty(PropertyName = "delays")]
+        [ConfigurationKeyName("delays")]
         public int[] DelaysMilliseconds { get; set; } = new[] { 250, 500, 1000 };
 
         // Gets the delays in TimeSpan objects

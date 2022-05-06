@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
@@ -14,7 +18,7 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         public string Type { get; set; }
 
         [JsonProperty(PropertyName = "args")]
-        public object Args { get; set; }
+        public Dictionary<string, string> Args { get; set; }
 
         [JsonProperty(PropertyName = "ref")]
         public string Ref { get; set; }

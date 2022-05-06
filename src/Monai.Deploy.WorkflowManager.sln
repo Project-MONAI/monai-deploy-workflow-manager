@@ -27,7 +27,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManage
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Tests", "..\tests\WorkflowManager.Tests\Monai.Deploy.WorkflowManager.Tests.csproj", "{C2A58360-996D-42CF-BD83-A42C6BDBC584}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monai.Deploy.WorkflowManager.Configuration.Tests", "..\tests\Configuration.Tests\Monai.Deploy.WorkflowManager.Configuration.Tests.csproj", "{D36D3A1E-6D95-4DC6-8C54-225C2410B8D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Configuration.Tests", "..\tests\Configuration.Tests\Monai.Deploy.WorkflowManager.Configuration.Tests.csproj", "{D36D3A1E-6D95-4DC6-8C54-225C2410B8D4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkloadManager.WorkfowExecuter", "WorkflowExecuter\Monai.Deploy.WorkloadManager.WorkfowExecuter.csproj", "{BF0FB5E4-2C58-4AC3-9D68-5FB6BD196C45}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests", "WorkflowExecuter.Tests\Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.csproj", "{6E095A30-EDF0-4940-935D-A8B64C19DE22}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monai.Deploy.WorkflowManager.Database.Tests", "Database.Tests\Monai.Deploy.WorkflowManager.Database.Tests.csproj", "{F1F553CD-373E-4D82-9A92-6D138C4F0A5A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +89,18 @@ Global
 		{D36D3A1E-6D95-4DC6-8C54-225C2410B8D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D36D3A1E-6D95-4DC6-8C54-225C2410B8D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D36D3A1E-6D95-4DC6-8C54-225C2410B8D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF0FB5E4-2C58-4AC3-9D68-5FB6BD196C45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF0FB5E4-2C58-4AC3-9D68-5FB6BD196C45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF0FB5E4-2C58-4AC3-9D68-5FB6BD196C45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF0FB5E4-2C58-4AC3-9D68-5FB6BD196C45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E095A30-EDF0-4940-935D-A8B64C19DE22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E095A30-EDF0-4940-935D-A8B64C19DE22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E095A30-EDF0-4940-935D-A8B64C19DE22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E095A30-EDF0-4940-935D-A8B64C19DE22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1F553CD-373E-4D82-9A92-6D138C4F0A5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1F553CD-373E-4D82-9A92-6D138C4F0A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1F553CD-373E-4D82-9A92-6D138C4F0A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1F553CD-373E-4D82-9A92-6D138C4F0A5A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,6 +110,8 @@ Global
 		{64CADF9C-037D-4259-B54A-4FB89E38F26D} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{C2A58360-996D-42CF-BD83-A42C6BDBC584} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{D36D3A1E-6D95-4DC6-8C54-225C2410B8D4} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
+		{6E095A30-EDF0-4940-935D-A8B64C19DE22} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
+		{F1F553CD-373E-4D82-9A92-6D138C4F0A5A} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC0D56C8-D8CB-45CE-B528-F3DCF86D63ED}
