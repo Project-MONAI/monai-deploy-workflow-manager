@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
@@ -74,7 +74,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             }
         }
 
-        public async Task<bool> UpdateTaskStatusAsync(string workflowInstanceId, string taskId, Status status)
+        public async Task<bool> UpdateTaskStatusAsync(string workflowInstanceId, string taskId, TaskExecutionStatus status)
         {
             Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
             Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));

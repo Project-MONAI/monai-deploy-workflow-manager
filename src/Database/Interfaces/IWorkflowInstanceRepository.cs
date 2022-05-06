@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using Monai.Deploy.WorkloadManager.Contracts.Models;
 using System.Threading.Tasks;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.Messaging.Events;
 
 namespace Monai.Deploy.WorkflowManager.Database.Interfaces
 {
@@ -28,6 +28,6 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <param name="workflowInstanceId">Workflow Instance to update.</param>
         /// <param name="taskId">TaskId to update.</param>
         /// <param name="status">Status to set.</param>
-        Task<bool> UpdateTaskStatusAsync(string workflowInstanceId, string taskId, Status status);
+        Task<bool> UpdateTaskStatusAsync(string workflowInstanceId, string taskId, TaskExecutionStatus status);
     }
 }

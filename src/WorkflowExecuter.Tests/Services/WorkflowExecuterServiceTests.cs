@@ -87,7 +87,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
-            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Status>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
 
             var result = await WorkflowExecuterService.ProcessPayload(workflowRequest);
 
@@ -171,7 +171,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
-            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Status>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
 
             var result = await WorkflowExecuterService.ProcessPayload(workflowRequest);
 
@@ -266,7 +266,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                         new TaskExecution
                         {
                             TaskId = Guid.NewGuid().ToString(),
-                            Status = Status.Dispatched
+                            Status = TaskExecutionStatus.Dispatched
                         }
                     }
                 }
@@ -276,7 +276,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(workflowsInstance);
-            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Status>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
 
             var result = await WorkflowExecuterService.ProcessPayload(workflowRequest);
 

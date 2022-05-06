@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.Collections.Generic;
+using Monai.Deploy.Messaging.Events;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
@@ -21,7 +22,7 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         public string TaskId { get; set; }
 
         [JsonProperty(PropertyName = "status")]
-        public Status Status { get; set; }
+        public TaskExecutionStatus Status { get; set; }
 
         [JsonProperty(PropertyName = "input_artifacts")]
         public Dictionary<string, string> InputArtifacts { get; set; }

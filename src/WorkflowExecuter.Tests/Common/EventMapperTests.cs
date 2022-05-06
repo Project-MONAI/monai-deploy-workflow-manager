@@ -26,7 +26,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                     { "key", "value" }
                 },
                 TaskId = Guid.NewGuid().ToString(),
-                Status = Status.Created,
+                Status = TaskExecutionStatus.Created,
                 InputArtifacts = new Dictionary<string, string>
                 {
                     { "key", "value" }
@@ -52,7 +52,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 WorkflowId = workflowId,
                 TaskId = task.TaskId,
                 ExecutionId = task.ExecutionId.ToString(),
-                Status = TaskStatus.Created,
+                Status = TaskExecutionStatus.Created,
                 Inputs = new List<Messaging.Common.Storage>
                 {
                     new Messaging.Common.Storage

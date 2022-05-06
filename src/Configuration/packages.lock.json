@@ -14,9 +14,9 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0030, )",
-        "resolved": "0.1.0-rc0030",
-        "contentHash": "oPlxctcW83GhiWxz1vbNyexxELXVH/kCZj+txh89bXxeVuCWrKOkZtVGXogO4lNASKKF80cNPvmG9xhMRD8SVg==",
+        "requested": "[0.1.0-rc0033, )",
+        "resolved": "0.1.0-rc0033",
+        "contentHash": "Grp8jVQH6Cn3PNtEcthm2zNTVJDYgv5flj9JyAmv3dYXqVoqgBhXAg8LZepetNnbcMpvgwEV0JG67dKS5fOdNw==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",

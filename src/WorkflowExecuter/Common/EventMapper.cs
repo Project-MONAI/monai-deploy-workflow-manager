@@ -39,7 +39,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
                 TaskId = task.TaskId,
                 ExecutionId = task.ExecutionId.ToString(),
                 CorrelationId = Guid.NewGuid().ToString(),
-                Status = Messaging.Events.TaskStatus.Created,
+                Status = TaskExecutionStatus.Created,
                 TaskPluginArguments = task.TaskPluginArguments,
                 Inputs = inputs,
                 Metadata = task.Metadata

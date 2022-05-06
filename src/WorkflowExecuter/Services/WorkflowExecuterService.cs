@@ -88,7 +88,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             {
                 var task = workflowInstance.Tasks.FirstOrDefault();
 
-                if (task.Status != Status.Created)
+                if (task.Status != TaskExecutionStatus.Created)
                 {
                     _logger.TaskPreviouslyDispatched(workflowInstance.PayloadId, task.TaskId);
 
@@ -100,7 +100,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
 
                 await _messageBrokerPublisherService.Publish(TaskDispatchRoutingKey, jsonMesssage.ToMessage());
 
-                processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, Status.Dispatched);
+                processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Dispatched);
             }
 
             return processed;
@@ -146,7 +146,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                     TaskType = firstTask.Type,
                     TaskPluginArguments = firstTask.Args,
                     TaskId = firstTask.Id,
-                    Status = Status.Created,
+                    Status = TaskExecutionStatus.Created,
                     InputArtifacts = firstTask.Artifacts?.Input?.ToDictionary(),
                     OutputDirectory = $"{message.Bucket}/{workflow.Id}/{exceutionId}",
                     Metadata = { }
