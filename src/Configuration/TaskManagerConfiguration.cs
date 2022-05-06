@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.Configuration
 {
-    public class TaskManagerOptions
+    public class TaskManagerConfiguration
     {
         [ConfigurationKeyName("concurrency")]
         public uint MaximumNumberOfConcurrentJobs { get; set; } = uint.MaxValue;
@@ -23,7 +23,7 @@ namespace Monai.Deploy.WorkflowManager.Configuration
 
         public TimeSpan TaskTimeout { get => TimeSpan.FromMinutes(TaskTimeoutMinutes); }
 
-        public TaskManagerOptions()
+        public TaskManagerConfiguration()
         {
             PluginAssemblyMappings = new Dictionary<string, string>();
         }

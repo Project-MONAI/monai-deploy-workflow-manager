@@ -88,7 +88,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
             var correlationId = Guid.NewGuid().ToString();
             var message = new JsonMessage<TaskDispatchEvent>(new TaskDispatchEvent
             {
-                WorkflowId = Guid.NewGuid().ToString(),
+                WorkflowInstanceId = Guid.NewGuid().ToString(),
                 TaskId = Guid.NewGuid().ToString(),
                 ExecutionId = Guid.NewGuid().ToString(),
                 CorrelationId = correlationId,

@@ -92,7 +92,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         public override async Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken = default)
         {
-            using var loggerScope = _logger.BeginScope($"Workflow ID={Event.WorkflowId}, Task ID={Event.TaskId}, Execution ID={Event.ExecutionId}, Argo namespace={_namespace}");
+            using var loggerScope = _logger.BeginScope($"Workflow ID={Event.WorkflowInstanceId}, Task ID={Event.TaskId}, Execution ID={Event.ExecutionId}, Argo namespace={_namespace}");
 
             Workflow workflow;
             try
@@ -102,7 +102,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             catch (Exception ex)
             {
                 _logger.ErrorGeneratingWorkflow(ex);
-                return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Failed, FailureReason = FailureReason.PluginError, Errors = ex.Message };
+                return new ExecutionStatus { Status = TaskExecutionStatus.Failed, FailureReason = FailureReason.PluginError, Errors = ex.Message };
             }
 
             try
@@ -111,12 +111,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 _logger.CreatingArgoWorkflow(workflow.Metadata.GenerateName);
                 var result = await client.WorkflowService_CreateWorkflowAsync(_namespace, new WorkflowCreateRequest { Namespace = _namespace, Workflow = workflow }, cancellationToken).ConfigureAwait(false);
                 _logger.ArgoWorkflowCreated(result.Metadata.Name);
-                return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Accepted, FailureReason = FailureReason.None };
+                return new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None };
             }
             catch (Exception ex)
             {
                 _logger.ErrorCreatingWorkflow(ex);
-                return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Failed, FailureReason = FailureReason.PluginError, Errors = ex.Message };
+                return new ExecutionStatus { Status = TaskExecutionStatus.Failed, FailureReason = FailureReason.PluginError, Errors = ex.Message };
             }
         }
 
@@ -139,21 +139,21 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
                 if (Strings.ArgoFailurePhases.Contains(workflow.Status.Phase, StringComparer.OrdinalIgnoreCase))
                 {
-                    return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Failed, FailureReason = FailureReason.ExternalServiceError, Errors = workflow.Status.Message };
+                    return new ExecutionStatus { Status = TaskExecutionStatus.Failed, FailureReason = FailureReason.ExternalServiceError, Errors = workflow.Status.Message };
                 }
                 else if (workflow.Status.Phase.Equals(Strings.ArgoPhaseSucceeded, StringComparison.OrdinalIgnoreCase))
                 {
-                    return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Succeeded, FailureReason = FailureReason.None };
+                    return new ExecutionStatus { Status = TaskExecutionStatus.Succeeded, FailureReason = FailureReason.None };
                 }
                 else
                 {
-                    return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Unknown, FailureReason = FailureReason.Unknown, Errors = $"Argo status = '{workflow.Status.Phase}'. Messages = '{workflow.Status.Message}'." };
+                    return new ExecutionStatus { Status = TaskExecutionStatus.Unknown, FailureReason = FailureReason.Unknown, Errors = $"Argo status = '{workflow.Status.Phase}'. Messages = '{workflow.Status.Message}'." };
                 }
             }
             catch (Exception ex)
             {
                 _logger.ErrorCreatingWorkflow(ex);
-                return new ExecutionStatus { Status = Messaging.Events.TaskStatus.Failed, FailureReason = FailureReason.PluginError, Errors = ex.Message };
+                return new ExecutionStatus { Status = TaskExecutionStatus.Failed, FailureReason = FailureReason.PluginError, Errors = ex.Message };
             }
         }
 
@@ -170,7 +170,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     Labels = new Dictionary<string, string>
                     {
                         { Strings.TaskIdLabelSelectorName, Event.TaskId! },
-                        { Strings.WorkflowIdLabelSelectorName, Event.WorkflowId! },
+                        { Strings.WorkflowIdLabelSelectorName, Event.WorkflowInstanceId! },
                         { Strings.CorrelationIdLabelSelectorName, Event.CorrelationId! },
                         { Strings.ExecutionIdLabelSelectorName, Event.ExecutionId }
                     }

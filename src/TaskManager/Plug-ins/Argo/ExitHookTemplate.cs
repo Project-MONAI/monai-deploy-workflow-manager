@@ -76,7 +76,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         private TaskCallbackEvent GenerateTaskCallbackEvent() =>
             new()
             {
-                WorkflowId = _taskDispatchEvent.WorkflowId,
+                WorkflowInstanceId = _taskDispatchEvent.WorkflowInstanceId,
                 TaskId = _taskDispatchEvent.TaskId,
                 ExecutionId = _taskDispatchEvent.ExecutionId,
                 CorrelationId = _taskDispatchEvent.CorrelationId,

@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using Monai.Deploy.Messaging.Events;
-using TaskStatus = Monai.Deploy.Messaging.Events.TaskStatus;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.API
 {
@@ -11,7 +10,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
         /// <summary>
         /// Gets or sets the status of the execution.
         /// </summary>
-        public TaskStatus Status { get; set; } = TaskStatus.Unknown;
+        public TaskExecutionStatus Status { get; set; } = TaskExecutionStatus.Unknown;
 
         /// <summary>
         /// Gets or sets the reason of a failure.

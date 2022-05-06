@@ -285,7 +285,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _options.Value.TaskManager.MaximumNumberOfConcurrentJobs = 1;
             _testRunnerCallback
                 .Setup(p => p.GenerateExecuteTaskResult())
-                .Returns(new ExecutionStatus { Status = Messaging.Events.TaskStatus.Accepted, FailureReason = FailureReason.None });
+                .Returns(new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None });
 
             var message = GenerateTaskDispatchEvent();
             message.Body.TaskPluginType = "argo";
@@ -402,7 +402,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _options.Value.TaskManager.MaximumNumberOfConcurrentJobs = 1;
             _testRunnerCallback
                 .Setup(p => p.GenerateExecuteTaskResult())
-                .Returns(new ExecutionStatus { Status = Messaging.Events.TaskStatus.Accepted, FailureReason = FailureReason.None });
+                .Returns(new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None });
             _testRunnerCallback
                 .Setup(p => p.GenerateGetStatusResult())
                 .Throws(new Exception("error"));
@@ -473,10 +473,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _options.Value.TaskManager.MaximumNumberOfConcurrentJobs = 1;
             _testRunnerCallback
                 .Setup(p => p.GenerateExecuteTaskResult())
-                .Returns(new ExecutionStatus { Status = Messaging.Events.TaskStatus.Accepted, FailureReason = FailureReason.None });
+                .Returns(new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None });
             _testRunnerCallback
                 .Setup(p => p.GenerateGetStatusResult())
-                .Returns(new ExecutionStatus { Status = Messaging.Events.TaskStatus.Succeeded, FailureReason = FailureReason.None });
+                .Returns(new ExecutionStatus { Status = TaskExecutionStatus.Succeeded, FailureReason = FailureReason.None });
 
             var resetEvent = new CountdownEvent(2);
 
@@ -543,7 +543,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                             {
                                 CorrelationId = taskDispatchEventMessage is null ? Guid.NewGuid().ToString() : taskDispatchEventMessage.CorrelationId,
                                 ExecutionId = taskDispatchEventMessage is null ? Guid.NewGuid().ToString() : taskDispatchEventMessage.Body.ExecutionId,
-                                WorkflowId = taskDispatchEventMessage is null ? Guid.NewGuid().ToString() : taskDispatchEventMessage.Body.WorkflowId,
+                                WorkflowInstanceId = taskDispatchEventMessage is null ? Guid.NewGuid().ToString() : taskDispatchEventMessage.Body.WorkflowInstanceId,
                                 TaskId = taskDispatchEventMessage is null ? Guid.NewGuid().ToString() : taskDispatchEventMessage.Body.TaskId,
                                 Identity = Guid.NewGuid().ToString(),
                             },
@@ -561,7 +561,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                 CorrelationId = correlationId,
                                 ExecutionId = Guid.NewGuid().ToString(),
                                 TaskPluginType = "argo",
-                                WorkflowId = Guid.NewGuid().ToString(),
+                                WorkflowInstanceId = Guid.NewGuid().ToString(),
                                 TaskId = Guid.NewGuid().ToString()
                             },
                             Guid.NewGuid().ToString(),

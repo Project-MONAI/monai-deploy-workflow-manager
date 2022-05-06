@@ -21,7 +21,6 @@ using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Moq;
 using Moq.Language.Flow;
 using Xunit;
-using TaskStatus = Monai.Deploy.Messaging.Events.TaskStatus;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo;
 
@@ -116,7 +115,7 @@ public class ArgoPluginTest
         var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, message);
         var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
 
-        Assert.Equal(TaskStatus.Failed, result.Status);
+        Assert.Equal(TaskExecutionStatus.Failed, result.Status);
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
         Assert.Equal("error", result.Errors);
 
@@ -160,7 +159,7 @@ public class ArgoPluginTest
         var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, message);
         var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
 
-        Assert.Equal(TaskStatus.Failed, result.Status);
+        Assert.Equal(TaskExecutionStatus.Failed, result.Status);
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
         Assert.Equal("error", result.Errors);
 
@@ -200,7 +199,7 @@ public class ArgoPluginTest
         var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, message);
         var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
 
-        Assert.Equal(TaskStatus.Failed, result.Status);
+        Assert.Equal(TaskExecutionStatus.Failed, result.Status);
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
         Assert.Equal("error", result.Errors);
 
@@ -246,7 +245,7 @@ public class ArgoPluginTest
         var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, message);
         var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
 
-        Assert.Equal(TaskStatus.Failed, result.Status);
+        Assert.Equal(TaskExecutionStatus.Failed, result.Status);
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
         Assert.Equal($"Template '{message.TaskPluginArguments[Keys.WorkflowTemplateEntrypoint]}' cannot be found in the referenced WorkflowTmplate '{message.TaskPluginArguments[Keys.WorkflowTemplateName]}'.", result.Errors);
 
@@ -297,7 +296,7 @@ public class ArgoPluginTest
         var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, message);
         var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
 
-        Assert.Equal(TaskStatus.Accepted, result.Status);
+        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
         Assert.Equal(FailureReason.None, result.FailureReason);
         Assert.Empty(result.Errors);
 
@@ -360,7 +359,7 @@ public class ArgoPluginTest
         var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, message);
         var result = await runner.GetStatus("identity", CancellationToken.None).ConfigureAwait(false);
 
-        Assert.Equal(TaskStatus.Succeeded, result.Status);
+        Assert.Equal(TaskExecutionStatus.Succeeded, result.Status);
         Assert.Equal(FailureReason.None, result.FailureReason);
         Assert.Empty(result.Errors);
 
@@ -395,19 +394,19 @@ public class ArgoPluginTest
 
         if (phase == Strings.ArgoPhaseSucceeded)
         {
-            Assert.Equal(TaskStatus.Succeeded, result.Status);
+            Assert.Equal(TaskExecutionStatus.Succeeded, result.Status);
             Assert.Equal(FailureReason.None, result.FailureReason);
             Assert.Empty(result.Errors);
         }
         else if (Strings.ArgoFailurePhases.Contains(phase, StringComparer.OrdinalIgnoreCase))
         {
-            Assert.Equal(TaskStatus.Failed, result.Status);
+            Assert.Equal(TaskExecutionStatus.Failed, result.Status);
             Assert.Equal(FailureReason.ExternalServiceError, result.FailureReason);
             Assert.Equal("error", result.Errors);
         }
         else
         {
-            Assert.Equal(TaskStatus.Unknown, result.Status);
+            Assert.Equal(TaskExecutionStatus.Unknown, result.Status);
             Assert.Equal(FailureReason.Unknown, result.FailureReason);
             Assert.Equal($"Argo status = '{phase}'. Messages = 'error'.", result.Errors);
         }
@@ -426,7 +425,7 @@ public class ArgoPluginTest
         var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, message);
         var result = await runner.GetStatus("identity", CancellationToken.None).ConfigureAwait(false);
 
-        Assert.Equal(TaskStatus.Failed, result.Status);
+        Assert.Equal(TaskExecutionStatus.Failed, result.Status);
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
         Assert.Equal("error", result.Errors);
 
@@ -457,7 +456,7 @@ public class ArgoPluginTest
             CorrelationId = Guid.NewGuid().ToString(),
             ExecutionId = Guid.NewGuid().ToString(),
             TaskPluginType = Guid.NewGuid().ToString(),
-            WorkflowId = Guid.NewGuid().ToString(),
+            WorkflowInstanceId = Guid.NewGuid().ToString(),
             TaskId = Guid.NewGuid().ToString()
         };
 
