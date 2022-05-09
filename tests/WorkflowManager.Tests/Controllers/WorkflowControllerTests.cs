@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Contracts.Responses;
@@ -17,20 +18,22 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
     public class WorkflowsControllerTests
     {
         private readonly Mock<IWorkflowService> _mockWorkflowService;
+        private readonly Mock<ILogger<WorkflowsController>> _mockLogger;
 
         public WorkflowsControllerTests()
         {
             _mockWorkflowService = new();
+            _mockLogger = new();
         }
 
         [Fact]
         public async Task GetAsync_ValidRequest_ShouldReturnWorkflow()
         {
-            var mockWorkflow = new Workflow
+            var mockWorkflow = new WorkflowRevision
             {
                 WorkflowId = Guid.NewGuid().ToString(),
                 Revision = 1,
-                WorkflowSpec = new()
+                Workflow = new()
                 {
                     Description = "Workflow Description",
                     Name = "Workflow 1",
@@ -59,7 +62,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             response.Should().BeOfType<OkObjectResult>();
 
             var resultAsOkObjectResult = response as OkObjectResult;
-            resultAsOkObjectResult!.Value.Should().BeOfType<Workflow>();
+            resultAsOkObjectResult!.Value.Should().BeOfType<WorkflowRevision>();
             resultAsOkObjectResult.Value.Should().BeEquivalentTo(mockWorkflow);
 
             _mockWorkflowService.Verify(x => x.GetAsync(It.Is<string>(y => y == mockWorkflowId)), Times.Once);
@@ -67,13 +70,13 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Fact]
-        public async Task GetAsync_WorkflowIdIsNullOrEmpty_ShouldReturnBadRequest()
+        public async Task GetAsync_WorkflowIdIsNullOrEmpty_ShouldReturnBadRequestProblemDetails()
         {
-            var mockWorkflow = new Workflow
+            var mockWorkflow = new WorkflowRevision
             {
                 WorkflowId = Guid.NewGuid().ToString(),
                 Revision = 1,
-                WorkflowSpec = new()
+                Workflow = new()
                 {
                     Description = "Workflow Description",
                     Name = "Workflow 1",
@@ -97,7 +100,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             var response = await sut.GetAsync(null);
 
-            response.Should().BeOfType<BadRequestResult>();
+            response.Should().BeOfType<ObjectResult>();
 
             _mockWorkflowService.VerifyNoOtherCalls();
         }
@@ -107,20 +110,16 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         {
             var mockRequest = new Workflow
             {
-                WorkflowId = Guid.NewGuid().ToString(),
-                Revision = 1,
-                WorkflowSpec = new()
+                Description = "Workflow Description",
+                Name = "Workflow 1",
+                Version = "1",
+                InformaticsGateway = new()
                 {
-                    Description = "Workflow Description",
-                    Name = "Workflow 1",
-                    Version = "1",
-                    InformaticsGateway = new()
-                    {
-                        AeTitle = "The AeTitle",
-                        DataOrigins = new[] { "test 1", "test 2" },
-                        ExportDestinations = new[] { "test 1", "test 2" }
-                    },
-                    Tasks = new TaskObject[]
+                    AeTitle = "The AeTitle",
+                    DataOrigins = new[] { "test 1", "test 2" },
+                    ExportDestinations = new[] { "test 1", "test 2" }
+                },
+                Tasks = new TaskObject[]
                     {
                         new()
                         {
@@ -131,7 +130,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                             Ref = "ref"
                         }
                     }
-                }
             };
 
             var workflowId = Guid.NewGuid().ToString();
@@ -156,29 +154,24 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Fact]
-        public async Task CreateAsync_InvalidRequest_ShouldReturnBadRequest()
+        public async Task CreateAsync_InvalidRequest_ShouldReturnBadRequestProblemDetails()
         {
             var mockRequest = new Workflow
             {
-                WorkflowId = Guid.NewGuid().ToString(),
-                Revision = 1,
-                WorkflowSpec = new()
-                {
-                    Name = "", // Invalid name
-                    InformaticsGateway = new InformaticsGateway(),
-                    Tasks = new TaskObject[] { }
-                },
+                Name = "", // Invalid name
+                InformaticsGateway = new InformaticsGateway(),
+                Tasks = new TaskObject[] { }
             };
 
             var sut = BuildSut();
 
             var response = await sut.CreateAsync(mockRequest);
 
-            response.Should().BeOfType<BadRequestResult>();
+            response.Should().BeOfType<ObjectResult>();
 
             _mockWorkflowService.VerifyNoOtherCalls();
         }
 
-        private WorkflowsController BuildSut() => new(_mockWorkflowService.Object);
+        private WorkflowsController BuildSut() => new(_mockWorkflowService.Object, _mockLogger.Object);
     }
 }

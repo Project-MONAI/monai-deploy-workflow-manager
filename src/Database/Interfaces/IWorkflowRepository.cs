@@ -13,25 +13,25 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// Get Retrieves a worklow based on an Id.
         /// </summary>
         /// <param name="workflowId">The workflow Id.</param>
-        Task<Workflow> GetByWorkflowIdAsync(string workflowId);
+        Task<WorkflowRevision> GetByWorkflowIdAsync(string workflowId);
 
         /// <summary>
         /// Get Retrieves a list of worklows based on a list of Ids.
         /// </summary>
         /// <param name="workflowIds">The workflow Ids.</param>
-        Task<IList<Workflow>> GetByWorkflowsIdsAsync(IEnumerable<string> workflowIds);
+        Task<IList<WorkflowRevision>> GetByWorkflowsIdsAsync(IEnumerable<string> workflowIds);
 
         /// <summary>
         /// Get Retrieves a worklow based on an aeTitle.
         /// </summary>
         /// <param name="aeTitle">An aeTitle to retrieve.</param>
-        Task<Workflow> GetByAeTitleAsync(string aeTitle);
+        Task<WorkflowRevision> GetByAeTitleAsync(string aeTitle);
 
         /// <summary>
         /// Get Retrieves a list of worklows based on an aeTitle.
         /// </summary>
         /// <param name="aeTitle">An aeTitle to retrieve workflows for.</param>
-        Task<IList<Workflow>> GetWorkflowsByAeTitleAsync(string aeTitle);
+        Task<IList<WorkflowRevision>> GetWorkflowsByAeTitleAsync(string aeTitle);
 
         /// <summary>
         /// Creates a workflow object.

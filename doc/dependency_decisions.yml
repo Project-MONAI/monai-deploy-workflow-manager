@@ -966,3 +966,189 @@
     :why: BSD-3 - https://raw.githubusercontent.com/moq/moq4/main/License.txt
     :versions: []
     :when: 2022-04-25 09:36:00
+- - :approve
+  - AWSSDK.Core
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://aws.amazon.com/apache-2-0
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - AWSSDK.SecurityToken
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://aws.amazon.com/apache-2-0
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - AWSSDK.SecurityToken
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://aws.amazon.com/apache-2-0
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - Crc32.NET
+  - :who: Jack Schofield (JackSchofield23)
+    :why: MIT - https://github.com/force-net/Crc32.NET/blob/develop/LICENSE
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - DnsClient
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - FluentAssertions
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - Microsoft.Win32.Registry
+  - :who: Jack Schofield (JackSchofield23)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - Minio
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - Monai.Deploy.Messaging
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - Monai.Deploy.Storage
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - System.Security.Principal.Windows
+  - :who: Jack Schofield (JackSchofield23)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - System.Security.Cryptography.ProtectedData
+  - :who: Jack Schofield (JackSchofield23)
+    :why: MIT - https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - System.Security.AccessControl
+  - :who: Jack Schofield (JackSchofield23)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - System.Reactive.Linq
+  - :who: Jack Schofield (JackSchofield23)
+    :why: MIT - http://go.microsoft.com/fwlink/?LinkID=261272
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - System.Reactive
+  - :who: Jack Schofield (JackSchofield23)
+    :why: MIT - http://go.microsoft.com/fwlink/?LinkID=261272
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - System.IO.Abstractions.TestingHelpers
+  - :who: Jack Schofield (JackSchofield23)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - System.IO.Abstractions
+  - :who: Jack Schofield (JackSchofield23)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - System.Configuration.ConfigurationManager
+  - :who: Jack Schofield (JackSchofield23)
+    :why: MIT - https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - StyleCop.Analyzers
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - RestSharp
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://github.com/restsharp/RestSharp/blob/master/LICENSE.txt
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - RabbitMQ.Client
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - NUnit3TestAdapter
+  - :who: Jack Schofield (JackSchofield23)
+    :why: MIT - https://licenses.nuget.org/MIT
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - MongoDB.Bson
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - MongoDB.Bson
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - MongoDB.Driver
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - MongoDB.Driver.Core
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  - MongoDB.Libmongocrypt
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - http://www.apache.org/licenses/LICENSE-2.0
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  -  SharpCompress
+  - :who: Jack Schofield (JackSchofield23)
+    :why: MIT - https://github.com/adamhathcock/sharpcompress/blob/master/LICENSE.txt
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  -  NUnit
+  - :who: Jack Schofield (JackSchofield23)
+    :why: MIT - https://github.com/nunit/nunit/blob/master/LICENSE.txt
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  -  NUnit
+  - :who: Jack Schofield (JackSchofield23)
+    :why: MIT - https://github.com/nunit/nunit/blob/master/LICENSE.txt
+    :versions: []
+    :when: 2022-05-09 13:46:00
+- - :approve
+  -  System.Runtime.InteropServices.WindowsRuntime
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
+    :versions: []
+    :when: 2022-05-09 13:46:00

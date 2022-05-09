@@ -55,14 +55,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 Timestamp = DateTime.UtcNow
             };
 
-            var workflows = new List<Workflow>
+            var workflows = new List<WorkflowRevision>
             {
-                new Workflow
+                new WorkflowRevision
                 {
                     Id = Guid.NewGuid().ToString(),
                     WorkflowId = Guid.NewGuid().ToString(),
                     Revision = 1,
-                    WorkflowSpec = new WorkflowSpec
+                    Workflow = new Workflow
                     {
                         Name = "Workflowname",
                         Description = "Workflowdesc",
@@ -115,14 +115,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 }
             };
 
-            var workflows = new List<Workflow>
+            var workflows = new List<WorkflowRevision>
             {
-                new Workflow
+                new WorkflowRevision
                 {
                     Id = Guid.NewGuid().ToString(),
                     WorkflowId = workflowId1,
                     Revision = 1,
-                    WorkflowSpec = new WorkflowSpec
+                    Workflow = new Workflow
                     {
                         Name = "Workflowname1",
                         Description = "Workflowdesc1",
@@ -141,12 +141,12 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                         }
                     }
                 },
-                new Workflow
+                new WorkflowRevision
                 {
                     Id = Guid.NewGuid().ToString(),
                     WorkflowId = workflowId2,
                     Revision = 1,
-                    WorkflowSpec = new WorkflowSpec
+                    Workflow = new Workflow
                     {
                         Name = "Workflowname2",
                         Description = "Workflowdesc2",
@@ -200,14 +200,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 }
             };
 
-            var workflows = new List<Workflow>
+            var workflows = new List<WorkflowRevision>
             {
-                new Workflow
+                new WorkflowRevision
                 {
                     Id = Guid.NewGuid().ToString(),
                     WorkflowId = workflowId1,
                     Revision = 1,
-                    WorkflowSpec = new WorkflowSpec
+                    Workflow = new Workflow
                     {
                         Name = "Workflowname1",
                         Description = "Workflowdesc1",
@@ -226,12 +226,12 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                         }
                     }
                 },
-                new Workflow
+                new WorkflowRevision
                 {
                     Id = Guid.NewGuid().ToString(),
                     WorkflowId = workflowId2,
                     Revision = 1,
-                    WorkflowSpec = new WorkflowSpec
+                    Workflow = new Workflow
                     {
                         Name = "Workflowname2",
                         Description = "Workflowdesc2",

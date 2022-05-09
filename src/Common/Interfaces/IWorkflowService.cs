@@ -11,7 +11,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// Gets a workflow from the workflow repository.
         /// </summary>
         /// <param name="id">Id used to retrieve a Workflow.</param>
-        Task<Workflow> GetAsync(string id);
+        Task<WorkflowRevision> GetAsync(string id);
 
         /// <summary>
         /// Creates a workflow within the workflow repository.

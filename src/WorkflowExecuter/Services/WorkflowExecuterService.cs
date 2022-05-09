@@ -60,11 +60,11 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             Guard.Against.Null(message, nameof(message));
 
             var processed = true;
-            var workflows = new List<Workflow>();
+            var workflows = new List<WorkflowRevision>();
 
             workflows = message.Workflows?.Any() != true ?
-                await _workflowRepository.GetWorkflowsByAeTitleAsync(message.CalledAeTitle) as List<Workflow> :
-                await _workflowRepository.GetByWorkflowsIdsAsync(message.Workflows) as List<Workflow>;
+                await _workflowRepository.GetWorkflowsByAeTitleAsync(message.CalledAeTitle) as List<WorkflowRevision> :
+                await _workflowRepository.GetByWorkflowsIdsAsync(message.Workflows) as List<WorkflowRevision>;
 
             var workflowInstances = new List<WorkflowInstance>();
             workflows.ForEach((workflow) => workflowInstances.Add(CreateWorkFlowIntsance(message, workflow)));
@@ -95,7 +95,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                     continue;
                 }
 
-                var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(task, workflowInstance.WorkflowId, _storageConfiguration);
+                var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(task, workflowInstance.WorkflowId, message.CorrelationId, _storageConfiguration);
                 var jsonMesssage = new JsonMessage<TaskDispatchEvent>(taskDispatchEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, taskDispatchEvent.CorrelationId, Guid.NewGuid().ToString());
 
                 await _messageBrokerPublisherService.Publish(TaskDispatchRoutingKey, jsonMesssage.ToMessage());
@@ -106,11 +106,11 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             return processed;
         }
 
-        private WorkflowInstance CreateWorkFlowIntsance(WorkflowRequestEvent message, Workflow workflow)
+        private WorkflowInstance CreateWorkFlowIntsance(WorkflowRequestEvent message, WorkflowRevision workflow)
         {
             Guard.Against.Null(message, nameof(message));
             Guard.Against.Null(workflow, nameof(workflow));
-            Guard.Against.Null(workflow.WorkflowSpec, nameof(workflow.WorkflowSpec));
+            Guard.Against.Null(workflow.Workflow, nameof(workflow.Workflow));
 
             var workflowInstance = new WorkflowInstance()
             {
@@ -119,16 +119,16 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                 PayloadId = message.PayloadId.ToString(),
                 StartTime = DateTime.UtcNow,
                 Status = Status.Created,
-                AeTitle = workflow.WorkflowSpec?.InformaticsGateway?.AeTitle,
+                AeTitle = workflow.Workflow?.InformaticsGateway?.AeTitle,
                 BucketId = $"{message.Bucket}/{workflow.Id}",
                 InputMetaData = { } //Functionality to be added later
             };
 
             var tasks = new List<TaskExecution>();
             // part of this ticket just take the first task
-            if (workflow.WorkflowSpec.Tasks.Length > 0)
+            if (workflow.Workflow.Tasks.Length > 0)
             {
-                var firstTask = workflow.WorkflowSpec.Tasks.FirstOrDefault();
+                var firstTask = workflow.Workflow.Tasks.FirstOrDefault();
 
                 // check if template exists merge args.
 

@@ -17,7 +17,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             _workflowRepository = workflowRepository ?? throw new ArgumentNullException(nameof(workflowRepository));
         }
 
-        public async Task<Workflow> GetAsync(string id)
+        public async Task<WorkflowRevision> GetAsync(string id)
         {
             Guard.Against.NullOrWhiteSpace(id);
 
@@ -30,9 +30,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
         {
             Guard.Against.Null(workflow);
 
-            var createdWorkflow = await _workflowRepository.CreateAsync(workflow);
-
-            return createdWorkflow;
+            return await _workflowRepository.CreateAsync(workflow);
         }
     }
 }
