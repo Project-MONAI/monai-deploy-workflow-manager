@@ -10,10 +10,11 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
 {
     public static class EventMapper
     {
-        public static TaskDispatchEvent ToTaskDispatchEvent(TaskExecution task, string workflowId, StorageServiceConfiguration configuration)
+        public static TaskDispatchEvent ToTaskDispatchEvent(TaskExecution task, string workflowId, string correlationId, StorageServiceConfiguration configuration)
         {
             Guard.Against.Null(task, nameof(task));
             Guard.Against.Null(workflowId, nameof(workflowId));
+            Guard.Against.Null(correlationId, nameof(correlationId));
             Guard.Against.Null(configuration, nameof(configuration));
 
             var inputs = new List<Messaging.Common.Storage>();
@@ -38,7 +39,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
                 WorkflowId = workflowId,
                 TaskId = task.TaskId,
                 ExecutionId = task.ExecutionId.ToString(),
-                CorrelationId = Guid.NewGuid().ToString(),
+                CorrelationId = correlationId,
                 Status = TaskExecutionStatus.Created,
                 TaskPluginArguments = task.TaskPluginArguments,
                 Inputs = inputs,

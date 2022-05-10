@@ -46,12 +46,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
             };
 
             var workflowId = Guid.NewGuid().ToString();
+            var correlationId = Guid.NewGuid().ToString();
 
             var expectedTask = new TaskDispatchEvent
             {
                 WorkflowId = workflowId,
                 TaskId = task.TaskId,
                 ExecutionId = task.ExecutionId.ToString(),
+                CorrelationId = correlationId,
                 Status = TaskExecutionStatus.Created,
                 Inputs = new List<Messaging.Common.Storage>
                 {
@@ -71,7 +73,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 }
             };
 
-            var taskDispatch = EventMapper.ToTaskDispatchEvent(task, workflowId, configuration);
+            var taskDispatch = EventMapper.ToTaskDispatchEvent(task, workflowId, correlationId, configuration);
 
             taskDispatch.Should().BeEquivalentTo(expectedTask, options =>
                 options.Excluding(t => t.CorrelationId));

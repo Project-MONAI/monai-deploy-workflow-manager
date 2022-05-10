@@ -143,7 +143,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
                 PayloadId = Guid.NewGuid(),
                 Workflows = new List<string>(),
                 FileCount = 2,
-                CorrelationId = "CorrelationId",
+                CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.Now,
                 CalledAeTitle = "AeTitle",
                 CallingAeTitle = "CallingAeTitle",

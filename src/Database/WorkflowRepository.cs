@@ -10,12 +10,13 @@ using Monai.Deploy.WorkflowManager.Database.Options;
 using MongoDB.Driver;
 using System;
 using Ardalis.GuardClauses;
+using System.Linq;
 
 namespace Monai.Deploy.WorkflowManager.Database
 {
     public class WorkflowRepository : IWorkflowRepository
     {
-        private readonly IMongoCollection<Workflow> _workflowCollection;
+        private readonly IMongoCollection<WorkflowRevision> _workflowCollection;
 
         public WorkflowRepository(
             IMongoClient client,
@@ -27,57 +28,89 @@ namespace Monai.Deploy.WorkflowManager.Database
             }
 
             var mongoDatabase = client.GetDatabase(databaseSettings.Value.DatabaseName);
-            _workflowCollection = mongoDatabase.GetCollection<Workflow>(databaseSettings.Value.WorkflowCollectionName);
+            _workflowCollection = mongoDatabase.GetCollection<WorkflowRevision>(databaseSettings.Value.WorkflowCollectionName);
         }
 
-        public async Task<Workflow> GetByWorkflowIdAsync(string workflowId)
+        public async Task<WorkflowRevision> GetByWorkflowIdAsync(string workflowId)
         {
             Guard.Against.NullOrWhiteSpace(workflowId, nameof(workflowId));
 
             var workflow = await _workflowCollection
                 .Find(x => x.WorkflowId == workflowId)
-                .Sort(Builders<Workflow>.Sort.Descending("Revision"))
+                .Sort(Builders<WorkflowRevision>.Sort.Descending("Revision"))
                 .FirstOrDefaultAsync();
 
             return workflow;
         }
 
-        public async Task<IList<Workflow>> GetByWorkflowsIdsAsync(IEnumerable<string> workflowIds)
+        public async Task<IList<WorkflowRevision>> GetByWorkflowsIdsAsync(IEnumerable<string> workflowIds)
         {
             Guard.Against.NullOrEmpty(workflowIds, nameof(workflowIds));
 
-            var filterDef = new FilterDefinitionBuilder<Workflow>();
+            var workflows = new List<WorkflowRevision>();
+
+            var filterDef = new FilterDefinitionBuilder<WorkflowRevision>();
 
             var filter = filterDef.In(x => x.WorkflowId, workflowIds);
 
-            var workflows = await _workflowCollection
-                .Find(filter).ToListAsync();
+            workflows = await _workflowCollection
+                .Find(filter)
+                .Sort(Builders<WorkflowRevision>.Sort.Descending("Revision"))
+                .ToListAsync();
 
-            return workflows ?? new List<Workflow>();
+            workflows = workflows.GroupBy(w => w.WorkflowId).Select(g => g.First()).ToList();
+
+            return workflows;
         }
 
-        public async Task<Workflow> GetByAeTitleAsync(string aeTitle)
+        public async Task<WorkflowRevision> GetByAeTitleAsync(string aeTitle)
         {
             Guard.Against.NullOrWhiteSpace(aeTitle, nameof(aeTitle));
 
             var workflow = await _workflowCollection
-                .Find(x => x.WorkflowSpec.InformaticsGateway.AeTitle == aeTitle)
-                .Sort(Builders<Workflow>.Sort.Descending("Revision"))
+                .Find(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle)
+                .Sort(Builders<WorkflowRevision>.Sort.Descending("Revision"))
                 .FirstOrDefaultAsync();
 
             return workflow;
         }
 
-        public async Task<IList<Workflow>> GetWorkflowsByAeTitleAsync(string aeTitle)
+        public async Task<IList<WorkflowRevision>> GetWorkflowsByAeTitleAsync(string aeTitle)
         {
             Guard.Against.NullOrWhiteSpace(aeTitle, nameof(aeTitle));
 
-            var workflows = await _workflowCollection
-                .Find(x => x.WorkflowSpec.InformaticsGateway.AeTitle == aeTitle)
-                .Sort(Builders<Workflow>.Sort.Descending("Revision"))
+            var workflows = new List<WorkflowRevision>();
+
+            workflows = await _workflowCollection
+                .Find(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle)
+                .Sort(Builders<WorkflowRevision>.Sort.Descending("Revision"))
                 .ToListAsync();
 
-            return workflows ?? new List<Workflow>();
+            workflows = workflows.GroupBy(w => w.WorkflowId).Select(g => g.First()).ToList();
+
+            return workflows;
+        }
+
+        public async Task<string> CreateAsync(Workflow workflow)
+        {
+            Guard.Against.Null(workflow, nameof(workflow));
+
+            foreach (var task in workflow.Tasks)
+            {
+                task.Id = Guid.NewGuid().ToString();
+            }
+
+            var workflowRevision = new WorkflowRevision
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = Guid.NewGuid().ToString(),
+                Revision = 1,
+                Workflow = workflow
+            };
+
+            await _workflowCollection.InsertOneAsync(workflowRevision);
+
+            return workflowRevision.WorkflowId;
         }
     }
 }

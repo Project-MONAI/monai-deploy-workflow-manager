@@ -18,6 +18,9 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 
             valid &= IsAeTitleValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.CallingAeTitle, validationErrors);
             valid &= IsAeTitleValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.CalledAeTitle, validationErrors);
+            valid &= IsBucketValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.Bucket, validationErrors);
+            valid &= IsCorrelationIdValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.CorrelationId, validationErrors);
+            valid &= IsPayloadIdValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.PayloadId.ToString(), validationErrors);
 
             return valid;
         }
@@ -29,6 +32,39 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             if (!string.IsNullOrWhiteSpace(aeTitle) && aeTitle.Length <= 15) return true;
 
             validationErrors?.Add($"'{aeTitle}' is not a valid AE Title (source: {source}).");
+            return false;
+        }
+
+        public static bool IsBucketValid(string source, string bucket, IList<string> validationErrors = null)
+        {
+            Guard.Against.NullOrWhiteSpace(source, nameof(source));
+
+            if (!string.IsNullOrWhiteSpace(bucket) && bucket.Length >= 3 && bucket.Length <= 63) return true;
+
+            validationErrors?.Add($"'{bucket}' is not a valid Bucket Name: must be 3-63 characters (source: {source}).");
+
+            return false;
+        }
+
+        public static bool IsCorrelationIdValid(string source, string correlationId, IList<string> validationErrors = null)
+        {
+            Guard.Against.NullOrWhiteSpace(source, nameof(source));
+
+            if (!string.IsNullOrWhiteSpace(correlationId) && Guid.TryParse(correlationId, out var _)) return true;
+
+            validationErrors?.Add($"'{correlationId}' is not a valid {nameof(correlationId)}: must be a valid guid (source: {correlationId}).");
+
+            return false;
+        }
+
+        public static bool IsPayloadIdValid(string source, string payloadId, IList<string> validationErrors = null)
+        {
+            Guard.Against.NullOrWhiteSpace(source, nameof(source));
+
+            if (!string.IsNullOrWhiteSpace(payloadId) && Guid.TryParse(payloadId, out var _)) return true;
+
+            validationErrors?.Add($"'{payloadId}' is not a valid {nameof(payloadId)}: must be a valid guid (source: {payloadId}).");
+
             return false;
         }
     }

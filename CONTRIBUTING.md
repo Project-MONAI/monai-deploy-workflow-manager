@@ -100,6 +100,7 @@ We operate under the Apache 2.0 license. This means that we can only use package
 
 - MIT
 - Apache 2.0
+- Dotnet
 
 **Amber list** (Can possibly be used but needs approval from the maintainers)
 
