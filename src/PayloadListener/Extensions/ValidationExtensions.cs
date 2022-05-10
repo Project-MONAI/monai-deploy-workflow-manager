@@ -84,8 +84,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 
         public static bool ValueIsNullOrWhiteSpace(this string value, string source, IList<string> validationErrors)
         {
-            Guard.Against.NullOrWhiteSpace(value, nameof(value));
-
             if (string.IsNullOrWhiteSpace(value))
             {
                 validationErrors.Add($"'{value}' is not a valid value (source: {source}).");
