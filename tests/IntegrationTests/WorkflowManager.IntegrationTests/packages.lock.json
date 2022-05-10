@@ -1448,6 +1448,7 @@
           "Monai.Deploy.WorkflowManager.Database": "1.0.0",
           "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
           "Monai.Deploy.WorkflowManager.PayloadListener": "1.0.0",
+          "Monai.Deploy.WorkloadManager.WorkfowExecuter": "1.0.0",
           "Newtonsoft.Json": "13.0.1",
           "Swashbuckle.AspNetCore": "6.3.0"
         }

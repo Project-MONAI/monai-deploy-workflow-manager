@@ -19,9 +19,9 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 {
     public class EventPayloadRecieverServiceTests
     {
-        private IEventPayloadRecieverService _eventPayloadRecieverService;
+        private EventPayloadReceiverService _eventPayloadRecieverService;
         private Mock<IEventPayloadValidator> _mockEventPayloadValidator;
-        private Mock<ILogger<EventPayloadRecieverService>> _mockLogger;
+        private Mock<ILogger<EventPayloadReceiverService>> _mockLogger;
         private Mock<IMessageBrokerSubscriberService> _mockMessageBrokerSubscriberService;
         private Mock<IWorkflowExecuterService> _workflowExecuterService;
 
@@ -29,17 +29,17 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         public void Setup()
         {
             _mockEventPayloadValidator = new Mock<IEventPayloadValidator>();
-            _mockLogger = new Mock<ILogger<EventPayloadRecieverService>>();
+            _mockLogger = new Mock<ILogger<EventPayloadReceiverService>>();
             _mockMessageBrokerSubscriberService = new Mock<IMessageBrokerSubscriberService>();
             _workflowExecuterService = new Mock<IWorkflowExecuterService>();
-            _eventPayloadRecieverService = new EventPayloadRecieverService(_mockLogger.Object, _mockEventPayloadValidator.Object, _mockMessageBrokerSubscriberService.Object, _workflowExecuterService.Object);
+            _eventPayloadRecieverService = new EventPayloadReceiverService(_mockLogger.Object, _mockEventPayloadValidator.Object, _mockMessageBrokerSubscriberService.Object, _workflowExecuterService.Object);
         }
 
         [Test]
         public void RecieveWorkflowPayload_ValidateWorkFlowRequest()
         {
             var message = CreateMessageReceivedEventArgs("destination");
-            _eventPayloadRecieverService.RecieveWorkflowPayload(message);
+            _eventPayloadRecieverService.ReceiveWorkflowPayload(message);
 
             _mockEventPayloadValidator.Verify(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>()), Times.Once());
         }
@@ -52,7 +52,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 
             _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(false);
 
-            _eventPayloadRecieverService.RecieveWorkflowPayload(message);
+            _eventPayloadRecieverService.ReceiveWorkflowPayload(message);
 
             _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), false), Times.Once());
         }
@@ -67,7 +67,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 
             _workflowExecuterService.Setup(p => p.ProcessPayload(It.IsAny<WorkflowRequestEvent>())).ReturnsAsync(true);
 
-            _eventPayloadRecieverService.RecieveWorkflowPayload(message);
+            _eventPayloadRecieverService.ReceiveWorkflowPayload(message);
 
             _mockMessageBrokerSubscriberService.Verify(p => p.Acknowledge(It.IsAny<Message>()), Times.Once());
         }

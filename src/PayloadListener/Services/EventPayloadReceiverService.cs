@@ -11,10 +11,10 @@ using Monai.Deploy.WorkloadManager.WorkfowExecuter.Services;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 {
-    public class EventPayloadRecieverService : IEventPayloadRecieverService
+    public class EventPayloadReceiverService : IEventPayloadReceiverService
     {
-        public EventPayloadRecieverService(
-            ILogger<EventPayloadRecieverService> logger,
+        public EventPayloadReceiverService(
+            ILogger<EventPayloadReceiverService> logger,
             IEventPayloadValidator payloadValidator,
             IMessageBrokerSubscriberService messageBrokerSubscriberService,
             IWorkflowExecuterService workflowExecuterService)
@@ -29,11 +29,11 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 
         private IWorkflowExecuterService WorkflowExecuterService { get; }
 
-        private ILogger<EventPayloadRecieverService> Logger { get; }
+        private ILogger<EventPayloadReceiverService> Logger { get; }
 
         private readonly IMessageBrokerSubscriberService _messageSubscriber;
 
-        public async Task RecieveWorkflowPayload(MessageReceivedEventArgs message)
+        public async Task ReceiveWorkflowPayload(MessageReceivedEventArgs message)
         {
             try
             {
@@ -62,7 +62,42 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             }
             catch (Exception e)
             {
-                Logger.Exception("Failed to serialze WorkflowRequestMessage", e);
+                Logger.Exception("Failed to serialize WorkflowRequestMessage", e);
+                Logger.EventRejectedRequeue(message.Message.MessageId);
+
+                _messageSubscriber.Reject(message.Message, true);
+            }
+        }
+
+        public async Task UpdateTaskStatusPayload(MessageReceivedEventArgs message)
+        {
+            try
+            {
+                var payload = message.Message.ConvertTo<TaskUpdateEvent>();
+                var validation = PayloadValidator.ValidateTaskUpdate(payload);
+
+                if (!validation)
+                {
+                    Logger.EventRejectedNoQueue(message.Message.MessageId);
+                    _messageSubscriber.Reject(message.Message, false);
+
+                    return;
+                }
+
+                if (!await WorkflowExecuterService.ProcessTaskUpdate(payload))
+                {
+                    Logger.EventRejectedRequeue(message.Message.MessageId);
+
+                    _messageSubscriber.Reject(message.Message, true);
+
+                    return;
+                }
+
+                _messageSubscriber.Acknowledge(message.Message);
+            }
+            catch (Exception e)
+            {
+                Logger.Exception("Failed to serialize TaskUpdateMessage", e);
                 Logger.EventRejectedRequeue(message.Message.MessageId);
 
                 _messageSubscriber.Reject(message.Message, true);
