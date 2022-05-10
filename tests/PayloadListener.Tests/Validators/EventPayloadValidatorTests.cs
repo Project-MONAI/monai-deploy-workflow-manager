@@ -136,7 +136,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         }
 
         [Test]
-        public void ValidateTaskUpdateEvent_TaskUpdateEventIsValid_ReturnsTrue()
+        public void ValidateTaskUpdate_TaskUpdateEventIsValid_ReturnsTrue()
         {
             var updateEvent = new TaskUpdateEvent
             {
@@ -153,6 +153,35 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
             var result = _eventPayloadValidator.ValidateTaskUpdate(updateEvent);
 
             Assert.IsTrue(result);
+        }
+
+        [Test]
+        public void ValidateTaskUpdate_TaskUpdateEventIsInvalid_ReturnsFalse()
+        {
+            var updateEvent = new TaskUpdateEvent
+            {
+                WorkflowId = "   ",
+                TaskId = Guid.NewGuid().ToString(),
+                ExecutionId = Guid.NewGuid().ToString(),
+                Status = TaskExecutionStatus.Succeeded,
+                Reason = FailureReason.None,
+                Message = "This is a message",
+                Metadata = new Dictionary<string, object>(),
+                CorrelationId = Guid.NewGuid().ToString()
+            };
+
+            var result = _eventPayloadValidator.ValidateTaskUpdate(updateEvent);
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void ValidateTaskUpdate_TaskUpdateEventIsNull_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                _eventPayloadValidator.ValidateTaskUpdate(null);
+            });
         }
 
         private static WorkflowRequestEvent CreateWorkflowRequestMessageWithNoWorkFlow()

@@ -36,40 +36,182 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         }
 
         [Test]
-        public void RecieveWorkflowPayload_ValidateWorkFlowRequest()
+        public void ReceiveWorkflowPayload_ValidateWorkFlowRequest()
         {
+            // Arrange
             var message = CreateMessageReceivedEventArgs("destination");
+
+            // Act
             _eventPayloadRecieverService.ReceiveWorkflowPayload(message);
 
+            // Assert
             _mockEventPayloadValidator.Verify(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>()), Times.Once());
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
         }
 
         [Test]
-        public void RecieveWorkflowPayload_WorkFlowRequestIsNotValid_MessageSubscriberRejectsTheMessage()
+        public void ReceiveWorkflowPayload_WorkFlowRequestIsNotValid_MessageSubscriberRejectsTheMessage()
         {
+            // Arrange
             var message = CreateMessageReceivedEventArgs("destination");
-
 
             _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(false);
 
+            // Act
             _eventPayloadRecieverService.ReceiveWorkflowPayload(message);
 
+            // Assert
             _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), false), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+
+            _mockEventPayloadValidator.Verify(x => x.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
         }
 
         [Test]
-        public void RecieveWorkflowPayload_WorkFlowRequestIsValid_MessageSubscriberAcknowledgeTheMessage()
+        public void ReceiveWorkflowPayload_WorkFlowRequestIsValid_MessageSubscriberAcknowledgeTheMessage()
+        {
+            // Arrange
+            var message = CreateMessageReceivedEventArgs("destination");
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(true);
+            _workflowExecuterService.Setup(p => p.ProcessPayload(It.IsAny<WorkflowRequestEvent>())).ReturnsAsync(true);
+
+            // Act
+            _eventPayloadRecieverService.ReceiveWorkflowPayload(message);
+
+            // Assert
+            _mockEventPayloadValidator.Verify(x => x.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.Acknowledge(It.IsAny<Message>()), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public void ReceiveWorkflowPayload_FailsToProcessPayload_MessageIsRejectedAndRequeued()
+        {
+            // Arrange
+            var message = CreateMessageReceivedEventArgs("destination");
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(true);
+            _workflowExecuterService.Setup(p => p.ProcessPayload(It.IsAny<WorkflowRequestEvent>())).ReturnsAsync(false);
+
+            // Act
+            _eventPayloadRecieverService.ReceiveWorkflowPayload(message);
+
+            // Assert
+            _mockEventPayloadValidator.Verify(x => x.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), It.IsAny<bool>()), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public void ReceiveWorkflowPayload_ErrorIsThrown_MessageIsRejectedAndRequeued()
+        {
+            // Arrange
+            var message = CreateMessageReceivedEventArgs("destination");
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(true);
+            _workflowExecuterService.Setup(p => p.ProcessPayload(It.IsAny<WorkflowRequestEvent>())).Throws<Exception>();
+
+            // Act
+            _eventPayloadRecieverService.ReceiveWorkflowPayload(message);
+
+            // Assert
+            _mockEventPayloadValidator.Verify(x => x.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), It.IsAny<bool>()), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+        }
+
+        // ----------------------------
+
+        [Test]
+        public void UpdateTaskStatusPayload_ValidateTaskUpdate()
         {
             var message = CreateMessageReceivedEventArgs("destination");
 
+            _eventPayloadRecieverService.UpdateTaskStatusPayload(message);
 
-            _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(true);
+            _mockEventPayloadValidator.Verify(p => p.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>()), Times.Once());
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+        }
 
-            _workflowExecuterService.Setup(p => p.ProcessPayload(It.IsAny<WorkflowRequestEvent>())).ReturnsAsync(true);
+        [Test]
+        public void UpdateTaskStatusPayload_TaskUpdateIsNotValid_MessageSubscriberRejectsTheMessage()
+        {
+            var message = CreateMessageReceivedEventArgs("destination");
 
-            _eventPayloadRecieverService.ReceiveWorkflowPayload(message);
+            _mockEventPayloadValidator.Setup(p => p.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>())).Returns(false);
+
+            _eventPayloadRecieverService.UpdateTaskStatusPayload(message);
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), false), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+
+            _mockEventPayloadValidator.Verify(x => x.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public void UpdateTaskStatusPayload_TaskUpdateIsValid_MessageSubscriberAcknowledgeTheMessage()
+        {
+            var message = CreateMessageReceivedEventArgs("destination");
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>())).Returns(true);
+            _workflowExecuterService.Setup(p => p.ProcessTaskUpdate(It.IsAny<TaskUpdateEvent>())).ReturnsAsync(true);
+
+            _eventPayloadRecieverService.UpdateTaskStatusPayload(message);
 
             _mockMessageBrokerSubscriberService.Verify(p => p.Acknowledge(It.IsAny<Message>()), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+
+            _mockEventPayloadValidator.Verify(x => x.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public void UpdateTaskStatusPayload_FailsToProcessUpdateTask_MessageIsRejectedAndRequeued()
+        {
+            // Arrange
+            var message = CreateMessageReceivedEventArgs("destination");
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>())).Returns(true);
+            _workflowExecuterService.Setup(p => p.ProcessTaskUpdate(It.IsAny<TaskUpdateEvent>())).ReturnsAsync(false);
+
+            // Act
+            _eventPayloadRecieverService.UpdateTaskStatusPayload(message);
+
+            // Assert
+            _mockEventPayloadValidator.Verify(x => x.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), It.IsAny<bool>()), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public void UpdateTaskStatusPayload_ErrorIsThrown_MessageIsRejectedAndRequeued()
+        {
+            // Arrange
+            var message = CreateMessageReceivedEventArgs("destination");
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>())).Returns(true);
+            _workflowExecuterService.Setup(p => p.ProcessTaskUpdate(It.IsAny<TaskUpdateEvent>())).Throws<Exception>();
+
+            // Act
+            _eventPayloadRecieverService.UpdateTaskStatusPayload(message);
+
+            // Assert
+            _mockEventPayloadValidator.Verify(x => x.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), It.IsAny<bool>()), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
         }
 
         private static MessageReceivedEventArgs CreateMessageReceivedEventArgs(string destination)
