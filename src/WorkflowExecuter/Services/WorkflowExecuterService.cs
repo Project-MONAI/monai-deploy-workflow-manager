@@ -106,6 +106,15 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             return processed;
         }
 
+        public async Task<bool> ProcessTaskUpdate(TaskUpdateEvent message)
+        {
+            Guard.Against.Null(message, nameof(message));
+
+            var processed = await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowId, message.TaskId, message.Status);
+
+            return processed;
+        }
+
         private WorkflowInstance CreateWorkFlowIntsance(WorkflowRequestEvent message, WorkflowRevision workflow)
         {
             Guard.Against.Null(message, nameof(message));

@@ -12,5 +12,11 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
         /// </summary>
         /// <param name="payload">The workflow message event.</param>
         bool ValidateWorkflowRequest(WorkflowRequestEvent payload);
+
+        /// <summary>
+        /// Validates the task input payload from the RabbitMQ queue.
+        /// </summary>
+        /// <param name="payload">The workflow message event.</param>
+        bool ValidateTaskUpdate(TaskUpdateEvent payload);
     }
 }

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging;
@@ -283,6 +284,28 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.TaskDispatchRequest, It.IsAny<Message>()), Times.Exactly(1));
 
             Assert.True(result);
+        }
+
+        [Fact]
+        public async Task ProcessTaskUpdate_ValidTaskUpdateEvent_ReturnesTrue()
+        {
+            var updateEvent = new TaskUpdateEvent
+            {
+                WorkflowId = Guid.NewGuid().ToString(),
+                TaskId = Guid.NewGuid().ToString(),
+                ExecutionId = Guid.NewGuid().ToString(),
+                Status = TaskExecutionStatus.Succeeded,
+                Reason = FailureReason.None,
+                Message = "This is a message",
+                Metadata = new Dictionary<string, object>(),
+                CorrelationId = Guid.NewGuid().ToString()
+            };
+
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+
+            var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
+
+            response.Should().BeTrue();
         }
     }
 }

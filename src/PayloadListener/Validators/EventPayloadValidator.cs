@@ -51,5 +51,22 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
 
             return valid;
         }
+
+        public bool ValidateTaskUpdate(TaskUpdateEvent payload)
+        {
+            Guard.Against.Null(payload, nameof(payload));
+
+            var valid = true;
+            var payloadValid = payload.IsValid(out var validationErrors);
+
+            if (!payloadValid)
+            {
+                Logger.ValidationErrors(string.Join(Environment.NewLine, validationErrors));
+            }
+
+            valid &= payloadValid;
+
+            return valid;
+        }
     }
 }
