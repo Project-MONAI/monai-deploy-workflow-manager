@@ -43,8 +43,9 @@
     <ProjectReference Include="..\Contracts\Monai.Deploy.WorkflowManager.Contracts.csproj" />
     <ProjectReference Include="..\Database\Monai.Deploy.WorkflowManager.Database.csproj" />
     <ProjectReference Include="..\Common\Monai.Deploy.WorkflowManager.Common.csproj" />
-    <ProjectReference Include="..\PayloadListener\Monai.Deploy.WorkflowManager.PayloadListener.csproj" />
     <ProjectReference Include="..\Logging\Monai.Deploy.WorkflowManager.Logging.csproj" />
+    <ProjectReference Include="..\PayloadListener\Monai.Deploy.WorkflowManager.PayloadListener.csproj" />
+    <ProjectReference Include="..\WorkflowExecuter\Monai.Deploy.WorkloadManager.WorkfowExecuter.csproj" />
   </ItemGroup>
 
   <ItemGroup>
