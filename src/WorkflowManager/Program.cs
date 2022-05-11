@@ -33,7 +33,7 @@ using MongoDB.Driver;
 namespace Monai.Deploy.WorkflowManager
 {
 #pragma warning disable SA1600 // Elements should be documented
-    internal class Program
+    public class Program
     {
         protected Program()
         {
