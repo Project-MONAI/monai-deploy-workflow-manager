@@ -36,7 +36,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
 
             return new TaskDispatchEvent
             {
-                WorkflowId = workflowId,
+                WorkflowInstanceId = workflowId,
                 TaskId = task.TaskId,
                 ExecutionId = task.ExecutionId.ToString(),
                 CorrelationId = correlationId,

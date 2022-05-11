@@ -25,6 +25,20 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             return valid;
         }
 
+        public static bool IsValid(this TaskUpdateEvent taskUpdateMessage, out IList<string> validationErrors)
+        {
+            Guard.Against.Null(taskUpdateMessage, nameof(taskUpdateMessage));
+
+            validationErrors = new List<string>();
+
+            var valid = true;
+
+            valid &= !taskUpdateMessage.WorkflowInstanceId.ValueIsNullOrWhiteSpace(taskUpdateMessage.GetType().Name, validationErrors);
+            valid &= !taskUpdateMessage.TaskId.ValueIsNullOrWhiteSpace(taskUpdateMessage.GetType().Name, validationErrors);
+
+            return valid;
+        }
+
         public static bool IsAeTitleValid(string source, string aeTitle, IList<string> validationErrors)
         {
             Guard.Against.NullOrWhiteSpace(source, nameof(source));
@@ -66,20 +80,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             validationErrors?.Add($"'{payloadId}' is not a valid {nameof(payloadId)}: must be a valid guid (source: {payloadId}).");
 
             return false;
-        }
-
-        public static bool IsValid(this TaskUpdateEvent taskUpdateMessage, out IList<string> validationErrors)
-        {
-            Guard.Against.Null(taskUpdateMessage, nameof(taskUpdateMessage));
-
-            validationErrors = new List<string>();
-
-            var valid = true;
-
-            valid &= !taskUpdateMessage.WorkflowId.ValueIsNullOrWhiteSpace(taskUpdateMessage.GetType().Name, validationErrors);
-            valid &= !taskUpdateMessage.TaskId.ValueIsNullOrWhiteSpace(taskUpdateMessage.GetType().Name, validationErrors);
-
-            return valid;
         }
 
         private static bool ValueIsNullOrWhiteSpace(this string value, string source, IList<string> validationErrors)

@@ -95,11 +95,6 @@ namespace Monai.Deploy.WorkflowManager.Database
         {
             Guard.Against.Null(workflow, nameof(workflow));
 
-            foreach (var task in workflow.Tasks)
-            {
-                task.Id = Guid.NewGuid().ToString();
-            }
-
             var workflowRevision = new WorkflowRevision
             {
                 Id = Guid.NewGuid().ToString(),

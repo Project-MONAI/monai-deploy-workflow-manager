@@ -50,7 +50,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
 
             var expectedTask = new TaskDispatchEvent
             {
-                WorkflowId = workflowId,
+                WorkflowInstanceId = workflowId,
                 TaskId = task.TaskId,
                 ExecutionId = task.ExecutionId.ToString(),
                 CorrelationId = correlationId,
