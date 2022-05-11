@@ -135,7 +135,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         {
             var message = CreateMessageReceivedEventArgs("destination");
 
-            _eventPayloadRecieverService.UpdateTaskStatusPayload(message);
+            _eventPayloadRecieverService.TaskUpdatePayload(message);
 
             _mockEventPayloadValidator.Verify(p => p.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>()), Times.Once());
             _mockEventPayloadValidator.VerifyNoOtherCalls();
@@ -148,7 +148,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 
             _mockEventPayloadValidator.Setup(p => p.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>())).Returns(false);
 
-            _eventPayloadRecieverService.UpdateTaskStatusPayload(message);
+            _eventPayloadRecieverService.TaskUpdatePayload(message);
 
             _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), false), Times.Once());
             _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
@@ -165,7 +165,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
             _mockEventPayloadValidator.Setup(p => p.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>())).Returns(true);
             _workflowExecuterService.Setup(p => p.ProcessTaskUpdate(It.IsAny<TaskUpdateEvent>())).ReturnsAsync(true);
 
-            _eventPayloadRecieverService.UpdateTaskStatusPayload(message);
+            _eventPayloadRecieverService.TaskUpdatePayload(message);
 
             _mockMessageBrokerSubscriberService.Verify(p => p.Acknowledge(It.IsAny<Message>()), Times.Once());
             _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
@@ -184,7 +184,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
             _workflowExecuterService.Setup(p => p.ProcessTaskUpdate(It.IsAny<TaskUpdateEvent>())).ReturnsAsync(false);
 
             // Act
-            _eventPayloadRecieverService.UpdateTaskStatusPayload(message);
+            _eventPayloadRecieverService.TaskUpdatePayload(message);
 
             // Assert
             _mockEventPayloadValidator.Verify(x => x.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>()), Times.Once);
@@ -204,7 +204,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
             _workflowExecuterService.Setup(p => p.ProcessTaskUpdate(It.IsAny<TaskUpdateEvent>())).Throws<Exception>();
 
             // Act
-            _eventPayloadRecieverService.UpdateTaskStatusPayload(message);
+            _eventPayloadRecieverService.TaskUpdatePayload(message);
 
             // Assert
             _mockEventPayloadValidator.Verify(x => x.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>()), Times.Once);

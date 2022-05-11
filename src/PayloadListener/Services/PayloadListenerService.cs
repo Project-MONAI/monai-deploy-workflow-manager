@@ -48,7 +48,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            TaskStatusUpdateRoutingKey = configuration.Value.Messaging.Topics.UpdateTaskStatus;
+            TaskStatusUpdateRoutingKey = configuration.Value.Messaging.Topics.TaskUpdateRequest;
             WorkflowRequestRoutingKey = configuration.Value.Messaging.Topics.WorkflowRequest;
             Concurrency = 2;
 
@@ -95,7 +95,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         {
             Task.Run(async () =>
             {
-                await _eventPayloadListenerService.UpdateTaskStatusPayload(eventArgs);
+                await _eventPayloadListenerService.TaskUpdatePayload(eventArgs);
             }).ConfigureAwait(false);
         }
 
