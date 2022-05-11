@@ -69,7 +69,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             }
         }
 
-        public async Task UpdateTaskStatusPayload(MessageReceivedEventArgs message)
+        public async Task TaskUpdatePayload(MessageReceivedEventArgs message)
         {
             try
             {

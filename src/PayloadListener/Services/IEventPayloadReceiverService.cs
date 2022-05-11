@@ -19,6 +19,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         /// then goes on to update the workflow instance database record
         /// </summary>
         /// <param name="message">The workflow message event.</param>
-        Task UpdateTaskStatusPayload(MessageReceivedEventArgs message);
+        Task TaskUpdatePayload(MessageReceivedEventArgs message);
     }
 }
