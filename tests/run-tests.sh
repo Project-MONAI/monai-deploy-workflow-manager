@@ -12,10 +12,9 @@
 #!/bin/bash
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
-TOP="$(git rev-parse --show-toplevel 2> /dev/null || readlink -f ${SCRIPT_DIR}/..)"
+TOP="$(git rev-parse --show-toplevel 2>/dev/null || readlink -f ${SCRIPT_DIR}/..)"
 RESULTS_DIR=$SCRIPT_DIR/results
 VERBOSITY=normal
-
 
 if [ "$CI" = "true" ]; then
     VERBOSITY=minimal
@@ -32,7 +31,6 @@ if [ ! -z ${CI} ]; then
     sudo apt-get update
     sudo apt-get install -y dcmtk sqlite3
 fi
-
 
 if [ -d "$RESULTS_DIR" ]; then
     rm -r "$RESULTS_DIR"
