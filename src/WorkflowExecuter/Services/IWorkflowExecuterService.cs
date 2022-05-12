@@ -12,5 +12,11 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
         /// </summary>
         /// <param name="message">The workflow request message event.</param>
         Task<bool> ProcessPayload(WorkflowRequestEvent message);
+
+        /// <summary>
+        /// Processes the task update payload and updates the workflow instance.
+        /// </summary>
+        /// <param name="message">The workflow request message event.</param>
+        Task<bool> ProcessTaskUpdate(TaskUpdateEvent message);
     }
 }

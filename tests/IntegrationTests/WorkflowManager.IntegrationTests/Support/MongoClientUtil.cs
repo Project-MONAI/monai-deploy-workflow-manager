@@ -51,9 +51,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             return WorkflowInstanceCollection.Find(x => x.PayloadId == payloadId).FirstOrDefault();
         }
 
-        public WorkflowInstance GetWorkflowInstanceById(string Id)
+        public WorkflowInstance GetWorkflowInstanceById(string id)
         {
-            return WorkflowInstanceCollection.Find(x => x.Id == Id).FirstOrDefault();
+            return WorkflowInstanceCollection.Find(x => x.Id == id).FirstOrDefault();
         }
 
         public List<WorkflowInstance> GetWorkflowInstances(string payloadId)
