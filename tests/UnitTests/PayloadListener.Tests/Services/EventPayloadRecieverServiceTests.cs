@@ -131,7 +131,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         // ----------------------------
 
         [Test]
-        public void UpdateTaskStatusPayload_ValidateTaskUpdate()
+        public void TaskUpdatePayload_ValidateTaskUpdate()
         {
             var message = CreateMessageReceivedEventArgs("destination");
 
@@ -142,7 +142,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         }
 
         [Test]
-        public void UpdateTaskStatusPayload_TaskUpdateIsNotValid_MessageSubscriberRejectsTheMessage()
+        public void TaskUpdatePayload_TaskUpdateIsNotValid_MessageSubscriberRejectsTheMessage()
         {
             var message = CreateMessageReceivedEventArgs("destination");
 
@@ -158,7 +158,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         }
 
         [Test]
-        public void UpdateTaskStatusPayload_TaskUpdateIsValid_MessageSubscriberAcknowledgeTheMessage()
+        public void TaskUpdatePayload_TaskUpdateIsValid_MessageSubscriberAcknowledgeTheMessage()
         {
             var message = CreateMessageReceivedEventArgs("destination");
 
@@ -175,7 +175,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         }
 
         [Test]
-        public void UpdateTaskStatusPayload_FailsToProcessUpdateTask_MessageIsRejectedAndRequeued()
+        public void TaskUpdatePayload_FailsToProcessUpdateTask_MessageIsRejectedAndRequeued()
         {
             // Arrange
             var message = CreateMessageReceivedEventArgs("destination");
@@ -195,7 +195,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         }
 
         [Test]
-        public void UpdateTaskStatusPayload_ErrorIsThrown_MessageIsRejectedAndRequeued()
+        public void TaskUpdatePayload_ErrorIsThrown_MessageIsRejectedAndRequeued()
         {
             // Arrange
             var message = CreateMessageReceivedEventArgs("destination");
