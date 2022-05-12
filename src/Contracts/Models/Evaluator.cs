@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System;
-using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
@@ -31,25 +31,73 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
     public class ConditionalGroup
     {
-        private readonly List<string> _logicalOperators = new List<string> { "==", "!=", ">", "<", "=>", "=<" };
+        public Keywords Keyword { get; set; }
 
-        Keywords Keyword { get; set; }
+        public Conditional LeftGroup { get; set; }
 
-        public int LogicalOperator { get; set; }
+        public Conditional RightGroup { get; set; }
+
+        public void SetGroups(string left, string right, Keywords keyword)
+        {
+            LeftGroup = Conditional.Create(left);
+            RightGroup = Conditional.Create(right);
+            Keyword = keyword;
+        }
+
+        public void Parse(string input, int currentIndex = 0)
+        {
+            // "{{context.dicom.tags[('0010','0040')]}} == 'F' AND {{context.executions.body_part_identifier.result.body_part}} == 'leg'"
+
+            var findAnds = new Regex("(and|AND)");
+            var foundAnds = findAnds.Matches(input);
+            var findOrs = new Regex("(or|OR)");
+            var foundOrs = findOrs.Matches(input);
+
+            if (foundAnds.Count == 1 && foundOrs.Count == 0)
+            {
+                var splitByAnd = input.Split("AND");
+                SetGroups(splitByAnd[0], splitByAnd[1], Keywords.AND);
+            }
+            if (foundAnds.Count == 0 && foundOrs.Count == 1)
+            {
+                var splitByOr = input.Split("OR");
+                SetGroups(splitByOr[0], splitByOr[1], Keywords.OR);
+            }
+            if (foundAnds.Count == 0 && foundOrs.Count == 0)
+            {
+                var splitByOr = input.Split("OR");
+                SetGroups(splitByOr[0], splitByOr[1], Keywords.SINGULAR);
+            }
+
+        }
+
+        public static ConditionalGroup Create(string input, int currentIndex = 0)
+        {
+            var conditionalGroup = new ConditionalGroup();
+            conditionalGroup.Parse(input.Trim());
+
+            return conditionalGroup;
+        }
+    }
+
+
+    public class Conditional
+    {
+        //private readonly List<string> _logicalOperators = new List<string> { "==", "!=", ">", "<", "=>", "=<" };
+
+
+        public string LogicalOperator { get; set; }
 
         public string LeftParameter { get; set; }
 
         public string RightParameter { get; set; }
 
-        public ConditionalGroup LeftGroup { get; set; }
-
-        public ConditionalGroup RightGroup { get; set; }
 
         public bool Parse(string input, int currentIndex = 0)
         {
             //input = "'F' == {{context.dicom.tags[('0010','0040')]}}";
             //"AND {{context.dicom.tags[('0010','0040')]}} == 'F'"
-            if (currentIndex == input.Length)
+            if (currentIndex >= input.Length)
             {
                 return true;
             }
@@ -75,10 +123,11 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
                     currentIndex = idxClosingBracket;
                     break;
                 case '\'':
-                    var idxClosingQuote = input.IndexOf('\'', currentIndex) + 1;
+                    var nextIndex = currentIndex + 1;
+                    var idxClosingQuote = input.IndexOf('\'', nextIndex);
                     if (RightParameter is null)
                     {
-                        RightParameter = nextChar.ToString();
+                        RightParameter = input[nextIndex..idxClosingQuote];
                         currentIndex = idxClosingQuote;
                     }
                     break;
@@ -86,47 +135,48 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
                 case '=':
                     if (nextChar == '=')
                     {
-                        LogicalOperator = _logicalOperators.IndexOf($"{currentChar}{nextChar}");
+                        LogicalOperator = $"{currentChar}{nextChar}";
                         currentIndex += 1;
                     }
                     break;
                 case '<':
                 case '>':
-                    LogicalOperator = _logicalOperators.IndexOf(currentChar.ToString());
+                    LogicalOperator = currentChar.ToString();
                     break;
-                case 'A':
-                case 'a':
-                    if (string.IsNullOrEmpty(LeftParameter))
-                    {
-                        throw new ArgumentException($"No left hand parameter at index: {currentIndex}");
-                    }
-                    return Parse(input, currentIndex + 1);
-                    break;
-                case 'N':
-                case 'n':
-                    if (previousChar == 'a' || previousChar == 'A')
-                    {
-                        return Parse(input, currentIndex + 1);
-                    }
-                    break;
-                case 'D':
-                case 'd':
-                    if (previousChar == 'n' || previousChar == 'N')
-                    {
-                        Keyword = Keywords.AND;
-                    }
-                    break;
+                //case 'A':
+                //case 'a':
+                //    if (string.IsNullOrEmpty(LeftParameter))
+                //    {
+                //        throw new ArgumentException($"No left hand parameter at index: {currentIndex}");
+                //    }
+                //    return Parse(input, currentIndex + 1);
+                //    break;
+                //case 'N':
+                //case 'n':
+                //    if (previousChar == 'a' || previousChar == 'A')
+                //    {
+                //        return Parse(input, currentIndex + 1);
+                //    }
+                //    break;
+                //case 'D':
+                //case 'd':
+                //    if (previousChar == 'n' || previousChar == 'N')
+                //    {
+                //        Keyword = Keywords.AND;
+                //    }
+                //    break;
                 default:
                     break;
             }
             return Parse(input, currentIndex + 1);
         }
 
-        public static ConditionalGroup Create(string input, int currentIndex = 0)
+        // TODO: Probably only used by testing do we need to keep it? probably not
+        public static Conditional Create(string input, int currentIndex = 0)
         {
             //input = "{{context.dicom.tags[('0010','0040')]}} == 'F'";
-            var conditionalGroup = new ConditionalGroup();
-            conditionalGroup.Parse(input);
+            var conditionalGroup = new Conditional();
+            conditionalGroup.Parse(input.Trim());
 
             return conditionalGroup;
 
@@ -140,8 +190,9 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
     /// <summary>
     /// Group Keywords or Operators
     /// </summary>
-    enum Keywords
+    public enum Keywords
     {
+        SINGULAR,
         AND,
         OR,
     }
