@@ -67,7 +67,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                 await _workflowRepository.GetByWorkflowsIdsAsync(message.Workflows) as List<WorkflowRevision>;
 
             var workflowInstances = new List<WorkflowInstance>();
-            workflows.ForEach((workflow) => workflowInstances.Add(CreateWorkFlowIntsance(message, workflow)));
+            workflows.ForEach((workflow) => workflowInstances.Add(CreateWorkFlowInstance(message, workflow)));
 
             var existingInstances = await _workflowInstanceRepository.GetByWorkflowsIdsAsync(workflowInstances.Select(w => w.WorkflowId).ToList());
             workflowInstances.RemoveAll(i => existingInstances.ToList().Exists(e => e.WorkflowId == i.WorkflowId && e.PayloadId == i.PayloadId));
@@ -106,7 +106,16 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             return processed;
         }
 
-        private WorkflowInstance CreateWorkFlowIntsance(WorkflowRequestEvent message, WorkflowRevision workflow)
+        public async Task<bool> ProcessTaskUpdate(TaskUpdateEvent message)
+        {
+            Guard.Against.Null(message, nameof(message));
+
+            var processed = await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowId, message.TaskId, message.Status);
+
+            return processed;
+        }
+
+        private WorkflowInstance CreateWorkFlowInstance(WorkflowRequestEvent message, WorkflowRevision workflow)
         {
             Guard.Against.Null(message, nameof(message));
             Guard.Against.Null(workflow, nameof(workflow));

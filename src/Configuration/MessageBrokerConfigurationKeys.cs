@@ -27,5 +27,12 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         /// </summary>
         [ConfigurationKeyName("exportRequestPrefix")]
         public string ExportRequestPrefix { get; set; } = "md.export.request";
+
+        /// <summary>
+        /// Gets or sets the topic for publishing task update requests.
+        /// Defaults to `md.tasks.update`.
+        /// </summary>
+        [ConfigurationKeyName("taskUpdate")]
+        public string TaskUpdateRequest { get; set; } = "md.tasks.update";
     }
 }
