@@ -28,6 +28,8 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
 
         private static RabbitConsumer? TaskDispatchConsumer { get; set; }
 
+        private static RabbitPublisher? TaskUpdatePublisher { get; set; }
+
         private static MongoClientUtil? MongoClient { get; set; }
 
         private IObjectContainer ObjectContainer { get; set; }
@@ -62,6 +64,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
 
             WorkflowPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
             TaskDispatchConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            TaskUpdatePublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
             MongoClient = new MongoClientUtil();
             WebAppFactory.SetupWorkflowManger();
         }
@@ -108,6 +111,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         {
             ObjectContainer.RegisterInstanceAs(WorkflowPublisher, "WorkflowPublisher");
             ObjectContainer.RegisterInstanceAs(TaskDispatchConsumer, "TaskDispatchConsumer");
+            ObjectContainer.RegisterInstanceAs(TaskUpdatePublisher, "TaskUpdatePublisher");
             ObjectContainer.RegisterInstanceAs(MongoClient);
         }
 
