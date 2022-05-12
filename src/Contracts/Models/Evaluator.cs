@@ -29,15 +29,13 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         }
     }
 
-
-
-
-
     public class ConditionalGroup
     {
         private readonly List<string> _logicalOperators = new List<string> { "==", "!=", ">", "<", "=>", "=<" };
 
         Keywords Keyword { get; set; }
+
+        public int LogicalOperator { get; set; }
 
         public string LeftParameter { get; set; }
 
@@ -47,36 +45,64 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         public ConditionalGroup RightGroup { get; set; }
 
-        public void Parse(string input, int currentIndex = 0)
+        public bool Parse(string input, int currentIndex = 0)
         {
             //input = "'F' == {{context.dicom.tags[('0010','0040')]}}";
             //"AND {{context.dicom.tags[('0010','0040')]}} == 'F'"
-            switch (input)
+            var currentChar = input[currentIndex];
+            char? previousChar = null;
+            char? nextChar = null;
+
+            if (currentIndex != 0)
             {
-                case "{":
-                    var idxClosingBracket = input.IndexOf('}') + 1;
+                previousChar = input[currentIndex - 1];
+            }
+            if (currentIndex < input.Length - 1)
+            {
+                nextChar = input[currentIndex + 1];
+            }
+
+            switch (currentChar)
+            {
+                case '{':
+                    var idxClosingBracket = input.IndexOf('}') + 2;
                     LeftParameter = input[currentIndex..idxClosingBracket];
+                    currentIndex = idxClosingBracket;
                     break;
-                case "'":
-                    var idxClosingQuote = input.IndexOf('\'') + 1;
-                    RightParameter = input[currentIndex..idxClosingQuote];
-                    break;
-                case "A":
-                case "a":
-                    Parse(input, currentIndex + 1);
-                    break;
-                case "N":
-                case "n":
-                    var npreviousChar = input[currentIndex - 1];
-                    if (npreviousChar == 'a' || npreviousChar == 'A')
+                case '\'':
+                    var idxClosingQuote = input.IndexOf('\'', currentIndex) + 1;
+                    if (RightParameter is null)
                     {
-                        Parse(input, currentIndex + 1);
+                        RightParameter = nextChar.ToString();
+                    }
+                    currentIndex = idxClosingQuote;
+                    break;
+                case '!':
+                case '=':
+                    if (nextChar == '=')
+                    {
+                        LogicalOperator = _logicalOperators.IndexOf($"{currentChar}{nextChar}");
+                        currentIndex += 1;
                     }
                     break;
-                case "D":
-                case "d":
-                    var dpreviousChar = input[currentIndex - 1];
-                    if (dpreviousChar == 'n' || dpreviousChar == 'N')
+                case '<':
+                case '>':
+                    LogicalOperator = _logicalOperators.IndexOf(currentChar.ToString());
+                    break;
+                case 'A':
+                case 'a':
+                    return Parse(input, currentIndex + 1);
+                    break;
+                case 'N':
+                case 'n':
+                    if (previousChar == 'a' || previousChar == 'A')
+                    {
+                        return Parse(input, currentIndex + 1);
+                    }
+                    break;
+                case 'D':
+                case 'd':
+                    if (previousChar == 'n' || previousChar == 'N')
                     {
                         Keyword = Keywords.AND;
                     }
@@ -84,11 +110,16 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
                 default:
                     break;
             }
+            if (currentIndex == input.Length)
+            {
+                return true;
+            }
+            return Parse(input, currentIndex + 1);
         }
 
         public static ConditionalGroup Create(string input, int currentIndex = 0)
         {
-            input = "{{context.dicom.tags[('0010','0040')]}} == 'F'";
+            //input = "{{context.dicom.tags[('0010','0040')]}} == 'F'";
             var conditionalGroup = new ConditionalGroup();
             conditionalGroup.Parse(input);
 
