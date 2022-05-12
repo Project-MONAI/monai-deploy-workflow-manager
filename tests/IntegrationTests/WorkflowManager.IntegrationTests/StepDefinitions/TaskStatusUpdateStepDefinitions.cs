@@ -22,8 +22,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             ScenarioContext = scenarioContext;
         }
 
-        [When(@"I publish a Task Update Message <taskUpdateMessage>")]
-        public void WhenIPublishATaskUpdateMessageTaskUpdateMessage()
+        [When(@"I publish a Task Update Message (.*) with status (.*)")]
+        public void WhenIPublishATaskUpdateMessageTaskUpdateMessage(string updateMessage, string updateStatus)
         {
             throw new PendingStepException();
         }
@@ -34,5 +34,12 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             var workflowIntsance = ScenarioContext["WorkflowInstance"];
             throw new PendingStepException();
         }
+
+        [Then(@"I can see the status of the Task is not updated")]
+        public void ThenICanSeeTheStatusOfTheTaskIsNotUpdated()
+        {
+            throw new PendingStepException();
+        }
+
     }
 }
