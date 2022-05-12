@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
+using System;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Xunit;
 
@@ -23,9 +24,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
 
         [Theory]
         [InlineData("{{context.dicom.tags[('0010','0040')]}}", "F", "{{context.dicom.tags[('0010','0040')]}} == 'F'")]
-        //[InlineData(-4, -6, -10)]
-        //[InlineData(-2, 2, 0)]
-        //[InlineData(int.MinValue, -1, int.MaxValue)]
         public void ConditionalGroup_CreatesAndEvaluates(string expectedLeftParam, string expectedRightParam, string input)
         {
             var conditional = ConditionalGroup.Create(input);
@@ -34,6 +32,13 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
 
             Assert.Equal(expectedLeftParam, leftParameter);
             Assert.Equal(expectedRightParam, rightParameter);
+        }
+
+        [Theory]
+        [InlineData("AND {{context.dicom.tags[('0010','0040')]}} == 'F'", "No left hand parameter at index: 0")]
+        public void ConditionalGroup_CreatesAndEvaluates_ErrorsOnInvalidInput(string input, string expectedErrorMessage)
+        {
+            Assert.Throws<ArgumentException>(expectedErrorMessage, () => ConditionalGroup.Create(input));
         }
     }
 }

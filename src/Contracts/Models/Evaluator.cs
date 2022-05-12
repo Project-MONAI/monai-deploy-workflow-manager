@@ -49,6 +49,11 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         {
             //input = "'F' == {{context.dicom.tags[('0010','0040')]}}";
             //"AND {{context.dicom.tags[('0010','0040')]}} == 'F'"
+            if (currentIndex == input.Length)
+            {
+                return true;
+            }
+
             var currentChar = input[currentIndex];
             char? previousChar = null;
             char? nextChar = null;
@@ -74,8 +79,8 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
                     if (RightParameter is null)
                     {
                         RightParameter = nextChar.ToString();
+                        currentIndex = idxClosingQuote;
                     }
-                    currentIndex = idxClosingQuote;
                     break;
                 case '!':
                 case '=':
@@ -91,6 +96,10 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
                     break;
                 case 'A':
                 case 'a':
+                    if (string.IsNullOrEmpty(LeftParameter))
+                    {
+                        throw new ArgumentException($"No left hand parameter at index: {currentIndex}");
+                    }
                     return Parse(input, currentIndex + 1);
                     break;
                 case 'N':
@@ -109,10 +118,6 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
                     break;
                 default:
                     break;
-            }
-            if (currentIndex == input.Length)
-            {
-                return true;
             }
             return Parse(input, currentIndex + 1);
         }
