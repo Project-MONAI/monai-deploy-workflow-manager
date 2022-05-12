@@ -26,6 +26,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.POCO
             public static string TaskCallbackQueue { get; set; }
 
             public static string WorkflowCompleteQueue { get; set; }
+
+            public static string TaskUpdateQueue { get; set; }
         }
 
         public static class MongoConfig

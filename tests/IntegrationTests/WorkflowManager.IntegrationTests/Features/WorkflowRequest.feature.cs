@@ -340,7 +340,7 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Given("I have a clinical workflow Multi_Request_Workflow_Created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 57
-    testRunner.And("I have an existing Workflow Instance Existing_WFI_Created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I have a Workflow Instance Existing_WFI_Created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 58
     testRunner.When("I publish a Workflow Request Message Multi_WF_Created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -388,7 +388,7 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Given("I have a clinical workflow Multi_Request_Workflow_Dispatched", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 64
-    testRunner.And("I have an existing Workflow Instance Existing_WFI_Dispatched", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I have a Workflow Instance Existing_WFI_Dispatched", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 65
     testRunner.When("I publish a Workflow Request Message Multi_WF_Dispatched", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");

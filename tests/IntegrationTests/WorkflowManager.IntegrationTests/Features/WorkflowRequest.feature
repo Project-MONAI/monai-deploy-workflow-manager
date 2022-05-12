@@ -54,14 +54,14 @@ Scenario: Publish an invalid workflow request which does not create a workflow i
 
 Scenario: Publish a workflow request with the same payloadId for a Workflow Instance which has not been dispatched
     Given I have a clinical workflow Multi_Request_Workflow_Created
-    And I have an existing Workflow Instance Existing_WFI_Created
+    And I have a Workflow Instance Existing_WFI_Created
     When I publish a Workflow Request Message Multi_WF_Created
     Then I can see an additional Workflow Instance is not created
     And 1 Task Dispatch event is published
 
 Scenario: Publish a workflow request with the same payloadId for a Workflow Instance which has been dispatched
     Given I have a clinical workflow Multi_Request_Workflow_Dispatched
-    And I have an existing Workflow Instance Existing_WFI_Dispatched
+    And I have a Workflow Instance Existing_WFI_Dispatched
     When I publish a Workflow Request Message Multi_WF_Dispatched
     Then I can see an additional Workflow Instance is not created
     And A Task Dispatch event is not published
