@@ -93,7 +93,7 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         public string RightParameter { get; set; }
 
 
-        public bool Parse(string input, int currentIndex = 0)
+        public bool Parse(ReadOnlySpan<char> input, int currentIndex = 0)
         {
             //input = "'F' == {{context.dicom.tags[('0010','0040')]}}";
             //"AND {{context.dicom.tags[('0010','0040')]}} == 'F'"
@@ -102,37 +102,35 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
                 return true;
             }
 
-            var currentChar = input[currentIndex];
-            char? previousChar = null;
-            char? nextChar = null;
+            var isAnd = input.Slice(0, 3).ToString().ToUpper() == "AND";
+            var isOr = input.Slice(0, 2).ToString().ToUpper() == "OR";
+            if (isAnd || isOr)
+            {
+                throw new ArgumentException($"No left hand parameter at index: {0}");
+            }
 
-            if (currentIndex != 0)
-            {
-                previousChar = input[currentIndex - 1];
-            }
-            if (currentIndex < input.Length - 1)
-            {
-                nextChar = input[currentIndex + 1];
-            }
+            var currentChar = input[currentIndex];
 
             switch (currentChar)
             {
                 case '{':
                     var idxClosingBracket = input.IndexOf('}') + 2;
-                    LeftParameter = input[currentIndex..idxClosingBracket];
+                    LeftParameter = input.Slice(currentIndex, idxClosingBracket).ToString(); //[currentIndex..idxClosingBracket];
                     currentIndex = idxClosingBracket;
                     break;
                 case '\'':
                     var nextIndex = currentIndex + 1;
-                    var idxClosingQuote = input.IndexOf('\'', nextIndex);
+                    var lengthTillClosingQuote = input.Slice(nextIndex).IndexOf('\'');
                     if (RightParameter is null)
                     {
-                        RightParameter = input[nextIndex..idxClosingQuote];
-                        currentIndex = idxClosingQuote;
+                        RightParameter = input.Slice(nextIndex, lengthTillClosingQuote).ToString(); //[nextIndex..idxClosingQuote];
+                        currentIndex = nextIndex + lengthTillClosingQuote;
                     }
                     break;
                 case '!':
                 case '=':
+                    var nextChar = input[currentIndex + 1];
+
                     if (nextChar == '=')
                     {
                         LogicalOperator = $"{currentChar}{nextChar}";
@@ -143,28 +141,6 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
                 case '>':
                     LogicalOperator = currentChar.ToString();
                     break;
-                //case 'A':
-                //case 'a':
-                //    if (string.IsNullOrEmpty(LeftParameter))
-                //    {
-                //        throw new ArgumentException($"No left hand parameter at index: {currentIndex}");
-                //    }
-                //    return Parse(input, currentIndex + 1);
-                //    break;
-                //case 'N':
-                //case 'n':
-                //    if (previousChar == 'a' || previousChar == 'A')
-                //    {
-                //        return Parse(input, currentIndex + 1);
-                //    }
-                //    break;
-                //case 'D':
-                //case 'd':
-                //    if (previousChar == 'n' || previousChar == 'N')
-                //    {
-                //        Keyword = Keywords.AND;
-                //    }
-                //    break;
                 default:
                     break;
             }

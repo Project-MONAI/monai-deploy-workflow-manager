@@ -26,8 +26,18 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
         }
 
         [Theory]
-        [InlineData("{{context.dicom.tags[('0010','0040')]}}", "F", "{{context.executions.body_part_identifier.result.body_part}}", "leg", "{{context.dicom.tags[('0010','0040')]}} == 'F' AND {{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
-        [InlineData("{{context.dicom.tags[('0010','0040')]}}", "F", "{{context.executions.body_part_identifier.result.body_part}}", "leg", "{{context.dicom.tags[('0010','0040')]}} == 'F' OR {{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
+        [InlineData(
+            "{{context.dicom.tags[('0010','0040')]}}",
+            "F",
+            "{{context.executions.body_part_identifier.result.body_part}}",
+            "leg",
+            "{{context.dicom.tags[('0010','0040')]}} == 'F' AND {{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
+        [InlineData(
+            "{{context.dicom.tags[('0010','0040')]}}",
+            "F",
+            "{{context.executions.body_part_identifier.result.body_part}}",
+            "leg",
+            "{{context.dicom.tags[('0010','0040')]}} == 'F' OR {{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
         public void ConditionalGroup_Creates_HasLeftAndRightGroupsWithValues(string leftGroupLeftParam,
                                                                              string leftGroupRightParam,
                                                                              string rightGroupLeftParam,
@@ -37,6 +47,11 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
             var conditionalGroup = ConditionalGroup.Create(input);
             Assert.NotNull(conditionalGroup.LeftGroup);
             Assert.NotNull(conditionalGroup.RightGroup);
+
+            Assert.Equal(leftGroupLeftParam, conditionalGroup.LeftGroup.LeftParameter);
+            Assert.Equal(leftGroupRightParam, conditionalGroup.LeftGroup.RightParameter);
+            Assert.Equal(rightGroupLeftParam, conditionalGroup.RightGroup.LeftParameter);
+            Assert.Equal(rightGroupRightParam, conditionalGroup.RightGroup.RightParameter);
         }
 
         //[InlineData(false, "AND {{context.dicom.tags[('0010','0040')]}} == 'F'")]
