@@ -9,6 +9,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [Theory]
         [InlineData("{{context.dicom.tags[('0010','0040')]}}", "F", "{{context.dicom.tags[('0010','0040')]}} == 'F'")]
         [InlineData("{{context.executions.body_part_identifier.result.body_part}}", "leg", "{{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
+        [InlineData("F", "F", "'F' == 'F'")]
+        [InlineData("F", "{{context.dicom.tags[('0010','0040')]}}", "'F' == {{context.dicom.tags[('0010','0040')]}}")]
         public void Conditional_CreatesAndEvaluates(string expectedLeftParam, string expectedRightParam, string input)
         {
             var conditional = Conditional.Create(input);
@@ -22,8 +24,9 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [Theory]
         [InlineData("AND {{context.dicom.tags[('0010','0040')]}} == 'F'", "No left hand parameter at index: 0")]
         [InlineData(" AND {{context.dicom.tags[('0010','0040')]}} == 'F'", "No left hand parameter at index: 0")]
-        //[InlineData("OR {{context.dicom.tags[('0010','0040')]}} == 'F'", "No left hand parameter at index: 0")]
-        public void Conditional_CreatesAndEvaluates_ErrorsOnInvalidInput(string input, string expectedErrorMessage)
+        [InlineData("OR {{context.dicom.tags[('0010','0040')]}} == 'F'", "No left hand parameter at index: 0")]
+        [InlineData(" OR {{context.dicom.tags[('0010','0040')]}} == 'F'", "No left hand parameter at index: 0")]
+        public void Conditional_WhenGivenInvalidInput_ShouldThrowErrors(string input, string expectedErrorMessage)
         {
             var exception = Assert.Throws<ArgumentException>(() => Conditional.Create(input));
 

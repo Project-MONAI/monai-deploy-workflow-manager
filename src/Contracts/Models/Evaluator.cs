@@ -1,8 +1,6 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
-using System;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
@@ -20,4 +18,5 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         [JsonProperty(PropertyName = "dicom")]
         public ExecutionContext Dicom { get; set; }
+    }
 }

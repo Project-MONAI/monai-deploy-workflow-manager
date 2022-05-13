@@ -1,18 +1,33 @@
 ﻿namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 {
-    public class Conditional
+    public class Conditional : IEvaluator
     {
-        public string LogicalOperator { get; set; }
+        public string LogicalOperator { get; set; } = string.Empty;
 
-        public string LeftParameter { get; set; }
+        public string LeftParameter { get; set; } = string.Empty;
 
-        public string RightParameter { get; set; }
+        public string RightParameter { get; set; } = string.Empty;
+
+        public bool RequiresResolving { get; set; } = false;
+
+        public void SetNextParameter(string value)
+        {
+            if (string.IsNullOrEmpty(LeftParameter))
+            {
+                LeftParameter = value;
+                return;
+            }
+            else if (string.IsNullOrEmpty(RightParameter))
+            {
+                RightParameter = value;
+                return;
+            }
+            throw new Exception("All parameters set");
+        }
 
 
         public bool Parse(ReadOnlySpan<char> input, int currentIndex = 0)
         {
-            //input = "'F' == {{context.dicom.tags[('0010','0040')]}}";
-            //"AND {{context.dicom.tags[('0010','0040')]}} == 'F'"
             if (currentIndex >= input.Length)
             {
                 return true;
@@ -26,30 +41,29 @@
             }
 
             var currentChar = input[currentIndex];
+            var nextIndex = currentIndex + 1;
 
             switch (currentChar)
             {
                 case '{':
-                    var idxClosingBracket = input.IndexOf('}') + 2;
-                    LeftParameter = input.Slice(currentIndex, idxClosingBracket).ToString(); //[currentIndex..idxClosingBracket];
-                    currentIndex = idxClosingBracket;
+                    var idxClosingBracket = input.Slice(nextIndex).IndexOf('}') + 3;
+                    SetNextParameter(input.Slice(currentIndex, idxClosingBracket).ToString());
+                    RequiresResolving = true;
+                    currentIndex = nextIndex + idxClosingBracket;
                     break;
                 case '\'':
-                    var nextIndex = currentIndex + 1;
                     var lengthTillClosingQuote = input.Slice(nextIndex).IndexOf('\'');
-                    if (RightParameter is null)
-                    {
-                        RightParameter = input.Slice(nextIndex, lengthTillClosingQuote).ToString(); //[nextIndex..idxClosingQuote];
-                        currentIndex = nextIndex + lengthTillClosingQuote;
-                    }
+                    SetNextParameter(input.Slice(nextIndex, lengthTillClosingQuote).ToString());
+                    currentIndex = nextIndex + lengthTillClosingQuote;
                     break;
                 case '!':
                 case '=':
                     var nextChar = input[currentIndex + 1];
 
-                    if (nextChar == '=')
+                    if (nextChar == '=' || nextChar == '>' || nextChar == '<')
                     {
-                        LogicalOperator = $"{currentChar}{nextChar}";
+                        var chars = new char[] { currentChar, nextChar };
+                        LogicalOperator = new string(chars);
                         currentIndex += 1;
                     }
                     break;
@@ -63,10 +77,8 @@
             return Parse(input, currentIndex + 1);
         }
 
-        // TODO: Probably only used by testing do we need to keep it? probably not
         public static Conditional Create(string input, int currentIndex = 0)
         {
-            //input = "{{context.dicom.tags[('0010','0040')]}} == 'F'";
             var conditionalGroup = new Conditional();
             conditionalGroup.Parse(input.Trim());
 
@@ -75,6 +87,10 @@
 
         public bool Evaluate()
         {
+            if (RequiresResolving)
+            {
+                ResolveParameters();
+            }
             switch (LogicalOperator)
             {
                 case "==":
@@ -93,5 +109,7 @@
                     throw new InvalidOperationException("Invalid logical operator between parameters {} and");
             }
         }
+
+        private void ResolveParameters() => throw new NotImplementedException();
     }
 }
