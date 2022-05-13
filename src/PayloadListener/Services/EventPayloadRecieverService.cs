@@ -74,9 +74,8 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             try
             {
                 var payload = message.Message.ConvertTo<TaskUpdateEvent>();
-                var validation = PayloadValidator.ValidateTaskUpdate(payload);
 
-                if (!validation)
+                if (!PayloadValidator.ValidateTaskUpdate(payload))
                 {
                     Logger.EventRejectedNoQueue(message.Message.MessageId);
                     _messageSubscriber.Reject(message.Message, false);
@@ -97,7 +96,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             }
             catch (Exception e)
             {
-                Logger.Exception("Failed to serialize TaskUpdateMessage", e);
+                Logger.Exception($"Failed to serialize {nameof(TaskUpdateEvent)}", e);
                 Logger.EventRejectedRequeue(message.Message.MessageId);
 
                 _messageSubscriber.Reject(message.Message, true);
