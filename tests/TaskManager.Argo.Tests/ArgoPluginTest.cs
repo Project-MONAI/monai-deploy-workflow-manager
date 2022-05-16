@@ -284,7 +284,7 @@ public class ArgoPluginTest
         Assert.NotNull(argoTemplate);
 
         var message = GenerateTaskDispatchEventWithValidArguments();
-        Workflow submittedArgoTemplate = null;
+        Workflow? submittedArgoTemplate = null;
 
         _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(argoTemplate);
@@ -346,29 +346,25 @@ public class ArgoPluginTest
     private void ValidateDagWithIntermediateArtifacts(TaskDispatchEvent message, Workflow workflow)
     {
         var template = workflow.Spec.Templates.FirstOrDefault(p => p.Name.Equals("my-entrypoint", StringComparison.Ordinal));
-
-        Assert.NotNull(template);
-        Assert.Equal(message.Inputs.First(p => p.Name.Equals("input-dicom")).RelativeRootPath, template.Dag.Tasks.ElementAt(0).Arguments.Artifacts.First().S3.Key);
-        Assert.Equal(message.Inputs.First(p => p.Name.Equals("input-dicom")).RelativeRootPath, template.Dag.Tasks.ElementAt(1).Arguments.Artifacts.First().S3.Key);
+        Assert.NotNull(template!);
+        Assert.Equal(message.Inputs.First(p => p.Name.Equals("input-dicom")).RelativeRootPath, template!.Dag.Tasks.ElementAt(0).Arguments.Artifacts.First().S3.Key);
+        Assert.Equal(message.Inputs.First(p => p.Name.Equals("input-dicom")).RelativeRootPath, template!.Dag.Tasks.ElementAt(1).Arguments.Artifacts.First().S3.Key);
         Assert.Null(template.Dag.Tasks.ElementAt(2).Arguments.Artifacts.ElementAt(0).S3);
         Assert.Null(template.Dag.Tasks.ElementAt(2).Arguments.Artifacts.ElementAt(1).S3);
 
         template = workflow.Spec.Templates.FirstOrDefault(p => p.Name.Equals("segmentation", StringComparison.Ordinal));
-
-        Assert.NotNull(template);
-        Assert.Null(template.Inputs.Artifacts.First().S3);
+        Assert.NotNull(template!);
+        Assert.Null(template!.Inputs.Artifacts.First().S3);
         Assert.Equal($"{message.IntermediateStorage.RelativeRootPath}/{{{{ workflow.name }}}}/{template.Outputs.Artifacts.First().Name}", template.Outputs.Artifacts.First().S3.Key);
 
         template = workflow.Spec.Templates.FirstOrDefault(p => p.Name.Equals("inference", StringComparison.Ordinal));
-
-        Assert.NotNull(template);
-        Assert.Null(template.Inputs.Artifacts.First().S3);
+        Assert.NotNull(template!);
+        Assert.Null(template!.Inputs.Artifacts.First().S3);
         Assert.Equal($"{message.IntermediateStorage.RelativeRootPath}/{{{{ workflow.name }}}}/{template.Outputs.Artifacts.First().Name}", template.Outputs.Artifacts.First().S3.Key);
 
         template = workflow.Spec.Templates.FirstOrDefault(p => p.Name.Equals("generate-report", StringComparison.Ordinal));
-
-        Assert.NotNull(template);
-        Assert.Null(template.Inputs.Artifacts.ElementAt(0).S3);
+        Assert.NotNull(template!);
+        Assert.Null(template!.Inputs.Artifacts.ElementAt(0).S3);
         Assert.Null(template.Inputs.Artifacts.ElementAt(1).S3);
         Assert.Equal(message.Outputs.First(p => p.Name.Equals("output")).RelativeRootPath, template.Outputs.Artifacts.First().S3.Key);
 
@@ -381,7 +377,7 @@ public class ArgoPluginTest
 
         Assert.NotNull(template);
 
-        Assert.Equal(message.Inputs.First(p => p.Name.Equals("input-dicom")).RelativeRootPath, template.Inputs.Artifacts.ElementAt(0).S3.Key);
+        Assert.Equal(message.Inputs.First(p => p.Name.Equals("input-dicom")).RelativeRootPath, template!.Inputs.Artifacts.ElementAt(0).S3.Key);
     }
 
     [Fact(DisplayName = "ExecuteTask - Waits until Succeeded Phase")]

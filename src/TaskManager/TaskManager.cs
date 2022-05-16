@@ -114,9 +114,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             Guard.Against.Null(args, nameof(args));
 
             using var loggingScope = _logger.BeginScope($"Message Type={args.Message.MessageDescription}, ID={args.Message.MessageId}. Correlation ID={args.Message.CorrelationId}");
-            var message = args.Message.ConvertToJsonMessage<TaskDispatchEvent>();
+
+            JsonMessage<TaskDispatchEvent>? message = null;
             try
             {
+                message = args.Message.ConvertToJsonMessage<TaskDispatchEvent>();
                 await HandleDispatchTask(message).ConfigureAwait(false);
             }
             catch (OperationCanceledException ex)
@@ -196,8 +198,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             try
             {
-                PopulateTemporaryStorageCredentials(message.Body.Inputs);
-                PopulateTemporaryStorageCredentials(message.Body.Outputs);
+                PopulateTemporaryStorageCredentials(message.Body.Inputs.ToArray());
+                PopulateTemporaryStorageCredentials(message.Body.IntermediateStorage);
+                PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray());
             }
             catch (Exception ex)
             {
@@ -234,7 +237,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
         }
 
-        private void PopulateTemporaryStorageCredentials(IList<Messaging.Common.Storage> storages)
+        private void PopulateTemporaryStorageCredentials(params Messaging.Common.Storage[] storages)
         {
             Guard.Against.Null(storages, nameof(storages));
 
