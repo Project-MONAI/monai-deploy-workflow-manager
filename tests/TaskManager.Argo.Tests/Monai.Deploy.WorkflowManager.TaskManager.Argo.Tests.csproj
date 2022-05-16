@@ -23,10 +23,20 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TaskManager\Plug-ins\Argo\Monai.Deploy.WorkflowManager.TaskManager.Argo.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Templates\DagWithIntermediateArtifacts.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Templates\SimpleTemplate.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

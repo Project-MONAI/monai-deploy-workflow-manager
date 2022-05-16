@@ -579,6 +579,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 Bucket = Guid.NewGuid().ToString(),
                 RelativeRootPath = Guid.NewGuid().ToString(),
             });
+            message.Body.IntermediateStorage = new Messaging.Common.Storage
+            {
+                Name = Guid.NewGuid().ToString(),
+                Endpoint = Guid.NewGuid().ToString(),
+                Credentials = new Messaging.Common.Credentials
+                {
+                    AccessKey = Guid.NewGuid().ToString(),
+                    AccessToken = Guid.NewGuid().ToString()
+                },
+                Bucket = Guid.NewGuid().ToString(),
+                RelativeRootPath = Guid.NewGuid().ToString(),
+            };
             return message;
         }
 

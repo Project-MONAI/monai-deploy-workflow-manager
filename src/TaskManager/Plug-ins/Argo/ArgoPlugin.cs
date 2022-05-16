@@ -17,6 +17,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
     public sealed class ArgoPlugin : TaskPluginBase, IAsyncDisposable
     {
         private readonly Dictionary<string, string> _secretStores;
+        private readonly Dictionary<string, Messaging.Common.Storage> _intermediaryArtifactStores;
         private readonly IServiceScope _scope;
         private readonly IKubernetesProvider _kubernetesProvider;
         private readonly IArgoProvider _argoProvider;
@@ -35,6 +36,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             Guard.Against.Null(serviceScopeFactory, nameof(serviceScopeFactory));
 
             _secretStores = new Dictionary<string, string>();
+            _intermediaryArtifactStores = new Dictionary<string, Messaging.Common.Storage>();
             _scope = serviceScopeFactory.CreateScope();
 
             _kubernetesProvider = _scope.ServiceProvider.GetRequiredService<IKubernetesProvider>() ?? throw new ServiceNotFoundException(nameof(IKubernetesProvider));
@@ -222,27 +224,25 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                         new WorkflowStep()
                         {
                             Name = Strings.WorkflowEntrypoint,
-                            Template = Event.TaskPluginArguments![Keys.WorkflowTemplateEntrypoint]
+                            Template = workflowTemplate.Spec.Entrypoint
                         }
                     }
                 }
             };
 
-            await CopyWorkflowTemplateToWorkflow(workflowTemplate, Event.TaskPluginArguments![Keys.WorkflowTemplateEntrypoint], workflow, cancellationToken).ConfigureAwait(false);
-
+            await CopyWorkflowTemplateToWorkflow(workflowTemplate, workflowTemplate.Spec.Entrypoint, workflow, cancellationToken).ConfigureAwait(false);
             workflow.Spec.Templates.Add(mainTemplateSteps);
+
+            await ConfigureInputArtifactStoreForTemplates(workflow.Spec.Templates, cancellationToken).ConfigureAwait(false);
+            await ConfigureOuputArtifactStoreForTemplates(workflow.Spec.Templates, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task AddExitHookTemplate(Workflow workflow, CancellationToken cancellationToken)
         {
             Guard.Against.Null(workflow, nameof(workflow));
 
-            var temporaryStore = Event.Outputs.FirstOrDefault(p => p.Name!.Equals(Strings.ExitHookOutputStorageName, StringComparison.Ordinal));
-
-            if (temporaryStore is null)
-            {
-                throw new ArtifactMappingNotFoundException(Strings.ExitHookOutputStorageName);
-            }
+            var temporaryStore = Event.IntermediateStorage.Clone() as Messaging.Common.Storage;
+            temporaryStore!.RelativeRootPath = $"{temporaryStore.RelativeRootPath}/{{{{ workflow.name }}}}/messaging";
 
             var exitTemplateSteps = new Template2()
             {
@@ -312,26 +312,139 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             await CopyTemplateSteps(template.Steps, workflowTemplate, name, workflow, cancellationToken).ConfigureAwait(false);
             await CopyTemplateDags(template.Dag, workflowTemplate, name, workflow, cancellationToken).ConfigureAwait(false);
-            await AddArtifacts(name, template?.Inputs?.Artifacts, Event.Inputs, cancellationToken).ConfigureAwait(false);
-            await AddArtifacts(name, template?.Outputs?.Artifacts, Event.Outputs, cancellationToken).ConfigureAwait(false);
         }
 
-        private async Task AddArtifacts(string tempalteName, ICollection<Artifact>? artifacts, List<Messaging.Common.Storage> storageInfos, CancellationToken cancellationToken)
+        /// <summary>
+        /// Configures input artifact store for all templates.
+        /// For dag & steps, if an argument with S3 Key is set to <see cref="Strings.InputRepositoryToken"/>
+        /// with a matching name in <see cref="TaskDispatchEvent.Inputs"/>, then the connection information is used.
+        /// For all other template types, if a matching name in <see cref="TaskDispatchEvent.Inputs"/>, then the connection information is used.
+        /// Otherwise, the ArgoPlugin assume that a connection is provided.
+        /// </summary>
+        /// <param name="templates"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        private async Task ConfigureInputArtifactStoreForTemplates(ICollection<Template2> templates, CancellationToken cancellationToken)
         {
-            Guard.Against.Null(storageInfos, nameof(storageInfos));
+            Guard.Against.Null(templates, nameof(templates));
 
-            if (artifacts is null || artifacts.Count == 0)
+            foreach (var template in templates)
+            {
+                if (template.Dag is not null)
+                {
+                    await ConfigureInputArtifactStore(template.Name, templates, template.Dag.Tasks.Where(p => p.Arguments is not null).SelectMany(p => p.Arguments.Artifacts), true, cancellationToken).ConfigureAwait(false);
+                }
+                else if (template.Steps is not null)
+                {
+                    foreach (var step in template.Steps)
+                    {
+                        await ConfigureInputArtifactStore(template.Name, templates, step.Where(p => p.Arguments is not null).SelectMany(p => p.Arguments.Artifacts), true, cancellationToken).ConfigureAwait(false);
+                    }
+                }
+                else if (template.Inputs is not null)
+                {
+                    await ConfigureInputArtifactStore(template.Name, templates, template.Inputs.Artifacts, false, cancellationToken).ConfigureAwait(false);
+                }
+            }
+        }
+
+        private async Task ConfigureInputArtifactStore(string templateName, ICollection<Template2> templates, IEnumerable<Artifact> artifacts, bool isDagOrStep, CancellationToken cancellationToken)
+        {
+            Guard.Against.NullOrWhiteSpace(templateName, nameof(templateName));
+            Guard.Against.Null(templates, nameof(templates));
+
+            if (artifacts is null || !artifacts.Any())
             {
                 return;
             }
 
             foreach (var artifact in artifacts)
             {
-                var storageInfo = storageInfos.FirstOrDefault(p => p.Name!.Equals(artifact.Name, StringComparison.Ordinal));
+                if (!isDagOrStep && IsInputConfiguredInStepOrDag(templates, templateName, artifact.Name))
+                {
+                    continue;
+                }
+
+
+                var storageInfo = Event.Inputs.FirstOrDefault(p => p.Name.Equals(artifact.Name, StringComparison.Ordinal));
                 if (storageInfo is null)
                 {
-                    _logger.NoStorageInformationForArtifact(artifact.Name, tempalteName);
+                    _logger.NoInputArtifactStorageConfigured(artifact.Name, templateName);
+                    return;
+                }
+                artifact.S3 = await CreateArtifact(storageInfo, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        private bool IsInputConfiguredInStepOrDag(ICollection<Template2> templates, string referencedTemplateName, string referencedArtifactName)
+        {
+            Guard.Against.Null(templates, nameof(templates));
+            Guard.Against.NullOrWhiteSpace(referencedTemplateName, nameof(referencedTemplateName));
+            Guard.Against.NullOrWhiteSpace(referencedArtifactName, nameof(referencedArtifactName));
+
+            List<Artifact> artifacts = new List<Artifact>();
+            foreach (var template in templates)
+            {
+                if (template.Dag is not null)
+                {
+                    artifacts.AddRange(template.Dag.Tasks
+                        .Where(p => p.Template.Equals(referencedTemplateName, StringComparison.Ordinal) && p.Arguments is not null)
+                        .SelectMany(p => p.Arguments.Artifacts));
+                }
+                else if (template.Steps is not null)
+                {
+                    foreach (var step in template.Steps)
+                    {
+                        artifacts.AddRange(step.Where(p => p.Template.Equals(referencedTemplateName, StringComparison.OrdinalIgnoreCase) && p.Arguments is not null)
+                           .SelectMany(p => p.Arguments.Artifacts));
+                    }
+                }
+            }
+
+
+            return artifacts.Any(p => p.Name.Equals(referencedArtifactName, StringComparison.Ordinal));
+        }
+
+        /// <summary>
+        /// Configures output artifact store for non-dag & non-steps templates.
+        /// If a matching output name in the template is found in <see cref="TaskDispatchEvent.Outputs"/>, the connection information is used and is assumed to be a task output.
+        /// Otherwise, the <see cref="TaskDispatchEvent.IntermediateStorage"/> output store is used and a subdirectory is created & mapped into the container.
+        /// </summary>
+        /// <param name="templates"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        private async Task ConfigureOuputArtifactStoreForTemplates(ICollection<Template2> templates, CancellationToken cancellationToken)
+        {
+            Guard.Against.Null(templates, nameof(templates));
+
+            foreach (var template in templates)
+            {
+                if (template.Dag is not null || template.Steps is not null)
+                {
                     continue;
+                }
+
+                await SetupOutputArtifactStoreForTemplate(template, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        private async Task SetupOutputArtifactStoreForTemplate(Template2 template, CancellationToken cancellationToken)
+        {
+            Guard.Against.Null(template, nameof(template));
+
+            if (template.Outputs is null || template.Outputs.Artifacts is null)
+            {
+                return;
+            }
+
+            foreach (var artifact in template.Outputs.Artifacts)
+            {
+                var storageInfo = Event.Outputs.FirstOrDefault(p => p.Name.Equals(artifact.Name, StringComparison.Ordinal));
+
+                if (storageInfo is null)
+                {
+                    storageInfo = GenerateIntermediaryArtifactStore(artifact.Name);
+                    _logger.UseIntermediaryArtifactStorage(artifact.Name, template.Name);
                 }
 
                 artifact.S3 = await CreateArtifact(storageInfo, cancellationToken).ConfigureAwait(false);
@@ -340,6 +453,21 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     None = new NoneStrategy()
                 };
             }
+        }
+
+        private Messaging.Common.Storage GenerateIntermediaryArtifactStore(string artifactName)
+        {
+            if (_intermediaryArtifactStores.ContainsKey(artifactName))
+            {
+                return _intermediaryArtifactStores[artifactName];
+            }
+
+            var storageInfo = Event.IntermediateStorage.Clone() as Messaging.Common.Storage;
+            storageInfo!.RelativeRootPath = $"{storageInfo.RelativeRootPath}/{{{{ workflow.name }}}}/{artifactName}";
+
+            _intermediaryArtifactStores.Add(artifactName, storageInfo);
+
+            return storageInfo;
         }
 
         private async Task<S3Artifact2> CreateArtifact(Messaging.Common.Storage storageInfo, CancellationToken cancellationToken)

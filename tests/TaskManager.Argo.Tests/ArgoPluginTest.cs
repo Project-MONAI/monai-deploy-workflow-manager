@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -21,8 +22,9 @@ using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Moq;
 using Moq.Language.Flow;
 using Xunit;
+using YamlDotNet.Serialization;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Argo;
+namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests;
 
 public class ArgoPluginTest
 {
@@ -128,7 +130,7 @@ public class ArgoPluginTest
             It.IsAny<string>(),
             It.IsAny<bool?>(),
             It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
-            It.IsAny<CancellationToken>()), Times.Exactly(2));
+            It.IsAny<CancellationToken>()), Times.Exactly(3));
 
         await runner.DisposeAsync().ConfigureAwait(false);
         _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
@@ -141,7 +143,7 @@ public class ArgoPluginTest
             It.IsAny<string>(),
             It.IsAny<bool?>(),
             It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
-            It.IsAny<CancellationToken>()), Times.Exactly(2));
+            It.IsAny<CancellationToken>()), Times.Exactly(3));
     }
 
     [Fact(DisplayName = "ExecuteTask - returns ExecutionStatus when failed to generate K8s secrets")]
@@ -228,18 +230,17 @@ public class ArgoPluginTest
             It.IsAny<CancellationToken>()), Times.Never());
     }
 
-    [Fact(DisplayName = "ExecuteTask - returns ExecutionStatus when failed to locate Argo template")]
+    [Fact(DisplayName = "ExecuteTask - returns ExecutionStatus when failed to locate entrypoint template")]
     public async Task ArgoPlugin_ExecuteTask_ReturnsExecutionStatusWhenFailedToLocateTemplate()
     {
         var message = GenerateTaskDispatchEventWithValidArguments();
 
+        var argoTemplate = GenerateWorkflowTemplate(message);
+        argoTemplate.Spec.Entrypoint = "missing-template";
         _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-            .ReturnsAsync(GenerateWorkflowTemplate(message));
+            .ReturnsAsync(argoTemplate);
 
-        message.TaskPluginArguments[Keys.WorkflowTemplateEntrypoint] = "missing-template";
-
-        SetupKubbernetesSecrets()
-            .Throws(new Exception("error"));
+        SetupKubbernetesSecrets().Throws(new Exception("error"));
         SetupKubernetesDeleteSecret();
 
         var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, message);
@@ -247,7 +248,7 @@ public class ArgoPluginTest
 
         Assert.Equal(TaskExecutionStatus.Failed, result.Status);
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
-        Assert.Equal($"Template '{message.TaskPluginArguments[Keys.WorkflowTemplateEntrypoint]}' cannot be found in the referenced WorkflowTmplate '{message.TaskPluginArguments[Keys.WorkflowTemplateName]}'.", result.Errors);
+        Assert.Equal($"Template '{argoTemplate.Spec.Entrypoint}' cannot be found in the referenced WorkflowTmplate '{message.TaskPluginArguments[Keys.WorkflowTemplateName]}'.", result.Errors);
 
         _argoClient.Verify(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
         _kubernetesClient.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
@@ -274,13 +275,24 @@ public class ArgoPluginTest
             It.IsAny<CancellationToken>()), Times.Never());
     }
 
-    [Fact(DisplayName = "ExecuteTask - returns ExecutionStatus on success")]
-    public async Task ArgoPlugin_ExecuteTask_ReturnsExecutionStatusOnSuccess()
+    [Theory(DisplayName = "ExecuteTask - WorkflowTemplate test")]
+    [InlineData("SimpleTemplate.yml", 3)]
+    [InlineData("DagWithIntermediateArtifacts.yml", 3)]
+    public async Task ArgoPlugin_ExecuteTask_WorkflowTemplates(string filename, int secretsCreated)
     {
+        var argoTemplate = LoadArgoTemplate(filename);
+        Assert.NotNull(argoTemplate);
+
         var message = GenerateTaskDispatchEventWithValidArguments();
+        Workflow submittedArgoTemplate = null;
+
         _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-            .ReturnsAsync(GenerateWorkflowTemplate(message));
+            .ReturnsAsync(argoTemplate);
         _argoClient.Setup(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
+            .Callback((string ns, WorkflowCreateRequest body, CancellationToken cancellationToken) =>
+            {
+                submittedArgoTemplate = body.Workflow;
+            })
             .ReturnsAsync((string ns, WorkflowCreateRequest body, CancellationToken cancellationToken) =>
             {
                 return new Workflow { Metadata = new ObjectMeta { Name = "workflow" } };
@@ -309,7 +321,7 @@ public class ArgoPluginTest
             It.IsAny<string>(),
             It.IsAny<bool?>(),
             It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
-            It.IsAny<CancellationToken>()), Times.Exactly(2));
+            It.IsAny<CancellationToken>()), Times.Exactly(secretsCreated));
 
         await runner.DisposeAsync().ConfigureAwait(false);
         _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
@@ -322,10 +334,57 @@ public class ArgoPluginTest
             It.IsAny<string>(),
             It.IsAny<bool?>(),
             It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
-            It.IsAny<CancellationToken>()), Times.Exactly(2));
+            It.IsAny<CancellationToken>()), Times.Exactly(secretsCreated));
+
+        Assert.NotNull(submittedArgoTemplate);
+        if (filename == "SimpleTemplate.yml") ValidateSimpleTemplate(message, submittedArgoTemplate!);
+        else if (filename == "DagWithIntermediateArtifacts.yml") ValidateDagWithIntermediateArtifacts(message, submittedArgoTemplate!);
+        else
+            Assert.True(false);
     }
 
-    [Fact(DisplayName = "ExecuteTask - Waits until Succeeded Phase ")]
+    private void ValidateDagWithIntermediateArtifacts(TaskDispatchEvent message, Workflow workflow)
+    {
+        var template = workflow.Spec.Templates.FirstOrDefault(p => p.Name.Equals("my-entrypoint", StringComparison.Ordinal));
+
+        Assert.NotNull(template);
+        Assert.Equal(message.Inputs.First(p => p.Name.Equals("input-dicom")).RelativeRootPath, template.Dag.Tasks.ElementAt(0).Arguments.Artifacts.First().S3.Key);
+        Assert.Equal(message.Inputs.First(p => p.Name.Equals("input-dicom")).RelativeRootPath, template.Dag.Tasks.ElementAt(1).Arguments.Artifacts.First().S3.Key);
+        Assert.Null(template.Dag.Tasks.ElementAt(2).Arguments.Artifacts.ElementAt(0).S3);
+        Assert.Null(template.Dag.Tasks.ElementAt(2).Arguments.Artifacts.ElementAt(1).S3);
+
+        template = workflow.Spec.Templates.FirstOrDefault(p => p.Name.Equals("segmentation", StringComparison.Ordinal));
+
+        Assert.NotNull(template);
+        Assert.Null(template.Inputs.Artifacts.First().S3);
+        Assert.Equal($"{message.IntermediateStorage.RelativeRootPath}/{{{{ workflow.name }}}}/{template.Outputs.Artifacts.First().Name}", template.Outputs.Artifacts.First().S3.Key);
+
+        template = workflow.Spec.Templates.FirstOrDefault(p => p.Name.Equals("inference", StringComparison.Ordinal));
+
+        Assert.NotNull(template);
+        Assert.Null(template.Inputs.Artifacts.First().S3);
+        Assert.Equal($"{message.IntermediateStorage.RelativeRootPath}/{{{{ workflow.name }}}}/{template.Outputs.Artifacts.First().Name}", template.Outputs.Artifacts.First().S3.Key);
+
+        template = workflow.Spec.Templates.FirstOrDefault(p => p.Name.Equals("generate-report", StringComparison.Ordinal));
+
+        Assert.NotNull(template);
+        Assert.Null(template.Inputs.Artifacts.ElementAt(0).S3);
+        Assert.Null(template.Inputs.Artifacts.ElementAt(1).S3);
+        Assert.Equal(message.Outputs.First(p => p.Name.Equals("output")).RelativeRootPath, template.Outputs.Artifacts.First().S3.Key);
+
+    }
+
+
+    private void ValidateSimpleTemplate(TaskDispatchEvent message, Workflow workflow)
+    {
+        var template = workflow.Spec.Templates.FirstOrDefault(p => p.Name.Equals("my-entrypoint", StringComparison.Ordinal));
+
+        Assert.NotNull(template);
+
+        Assert.Equal(message.Inputs.First(p => p.Name.Equals("input-dicom")).RelativeRootPath, template.Inputs.Artifacts.ElementAt(0).S3.Key);
+    }
+
+    [Fact(DisplayName = "ExecuteTask - Waits until Succeeded Phase")]
     public async Task ArgoPlugin_GetStatus_WaitUntilSucceededPhase()
     {
         var tryCount = 0;
@@ -437,7 +496,6 @@ public class ArgoPluginTest
         var message = GenerateTaskDispatchEvent();
         message.TaskPluginArguments[Keys.BaseUrl] = "http://api-endpoint/";
         message.TaskPluginArguments[Keys.WorkflowTemplateName] = "workflowTemplate";
-        message.TaskPluginArguments[Keys.WorkflowTemplateEntrypoint] = "workflowTemplate-template";
         message.TaskPluginArguments[Keys.MessagingEnddpoint] = "1.2.2.3/virtualhost";
         message.TaskPluginArguments[Keys.MessagingUsername] = "username";
         message.TaskPluginArguments[Keys.MessagingPassword] = "password";
@@ -459,10 +517,33 @@ public class ArgoPluginTest
             WorkflowInstanceId = Guid.NewGuid().ToString(),
             TaskId = Guid.NewGuid().ToString()
         };
-
-        message.Inputs.Add(new Messaging.Common.Storage
+        message.IntermediateStorage = new Messaging.Common.Storage
         {
             Name = Guid.NewGuid().ToString(),
+            Endpoint = Guid.NewGuid().ToString(),
+            Credentials = new Messaging.Common.Credentials
+            {
+                AccessKey = Guid.NewGuid().ToString(),
+                AccessToken = Guid.NewGuid().ToString()
+            },
+            Bucket = Guid.NewGuid().ToString(),
+            RelativeRootPath = Guid.NewGuid().ToString(),
+        };
+        message.Inputs.Add(new Messaging.Common.Storage
+        {
+            Name = "input-dicom",
+            Endpoint = Guid.NewGuid().ToString(),
+            Credentials = new Messaging.Common.Credentials
+            {
+                AccessKey = Guid.NewGuid().ToString(),
+                AccessToken = Guid.NewGuid().ToString()
+            },
+            Bucket = Guid.NewGuid().ToString(),
+            RelativeRootPath = Guid.NewGuid().ToString(),
+        });
+        message.Inputs.Add(new Messaging.Common.Storage
+        {
+            Name = "input-ehr",
             Endpoint = Guid.NewGuid().ToString(),
             Credentials = new Messaging.Common.Credentials
             {
@@ -474,7 +555,7 @@ public class ArgoPluginTest
         });
         message.Outputs.Add(new Messaging.Common.Storage
         {
-            Name = Strings.ExitHookOutputStorageName,
+            Name = "output",
             Endpoint = Guid.NewGuid().ToString(),
             Credentials = new Messaging.Common.Credentials
             {
@@ -496,11 +577,12 @@ public class ArgoPluginTest
         },
         Spec = new WorkflowSpec
         {
+            Entrypoint = "EntrypointTemplate",
             Templates = new List<Template2>
             {
                 new Template2
                 {
-                     Name = taskDispatchEvent.TaskPluginArguments[Keys.WorkflowTemplateEntrypoint],
+                     Name = "EntrypointTemplate",
                      Steps = new List<ParallelSteps>
                      {
                         new ParallelSteps
@@ -513,7 +595,17 @@ public class ArgoPluginTest
                              new WorkflowStep
                              {
                                   Name = "T1.Step1b",
-                                  Template = "T1.Step1b"
+                                  Template = "T1.Step1b",
+                                  Arguments = new Arguments
+                                  {
+                                      Artifacts = new List<Artifact>
+                                      {
+                                          new Artifact()
+                                          {
+                                              Name = "T1.Step1b.Artifact1"
+                                          }
+                                      }
+                                  }
                              }
                         },
                         new ParallelSteps
@@ -525,24 +617,39 @@ public class ArgoPluginTest
                              },
                              new WorkflowStep
                              {
-                                  Name = "T1.Step2b",
-                                  Template = "T1.Step2b"
+                                  Name = "T1.Dag",
+                                  Template = "T1.Dag"
                              }
                         }
-                     },
+                     }
+                },
+
+                new Template2
+                {
+                     Name= "T1.Dag",
                      Dag = new DAGTemplate
                      {
                           Tasks = new List<DAGTask>
                           {
                               new DAGTask
                               {
-                                    Name = "Dag.Task1",
-                                    Template = "Dag.Task1",
+                                    Name = "T1.Dag.Task1",
+                                    Template = "T1.Dag.Task1",
+                                    Arguments = new Arguments
+                                    {
+                                        Artifacts = new List<Artifact>
+                                        {
+                                            new Artifact()
+                                            {
+                                                  Name = taskDispatchEvent.Inputs[0].Name
+                                            }
+                                        }
+                                    }
                               },
                               new DAGTask
                               {
-                                    Name = "Dag.Task2",
-                                    Template = "Dag.Task2",
+                                    Name = "T1.Dag.Task2",
+                                    Template = "T1.Dag.Task2",
                               }
                           }
                      }
@@ -568,6 +675,21 @@ public class ArgoPluginTest
                 new Template2
                 {
                     Name = "T1.Step1b",
+                    Inputs= new Inputs
+                    {
+                         Artifacts = new List<Artifact>
+                         {
+                             new Artifact
+                             {
+                                 Name = "T1.Step1b.Artifact1"
+                             },
+                             new Artifact
+                             {
+                                 Name = taskDispatchEvent.Inputs.First().Name,
+
+                             }
+                         },
+                    }
                 },
                 new Template2
                 {
@@ -575,15 +697,25 @@ public class ArgoPluginTest
                 },
                 new Template2
                 {
-                    Name = "T1.Step2b",
+                    Name = "T1.Dag.Task1",
+                    Inputs= new Inputs
+                    {
+                         Artifacts = new List<Artifact>
+                         {
+                             new Artifact
+                             {
+                                 Name = "T1.Dag.Task1.Artifact1"
+                             },
+                             new Artifact
+                             {
+                                 Name = "T1.Dag.Task1.Artifact2"
+                             }
+                         },
+                    }
                 },
                 new Template2
                 {
-                    Name = "Dag.Task1",
-                },
-                new Template2
-                {
-                    Name = "Dag.Task2",
+                    Name = "T1.Dag.Task2",
                     Inputs = new Inputs
                     {
                         Artifacts = new List<Artifact>()
@@ -609,25 +741,37 @@ public class ArgoPluginTest
         }
     };
 
+
+    private WorkflowTemplate? LoadArgoTemplate(string filename)
+    {
+        var templateString = File.ReadAllText($"Templates/{filename}");
+
+        var deserializer = new DeserializerBuilder()
+            .WithNamingConvention(YamlDotNet.Serialization.NamingConventions.CamelCaseNamingConvention.Instance)
+            .Build();
+
+        return deserializer.Deserialize<WorkflowTemplate>(templateString);
+    }
+
     private ISetup<IKubernetes, Task<HttpOperationResponse<V1Secret>>> SetupKubbernetesSecrets() => _kubernetesClient.Setup(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
-                          It.IsAny<V1Secret>(),
-                          It.IsAny<string>(),
-                          It.IsAny<string>(),
-                          It.IsAny<string>(),
-                          It.IsAny<string>(),
-                          It.IsAny<bool?>(),
-                          It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
-                          It.IsAny<CancellationToken>()));
+                           It.IsAny<V1Secret>(),
+                           It.IsAny<string>(),
+                           It.IsAny<string>(),
+                           It.IsAny<string>(),
+                           It.IsAny<string>(),
+                           It.IsAny<bool?>(),
+                           It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
+                           It.IsAny<CancellationToken>()));
 
     private void SetupKubernetesDeleteSecret() => _kubernetesClient.Setup(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
-                      It.IsAny<string>(),
-                      It.IsAny<string>(),
-                      It.IsAny<V1DeleteOptions>(),
-                      It.IsAny<string>(),
-                      It.IsAny<int?>(),
-                      It.IsAny<bool?>(),
-                      It.IsAny<string>(),
-                      It.IsAny<bool?>(),
-                      It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
-                      It.IsAny<CancellationToken>()));
+                       It.IsAny<string>(),
+                       It.IsAny<string>(),
+                       It.IsAny<V1DeleteOptions>(),
+                       It.IsAny<string>(),
+                       It.IsAny<int?>(),
+                       It.IsAny<bool?>(),
+                       It.IsAny<string>(),
+                       It.IsAny<bool?>(),
+                       It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
+                       It.IsAny<CancellationToken>()));
 }
