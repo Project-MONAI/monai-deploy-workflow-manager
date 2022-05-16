@@ -66,6 +66,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             WorkflowInstanceCollection.DeleteMany("{ }");
         }
 
+        public void DeleteWorkflowInstance(string id)
+        {
+            WorkflowInstanceCollection.DeleteOne(x => x.Id.Equals(id));
+        }
+
         public void DropDatabase(string dbName)
         {
             Client.DropDatabase(dbName);

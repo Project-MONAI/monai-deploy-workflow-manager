@@ -35,7 +35,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Features
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "TaskStatusUpdate", "Update task status in the workflow instance", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "TaskStatusUpdate", "Update task status in the workflow instance from a Task Update Event", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -75,18 +75,26 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Features
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Publish a valid Task Update event which updates the Task status")]
-        [NUnit.Framework.TestCaseAttribute("Task_Status_Update_Valid", "Accepted", null)]
-        [NUnit.Framework.TestCaseAttribute("Task_Status_Update_Valid", "Succeeded", null)]
-        [NUnit.Framework.TestCaseAttribute("Task_Status_Update_Valid", "Failed", null)]
-        [NUnit.Framework.TestCaseAttribute("Task_Status_Update_Valid", "Cancelled", null)]
-        public virtual void PublishAValidTaskUpdateEventWhichUpdatesTheTaskStatus(string taskUpdateMessage, string taskUpdateStatus, string[] exampleTags)
+        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        [NUnit.Framework.TestCaseAttribute("WFI_Task_Status_Update_1", "Task_Status_Update_Valid_1", "Accepted", null)]
+        [NUnit.Framework.TestCaseAttribute("WFI_Task_Status_Update_2", "Task_Status_Update_Valid_2", "Succeeded", null)]
+        [NUnit.Framework.TestCaseAttribute("WFI_Task_Status_Update_3", "Task_Status_Update_Valid_3", "Failed", null)]
+        [NUnit.Framework.TestCaseAttribute("WFI_Task_Status_Update_4", "Task_Status_Update_Valid_4", "Canceled", null)]
+        public virtual void PublishAValidTaskUpdateEventWhichUpdatesTheTaskStatus(string existingWFI, string taskUpdateMessage, string taskUpdateStatus, string[] exampleTags)
         {
-            string[] tagsOfScenario = exampleTags;
+            string[] @__tags = new string[] {
+                    "TaskUpdate"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("existingWFI", existingWFI);
             argumentsOfScenario.Add("taskUpdateMessage", taskUpdateMessage);
             argumentsOfScenario.Add("taskUpdateStatus", taskUpdateStatus);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a valid Task Update event which updates the Task status", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 5
+#line 6
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -106,13 +114,13 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 6
-    testRunner.Given("I have a Workflow Instance Existing_WFI_Created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
 #line 7
-    testRunner.When(string.Format("I publish a Task Update Message {0} with status {1}", taskUpdateMessage, taskUpdateStatus), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.Given(string.Format("I have a Workflow Instance {0}", existingWFI), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 8
+    testRunner.When(string.Format("I publish a Task Update Message {0} with status {1}", taskUpdateMessage, taskUpdateStatus), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 9
     testRunner.Then("I can see the status of the Task is updated", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -122,16 +130,24 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Publish a valid Task Update event that does not match a workflow instance which d" +
             "oes not update the task status")]
-        [NUnit.Framework.TestCaseAttribute("Execution_ID_Not_Found", null)]
-        [NUnit.Framework.TestCaseAttribute("Execution_And_Task_ID_Dont_Match", null)]
-        public virtual void PublishAValidTaskUpdateEventThatDoesNotMatchAWorkflowInstanceWhichDoesNotUpdateTheTaskStatus(string taskUpdateMessage, string[] exampleTags)
+        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        [NUnit.Framework.TestCaseAttribute("WFI_Task_Status_Update_2", "Task_Status_Update_WorkflowInstanceId_Not_Found", null)]
+        [NUnit.Framework.TestCaseAttribute("WFI_Task_Status_Update_4", "Task_Status_Update_TaskId_Not_Found", null)]
+        public virtual void PublishAValidTaskUpdateEventThatDoesNotMatchAWorkflowInstanceWhichDoesNotUpdateTheTaskStatus(string existingWFI, string taskUpdateMessage, string[] exampleTags)
         {
-            string[] tagsOfScenario = exampleTags;
+            string[] @__tags = new string[] {
+                    "TaskUpdate"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("existingWFI", existingWFI);
             argumentsOfScenario.Add("taskUpdateMessage", taskUpdateMessage);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a valid Task Update event that does not match a workflow instance which d" +
                     "oes not update the task status", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 16
+#line 18
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -151,13 +167,13 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 17
-    testRunner.Given("I have a Workflow Instance Existing_WFI_Created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 19
+    testRunner.Given(string.Format("I have a Workflow Instance {0}", existingWFI), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 18
+#line 20
     testRunner.When(string.Format("I publish a Task Update Message {0} with status Succeeded", taskUpdateMessage), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 19
+#line 21
     testRunner.Then("I can see the status of the Task is not updated", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -166,18 +182,26 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Publish an invalid Task Update event which does not update the task status")]
-        [NUnit.Framework.TestCaseAttribute("Invalid_WorkflowID", null)]
-        [NUnit.Framework.TestCaseAttribute("Invalid_TaskID", null)]
-        [NUnit.Framework.TestCaseAttribute("Invalid_ExecutionID", null)]
-        [NUnit.Framework.TestCaseAttribute("Invalid_CorrelationID", null)]
-        [NUnit.Framework.TestCaseAttribute("Missing_Status", null)]
-        public virtual void PublishAnInvalidTaskUpdateEventWhichDoesNotUpdateTheTaskStatus(string taskUpdateMessage, string[] exampleTags)
+        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        [NUnit.Framework.TestCaseAttribute("WFI_Task_Status_Update_1", "Task_Status_Update_Missing_WorkflowId", null)]
+        [NUnit.Framework.TestCaseAttribute("WFI_Task_Status_Update_2", "Task_Status_Update_Missing_TaskId", null)]
+        [NUnit.Framework.TestCaseAttribute("WFI_Task_Status_Update_3", "Task_Status_Update_Missing_ExecutionId", null)]
+        [NUnit.Framework.TestCaseAttribute("WFI_Task_Status_Update_4", "Task_Status_Update_Missing_CorrelationId", null)]
+        [NUnit.Framework.TestCaseAttribute("WFI_Task_Status_Update_1", "Task_Status_Update_Missing_Status", null)]
+        public virtual void PublishAnInvalidTaskUpdateEventWhichDoesNotUpdateTheTaskStatus(string existingWFI, string taskUpdateMessage, string[] exampleTags)
         {
-            string[] tagsOfScenario = exampleTags;
+            string[] @__tags = new string[] {
+                    "TaskUpdate"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("existingWFI", existingWFI);
             argumentsOfScenario.Add("taskUpdateMessage", taskUpdateMessage);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish an invalid Task Update event which does not update the task status", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 25
+#line 28
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -197,13 +221,13 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 26
-    testRunner.Given("I have a Workflow Instance Existing_WFI_Created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 29
+    testRunner.Given(string.Format("I have a Workflow Instance {0}", existingWFI), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 27
+#line 30
     testRunner.When(string.Format("I publish a Task Update Message {0} with status Succeeded", taskUpdateMessage), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 28
+#line 31
     testRunner.Then("I can see the status of the Task is not updated", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -211,13 +235,28 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Publish an valid Task Update event with a status that is non linear")]
-        public virtual void PublishAnValidTaskUpdateEventWithAStatusThatIsNonLinear()
+        [NUnit.Framework.DescriptionAttribute("Publish an valid Task Update event with a status that is invalid for current stat" +
+            "us")]
+        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        [NUnit.Framework.TestCaseAttribute("WFI_Task_Status_Succeeded", "Task_Status_Update_Status_Invalid_When_Succeeded", "Accepted", null)]
+        [NUnit.Framework.TestCaseAttribute("WFI_Task_Status_Failed", "Task_Status_Update_Status_Invalid_When_Failed", "Accepted", null)]
+        [NUnit.Framework.TestCaseAttribute("WFI_Task_Status_Canceled", "Task_Status_Update_Status_Invalid_When_Canceled", "Accepted", null)]
+        public virtual void PublishAnValidTaskUpdateEventWithAStatusThatIsInvalidForCurrentStatus(string existingWFI, string taskUpdateMessage, string taskUpdateStatus, string[] exampleTags)
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] @__tags = new string[] {
+                    "TaskUpdate"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish an valid Task Update event with a status that is non linear", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 37
+            argumentsOfScenario.Add("existingWFI", existingWFI);
+            argumentsOfScenario.Add("taskUpdateMessage", taskUpdateMessage);
+            argumentsOfScenario.Add("taskUpdateStatus", taskUpdateStatus);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish an valid Task Update event with a status that is invalid for current stat" +
+                    "us", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 41
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -237,13 +276,13 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 38
-    testRunner.Given("I have a Workflow Instance Existing_WFI_Status_Succeeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 42
+    testRunner.Given(string.Format("I have a Workflow Instance {0}", existingWFI), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 39
-    testRunner.When("I publish a Task Update Message Task_Status_Update_Valid with status Accepted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 43
+    testRunner.When(string.Format("I publish a Task Update Message {0} with status {1}", taskUpdateMessage, taskUpdateStatus), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 40
+#line 44
     testRunner.Then("I can see the status of the Task is not updated", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }

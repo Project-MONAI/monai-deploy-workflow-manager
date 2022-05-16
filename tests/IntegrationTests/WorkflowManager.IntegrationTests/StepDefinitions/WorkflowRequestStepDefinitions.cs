@@ -70,7 +70,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             {
                 if (workflowInstance.WorkflowInstance != null)
                 {
-                    ScenarioContext["WorkflowInstance"] = workflowInstance.WorkflowInstance;
+                    ScenarioContext["OriginalWorkflowInstance"] = workflowInstance.WorkflowInstance;
                     MongoClient.CreateWorkflowInstanceDocument(workflowInstance.WorkflowInstance);
                 }
                 else
@@ -128,7 +128,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
                     if (workflow != null)
                     {
-                        Assertions.AssertWorkflowInstanceDetails(workflowInstance, workflow, WorkflowRequestMessage);
+                        Assertions.AssertWorkflowInstanceMatchesExpectedWorkflow(workflowInstance, workflow, WorkflowRequestMessage);
                     }
                     else
                     {
@@ -268,8 +268,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             throw new Exception($"{count} task dispatch events could not be found");
         }
 
+        [Scope(Tag = "WorkflowRequest")]
         [AfterScenario(Order = 1)]
-        public void DeleteWorkflows()
+        public void DeleteTestData()
         {
             foreach (var workflow in _workflowRevisions)
             {
