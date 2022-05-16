@@ -37,7 +37,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 {
                     Bucket = "bucket_1",
                     PayloadId = Guid.NewGuid(),
-                    Workflows = new List<string>() { Helper.GetWorkflowIdByName("Basic_Workflow_1") },
+                    Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_1").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.Now,
                     CalledAeTitle = "No_AE",
@@ -51,7 +51,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 {
                     Bucket = "bucket_1",
                     PayloadId = Guid.NewGuid(),
-                    Workflows = new List<string>() { Helper.GetWorkflowIdByName("Basic_Workflow_1"), Helper.GetWorkflowIdByName("Basic_Workflow_2") },
+                    Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_1").WorkflowRevision.WorkflowId, Helper.GetWorkflowByName("Basic_Workflow_2").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.Now,
                     CalledAeTitle = "No_AE",
@@ -65,7 +65,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 {
                     Bucket = "bucket_1",
                     PayloadId = Guid.NewGuid(),
-                    Workflows = new List<string>() { Helper.GetWorkflowIdByName("Basic_Workflow_1") },
+                    Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_1").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.Now,
                     CalledAeTitle = "Basic_AE_3",
@@ -93,7 +93,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 {
                     Bucket = "bucket_1",
                     PayloadId = Guid.NewGuid(),
-                    Workflows = new List<string>() { Helper.GetWorkflowIdByName("Basic_Workflow_Multiple_Revisions_2") },
+                    Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_Multiple_Revisions_2").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.Now,
                     CalledAeTitle = "No_AE",
@@ -106,7 +106,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
                     Bucket = "bucket_1",
-                    Workflows = new List<string>() { Helper.GetWorkflowIdByName("Basic_Workflow_3") },
+                    Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_3").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.Now,
                     CalledAeTitle = "Basic_AE_3",
@@ -132,7 +132,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
                     PayloadId = Guid.NewGuid(),
-                    Workflows = new List<string>() { Helper.GetWorkflowIdByName("Basic_Workflow_3") },
+                    Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_3").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.Now,
                     CalledAeTitle = "Basic_AE_3",
@@ -146,7 +146,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 {
                     Bucket = "bucket_1",
                     PayloadId = Guid.NewGuid(),
-                    Workflows = new List<string>() { Helper.GetWorkflowIdByName("Basic_Workflow_3") },
+                    Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_3").WorkflowRevision.WorkflowId },
                     Timestamp = DateTime.Now,
                     CalledAeTitle = "Basic_AE_3",
                     CallingAeTitle = "MWM",
@@ -159,7 +159,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 {
                     Bucket = "bucket_1",
                     PayloadId = Guid.NewGuid(),
-                    Workflows = new List<string>() { Helper.GetWorkflowIdByName("Basic_Workflow_3") },
+                    Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_3").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.Now,
                     CalledAeTitle = "Basic_AE_3",
@@ -172,7 +172,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 {
                     Bucket = "bucket_1",
                     PayloadId = Guid.NewGuid(),
-                    Workflows = new List<string>() { Helper.GetWorkflowIdByName("Basic_Workflow_3") },
+                    Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_3").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.Now,
                     CallingAeTitle = "MWM",

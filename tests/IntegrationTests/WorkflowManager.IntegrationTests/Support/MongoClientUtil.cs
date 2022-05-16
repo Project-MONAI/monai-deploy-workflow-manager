@@ -51,9 +51,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             return WorkflowInstanceCollection.Find(x => x.PayloadId == payloadId).FirstOrDefault();
         }
 
-        public WorkflowInstance GetWorkflowInstanceById(string id)
+        public WorkflowInstance GetWorkflowInstanceById(string Id)
         {
-            return WorkflowInstanceCollection.Find(x => x.Id == id).FirstOrDefault();
+            return WorkflowInstanceCollection.Find(x => x.Id == Id).FirstOrDefault();
         }
 
         public List<WorkflowInstance> GetWorkflowInstances(string payloadId)
@@ -64,6 +64,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public void DeleteAllWorkflowInstances()
         {
             WorkflowInstanceCollection.DeleteMany("{ }");
+        }
+
+        public void DeleteWorkflowInstance(string id)
+        {
+            WorkflowInstanceCollection.DeleteOne(x => x.Id.Equals(id));
         }
 
         public void DropDatabase(string dbName)
