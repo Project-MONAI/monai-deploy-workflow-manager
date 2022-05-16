@@ -5,32 +5,40 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
 {
     public static class Helper
     {
-        public static object WorkflowsTestData { get; private set; }
-
-        public static string GetWorkflowIdByName(string name)
+        public static WorkflowRevisionTestData GetWorkflowByName(string name)
         {
-            var workflowRevision = WorkflowRevisionsTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));
-            if (workflowRevision != null)
+            var workflowRevisionTestData = WorkflowRevisionsTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));
+
+            if (workflowRevisionTestData != null)
             {
-                if (workflowRevision.WorkflowRevision != null)
-                {
-                    return workflowRevision.WorkflowRevision.WorkflowId;
-                }
+                return workflowRevisionTestData;
             }
+
             throw new Exception($"workflow {name} does not exist. Please check and try again!");
         }
 
-        public static string GetPayloadIdByName(string name)
+        public static WorkflowRequestTestData GetWorkflowRequestByName(string name)
         {
-            var workflowRequest = WorkflowRequestsTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));
-            if (workflowRequest != null)
+            var workflowRequestTestData = WorkflowRequestsTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));
+
+            if (workflowRequestTestData != null)
             {
-                if (workflowRequest.WorkflowRequestMessage != null)
-                {
-                    return workflowRequest.WorkflowRequestMessage.PayloadId.ToString();
-                }
+                return workflowRequestTestData;
             }
+
             throw new Exception($"workflow {name} does not exist. Please check and try again!");
+        }
+
+        public static WorkflowInstanceTestData GetWorkflowInstanceByName(string name)
+        {
+            var workflowInstanceTestData = WorkflowInstancesTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));
+
+            if (workflowInstanceTestData != null)
+            {
+                return workflowInstanceTestData;
+            }
+
+            throw new Exception($"Workflow Instance {name} does not exist. Please check and try again!");
         }
     }
 }

@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
+// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using BoDi;
 using FluentAssertions;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
@@ -22,13 +26,15 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private readonly List<WorkflowRevision> _workflowRevisions = new List<WorkflowRevision>();
         private WorkflowRequestMessage WorkflowRequestMessage { get; set; }
         private List<WorkflowInstance> WorkflowInstances { get; set; }
+        private ScenarioContext ScenarioContext { get; set; }
 
-        public WorkflowRequestStepDefinitions(RabbitPublisher workflowPublisher, RabbitConsumer taskDispatchConsumer, MongoClientUtil mongoClient)
+        public WorkflowRequestStepDefinitions(ObjectContainer objectContainer, ScenarioContext scenarioContext)
         {
-            WorkflowPublisher = workflowPublisher ?? throw new ArgumentNullException(nameof(workflowPublisher));
-            TaskDispatchConsumer = taskDispatchConsumer ?? throw new ArgumentNullException(nameof(taskDispatchConsumer));
-            MongoClient = mongoClient ?? throw new ArgumentNullException(nameof(mongoClient)); ;
+            WorkflowPublisher = objectContainer.Resolve<RabbitPublisher>("WorkflowPublisher");
+            TaskDispatchConsumer = objectContainer.Resolve<RabbitConsumer>("TaskDispatchConsumer");
+            MongoClient = objectContainer.Resolve<MongoClientUtil>();
             Assertions = new Assertions();
+            ScenarioContext = scenarioContext;
         }
 
         [Given(@"I have a clinical workflow (.*)")]
@@ -55,8 +61,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
         }
 
-        [Given(@"I have an existing Workflow Instance (.*)")]
-        public void GivenIHaveAnExistingWorkflowInstance(string name)
+        [Given(@"I have a Workflow Instance (.*)")]
+        public void GivenIHaveAWorkflowInstance(string name)
         {
             var workflowInstance = WorkflowInstancesTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));
 
@@ -64,6 +70,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             {
                 if (workflowInstance.WorkflowInstance != null)
                 {
+                    ScenarioContext["OriginalWorkflowInstance"] = workflowInstance.WorkflowInstance;
                     MongoClient.CreateWorkflowInstanceDocument(workflowInstance.WorkflowInstance);
                 }
                 else
@@ -121,7 +128,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
                     if (workflow != null)
                     {
-                        Assertions.AssertWorkflowInstanceDetails(workflowInstance, workflow, WorkflowRequestMessage);
+                        Assertions.AssertWorkflowInstanceMatchesExpectedWorkflow(workflowInstance, workflow, WorkflowRequestMessage);
                     }
                     else
                     {
@@ -261,8 +268,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             throw new Exception($"{count} task dispatch events could not be found");
         }
 
+        [Scope(Tag = "WorkflowRequest")]
         [AfterScenario(Order = 1)]
-        public void DeleteWorkflows()
+        public void DeleteTestData()
         {
             foreach (var workflow in _workflowRevisions)
             {
