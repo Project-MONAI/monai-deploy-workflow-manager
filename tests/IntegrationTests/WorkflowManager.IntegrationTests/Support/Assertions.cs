@@ -34,7 +34,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             taskDispatchEvent.CorrelationId.Should().Match(workflowRequestMessage.CorrelationId);
             taskDispatchEvent.TaskId.Should().Match(workflowRevision.Workflow.Tasks[0].Id);
-            taskDispatchEvent.WorkflowId.Should().Match(workflowRevision.WorkflowId);
+            taskDispatchEvent.WorkflowInstanceId.Should().Match(workflowRevision.WorkflowId);
             workflowInstance.Tasks[0].Status.Should().Be(TaskExecutionStatus.Dispatched);
         }
     }

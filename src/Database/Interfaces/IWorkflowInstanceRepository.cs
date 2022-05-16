@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Monai.Deploy.WorkloadManager.Contracts.Models;
 using System.Threading.Tasks;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Database.Interfaces
 {
@@ -15,6 +16,12 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// </summary>
         /// <param name="workflowInstances">A list of workflowInstances to create.</param>
         Task<bool> CreateAsync(IList<WorkflowInstance> workflowInstances);
+
+        /// <summary>
+        /// Gets a workflow instance for a given workflowInstanceId.
+        /// </summary>
+        /// <param name="workflowInstanceId">A Workflow Instance Id to retrieve.</param>
+        Task<WorkflowInstance> GetByWorkflowInstanceIdAsync(string workflowInstanceId);
 
         /// <summary>
         /// Gets a list of workflow instances for a given set of workflowIds.
@@ -29,5 +36,12 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <param name="taskId">TaskId to update.</param>
         /// <param name="status">Status to set.</param>
         Task<bool> UpdateTaskStatusAsync(string workflowInstanceId, string taskId, TaskExecutionStatus status);
+
+        /// <summary>
+        /// Updates the Task list for a given workflow instance.
+        /// </summary>
+        /// <param name="workflowInstanceId">Workflow Instance to update.</param>
+        /// <param name="tasks">List of takss to update.</param>
+        Task<bool> UpdateTasksAsync(string workflowInstanceId, List<TaskExecution> tasks);
     }
 }

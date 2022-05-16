@@ -140,7 +140,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         {
             var updateEvent = new TaskUpdateEvent
             {
-                WorkflowId = Guid.NewGuid().ToString(),
+                WorkflowInstanceId = Guid.NewGuid().ToString(),
                 TaskId = Guid.NewGuid().ToString(),
                 ExecutionId = Guid.NewGuid().ToString(),
                 Status = TaskExecutionStatus.Succeeded,
@@ -160,7 +160,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         {
             var updateEvent = new TaskUpdateEvent
             {
-                WorkflowId = "   ",
+                WorkflowInstanceId = "   ",
                 TaskId = Guid.NewGuid().ToString(),
                 ExecutionId = Guid.NewGuid().ToString(),
                 Status = TaskExecutionStatus.Succeeded,

@@ -68,20 +68,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             return false;
         }
 
-        public static bool IsValid(this TaskUpdateEvent taskUpdateMessage, out IList<string> validationErrors)
-        {
-            Guard.Against.Null(taskUpdateMessage, nameof(taskUpdateMessage));
-
-            validationErrors = new List<string>();
-
-            var valid = true;
-
-            valid &= !taskUpdateMessage.WorkflowId.ValueIsNullOrWhiteSpace(taskUpdateMessage.GetType().Name, validationErrors);
-            valid &= !taskUpdateMessage.TaskId.ValueIsNullOrWhiteSpace(taskUpdateMessage.GetType().Name, validationErrors);
-
-            return valid;
-        }
-
         private static bool ValueIsNullOrWhiteSpace(this string value, string source, IList<string> validationErrors)
         {
             if (string.IsNullOrWhiteSpace(value))
