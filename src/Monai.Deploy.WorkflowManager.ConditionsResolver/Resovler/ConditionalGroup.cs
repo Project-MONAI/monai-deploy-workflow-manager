@@ -156,7 +156,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             if (FindOrs.IsMatch(input) && getFirstIndexOf(FindAnds) > getFirstIndexOf(FindOrs) || !FindAnds.IsMatch(input)) // gets first index for any "AND" if its greater than parse left OR first
             {
                 var splitByOr = ParseOrs(input);
-                if (splitByOr[0] == String.Empty || splitByOr[1] == String.Empty)
+                if (splitByOr[0] == string.Empty || splitByOr[1] == string.Empty)
                 {
                     throw new Exception($"Error parsing OR condition in: {input}");
                 }
@@ -165,7 +165,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             else
             {
                 var splitByAnd = ParseAnds(input);
-                if (splitByAnd[0] == String.Empty || splitByAnd[1] == String.Empty)
+                if (splitByAnd[0] == string.Empty || splitByAnd[1] == string.Empty)
                 {
                     throw new Exception($"Error parsing OR condition in: {input}");
                 }
@@ -177,65 +177,11 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
         {
             if (Keyword == Keyword.AND)
             {
-                if (RightGroup is not null && RightGroup.GroupedLogical > GroupedLogical)
-                {
-                    if (LeftConditional is not null)
-                    {
-                        return RightGroup.Evaluate() && LeftConditional.Evaluate();
-                    }
-                    if (LeftGroup is not null)
-                    {
-                        return RightGroup.Evaluate() && LeftGroup.Evaluate();
-                    }
-                }
-
-                if (LeftConditional is not null && RightConditional is not null)
-                {
-                    return LeftConditional.Evaluate() && RightConditional.Evaluate();
-                }
-                if (LeftGroup is not null && RightGroup is not null)
-                {
-                    return LeftGroup.Evaluate() && RightGroup.Evaluate();
-                }
-                if (LeftGroup is not null && RightConditional is not null)
-                {
-                    return LeftGroup.Evaluate() && RightConditional.Evaluate();
-                }
-                if (LeftConditional is not null && RightGroup is not null)
-                {
-                    return LeftConditional.Evaluate() || RightGroup.Evaluate();
-                }
+                return EvaluateAnds();
             }
             if (Keyword == Keyword.OR)
             {
-                if (RightGroup is not null && RightGroup.GroupedLogical > GroupedLogical)
-                {
-                    if (LeftConditional is not null)
-                    {
-                        return RightGroup.Evaluate() || LeftConditional.Evaluate();
-                    }
-                    if (LeftGroup is not null)
-                    {
-                        return RightGroup.Evaluate() || LeftGroup.Evaluate();
-                    }
-                }
-
-                if (LeftConditional is not null && RightConditional is not null)
-                {
-                    return LeftConditional.Evaluate() || RightConditional.Evaluate();
-                }
-                if (LeftGroup is not null && RightGroup is not null)
-                {
-                    return LeftGroup.Evaluate() || RightGroup.Evaluate();
-                }
-                if (LeftGroup is not null && RightConditional is not null)
-                {
-                    return LeftGroup.Evaluate() || RightConditional.Evaluate();
-                }
-                if (LeftConditional is not null && RightGroup is not null)
-                {
-                    return LeftConditional.Evaluate() || RightGroup.Evaluate();
-                }
+                return EvaluateOrs();
             }
             if (LeftConditional is not null && !RightIsSet)
             {
@@ -243,6 +189,74 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             }
 
             throw new InvalidOperationException("Evaluation Error");
+        }
+
+        private bool EvaluateOrs()
+        {
+            if (RightGroup is not null && RightGroup.GroupedLogical > GroupedLogical)
+            {
+                if (LeftConditional is not null)
+                {
+                    return RightGroup.Evaluate() || LeftConditional.Evaluate();
+                }
+                if (LeftGroup is not null)
+                {
+                    return RightGroup.Evaluate() || LeftGroup.Evaluate();
+                }
+            }
+
+            if (LeftConditional is not null && RightConditional is not null)
+            {
+                return LeftConditional.Evaluate() || RightConditional.Evaluate();
+            }
+            if (LeftGroup is not null && RightGroup is not null)
+            {
+                return LeftGroup.Evaluate() || RightGroup.Evaluate();
+            }
+            if (LeftGroup is not null && RightConditional is not null)
+            {
+                return LeftGroup.Evaluate() || RightConditional.Evaluate();
+            }
+            if (LeftConditional is not null && RightGroup is not null)
+            {
+                return LeftConditional.Evaluate() || RightGroup.Evaluate();
+            }
+
+            throw new InvalidOperationException("Evaluation Error in EvaluateOrs");
+        }
+
+        private bool EvaluateAnds()
+        {
+            if (RightGroup is not null && RightGroup.GroupedLogical > GroupedLogical)
+            {
+                if (LeftConditional is not null)
+                {
+                    return RightGroup.Evaluate() && LeftConditional.Evaluate();
+                }
+                if (LeftGroup is not null)
+                {
+                    return RightGroup.Evaluate() && LeftGroup.Evaluate();
+                }
+            }
+
+            if (LeftConditional is not null && RightConditional is not null)
+            {
+                return LeftConditional.Evaluate() && RightConditional.Evaluate();
+            }
+            if (LeftGroup is not null && RightGroup is not null)
+            {
+                return LeftGroup.Evaluate() && RightGroup.Evaluate();
+            }
+            if (LeftGroup is not null && RightConditional is not null)
+            {
+                return LeftGroup.Evaluate() && RightConditional.Evaluate();
+            }
+            if (LeftConditional is not null && RightGroup is not null)
+            {
+                return LeftConditional.Evaluate() && RightGroup.Evaluate();
+            }
+
+            throw new InvalidOperationException("Evaluation Error in EvaluateAnds");
         }
 
         public static ConditionalGroup Create(string input, int groupedLogicalParent = 0)
