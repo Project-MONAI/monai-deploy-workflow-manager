@@ -46,7 +46,6 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 throw new ArgumentException($"No right hand parameter at index: {currentIndex}");
             }
 
-
             var currentChar = input[currentIndex];
             var nextIndex = currentIndex + 1;
 

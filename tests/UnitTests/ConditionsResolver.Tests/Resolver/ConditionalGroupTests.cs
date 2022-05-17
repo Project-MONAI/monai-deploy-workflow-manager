@@ -16,7 +16,6 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [InlineData("'OR' == 'F' OR 'F' == 'leg'")]
         [InlineData("'F' == 'F' or 'F' == 'leg'")] // Lowercase OR
         [InlineData("'F' == 'F' and 'F' == 'leg'")] // Lowercase AND
-        [InlineData("'F' == 'F' AND 'F' == 'leg'")]
         [InlineData("'LEG' == 'F' OR 'F' == 'leg'")]
         [InlineData("'F' == 'F' OR 'F' == 'leg' AND 'F' == 'F'")]
         [InlineData("'F' == 'F' AND 'F' == 'leg' AND 'F' == 'F'")]
@@ -32,6 +31,18 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
             var conditionalGroup = ConditionalGroup.Create(input);
             Assert.True(conditionalGroup.LeftIsSet);
             Assert.True(conditionalGroup.RightIsSet);
+        }
+
+        [Theory]
+        [InlineData(true, "'F' == 'F'")]
+        [InlineData(false, "'F' == 'leg'")]
+        public void ConditionalGroup_WhenSetSingularConditional_ShouldCreateAndEvaluate(bool expectedEvaluation, string input)
+        {
+            var conditionalGroup = ConditionalGroup.Create(input);
+            Assert.True(conditionalGroup.LeftIsSet);
+            Assert.False(conditionalGroup.RightIsSet);
+            var result = conditionalGroup.Evaluate();
+            Assert.Equal(expectedEvaluation, result);
         }
 
         [Theory]
@@ -60,7 +71,9 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [InlineData(true, "('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE')")]
         [InlineData(true, "'TRUE' == 'TRUE' AND ('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE')")]
         [InlineData(true, "'TRUE' == 'TRUE' AND ('Falsee' == 'FLASE' OR 'TRUE' == 'TRUE')")]
+        [InlineData(false, "('Falsee' == 'FLASE' AND 'TRUE' == 'TRUE') AND ('Falsee' == 'FLASE' OR 'TRUE' == 'TRUE')")]
         [InlineData(true, "('TRUE' == 'TRUE' AND ('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE'))")]
+        [InlineData(true, "('TRUE' == 'TRUE' OR ('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE'))")]
         public void ConditionalGroup_WhenProvidedCorrectinputWithBrackets_ShouldCreateAndEvaluate(bool expectedResult, string input)
         {
             var conditionalGroup = ConditionalGroup.Create(input);
@@ -91,6 +104,21 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
             });
 
             Assert.Equal(expectedMessage, exception.Message);
+        }
+
+        [Theory]
+        [InlineData(true, "'TRUE' == 'TRUE' OR 'TRUE' == 'TRUE'", "'TRUE' == 'TRUE' OR 'TRUE' == 'TRUE'", Keyword.AND)]
+        public void ConditionalGroup_WhenSetProvidedCorrectinput_ShouldCreateAndEvaluate(bool expectedResult, string inputLeft, string inputRight, Keyword keyword)
+        {
+            var conditionalGroup = new ConditionalGroup();
+            conditionalGroup.Set(inputLeft, inputRight, keyword);
+
+            Assert.True(conditionalGroup.LeftIsSet);
+            Assert.True(conditionalGroup.RightIsSet);
+
+            var result = conditionalGroup.Evaluate();
+
+            Assert.Equal(expectedResult, result);
         }
     }
 }

@@ -31,5 +31,11 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
             var result = input.TrimStartExt("test", StringComparison.CurrentCulture);
             Assert.Equal(expected, result);
         }
+
+        public void String_WhenTrimStartExtNull_ShouldOnlyRemoveTestFromStart(string expected, string input)
+        {
+            var result = input.TrimStartExt("test", StringComparison.CurrentCulture);
+            Assert.Equal(expected, result);
+        }
     }
 }

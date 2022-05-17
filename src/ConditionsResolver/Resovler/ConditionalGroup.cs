@@ -110,12 +110,14 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             var foundOrs = FindOrs.Matches(input);
 
             var indexOfBracket = FindBrackets.Match(input).Index;
+            var indexOfClosingBracket = FindCloseBrackets.Match(input).Index;
             if (indexOfBracket == -1)
             {
                 throw new InvalidOperationException("Expected Bracket: Bracket not found");
             }
+            var startingBracketHasBeenTrimmed = indexOfClosingBracket < indexOfBracket;
             // if first index of any ANDs or ORs are before the first bracket then left hand evaluation should be processed
-            if ((foundAnds.Any() && foundAnds.First().Index < indexOfBracket) || (foundOrs.Any() && foundOrs.First().Index < indexOfBracket))
+            if (!startingBracketHasBeenTrimmed && (foundAnds.Any() && foundAnds.First().Index < indexOfBracket) || (foundOrs.Any() && foundOrs.First().Index < indexOfBracket))
             {
                 if (foundAnds.Any() && foundAnds.First().Index < foundOrs.First().Index)
                 {
@@ -133,9 +135,11 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             else
             {
                 //handle left hand brackets
-                var indexOfClosingBracket = FindCloseBrackets.Match(input).Index;
-                var bracketedConditionalGroup = input.Substring(indexOfBracket, indexOfClosingBracket - 1);
+                var bracketedConditionalGroup = input.Substring(0, indexOfClosingBracket);
                 LeftGroup = ConditionalGroup.Create(bracketedConditionalGroup, GroupedLogical);
+                var rightSideConditionalGroup = input.Substring(indexOfClosingBracket + 1, input.Length - indexOfClosingBracket - 1);
+                rightSideConditionalGroup = rightSideConditionalGroup.TrimStartExt("AND").TrimStartExt("OR");
+                RightGroup = ConditionalGroup.Create(rightSideConditionalGroup, GroupedLogical);
             }
         }
 
