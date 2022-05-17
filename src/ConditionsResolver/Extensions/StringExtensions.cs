@@ -17,18 +17,18 @@
                 case StringComparison.CurrentCulture:
                 case StringComparison.InvariantCulture:
                 case StringComparison.Ordinal:
-                    input = input.TrimStart();
                     while (input != null && suffixToRemove != null && input.TrimStart().StartsWith(suffixToRemove))
                     {
+                        input = input.TrimStart();
                         input = input.TrimStart().Substring(suffixToRemove.Length, input.Length - suffixToRemove.Length);
                     }
                     return input?.TrimStart() ?? string.Empty;
                 case StringComparison.CurrentCultureIgnoreCase:
                 case StringComparison.InvariantCultureIgnoreCase:
                 case StringComparison.OrdinalIgnoreCase:
-                    input = input.TrimStart();
                     while (input != null && suffixToRemove != null && input.ToUpper().TrimStart().StartsWith(suffixToRemove.ToUpper()))
                     {
+                        input = input.TrimStart();
                         input = input.TrimStart().Substring(suffixToRemove.Length, input.Length - suffixToRemove.Length);
                     }
                     return input?.TrimStart() ?? string.Empty;
