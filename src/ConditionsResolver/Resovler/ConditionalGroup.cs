@@ -104,7 +104,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
         }
 
 
-        private string ParseBrackets(string input)
+        private void ParseBrackets(string input)
         {
             var foundAnds = FindAnds.Matches(input);
             var foundOrs = FindOrs.Matches(input);
@@ -137,10 +137,6 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 var bracketedConditionalGroup = input.Substring(indexOfBracket, indexOfClosingBracket - 1);
                 LeftGroup = ConditionalGroup.Create(bracketedConditionalGroup, GroupedLogical);
             }
-
-            input = input.Substring(indexOfBracket + 1);
-
-            return input;
         }
 
         private void ParseComplex(string input)
@@ -149,14 +145,14 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
             if (foundBrackets.Any())
             {
-                input = ParseBrackets(input);
+                ParseBrackets(input);
             }
 
             var getFirstIndexOf = (Regex find) => find.Match(input).Index;
             if (FindOrs.IsMatch(input) && getFirstIndexOf(FindAnds) > getFirstIndexOf(FindOrs) || !FindAnds.IsMatch(input)) // gets first index for any "AND" if its greater than parse left OR first
             {
                 var splitByOr = ParseOrs(input);
-                if (splitByOr[0] == String.Empty || splitByOr[1] == String.Empty)
+                if (splitByOr[0] == string.Empty || splitByOr[1] == string.Empty)
                 {
                     throw new ArgumentException($"Error parsing OR condition in: {input}");
                 }
@@ -165,7 +161,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             else
             {
                 var splitByAnd = ParseAnds(input);
-                if (splitByAnd[0] == String.Empty || splitByAnd[1] == String.Empty)
+                if (splitByAnd[0] == string.Empty || splitByAnd[1] == string.Empty)
                 {
                     throw new ArgumentException($"Error parsing OR condition in: {input}");
                 }
