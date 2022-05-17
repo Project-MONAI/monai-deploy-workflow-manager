@@ -3,7 +3,7 @@ using Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions;
 
 namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 {
-    public class ConditionalGroup : IEvaluator
+    public class ConditionalGroup
     {
         public Keyword Keyword { get; set; }
 
@@ -149,7 +149,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
             if (foundBrackets.Any())
             {
-                ParseBrackets(input);
+                input = ParseBrackets(input);
             }
 
             var getFirstIndexOf = (Regex find) => find.Match(input).Index;
@@ -158,7 +158,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 var splitByOr = ParseOrs(input);
                 if (splitByOr[0] == String.Empty || splitByOr[1] == String.Empty)
                 {
-                    throw new Exception($"Error parsing OR condition in: {input}");
+                    throw new ArgumentException($"Error parsing OR condition in: {input}");
                 }
                 Set(splitByOr[0], splitByOr[1].TrimStartExt("OR"), Keyword.OR);
             }
@@ -167,7 +167,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 var splitByAnd = ParseAnds(input);
                 if (splitByAnd[0] == String.Empty || splitByAnd[1] == String.Empty)
                 {
-                    throw new Exception($"Error parsing OR condition in: {input}");
+                    throw new ArgumentException($"Error parsing OR condition in: {input}");
                 }
                 Set(splitByAnd[0], splitByAnd[1].TrimStartExt("AND"), Keyword.AND);
             }

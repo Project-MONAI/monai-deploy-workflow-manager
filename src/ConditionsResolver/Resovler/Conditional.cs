@@ -1,6 +1,8 @@
-﻿namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
+﻿using System.Globalization;
+
+namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 {
-    public class Conditional : IEvaluator
+    public class Conditional
     {
         public string LogicalOperator { get; set; } = string.Empty;
 
@@ -22,7 +24,7 @@
                 RightParameter = value;
                 return;
             }
-            throw new Exception("All parameters set");
+            throw new ArgumentException("All parameters set");
         }
 
 
@@ -90,8 +92,12 @@
             return conditionalGroup;
         }
 
-        public bool Evaluate()
+        public bool Evaluate(IFormatProvider? culture = null)
         {
+            if (culture == null)
+            {
+                culture = CultureInfo.InvariantCulture;
+            }
             if (RequiresResolving)
             {
                 ResolveParameters();
@@ -103,13 +109,13 @@
                 case "!=":
                     return LeftParameter != RightParameter;
                 case ">":
-                    return Convert.ToInt16(LeftParameter) > Convert.ToInt16(RightParameter);
+                    return Convert.ToInt16(LeftParameter, culture) > Convert.ToInt16(RightParameter, culture);
                 case "<":
-                    return Convert.ToInt16(LeftParameter) < Convert.ToInt16(RightParameter);
+                    return Convert.ToInt16(LeftParameter, culture) < Convert.ToInt16(RightParameter, culture);
                 case "=>":
-                    return Convert.ToInt16(LeftParameter) >= Convert.ToInt16(RightParameter);
+                    return Convert.ToInt16(LeftParameter, culture) >= Convert.ToInt16(RightParameter, culture);
                 case "=<":
-                    return Convert.ToInt16(LeftParameter) >= Convert.ToInt16(RightParameter);
+                    return Convert.ToInt16(LeftParameter, culture) >= Convert.ToInt16(RightParameter, culture);
                 default:
                     throw new InvalidOperationException("Invalid logical operator between parameters {} and");
             }
