@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
     [Serializable]
-    internal class ArtifactMappingNotFoundException : Exception
+    public class ArtifactMappingNotFoundException : Exception
     {
         public ArtifactMappingNotFoundException()
         {
