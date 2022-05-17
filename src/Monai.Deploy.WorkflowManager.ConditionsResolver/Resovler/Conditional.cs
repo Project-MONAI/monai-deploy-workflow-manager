@@ -37,8 +37,13 @@
             var isOr = input.Slice(0, 2).ToString().ToUpper() == "OR";
             if (isAnd || isOr)
             {
-                throw new ArgumentException($"No left hand parameter at index: {0}");
+                throw new ArgumentException($"No left hand parameter at index: {currentIndex}");
             }
+            if (input.Trim().ToString().ToUpper().EndsWith("AND") || input.Trim().ToString().ToUpper().EndsWith("OR"))
+            {
+                throw new ArgumentException($"No right hand parameter at index: {currentIndex}");
+            }
+
 
             var currentChar = input[currentIndex];
             var nextIndex = currentIndex + 1;

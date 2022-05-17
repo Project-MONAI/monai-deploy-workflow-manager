@@ -26,12 +26,12 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [InlineData(" AND {{context.dicom.tags[('0010','0040')]}} == 'F'", "No left hand parameter at index: 0")]
         [InlineData("OR {{context.dicom.tags[('0010','0040')]}} == 'F'", "No left hand parameter at index: 0")]
         [InlineData(" OR {{context.dicom.tags[('0010','0040')]}} == 'F'", "No left hand parameter at index: 0")]
+        [InlineData("{{context.dicom.tags[('0010','0040')]}} == 'F'  AND ", "No right hand parameter at index: 0")]
         public void Conditional_WhenGivenInvalidInput_ShouldThrowErrors(string input, string expectedErrorMessage)
         {
             var exception = Assert.Throws<ArgumentException>(() => Conditional.Create(input));
 
             Assert.Equal(expectedErrorMessage, exception.Message);
         }
-
     }
 }

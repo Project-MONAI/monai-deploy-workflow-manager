@@ -5,22 +5,15 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
 {
     public class ConditionalGroupTests
     {
-        //TODO: Multiple AND/OR Keywords - DONE
-        //TODO: Multiple lowercase AND/OR Keywords
-        //TODO: Error Conditions AND/OR Keywords
-        //TODO: Test Operators ('==') AND/OR Keywords
-        //TODO: Parse Parameters
-        //TODO: Test reversed parameters 'F' on left and {{}} on right
-
         [Theory]
-        [InlineData("{{context.dicom.tags[('0010','0040')]}} == 'F' AND {{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
-        [InlineData("{{context.dicom.tags[('0010','0040')]}} == 'F' OR {{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
+        //[InlineData("{{context.dicom.tags[('0010','0040')]}} == 'F' AND {{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
+        //[InlineData("{{context.dicom.tags[('0010','0040')]}} == 'F' OR {{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
         [InlineData("'F' == 'F' OR {{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
         [InlineData("'F' == 'F' OR 'F' == 'leg'")]
         [InlineData("'AND' == 'F' OR 'F' == 'leg'")]
         [InlineData("'OR' == 'F' OR 'F' == 'leg'")]
         [InlineData("'F' == 'F' or 'F' == 'leg'")] // Lowercase OR
-        [InlineData("'F' == 'F' AND 'F' == 'leg'")] // Lowercase AND
+        [InlineData("'F' == 'F' and 'F' == 'leg'")] // Lowercase AND
         [InlineData("'F' == 'F' AND 'F' == 'leg'")]
         [InlineData("'LEG' == 'F' OR 'F' == 'leg'")]
         [InlineData("'F' == 'F' OR 'F' == 'leg' AND 'F' == 'F'")]
@@ -62,32 +55,17 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         }
 
         [Theory]
-        [InlineData(
-            "{{context.dicom.tags[('0010','0040')]}}",
-            "F",
-            "{{context.executions.body_part_identifier.result.body_part}}",
-            "leg",
-            "{{context.dicom.tags[('0010','0040')]}} == 'F' AND {{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
-        [InlineData(
-            "{{context.dicom.tags[('0010','0040')]}}",
-            "F",
-            "{{context.executions.body_part_identifier.result.body_part}}",
-            "leg",
-            "{{context.dicom.tags[('0010','0040')]}} == 'F' OR {{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
-        public void ConditionalGroup_Creates_HasLeftAndRightGroupsWithValues(string leftGroupLeftParam,
-                                                                             string leftGroupRightParam,
-                                                                             string rightGroupLeftParam,
-                                                                             string rightGroupRightParam,
-                                                                             string input)
+        [InlineData(true, "('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE')")]
+        [InlineData(true, "'TRUE' == 'TRUE' AND ('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE')")]
+        [InlineData(true, "'TRUE' == 'TRUE' AND ('Falsee' == 'FLASE' OR 'TRUE' == 'TRUE')")]
+        [InlineData(true, "('TRUE' == 'TRUE' AND ('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE'))")]
+        public void ConditionalGroup_WhenProvidedCorrectinputWithBrackets_ShouldCreateAndEvaluate(bool expectedResult, string input)
         {
             var conditionalGroup = ConditionalGroup.Create(input);
-            Assert.NotNull(conditionalGroup.LeftConditional);
-            Assert.NotNull(conditionalGroup.RightConditional);
-
-            Assert.Equal(leftGroupLeftParam, conditionalGroup?.LeftConditional?.LeftParameter);
-            Assert.Equal(leftGroupRightParam, conditionalGroup?.LeftConditional?.RightParameter);
-            Assert.Equal(rightGroupLeftParam, conditionalGroup?.RightConditional?.LeftParameter);
-            Assert.Equal(rightGroupRightParam, conditionalGroup?.RightConditional?.RightParameter);
+            Assert.True(conditionalGroup.LeftIsSet);
+            Assert.True(conditionalGroup.RightIsSet);
+            var result = conditionalGroup.Evaluate();
+            Assert.Equal(expectedResult, result);
         }
     }
 }
