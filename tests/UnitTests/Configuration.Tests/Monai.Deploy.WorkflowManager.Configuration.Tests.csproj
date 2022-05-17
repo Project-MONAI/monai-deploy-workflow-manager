@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: © 2022 MONAI Consortium
+SPDX-License-Identifier: Apache License 2.0
+-->
+
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
@@ -13,11 +18,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0034" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0035" />
     <PackageReference Include="Moq" Version="4.17.2" />
     <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="16.1.25" />
     <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

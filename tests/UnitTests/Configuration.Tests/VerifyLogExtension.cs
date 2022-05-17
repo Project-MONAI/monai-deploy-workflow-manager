@@ -8,7 +8,10 @@ using Moq;
 
 namespace Monai.Deploy.InformaticsGateway.SharedTest
 {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
     [ExcludeFromCodeCoverage]
+
     public static class VerifyLogExtension
     {
         public static Mock<ILogger> VerifyLoggingMessageEndsWith(this Mock<ILogger> logger, string expectedMessage, LogLevel expectedLogLevel = LogLevel.Debug, Times? times = null)
@@ -121,4 +124,6 @@ namespace Monai.Deploy.InformaticsGateway.SharedTest
             return logger;
         }
     }
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 }
