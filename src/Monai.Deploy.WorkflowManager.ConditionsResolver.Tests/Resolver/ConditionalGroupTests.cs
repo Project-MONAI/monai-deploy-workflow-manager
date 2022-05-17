@@ -59,6 +59,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [InlineData(true, "'TRUE' == 'TRUE' AND ('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE')")]
         [InlineData(true, "'TRUE' == 'TRUE' AND ('Falsee' == 'FLASE' OR 'TRUE' == 'TRUE')")]
         [InlineData(true, "('TRUE' == 'TRUE' AND ('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE'))")]
+        [InlineData(true, "('TRUE' == 'TRUE' AND ('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE')) OR 'TRUE' == 'TRUE' ")]
+        [InlineData(true, "('TRUE' == 'TRUE' AND ('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE') OR 'TRUE' == 'TRUE') OR 'TRUE' == 'TRUE' ")]
         public void ConditionalGroup_WhenProvidedCorrectinputWithBrackets_ShouldCreateAndEvaluate(bool expectedResult, string input)
         {
             var conditionalGroup = ConditionalGroup.Create(input);

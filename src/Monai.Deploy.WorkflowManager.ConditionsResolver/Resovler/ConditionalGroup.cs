@@ -212,11 +212,11 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 {
                     if (LeftConditional is not null)
                     {
-                        return RightGroup.Evaluate() && LeftConditional.Evaluate();
+                        return RightGroup.Evaluate() || LeftConditional.Evaluate();
                     }
                     if (LeftGroup is not null)
                     {
-                        return RightGroup.Evaluate() && LeftGroup.Evaluate();
+                        return RightGroup.Evaluate() || LeftGroup.Evaluate();
                     }
                 }
 
