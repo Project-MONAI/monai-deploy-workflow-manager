@@ -63,5 +63,8 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
 
         [LoggerMessage(EventId = 19, Level = LogLevel.Error, Message = "The following task has already been dispatched: {payloadId}, {taskId}")]
         public static partial void TaskPreviouslyDispatched(this ILogger logger, string payloadId, string taskId);
+
+        [LoggerMessage(EventId = 20, Level = LogLevel.Error, Message = "The following task: {taskId} cannot be found in the workflow: {workflowId}. Payload: {payloadId}")]
+        public static partial void TaskNotFoundInWorkfow(this ILogger logger, string payloadId, string taskId, string workflowId);
     }
 }

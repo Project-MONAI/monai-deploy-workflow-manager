@@ -13,9 +13,9 @@
       },
       "Karambolo.Extensions.Logging.File": {
         "type": "Direct",
-        "requested": "[3.2.1, )",
-        "resolved": "3.2.1",
-        "contentHash": "+jWcz78yeZw7RgXO73c5QPNja/Bt6i7s9h2W5GrSTuWyd9N/45nfCtd3fATwv556PihcYTFJO62yOgMTkZzbBw==",
+        "requested": "[3.3.0, )",
+        "resolved": "3.3.0",
+        "contentHash": "d5COomaWp+1Eu5D0ivnuXy14GfgygzSUD7XIFtW8v2+2gCSCrZjuZVwMkQP9nQav9gt98iBh7F10HKePlPkLbQ==",
         "dependencies": {
           "Microsoft.Extensions.FileProviders.Physical": "3.0.0",
           "Microsoft.Extensions.Logging.Configuration": "3.0.0",
@@ -138,9 +138,9 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0033, )",
-        "resolved": "0.1.0-rc0033",
-        "contentHash": "Grp8jVQH6Cn3PNtEcthm2zNTVJDYgv5flj9JyAmv3dYXqVoqgBhXAg8LZepetNnbcMpvgwEV0JG67dKS5fOdNw==",
+        "requested": "[0.1.0-rc0035, )",
+        "resolved": "0.1.0-rc0035",
+        "contentHash": "roJZo09Wiq8QnwzKsU6CfIYe0OB7u4wrBoHulfui6rfdj2/+pXFqIRm/paTfkXUq37ENVP0pivffHqrqL/XO8Q==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -710,6 +710,8 @@
       "monai.deploy.workflowmanager.common": {
         "type": "Project",
         "dependencies": {
+          "Ardalis.GuardClauses": "4.0.1",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Database": "1.0.0"
         }
@@ -717,8 +719,9 @@
       "monai.deploy.workflowmanager.configuration": {
         "type": "Project",
         "dependencies": {
+          "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.0-rc0033",
+          "Monai.Deploy.Messaging": "0.1.0-rc0035",
           "Monai.Deploy.Storage": "0.1.0-rc0019",
           "Newtonsoft.Json": "13.0.1",
           "System.IO.Abstractions": "16.1.25"
@@ -729,7 +732,7 @@
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.141",
           "Microsoft.Extensions.Configuration": "6.0.1",
-          "Monai.Deploy.Messaging": "0.1.0-rc0033",
+          "Monai.Deploy.Messaging": "0.1.0-rc0035",
           "MongoDB.Bson": "2.15.0",
           "Newtonsoft.Json": "13.0.1"
         }
@@ -740,7 +743,7 @@
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.0-rc0033",
+          "Monai.Deploy.Messaging": "0.1.0-rc0035",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
           "MongoDB.Bson": "2.15.0",
@@ -750,7 +753,6 @@
       "monai.deploy.workflowmanager.logging": {
         "type": "Project",
         "dependencies": {
-          "Karambolo.Extensions.Logging.File": "3.2.1",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1"
         }
       },
@@ -758,9 +760,8 @@
         "type": "Project",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
-          "Karambolo.Extensions.Logging.File": "3.2.1",
           "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.0-rc0033",
+          "Monai.Deploy.Messaging": "0.1.0-rc0035",
           "Monai.Deploy.Storage": "0.1.0-rc0019",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
@@ -774,7 +775,7 @@
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.141",
           "Ardalis.GuardClauses": "4.0.1",
-          "Monai.Deploy.Messaging": "0.1.0-rc0033",
+          "Monai.Deploy.Messaging": "0.1.0-rc0035",
           "Monai.Deploy.Storage": "0.1.0-rc0019",
           "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",

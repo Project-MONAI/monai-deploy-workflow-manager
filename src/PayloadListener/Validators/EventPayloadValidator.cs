@@ -3,6 +3,7 @@
 
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 // SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
@@ -50,6 +51,24 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
             }
 
             return valid;
+        }
+
+        public bool ValidateTaskUpdate(TaskUpdateEvent payload)
+        {
+            Guard.Against.Null(payload, nameof(payload));
+
+            try
+            {
+                payload.Validate();
+            }
+            catch (MessageValidationException e)
+            {
+                Logger.Exception($"Failed to validate {nameof(TaskUpdateEvent)}", e);
+
+                return false;
+            }
+
+            return true;
         }
     }
 }

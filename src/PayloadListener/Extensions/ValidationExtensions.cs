@@ -67,5 +67,16 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 
             return false;
         }
+
+        private static bool ValueIsNullOrWhiteSpace(this string value, string source, IList<string> validationErrors)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                validationErrors.Add($"'{value}' is not a valid value (source: {source}).");
+                return true;
+            }
+
+            return false;
+        }
     }
 }

@@ -123,7 +123,7 @@ namespace Monai.Deploy.WorkflowManager
 
                     services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
 
-                    services.AddSingleton<IEventPayloadRecieverService, EventPayloadRecieverService>();
+                    services.AddSingleton<IEventPayloadReceiverService, EventPayloadReceiverService>();
                     services.AddTransient<IEventPayloadValidator, EventPayloadValidator>();
                     services.AddSingleton<IWorkflowExecuterService, WorkflowExecuterService>();
 

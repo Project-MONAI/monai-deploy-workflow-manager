@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+﻿// SPDX-FileCopyrightText: © 2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
 using Microsoft.Extensions.DependencyInjection;
@@ -21,21 +21,22 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IServiceScope _scope;
 
-        private readonly IEventPayloadRecieverService _eventPayloadListenerService;
+        private readonly IEventPayloadReceiverService _eventPayloadListenerService;
 
         private readonly IMessageBrokerSubscriberService _messageSubscriber;
         private bool _disposedValue;
 
         public string WorkflowRequestRoutingKey { get; set; }
+        public string TaskStatusUpdateRoutingKey { get; set; }
         protected int Concurrency { get; set; }
         public ServiceStatus Status { get; set; } = ServiceStatus.Unknown;
-        public string ServiceName => "Payload Listner Service";
+        public string ServiceName => "Payload Listener Service";
 
         public PayloadListenerService(
             ILogger<PayloadListenerService> logger,
             IOptions<WorkflowManagerOptions> configuration,
             IServiceScopeFactory serviceScopeFactory,
-            IEventPayloadRecieverService eventPayloadListenerService)
+            IEventPayloadReceiverService eventPayloadListenerService)
         {
             _cancellationTokenSource = new CancellationTokenSource();
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -47,6 +48,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 throw new ArgumentNullException(nameof(configuration));
             }
 
+            TaskStatusUpdateRoutingKey = configuration.Value.Messaging.Topics.TaskUpdateRequest;
             WorkflowRequestRoutingKey = configuration.Value.Messaging.Topics.WorkflowRequest;
             Concurrency = 2;
 
@@ -74,15 +76,26 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 
         private void SetupPolling()
         {
-            _messageSubscriber.Subscribe(WorkflowRequestRoutingKey, String.Empty, OnWorkflowRequestRecievedCallback);
+            _messageSubscriber.Subscribe(WorkflowRequestRoutingKey, String.Empty, OnWorkflowRequestReceivedCallback);
             _logger.EventSubscription(ServiceName, WorkflowRequestRoutingKey);
+
+            _messageSubscriber.Subscribe(TaskStatusUpdateRoutingKey, String.Empty, OnTaskUpdateStatusReceivedCallback);
+            _logger.EventSubscription(ServiceName, TaskStatusUpdateRoutingKey);
         }
 
-        private void OnWorkflowRequestRecievedCallback(MessageReceivedEventArgs eventArgs)
+        private void OnWorkflowRequestReceivedCallback(MessageReceivedEventArgs eventArgs)
         {
             Task.Run(async () =>
             {
-                await _eventPayloadListenerService.RecieveWorkflowPayload(eventArgs);
+                await _eventPayloadListenerService.ReceiveWorkflowPayload(eventArgs);
+            }).ConfigureAwait(false);
+        }
+
+        private void OnTaskUpdateStatusReceivedCallback(MessageReceivedEventArgs eventArgs)
+        {
+            Task.Run(async () =>
+            {
+                await _eventPayloadListenerService.TaskUpdatePayload(eventArgs);
             }).ConfigureAwait(false);
         }
 

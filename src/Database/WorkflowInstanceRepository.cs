@@ -10,6 +10,7 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
@@ -92,6 +93,36 @@ namespace Monai.Deploy.WorkflowManager.Database
                 _logger.DbCallFailed(nameof(CreateAsync), e);
                 return false;
             }
+        }
+
+        public async Task<bool> UpdateTasksAsync(string workflowInstanceId, List<TaskExecution> tasks)
+        {
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            Guard.Against.NullOrEmpty(tasks, nameof(tasks));
+
+            try
+            {
+                var result = await _workflowInstanceCollection.FindOneAndUpdateAsync(
+                    i => i.Id == workflowInstanceId,
+                    Builders<WorkflowInstance>.Update.Set(w => w.Tasks, tasks));
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.DbCallFailed(nameof(CreateAsync), e);
+                return false;
+            }
+        }
+
+        public async Task<WorkflowInstance> GetByWorkflowInstanceIdAsync(string workflowInstanceId)
+        {
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+
+            var workflow = await _workflowInstanceCollection
+                            .Find(x => x.Id == workflowInstanceId)
+                            .FirstOrDefaultAsync();
+
+            return workflow;
         }
     }
 }
