@@ -19,7 +19,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
         public bool RightIsSet => RightGroup is not null || RightConditional is not null;
 
-        private int GroupedLogical { get; set; } = 1;
+        public int GroupedLogical { get; set; } = 1;
 
         public Regex FindAnds { get; } = new Regex(@"([\s]and[\s]|[\s]AND[\s]|[\s]And[\s])");
 
@@ -270,6 +270,11 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             {
                 var foundOpenBrackets = conditionalGroup.FindBrackets.Matches(input);
                 var foundClosingBrackets = conditionalGroup.FindCloseBrackets.Matches(input);
+
+                if (foundOpenBrackets.Count != foundClosingBrackets.Count)
+                {
+                    throw new ArgumentException("Matching brackets missing.");
+                }
 
                 if (foundOpenBrackets.Count == 1)
                 {

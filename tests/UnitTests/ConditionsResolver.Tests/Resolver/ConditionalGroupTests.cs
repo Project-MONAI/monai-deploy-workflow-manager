@@ -1,3 +1,4 @@
+using System;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver;
 using Xunit;
 
@@ -10,6 +11,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         //[InlineData("{{context.dicom.tags[('0010','0040')]}} == 'F' OR {{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
         [InlineData("'F' == 'F' OR {{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
         [InlineData("'F' == 'F' OR 'F' == 'leg'")]
+        [InlineData("'F' == 'F' AND 'F' == 'leg'")]
         [InlineData("'AND' == 'F' OR 'F' == 'leg'")]
         [InlineData("'OR' == 'F' OR 'F' == 'leg'")]
         [InlineData("'F' == 'F' or 'F' == 'leg'")] // Lowercase OR
@@ -66,6 +68,29 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
             Assert.True(conditionalGroup.RightIsSet);
             var result = conditionalGroup.Evaluate();
             Assert.Equal(expectedResult, result);
+        }
+
+        [Theory]
+        [InlineData("Matching brackets missing.", "('TRUE' == 'TRUE' AND ('TRUE' == 'TRUE' OR ('TRUE' == 'TRUE' AND ((('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE'))))")]
+        public void ConditionalGroup_WhenErrorHappens_ShouldShowsCorrectError(string expectedMessage, string input)
+        {
+            var exception = Assert.Throws<ArgumentException>(() => ConditionalGroup.Create(input));
+
+            Assert.Equal(expectedMessage, exception.Message);
+        }
+
+        [Theory]
+        [InlineData("Matching brackets missing.", "('TRUE' == 'TRUE' AND ('TRUE' == 'TRUE' OR ('TRUE' == 'TRUE' AND ((('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE'))))")]
+        public void ConditionalGroup_WhenParsingErrorHappens_ShouldShowsCorrectError(string expectedMessage, string input)
+        {
+            var exception = Assert.Throws<ArgumentException>(() =>
+            {
+                var conditionalGroup = new ConditionalGroup();
+                conditionalGroup.GroupedLogical = 2;
+                conditionalGroup.Parse(input);
+            });
+
+            Assert.Equal(expectedMessage, exception.Message);
         }
     }
 }
