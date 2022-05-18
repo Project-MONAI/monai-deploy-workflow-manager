@@ -1,4 +1,7 @@
-﻿using System.Text.RegularExpressions;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using System.Text.RegularExpressions;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions;
 
 namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
@@ -62,6 +65,11 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
         public void Parse(string input, int groupedLogicalParent = 0)
         {
+            if (string.IsNullOrEmpty(input))
+            {
+                throw new ArgumentNullException(nameof(input));
+            }
+
             var foundOpenBrackets = FindBrackets.Matches(input);
             var foundClosingBrackets = FindCloseBrackets.Matches(input);
             if (GroupedLogical > 1 && foundOpenBrackets.Count != foundClosingBrackets.Count)
@@ -103,23 +111,27 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             ParseComplex(input);
         }
 
-
-        private void ParseBrackets(string input)
+        public void ParseBrackets(string input)
         {
+            if (string.IsNullOrEmpty(input))
+            {
+                throw new ArgumentNullException(nameof(input));
+            }
+
             var foundAnds = FindAnds.Matches(input);
             var foundOrs = FindOrs.Matches(input);
 
-            var indexOfBracket = FindBrackets.Match(input).Index;
+            var foundBrackets = FindBrackets.Match(input);
             var indexOfClosingBracket = FindCloseBrackets.Match(input).Index;
-            if (indexOfBracket == -1)
+            if (!foundBrackets.Success)
             {
                 throw new InvalidOperationException("Expected Bracket: Bracket not found");
             }
-            var startingBracketHasBeenTrimmed = indexOfClosingBracket < indexOfBracket;
+            var startingBracketHasBeenTrimmed = indexOfClosingBracket < foundBrackets.Index;
             // if first index of any ANDs or ORs are before the first bracket then left hand evaluation should be processed
-            if (!startingBracketHasBeenTrimmed && (foundAnds.Any() && foundAnds.First().Index < indexOfBracket) || (foundOrs.Any() && foundOrs.First().Index < indexOfBracket))
+            if (!startingBracketHasBeenTrimmed && (foundAnds.Any() && foundAnds.First().Index < foundBrackets.Index) || (foundOrs.Any() && foundOrs.First().Index < foundBrackets.Index))
             {
-                if (foundAnds.Any() && foundAnds.First().Index < foundOrs.First().Index)
+                if (!foundOrs.Any() || foundAnds.Any() && foundAnds.First().Index < foundOrs.First().Index)
                 {
                     var splitByAnds = ParseAnds(input);
                     var rightAnd = splitByAnds[1].TrimStartExt("AND");
@@ -262,6 +274,10 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
         public static ConditionalGroup Create(string input, int groupedLogicalParent = 0)
         {
             var conditionalGroup = new ConditionalGroup();
+            if (string.IsNullOrEmpty(input))
+            {
+                throw new ArgumentNullException(nameof(input));
+            }
             if (groupedLogicalParent == 0)
             {
                 input = TrimStartingBrackets(input, conditionalGroup);

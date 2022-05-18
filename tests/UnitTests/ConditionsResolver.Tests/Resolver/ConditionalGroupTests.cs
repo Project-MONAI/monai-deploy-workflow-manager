@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
 using System;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver;
 using Xunit;
@@ -74,6 +77,11 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [InlineData(false, "('Falsee' == 'FLASE' AND 'TRUE' == 'TRUE') AND ('Falsee' == 'FLASE' OR 'TRUE' == 'TRUE')")]
         [InlineData(true, "('TRUE' == 'TRUE' AND ('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE'))")]
         [InlineData(true, "('TRUE' == 'TRUE' OR ('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE'))")]
+        [InlineData(true, "('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE') OR ('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE')")]
+        [InlineData(true, "('TRUE' == 'TRUE' AND 'TRUE' == 'TRUE' AND 'TRUE' == 'TRUE') AND ('TRUE' == 'TRUE' AND 'TRUE' == 'TRUE')")]
+        [InlineData(true, "('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE' OR 'TRUE' == 'TRUE') OR ('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE')")]
+        [InlineData(true, "('TRUE' == 'TRUE' OR '(TRUE' == 'TRUE' OR 'TRUE' == 'TRUE') OR 'TRUE' == 'TRUE') OR ('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE')")]
+        [InlineData(true, "('TRUE' == 'TRUE' AND ('TRUE' == 'TRUE' AND 'TRUE' == 'TRUE') AND 'TRUE' == 'TRUE') AND ('TRUE' == 'TRUE' AND 'TRUE' == 'TRUE')")]
         public void ConditionalGroup_WhenProvidedCorrectinputWithBrackets_ShouldCreateAndEvaluate(bool expectedResult, string input)
         {
             var conditionalGroup = ConditionalGroup.Create(input);
@@ -119,6 +127,38 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
             var result = conditionalGroup.Evaluate();
 
             Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void ConditionalGroup_GivenConditionalGroup_ShouldThrowException()
+        {
+            var expectedMessage = "Evaluation Error";
+            var exception = Assert.Throws<InvalidOperationException>(() => new ConditionalGroup().Evaluate());
+            Assert.Equal(expectedMessage, exception.Message);
+        }
+
+        [Fact]
+        public void ConditionalGroup_GivenConditionalGroupParseBrackets_ShouldThrowException()
+        {
+            var expectedMessage = "Expected Bracket: Bracket not found";
+            var exception = Assert.Throws<InvalidOperationException>(() => new ConditionalGroup().ParseBrackets("'f' == 'f'"));
+            Assert.Equal(expectedMessage, exception.Message);
+        }
+
+        [Fact]
+        public void ConditionalGroup_GivenEmptyStringConditionalGroup_ShouldThrowException()
+        {
+            var expectedMessage = "Value cannot be null. (Parameter 'input')";
+            var exception = Assert.Throws<ArgumentNullException>(() => ConditionalGroup.Create(""));
+            Assert.Equal(expectedMessage, exception.Message);
+        }
+
+        [Fact]
+        public void ConditionalGroup_GivenEmptyStringConditionalGroupParse_ShouldThrowException()
+        {
+            var expectedMessage = "Value cannot be null. (Parameter 'input')";
+            var exception = Assert.Throws<ArgumentNullException>(() => new ConditionalGroup().Parse(""));
+            Assert.Equal(expectedMessage, exception.Message);
         }
     }
 }

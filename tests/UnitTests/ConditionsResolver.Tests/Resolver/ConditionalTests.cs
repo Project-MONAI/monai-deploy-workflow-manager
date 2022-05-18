@@ -1,4 +1,7 @@
-﻿using System;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using System;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver;
 using Xunit;
 
@@ -32,6 +35,22 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
             var exception = Assert.Throws<ArgumentException>(() => Conditional.Create(input));
 
             Assert.Equal(expectedErrorMessage, exception.Message);
+        }
+
+        [Fact]
+        public void Conditional_GivenEmptyStringConditional_ShouldThrowException()
+        {
+            var expectedMessage = "Value cannot be null. (Parameter 'input')";
+            var exception = Assert.Throws<ArgumentNullException>(() => Conditional.Create(""));
+            Assert.Equal(expectedMessage, exception.Message);
+        }
+
+        [Fact]
+        public void Conditional_GivenEmptyStringConditionalParse_ShouldThrowException()
+        {
+            var expectedMessage = "Value cannot be null. (Parameter 'input')";
+            var exception = Assert.Throws<ArgumentNullException>(() => new Conditional().Parse(null));
+            Assert.Equal(expectedMessage, exception.Message);
         }
     }
 }

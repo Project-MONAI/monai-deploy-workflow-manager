@@ -1,4 +1,7 @@
-﻿using System.Globalization;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using System.Globalization;
 
 namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 {
@@ -28,11 +31,16 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
         }
 
 
-        public bool Parse(ReadOnlySpan<char> input, int currentIndex = 0)
+        public void Parse(ReadOnlySpan<char> input, int currentIndex = 0)
         {
+            if (input.IsEmpty || input.IsWhiteSpace())
+            {
+                throw new ArgumentNullException(nameof(input));
+            }
+
             if (currentIndex >= input.Length)
             {
-                return true;
+                return;
             }
 
             var isAnd = input.Slice(0, 3).ToString().ToUpper() == "AND";
@@ -80,11 +88,16 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 default:
                     break;
             }
-            return Parse(input, currentIndex + 1);
+            Parse(input, currentIndex + 1);
+            return;
         }
 
         public static Conditional Create(string input, int currentIndex = 0)
         {
+            if (string.IsNullOrEmpty(input))
+            {
+                throw new ArgumentNullException(nameof(input));
+            }
             var conditionalGroup = new Conditional();
             conditionalGroup.Parse(input.Trim());
 

@@ -1,4 +1,7 @@
-﻿using System;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using System;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions;
 using Xunit;
 
@@ -27,12 +30,6 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [InlineData("(test", "test test(test")]
         [InlineData("tESt TEST tesT test test(test", "tESt TEST tesT test test(test")]
         public void String_WhenTrimStartExtWithTestAndSpecifiyCurrentCulture_ShouldOnlyRemoveTestFromStart(string expected, string input)
-        {
-            var result = input.TrimStartExt("test", StringComparison.CurrentCulture);
-            Assert.Equal(expected, result);
-        }
-
-        public void String_WhenTrimStartExtNull_ShouldOnlyRemoveTestFromStart(string expected, string input)
         {
             var result = input.TrimStartExt("test", StringComparison.CurrentCulture);
             Assert.Equal(expected, result);
