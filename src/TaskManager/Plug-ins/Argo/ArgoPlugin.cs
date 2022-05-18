@@ -365,7 +365,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     continue;
                 }
 
-
                 var storageInfo = Event.Inputs.FirstOrDefault(p => p.Name.Equals(artifact.Name, StringComparison.Ordinal));
                 if (storageInfo is null)
                 {
@@ -400,7 +399,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     }
                 }
             }
-
 
             return artifacts.Any(p => p.Name.Equals(referencedArtifactName, StringComparison.Ordinal));
         }

@@ -81,7 +81,7 @@ public class ArgoPluginTest
             message.TaskPluginArguments.Add(key, Guid.NewGuid().ToString());
             Assert.Throws<InvalidTaskException>(() => new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, message));
         }
-        message.TaskPluginArguments[Keys.RequiredParameters.Last()] = Guid.NewGuid().ToString();
+        message.TaskPluginArguments[Keys.RequiredParameters[Keys.RequiredParameters.Count - 1]] = Guid.NewGuid().ToString();
         Assert.Throws<InvalidTaskException>(() => new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, message));
 
         message.TaskPluginArguments[Keys.BaseUrl] = "/api";
@@ -343,7 +343,7 @@ public class ArgoPluginTest
             Assert.True(false);
     }
 
-    private void ValidateDagWithIntermediateArtifacts(TaskDispatchEvent message, Workflow workflow)
+    private static void ValidateDagWithIntermediateArtifacts(TaskDispatchEvent message, Workflow workflow)
     {
         var template = workflow.Spec.Templates.FirstOrDefault(p => p.Name.Equals("my-entrypoint", StringComparison.Ordinal));
         Assert.NotNull(template!);
@@ -367,11 +367,9 @@ public class ArgoPluginTest
         Assert.Null(template!.Inputs.Artifacts.ElementAt(0).S3);
         Assert.Null(template.Inputs.Artifacts.ElementAt(1).S3);
         Assert.Equal(message.Outputs.First(p => p.Name.Equals("output")).RelativeRootPath, template.Outputs.Artifacts.First().S3.Key);
-
     }
 
-
-    private void ValidateSimpleTemplate(TaskDispatchEvent message, Workflow workflow)
+    private static void ValidateSimpleTemplate(TaskDispatchEvent message, Workflow workflow)
     {
         var template = workflow.Spec.Templates.FirstOrDefault(p => p.Name.Equals("my-entrypoint", StringComparison.Ordinal));
 
@@ -511,19 +509,19 @@ public class ArgoPluginTest
             ExecutionId = Guid.NewGuid().ToString(),
             TaskPluginType = Guid.NewGuid().ToString(),
             WorkflowInstanceId = Guid.NewGuid().ToString(),
-            TaskId = Guid.NewGuid().ToString()
-        };
-        message.IntermediateStorage = new Messaging.Common.Storage
-        {
-            Name = Guid.NewGuid().ToString(),
-            Endpoint = Guid.NewGuid().ToString(),
-            Credentials = new Messaging.Common.Credentials
+            TaskId = Guid.NewGuid().ToString(),
+            IntermediateStorage = new Messaging.Common.Storage
             {
-                AccessKey = Guid.NewGuid().ToString(),
-                AccessToken = Guid.NewGuid().ToString()
-            },
-            Bucket = Guid.NewGuid().ToString(),
-            RelativeRootPath = Guid.NewGuid().ToString(),
+                Name = Guid.NewGuid().ToString(),
+                Endpoint = Guid.NewGuid().ToString(),
+                Credentials = new Messaging.Common.Credentials
+                {
+                    AccessKey = Guid.NewGuid().ToString(),
+                    AccessToken = Guid.NewGuid().ToString()
+                },
+                Bucket = Guid.NewGuid().ToString(),
+                RelativeRootPath = Guid.NewGuid().ToString(),
+            }
         };
         message.Inputs.Add(new Messaging.Common.Storage
         {
@@ -564,7 +562,7 @@ public class ArgoPluginTest
         return message;
     }
 
-    private WorkflowTemplate GenerateWorkflowTemplate(TaskDispatchEvent taskDispatchEvent) => new()
+    private static WorkflowTemplate GenerateWorkflowTemplate(TaskDispatchEvent taskDispatchEvent) => new()
     {
         Kind = "WorkflowTemplate",
         Metadata = new ObjectMeta()
@@ -682,7 +680,6 @@ public class ArgoPluginTest
                              new Artifact
                              {
                                  Name = taskDispatchEvent.Inputs.First().Name,
-
                              }
                          },
                     }
@@ -737,8 +734,7 @@ public class ArgoPluginTest
         }
     };
 
-
-    private WorkflowTemplate? LoadArgoTemplate(string filename)
+    private static WorkflowTemplate? LoadArgoTemplate(string filename)
     {
         var templateString = File.ReadAllText($"Templates/{filename}");
 

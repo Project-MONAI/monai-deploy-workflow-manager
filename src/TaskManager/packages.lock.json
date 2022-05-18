@@ -60,9 +60,9 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0035, )",
-        "resolved": "0.1.0-rc0035",
-        "contentHash": "roJZo09Wiq8QnwzKsU6CfIYe0OB7u4wrBoHulfui6rfdj2/+pXFqIRm/paTfkXUq37ENVP0pivffHqrqL/XO8Q==",
+        "requested": "[0.1.0-rc0036, )",
+        "resolved": "0.1.0-rc0036",
+        "contentHash": "ONfPbkd0bsJGJHOPVn7U5z0FDNirYuvMswLauN8rxHNSat0GbhFDnObrY8iIuCFY02zfPfpoL9mywkksVwsUAA==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -562,7 +562,7 @@
         "dependencies": {
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.0-rc0035",
+          "Monai.Deploy.Messaging": "0.1.0-rc0036",
           "Monai.Deploy.Storage": "0.1.0-rc0019",
           "Newtonsoft.Json": "13.0.1",
           "System.IO.Abstractions": "16.1.25"
@@ -573,7 +573,7 @@
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.141",
           "Microsoft.Extensions.Configuration": "6.0.1",
-          "Monai.Deploy.Messaging": "0.1.0-rc0035",
+          "Monai.Deploy.Messaging": "0.1.0-rc0036",
           "MongoDB.Bson": "2.15.0",
           "Newtonsoft.Json": "13.0.1"
         }
@@ -584,7 +584,7 @@
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.0-rc0035",
+          "Monai.Deploy.Messaging": "0.1.0-rc0036",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
           "MongoDB.Bson": "2.15.0",
@@ -600,7 +600,7 @@
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.0-rc0035",
+          "Monai.Deploy.Messaging": "0.1.0-rc0036",
           "Monai.Deploy.Storage": "0.1.0-rc0019"
         }
       }
