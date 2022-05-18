@@ -207,14 +207,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
         {
             if (RightGroup is not null && RightGroup.GroupedLogical > GroupedLogical)
             {
-                if (LeftConditional is not null)
-                {
-                    return RightGroup.Evaluate() || LeftConditional.Evaluate();
-                }
-                if (LeftGroup is not null)
-                {
-                    return RightGroup.Evaluate() || LeftGroup.Evaluate();
-                }
+                return EvaluteOrsLogicalGroups();
             }
 
             if (LeftConditional is not null && RightConditional is not null)
@@ -237,18 +230,24 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             throw new InvalidOperationException("Evaluation Error in EvaluateOrs");
         }
 
+        private bool EvaluteOrsLogicalGroups()
+        {
+            if (LeftConditional is not null && RightGroup is not null)
+            {
+                return RightGroup.Evaluate() || LeftConditional.Evaluate();
+            }
+            if (LeftGroup is not null && RightGroup is not null)
+            {
+                return RightGroup.Evaluate() || LeftGroup.Evaluate();
+            }
+            return false;
+        }
+
         private bool EvaluateAnds()
         {
             if (RightGroup is not null && RightGroup.GroupedLogical > GroupedLogical)
             {
-                if (LeftConditional is not null)
-                {
-                    return RightGroup.Evaluate() && LeftConditional.Evaluate();
-                }
-                if (LeftGroup is not null)
-                {
-                    return RightGroup.Evaluate() && LeftGroup.Evaluate();
-                }
+                return EvaluteAndsLogicalGroups();
             }
 
             if (LeftConditional is not null && RightConditional is not null)
@@ -269,6 +268,19 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             }
 
             throw new InvalidOperationException("Evaluation Error in EvaluateAnds");
+        }
+
+        private bool EvaluteAndsLogicalGroups()
+        {
+            if (LeftConditional is not null && RightGroup is not null)
+            {
+                return RightGroup.Evaluate() && LeftConditional.Evaluate();
+            }
+            if (LeftGroup is not null && RightGroup is not null)
+            {
+                return RightGroup.Evaluate() && LeftGroup.Evaluate();
+            }
+            return false;
         }
 
         public static ConditionalGroup Create(string input, int groupedLogicalParent = 0)
