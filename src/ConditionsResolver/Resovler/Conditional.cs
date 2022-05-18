@@ -89,7 +89,6 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                     break;
             }
             Parse(input, currentIndex + 1);
-            return;
         }
 
         public static Conditional Create(string input, int currentIndex = 0)
