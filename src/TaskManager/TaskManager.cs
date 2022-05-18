@@ -251,6 +251,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 //     AccessToken = credeentials.SecretAccessKey,
                 //     SessionToken = credeentials.SessionToken,
                 // };
+
                 storage.Credentials = new Credentials
                 {
                     AccessKey = _options.Value.Storage.Settings["accessKey"],
