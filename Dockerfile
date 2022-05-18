@@ -50,4 +50,4 @@ EXPOSE 5000
 RUN ls -lR /opt/monai/wm
 ENV PATH="/opt/dotnetcore-tools:${PATH}"
 
-ENTRYPOINT ["/opt/monai/ig/Monai.Deploy.WorkflowManager"]
+ENTRYPOINT ["/opt/monai/wm/Monai.Deploy.WorkflowManager"]
