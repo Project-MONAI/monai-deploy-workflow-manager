@@ -26,7 +26,7 @@ RUN echo "Building MONAI Workflow Manager $Version ($FileVersion)..."
 RUN dotnet publish -c Release -o out --nologo /p:Version=$Version /p:FileVersion=$FileVersion src/WorkflowManager/Monai.Deploy.WorkflowManager.csproj
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/runtime:6.0-focal
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -38,7 +38,7 @@ RUN apt-get clean \
     sqlite3 \
    && rm -rf /var/lib/apt/lists
 
-WORKDIR /opt/monai/ig
+WORKDIR /opt/monai/wm
 COPY --from=build /app/out .
 #COPY docs/compliance/open-source-licenses.md .
 
@@ -47,7 +47,7 @@ COPY --from=build /tools /opt/dotnetcore-tools
 EXPOSE 104
 EXPOSE 5000
 
-RUN ls -lR /opt/monai/ig
+RUN ls -lR /opt/monai/wm
 ENV PATH="/opt/dotnetcore-tools:${PATH}"
 
-ENTRYPOINT ["/opt/monai/ig/Monai.Deploy.WorkflowManager"]
+ENTRYPOINT ["/opt/monai/wm/Monai.Deploy.WorkflowManager"]
