@@ -58,7 +58,7 @@ Scenario: Publish an invalid workflow request which does not create a workflow i
     | Missing_CalledAETitle_Invalid_WF_Request  |
 
 @WorkflowRequest
-Scenario: Publish a workflow request with the same payloadId for a Workflow Instance which has not been dispatched
+Scenario: Publish a valid workflow request with an exiting Workflow Instance with a Task which is not dispatched
     Given I have a clinical workflow Multi_Request_Workflow_Created
     And I have a Workflow Instance Existing_WFI_Created
     When I publish a Workflow Request Message Multi_WF_Created
@@ -66,7 +66,7 @@ Scenario: Publish a workflow request with the same payloadId for a Workflow Inst
     And 1 Task Dispatch event is published
 
 @WorkflowRequest
-Scenario: Publish a workflow request with the same payloadId for a Workflow Instance which has been dispatched
+Scenario: Publish a valid workflow request with an exiting Workflow Instance with a Task which is dispatched
     Given I have a clinical workflow Multi_Request_Workflow_Dispatched
     And I have a Workflow Instance Existing_WFI_Dispatched
     When I publish a Workflow Request Message Multi_WF_Dispatched

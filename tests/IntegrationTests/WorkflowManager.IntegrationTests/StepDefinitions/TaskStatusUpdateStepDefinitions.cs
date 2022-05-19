@@ -6,8 +6,9 @@ using FluentAssertions;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using Monai.Deploy.WorkflowManager.IntegrationTests.TestData;
 using Monai.Deploy.WorkloadManager.Contracts.Models;
+using Polly;
+using Polly.Retry;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
@@ -15,93 +16,67 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
     public class TaskStatusUpdateStepDefinitions
     {
         private MongoClientUtil MongoClient { get; set; }
-        private Assertions Assertions { get; set; }
         private RabbitPublisher TaskUpdatePublisher { get; set; }
         private ScenarioContext ScenarioContext { get; set; }
         private TaskUpdateEvent TaskUpdateEvent { get; set; }
         private WorkflowInstance WorkflowInstance { get; set; }
+        private RetryPolicy RetryPolicy { get; set; }
+        private DataHelper DataHelper { get; set; }
 
         public TaskStatusUpdateStepDefinitions(ObjectContainer objectContainer, ScenarioContext scenarioContext)
         {
             TaskUpdatePublisher = objectContainer.Resolve<RabbitPublisher>("TaskUpdatePublisher");
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
-            Assertions = new Assertions();
+            DataHelper = objectContainer.Resolve<DataHelper>();
             ScenarioContext = scenarioContext;
+            RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
         [When(@"I publish a Task Update Message (.*) with status (.*)")]
         public void WhenIPublishATaskUpdateMessageTaskUpdateMessage(string name, string updateStatus)
         {
-            var taskUpdateTestData = TaskUpdatesTestData.TestData.FirstOrDefault(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            var message = new JsonMessage<TaskUpdateEvent>(
+                DataHelper.GetTaskUpdateTestData(name, updateStatus),
+                "16988a78-87b5-4168-a5c3-2cfc2bab8e54",
+                Guid.NewGuid().ToString(),
+                string.Empty);
 
-            if (taskUpdateTestData != null && taskUpdateTestData.TaskUpdateEvent != null)
-            {
-                if (!taskUpdateTestData.Name.Contains("Missing_Status"))
-                {
-                    taskUpdateTestData.TaskUpdateEvent.Status = updateStatus.ToLower() switch
-                    {
-                        "accepted" => TaskExecutionStatus.Accepted,
-                        "succeeded" => TaskExecutionStatus.Succeeded,
-                        "failed" => TaskExecutionStatus.Failed,
-                        "canceled" => TaskExecutionStatus.Canceled,
-                        _ => throw new Exception($"updateStatus {updateStatus} is not recognised. Please check and try again."),
-                    };
-                }
-
-                TaskUpdateEvent = taskUpdateTestData.TaskUpdateEvent;
-
-                var message = new JsonMessage<TaskUpdateEvent>(
-                    TaskUpdateEvent,
-                    "16988a78-87b5-4168-a5c3-2cfc2bab8e54",
-                    Guid.NewGuid().ToString(),
-                    string.Empty);
-
-                TaskUpdatePublisher.PublishMessage(message.ToMessage());
-            }
-            else
-            {
-                throw new Exception($"Task update message not found for {name}");
-            }
+            TaskUpdatePublisher.PublishMessage(message.ToMessage());
         }
 
         [Then(@"I can see the status of the Task is updated")]
         public void ThenICanSeeTheStatusOfTheTaskIsUpdated()
         {
-            WorkflowInstance = (WorkflowInstance)ScenarioContext["OriginalWorkflowInstance"];
-
-            for (int i = 0; i < 10; i++)
+            RetryPolicy.Execute(() =>
             {
-                var updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(WorkflowInstance.Id);
+                var workflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
 
-                try
+                var taskUpdated = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(DataHelper.TaskUpdateEvent.TaskId));
+
+                taskUpdated.Status.Should().Be(DataHelper.TaskUpdateEvent.Status);
+
+                if (DataHelper.TaskDispatchEvent.Count > 0)
                 {
-                    updatedWorkflowInstance.Tasks[0].Status.Should().Be(TaskUpdateEvent.Status);
-                    break;
-                }
-                catch (Exception e)
-                {
-                    Console.Write($"Task status for workflow instance does not match {TaskUpdateEvent.Status}. Trying again");
-
-                    Thread.Sleep(1000);
-
-                    if (i == 9)
+                    foreach (var e in DataHelper.TaskDispatchEvent)
                     {
-                        throw e;
+                        var taskDispatched = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(e.TaskId));
+
+                        taskDispatched.Status.Should().Be(TaskExecutionStatus.Dispatched);
                     }
                 }
-            }
+            });
         }
 
         [Then(@"I can see the status of the Task is not updated")]
         public void ThenICanSeeTheStatusOfTheTaskIsNotUpdated()
         {
-            WorkflowInstance = (WorkflowInstance)ScenarioContext["OriginalWorkflowInstance"];
-
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 2; i++)
             {
-                var updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(WorkflowInstance.Id);
+                var updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
 
-                updatedWorkflowInstance.Tasks[0].Status.Should().Be(WorkflowInstance.Tasks[0].Status);
+                var orignalWorkflowInstance = DataHelper.WorkflowInstances.FirstOrDefault(x => x.Id.Equals(DataHelper.TaskUpdateEvent.WorkflowInstanceId));
+
+                updatedWorkflowInstance.Tasks[0].Status.Should().Be(orignalWorkflowInstance.Tasks[0].Status);
 
                 Thread.Sleep(1000);
             }
@@ -111,9 +86,20 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [AfterScenario(Order = 1)]
         public void DeleteTestData()
         {
-            if (WorkflowInstance != null)
+            if (DataHelper.WorkflowRevisions.Count > 0)
             {
-                MongoClient.DeleteWorkflowInstance(WorkflowInstance.Id);
+                foreach (var workflowRevision in DataHelper.WorkflowRevisions)
+                {
+                    MongoClient.DeleteWorkflowDocument(workflowRevision.Id);
+                }
+            }
+
+            if (DataHelper.WorkflowInstances.Count > 0)
+            {
+                foreach (var workflowInstance in DataHelper.WorkflowInstances)
+                {
+                    MongoClient.DeleteWorkflowInstance(workflowInstance.Id);
+                }
             }
         }
 

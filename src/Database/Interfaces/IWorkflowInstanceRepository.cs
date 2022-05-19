@@ -43,5 +43,12 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <param name="workflowInstanceId">Workflow Instance to update.</param>
         /// <param name="tasks">List of takss to update.</param>
         Task<bool> UpdateTasksAsync(string workflowInstanceId, List<TaskExecution> tasks);
+
+        /// <summary>
+        /// Updates the Status for a given workflow instance.
+        /// </summary>
+        /// <param name="workflowInstanceId">Workflow Instance to update.</param>
+        /// <param name="status">Status to set.</param>
+        Task<bool> UpdateWorkflowInstanceStatusAsync(string workflowInstanceId, Status status);
     }
 }

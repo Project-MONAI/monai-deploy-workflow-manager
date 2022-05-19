@@ -338,16 +338,16 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Publish a workflow request with the same payloadId for a Workflow Instance which " +
-            "has not been dispatched")]
+        [NUnit.Framework.DescriptionAttribute("Publish a valid workflow request with an exiting Workflow Instance with a Task wh" +
+            "ich is not dispatched")]
         [NUnit.Framework.CategoryAttribute("WorkflowRequest")]
-        public virtual void PublishAWorkflowRequestWithTheSamePayloadIdForAWorkflowInstanceWhichHasNotBeenDispatched()
+        public virtual void PublishAValidWorkflowRequestWithAnExitingWorkflowInstanceWithATaskWhichIsNotDispatched()
         {
             string[] tagsOfScenario = new string[] {
                     "WorkflowRequest"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a workflow request with the same payloadId for a Workflow Instance which " +
-                    "has not been dispatched", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a valid workflow request with an exiting Workflow Instance with a Task wh" +
+                    "ich is not dispatched", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 61
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -388,16 +388,16 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Publish a workflow request with the same payloadId for a Workflow Instance which " +
-            "has been dispatched")]
+        [NUnit.Framework.DescriptionAttribute("Publish a valid workflow request with an exiting Workflow Instance with a Task wh" +
+            "ich is dispatched")]
         [NUnit.Framework.CategoryAttribute("WorkflowRequest")]
-        public virtual void PublishAWorkflowRequestWithTheSamePayloadIdForAWorkflowInstanceWhichHasBeenDispatched()
+        public virtual void PublishAValidWorkflowRequestWithAnExitingWorkflowInstanceWithATaskWhichIsDispatched()
         {
             string[] tagsOfScenario = new string[] {
                     "WorkflowRequest"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a workflow request with the same payloadId for a Workflow Instance which " +
-                    "has been dispatched", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a valid workflow request with an exiting Workflow Instance with a Task wh" +
+                    "ich is dispatched", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 69
 this.ScenarioInitialize(scenarioInfo);
 #line hidden

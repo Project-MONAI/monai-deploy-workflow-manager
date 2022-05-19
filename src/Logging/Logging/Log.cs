@@ -66,5 +66,11 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
 
         [LoggerMessage(EventId = 20, Level = LogLevel.Error, Message = "The following task: {taskId} cannot be found in the workflow: {workflowId}. Payload: {payloadId}")]
         public static partial void TaskNotFoundInWorkfow(this ILogger logger, string payloadId, string taskId, string workflowId);
+
+        [LoggerMessage(EventId = 21, Level = LogLevel.Error, Message = "The following task: {taskId} cannot be found in the workflow instance: {workflowInstanceId}.")]
+        public static partial void TaskNotFoundInWorkfowInstance(this ILogger logger, string taskId, string workflowInstanceId);
+
+        [LoggerMessage(EventId = 22, Level = LogLevel.Error, Message = "The task execution status for task {taskId} cannot be updated from {oldStatus} to {newStatus}. Payload: {payloadId}")]
+        public static partial void TaskStatusUpdateNotValid(this ILogger logger, string payloadId, string taskId, string oldStatus, string newStatus);
     }
 }
