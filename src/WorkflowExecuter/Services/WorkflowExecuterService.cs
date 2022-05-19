@@ -112,17 +112,6 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             Guard.Against.Null(message, nameof(message));
             Guard.Against.Null(message.WorkflowInstanceId, nameof(message.WorkflowInstanceId));
 
-            if (!await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status))
-            {
-                return false;
-            }
-
-            if (message.Status != TaskExecutionStatus.Succeeded
-                && message.Status != TaskExecutionStatus.Failed)
-            {
-                return true;
-            }
-
             var workflowInstance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId);
 
             if (workflowInstance is null)
@@ -130,6 +119,27 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                 _logger.TypeNotFound(nameof(workflowInstance));
 
                 return false;
+            }
+
+            var currentTask = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId == message.TaskId);
+
+            if (currentTask is null)
+            {
+                _logger.TaskNotFoundInWorkfowInstance(message.TaskId, message.WorkflowInstanceId);
+
+                return false;
+            }
+
+            if (!message.Status.IsTaskExecutionStatusUpdateValid(currentTask.Status))
+            {
+                _logger.TaskStatusUpdateNotValid(workflowInstance.PayloadId, message.TaskId, currentTask.Status.ToString(), message.Status.ToString());
+
+                return false;
+            }
+
+            if (message.Status != TaskExecutionStatus.Succeeded)
+            {
+                return await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
             }
 
             var workflow = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId);
@@ -146,7 +156,12 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
 
             if (!newTaskExecutions.Any())
             {
-                return true;
+                if (!workflowInstance.Tasks.Any(t => t.Status != TaskExecutionStatus.Succeeded && t.Status != TaskExecutionStatus.Failed && t.TaskId != message.TaskId))
+                {
+                    await _workflowInstanceRepository.UpdateWorkflowInstanceStatusAsync(workflowInstance.Id, Status.Succeeded);
+                }
+
+                return await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
             }
 
             workflowInstance.Tasks.AddRange(newTaskExecutions);
@@ -167,8 +182,10 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                     continue;
                 }
 
-                processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, TaskExecutionStatus.Dispatched);
+                processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, taskExec.TaskId, TaskExecutionStatus.Dispatched);
             }
+
+            processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
 
             return processed;
         }
@@ -211,7 +228,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
 
         private async Task<bool> DispatchTask(WorkflowInstance workflowInstance, TaskExecution taskExec, string correlationId)
         {
-            var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(taskExec, workflowInstance.WorkflowId, correlationId, _storageConfiguration);
+            var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(taskExec, workflowInstance.Id, correlationId, _storageConfiguration);
             var jsonMesssage = new JsonMessage<TaskDispatchEvent>(taskDispatchEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, taskDispatchEvent.CorrelationId, Guid.NewGuid().ToString());
 
             await _messageBrokerPublisherService.Publish(TaskDispatchRoutingKey, jsonMesssage.ToMessage());

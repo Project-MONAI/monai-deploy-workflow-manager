@@ -1266,3 +1266,9 @@
     :why: MIT - https://github.com/aaubry/YamlDotNet/blob/master/LICENSE.txt
     :versions: []
     :when: 2022-05-16 20:42:18.749052054 Z
+- - :approve
+  - Polly
+  - :who: Jack Schofield (JackSchofield23)
+    :why: BSD-3 - https://licenses.nuget.org/BSD-3-Clause
+    :versions: []
+    :when: 2022-05-18 11:24:00.000000000 +01:00

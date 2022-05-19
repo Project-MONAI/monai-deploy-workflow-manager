@@ -5,35 +5,42 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkloadManager.Contracts.Models;
 using MongoDB.Driver;
+using Polly;
+using Polly.Retry;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
     public class MongoClientUtil
     {
+        private MongoClient Client { get; set; }
+        private IMongoDatabase Database { get; set; }
+        private IMongoCollection<WorkflowRevision> WorkflowRevisionCollection { get; set; }
+        private IMongoCollection<WorkflowInstance> WorkflowInstanceCollection { get; set; }
+        private RetryPolicy RetryMongo { get; set; }
+
         public MongoClientUtil()
         {
             Client = new MongoClient(TestExecutionConfig.MongoConfig.ConnectionString);
             Database = Client.GetDatabase($"{TestExecutionConfig.MongoConfig.Database}");
             WorkflowRevisionCollection = Database.GetCollection<WorkflowRevision>($"{TestExecutionConfig.MongoConfig.WorkflowCollection}");
             WorkflowInstanceCollection = Database.GetCollection<WorkflowInstance>($"{TestExecutionConfig.MongoConfig.WorkflowInstanceCollection}");
+            RetryMongo = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
-
-        private MongoClient Client { get; set; }
-
-        private IMongoDatabase Database { get; set; }
-
-        private IMongoCollection<WorkflowRevision> WorkflowRevisionCollection { get; set; }
-
-        private IMongoCollection<WorkflowInstance> WorkflowInstanceCollection { get; set; }
 
         public void CreateWorkflowRevisionDocument(WorkflowRevision workflowRevision)
         {
-            WorkflowRevisionCollection.InsertOne(workflowRevision);
+            RetryMongo.Execute(() =>
+            {
+                WorkflowRevisionCollection.InsertOne(workflowRevision);
+            });
         }
 
         public void DeleteWorkflowDocument(string id)
         {
-            WorkflowRevisionCollection.DeleteOne(x => x.WorkflowId.Equals(id));
+            RetryMongo.Execute(() =>
+            {
+                WorkflowRevisionCollection.DeleteOne(x => x.Id.Equals(id));
+            });
         }
 
         public void DeleteAllWorkflowDocuments()
@@ -43,7 +50,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         public void CreateWorkflowInstanceDocument(WorkflowInstance workflowInstance)
         {
-            WorkflowInstanceCollection.InsertOne(workflowInstance);
+            RetryMongo.Execute(() =>
+            {
+                WorkflowInstanceCollection.InsertOne(workflowInstance);
+            });
         }
 
         public WorkflowInstance GetWorkflowInstance(string payloadId)
@@ -56,7 +66,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             return WorkflowInstanceCollection.Find(x => x.Id == Id).FirstOrDefault();
         }
 
-        public List<WorkflowInstance> GetWorkflowInstances(string payloadId)
+        public List<WorkflowInstance> GetWorkflowInstancesByPayloadId(string payloadId)
         {
             return WorkflowInstanceCollection.Find(x => x.PayloadId == payloadId).ToList();
         }
@@ -68,7 +78,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         public void DeleteWorkflowInstance(string id)
         {
-            WorkflowInstanceCollection.DeleteOne(x => x.Id.Equals(id));
+            RetryMongo.Execute(() =>
+            {
+                WorkflowInstanceCollection.DeleteOne(x => x.Id.Equals(id));
+            });
         }
 
         public void DropDatabase(string dbName)
