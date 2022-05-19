@@ -75,16 +75,23 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Features
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Publish a valid workflow request which creates a single workflow instance")]
+        [NUnit.Framework.CategoryAttribute("WorkflowRequest")]
         [NUnit.Framework.TestCaseAttribute("Basic_Workflow_1", "Basic_AeTitle_WF_Request", null)]
         [NUnit.Framework.TestCaseAttribute("Basic_Workflow_1", "Basic_Id_WF_Request", null)]
         public virtual void PublishAValidWorkflowRequestWhichCreatesASingleWorkflowInstance(string workflow, string workflowRequestMessage, string[] exampleTags)
         {
-            string[] tagsOfScenario = exampleTags;
+            string[] @__tags = new string[] {
+                    "WorkflowRequest"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("workflow", workflow);
             argumentsOfScenario.Add("workflowRequestMessage", workflowRequestMessage);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a valid workflow request which creates a single workflow instance", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 5
+#line 6
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -104,16 +111,16 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 6
+#line 7
     testRunner.Given(string.Format("I have a clinical workflow {0}", workflow), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 7
+#line 8
     testRunner.When(string.Format("I publish a Workflow Request Message {0}", workflowRequestMessage), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 8
+#line 9
     testRunner.Then("I can see 1 Workflow Instance is created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 9
+#line 10
     testRunner.And("1 Task Dispatch event is published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -122,17 +129,24 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Publish a valid workflow request which creates multiple workflow instances")]
+        [NUnit.Framework.CategoryAttribute("WorkflowRequest")]
         [NUnit.Framework.TestCaseAttribute("Same_AeTitle_1", "Same_AeTitle_2", "Same_AeTitle", null)]
         [NUnit.Framework.TestCaseAttribute("Basic_Workflow_1", "Basic_Workflow_2", "Basic_Multi_Id_WF_Request", null)]
         public virtual void PublishAValidWorkflowRequestWhichCreatesMultipleWorkflowInstances(string workflow_1, string workflow_2, string workflowRequestMessage, string[] exampleTags)
         {
-            string[] tagsOfScenario = exampleTags;
+            string[] @__tags = new string[] {
+                    "WorkflowRequest"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("workflow_1", workflow_1);
             argumentsOfScenario.Add("workflow_2", workflow_2);
             argumentsOfScenario.Add("workflowRequestMessage", workflowRequestMessage);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a valid workflow request which creates multiple workflow instances", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 15
+#line 17
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -152,19 +166,19 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 16
+#line 18
     testRunner.Given(string.Format("I have a clinical workflow {0}", workflow_1), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 17
+#line 19
     testRunner.And(string.Format("I have a clinical workflow {0}", workflow_2), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 18
+#line 20
     testRunner.When(string.Format("I publish a Workflow Request Message {0}", workflowRequestMessage), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 19
+#line 21
     testRunner.Then("I can see 2 Workflow Instances are created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 20
+#line 22
     testRunner.And("2 Task Dispatch events are published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -173,12 +187,14 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Publish a valid workflow request with mismatched AE title and workflow ID")]
+        [NUnit.Framework.CategoryAttribute("WorkflowRequest")]
         public virtual void PublishAValidWorkflowRequestWithMismatchedAETitleAndWorkflowID()
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = new string[] {
+                    "WorkflowRequest"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a valid workflow request with mismatched AE title and workflow ID", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 26
+#line 29
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -198,16 +214,16 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 27
+#line 30
     testRunner.Given("I have a clinical workflow Basic_Workflow_1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 28
+#line 31
     testRunner.And("I have a clinical workflow Basic_Workflow_3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 29
+#line 32
     testRunner.When("I publish a Workflow Request Message Mismatch_Id_AeTitle_WF_Request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 30
+#line 33
     testRunner.Then("I can see 1 Workflow Instance is created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -216,15 +232,22 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Publish a valid workflow request triggering a workflow with multiple revisions")]
+        [NUnit.Framework.CategoryAttribute("WorkflowRequest")]
         [NUnit.Framework.TestCaseAttribute("AeTitle_Multi_Revision_WF_Request", null)]
         [NUnit.Framework.TestCaseAttribute("WorkflowID_Multi_Revision_WF_Request", null)]
         public virtual void PublishAValidWorkflowRequestTriggeringAWorkflowWithMultipleRevisions(string workflowRequestMessage, string[] exampleTags)
         {
-            string[] tagsOfScenario = exampleTags;
+            string[] @__tags = new string[] {
+                    "WorkflowRequest"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("workflowRequestMessage", workflowRequestMessage);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a valid workflow request triggering a workflow with multiple revisions", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 32
+#line 36
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -244,16 +267,16 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 33
+#line 37
     testRunner.Given("I have a clinical workflow Basic_Workflow_Multiple_Revisions_1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 34
+#line 38
     testRunner.And("I have a clinical workflow Basic_Workflow_Multiple_Revisions_2", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 35
+#line 39
     testRunner.When(string.Format("I publish a Workflow Request Message {0}", workflowRequestMessage), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 36
+#line 40
     testRunner.Then("I can see 1 Workflow Instances are created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -262,6 +285,7 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Publish an invalid workflow request which does not create a workflow instance")]
+        [NUnit.Framework.CategoryAttribute("WorkflowRequest")]
         [NUnit.Framework.TestCaseAttribute("Missing_PayloadID_Invalid_WF_Request", null)]
         [NUnit.Framework.TestCaseAttribute("Missing_WorkflowID_Invalid_WF_Request", null)]
         [NUnit.Framework.TestCaseAttribute("Missing_Bucket_Invalid_WF_Request", null)]
@@ -270,11 +294,17 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestCaseAttribute("Missing_CalledAETitle_Invalid_WF_Request", null)]
         public virtual void PublishAnInvalidWorkflowRequestWhichDoesNotCreateAWorkflowInstance(string workflowRequestMessage, string[] exampleTags)
         {
-            string[] tagsOfScenario = exampleTags;
+            string[] @__tags = new string[] {
+                    "WorkflowRequest"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("workflowRequestMessage", workflowRequestMessage);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish an invalid workflow request which does not create a workflow instance", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 42
+#line 47
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -294,13 +324,13 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 43
+#line 48
     testRunner.Given("I have a clinical workflow Basic_Workflow_3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 44
+#line 49
     testRunner.When(string.Format("I publish a Workflow Request Message {0}", workflowRequestMessage), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 45
+#line 50
     testRunner.Then("I can see 0 Workflow Instances are created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -308,15 +338,17 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Publish a workflow request with the same payloadId for a Workflow Instance which " +
-            "has not been dispatched")]
-        public virtual void PublishAWorkflowRequestWithTheSamePayloadIdForAWorkflowInstanceWhichHasNotBeenDispatched()
+        [NUnit.Framework.DescriptionAttribute("Publish a valid workflow request with an exiting Workflow Instance with a Task wh" +
+            "ich is not dispatched")]
+        [NUnit.Framework.CategoryAttribute("WorkflowRequest")]
+        public virtual void PublishAValidWorkflowRequestWithAnExitingWorkflowInstanceWithATaskWhichIsNotDispatched()
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = new string[] {
+                    "WorkflowRequest"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a workflow request with the same payloadId for a Workflow Instance which " +
-                    "has not been dispatched", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 55
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a valid workflow request with an exiting Workflow Instance with a Task wh" +
+                    "ich is not dispatched", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 61
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -336,19 +368,19 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 56
+#line 62
     testRunner.Given("I have a clinical workflow Multi_Request_Workflow_Created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 57
-    testRunner.And("I have an existing Workflow Instance Existing_WFI_Created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 63
+    testRunner.And("I have a Workflow Instance Existing_WFI_Created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 58
+#line 64
     testRunner.When("I publish a Workflow Request Message Multi_WF_Created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 59
+#line 65
     testRunner.Then("I can see an additional Workflow Instance is not created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 60
+#line 66
     testRunner.And("1 Task Dispatch event is published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -356,15 +388,17 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Publish a workflow request with the same payloadId for a Workflow Instance which " +
-            "has been dispatched")]
-        public virtual void PublishAWorkflowRequestWithTheSamePayloadIdForAWorkflowInstanceWhichHasBeenDispatched()
+        [NUnit.Framework.DescriptionAttribute("Publish a valid workflow request with an exiting Workflow Instance with a Task wh" +
+            "ich is dispatched")]
+        [NUnit.Framework.CategoryAttribute("WorkflowRequest")]
+        public virtual void PublishAValidWorkflowRequestWithAnExitingWorkflowInstanceWithATaskWhichIsDispatched()
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = new string[] {
+                    "WorkflowRequest"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a workflow request with the same payloadId for a Workflow Instance which " +
-                    "has been dispatched", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 62
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a valid workflow request with an exiting Workflow Instance with a Task wh" +
+                    "ich is dispatched", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 69
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -384,19 +418,19 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 63
+#line 70
     testRunner.Given("I have a clinical workflow Multi_Request_Workflow_Dispatched", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 64
-    testRunner.And("I have an existing Workflow Instance Existing_WFI_Dispatched", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 71
+    testRunner.And("I have a Workflow Instance Existing_WFI_Dispatched", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 65
+#line 72
     testRunner.When("I publish a Workflow Request Message Multi_WF_Dispatched", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 66
+#line 73
     testRunner.Then("I can see an additional Workflow Instance is not created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 67
+#line 74
     testRunner.And("A Task Dispatch event is not published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }

@@ -8,7 +8,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
     public class Assertions
     {
-        public void AssertWorkflowInstanceDetails(WorkflowInstance workflowInstance, WorkflowRevision workflowRevision, WorkflowRequestMessage workflowRequestMessage)
+        public void AssertWorkflowInstanceMatchesExpectedWorkflow(WorkflowInstance workflowInstance, WorkflowRevision workflowRevision, WorkflowRequestMessage workflowRequestMessage)
         {
             workflowInstance.PayloadId.Should().Match(workflowRequestMessage.PayloadId.ToString());
             workflowInstance.WorkflowId.Should().Match(workflowRevision.WorkflowId);
@@ -30,12 +30,36 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
         }
 
-        public void AssertTaskDispatchEvent(TaskDispatchEvent taskDispatchEvent, WorkflowInstance workflowInstance, WorkflowRevision workflowRevision, WorkflowRequestMessage workflowRequestMessage)
+        public void AssertTaskDispatchEvent(TaskDispatchEvent taskDispatchEvent, WorkflowInstance workflowInstance, WorkflowRevision workflowRevision, WorkflowRequestMessage workflowRequestMessage = null, TaskUpdateEvent taskUpdateEvent = null)
         {
-            taskDispatchEvent.CorrelationId.Should().Match(workflowRequestMessage.CorrelationId);
-            taskDispatchEvent.TaskId.Should().Match(workflowRevision.Workflow.Tasks[0].Id);
-            taskDispatchEvent.WorkflowInstanceId.Should().Match(workflowRevision.WorkflowId);
-            workflowInstance.Tasks[0].Status.Should().Be(TaskExecutionStatus.Dispatched);
+            var taskDetails = workflowInstance.Tasks.FirstOrDefault(c => c.TaskId.Equals(taskDispatchEvent.TaskId));
+
+            if (workflowRequestMessage != null)
+            {
+                taskDispatchEvent.CorrelationId.Should().Match(workflowRequestMessage.CorrelationId);
+            }
+            else
+            {
+                taskDispatchEvent.CorrelationId.Should().Match(taskUpdateEvent.CorrelationId);
+            }
+
+            taskDispatchEvent.WorkflowInstanceId.Should().Match(workflowInstance.Id);
+
+            if (taskUpdateEvent == null)
+            {
+                taskDispatchEvent.TaskId.Should().Match(workflowRevision.Workflow.Tasks[0].Id);
+            }
+            else
+            {
+                taskDispatchEvent.TaskId.Should().Match(taskDetails.TaskId);
+            }
+
+            taskDetails.Status.Should().Be(TaskExecutionStatus.Dispatched);
+        }
+
+        public void AssertWorkflowIstanceMatchesExpectedTaskStatusUpdate(WorkflowInstance updatedWorkflowInstance, TaskExecutionStatus taskExecutionStatus)
+        {
+            updatedWorkflowInstance.Tasks[0].Status.Should().Be(taskExecutionStatus);
         }
     }
 }

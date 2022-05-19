@@ -256,6 +256,35 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
             },
             new WorkflowRevisionTestData()
             {
+                Name = "Task_Status_Update_Workflow",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Task Update Status",
+                        Description = "Task Update Status",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Task_Update",
+                                Description = "Task Update Task 1"
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Task_Update"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
                 Name = "Multi_Request_Workflow_Created",
                 WorkflowRevision = new WorkflowRevision()
                 {
@@ -308,6 +337,100 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                         InformaticsGateway = new InformaticsGateway()
                         {
                             AeTitle = "Multi_Dispatch"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Multi_Task_Workflow_1",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Mulit Task workflow 1",
+                        Description = "Multi Task workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "00d275ce-81d8-4d54-a923-d34cf1955cc4",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination()
+                                    {
+                                        Name = "510ba0cf-8632-4112-994d-36617318a74f"
+                                    }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "510ba0cf-8632-4112-994d-36617318a74f",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 2",
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Multi_Task_1"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Multi_Task_Workflow_2",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Multi Task workflow 2",
+                        Description = "Multi Task workflow 2",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "b971c259-c3d5-4ddf-93b2-56c83fb7b474",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination()
+                                    {
+                                        Name = "6da9b529-f7b5-40c2-a604-b7421599b364"
+                                    },
+                                    new TaskDestination()
+                                    {
+                                        Name = "eefdd563-c589-433a-969f-2cddfe93af24"
+                                    }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "6da9b529-f7b5-40c2-a604-b7421599b364",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 2",
+                            },
+                            new TaskObject
+                            {
+                                Id = "eefdd563-c589-433a-969f-2cddfe93af24",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 3",
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Multi_Task_1"
                         }
                     }
                 }

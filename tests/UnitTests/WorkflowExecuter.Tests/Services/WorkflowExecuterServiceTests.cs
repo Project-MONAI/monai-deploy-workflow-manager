@@ -186,6 +186,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         {
             var workflowId1 = Guid.NewGuid().ToString();
             var workflowId2 = Guid.NewGuid().ToString();
+            var taskId = Guid.NewGuid().ToString();
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
@@ -244,7 +245,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                         Tasks = new TaskObject[]
                         {
                             new TaskObject {
-                                Id = Guid.NewGuid().ToString(),
+                                Id = taskId,
                                 Type = "type",
                                 Description = "taskdesc"
                             }
@@ -266,7 +267,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                     {
                         new TaskExecution
                         {
-                            TaskId = Guid.NewGuid().ToString(),
+                            TaskId = taskId,
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
@@ -294,7 +295,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             var updateEvent = new TaskUpdateEvent
             {
                 WorkflowInstanceId = workflowInstanceId,
-                TaskId = Guid.NewGuid().ToString(),
+                TaskId = "taskid",
                 ExecutionId = Guid.NewGuid().ToString(),
                 Status = TaskExecutionStatus.Succeeded,
                 Reason = FailureReason.None,
@@ -322,7 +323,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                     Tasks = new TaskObject[]
                         {
                             new TaskObject {
-                                Id = Guid.NewGuid().ToString(),
+                                Id = "taskid",
                                 Type = "type",
                                 Description = "taskdesc"
                             }
@@ -341,7 +342,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                     {
                         new TaskExecution
                         {
-                            TaskId = Guid.NewGuid().ToString(),
+                            TaskId = "taskid",
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
@@ -353,6 +354,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 
+            _workflowInstanceRepository.Verify(w => w.UpdateWorkflowInstanceStatusAsync(workflowInstanceId, Status.Succeeded), Times.Exactly(1));
+
             response.Should().BeTrue();
         }
 
@@ -360,6 +363,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         public async Task ProcessTaskUpdate_ValidTaskUpdateEventWithTaskDestinations_ReturnsTrue()
         {
             var workflowInstanceId = Guid.NewGuid().ToString();
+            var taskId = Guid.NewGuid().ToString();
 
             var updateEvent = new TaskUpdateEvent
             {
@@ -471,7 +475,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             var workflow = new WorkflowRevision
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = workflowInstanceId,
                 WorkflowId = workflowId,
                 Revision = 1,
                 Workflow = new Workflow
@@ -532,6 +536,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                     }
             };
 
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);

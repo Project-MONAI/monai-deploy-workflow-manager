@@ -25,11 +25,9 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         }
 
         private static RabbitPublisher? WorkflowPublisher { get; set; }
-
         private static RabbitConsumer? TaskDispatchConsumer { get; set; }
-
+        private static RabbitPublisher? TaskUpdatePublisher { get; set; }
         private static MongoClientUtil? MongoClient { get; set; }
-
         private IObjectContainer ObjectContainer { get; set; }
 
         /// <summary>
@@ -52,6 +50,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             TestExecutionConfig.RabbitConfig.WorkflowRequestQueue = config.GetValue<string>("WorkflowManager:messaging:topics:workflowRequest");
             TestExecutionConfig.RabbitConfig.TaskDispatchQueue = "md.tasks.dispatch";
             TestExecutionConfig.RabbitConfig.TaskCallbackQueue = "md.tasks.callback";
+            TestExecutionConfig.RabbitConfig.TaskUpdateQueue = "md.tasks.update";
             TestExecutionConfig.RabbitConfig.WorkflowCompleteQueue = config.GetValue<string>("WorkflowManager:messaging:topics:exportComplete");
 
             TestExecutionConfig.MongoConfig.ConnectionString = config.GetValue<string>("WorkloadManagerDatabase:ConnectionString");
@@ -61,6 +60,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
 
             WorkflowPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
             TaskDispatchConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            TaskUpdatePublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
             MongoClient = new MongoClientUtil();
             WebAppFactory.SetupWorkflowManger();
         }
@@ -105,16 +105,17 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         [BeforeScenario]
         public void SetUp()
         {
-            ObjectContainer.RegisterInstanceAs(WorkflowPublisher);
-            ObjectContainer.RegisterInstanceAs(TaskDispatchConsumer);
+            ObjectContainer.RegisterInstanceAs(WorkflowPublisher, "WorkflowPublisher");
+            ObjectContainer.RegisterInstanceAs(TaskDispatchConsumer, "TaskDispatchConsumer");
+            ObjectContainer.RegisterInstanceAs(TaskUpdatePublisher, "TaskUpdatePublisher");
             ObjectContainer.RegisterInstanceAs(MongoClient);
+            var dataHelper = new DataHelper(TaskDispatchConsumer, MongoClient);
+            ObjectContainer.RegisterInstanceAs(dataHelper);
         }
 
-        /// <summary>
-        /// Runs after all tests to closes Rabbit connections.
-        /// </summary>
+        [BeforeTestRun(Order = 1)]
         [AfterTestRun(Order = 0)]
-        public static void TearDownMongo()
+        public static void ClearTestData()
         {
             MongoClient.DeleteAllWorkflowDocuments();
             MongoClient.DeleteAllWorkflowInstances();
