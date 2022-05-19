@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.Globalization;
+using Ardalis.GuardClauses;
 
 namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 {
@@ -17,10 +18,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
         public void SetNextParameter(string value)
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
+            Guard.Against.NullOrWhiteSpace(value, nameof(value));
+
             if (string.IsNullOrEmpty(LeftParameter))
             {
                 LeftParameter = value;

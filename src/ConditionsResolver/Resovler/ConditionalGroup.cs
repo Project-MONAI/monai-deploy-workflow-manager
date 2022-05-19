@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.Text.RegularExpressions;
+using Ardalis.GuardClauses;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions;
 
 namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
@@ -36,9 +37,12 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
         private string[] ParseAnds(string input) => FindAnds.SplitOnce(input);
 
-        public void Set(string left, string right, Keyword keyword)
+        public void Set(string left, string right, Keyword? keyword)
         {
-            Keyword = keyword;
+            if (keyword is not null)
+            {
+                Keyword = (Keyword)keyword;
+            }
             if (!string.IsNullOrEmpty(left))
             {
                 if (FindAnds.Matches(left).Any() || FindOrs.Matches(left).Any())
@@ -65,10 +69,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
         public void Parse(string input, int groupedLogicalParent = 0)
         {
-            if (string.IsNullOrEmpty(input))
-            {
-                throw new ArgumentNullException(nameof(input));
-            }
+            Guard.Against.NullOrEmpty(input);
 
             var foundOpenBrackets = FindBrackets.Matches(input);
             var foundClosingBrackets = FindCloseBrackets.Matches(input);
@@ -113,16 +114,14 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
         public void ParseBrackets(string input)
         {
-            if (string.IsNullOrEmpty(input))
-            {
-                throw new ArgumentNullException(nameof(input));
-            }
+            Guard.Against.NullOrWhiteSpace(input);
 
             var foundAnds = FindAnds.Matches(input);
             var foundOrs = FindOrs.Matches(input);
 
             var foundBrackets = FindBrackets.Match(input);
             var indexOfClosingBracket = FindCloseBrackets.Match(input).Index;
+
             if (!foundBrackets.Success)
             {
                 throw new InvalidOperationException("Expected Bracket: Bracket not found");
@@ -285,11 +284,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
         public static ConditionalGroup Create(string input, int groupedLogicalParent = 0)
         {
+            Guard.Against.NullOrEmpty(input);
             var conditionalGroup = new ConditionalGroup();
-            if (string.IsNullOrEmpty(input))
-            {
-                throw new ArgumentNullException(nameof(input));
-            }
             if (groupedLogicalParent == 0)
             {
                 input = TrimStartingBrackets(input, conditionalGroup);

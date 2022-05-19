@@ -148,16 +148,24 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [Fact]
         public void ConditionalGroup_GivenEmptyStringConditionalGroup_ShouldThrowException()
         {
-            var expectedMessage = "Value cannot be null. (Parameter 'input')";
-            var exception = Assert.Throws<ArgumentNullException>(() => ConditionalGroup.Create(""));
+            var expectedMessage = "Required input input was empty. (Parameter 'input')";
+            var exception = Assert.Throws<ArgumentException>(() => ConditionalGroup.Create(""));
             Assert.Equal(expectedMessage, exception.Message);
         }
 
         [Fact]
         public void ConditionalGroup_GivenEmptyStringConditionalGroupParse_ShouldThrowException()
         {
-            var expectedMessage = "Value cannot be null. (Parameter 'input')";
-            var exception = Assert.Throws<ArgumentNullException>(() => new ConditionalGroup().Parse(""));
+            var expectedMessage = "Required input input was empty. (Parameter 'input')";
+            var exception = Assert.Throws<ArgumentException>(() => new ConditionalGroup().Parse(""));
+            Assert.Equal(expectedMessage, exception.Message);
+        }
+
+        [Fact]
+        public void ConditionalGroup_GivenEmptyStringConditionalGroupParseBrackets_ShouldThrowException()
+        {
+            var expectedMessage = "Required input input was empty. (Parameter 'input')";
+            var exception = Assert.Throws<ArgumentException>(() => new ConditionalGroup().ParseBrackets(""));
             Assert.Equal(expectedMessage, exception.Message);
         }
     }
