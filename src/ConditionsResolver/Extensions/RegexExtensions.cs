@@ -9,6 +9,10 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions
     {
         public static string[] SplitOnce(this Regex regex, string input)
         {
+            if (input is null)
+            {
+                throw new ArgumentNullException(nameof(input));
+            }
             var inputArr = regex.Split(input);
             return new string[] { inputArr.First(), string.Join(string.Empty, inputArr.Skip(1)) };
         }

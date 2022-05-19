@@ -10,29 +10,31 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions
         /// by default is case insenstive.
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="suffixToRemove"></param>
+        /// <param name="prefixToRemove"></param>
         /// <param name="stringComparison"></param>
         /// <returns></returns>
-        public static string TrimStartExt(this string input, string suffixToRemove, StringComparison stringComparison = StringComparison.CurrentCultureIgnoreCase)
+        public static string TrimStartExt(this string input, string prefixToRemove, StringComparison stringComparison = StringComparison.CurrentCultureIgnoreCase)
         {
             switch (stringComparison)
             {
                 case StringComparison.CurrentCulture:
                 case StringComparison.InvariantCulture:
                 case StringComparison.Ordinal:
-                    while (input != null && suffixToRemove != null && input.TrimStart().StartsWith(suffixToRemove))
+                    while (input != null && prefixToRemove != null && input.TrimStart().StartsWith(prefixToRemove))
                     {
+                        // clean string before removing the prefix
                         input = input.TrimStart();
-                        input = input.TrimStart().Substring(suffixToRemove.Length, input.Length - suffixToRemove.Length);
+                        // clean string after removing the prefix
+                        input = input.TrimStart().Substring(prefixToRemove.Length, input.Length - prefixToRemove.Length);
                     }
                     return input?.TrimStart() ?? string.Empty;
                 case StringComparison.CurrentCultureIgnoreCase:
                 case StringComparison.InvariantCultureIgnoreCase:
                 case StringComparison.OrdinalIgnoreCase:
-                    while (input != null && suffixToRemove != null && input.ToUpper().TrimStart().StartsWith(suffixToRemove.ToUpper()))
+                    while (input != null && prefixToRemove != null && input.ToUpper().TrimStart().StartsWith(prefixToRemove.ToUpper()))
                     {
                         input = input.TrimStart();
-                        input = input.TrimStart().Substring(suffixToRemove.Length, input.Length - suffixToRemove.Length);
+                        input = input.TrimStart().Substring(prefixToRemove.Length, input.Length - prefixToRemove.Length);
                     }
                     return input?.TrimStart() ?? string.Empty;
             }

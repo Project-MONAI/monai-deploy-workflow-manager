@@ -52,5 +52,13 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
             var exception = Assert.Throws<ArgumentNullException>(() => new Conditional().Parse(null));
             Assert.Equal(expectedMessage, exception.Message);
         }
+
+        [Fact]
+        public void Conditional_GiveNullStringConditionalSetNextParameter_ShouldThrowException()
+        {
+            var expectedMessage = "Value cannot be null. (Parameter 'value')";
+            var exception = Assert.Throws<ArgumentNullException>(() => new Conditional().SetNextParameter(null));
+            Assert.Equal(expectedMessage, exception.Message);
+        }
     }
 }

@@ -17,6 +17,10 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
         public void SetNextParameter(string value)
         {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
             if (string.IsNullOrEmpty(LeftParameter))
             {
                 LeftParameter = value;
