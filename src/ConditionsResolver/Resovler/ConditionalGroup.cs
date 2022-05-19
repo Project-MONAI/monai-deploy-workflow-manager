@@ -9,7 +9,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 {
     public class ConditionalGroup
     {
-        public Keyword Keyword { get; set; }
+        public Keyword Keyword { get; set; } = Keyword.Singular;
 
         public Conditional? LeftConditional { get; set; } = null;
 
@@ -94,18 +94,18 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             if (foundAnds.Count == 1 && foundOrs.Count == 0)
             {
                 var splitByAnd = ParseAnds(input);
-                Set(splitByAnd[0], splitByAnd[1].TrimStartExt("AND"), Keyword.AND);
+                Set(splitByAnd[0], splitByAnd[1].TrimStartExt("AND"), Keyword.And);
                 return;
             }
             if (foundAnds.Count == 0 && foundOrs.Count == 1)
             {
                 var splitByOr = ParseOrs(input);
-                Set(splitByOr[0], splitByOr[1].TrimStartExt("OR"), Keyword.OR);
+                Set(splitByOr[0], splitByOr[1].TrimStartExt("OR"), Keyword.Or);
                 return;
             }
             if (foundAnds.Count == 0 && foundOrs.Count == 0)
             {
-                Set(input, string.Empty, Keyword.SINGULAR);
+                Set(input, string.Empty, Keyword.Singular);
                 return;
             }
 
@@ -134,13 +134,13 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 {
                     var splitByAnds = ParseAnds(input);
                     var rightAnd = splitByAnds[1].TrimStartExt("AND");
-                    Set(splitByAnds[0], rightAnd, Keyword.AND);
+                    Set(splitByAnds[0], rightAnd, Keyword.And);
                 }
                 else if (!foundAnds.Any() && foundOrs.Any() || foundOrs.First().Index < foundAnds.First().Index)
                 {
                     var splitByOrs = ParseOrs(input);
                     var rightOrs = splitByOrs[1].TrimStartExt("OR");
-                    Set(splitByOrs[0], rightOrs, Keyword.OR);
+                    Set(splitByOrs[0], rightOrs, Keyword.Or);
                 }
             }
             else
@@ -173,7 +173,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 {
                     throw new ArgumentException($"Error parsing OR condition in: {input}");
                 }
-                Set(splitByOr[0], splitByOr[1].TrimStartExt("OR"), Keyword.OR);
+                Set(splitByOr[0], splitByOr[1].TrimStartExt("OR"), Keyword.Or);
             }
             else
             {
@@ -182,17 +182,17 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 {
                     throw new ArgumentException($"Error parsing OR condition in: {input}");
                 }
-                Set(splitByAnd[0], splitByAnd[1].TrimStartExt("AND"), Keyword.AND);
+                Set(splitByAnd[0], splitByAnd[1].TrimStartExt("AND"), Keyword.And);
             }
         }
 
         public bool Evaluate()
         {
-            if (Keyword == Keyword.AND)
+            if (Keyword == Keyword.And)
             {
                 return EvaluateAnds();
             }
-            if (Keyword == Keyword.OR)
+            if (Keyword == Keyword.Or)
             {
                 return EvaluateOrs();
             }

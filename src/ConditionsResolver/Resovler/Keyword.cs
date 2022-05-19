@@ -8,8 +8,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
     /// </summary>
     public enum Keyword
     {
-        SINGULAR,
-        AND,
-        OR,
+        Singular,
+        And,
+        Or,
     }
 }

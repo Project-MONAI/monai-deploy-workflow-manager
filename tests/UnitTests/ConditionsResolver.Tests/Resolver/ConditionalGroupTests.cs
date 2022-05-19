@@ -115,7 +115,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         }
 
         [Theory]
-        [InlineData(true, "'TRUE' == 'TRUE' OR 'TRUE' == 'TRUE'", "'TRUE' == 'TRUE' OR 'TRUE' == 'TRUE'", Keyword.AND)]
+        [InlineData(true, "'TRUE' == 'TRUE' OR 'TRUE' == 'TRUE'", "'TRUE' == 'TRUE' OR 'TRUE' == 'TRUE'", Keyword.And)]
         public void ConditionalGroup_WhenSetProvidedCorrectinput_ShouldCreateAndEvaluate(bool expectedResult, string inputLeft, string inputRight, Keyword keyword)
         {
             var conditionalGroup = new ConditionalGroup();
