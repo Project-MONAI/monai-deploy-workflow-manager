@@ -4,9 +4,9 @@
     "net6.0": {
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0036, )",
-        "resolved": "0.1.0-rc0036",
-        "contentHash": "ONfPbkd0bsJGJHOPVn7U5z0FDNirYuvMswLauN8rxHNSat0GbhFDnObrY8iIuCFY02zfPfpoL9mywkksVwsUAA==",
+        "requested": "[0.1.0-rc0038, )",
+        "resolved": "0.1.0-rc0038",
+        "contentHash": "j6RswItc5GE7b42T1KMMT9oXsOEizr6HKgso4WAV/evGmcwMnzuBdRJHNIfGWeDTTKO7Ld7+BJrSOEno5+udsg==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -18,9 +18,9 @@
       },
       "Monai.Deploy.Storage": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0019, )",
-        "resolved": "0.1.0-rc0019",
-        "contentHash": "YAXgTE7vTqeMc+ZhprUg/muQ+JDVMaix1Ha1vLJTSSjfZWBOnxyK5SugS50uNlvByJcqHEXh+ygd9219wK1S+Q==",
+        "requested": "[0.1.0-rc0020, )",
+        "resolved": "0.1.0-rc0020",
+        "contentHash": "SNNzbGPte4S2CKzsYI5g723aRMNG8AVFNYR847hHl8JQXCD5f6ugxEJUid4/hpu88HxPPigDm7sMrc5H4EwtZQ==",
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.141",
           "Ardalis.GuardClauses": "4.0.0",

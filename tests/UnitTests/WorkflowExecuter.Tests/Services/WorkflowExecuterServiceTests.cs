@@ -15,6 +15,7 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkloadManager.Contracts.Models;
+using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
 using Monai.Deploy.WorkloadManager.WorkfowExecuter.Services;
 using Moq;
 using Xunit;
@@ -26,6 +27,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         private IWorkflowExecuterService WorkflowExecuterService { get; set; }
 
         private readonly Mock<IWorkflowRepository> _workflowRepository;
+        private readonly Mock<IArtifactMapper> _artifactMapper;
         private readonly Mock<ILogger<WorkflowExecuterService>> _logger;
         private readonly Mock<IWorkflowInstanceRepository> _workflowInstanceRepository;
         private readonly Mock<IMessageBrokerPublisherService> _messageBrokerPublisherService;
@@ -35,13 +37,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         public WorkflowExecuterServiceTests()
         {
             _workflowRepository = new Mock<IWorkflowRepository>();
+            _artifactMapper = new Mock<IArtifactMapper>();
             _logger = new Mock<ILogger<WorkflowExecuterService>>();
             _workflowInstanceRepository = new Mock<IWorkflowInstanceRepository>();
             _messageBrokerPublisherService = new Mock<IMessageBrokerPublisherService>();
             _configuration = Options.Create(new WorkflowManagerOptions() { Messaging = new MessageBrokerConfiguration { Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch" } } });
             _storageConfiguration = Options.Create(new StorageServiceConfiguration());
 
-            WorkflowExecuterService = new WorkflowExecuterService(_logger.Object, _configuration, _storageConfiguration, _workflowRepository.Object, _workflowInstanceRepository.Object, _messageBrokerPublisherService.Object);
+            WorkflowExecuterService = new WorkflowExecuterService(_logger.Object, _configuration, _storageConfiguration, _workflowRepository.Object, _workflowInstanceRepository.Object, _messageBrokerPublisherService.Object, _artifactMapper.Object);
         }
 
         [Fact]
@@ -173,6 +176,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
             _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            _artifactMapper.Setup(a => a.ConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new Dictionary<string, string>());
 
             var result = await WorkflowExecuterService.ProcessPayload(workflowRequest);
 
@@ -279,6 +283,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(workflowsInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            _artifactMapper.Setup(a => a.ConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new Dictionary<string, string>());
 
             var result = await WorkflowExecuterService.ProcessPayload(workflowRequest);
 
@@ -351,6 +356,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _artifactMapper.Setup(a => a.ConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new Dictionary<string, string>());
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 
@@ -446,6 +452,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _artifactMapper.Setup(a => a.ConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new Dictionary<string, string>());
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 
