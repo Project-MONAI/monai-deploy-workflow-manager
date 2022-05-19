@@ -90,7 +90,26 @@ namespace Monai.Deploy.WorkflowManager.Database
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(CreateAsync), e);
+                _logger.DbCallFailed(nameof(UpdateTaskStatusAsync), e);
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateWorkflowInstanceStatusAsync(string workflowInstanceId, Status status)
+        {
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            Guard.Against.Null(status, nameof(status));
+
+            try
+            {
+                var result = await _workflowInstanceCollection.FindOneAndUpdateAsync(
+                    i => i.Id == workflowInstanceId,
+                    Builders<WorkflowInstance>.Update.Set(w => w.Status, status));
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.DbCallFailed(nameof(UpdateWorkflowInstanceStatusAsync), e);
                 return false;
             }
         }
@@ -109,7 +128,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(CreateAsync), e);
+                _logger.DbCallFailed(nameof(UpdateTasksAsync), e);
                 return false;
             }
         }

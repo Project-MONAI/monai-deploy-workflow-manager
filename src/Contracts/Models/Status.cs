@@ -6,6 +6,7 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
     public enum Status
     {
         Created,
-        Dispatched
+        Succeeded,
+        Failed,
     }
 }
