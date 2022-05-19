@@ -156,6 +156,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
         private void ParseComplex(string input)
         {
+            Guard.Against.NullOrWhiteSpace(input);
+
             var foundBrackets = FindBrackets.Matches(input);
 
             if (foundBrackets.Any())
