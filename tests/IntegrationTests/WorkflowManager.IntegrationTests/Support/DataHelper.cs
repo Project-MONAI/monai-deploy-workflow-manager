@@ -13,7 +13,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public WorkflowRequestMessage WorkflowRequestMessage = new WorkflowRequestMessage();
         public List<WorkflowInstance> WorkflowInstances = new List<WorkflowInstance>();
         public TaskUpdateEvent TaskUpdateEvent = new TaskUpdateEvent();
-        public List<TaskDispatchEvent> TaskDispatchEvent = new List<TaskDispatchEvent>();
+        public List<TaskDispatchEvent> TaskDispatchEvents = new List<TaskDispatchEvent>();
         public List<WorkflowRevision> WorkflowRevisions = new List<WorkflowRevision>();
         private RetryPolicy<List<WorkflowInstance>> RetryWorkflowInstances { get; set; }
         private RetryPolicy<List<TaskDispatchEvent>> RetryTaskDispatches { get; set; }
@@ -153,14 +153,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     {
                         if (message.WorkflowInstanceId == workflowInstance.Id)
                         {
-                            TaskDispatchEvent.Add(message);
+                            TaskDispatchEvents.Add(message);
                         }
                     }
                 }
 
-                if (TaskDispatchEvent.Count == count)
+                if (TaskDispatchEvents.Count == count)
                 {
-                    return TaskDispatchEvent;
+                    return TaskDispatchEvents;
                 }
                 else
                 {

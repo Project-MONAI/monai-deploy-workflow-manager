@@ -8,12 +8,13 @@ Scenario Outline: Publish a valid Task Update event which updates the Task statu
     And I have a Workflow Instance WFI_Task_Status_Update
     When I publish a Task Update Message Task_Status_Update with status <taskUpdateStatus>
     Then I can see the status of the Task is updated
+    And Workflow Instance status is <workflowInstanceStatus>
     Examples:
-    | taskUpdateStatus |
-    | Accepted         |
-    | Succeeded        |
-    | Failed           |
-    | Canceled         |
+    | taskUpdateStatus | workflowInstanceStatus |
+    | Accepted         | Created                |
+    | Succeeded        | Succeeded              |
+    | Failed           | Failed                 |
+    | Canceled         | Succeeded              |
 
 @TaskUpdate
 Scenario: Publish a valid Task Update event that where WorkflowInstance does not contain TaskId

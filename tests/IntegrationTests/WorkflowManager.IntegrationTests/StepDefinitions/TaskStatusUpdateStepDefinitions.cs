@@ -44,6 +44,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             TaskUpdatePublisher.PublishMessage(message.ToMessage());
         }
 
+        [Then(@"I can see the status of the Tasks are updated")]
         [Then(@"I can see the status of the Task is updated")]
         public void ThenICanSeeTheStatusOfTheTaskIsUpdated()
         {
@@ -55,9 +56,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
                 taskUpdated.Status.Should().Be(DataHelper.TaskUpdateEvent.Status);
 
-                if (DataHelper.TaskDispatchEvent.Count > 0)
+                if (DataHelper.TaskDispatchEvents.Count > 0)
                 {
-                    foreach (var e in DataHelper.TaskDispatchEvent)
+                    foreach (var e in DataHelper.TaskDispatchEvents)
                     {
                         var taskDispatched = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(e.TaskId));
 

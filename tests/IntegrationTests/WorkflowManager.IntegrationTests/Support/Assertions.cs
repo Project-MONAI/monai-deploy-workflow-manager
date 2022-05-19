@@ -61,5 +61,22 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             updatedWorkflowInstance.Tasks[0].Status.Should().Be(taskExecutionStatus);
         }
+
+        public void WorkflowInstanceIncludesTaskDetails(List<TaskDispatchEvent> taskDispatchEvents, WorkflowInstance workflowInstance, WorkflowRevision workflowRevision)
+        {
+            foreach (var taskDispatchEvent in taskDispatchEvents)
+            {
+                var workflowInstanceTaskDetails = workflowInstance.Tasks.FirstOrDefault(c => c.TaskId.Equals(taskDispatchEvent.TaskId));
+                var workflowTaskDetails = workflowRevision.Workflow.Tasks.FirstOrDefault(c => c.Id.Equals(taskDispatchEvent.TaskId));
+                workflowInstanceTaskDetails.ExecutionId.Should().Be(taskDispatchEvent.ExecutionId);
+                workflowInstanceTaskDetails.Status.Should().Be(TaskExecutionStatus.Dispatched);
+                workflowInstanceTaskDetails.TaskType.Should().Be(workflowTaskDetails.Type);
+            }
+        }
+
+        public void WorkflowInstanceStatus(string status, WorkflowInstance workflowInstance)
+        {
+            workflowInstance.Status.Should().Be((Status)Enum.Parse(typeof(Status), status));
+        }
     }
 }

@@ -219,41 +219,41 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     }
                 }
             },
-            new WorkflowRevisionTestData()
-            {
-                Name = "Multi_Task_Workflow",
-                WorkflowRevision = new WorkflowRevision()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    WorkflowId = Guid.NewGuid().ToString(),
-                    Revision = 1,
-                    Workflow = new Workflow()
-                    {
-                        Name = "Multi task workflow",
-                        Description = "Multi task workflow",
-                        Version = "1",
-                        Tasks = new TaskObject[]
-                        {
-                            new TaskObject
-                            {
-                                Id = Guid.NewGuid().ToString(),
-                                Type = "task_1",
-                                Description = "Multi task workflow Task 1"
-                            },
-                            new TaskObject
-                            {
-                                Id = Guid.NewGuid().ToString(),
-                                Type = "task_2",
-                                Description = "Multi task workflow Task 2"
-                            }
-                        },
-                        InformaticsGateway = new InformaticsGateway()
-                        {
-                            AeTitle = "Multi_Workflow"
-                        }
-                    }
-                }
-            },
+            //new WorkflowRevisionTestData()
+            //{
+            //    Name = "Multi_Task_Workflow",
+            //    WorkflowRevision = new WorkflowRevision()
+            //    {
+            //        Id = Guid.NewGuid().ToString(),
+            //        WorkflowId = Guid.NewGuid().ToString(),
+            //        Revision = 1,
+            //        Workflow = new Workflow()
+            //        {
+            //            Name = "Multi task workflow",
+            //            Description = "Multi task workflow",
+            //            Version = "1",
+            //            Tasks = new TaskObject[]
+            //            {
+            //                new TaskObject
+            //                {
+            //                    Id = Guid.NewGuid().ToString(),
+            //                    Type = "task_1",
+            //                    Description = "Multi task workflow Task 1"
+            //                },
+            //                new TaskObject
+            //                {
+            //                    Id = Guid.NewGuid().ToString(),
+            //                    Type = "task_2",
+            //                    Description = "Multi task workflow Task 2"
+            //                }
+            //            },
+            //            InformaticsGateway = new InformaticsGateway()
+            //            {
+            //                AeTitle = "Multi_Workflow"
+            //            }
+            //        }
+            //    }
+            //},
             new WorkflowRevisionTestData()
             {
                 Name = "Task_Status_Update_Workflow",
