@@ -241,16 +241,16 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Publish a valid Task Update event which does not link to another task on the work" +
-            "flow leaves the workflow instance in Created status")]
+        [NUnit.Framework.DescriptionAttribute("Publish a valid Task Update event as failed which does not trigger a new task and" +
+            " updates the workflow status to Failed")]
         [NUnit.Framework.CategoryAttribute("TaskUpdate")]
-        public virtual void PublishAValidTaskUpdateEventWhichDoesNotLinkToAnotherTaskOnTheWorkflowLeavesTheWorkflowInstanceInCreatedStatus()
+        public virtual void PublishAValidTaskUpdateEventAsFailedWhichDoesNotTriggerANewTaskAndUpdatesTheWorkflowStatusToFailed()
         {
             string[] tagsOfScenario = new string[] {
                     "TaskUpdate"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a valid Task Update event which does not link to another task on the work" +
-                    "flow leaves the workflow instance in Created status", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a valid Task Update event as failed which does not trigger a new task and" +
+                    " updates the workflow status to Failed", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 38
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -272,120 +272,20 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 39
-    testRunner.Given("I have a clinical workflow Multi_Independent_Task_Workflow", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+    testRunner.Given("I have a clinical workflow Multi_Task_Workflow_1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 40
-    testRunner.And("I have a Workflow Instance WFI_Multi_Independent_Task", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I have a Workflow Instance WFI_Multi_Task_1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 41
-    testRunner.When("I publish a Task Update Message Task_Update_Independent_Task with status Succeede" +
-                        "d", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.When("I publish a Task Update Message Task_Update_Dispatches_Single_Task with status Fa" +
+                        "iled", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 42
     testRunner.Then("A Task Dispatch event is not published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 43
-    testRunner.And("Workflow Instance status is Created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Publish a valid Task Update event as failed which does not trigger a new task and" +
-            " updates the workflow status to Failed")]
-        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
-        public virtual void PublishAValidTaskUpdateEventAsFailedWhichDoesNotTriggerANewTaskAndUpdatesTheWorkflowStatusToFailed()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "TaskUpdate"};
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a valid Task Update event as failed which does not trigger a new task and" +
-                    " updates the workflow status to Failed", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 46
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            bool isScenarioIgnored = default(bool);
-            bool isFeatureIgnored = default(bool);
-            if ((tagsOfScenario != null))
-            {
-                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((this._featureTags != null))
-            {
-                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((isScenarioIgnored || isFeatureIgnored))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 47
-    testRunner.Given("I have a clinical workflow Multi_Task_Workflow_1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 48
-    testRunner.And("I have a Workflow Instance WFI_Multi_Task_1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 49
-    testRunner.When("I publish a Task Update Message Task_Update_Dispatches_Single_Task with status Fa" +
-                        "iled", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 50
-    testRunner.Then("A Task Dispatch event is not published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-#line 51
     testRunner.And("Workflow Instance status is Failed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Publish a valid Task Update which has an invalid task destination")]
-        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
-        public virtual void PublishAValidTaskUpdateWhichHasAnInvalidTaskDestination()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "TaskUpdate"};
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Publish a valid Task Update which has an invalid task destination", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 54
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            bool isScenarioIgnored = default(bool);
-            bool isFeatureIgnored = default(bool);
-            if ((tagsOfScenario != null))
-            {
-                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((this._featureTags != null))
-            {
-                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((isScenarioIgnored || isFeatureIgnored))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 55
-    testRunner.Given("I have a clinical workflow Multi_Task_Workflow_Invalid_Task_Destination", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 56
-    testRunner.And("I have a Workflow Instance WFI_Invalid_Task_Destination", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 57
-    testRunner.When("I publish a Task Update Message Task_Update_Invalid_Task_Destination with status " +
-                        "Succeeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 58
-    testRunner.Then("A Task Dispatch event is not published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-#line 59
-    testRunner.And("Workflow Instance status is Created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
