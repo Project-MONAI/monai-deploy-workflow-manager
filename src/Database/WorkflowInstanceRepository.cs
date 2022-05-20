@@ -95,6 +95,26 @@ namespace Monai.Deploy.WorkflowManager.Database
             }
         }
 
+        public async Task<bool> UpdateTaskOutputArtifactsAsync(string workflowInstanceId, string taskId, Dictionary<string, string> outputArtifacts)
+        {
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));
+            Guard.Against.Null(outputArtifacts, nameof(outputArtifacts));
+
+            try
+            {
+                var result = await _workflowInstanceCollection.FindOneAndUpdateAsync(
+                    i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.TaskId == taskId),
+                    Builders<WorkflowInstance>.Update.Set(w => w.Tasks[-1].OutputArtifacts, outputArtifacts));
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.DbCallFailed(nameof(UpdateTaskOutputArtifactsAsync), e);
+                return false;
+            }
+        }
+
         public async Task<bool> UpdateWorkflowInstanceStatusAsync(string workflowInstanceId, Status status)
         {
             Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));

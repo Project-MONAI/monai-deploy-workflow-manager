@@ -38,6 +38,14 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         Task<bool> UpdateTaskStatusAsync(string workflowInstanceId, string taskId, TaskExecutionStatus status);
 
         /// <summary>
+        /// Updates the Task output artifacts for a given task within a workflow instance.
+        /// </summary>
+        /// <param name="workflowInstanceId">Workflow Instance to update.</param>
+        /// <param name="taskId">TaskId to update.</param>
+        /// <param name="outputArtifacts">Output artifacts to set.</param>
+        Task<bool> UpdateTaskOutputArtifactsAsync(string workflowInstanceId, string taskId, Dictionary<string, string> outputArtifacts);
+
+        /// <summary>
         /// Gets a task execution for a given workflow instance id and task id.
         /// </summary>
         /// <param name="workflowInstanceId">A Workflow Instance Id to retrieve a task from.</param>

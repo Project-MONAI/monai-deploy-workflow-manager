@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
+using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -24,6 +25,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
         private readonly IWorkflowInstanceRepository _workflowInstanceRepository;
         private readonly IMessageBrokerPublisherService _messageBrokerPublisherService;
         private readonly IArtifactMapper _artifactMapper;
+        private readonly IStorageService _storageService;
         private readonly StorageServiceConfiguration _storageConfiguration;
 
         private string TaskDispatchRoutingKey { get; }
@@ -35,7 +37,8 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             IWorkflowRepository workflowRepository,
             IWorkflowInstanceRepository workflowInstanceRepository,
             IMessageBrokerPublisherService messageBrokerPublisherService,
-            IArtifactMapper artifactMapper)
+            IArtifactMapper artifactMapper,
+            IStorageService storageService)
         {
             if (configuration is null)
             {
@@ -56,6 +59,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             _workflowInstanceRepository = workflowInstanceRepository ?? throw new ArgumentNullException(nameof(workflowInstanceRepository));
             _messageBrokerPublisherService = messageBrokerPublisherService ?? throw new ArgumentNullException(nameof(messageBrokerPublisherService));
             _artifactMapper = artifactMapper ?? throw new ArgumentNullException(nameof(artifactMapper));
+            _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
         }
 
         public async Task<bool> ProcessPayload(WorkflowRequestEvent message)
@@ -156,12 +160,24 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                 return false;
             }
 
+            var validOutputArtifacts = await _storageService.VerifyObjectsExist(workflowInstance.BucketId, message.OutputArtifacts);
+
+            workflowInstance.Tasks?.ForEach(t =>
+            {
+                if (t.TaskId == message.TaskId)
+                {
+                    t.OutputArtifacts = validOutputArtifacts;
+                }
+            });
+
             var currentTaskDestinations = workflow.Workflow?.Tasks?.SingleOrDefault(t => t.Id == message.TaskId)?.TaskDestinations;
             var newTaskExecutions = await HandleTaskDestinations(workflowInstance, workflow, currentTaskDestinations);
 
             if (!newTaskExecutions.Any())
             {
                 await UpdateWorkflowInstanceStatus(workflowInstance, message.TaskId, message.Status);
+
+                await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, message.TaskId, validOutputArtifacts);
 
                 return await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
             }
