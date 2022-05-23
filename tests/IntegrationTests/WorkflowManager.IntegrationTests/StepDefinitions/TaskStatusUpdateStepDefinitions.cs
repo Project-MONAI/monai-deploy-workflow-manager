@@ -6,7 +6,6 @@ using FluentAssertions;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using Monai.Deploy.WorkloadManager.Contracts.Models;
 using Polly;
 using Polly.Retry;
 
@@ -17,18 +16,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
     {
         private MongoClientUtil MongoClient { get; set; }
         private RabbitPublisher TaskUpdatePublisher { get; set; }
-        private ScenarioContext ScenarioContext { get; set; }
-        private TaskUpdateEvent TaskUpdateEvent { get; set; }
-        private WorkflowInstance WorkflowInstance { get; set; }
         private RetryPolicy RetryPolicy { get; set; }
         private DataHelper DataHelper { get; set; }
 
-        public TaskStatusUpdateStepDefinitions(ObjectContainer objectContainer, ScenarioContext scenarioContext)
+        public TaskStatusUpdateStepDefinitions(ObjectContainer objectContainer)
         {
             TaskUpdatePublisher = objectContainer.Resolve<RabbitPublisher>("TaskUpdatePublisher");
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
             DataHelper = objectContainer.Resolve<DataHelper>();
-            ScenarioContext = scenarioContext;
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
@@ -44,6 +39,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             TaskUpdatePublisher.PublishMessage(message.ToMessage());
         }
 
+        [Then(@"I can see the status of the Tasks are updated")]
         [Then(@"I can see the status of the Task is updated")]
         public void ThenICanSeeTheStatusOfTheTaskIsUpdated()
         {
@@ -55,9 +51,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
                 taskUpdated.Status.Should().Be(DataHelper.TaskUpdateEvent.Status);
 
-                if (DataHelper.TaskDispatchEvent.Count > 0)
+                if (DataHelper.TaskDispatchEvents.Count > 0)
                 {
-                    foreach (var e in DataHelper.TaskDispatchEvent)
+                    foreach (var e in DataHelper.TaskDispatchEvents)
                     {
                         var taskDispatched = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(e.TaskId));
 

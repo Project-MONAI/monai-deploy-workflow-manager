@@ -221,7 +221,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
             },
             new WorkflowRevisionTestData()
             {
-                Name = "Multi_Task_Workflow",
+                Name = "Multi_Independent_Task_Workflow",
                 WorkflowRevision = new WorkflowRevision()
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -435,7 +435,48 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     }
                 }
             },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Multi_Task_Workflow_Invalid_Task_Destination",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Multi Task workflow 3",
+                        Description = "Multi Task workflow 3",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination()
+                                    {
+                                        Name = "b9964b10-acb4-4050-a610-374fdbe2100d"
+                                    },
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "36dcdd1a-7e57-405e-a6c3-b0e99be1f3d2",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Multi_Task_3"
+                        }
+                    }
+                }
+            },
         };
     }
 }
-
