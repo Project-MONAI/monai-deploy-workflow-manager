@@ -232,7 +232,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             return true;
         }
 
-        private List<TaskExecution> HandleTaskDestinations(WorkflowInstance workflowInstance, WorkflowRevision workflow, TaskDestination[]? currentTaskDestinations)
+        private async Task<List<TaskExecution>> HandleTaskDestinations(WorkflowInstance workflowInstance, WorkflowRevision workflow, TaskDestination[]? currentTaskDestinations)
         {
             var newTaskExecutions = new List<TaskExecution>();
 

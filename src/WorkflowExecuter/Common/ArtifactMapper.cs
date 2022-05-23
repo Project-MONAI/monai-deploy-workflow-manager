@@ -31,6 +31,11 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
 
                 var variableString = artifact.Value.Split(" ")?[1];
 
+                if (variableString is null)
+                {
+                    continue;
+                }
+
                 if (variableString.StartsWith("context.input"))
                 {
                     artifactPathDictionary.Add(artifact.Name, $"{payloadId}/dcm");

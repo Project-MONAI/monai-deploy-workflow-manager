@@ -95,5 +95,69 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
 
             response.Should().BeEquivalentTo(expected);
         }
+
+        [Fact]
+        public async Task ConvertArtifactVariablesToPath_MultipleInvalid_ReturnsEmptyDict()
+        {
+            var artifacts = new Artifact[]
+            {
+                new Artifact
+                {
+                    Name = "taskartifact",
+                    Value = "{{ test.not.an.artifact }}"
+                },
+                new Artifact
+                {
+                    Name = "dicomimage",
+                    Value = "{{ context }}"
+                },
+                new Artifact
+                {
+                    Name = "outputtaskdir",
+                    Value = "{{ sandwich.executions.coffee.output_dir }}"
+                }
+            };
+
+            var payloadId = Guid.NewGuid().ToString();
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var executionId = Guid.NewGuid().ToString();
+
+            var expected = new Dictionary<string, string>();
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = Guid.NewGuid().ToString(),
+                PayloadId = payloadId,
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = "image_type_detector",
+                            ExecutionId = executionId,
+                            Status = TaskExecutionStatus.Dispatched,
+                            OutputArtifacts = new Dictionary<string, string>
+                            {
+                                { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}" }
+                            }
+                        },
+                        new TaskExecution
+                        {
+                            TaskId = "coffee",
+                            Status = TaskExecutionStatus.Created,
+                            OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}"
+                        }
+                    }
+            };
+
+            _workflowInstanceRepository.Setup(w => w.GetTaskByIdAsync(workflowInstance.Id, "image_type_detector")).ReturnsAsync(workflowInstance.Tasks[0]);
+            _workflowInstanceRepository.Setup(w => w.GetTaskByIdAsync(workflowInstance.Id, "coffee")).ReturnsAsync(workflowInstance.Tasks[1]);
+
+            var response = await ArtifactMapper.ConvertArtifactVariablesToPath(artifacts, workflowInstance.PayloadId, workflowInstance.Id);
+
+            response.Should().BeEquivalentTo(expected);
+        }
     }
 }
