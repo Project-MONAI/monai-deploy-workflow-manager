@@ -29,52 +29,74 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
                 Guard.Against.NullOrWhiteSpace(artifact.Value);
                 Guard.Against.NullOrWhiteSpace(artifact.Name);
 
-                var variableString = artifact.Value.Split(" ")?[1];
-
-                if (variableString is null)
+                if (!TrimArtifactVariable(artifact.Value, out var variableString))
                 {
                     continue;
                 }
 
-                if (variableString.StartsWith("context.input"))
+                var mappedArtifact = await ConvertVariableStringToPath(artifact, variableString, workflowInstanceId, payloadId);
+
+                if (mappedArtifact.Equals(default(KeyValuePair<string, string>)))
                 {
-                    artifactPathDictionary.Add(artifact.Name, $"{payloadId}/dcm");
                     continue;
                 }
 
-                if (variableString.StartsWith("context.executions"))
-                {
-                    var variableWords = variableString.Split(".");
-
-                    var variableTaskId = variableWords[2];
-                    var variableLocation = variableWords[3];
-
-                    var task = await _workflowInstanceRepository.GetTaskByIdAsync(workflowInstanceId, variableTaskId);
-
-                    if (variableLocation == "output_dir")
-                    {
-                        artifactPathDictionary.Add(artifact.Name, task.OutputDirectory);
-                        continue;
-                    }
-
-                    if (variableLocation == "artifacts")
-                    {
-                        var artifactName = variableWords[4];
-                        var outputArtifact = task.OutputArtifacts.FirstOrDefault(a => a.Key == artifactName);
-
-                        if (!outputArtifact.Equals(default(KeyValuePair<string, string>)))
-                        {
-                            artifactPathDictionary.Add(outputArtifact.Key, outputArtifact.Value);
-                        }
-
-                        continue;
-                    }
-
-                }
-
+                artifactPathDictionary.Add(mappedArtifact.Key, mappedArtifact.Value);
             }
 
             return artifactPathDictionary;
+        }
+
+        private static bool TrimArtifactVariable(string valueString, out string variableString)
+        {
+            var variableStrings = valueString.Split(" ");
+
+            if (variableStrings.Length < 2)
+            {
+                variableString = null;
+
+                return false;
+            }
+
+            variableString = variableStrings[1];
+
+            return true;
+        }
+
+        private async Task<KeyValuePair<string, string>> ConvertVariableStringToPath(Artifact artifact, string variableString, string workflowInstanceId, string payloadId)
+        {
+            if (variableString.StartsWith("context.input"))
+            {
+                return new KeyValuePair<string, string>(artifact.Name, $"{payloadId}/dcm");
+            }
+
+            if (variableString.StartsWith("context.executions"))
+            {
+                var variableWords = variableString.Split(".");
+
+                var variableTaskId = variableWords[2];
+                var variableLocation = variableWords[3];
+
+                var task = await _workflowInstanceRepository.GetTaskByIdAsync(workflowInstanceId, variableTaskId);
+
+                if (variableLocation == "output_dir")
+                {
+                    return new KeyValuePair<string, string>(artifact.Name, task.OutputDirectory);
+                }
+
+                if (variableLocation == "artifacts")
+                {
+                    var artifactName = variableWords[4];
+                    var outputArtifact = task.OutputArtifacts.FirstOrDefault(a => a.Key == artifactName);
+
+                    if (!outputArtifact.Equals(default(KeyValuePair<string, string>)))
+                    {
+                        return new KeyValuePair<string, string>(outputArtifact.Key, outputArtifact.Value);
+                    }
+                }
+            }
+
+            return default;
         }
     }
 }

@@ -115,6 +115,16 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 {
                     Name = "outputtaskdir",
                     Value = "{{ sandwich.executions.coffee.output_dir }}"
+                },
+                new Artifact
+                {
+                    Name = "outputtaskdir4",
+                    Value = "{{ sandwich.executions.coffee.artifacts.test }}"
+                },
+                new Artifact
+                {
+                    Name = "outputtaskdir2",
+                    Value = "{{sandwich.executions.coffee.output_dir"
                 }
             };
 

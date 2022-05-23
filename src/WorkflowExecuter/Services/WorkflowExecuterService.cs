@@ -144,7 +144,9 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                 return false;
             }
 
-            if (message.Status != TaskExecutionStatus.Succeeded)
+            var previouslyFailed = workflowInstance.Tasks.Any(t => t.Status == TaskExecutionStatus.Failed) || workflowInstance.Status == Status.Failed;
+
+            if (message.Status != TaskExecutionStatus.Succeeded || previouslyFailed)
             {
                 await UpdateWorkflowInstanceStatus(workflowInstance, message.TaskId, message.Status);
 
@@ -215,18 +217,22 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                 return false;
             }
 
+            if (workflowInstance.Status == Status.Failed)
+            {
+                return true;
+            }
+
             var previousTasks = workflowInstance.Tasks.Where(t => t.TaskId != taskId);
+
+            if (previousTasks.Any(t => t.Status == TaskExecutionStatus.Failed) || currentTaskStatus == TaskExecutionStatus.Failed)
+            {
+                return await _workflowInstanceRepository.UpdateWorkflowInstanceStatusAsync(workflowInstance.Id, Status.Failed);
+            }
 
             if (!previousTasks.Any(t => t.Status != TaskExecutionStatus.Succeeded && t.Status != TaskExecutionStatus.Canceled)
                 && (currentTaskStatus == TaskExecutionStatus.Succeeded || currentTaskStatus == TaskExecutionStatus.Canceled))
             {
                 return await _workflowInstanceRepository.UpdateWorkflowInstanceStatusAsync(workflowInstance.Id, Status.Succeeded);
-            }
-
-            if (!previousTasks.Any(t => t.Status != TaskExecutionStatus.Succeeded && t.Status != TaskExecutionStatus.Failed && t.Status != TaskExecutionStatus.Canceled)
-                && (currentTaskStatus == TaskExecutionStatus.Succeeded || currentTaskStatus == TaskExecutionStatus.Canceled || currentTaskStatus == TaskExecutionStatus.Failed))
-            {
-                return await _workflowInstanceRepository.UpdateWorkflowInstanceStatusAsync(workflowInstance.Id, Status.Failed);
             }
 
             return true;
