@@ -238,6 +238,34 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
             },
             new WorkflowInstanceTestData()
             {
+                Name = "WFI_Multi_Task_3",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_3").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_3").WorkflowRevision.WorkflowId,
+                    PayloadId = Guid.NewGuid().ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = "bucket_1",
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_3").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_3").WorkflowRevision.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
                 Name = "WFI_Multi_Task_Dispatched",
                 WorkflowInstance = new WorkflowInstance()
                 {

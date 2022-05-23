@@ -4,9 +4,9 @@ New task is dispatched after a Task update message is received.
 
 @TaskUpdate
 Scenario: Publish a valid Task Update event which triggers a single new task
-    Given I have a clinical workflow Multi_Task_Workflow_1
-    And I have a Workflow Instance WFI_Multi_Task_1
-    When I publish a Task Update Message Task_Update_Dispatches_Single_Task with status Succeeded
+    Given I have a clinical workflow Multi_Task_Workflow_3
+    And I have a Workflow Instance WFI_Multi_Task_3
+    When I publish a Task Update Message Task_Update_To_Dispatch_Single_Task with status Succeeded
     Then 1 Task Dispatch event is published
     And Workflow Instance is updated with the new Task
     And I can see the status of the Tasks are updated

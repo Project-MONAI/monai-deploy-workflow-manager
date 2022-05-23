@@ -193,6 +193,22 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
             },
             new TaskUpdateTestData()
             {
+                Name = "Task_Update_To_Dispatch_Single_Task",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Multi_Task_3").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Multi_Task_3").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Multi_Task_3").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
                 Name = "Task_Update_Independent_Task",
                 TaskUpdateEvent = new TaskUpdateEvent()
                 {

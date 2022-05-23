@@ -437,6 +437,48 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
             },
             new WorkflowRevisionTestData()
             {
+                Name = "Multi_Task_Workflow_3",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Mulit Task workflow 3",
+                        Description = "Multi Task workflow 3",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "f4c96785-4cd4-42c9-9e43-4c50b654e397",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination()
+                                    {
+                                        Name = "6f26fb39-5991-4b6e-9885-67e32a575559"
+                                    }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "6f26fb39-5991-4b6e-9885-67e32a575559",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 2",
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Multi_Task_3"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
                 Name = "Multi_Task_Workflow_Invalid_Task_Destination",
                 WorkflowRevision = new WorkflowRevision()
                 {

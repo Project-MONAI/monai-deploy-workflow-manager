@@ -103,14 +103,14 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 7
-    testRunner.Given("I have a clinical workflow Multi_Task_Workflow_1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+    testRunner.Given("I have a clinical workflow Multi_Task_Workflow_3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 8
-    testRunner.And("I have a Workflow Instance WFI_Multi_Task_1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I have a Workflow Instance WFI_Multi_Task_3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 9
-    testRunner.When("I publish a Task Update Message Task_Update_Dispatches_Single_Task with status Su" +
-                        "cceeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.When("I publish a Task Update Message Task_Update_To_Dispatch_Single_Task with status S" +
+                        "ucceeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 10
     testRunner.Then("1 Task Dispatch event is published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
