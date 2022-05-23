@@ -139,6 +139,8 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
 
             if (message.Status != TaskExecutionStatus.Succeeded)
             {
+                await UpdateWorkflowInstanceStatus(workflowInstance, message.TaskId, message.Status);
+
                 return await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
             }
 
@@ -156,10 +158,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
 
             if (!newTaskExecutions.Any())
             {
-                if (!workflowInstance.Tasks.Any(t => t.Status != TaskExecutionStatus.Succeeded && t.Status != TaskExecutionStatus.Failed && t.TaskId != message.TaskId))
-                {
-                    await _workflowInstanceRepository.UpdateWorkflowInstanceStatusAsync(workflowInstance.Id, Status.Succeeded);
-                }
+                await UpdateWorkflowInstanceStatus(workflowInstance, message.TaskId, message.Status);
 
                 return await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
             }
@@ -188,6 +187,30 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
 
             return processed;
+        }
+
+        private async Task<bool> UpdateWorkflowInstanceStatus(WorkflowInstance workflowInstance, string taskId, TaskExecutionStatus currentTaskStatus)
+        {
+            if (!workflowInstance.Tasks.Any(t => t.TaskId == taskId))
+            {
+                return false;
+            }
+
+            var previousTasks = workflowInstance.Tasks.Where(t => t.TaskId != taskId);
+
+            if (!previousTasks.Any(t => t.Status != TaskExecutionStatus.Succeeded && t.Status != TaskExecutionStatus.Canceled)
+                && (currentTaskStatus == TaskExecutionStatus.Succeeded || currentTaskStatus == TaskExecutionStatus.Canceled))
+            {
+                return await _workflowInstanceRepository.UpdateWorkflowInstanceStatusAsync(workflowInstance.Id, Status.Succeeded);
+            }
+
+            if (!previousTasks.Any(t => t.Status != TaskExecutionStatus.Succeeded && t.Status != TaskExecutionStatus.Failed && t.Status != TaskExecutionStatus.Canceled)
+                && (currentTaskStatus == TaskExecutionStatus.Succeeded || currentTaskStatus == TaskExecutionStatus.Canceled || currentTaskStatus == TaskExecutionStatus.Failed))
+            {
+                return await _workflowInstanceRepository.UpdateWorkflowInstanceStatusAsync(workflowInstance.Id, Status.Failed);
+            }
+
+            return true;
         }
 
         private List<TaskExecution> HandleTaskDestinations(WorkflowInstance workflowInstance, WorkflowRevision workflow, TaskDestination[]? currentTaskDestinations)

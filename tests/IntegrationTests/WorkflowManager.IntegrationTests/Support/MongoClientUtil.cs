@@ -24,7 +24,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             Database = Client.GetDatabase($"{TestExecutionConfig.MongoConfig.Database}");
             WorkflowRevisionCollection = Database.GetCollection<WorkflowRevision>($"{TestExecutionConfig.MongoConfig.WorkflowCollection}");
             WorkflowInstanceCollection = Database.GetCollection<WorkflowInstance>($"{TestExecutionConfig.MongoConfig.WorkflowInstanceCollection}");
-            RetryMongo = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+            RetryMongo = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
         }
 
         public void CreateWorkflowRevisionDocument(WorkflowRevision workflowRevision)
