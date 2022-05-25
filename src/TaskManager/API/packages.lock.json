@@ -18,9 +18,9 @@
       },
       "Monai.Deploy.Storage": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0020, )",
-        "resolved": "0.1.0-rc0020",
-        "contentHash": "SNNzbGPte4S2CKzsYI5g723aRMNG8AVFNYR847hHl8JQXCD5f6ugxEJUid4/hpu88HxPPigDm7sMrc5H4EwtZQ==",
+        "requested": "[0.1.0-rc0021, )",
+        "resolved": "0.1.0-rc0021",
+        "contentHash": "jealmI38hO1f8iTGt9ACYUx5sIyUnrf5tMVA7DNekzJ9mufhTMpNgukCqmkvYpXeljaPBp6yWn7NzfjiS1fnhw==",
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.141",
           "Ardalis.GuardClauses": "4.0.0",

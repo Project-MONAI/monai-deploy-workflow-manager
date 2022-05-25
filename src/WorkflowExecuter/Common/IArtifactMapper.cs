@@ -7,6 +7,13 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
 {
     public interface IArtifactMapper
     {
-        Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId);
+        /// <summary>
+        /// Converts an array of artifacts to a dictionary of artifact path variables.
+        /// </summary>
+        /// <param name="artifacts">Array of artifacts to convert.</param>
+        /// <param name="payloadId">Payload id to check against.</param>
+        /// <param name="workflowInstanceId">Workflow instance id to check against.</param>
+        /// <param name="bucketId">Bucket id used to verify.</param>
+        Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId);
     }
 }

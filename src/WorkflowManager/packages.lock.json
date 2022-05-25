@@ -490,8 +490,8 @@
       },
       "Monai.Deploy.Storage": {
         "type": "Transitive",
-        "resolved": "0.1.0-rc0020",
-        "contentHash": "SNNzbGPte4S2CKzsYI5g723aRMNG8AVFNYR847hHl8JQXCD5f6ugxEJUid4/hpu88HxPPigDm7sMrc5H4EwtZQ==",
+        "resolved": "0.1.0-rc0021",
+        "contentHash": "jealmI38hO1f8iTGt9ACYUx5sIyUnrf5tMVA7DNekzJ9mufhTMpNgukCqmkvYpXeljaPBp6yWn7NzfjiS1fnhw==",
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.141",
           "Ardalis.GuardClauses": "4.0.0",
@@ -722,7 +722,7 @@
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
           "Monai.Deploy.Messaging": "0.1.0-rc0038",
-          "Monai.Deploy.Storage": "0.1.0-rc0020",
+          "Monai.Deploy.Storage": "0.1.0-rc0021",
           "Newtonsoft.Json": "13.0.1",
           "System.IO.Abstractions": "16.1.25"
         }
@@ -762,7 +762,7 @@
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
           "Monai.Deploy.Messaging": "0.1.0-rc0038",
-          "Monai.Deploy.Storage": "0.1.0-rc0020",
+          "Monai.Deploy.Storage": "0.1.0-rc0021",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
@@ -776,7 +776,7 @@
           "AWSSDK.SecurityToken": "3.7.1.141",
           "Ardalis.GuardClauses": "4.0.1",
           "Monai.Deploy.Messaging": "0.1.0-rc0038",
-          "Monai.Deploy.Storage": "0.1.0-rc0020",
+          "Monai.Deploy.Storage": "0.1.0-rc0021",
           "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Database": "1.0.0",

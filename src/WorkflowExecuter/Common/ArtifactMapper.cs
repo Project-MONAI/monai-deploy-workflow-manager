@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using Ardalis.GuardClauses;
+using Monai.Deploy.Storage;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 
@@ -10,13 +11,18 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
     public class ArtifactMapper : IArtifactMapper
     {
         private readonly IWorkflowInstanceRepository _workflowInstanceRepository;
+        private readonly IStorageService _storageService;
 
-        public ArtifactMapper(IWorkflowInstanceRepository workflowInstanceRepository)
+        public ArtifactMapper(
+            IWorkflowInstanceRepository workflowInstanceRepository,
+            IStorageService storageService
+            )
         {
             _workflowInstanceRepository = workflowInstanceRepository ?? throw new ArgumentNullException(nameof(workflowInstanceRepository));
+            _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
         }
 
-        public async Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId)
+        public async Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId)
         {
             Guard.Against.Null(artifacts);
             Guard.Against.NullOrWhiteSpace(payloadId);
@@ -34,14 +40,17 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
                     continue;
                 }
 
-                var mappedArtifact = await ConvertVariableStringToPath(artifact, variableString, workflowInstanceId, payloadId);
+                var mappedArtifact = await ConvertVariableStringToPath(artifact, variableString, workflowInstanceId, payloadId, bucketId);
 
-                if (mappedArtifact.Equals(default(KeyValuePair<string, string>)))
+                if (!mappedArtifact.Equals(default(KeyValuePair<string, string>)))
                 {
-                    continue;
+                    artifactPathDictionary.Add(mappedArtifact.Key, mappedArtifact.Value);
                 }
 
-                artifactPathDictionary.Add(mappedArtifact.Key, mappedArtifact.Value);
+                if (artifact.Mandatory)
+                {
+                    throw new FileNotFoundException($"Mandatory artifact was not found: {artifact.Name}, {artifact.Value}");
+                }
             }
 
             return artifactPathDictionary;
@@ -63,11 +72,11 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
             return true;
         }
 
-        private async Task<KeyValuePair<string, string>> ConvertVariableStringToPath(Artifact artifact, string variableString, string workflowInstanceId, string payloadId)
+        private async Task<KeyValuePair<string, string>> ConvertVariableStringToPath(Artifact artifact, string variableString, string workflowInstanceId, string payloadId, string bucketId)
         {
             if (variableString.StartsWith("context.input"))
             {
-                return new KeyValuePair<string, string>(artifact.Name, $"{payloadId}/dcm");
+                return _storageService.VerifyObjectExists(bucketId, new KeyValuePair<string, string>(artifact.Name, $"{payloadId}/dcm/"));
             }
 
             if (variableString.StartsWith("context.executions"))
@@ -81,7 +90,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
 
                 if (variableLocation == "output_dir")
                 {
-                    return new KeyValuePair<string, string>(artifact.Name, task.OutputDirectory);
+                    return _storageService.VerifyObjectExists(bucketId, new KeyValuePair<string, string>(artifact.Name, task.OutputDirectory));
                 }
 
                 if (variableLocation == "artifacts")
@@ -91,7 +100,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
 
                     if (!outputArtifact.Equals(default(KeyValuePair<string, string>)))
                     {
-                        return new KeyValuePair<string, string>(outputArtifact.Key, outputArtifact.Value);
+                        return _storageService.VerifyObjectExists(bucketId, new KeyValuePair<string, string>(outputArtifact.Key, outputArtifact.Value));
                     }
                 }
             }

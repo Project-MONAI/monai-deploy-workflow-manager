@@ -12,5 +12,8 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         [JsonProperty(PropertyName = "value")]
         public string Value { get; set; }
+
+        [JsonProperty(PropertyName = "mandatory")]
+        public bool Mandatory { get; set; }
     }
 }
