@@ -168,6 +168,7 @@ The adapter will listen on multiple queues, as  follows:
 |md.workflow.request|Informatics Gateway|Workflow Executer
 |md.workflow.task_dispatch|Workflow Executer|Task Executer
 |md.workflow.task_callback|App Servers|Task Executer
+|md.tasks.update|Task Executer | Workflow Executer
 |md.export.complete|Workflow Executer|Informatics Gateway
 
 ##### The Workflow Request Queue
