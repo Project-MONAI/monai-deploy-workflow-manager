@@ -43,6 +43,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
                 Status = TaskExecutionStatus.Created,
                 TaskPluginArguments = task.TaskPluginArguments,
                 Inputs = inputs,
+                TaskPluginType = task.TaskType,
                 Metadata = task.Metadata
             };
         }

@@ -55,6 +55,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 ExecutionId = task.ExecutionId.ToString(),
                 CorrelationId = correlationId,
                 Status = TaskExecutionStatus.Created,
+                TaskPluginType = task.TaskType,
                 Inputs = new List<Messaging.Common.Storage>
                 {
                     new Messaging.Common.Storage

@@ -312,7 +312,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
         }
 
-        private static JsonMessage<TaskUpdateEvent> GenerateUpdateEventMessage<T>(JsonMessage<T> message, string executionId, string WorkflowInstanceId, string taskId, ExecutionStatus executionStatus)
+        private static JsonMessage<TaskUpdateEvent> GenerateUpdateEventMessage<T>(JsonMessage<T> message, string executionId, string WorkflowInstanceId, string taskId, ExecutionStatus executionStatus, Dictionary<string, string> outputArtifacts = null)
         {
             Guard.Against.Null(message, nameof(message));
             Guard.Against.Null(executionStatus, nameof(executionStatus));
@@ -326,6 +326,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 WorkflowInstanceId = WorkflowInstanceId,
                 TaskId = taskId,
                 Message = executionStatus.Errors,
+                OutputArtifacts = outputArtifacts ?? new Dictionary<string, string>(),
             }, TaskManagerApplicationId, message.CorrelationId);
         }
 

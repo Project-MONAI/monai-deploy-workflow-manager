@@ -3,6 +3,7 @@
 
 using Argo;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
@@ -80,7 +81,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 TaskId = _taskDispatchEvent.TaskId,
                 ExecutionId = _taskDispatchEvent.ExecutionId,
                 CorrelationId = _taskDispatchEvent.CorrelationId,
-                Identity = "{{workflow.name}}"
+                Identity = "{{workflow.name}}",
+                OutputArtifacts = _taskDispatchEvent.Outputs?.ToArtifactDictionary() ?? new Dictionary<string, string>()
             };
 
         private object GenerateTaskCallbackMessage() =>
