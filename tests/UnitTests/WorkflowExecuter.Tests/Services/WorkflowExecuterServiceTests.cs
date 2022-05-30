@@ -13,6 +13,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
@@ -756,9 +757,13 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 Message = "This is a message",
                 Metadata = new Dictionary<string, object>(),
                 CorrelationId = Guid.NewGuid().ToString(),
-                OutputArtifacts = new Dictionary<string, string>
+                Outputs = new List<Messaging.Common.Storage>
                 {
-                    { "artifact.txt", "path/to/artifact" }
+                    new Messaging.Common.Storage
+                    {
+                        Name = "artifactname",
+                        RelativeRootPath = "path/to/artifact"
+                    }
                 }
             };
 
@@ -832,11 +837,13 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                     }
             };
 
+            var artifactDict = updateEvent.Outputs.ToArtifactDictionary();
+
             _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
-            _storageService.Setup(w => w.VerifyObjectsExist(workflowInstance.BucketId, updateEvent.OutputArtifacts)).Returns(updateEvent.OutputArtifacts);
+            _storageService.Setup(w => w.VerifyObjectsExist(workflowInstance.BucketId, artifactDict)).Returns(artifactDict);
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 

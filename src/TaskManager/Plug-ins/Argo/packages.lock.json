@@ -34,9 +34,9 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0038, )",
-        "resolved": "0.1.0-rc0038",
-        "contentHash": "j6RswItc5GE7b42T1KMMT9oXsOEizr6HKgso4WAV/evGmcwMnzuBdRJHNIfGWeDTTKO7Ld7+BJrSOEno5+udsg==",
+        "requested": "[0.1.0-rc0040, )",
+        "resolved": "0.1.0-rc0040",
+        "contentHash": "q5t6h24M+22JQqeBTD9wOOYYAvb1Vk29nkadcOJ05wT569jnF+MGmEherDn1moX45Ehj4TsCvQl3TD4HJlC1mA==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -601,7 +601,7 @@
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.141",
           "Microsoft.Extensions.Configuration": "6.0.1",
-          "Monai.Deploy.Messaging": "0.1.0-rc0038",
+          "Monai.Deploy.Messaging": "0.1.0-rc0040",
           "MongoDB.Bson": "2.15.0",
           "Newtonsoft.Json": "13.0.1"
         }
@@ -612,7 +612,7 @@
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.0-rc0038",
+          "Monai.Deploy.Messaging": "0.1.0-rc0040",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
           "MongoDB.Bson": "2.15.0",
@@ -628,7 +628,7 @@
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.0-rc0038",
+          "Monai.Deploy.Messaging": "0.1.0-rc0040",
           "Monai.Deploy.Storage": "0.1.0-rc0021"
         }
       }
