@@ -166,6 +166,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                     services.AddSingleton<IStorageService, MinIoStorageService>();
                     services.AddSingleton<IMessageBrokerPublisherService, RabbitMqMessagePublisherService>();
                     services.AddSingleton<IMessageBrokerSubscriberService, RabbitMqMessageSubscriberService>();
+                    services.AddSingleton<IMinioAdmin>((shell) =>
+                    {
+                        var storage = hostContext.Configuration.GetSection("WorkflowManager:storage") as StorageServiceConfiguration;
+                        var executable = storage.Settings["executableLocation"];
+                        var endpoint = storage.Settings["endpoint"];
+                        var secretKey = storage.Settings["accessToken"];
+                        var accessKey = storage.Settings["accessKey"];
+                        return new Storage.MinioAdmin.Shell(executable, "minioApp", endpoint, accessKey, secretKey);
+                    });
 
                     services.AddSingleton<TaskManager>();
                     services.AddSingleton<IArgoProvider, ArgoProvider>();

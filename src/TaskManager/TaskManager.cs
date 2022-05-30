@@ -27,6 +27,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         private readonly ILogger<TaskManager> _logger;
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IMinioAdmin _minioAdmin;
         private readonly IServiceScope _scope;
         private readonly IDictionary<string, TaskRunnerInstance> _activeExecutions;
         private readonly CancellationTokenSource _cancellationTokenSource;
@@ -45,12 +46,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         public TaskManager(
             ILogger<TaskManager> logger,
             IOptions<WorkflowManagerOptions> options,
-            IServiceScopeFactory serviceScopeFactory)
+            IServiceScopeFactory serviceScopeFactory,
+            IMinioAdmin minioAdmin)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _options = options ?? throw new ArgumentNullException(nameof(options));
 
             _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
+            _minioAdmin = minioAdmin;
             _scope = _serviceScopeFactory.CreateScope();
 
             _activeExecutions = new Dictionary<string, TaskRunnerInstance>();
@@ -198,9 +201,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             try
             {
-                PopulateTemporaryStorageCredentials(message.Body.Inputs.ToArray());
-                PopulateTemporaryStorageCredentials(message.Body.IntermediateStorage);
-                PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray());
+                if (message.Body.TaskPluginType == "Argo")
+                {
+                    AddCredentialsToPlugin(message);
+                }
+                else
+                {
+                    PopulateTemporaryStorageCredentials(message.Body.Inputs.ToArray());
+                    PopulateTemporaryStorageCredentials(message.Body.IntermediateStorage);
+                    PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray());
+                }
             }
             catch (Exception ex)
             {
@@ -234,6 +244,40 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             {
                 _logger.ErrorExecutingTask(ex);
                 await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+            }
+        }
+
+        private void AddCredentialsToPlugin(JsonMessage<TaskDispatchEvent> message)
+        {
+            var storages = new List<Messaging.Common.Storage>();
+            storages.Add(message.Body.IntermediateStorage);
+            storages.AddRange(message.Body.Outputs);
+            storages.AddRange(message.Body.Inputs);
+
+            var storageBuckets = storages.Select(storage => storage.Bucket)
+                .Distinct()
+                .ToList();
+            var policyRequest = storageBuckets.Select(
+                    bucket => new PolicyRequest(bucket, "")
+                ).ToArray();
+
+            var creds = _minioAdmin.CreateReadOnlyUser(
+                $"TM{Guid.NewGuid()}",
+                policyRequest);
+
+            if (creds is null)
+            {
+                _logger.LogError("Credentials not generated");
+                return;
+            }
+
+            foreach (var storage in storages)
+            {
+                storage.Credentials = new Credentials
+                {
+                    AccessKey = creds.AccessKeyId,
+                    AccessToken = creds.SecretAccessKey
+                };
             }
         }
 
