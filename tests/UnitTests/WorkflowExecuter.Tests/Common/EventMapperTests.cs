@@ -71,6 +71,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 TaskPluginArguments = new Dictionary<string, string>
                 {
                     { "key", "value" }
+                },
+                IntermediateStorage = new Messaging.Common.Storage
+                {
+                    Bucket = configuration.Settings["bucket"],
+                    Endpoint = configuration.Settings["endpoint"],
+                    Name = task.TaskId,
+                    RelativeRootPath = "minio/workflowid/taskid/tmp",
+                    SecuredConnection = bool.Parse(configuration.Settings["securedConnection"])
                 }
             };
 

@@ -44,7 +44,15 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
                 TaskPluginArguments = task.TaskPluginArguments,
                 Inputs = inputs,
                 TaskPluginType = task.TaskType,
-                Metadata = task.Metadata
+                Metadata = task.Metadata,
+                IntermediateStorage = new Messaging.Common.Storage
+                {
+                    Bucket = configuration.Settings["bucket"],
+                    RelativeRootPath = $"{task.OutputDirectory}/tmp",
+                    Endpoint = configuration.Settings["endpoint"],
+                    Name = task.TaskId,
+                    SecuredConnection = bool.Parse(configuration.Settings["securedConnection"])
+                }
             };
         }
     }

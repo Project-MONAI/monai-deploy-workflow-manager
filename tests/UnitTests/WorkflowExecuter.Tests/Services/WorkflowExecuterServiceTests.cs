@@ -47,7 +47,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _messageBrokerPublisherService = new Mock<IMessageBrokerPublisherService>();
             _storageService = new Mock<IStorageService>();
             _configuration = Options.Create(new WorkflowManagerOptions() { Messaging = new MessageBrokerConfiguration { Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch" } } });
-            _storageConfiguration = Options.Create(new StorageServiceConfiguration());
+            _storageConfiguration = Options.Create(new StorageServiceConfiguration() { Settings = new Dictionary<string, string> { { "bucket", "testbucket" }, { "endpoint", "localhost" }, { "securedConnection", "False" } } });
 
             WorkflowExecuterService = new WorkflowExecuterService(_logger.Object, _configuration, _storageConfiguration, _workflowRepository.Object, _workflowInstanceRepository.Object, _messageBrokerPublisherService.Object, _artifactMapper.Object, _storageService.Object);
         }
