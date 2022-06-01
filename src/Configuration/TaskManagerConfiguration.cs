@@ -15,6 +15,9 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         [ConfigurationKeyName("plug-ins")]
         public Dictionary<string, string> PluginAssemblyMappings { get; set; }
 
+        [ConfigurationKeyName("meta-data")]
+        public Dictionary<string, string> MetadataAssemblyMappings { get; set; }
+
         [ConfigurationKeyName("storageCredentialDurationSeconds")]
         public int TemporaryStorageCredentialDurationSeconds { get; set; } = 3600;
 
@@ -26,6 +29,7 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         public TaskManagerConfiguration()
         {
             PluginAssemblyMappings = new Dictionary<string, string>();
+            MetadataAssemblyMappings = new Dictionary<string, string>();
         }
     }
 }

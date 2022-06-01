@@ -51,5 +51,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging
 
         [LoggerMessage(EventId = 1014, Level = LogLevel.Information, Message = "{artifactName} in template {templateName} is not configured as no matching input information was found.")]
         public static partial void NoInputArtifactStorageConfigured(this ILogger logger, string artifactName, string templateName);
+
+        [LoggerMessage(EventId = 1015, Level = LogLevel.Debug, Message = "metadata file in {path} in bucket {bucket} was not found.")]
+        public static partial void MetadataFileNotFound(this ILogger logger, string bucket, string path);
     }
 }

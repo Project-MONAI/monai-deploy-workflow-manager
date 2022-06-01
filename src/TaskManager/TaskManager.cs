@@ -153,19 +153,55 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 return;
             }
 
+            var metadataAssembly = string.Empty;
+            JsonMessage<TaskUpdateEvent>? updateMessage = null;
+
             try
             {
+                metadataAssembly = _options.Value.TaskManager.MetadataAssemblyMappings[runner.Event.TaskPluginType];
                 var executionStatus = await runner.Runner.GetStatus(message.Body.Identity, _cancellationTokenSource.Token).ConfigureAwait(false);
-                AcknowledgeMessage(message);
-                var updateMessage = GenerateUpdateEventMessage(message, message.Body.ExecutionId, message.Body.WorkflowInstanceId, message.Body.TaskId, executionStatus);
+                updateMessage = GenerateUpdateEventMessage(message, message.Body.ExecutionId, message.Body.WorkflowInstanceId, message.Body.TaskId, executionStatus);
                 updateMessage.Body.Metadata.Add(Strings.JobIdentity, message.Body.Identity);
-                await SendUpdateEvent(updateMessage).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 _logger.ErrorExecutingTask(ex);
                 await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+
+                return;
             }
+
+            IMetadataRepository? metadataRepository = null;
+            try
+            {
+                metadataRepository = typeof(IMetadataRepository).CreateInstance<IMetadataRepository>(serviceProvider: _scope.ServiceProvider, typeString: metadataAssembly, _serviceScopeFactory, runner.Event, message.Body);
+            }
+            catch (Exception ex)
+            {
+                _logger.UnsupportedRunner(metadataAssembly, ex);
+                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                metadataRepository?.Dispose();
+
+                return;
+            }
+
+            try
+            {
+                var metadata = await metadataRepository.RetrieveMetadata().ConfigureAwait(false);
+
+                foreach (var item in metadata)
+                    updateMessage.Body.Metadata.Add(item.Key, item.Value);
+            }
+            catch (Exception ex)
+            {
+                updateMessage.Body.Status = TaskExecutionStatus.Failed;
+                updateMessage.Body.Reason = FailureReason.PluginError;
+
+                _logger.MetadataRetrievalFailed(ex);
+            }
+
+            AcknowledgeMessage(message);
+            await SendUpdateEvent(updateMessage).ConfigureAwait(false);
 
             Interlocked.Decrement(ref _activeJobs);
             _activeExecutions.Remove(message.Body.ExecutionId);
