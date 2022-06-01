@@ -16,6 +16,7 @@ using Monai.Deploy.Messaging.RabbitMq;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.Storage.MinIo;
+using Monai.Deploy.Storage.MinioAdmin.Interfaces;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo;
