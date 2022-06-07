@@ -127,5 +127,23 @@ namespace Monai.Deploy.WorkflowManager.Database
 
             return workflowRevision.WorkflowId;
         }
+
+        public async Task<string> UpdateAsync(Workflow workflow, WorkflowRevision existingWorkflow)
+        {
+            Guard.Against.Null(workflow, nameof(workflow));
+            Guard.Against.Null(existingWorkflow, nameof(existingWorkflow));
+
+            var workflowRevision = new WorkflowRevision
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = existingWorkflow.WorkflowId,
+                Revision = existingWorkflow.Revision++,
+                Workflow = workflow
+            };
+
+            await _workflowCollection.InsertOneAsync(workflowRevision);
+
+            return workflowRevision.WorkflowId;
+        }
     }
 }

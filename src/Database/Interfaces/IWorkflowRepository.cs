@@ -43,5 +43,12 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// </summary>
         /// <param name="workflow">Workflow object to create.</param>
         Task<string> CreateAsync(Workflow workflow);
+
+        /// <summary>
+        /// Updates a workflow object and creates a new revision.
+        /// </summary>
+        /// <param name="workflow">Workflow object to create.</param>
+        /// <param name="existingWorkflow">Existing Workflow object to update.</param>
+        Task<string> UpdateAsync(Workflow workflow, WorkflowRevision existingWorkflow);
     }
 }

@@ -34,5 +34,20 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
 
             return await _workflowRepository.CreateAsync(workflow);
         }
+
+        public async Task<string> UpdateAsync(Workflow workflow, string id)
+        {
+            Guard.Against.Null(workflow);
+            Guard.Against.NullOrWhiteSpace(id);
+
+            var existingWorkflow = await _workflowRepository.GetByWorkflowIdAsync(id);
+
+            if (existingWorkflow is null)
+            {
+                return null;
+            }
+
+            return await _workflowRepository.UpdateAsync(workflow, existingWorkflow);
+        }
     }
 }
