@@ -7,6 +7,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
 {
     public interface IWorkflowService
     {
+        /// <summary>
+        /// Gets a list of the latest workflow revisions from the workflow repository.
+        /// </summary>
         List<WorkflowRevision> GetList();
 
         /// <summary>
