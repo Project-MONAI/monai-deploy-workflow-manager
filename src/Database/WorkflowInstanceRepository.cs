@@ -39,6 +39,13 @@ namespace Monai.Deploy.WorkflowManager.Database
             _workflowInstanceCollection = mongoDatabase.GetCollection<WorkflowInstance>(bookStoreDatabaseSettings.Value.WorkflowInstanceCollectionName);
         }
 
+        public async Task<IList<WorkflowInstance>> GetListAsync()
+        {
+            var workflowIstances = await _workflowInstanceCollection.Find(Builders<WorkflowInstance>.Filter.Empty).ToListAsync();
+
+            return workflowIstances ?? new List<WorkflowInstance>();
+        }
+
         public async Task<IList<WorkflowInstance>> GetByWorkflowsIdsAsync(List<string> workflowIds)
         {
             Guard.Against.NullOrEmpty(workflowIds, nameof(workflowIds));
