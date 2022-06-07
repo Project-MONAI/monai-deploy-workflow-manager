@@ -9,6 +9,8 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
 {
     public interface IWorkflowRepository
     {
+        List<WorkflowRevision> GetWorkflowsList();
+
         /// <summary>
         /// Get Retrieves a worklow based on an Id.
         /// </summary>

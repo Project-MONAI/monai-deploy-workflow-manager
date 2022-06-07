@@ -35,10 +35,29 @@ public class WorkflowsController : ControllerBase
     }
 
     /// <summary>
-    /// Get a workflow by the ID
+    /// Gets a list of all workflows.
+    /// </summary>
+    /// <returns>The ID of the created Workflow.</returns>
+    [HttpGet]
+    public IActionResult GetList()
+    {
+        try
+        {
+            var workflows = _workflowService.GetList();
+
+            return Ok(workflows);
+        }
+        catch (Exception e)
+        {
+            return Problem($"Unexpected error occured: {e.Message}", $"/workflows", 500);
+        }
+    }
+
+    /// <summary>
+    /// Get a workflow by the ID.
     /// </summary>
     /// <param name="id">The Workflow Id</param>
-    /// <returns>The ID of the created Workflow.</returns>
+    /// <returns>The specified workflow for a given Id.</returns>
     [Route("{id}")]
     [HttpGet]
     public async Task<IActionResult> GetAsync([FromRoute] string id)
