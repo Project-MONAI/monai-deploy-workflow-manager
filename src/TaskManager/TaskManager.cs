@@ -48,19 +48,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         public TaskManager(
             ILogger<TaskManager> logger,
             IOptions<WorkflowManagerOptions> options,
-            IServiceScopeFactory serviceScopeFactory,
-            IMinioAdmin minioAdmin)
+            IServiceScopeFactory serviceScopeFactory)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _options = options ?? throw new ArgumentNullException(nameof(options));
 
             _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
-            _minioAdmin = minioAdmin;
             _scope = _serviceScopeFactory.CreateScope();
 
             _activeExecutions = new Dictionary<string, TaskRunnerInstance>();
             _cancellationTokenSource = new CancellationTokenSource();
 
+            _minioAdmin = _scope.ServiceProvider.GetRequiredService<IMinioAdmin>() ?? throw new ServiceNotFoundException(nameof(IStorageService));
             _storageService = _scope.ServiceProvider.GetRequiredService<IStorageService>() ?? throw new ServiceNotFoundException(nameof(IStorageService));
             _messageBrokerPublisherService = null;
             _messageBrokerSubscriberService = null;
@@ -203,15 +202,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             try
             {
-                if (message.Body.TaskPluginType == "Argo")
+                if (message.Body.TaskPluginType.ToLower() == "argo")
                 {
                     AddCredentialsToPlugin(message);
                 }
                 else
                 {
-                    PopulateTemporaryStorageCredentials(message.Body.Inputs.ToArray());
-                    PopulateTemporaryStorageCredentials(message.Body.IntermediateStorage);
-                    PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray());
+                    await Task.WhenAll(
+                        PopulateTemporaryStorageCredentials(message.Body.Inputs.ToArray()),
+                        PopulateTemporaryStorageCredentials(message.Body.IntermediateStorage),
+                        PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray())
+                    ).ConfigureAwait(true);
                 }
             }
             catch (Exception ex)
@@ -283,24 +284,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
         }
 
-        private void PopulateTemporaryStorageCredentials(params Messaging.Common.Storage[] storages)
+        private async Task PopulateTemporaryStorageCredentials(params Messaging.Common.Storage[] storages)
         {
             Guard.Against.Null(storages, nameof(storages));
 
             foreach (var storage in storages)
             {
-                // TODO: https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/102
-                //var credeentials = await _storageService.CreateTemporaryCredentials(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
-                // storage.Credentials = new Credentials
-                // {
-                //     AccessKey = credeentials.AccessKeyId,
-                //     AccessToken = credeentials.SecretAccessKey,
-                //     SessionToken = credeentials.SessionToken,
-                // };
+                var credeentials = await _storageService.CreateTemporaryCredentials(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
                 storage.Credentials = new Credentials
                 {
-                    AccessKey = _options.Value.Storage.Settings["accessKey"],
-                    AccessToken = _options.Value.Storage.Settings["accessToken"],
+                    AccessKey = credeentials.AccessKeyId,
+                    AccessToken = credeentials.SecretAccessKey,
+                    SessionToken = credeentials.SessionToken,
                 };
             }
         }

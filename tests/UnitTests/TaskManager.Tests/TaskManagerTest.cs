@@ -73,7 +73,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _serviceScopeFactory = new Mock<IServiceScopeFactory>();
             _serviceScope = new Mock<IServiceScope>();
             _storageService = new Mock<IStorageService>();
-            _minioAdmin = new Mock<IMinioAdmin>();
             _messageBrokerPublisherService = new Mock<IMessageBrokerPublisherService>();
             _messageBrokerSubscriberService = new Mock<IMessageBrokerSubscriberService>();
             _testRunnerCallback = new Mock<ITestRunnerCallback>();
@@ -103,12 +102,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _options.Value.Storage.Settings["accessToken"] = "token";
         }
 
-        public IMinioAdmin MinioAdmin { get => _minioAdmin.Object; }
-
         [Fact(DisplayName = "Task Manager starts & stops")]
         public async Task TaskManager_StartStop()
         {
-            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object, MinioAdmin);
+            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
 
             Assert.Equal(ServiceStatus.Running, service.Status);
@@ -140,7 +137,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
                 .Callback(() => resetEvent.Set());
 
-            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object, MinioAdmin);
+            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
@@ -169,7 +166,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
                 .Callback(() => resetEvent.Set());
 
-            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object, MinioAdmin);
+            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
@@ -201,7 +198,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
         //    _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
         //        .ThrowsAsync(new Exception("error"));
 
-        //    var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object,MinioAdmin);
+        //    var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Objec);
         //    await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
         //    Assert.Equal(ServiceStatus.Running, service.Status);
 
@@ -236,7 +233,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     SecretAccessKey = Guid.NewGuid().ToString()
                 });
 
-            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object, MinioAdmin);
+            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
@@ -274,7 +271,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     SecretAccessKey = Guid.NewGuid().ToString()
                 });
 
-            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object, MinioAdmin);
+            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
@@ -318,7 +315,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     SecretAccessKey = Guid.NewGuid().ToString()
                 });
 
-            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object, MinioAdmin);
+            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
@@ -358,7 +355,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     SecretAccessKey = Guid.NewGuid().ToString()
                 });
 
-            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object, MinioAdmin);
+            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
@@ -392,7 +389,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     SecretAccessKey = Guid.NewGuid().ToString()
                 });
 
-            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object, MinioAdmin);
+            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
@@ -459,7 +456,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 .Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
                 .Callback(() => resetEvent.Signal());
 
-            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object, MinioAdmin);
+            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
@@ -528,7 +525,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     SecretAccessKey = Guid.NewGuid().ToString()
                 });
 
-            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object, MinioAdmin);
+            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
