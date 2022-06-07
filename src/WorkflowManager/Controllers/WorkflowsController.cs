@@ -107,4 +107,46 @@ public class WorkflowsController : ControllerBase
             return Problem($"Unexpected error occured: {e.Message}", $"/workflows", 500);
         }
     }
+
+    /// <summary>
+    /// Updates a workflow and creates a new revision
+    /// </summary>
+    /// <param name="workflow">The Workflow.</param>
+    /// <returns>The ID of the created Workflow.</returns>
+    [Route("{id}")]
+    [HttpPut]
+    public async Task<IActionResult> UpdateAsync([FromBody] Workflow workflow, [FromRoute] string id)
+    {
+        if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
+        {
+            this._logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(id)}");
+
+            return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", 400);
+        }
+
+        if (!workflow.IsValid(out var validationErrors))
+        {
+            this._logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+
+            return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/{id}", 400);
+        }
+
+        try
+        {
+            var workflowId = await _workflowService.UpdateAsync(workflow, id);
+
+            if (workflowId == null)
+            {
+                this._logger.LogDebug($"{nameof(UpdateAsync)} - Failed to find workflow with Id: {id}");
+
+                return NotFound($"Faild to find workflow with Id: {id}");
+            }
+
+            return StatusCode(StatusCodes.Status201Created, new CreateWorkflowResponse(workflowId));
+        }
+        catch (Exception e)
+        {
+            return Problem($"Unexpected error occured: {e.Message}", $"/workflows", 500);
+        }
+    }
 }
