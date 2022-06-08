@@ -21,8 +21,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
     {
         private IArtifactMapper ArtifactMapper { get; set; }
 
-        private IStorageService StorageService { get; set; }
-
         private readonly Mock<IWorkflowInstanceRepository> _workflowInstanceRepository;
         private readonly Mock<IStorageService> _storageService;
 

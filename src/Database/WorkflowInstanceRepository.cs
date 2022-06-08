@@ -55,6 +55,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             catch (Exception e)
             {
                 _logger.DbCallFailed(nameof(GetByWorkflowsIdsAsync), e);
+
                 return new List<WorkflowInstance>();
             }
         }
@@ -66,11 +67,13 @@ namespace Monai.Deploy.WorkflowManager.Database
             try
             {
                 await _workflowInstanceCollection.InsertManyAsync(workflowInstances);
+
                 return true;
             }
             catch (Exception e)
             {
                 _logger.DbCallFailed(nameof(CreateAsync), e);
+
                 return false;
             }
         }
@@ -83,14 +86,16 @@ namespace Monai.Deploy.WorkflowManager.Database
 
             try
             {
-                var result = await _workflowInstanceCollection.FindOneAndUpdateAsync(
+                await _workflowInstanceCollection.FindOneAndUpdateAsync(
                     i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.TaskId == taskId),
                     Builders<WorkflowInstance>.Update.Set(w => w.Tasks[-1].Status, status));
+
                 return true;
             }
             catch (Exception e)
             {
                 _logger.DbCallFailed(nameof(UpdateTaskStatusAsync), e);
+
                 return false;
             }
         }
@@ -103,14 +108,16 @@ namespace Monai.Deploy.WorkflowManager.Database
 
             try
             {
-                var result = await _workflowInstanceCollection.FindOneAndUpdateAsync(
+                await _workflowInstanceCollection.FindOneAndUpdateAsync(
                     i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.TaskId == taskId),
                     Builders<WorkflowInstance>.Update.Set(w => w.Tasks[-1].OutputArtifacts, outputArtifacts));
+
                 return true;
             }
             catch (Exception e)
             {
                 _logger.DbCallFailed(nameof(UpdateTaskOutputArtifactsAsync), e);
+
                 return false;
             }
         }
@@ -150,6 +157,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             catch (Exception e)
             {
                 _logger.DbCallFailed(nameof(GetTaskByIdAsync), e);
+
                 return null;
             }
         }

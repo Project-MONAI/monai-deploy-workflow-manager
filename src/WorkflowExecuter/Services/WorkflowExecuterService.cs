@@ -107,6 +107,11 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
 
                 var task = workflowInstance.Tasks.FirstOrDefault();
 
+                if (task is null)
+                {
+                    continue;
+                }
+
                 if (task.Status != TaskExecutionStatus.Created)
                 {
                     _logger.TaskPreviouslyDispatched(workflowInstance.PayloadId, task.TaskId);
@@ -191,7 +196,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                 return await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
             }
 
-            workflowInstance.Tasks.AddRange(newTaskExecutions);
+            workflowInstance.Tasks?.AddRange(newTaskExecutions);
 
             if (!await _workflowInstanceRepository.UpdateTasksAsync(message.WorkflowInstanceId, workflowInstance.Tasks))
             {
@@ -329,7 +334,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                 {
                     tasks.Add(await CreateTaskExecutionAsync(firstTask, workflowInstance.Id, message.Bucket, message.PayloadId.ToString()));
                 }
-                catch (FileNotFoundException e)
+                catch (FileNotFoundException)
                 {
                     workflowInstance.Status = Status.Failed;
                 }
