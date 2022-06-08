@@ -3,6 +3,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
 using Monai.Deploy.WorkloadManager.Contracts.Models;
+using NUnit.Framework;
 using System.Linq;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
@@ -83,7 +84,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public void AssertWorkflowList(List<WorkflowRevision> expectedWorkflowRevisions, List<WorkflowRevision> actualWorkflowRevisions)
         {
             actualWorkflowRevisions.Should().HaveCount(expectedWorkflowRevisions.Count);
-            expectedWorkflowRevisions.OrderBy(x => x.Id).SequenceEqual(actualWorkflowRevisions.OrderBy(x => x.Id));
+            expectedWorkflowRevisions.OrderBy(x => x.Id).Should().BeEquivalentTo(actualWorkflowRevisions.OrderBy(x => x.Id));
         }
     }
 }

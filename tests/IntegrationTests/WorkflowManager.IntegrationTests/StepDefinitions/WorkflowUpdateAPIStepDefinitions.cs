@@ -49,13 +49,5 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             var workflowRevisions = JsonConvert.DeserializeObject<List<WorkflowRevision>>(result);
             Assertions.AssertWorkflowList(DataHelper.WorkflowRevisions, workflowRevisions);
         }
-
-        [Then(@"the expected response is returned")]
-        public void ThenTheExpectedReponseIsReturned()
-        {
-            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
-            var formattedResult = JToken.Parse(result).ToString(Formatting.Indented);
-            Snapshot.Match(formattedResult);
-        }
     }
 }

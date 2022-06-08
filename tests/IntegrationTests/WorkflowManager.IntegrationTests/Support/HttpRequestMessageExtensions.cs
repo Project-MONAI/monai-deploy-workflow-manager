@@ -12,9 +12,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 Content = input.Content
             };
 
-            foreach (var prop in input.Properties)
+            foreach (var prop in input.Options)
             {
-                request.Properties.Add(prop);
+                request.Options.Append(prop);
             }
 
             foreach (var header in input.Headers)
