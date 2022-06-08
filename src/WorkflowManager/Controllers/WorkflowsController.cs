@@ -99,6 +99,7 @@ public class WorkflowsController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> DeleteAsync([FromRoute] string id)
     {
+        // TODO: Implement tests, blocked awaiting jacks PRs to complete.
         if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
         {
             this._logger.LogDebug($"{nameof(DeleteAsync)} - Failed to validate {nameof(id)}");
