@@ -113,8 +113,10 @@ public class WorkflowsController : ControllerBase
     /// </summary>
     /// <param name="workflow">The Workflow.</param>
     /// <returns>The ID of the created Workflow.</returns>
-    [Route("{id}")]
-    [HttpPut]
+    [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateWorkflowResponse))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateAsync([FromBody] Workflow workflow, [FromRoute] string id)
     {
         if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
