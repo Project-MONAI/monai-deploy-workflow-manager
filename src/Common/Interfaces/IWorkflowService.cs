@@ -18,5 +18,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// </summary>
         /// <param name="workflow">Workflow to create.</param>
         Task<string> CreateAsync(Workflow workflow);
+
+        /// <summary>
+        /// Hard deletes a workflow
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<bool> DeleteAsync(string id);
     }
 }

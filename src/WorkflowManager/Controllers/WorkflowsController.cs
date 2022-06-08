@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -86,6 +87,40 @@ public class WorkflowsController : ControllerBase
         catch (Exception e)
         {
             return Problem($"Unexpected error occured: {e.Message}", $"/workflows", 500);
+        }
+    }
+
+    /// <summary>
+    /// Delete a workflow by the ID.
+    /// </summary>
+    /// <param name="id">The Workflow Id.</param>
+    /// <returns>The ID of the deleted Workflow.</returns>
+    [Route("{id}")]
+    [HttpDelete]
+    public async Task<IActionResult> DeleteAsync([FromRoute] string id)
+    {
+        if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
+        {
+            this._logger.LogDebug($"{nameof(DeleteAsync)} - Failed to validate {nameof(id)}");
+
+            return Problem(
+                $"Failed to validate {nameof(id)}, not a valid guid",
+                $"/workflows/{id}",
+                (int)HttpStatusCode.BadRequest);
+        }
+
+        try
+        {
+            var workflow = await _workflowService.DeleteAsync(id);
+
+            return Ok(workflow);
+        }
+        catch (Exception ex)
+        {
+            return Problem(
+                $"Unexpected error occured: {ex.Message}",
+                $"/workflows/{nameof(id)}",
+                (int)HttpStatusCode.InternalServerError);
         }
     }
 }

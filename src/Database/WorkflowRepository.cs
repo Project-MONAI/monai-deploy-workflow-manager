@@ -107,5 +107,17 @@ namespace Monai.Deploy.WorkflowManager.Database
 
             return workflowRevision.WorkflowId;
         }
+
+        public async Task<bool> DeleteAsync(string id)
+        {
+            Guard.Against.NullOrWhiteSpace(id, nameof(id));
+            var result = await _workflowCollection.DeleteOneAsync(workflowRevision => workflowRevision.Id == id)
+                                                  .ConfigureAwait(true);
+            if (result is DeleteResult.Acknowledged acknowledged)
+            {
+                return acknowledged.DeletedCount == 1;
+            }
+            return false;
+        }
     }
 }
