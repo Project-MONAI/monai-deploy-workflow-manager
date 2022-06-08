@@ -95,7 +95,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                 TaskId = Guid.NewGuid().ToString(),
                 ExecutionId = Guid.NewGuid().ToString(),
                 CorrelationId = correlationId,
-                TaskPluginType = "argo",
+                TaskPluginType = PluginStrings.Argo,
             }, applicationId: "TaskManagerRunner", correlationId: correlationId, deliveryTag: "1");
             message.Body.TaskPluginArguments.Add(Keys.BaseUrl, argBaseUri);
             message.Body.TaskPluginArguments.Add(Keys.WorkflowTemplateName, "list-input-artifacts-template");

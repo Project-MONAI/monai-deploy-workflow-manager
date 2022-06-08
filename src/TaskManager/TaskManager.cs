@@ -202,7 +202,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             try
             {
-                if (message.Body.TaskPluginType.ToLower() == "argo")
+                if (message.Body.TaskPluginType == PluginStrings.Argo)
                 {
                     AddCredentialsToPlugin(message);
                 }

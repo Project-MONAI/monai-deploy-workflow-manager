@@ -75,6 +75,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _storageService = new Mock<IStorageService>();
             _messageBrokerPublisherService = new Mock<IMessageBrokerPublisherService>();
             _messageBrokerSubscriberService = new Mock<IMessageBrokerSubscriberService>();
+            _minioAdmin = new Mock<IMinioAdmin>();
             _testRunnerCallback = new Mock<ITestRunnerCallback>();
             _cancellationTokenSource = new CancellationTokenSource();
 
@@ -93,11 +94,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             serviceProvider
                 .Setup(x => x.GetService(typeof(IStorageService)))
                 .Returns(_storageService.Object);
+            serviceProvider
+                .Setup(x => x.GetService(typeof(IMinioAdmin)))
+                .Returns(_minioAdmin.Object);
 
             _serviceScope.Setup(x => x.ServiceProvider).Returns(serviceProvider.Object);
             _logger.Setup(p => p.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
 
-            _options.Value.TaskManager.PluginAssemblyMappings.Add("argo", typeof(TestPlugin).AssemblyQualifiedName);
+            _options.Value.TaskManager.PluginAssemblyMappings.Add(PluginStrings.Argo, typeof(TestPlugin).AssemblyQualifiedName);
             _options.Value.Storage.Settings["accessKey"] = "key";
             _options.Value.Storage.Settings["accessToken"] = "token";
         }
@@ -249,7 +253,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _testRunnerCallback.Setup(p => p.GenerateExecuteTaskResult()).Throws(new Exception("error"));
 
             var message = GenerateTaskDispatchEvent();
-            message.Body.TaskPluginType = "argo";
+            message.Body.TaskPluginType = PluginStrings.Argo;
             var resetEvent = new ManualResetEvent(false);
 
             _messageBrokerSubscriberService.Setup(
@@ -290,7 +294,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 .Returns(new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None });
 
             var message = GenerateTaskDispatchEvent();
-            message.Body.TaskPluginType = "argo";
+            message.Body.TaskPluginType = PluginStrings.Argo;
             var resetEvent = new CountdownEvent(2);
 
             _messageBrokerSubscriberService.Setup(
@@ -424,7 +428,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 });
 
             var taskDispatchEventMessage = GenerateTaskDispatchEvent();
-            taskDispatchEventMessage.Body.TaskPluginType = "argo";
+            taskDispatchEventMessage.Body.TaskPluginType = PluginStrings.Argo;
 
             _ = _messageBrokerSubscriberService.Setup(
                 p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskDispatchRequest, StringComparison.OrdinalIgnoreCase)),
@@ -483,7 +487,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             var resetEvent = new CountdownEvent(2);
 
             var taskDispatchEventMessage = GenerateTaskDispatchEvent();
-            taskDispatchEventMessage.Body.TaskPluginType = "argo";
+            taskDispatchEventMessage.Body.TaskPluginType = PluginStrings.Argo;
             _messageBrokerSubscriberService.Setup(
                 p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskDispatchRequest, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
@@ -562,7 +566,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                             {
                                 CorrelationId = correlationId,
                                 ExecutionId = Guid.NewGuid().ToString(),
-                                TaskPluginType = "argo",
+                                TaskPluginType = PluginStrings.Argo,
                                 WorkflowInstanceId = Guid.NewGuid().ToString(),
                                 TaskId = Guid.NewGuid().ToString()
                             },
