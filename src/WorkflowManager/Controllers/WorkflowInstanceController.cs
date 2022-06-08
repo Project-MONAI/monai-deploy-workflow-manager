@@ -52,4 +52,39 @@ public class WorkflowInstanceController : ControllerBase
             return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances", 500);
         }
     }
+
+    /// <summary>
+    /// Get a list of workflowInstances.
+    /// </summary>
+    /// <param name="id">The Workflow Instance Id.</param>
+    /// <returns>A list of workflow instances.</returns>
+    [Route("{id}")]
+    [HttpGet]
+    public async Task<IActionResult> GetByIdAsync([FromRoute] string id)
+    {
+        if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
+        {
+            this._logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to validate {nameof(id)}");
+
+            return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", 400);
+        }
+
+        try
+        {
+            var workflowInstance = await _workflowInstanceService.GetByIdAsync(id);
+
+            if (workflowInstance is null)
+            {
+                this._logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to find workflow instance with Id: {id}");
+
+                return NotFound($"Faild to find workflow instance with Id: {id}");
+            }
+
+            return Ok(workflowInstance);
+        }
+        catch (Exception e)
+        {
+            return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances/{nameof(id)}", 500);
+        }
+    }
 }

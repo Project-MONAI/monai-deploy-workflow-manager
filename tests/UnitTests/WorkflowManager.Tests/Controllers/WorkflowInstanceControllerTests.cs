@@ -75,5 +75,70 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             Assert.Equal(500, objectResult.StatusCode);
         }
 
+        [Fact]
+        public async Task GetByIdAsync_WorkflowInstancesExist_ReturnsOk()
+        {
+            var workflowsInstance = new WorkflowInstance
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = Guid.NewGuid().ToString(),
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = Guid.NewGuid().ToString(),
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+            };
+
+            _workflowInstanceService.Setup(w => w.GetByIdAsync(workflowsInstance.WorkflowId)).ReturnsAsync(workflowsInstance);
+
+            var result = await WorkflowInstanceController.GetByIdAsync(workflowsInstance.WorkflowId);
+
+            var objectResult = Assert.IsType<OkObjectResult>(result);
+
+            objectResult.Value.Should().BeEquivalentTo(workflowsInstance);
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_WorkflowInstanceDoesNotExist_ReturnsNotFound()
+        {
+            var workflowId = Guid.NewGuid().ToString();
+
+            var result = await WorkflowInstanceController.GetByIdAsync(workflowId);
+
+            var objectResult = Assert.IsType<NotFoundObjectResult>(result);
+
+            Assert.Equal(404, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_InvalidId_ReturnsBadRequest()
+        {
+            var workflowId = "2";
+
+            var result = await WorkflowInstanceController.GetByIdAsync(workflowId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal(400, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_ServiceException_ReturnProblem()
+        {
+            var workflowId = Guid.NewGuid().ToString();
+            _workflowInstanceService.Setup(w => w.GetByIdAsync(workflowId)).ThrowsAsync(new Exception());
+
+            var result = await WorkflowInstanceController.GetByIdAsync(workflowId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, objectResult.StatusCode);
+        }
+
     }
 }
