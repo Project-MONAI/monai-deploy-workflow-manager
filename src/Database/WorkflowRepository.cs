@@ -8,8 +8,10 @@ using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Options;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using System;
 using Ardalis.GuardClauses;
+using MongoDB.Bson;
 using System.Linq;
 
 namespace Monai.Deploy.WorkflowManager.Database
@@ -31,7 +33,25 @@ namespace Monai.Deploy.WorkflowManager.Database
             _workflowCollection = mongoDatabase.GetCollection<WorkflowRevision>(databaseSettings.Value.WorkflowCollectionName);
         }
 
-        public async Task<WorkflowRevision> GetByWorkflowIdAsync(string workflowId)
+        public List<WorkflowRevision> GetWorkflowsList()
+        {
+            var workflow = _workflowCollection
+                            .AsQueryable()
+                              .OrderByDescending(e => e.Revision)
+                              .GroupBy(e => e.WorkflowId)
+                              .Select(g => new WorkflowRevision
+                              {
+                                  Id = g.First().Id,
+                                  WorkflowId = g.Key,
+                                  Revision = g.First().Revision,
+                                  Workflow = g.First().Workflow
+                              })
+                              .ToList();
+
+            return workflow;
+        }
+
+    public async Task<WorkflowRevision> GetByWorkflowIdAsync(string workflowId)
         {
             Guard.Against.NullOrWhiteSpace(workflowId, nameof(workflowId));
 

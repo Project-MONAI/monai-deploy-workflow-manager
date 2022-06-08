@@ -10,11 +10,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
     public static class WebAppFactory
     {
-        public static void SetupWorkflowManger()
+        public static HttpClient SetupWorkflowManger()
         {
             var webApplicationFactory = new WebApplicationFactory<Program>();
 
-            _ = webApplicationFactory.CreateClient();
+            return webApplicationFactory.CreateClient();
         }
 
         public static async Task<HttpResponseMessage> GetConsumers()

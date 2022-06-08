@@ -24,6 +24,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             ObjectContainer = objectContainer;
         }
 
+        private static HttpClient HttpClient { get; set; }
         private static RabbitPublisher? WorkflowPublisher { get; set; }
         private static RabbitConsumer? TaskDispatchConsumer { get; set; }
         private static RabbitPublisher? TaskUpdatePublisher { get; set; }
@@ -58,11 +59,13 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             TestExecutionConfig.MongoConfig.WorkflowCollection = config.GetValue<string>("WorkloadManagerDatabase:WorkflowCollectionName");
             TestExecutionConfig.MongoConfig.WorkflowInstanceCollection = config.GetValue<string>("WorkloadManagerDatabase:WorkflowInstanceCollectionName");
 
+            TestExecutionConfig.ApiConfig.BaseUrl = "http://localhost:5000";
+
             WorkflowPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
             TaskDispatchConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
             TaskUpdatePublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
             MongoClient = new MongoClientUtil();
-            WebAppFactory.SetupWorkflowManger();
+            HttpClient = WebAppFactory.SetupWorkflowManger();
         }
 
         /// <summary>
@@ -111,6 +114,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             ObjectContainer.RegisterInstanceAs(MongoClient);
             var dataHelper = new DataHelper(TaskDispatchConsumer, MongoClient);
             ObjectContainer.RegisterInstanceAs(dataHelper);
+            ObjectContainer.RegisterInstanceAs(HttpClient);
         }
 
         [BeforeTestRun(Order = 1)]

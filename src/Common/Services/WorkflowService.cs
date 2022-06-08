@@ -17,6 +17,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             _workflowRepository = workflowRepository ?? throw new ArgumentNullException(nameof(workflowRepository));
         }
 
+        public List<WorkflowRevision> GetList() => _workflowRepository.GetWorkflowsList();
+
         public async Task<WorkflowRevision> GetAsync(string id)
         {
             Guard.Against.NullOrWhiteSpace(id);
