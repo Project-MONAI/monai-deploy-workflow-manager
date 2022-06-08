@@ -15,6 +15,7 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkloadManager.Contracts.Models;
+using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
 using Monai.Deploy.WorkloadManager.WorkfowExecuter.Services;
 using Moq;
 using Xunit;
@@ -28,6 +29,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         private readonly Mock<IWorkflowRepository> _workflowRepository;
         private readonly Mock<ILogger<WorkflowExecuterService>> _logger;
         private readonly Mock<IWorkflowInstanceRepository> _workflowInstanceRepository;
+        private readonly Mock<IWorkflowMetadataRepository> _workflowMetadataRepository;
         private readonly Mock<IMessageBrokerPublisherService> _messageBrokerPublisherService;
         private readonly IOptions<WorkflowManagerOptions> _configuration;
         private readonly IOptions<StorageServiceConfiguration> _storageConfiguration;
@@ -37,11 +39,29 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowRepository = new Mock<IWorkflowRepository>();
             _logger = new Mock<ILogger<WorkflowExecuterService>>();
             _workflowInstanceRepository = new Mock<IWorkflowInstanceRepository>();
+            _workflowMetadataRepository = new Mock<IWorkflowMetadataRepository>();
             _messageBrokerPublisherService = new Mock<IMessageBrokerPublisherService>();
-            _configuration = Options.Create(new WorkflowManagerOptions() { Messaging = new MessageBrokerConfiguration { Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch" } } });
+            _configuration = Options.Create(new WorkflowManagerOptions()
+            {
+                Messaging = new MessageBrokerConfiguration
+                {
+                    Topics = new MessageBrokerConfigurationKeys
+                    {
+                        TaskDispatchRequest = "md.task.dispatch"
+                    }
+                }
+            });
             _storageConfiguration = Options.Create(new StorageServiceConfiguration());
 
-            WorkflowExecuterService = new WorkflowExecuterService(_logger.Object, _configuration, _storageConfiguration, _workflowRepository.Object, _workflowInstanceRepository.Object, _messageBrokerPublisherService.Object);
+            WorkflowExecuterService = new WorkflowExecuterService(
+                _logger.Object,
+                _configuration,
+                _storageConfiguration,
+                _workflowRepository.Object,
+                _workflowInstanceRepository.Object,
+                _messageBrokerPublisherService.Object,
+                _workflowMetadataRepository.Object,
+                new ConditionalParameterParser(_logger.Object));
         }
 
         [Fact]
@@ -551,6 +571,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         {
             var workflowInstanceId = Guid.NewGuid().ToString();
 
+            var metadata = new Dictionary<string, object>();
+            metadata.Add("a", "b");
+            metadata.Add("c", "d");
             var updateEvent = new TaskUpdateEvent
             {
                 WorkflowInstanceId = workflowInstanceId,
@@ -559,7 +582,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 Status = TaskExecutionStatus.Succeeded,
                 Reason = FailureReason.None,
                 Message = "This is a message",
-                Metadata = new Dictionary<string, object>(),
+                Metadata = metadata,
                 CorrelationId = Guid.NewGuid().ToString()
             };
 
@@ -637,6 +660,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _workflowMetadataRepository.Setup(m => m.UpdateForTaskAsync(It.IsAny<string>(), It.IsAny<List<TaskMetadata>>())).ReturnsAsync(true);
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 
@@ -650,6 +674,10 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         {
             var workflowInstanceId = Guid.NewGuid().ToString();
 
+            var metadata = new Dictionary<string, object>();
+            metadata.Add("a", "b");
+            metadata.Add("c", "d");
+
             var updateEvent = new TaskUpdateEvent
             {
                 WorkflowInstanceId = workflowInstanceId,
@@ -658,7 +686,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 Status = TaskExecutionStatus.Succeeded,
                 Reason = FailureReason.None,
                 Message = "This is a message",
-                Metadata = new Dictionary<string, object>(),
+                Metadata = metadata,
                 CorrelationId = Guid.NewGuid().ToString()
             };
 
@@ -731,6 +759,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _workflowMetadataRepository.Setup(m => m.UpdateForTaskAsync(It.IsAny<string>(), It.IsAny<List<TaskMetadata>>())).ReturnsAsync(false);
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 

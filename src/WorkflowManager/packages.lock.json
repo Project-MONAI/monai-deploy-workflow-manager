@@ -716,6 +716,12 @@
           "Monai.Deploy.WorkflowManager.Database": "1.0.0"
         }
       },
+      "monai.deploy.workflowmanager.conditionsresolver": {
+        "type": "Project",
+        "dependencies": {
+          "Ardalis.GuardClauses": "4.0.1"
+        }
+      },
       "monai.deploy.workflowmanager.configuration": {
         "type": "Project",
         "dependencies": {
@@ -777,6 +783,7 @@
           "Ardalis.GuardClauses": "4.0.1",
           "Monai.Deploy.Messaging": "0.1.0-rc0036",
           "Monai.Deploy.Storage": "0.1.0-rc0019",
+          "Monai.Deploy.WorkflowManager.ConditionsResolver": "1.0.0",
           "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Database": "1.0.0",

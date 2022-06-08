@@ -23,7 +23,9 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
         private readonly IWorkflowRepository _workflowRepository;
         private readonly IWorkflowInstanceRepository _workflowInstanceRepository;
         private readonly IMessageBrokerPublisherService _messageBrokerPublisherService;
+        private readonly ConditionalParameterParser _conditionalParameterParser;
         private readonly StorageServiceConfiguration _storageConfiguration;
+        private readonly IWorkflowMetadataRepository _workflowMetadataRepository;
 
         private string TaskDispatchRoutingKey { get; }
 
@@ -33,7 +35,9 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             IOptions<StorageServiceConfiguration> storageConfiguration,
             IWorkflowRepository workflowRepository,
             IWorkflowInstanceRepository workflowInstanceRepository,
-            IMessageBrokerPublisherService messageBrokerPublisherService)
+            IMessageBrokerPublisherService messageBrokerPublisherService,
+            IWorkflowMetadataRepository workflowMetadataRepository,
+            ConditionalParameterParser conditionalParser)
         {
             if (configuration is null)
             {
@@ -53,6 +57,8 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             _workflowRepository = workflowRepository ?? throw new ArgumentNullException(nameof(workflowRepository));
             _workflowInstanceRepository = workflowInstanceRepository ?? throw new ArgumentNullException(nameof(workflowInstanceRepository));
             _messageBrokerPublisherService = messageBrokerPublisherService ?? throw new ArgumentNullException(nameof(messageBrokerPublisherService));
+            _conditionalParameterParser = conditionalParser;
+            _workflowMetadataRepository = workflowMetadataRepository;
         }
 
         public async Task<bool> ProcessPayload(WorkflowRequestEvent message)
@@ -144,8 +150,12 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
                 return await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
             }
 
-            var workflow = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId);
+            if (message.Metadata.Any() && !await UpdateMetadataStore(message, currentTask))
+            {
+                _logger.TaskMetaDataUpdateFailed(workflowInstance.PayloadId, message.TaskId, message.Metadata);
+            }
 
+            var workflow = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId);
             if (workflow is null)
             {
                 _logger.TypeNotFound(nameof(workflow));
@@ -189,6 +199,20 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             return processed;
         }
 
+        //variables needed
+        // - WorkflowExecutionId ? workflowInstanceId good enough?
+        // - Task Name
+        // - Task Execution Id
+        // meta data
+        private async Task<bool> UpdateMetadataStore(TaskUpdateEvent message, TaskExecution currentTask)
+        {
+            Guard.Against.Null(message);
+            Guard.Against.Null(currentTask);
+
+            var taskMetadata = TaskMetadata.Create(message.Metadata, message.ExecutionId, message.TaskId);
+            return await _workflowMetadataRepository.UpdateForTaskAsync(message.WorkflowInstanceId, taskMetadata);
+        }
+
         private async Task<bool> UpdateWorkflowInstanceStatus(WorkflowInstance workflowInstance, string taskId, TaskExecutionStatus currentTaskStatus)
         {
             if (!workflowInstance.Tasks.Any(t => t.TaskId == taskId))
@@ -224,6 +248,16 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
 
             foreach (var taskDest in currentTaskDestinations)
             {
+                //Evaluate Conditional
+                if (!string.IsNullOrEmpty(taskDest.Conditions))
+                {
+                    var condition = _conditionalParameterParser.ResolveParameters(taskDest.Conditions, workflowInstance);
+                    if (taskDest.Conditions != string.Empty && !_conditionalParameterParser.TryParse(condition))
+                    {
+                        continue;
+                    }
+                }
+
                 var existingTask = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId == taskDest.Name);
 
                 if (existingTask is not null
