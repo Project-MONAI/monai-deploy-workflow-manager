@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <SpecFlowObsoleteCodeBehindFiles Remove="Features\WorkflowRequest - Copy.feature.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
@@ -32,23 +28,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\WorkflowManager\Monai.Deploy.WorkflowManager.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Features\WorkflowUpdateAPI.feature.cs">
-      <DependentUpon>WorkflowUpdateAPI.feature</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <SpecFlowFeatureFiles Update="Features\WorkflowUpdateAPI.feature">
-      <Visible>$(UsingMicrosoftNETSdk)</Visible>
-      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
-    </SpecFlowFeatureFiles>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Utils\" />
   </ItemGroup>
 
 </Project>
