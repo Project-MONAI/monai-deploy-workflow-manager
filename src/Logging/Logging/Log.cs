@@ -73,7 +73,7 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
         [LoggerMessage(EventId = 22, Level = LogLevel.Error, Message = "The task execution status for task {taskId} cannot be updated from {oldStatus} to {newStatus}. Payload: {payloadId}")]
         public static partial void TaskStatusUpdateNotValid(this ILogger logger, string payloadId, string taskId, string oldStatus, string newStatus);
 
-        [LoggerMessage(EventId = 22, Level = LogLevel.Error, Message = "The task {taskId} metadata store update failed. Payload: {payloadId}")]
+        [LoggerMessage(EventId = 23, Level = LogLevel.Error, Message = "The task {taskId} metadata store update failed. Payload: {payloadId}")]
         public static partial void TaskMetaDataUpdateFailed(this ILogger logger, string payloadId, string taskId, Dictionary<string, object> metadata);
     }
 }
