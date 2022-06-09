@@ -50,12 +50,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
 
         public override Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(_testRunnerCallback.GenerateExecuteTaskResult())!;
+            return Task.FromResult(_testRunnerCallback.GenerateExecuteTaskResult());
         }
 
         public override Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(_testRunnerCallback.GenerateGetStatusResult())!;
+            return Task.FromResult(_testRunnerCallback.GenerateGetStatusResult());
         }
     }
 

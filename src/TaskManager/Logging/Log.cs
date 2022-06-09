@@ -95,7 +95,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Logging
         [LoggerMessage(EventId = 115, Level = LogLevel.Error, Message = "Error generating temporary storage credentials.")]
         public static partial void GenerateTemporaryCredentialsException(this ILogger logger, Exception ex);
 
-        [LoggerMessage(EventId = 1156, Level = LogLevel.Error, Message = "metadata retrieval failed.")]
+        [LoggerMessage(EventId = 116, Level = LogLevel.Error, Message = "Metadata retrieval failed.")]
         public static partial void MetadataRetrievalFailed(this ILogger logger, Exception ex);
     }
 }
