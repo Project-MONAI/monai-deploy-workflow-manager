@@ -6,6 +6,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
     public static class PluginStrings
     {
         // note not to be confused with the ApplicationId Monai.Deploy.WorkflowManager.TaskManager.Argo
-        public const string Argo = "Argo";
+        public const string Argo = "argo";
     }
 }
