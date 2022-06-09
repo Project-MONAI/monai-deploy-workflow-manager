@@ -80,7 +80,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 TaskId = _taskDispatchEvent.TaskId,
                 ExecutionId = _taskDispatchEvent.ExecutionId,
                 CorrelationId = _taskDispatchEvent.CorrelationId,
-                Identity = "{{workflow.name}}"
+                Identity = "{{workflow.name}}",
+                Outputs = _taskDispatchEvent.Outputs ?? new List<Messaging.Common.Storage>()
             };
 
         private object GenerateTaskCallbackMessage() =>
