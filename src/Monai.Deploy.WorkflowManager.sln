@@ -55,7 +55,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManage
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.ConditionsResolver.Tests", "..\tests\UnitTests\ConditionsResolver.Tests\Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.csproj", "{918E4DE3-A7BF-4B7F-9B5A-5C36FEFA3C30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monai.Deploy.WorkflowManager.Common.Tests", "..\tests\UnitTests\WorkflowManager.Common.Tests\Monai.Deploy.WorkflowManager.Common.Tests.csproj", "{A44F975E-70CA-49D6-8513-78F2D5210EAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Common.Tests", "..\tests\UnitTests\WorkflowManager.Common.Tests\Monai.Deploy.WorkflowManager.Common.Tests.csproj", "{A44F975E-70CA-49D6-8513-78F2D5210EAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
