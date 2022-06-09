@@ -73,7 +73,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 Name = "Invalid_Workflow_Update_Desc_Length",
                 Workflow = new Workflow()
                 {
-                    Name = "Over 15 characters",
+                    Name = "Basic workflow",
                     Description = "Over 200 chars dolor sit amet, consectetur adipiscing elit. Donec bibendum dapibus elit, quis tempus metus. Sed aliquam metus tempus pretium pharetra. Etiam a est id nunc tempor consectetur. Proin turpis.",
                     Version = "1",
                     Tasks = new TaskObject[]

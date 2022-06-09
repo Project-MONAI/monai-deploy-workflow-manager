@@ -43,18 +43,18 @@ Scenario Outline: Update workflow - Invalid Input
     And I have a body <put_body>
     When I send a PUT request
     Then I will get a 400 response
-    And I will recieve the correct error message
+    And I will recieve the error message <message>
     Examples:
-    | endpoint                                        | put_body                                |
-    | /workflows/1                                    | Basic_Workflow_Update_1                 |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_Name_Length     |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_Desc_Length     |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_AETitle_Length  |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_DataOrg         |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_ExportDest      |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_TaskDesc_Length |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_TaskType_Length |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_TaskArgs        |
+    | endpoint                                        | put_body                                | message                                                 |
+    | /workflows/1                                    | Basic_Workflow_Update_1                 | Failed to validate id, not a valid guid                 |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_Name_Length     | is not a valid Workflow Name                            |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_Desc_Length     | is not a valid Workflow Description                     |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_AETitle_Length  | is not a valid AE Title                                 |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_DataOrg         | is not a valid Informatics Gateway - dataOrigins        |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_ExportDest      | is not a valid Informatics Gateway - exportDestinations |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_TaskDesc_Length | is not a valid taskDescription                          |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_TaskType_Length | is not a valid taskType                                 |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_TaskArgs        | is not a valid args                                     |
 
 @WorkflowAPI
 Scenario: Update workflow - Non-existant workflow
@@ -63,7 +63,7 @@ Scenario: Update workflow - Non-existant workflow
     And I have a body Basic_Workflow_Update_1
     When I send a PUT request
     Then I will get a 404 response
-    And I will recieve the correct error message
+    And I will recieve the error message Failed to find workflow with Id: 52b87b54-a728-4796-9a79-d30867da2a6e
 
 
 

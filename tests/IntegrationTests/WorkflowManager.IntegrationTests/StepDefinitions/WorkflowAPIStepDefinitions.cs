@@ -60,10 +60,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Be($"{{\"workflow_id\":\"{id}\"}}");
         }
 
-        [Then(@"I will recieve the correct error message")]
-        public void ThenIWillRecieveTheCorrectErrorMessage()
+        [Then(@"I will recieve the error message (.*)")]
+        public void ThenIWillRecieveTheCorrectErrorMessage(string message)
         {
-            return;
+            ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Contain(message);
         }
 
         [Then(@"a new revision is created")]

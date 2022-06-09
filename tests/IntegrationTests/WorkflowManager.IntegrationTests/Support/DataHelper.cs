@@ -42,12 +42,12 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 }
                 else
                 {
-                    throw new Exception($"Workflow {name} does not have any applicable test data, please check and try again!");
+                    throw new Exception($"Workflow revision {name} does not have any applicable test data, please check and try again!");
                 }
             }
             else
             {
-                throw new Exception($"Workflow {name} does not have any applicable test data, please check and try again!");
+                throw new Exception($"Workflow revision {name} does not have any applicable test data, please check and try again!");
             }
         }
 
@@ -64,12 +64,12 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 }
                 else
                 {
-                    throw new Exception($"Workflow {name} does not have any applicable test data, please check and try again!");
+                    throw new Exception($"Workflow object {name} does not have any applicable test data, please check and try again!");
                 }
             }
             else
             {
-                throw new Exception($"Workflow {name} does not have any applicable test data, please check and try again!");
+                throw new Exception($"Workflow object {name} does not have any applicable test data, please check and try again!");
             }
         }
 
@@ -87,12 +87,12 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 }
                 else
                 {
-                    throw new Exception($"Workflow Intance {name} does not have any applicable test data, please check and try again!");
+                    throw new Exception($"Workflow Instance {name} does not have any applicable test data, please check and try again!");
                 }
             }
             else
             {
-                throw new Exception($"Workflow Intance {name} does not have any applicable test data, please check and try again!");
+                throw new Exception($"Workflow Instance {name} does not have any applicable test data, please check and try again!");
             }
         }
 

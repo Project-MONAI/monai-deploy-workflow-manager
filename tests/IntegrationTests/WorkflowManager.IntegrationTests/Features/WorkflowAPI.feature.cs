@@ -274,16 +274,16 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Update workflow - Invalid Input")]
         [NUnit.Framework.CategoryAttribute("WorkflowAPI")]
-        [NUnit.Framework.TestCaseAttribute("/workflows/1", "Basic_Workflow_Update_1", null)]
-        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_Name_Length", null)]
-        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_Desc_Length", null)]
-        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_AETitle_Length", null)]
-        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_DataOrg", null)]
-        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_ExportDest", null)]
-        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_TaskDesc_Length", null)]
-        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_TaskType_Length", null)]
-        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_TaskArgs", null)]
-        public virtual void UpdateWorkflow_InvalidInput(string endpoint, string put_Body, string[] exampleTags)
+        [NUnit.Framework.TestCaseAttribute("/workflows/1", "Basic_Workflow_Update_1", "Failed to validate id, not a valid guid", null)]
+        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_Name_Length", "is not a valid Workflow Name", null)]
+        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_Desc_Length", "is not a valid Workflow Description", null)]
+        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_AETitle_Length", "is not a valid AE Title", null)]
+        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_DataOrg", "is not a valid Informatics Gateway - dataOrigins", null)]
+        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_ExportDest", "is not a valid Informatics Gateway - exportDestinations", null)]
+        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_TaskDesc_Length", "is not a valid taskDescription", null)]
+        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_TaskType_Length", "is not a valid taskType", null)]
+        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_TaskArgs", "is not a valid args", null)]
+        public virtual void UpdateWorkflow_InvalidInput(string endpoint, string put_Body, string message, string[] exampleTags)
         {
             string[] @__tags = new string[] {
                     "WorkflowAPI"};
@@ -295,6 +295,7 @@ this.ScenarioInitialize(scenarioInfo);
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("endpoint", endpoint);
             argumentsOfScenario.Add("put_body", put_Body);
+            argumentsOfScenario.Add("message", message);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Update workflow - Invalid Input", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 40
 this.ScenarioInitialize(scenarioInfo);
@@ -332,7 +333,7 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Then("I will get a 400 response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 46
-    testRunner.And("I will recieve the correct error message", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And(string.Format("I will recieve the error message {0}", message), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -383,7 +384,8 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Then("I will get a 404 response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 66
-    testRunner.And("I will recieve the correct error message", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I will recieve the error message Failed to find workflow with Id: 52b87b54-a728-4" +
+                        "796-9a79-d30867da2a6e", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
