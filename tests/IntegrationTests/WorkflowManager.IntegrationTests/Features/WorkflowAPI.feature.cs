@@ -278,7 +278,11 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_Name_Length", null)]
         [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_Desc_Length", null)]
         [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_AETitle_Length", null)]
-        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_AETitle_Length", null)]
+        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_DataOrg", null)]
+        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_ExportDest", null)]
+        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_TaskDesc_Length", null)]
+        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_TaskType_Length", null)]
+        [NUnit.Framework.TestCaseAttribute("/workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", "Invalid_Workflow_Update_TaskArgs", null)]
         public virtual void UpdateWorkflow_InvalidInput(string endpoint, string put_Body, string[] exampleTags)
         {
             string[] @__tags = new string[] {
@@ -343,7 +347,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "WorkflowAPI"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Update workflow - Non-existant workflow", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 56
+#line 60
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -363,22 +367,22 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 57
+#line 61
     testRunner.Given("I have a clinical workflow Basic_Workflow_1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 58
+#line 62
     testRunner.And("I have an endpoint /workflows/52b87b54-a728-4796-9a79-d30867da2a6e", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 59
+#line 63
     testRunner.And("I have a body Basic_Workflow_Update_1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 60
+#line 64
     testRunner.When("I send a PUT request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 61
+#line 65
     testRunner.Then("I will get a 404 response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 62
+#line 66
     testRunner.And("I will recieve the correct error message", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
