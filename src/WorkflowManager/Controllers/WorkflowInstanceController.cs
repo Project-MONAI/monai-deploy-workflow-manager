@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -49,7 +50,7 @@ public class WorkflowInstanceController : ControllerBase
         {
             this._logger.LogError($"{nameof(GetListAsync)} - Failed to get workflowInstances", e);
 
-            return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances", 500);
+            return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances", (int)HttpStatusCode.InternalServerError);
         }
     }
 
@@ -66,7 +67,7 @@ public class WorkflowInstanceController : ControllerBase
         {
             this._logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to validate {nameof(id)}");
 
-            return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", 400);
+            return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", (int)HttpStatusCode.BadRequest);
         }
 
         try
@@ -84,7 +85,7 @@ public class WorkflowInstanceController : ControllerBase
         }
         catch (Exception e)
         {
-            return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances/{nameof(id)}", 500);
+            return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances/{nameof(id)}", (int)HttpStatusCode.InternalServerError);
         }
     }
 }

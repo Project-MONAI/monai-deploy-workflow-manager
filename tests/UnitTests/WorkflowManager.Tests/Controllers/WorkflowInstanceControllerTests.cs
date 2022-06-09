@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -137,7 +138,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             var result = await WorkflowInstanceController.GetByIdAsync(workflowId);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
-            Assert.Equal(500, objectResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
         }
 
     }

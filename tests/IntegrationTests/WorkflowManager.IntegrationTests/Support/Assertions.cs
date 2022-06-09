@@ -89,7 +89,19 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public void AssertWorkflowInstanceList(List<WorkflowInstance> expectedWorkflowInstances, List<WorkflowInstance> actualWorkflowInstances)
         {
             actualWorkflowInstances.Should().HaveCount(expectedWorkflowInstances.Count);
-            expectedWorkflowInstances.OrderBy(x => x.Id).Should().BeEquivalentTo(actualWorkflowInstances.OrderBy(x => x.Id));
+            foreach (var actualWorkflowInstance in actualWorkflowInstances)
+            {
+                var expectedWorkflowInstance = expectedWorkflowInstances.FirstOrDefault(x => x.Id.Equals(actualWorkflowInstance.Id));
+                actualWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss").Should().Be(expectedWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss"));
+            }
+            actualWorkflowInstances.OrderBy(x => x.Id).Should().BeEquivalentTo(expectedWorkflowInstances.OrderBy(x => x.Id),
+                options => options.Excluding(x => x.StartTime));
+        }
+        public void AssertWorkflowInstance(List<WorkflowInstance> expectedWorkflowInstances, WorkflowInstance? actualWorkflowInstance)
+        {
+            var expectedWorkflowInstance = expectedWorkflowInstances.FirstOrDefault(x => x.Id.Equals(actualWorkflowInstance.Id));
+            actualWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss").Should().Be(expectedWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss"));
+            actualWorkflowInstance.Should().BeEquivalentTo(expectedWorkflowInstance, options => options.Excluding(x => x.StartTime));
         }
     }
 }

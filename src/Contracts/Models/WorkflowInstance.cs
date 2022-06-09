@@ -10,7 +10,7 @@ namespace Monai.Deploy.WorkloadManager.Contracts.Models
 {
     public class WorkflowInstance
     {
-        [JsonIgnore]
+        [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
 
         [JsonProperty(PropertyName = "ae_title")]
