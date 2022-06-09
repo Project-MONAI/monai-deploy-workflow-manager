@@ -73,7 +73,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             var result = await WorkflowInstanceController.GetListAsync();
 
             var objectResult = Assert.IsType<ObjectResult>(result);
-            Assert.Equal(500, objectResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
         }
 
         [Fact]
@@ -114,7 +114,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             var objectResult = Assert.IsType<NotFoundObjectResult>(result);
 
-            Assert.Equal(404, objectResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.NotFound, objectResult.StatusCode);
         }
 
         [Fact]
@@ -126,7 +126,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             var objectResult = Assert.IsType<ObjectResult>(result);
 
-            Assert.Equal(400, objectResult.StatusCode);
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
         }
 
         [Fact]
