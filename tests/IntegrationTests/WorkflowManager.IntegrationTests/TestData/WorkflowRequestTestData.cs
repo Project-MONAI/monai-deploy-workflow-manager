@@ -23,7 +23,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 {
                     Bucket = "bucket_1",
                     PayloadId = Guid.NewGuid(),
-                    Workflows = new List<string>() { },
+                    Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_1").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.Now,
                     CalledAeTitle = "Basic_AE",
