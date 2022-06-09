@@ -2,8 +2,6 @@
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using FluentAssertions;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Snapshooter.NUnit;
 using System.Net;
 using BoDi;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -11,9 +9,9 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
     [Binding]
-    public class WorkflowUpdateAPIStepDefinitions
+    public class WorkflowAPIStepDefinitions
     {
-        public WorkflowUpdateAPIStepDefinitions(ObjectContainer objectContainer)
+        public WorkflowAPIStepDefinitions(ObjectContainer objectContainer)
         {
             var httpClient = objectContainer.Resolve<HttpClient>();
             DataHelper = objectContainer.Resolve<DataHelper>();
@@ -49,5 +47,30 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             var workflowRevisions = JsonConvert.DeserializeObject<List<WorkflowRevision>>(result);
             Assertions.AssertWorkflowList(DataHelper.WorkflowRevisions, workflowRevisions);
         }
+
+        [Given(@"I have a body (.*)")]
+        public void GivenIHaveABody(string name)
+        {
+            Support.HttpRequestMessageExtensions.AddJsonBody(ApiHelper.Request, DataHelper.GetWorkflowObjectTestData(name));
+        }
+
+        [Then(@"the ID (.*) is returned")]
+        public void ThenTheIDIsReturned(string id)
+        {
+            ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Be($"{{\"workflow_id\":\"{id}\"}}");
+        }
+
+        [Then(@"I will recieve the correct error message")]
+        public void ThenIWillRecieveTheCorrectErrorMessage()
+        {
+            return;
+        }
+
+        [Then(@"a new revision is created")]
+        public void ThenANewRevisionIsCreated()
+        {
+            return;
+        }
+
     }
 }

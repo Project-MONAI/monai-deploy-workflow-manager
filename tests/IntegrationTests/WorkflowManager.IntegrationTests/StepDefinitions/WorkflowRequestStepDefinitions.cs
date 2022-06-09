@@ -129,7 +129,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         }
 
         [Scope(Tag = "WorkflowRequest")]
-        [Scope(Tag = "WorkflowUpdateAPI")]
+        [Scope(Tag = "WorkflowAPI")]
         [AfterScenario(Order = 1)]
         public void DeleteTestData()
         {

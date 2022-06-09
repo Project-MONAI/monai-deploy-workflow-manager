@@ -15,6 +15,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public TaskUpdateEvent TaskUpdateEvent = new TaskUpdateEvent();
         public List<TaskDispatchEvent> TaskDispatchEvents = new List<TaskDispatchEvent>();
         public List<WorkflowRevision> WorkflowRevisions = new List<WorkflowRevision>();
+        public List<Workflow> Workflow = new List<Workflow>();
         private RetryPolicy<List<WorkflowInstance>> RetryWorkflowInstances { get; set; }
         private RetryPolicy<List<TaskDispatchEvent>> RetryTaskDispatches { get; set; }
         private RabbitConsumer TaskDispatchConsumer { get; set; }
@@ -38,6 +39,28 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 {
                     WorkflowRevisions.Add(workflowRevision.WorkflowRevision);
                     return workflowRevision.WorkflowRevision;
+                }
+                else
+                {
+                    throw new Exception($"Workflow {name} does not have any applicable test data, please check and try again!");
+                }
+            }
+            else
+            {
+                throw new Exception($"Workflow {name} does not have any applicable test data, please check and try again!");
+            }
+        }
+
+        public Workflow GetWorkflowObjectTestData(string name)
+        {
+            var workflow = WorkflowObjectsTestData.TestData.FirstOrDefault(c => c.Name.Equals(name));
+
+            if (workflow != null)
+            {
+                if (workflow.Workflow != null)
+                {
+                    Workflow.Add(workflow.Workflow);
+                    return workflow.Workflow;
                 }
                 else
                 {
