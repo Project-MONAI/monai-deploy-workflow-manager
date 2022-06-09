@@ -82,6 +82,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     WorkflowId = Helper.GetWorkflowByName("Task_Status_Update_Workflow").WorkflowRevision.WorkflowId,
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.Now,
+                    BucketId = "bucket1",
                     Status = Status.Created,
                     InputMetaData = new Dictionary<string, string>()
                     {
