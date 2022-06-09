@@ -425,6 +425,60 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     }
                 }
             },
+            new WorkflowInstanceTestData()
+            {
+                Name = "WFI_Static_1",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = "bff4cfd0-3af3-4e2b-9f3c-de2a6f2b9569",
+                    AeTitle = "Multi_Req",
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Created").WorkflowRevision.WorkflowId,
+                    PayloadId = Helper.GetWorkflowRequestByName("Multi_WF_Created").WorkflowRequestMessage.PayloadId.ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = "2dbd1af7-b699-4467-8e99-05a0c22422b4",
+                            TaskType = "Multi_task",
+                            Status = TaskExecutionStatus.Created
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "WFI_Static_2",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = "97749d29-8f75-4169-8cf4-1093a1f38c07",
+                    AeTitle = "Multi_Req",
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Dispatched").WorkflowRevision.WorkflowId,
+                    PayloadId = Helper.GetWorkflowRequestByName("Multi_WF_Dispatched").WorkflowRequestMessage.PayloadId.ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = "7d7c8b83-6628-413c-9912-a89314e5e2d5",
+                            TaskType = "Multi_task",
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+                }
+            },
         };
     }
 }
