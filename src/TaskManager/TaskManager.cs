@@ -11,6 +11,8 @@ using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage;
+using Monai.Deploy.Storage.Common.Policies;
+using Monai.Deploy.Storage.MinioAdmin.Interfaces;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.Configuration;
@@ -27,6 +29,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         private readonly ILogger<TaskManager> _logger;
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IMinioAdmin _minioAdmin;
         private readonly IServiceScope _scope;
         private readonly IDictionary<string, TaskRunnerInstance> _activeExecutions;
         private readonly CancellationTokenSource _cancellationTokenSource;
@@ -56,6 +59,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             _activeExecutions = new Dictionary<string, TaskRunnerInstance>();
             _cancellationTokenSource = new CancellationTokenSource();
 
+            _minioAdmin = _scope.ServiceProvider.GetRequiredService<IMinioAdmin>() ?? throw new ServiceNotFoundException(nameof(IStorageService));
             _storageService = _scope.ServiceProvider.GetRequiredService<IStorageService>() ?? throw new ServiceNotFoundException(nameof(IStorageService));
             _messageBrokerPublisherService = null;
             _messageBrokerSubscriberService = null;
@@ -234,9 +238,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             try
             {
-                PopulateTemporaryStorageCredentials(message.Body.Inputs.ToArray());
-                PopulateTemporaryStorageCredentials(message.Body.IntermediateStorage);
-                PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray());
+                if (string.Equals(message.Body.TaskPluginType,
+                                  PluginStrings.Argo,
+                                  StringComparison.InvariantCultureIgnoreCase))
+                {
+                    AddCredentialsToPlugin(message);
+                }
+                else
+                {
+                    await Task.WhenAll(
+                        PopulateTemporaryStorageCredentials(message.Body.Inputs.ToArray()),
+                        PopulateTemporaryStorageCredentials(message.Body.IntermediateStorage),
+                        PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray())
+                    ).ConfigureAwait(true);
+                }
             }
             catch (Exception ex)
             {
@@ -273,24 +288,52 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
         }
 
-        private void PopulateTemporaryStorageCredentials(params Messaging.Common.Storage[] storages)
+        private void AddCredentialsToPlugin(JsonMessage<TaskDispatchEvent> message)
+        {
+            var storages = new List<Messaging.Common.Storage>();
+            storages.Add(message.Body.IntermediateStorage);
+            storages.AddRange(message.Body.Outputs);
+            storages.AddRange(message.Body.Inputs);
+
+            var storageBuckets = storages.Select(storage => storage.Bucket)
+                .Distinct()
+                .ToList();
+            var policyRequest = storageBuckets.Select(
+                    bucket => new PolicyRequest(bucket, "")
+                ).ToArray();
+
+            var creds = _minioAdmin.CreateReadOnlyUser(
+                $"TM{Guid.NewGuid()}",
+                policyRequest);
+
+            if (creds is null)
+            {
+                _logger.LogError("Credentials not generated");
+                return;
+            }
+
+            foreach (var storage in storages)
+            {
+                storage.Credentials = new Credentials
+                {
+                    AccessKey = creds.AccessKeyId,
+                    AccessToken = creds.SecretAccessKey
+                };
+            }
+        }
+
+        private async Task PopulateTemporaryStorageCredentials(params Messaging.Common.Storage[] storages)
         {
             Guard.Against.Null(storages, nameof(storages));
 
             foreach (var storage in storages)
             {
-                // TODO: https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/102
-                //var credeentials = await _storageService.CreateTemporaryCredentials(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
-                // storage.Credentials = new Credentials
-                // {
-                //     AccessKey = credeentials.AccessKeyId,
-                //     AccessToken = credeentials.SecretAccessKey,
-                //     SessionToken = credeentials.SessionToken,
-                // };
+                var credeentials = await _storageService.CreateTemporaryCredentials(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
                 storage.Credentials = new Credentials
                 {
-                    AccessKey = _options.Value.Storage.Settings["accessKey"],
-                    AccessToken = _options.Value.Storage.Settings["accessToken"],
+                    AccessKey = credeentials.AccessKeyId,
+                    AccessToken = credeentials.SecretAccessKey,
+                    SessionToken = credeentials.SessionToken,
                 };
             }
         }
