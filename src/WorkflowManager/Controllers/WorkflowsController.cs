@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -64,7 +65,7 @@ public class WorkflowsController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
         {
-            this._logger.LogDebug($"{nameof(GetAsync)} - Failed to validate {nameof(id)}");
+            _logger.LogDebug($"{nameof(GetAsync)} - Failed to validate {nameof(id)}");
 
             return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", 400);
         }
@@ -91,7 +92,7 @@ public class WorkflowsController : ControllerBase
     {
         if (!workflow.IsValid(out var validationErrors))
         {
-            this._logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+            _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
 
             return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", 400);
         }
@@ -121,16 +122,16 @@ public class WorkflowsController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
         {
-            this._logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(id)}");
+            _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(id)}");
 
-            return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", 400);
+            return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", (int)HttpStatusCode.BadRequest);
         }
 
         if (!workflow.IsValid(out var validationErrors))
         {
-            this._logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+            _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
 
-            return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/{id}", 400);
+            return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/{id}", (int)HttpStatusCode.BadRequest);
         }
 
         try
@@ -139,7 +140,7 @@ public class WorkflowsController : ControllerBase
 
             if (workflowId == null)
             {
-                this._logger.LogDebug($"{nameof(UpdateAsync)} - Failed to find workflow with Id: {id}");
+                _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to find workflow with Id: {id}");
 
                 return NotFound($"Faild to find workflow with Id: {id}");
             }
@@ -148,7 +149,7 @@ public class WorkflowsController : ControllerBase
         }
         catch (Exception e)
         {
-            return Problem($"Unexpected error occured: {e.Message}", $"/workflows", 500);
+            return Problem($"Unexpected error occured: {e.Message}", $"/workflows", (int)HttpStatusCode.InternalServerError);
         }
     }
 }

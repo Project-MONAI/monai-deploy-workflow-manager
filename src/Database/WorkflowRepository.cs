@@ -137,7 +137,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             {
                 Id = Guid.NewGuid().ToString(),
                 WorkflowId = existingWorkflow.WorkflowId,
-                Revision = existingWorkflow.Revision++,
+                Revision = ++existingWorkflow.Revision,
                 Workflow = workflow
             };
 
