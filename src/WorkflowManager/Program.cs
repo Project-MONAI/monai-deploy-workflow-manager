@@ -86,6 +86,7 @@ namespace Monai.Deploy.WorkflowManager
 
                     // Services
                     services.AddTransient<IWorkflowService, WorkflowService>();
+                    services.AddTransient<IWorkflowInstanceService, WorkflowInstanceService>();
 
                     // Mongo DB
                     services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
