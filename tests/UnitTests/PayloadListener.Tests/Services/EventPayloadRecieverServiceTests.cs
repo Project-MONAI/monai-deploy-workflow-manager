@@ -13,7 +13,7 @@ using Monai.Deploy.Messaging.Common;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkloadManager.WorkfowExecuter.Services;
+using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 {

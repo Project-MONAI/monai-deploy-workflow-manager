@@ -11,8 +11,8 @@ using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkloadManager.Contracts.Models;
-using Monai.Deploy.WorkloadManager.Controllers;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Controllers;
 using Moq;
 using Xunit;
 

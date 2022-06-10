@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 
-namespace Monai.Deploy.WorkloadManager.Controllers;
+namespace Monai.Deploy.WorkflowManager.Controllers;
 
 /// <summary>
 /// Workflow Instances Controller.

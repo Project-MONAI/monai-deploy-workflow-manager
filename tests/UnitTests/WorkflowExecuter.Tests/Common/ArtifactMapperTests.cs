@@ -10,8 +10,8 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkloadManager.Contracts.Models;
-using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 using Moq;
 using Xunit;
 
