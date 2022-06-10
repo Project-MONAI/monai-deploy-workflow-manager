@@ -1,4 +1,4 @@
-﻿using Monai.Deploy.WorkloadManager.Contracts.Models;
+﻿using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Common.Interfaces
 {

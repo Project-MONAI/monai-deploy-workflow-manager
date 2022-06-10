@@ -3,7 +3,7 @@
 
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 
-namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
+namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 {
     public interface IArtifactMapper
     {

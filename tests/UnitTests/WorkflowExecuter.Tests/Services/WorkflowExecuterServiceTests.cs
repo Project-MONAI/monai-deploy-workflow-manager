@@ -17,9 +17,9 @@ using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkloadManager.Contracts.Models;
-using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
-using Monai.Deploy.WorkloadManager.WorkfowExecuter.Services;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
+using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
 using Moq;
 using Xunit;
 

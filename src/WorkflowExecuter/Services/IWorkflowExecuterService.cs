@@ -3,7 +3,7 @@
 
 using Monai.Deploy.Messaging.Events;
 
-namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
+namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 {
     public interface IWorkflowExecuterService
     {

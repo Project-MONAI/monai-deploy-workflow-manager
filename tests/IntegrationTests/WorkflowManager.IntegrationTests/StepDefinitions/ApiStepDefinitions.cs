@@ -4,7 +4,7 @@ using FluentAssertions;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using Monai.Deploy.WorkloadManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions

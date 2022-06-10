@@ -6,7 +6,7 @@ using Monai.Deploy.Storage;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 
-namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
+namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 {
     public class ArtifactMapper : IArtifactMapper
     {

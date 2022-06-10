@@ -6,7 +6,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 
-namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
+namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 {
     public static class EventMapper
     {

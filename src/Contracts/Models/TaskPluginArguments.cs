@@ -3,7 +3,7 @@
 
 using Microsoft.Extensions.Configuration;
 
-namespace Monai.Deploy.WorkloadManager.Contracts.Models
+namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
     public class TaskPluginArguments
     {

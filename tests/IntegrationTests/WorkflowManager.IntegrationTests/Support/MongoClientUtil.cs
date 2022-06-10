@@ -3,7 +3,7 @@
 
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
-using Monai.Deploy.WorkloadManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 using MongoDB.Driver;
 using Polly;
 using Polly.Retry;

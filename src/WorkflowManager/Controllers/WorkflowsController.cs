@@ -12,7 +12,7 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Contracts.Responses;
 using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
 
-namespace Monai.Deploy.WorkloadManager.Controllers;
+namespace Monai.Deploy.WorkflowManager.Controllers;
 
 /// <summary>
 /// Workflows Controller

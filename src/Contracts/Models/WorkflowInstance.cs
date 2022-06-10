@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace Monai.Deploy.WorkloadManager.Contracts.Models
+namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
     public class WorkflowInstance
     {
