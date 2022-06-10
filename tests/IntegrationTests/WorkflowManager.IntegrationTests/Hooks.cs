@@ -121,8 +121,30 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         [AfterTestRun(Order = 0)]
         public static void ClearTestData()
         {
-            MongoClient.DeleteAllWorkflowDocuments();
+            MongoClient.DeleteAllWorkflowRevisionDocuments();
             MongoClient.DeleteAllWorkflowInstances();
+        }
+
+        [AfterScenario]
+        public void DeleteTestData()
+        {
+            var dataHelper = ObjectContainer.Resolve<DataHelper>();
+
+            if (dataHelper.WorkflowRevisions.Count > 0)
+            {
+                foreach (var workflowRevision in dataHelper.WorkflowRevisions)
+                {
+                    MongoClient.DeleteWorkflowRevisionDocument(workflowRevision.Id);
+                }
+            }
+
+            if (dataHelper.WorkflowInstances.Count > 0)
+            {
+                foreach (var workflowInstance in dataHelper.WorkflowInstances)
+                {
+                    MongoClient.DeleteWorkflowInstance(workflowInstance.Id);
+                }
+            }
         }
 
         /// <summary>

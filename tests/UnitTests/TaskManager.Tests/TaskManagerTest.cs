@@ -139,6 +139,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _options.Value.TaskManager.PluginAssemblyMappings.Add(PluginStrings.Argo, typeof(TestPlugin).AssemblyQualifiedName);
             _options.Value.TaskManager.PluginAssemblyMappings.Add(NOT_ARGO, typeof(TestPlugin).AssemblyQualifiedName);
             _options.Value.TaskManager.MetadataAssemblyMappings.Add(PluginStrings.Argo, typeof(TestMetadataRepository).AssemblyQualifiedName);
+            _options.Value.TaskManager.MetadataAssemblyMappings.Add(NOT_ARGO, typeof(TestMetadataRepository).AssemblyQualifiedName);
             _options.Value.Storage.Settings["accessKey"] = "key";
             _options.Value.Storage.Settings["accessToken"] = "token";
         }
