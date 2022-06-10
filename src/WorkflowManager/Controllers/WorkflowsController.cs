@@ -142,7 +142,7 @@ public class WorkflowsController : ControllerBase
             {
                 _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to find workflow with Id: {id}");
 
-                return NotFound($"Faild to find workflow with Id: {id}");
+                return NotFound($"Failed to find workflow with Id: {id}");
             }
 
             return StatusCode(StatusCodes.Status201Created, new CreateWorkflowResponse(workflowId));

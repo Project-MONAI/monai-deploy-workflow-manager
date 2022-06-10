@@ -67,17 +67,42 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             Assertions.AssertWorkflowInstance(DataHelper.WorkflowInstances, actualWorkflowInstance);
         }
 
-        [Scope(Tag = "WorkflowInstanceApi")]
-        [AfterScenario(Order = 1)]
-        public void DeleteTestData()
+        [Given(@"I have a body (.*)")]
+        public void GivenIHaveABody(string name)
         {
-            if (DataHelper.WorkflowInstances.Count > 0)
-            {
-                foreach (var workflowInstance in DataHelper.WorkflowInstances)
-                {
-                    MongoClient.DeleteWorkflowInstance(workflowInstance.Id);
-                }
-            }
+            Support.HttpRequestMessageExtensions.AddJsonBody(ApiHelper.Request, DataHelper.GetWorkflowObjectTestData(name));
         }
+
+        [Then(@"the Id (.*) is returned in the response body")]
+        public void ThenTheIdIsReturned(string id)
+        {
+            ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Be($"{{\"workflow_id\":\"{id}\"}}");
+        }
+
+        [Then(@"I will recieve the error message (.*)")]
+        public void ThenIWillRecieveTheCorrectErrorMessage(string message)
+        {
+            ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Contain(message);
+        }
+
+        [Then(@"multiple workflow revisions now exist with correct details")]
+        public void ThenMultipleWorkflowRevisionNowExistWithCorrectDetails()
+        {
+            var workflowRevisions = MongoClient.GetWorkflowRevisionsByWorkflowId(DataHelper.WorkflowRevisions[0].WorkflowId);
+            Assertions.AssertWorkflowRevisionDetailsAfterUpdateRequest(workflowRevisions, DataHelper.Workflows, DataHelper.WorkflowRevisions);
+        }
+
+        //[Scope(Tag = "WorkflowInstanceApi")]
+        //[AfterScenario(Order = 1)]
+        //public void DeleteTestData()
+        //{
+        //    if (DataHelper.WorkflowInstances.Count > 0)
+        //    {
+        //        foreach (var workflowInstance in DataHelper.WorkflowInstances)
+        //        {
+        //            MongoClient.DeleteWorkflowInstance(workflowInstance.Id);
+        //        }
+        //    }
+        //}
     }
 }
