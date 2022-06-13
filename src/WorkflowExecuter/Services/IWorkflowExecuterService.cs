@@ -23,6 +23,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         /// Processes the export complete payload and updates the workflow instance.
         /// </summary>
         /// <param name="message">The export complete message event.</param>
-        Task<bool> ProcessExportComplete(ExportCompleteEvent message);
+        Task<bool> ProcessExportComplete(ExportCompleteEvent message, string correlationId);
     }
 }

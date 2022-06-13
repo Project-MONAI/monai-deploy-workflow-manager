@@ -193,7 +193,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return processed;
         }
 
-        public async Task<bool> ProcessExportComplete(ExportCompleteEvent message)
+        public async Task<bool> ProcessExportComplete(ExportCompleteEvent message, string correlationId)
         {
             var workflowInstance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(message.WorkflowId);
             var task = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId == message.ExportTaskId);
@@ -203,15 +203,39 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return false;
             }
 
+            var workflow = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId);
+
+            if (workflow is null)
+            {
+                _logger.TypeNotFound(nameof(workflow));
+
+                return false;
+            }
+
             if (message.Status.Equals(ExportStatus.Success)
                 && TaskExecutionStatus.Succeeded.IsTaskExecutionStatusUpdateValid(task.Status))
             {
-                await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, message.ExportTaskId, TaskExecutionStatus.Succeeded);
+                var currentTaskDestinations = workflow.Workflow?.Tasks?.SingleOrDefault(t => t.Id == task.TaskId)?.TaskDestinations;
+                var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, currentTaskDestinations);
+
+                if (!newTaskExecutions.Any())
+                {
+                    await UpdateWorkflowInstanceStatus(workflowInstance, task.TaskId, TaskExecutionStatus.Succeeded);
+
+                    return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Succeeded);
+                }
+
+                var processed = await HandleTaskDestinations(workflowInstance, correlationId, newTaskExecutions);
+
+                processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Succeeded);
+
+                return processed;
             }
-            else if ((message.Status.Equals(ExportStatus.Failure) || message.Status.Equals(ExportStatus.PartialFailure))
-                && TaskExecutionStatus.Failed.IsTaskExecutionStatusUpdateValid(task.Status))
+
+            if ((message.Status.Equals(ExportStatus.Failure) || message.Status.Equals(ExportStatus.PartialFailure)) &&
+                TaskExecutionStatus.Failed.IsTaskExecutionStatusUpdateValid(task.Status))
             {
-                await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, message.ExportTaskId, TaskExecutionStatus.Failed);
+                return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, message.ExportTaskId, TaskExecutionStatus.Failed);
             }
 
             return true;
@@ -261,18 +285,9 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (validOutputArtifacts is not null && validOutputArtifacts.Any())
             {
-                var artifactsProcessed = true;
-
-                foreach (var artifact in validOutputArtifacts)
-                {
-                    artifactsProcessed &= await ExportRequest(workflowInstance, task, validOutputArtifacts, correlationId);
-                }
-
-                await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, task.TaskId, validOutputArtifacts);
-
-                artifactsProcessed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Exported);
-
-                return artifactsProcessed;
+                return await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, task.TaskId, validOutputArtifacts) &&
+                    await ExportRequest(workflowInstance, task, validOutputArtifacts, correlationId) &&
+                    await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Exported);
             }
 
             return true;

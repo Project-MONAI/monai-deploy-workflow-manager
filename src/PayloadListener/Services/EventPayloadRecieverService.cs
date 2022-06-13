@@ -117,7 +117,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                     return;
                 }
 
-                if (!await WorkflowExecuterService.ProcessExportComplete(payload))
+                if (!await WorkflowExecuterService.ProcessExportComplete(payload, message.Message.CorrelationId))
                 {
                     Logger.EventRejectedRequeue(message.Message.MessageId);
 
