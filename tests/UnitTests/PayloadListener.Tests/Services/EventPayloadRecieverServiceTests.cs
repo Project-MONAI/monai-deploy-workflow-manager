@@ -156,6 +156,90 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
             _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
         }
 
+        [Test]
+        public void ExportCompletePayload_ValidateExportComplete()
+        {
+            var message = CreateMessageReceivedEventArgs("destination");
+
+            _eventPayloadReceiverService.ExportCompletePayload(message);
+
+            _mockEventPayloadValidator.Verify(p => p.ValidateExportComplete(It.IsAny<ExportCompleteEvent>()), Times.Once());
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public void ExportCompletePayload_ExportCompleteIsNotValid_MessageSubscriberRejectsTheMessage()
+        {
+            var message = CreateMessageReceivedEventArgs("destination");
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateExportComplete(It.IsAny<ExportCompleteEvent>())).Returns(false);
+
+            _eventPayloadReceiverService.ExportCompletePayload(message);
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), false), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+
+            _mockEventPayloadValidator.Verify(x => x.ValidateExportComplete(It.IsAny<ExportCompleteEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public void ExportCompletePayload_ExportCompleteIsValid_MessageSubscriberAcknowledgeTheMessage()
+        {
+            var message = CreateMessageReceivedEventArgs("destination");
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateExportComplete(It.IsAny<ExportCompleteEvent>())).Returns(true);
+            _workflowExecuterService.Setup(p => p.ProcessExportComplete(It.IsAny<ExportCompleteEvent>(), It.IsAny<string>())).ReturnsAsync(true);
+
+            _eventPayloadReceiverService.ExportCompletePayload(message);
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.Acknowledge(It.IsAny<Message>()), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+
+            _mockEventPayloadValidator.Verify(x => x.ValidateExportComplete(It.IsAny<ExportCompleteEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public void ExportCompletePayload_FailsToProcessExportComplete_MessageIsRejectedAndRequeued()
+        {
+            // Arrange
+            var message = CreateMessageReceivedEventArgs("destination");
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateExportComplete(It.IsAny<ExportCompleteEvent>())).Returns(true);
+            _workflowExecuterService.Setup(p => p.ProcessExportComplete(It.IsAny<ExportCompleteEvent>(), It.IsAny<string>())).ReturnsAsync(false);
+
+            // Act
+            _eventPayloadReceiverService.ExportCompletePayload(message);
+
+            // Assert
+            _mockEventPayloadValidator.Verify(x => x.ValidateExportComplete(It.IsAny<ExportCompleteEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), It.IsAny<bool>()), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public void ExportCompletePayload_ErrorIsThrown_MessageIsRejectedAndRequeued()
+        {
+            // Arrange
+            var message = CreateMessageReceivedEventArgs("destination");
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateExportComplete(It.IsAny<ExportCompleteEvent>())).Returns(true);
+            _workflowExecuterService.Setup(p => p.ProcessExportComplete(It.IsAny<ExportCompleteEvent>(), It.IsAny<string>())).Throws<Exception>();
+
+            // Act
+            _eventPayloadReceiverService.ExportCompletePayload(message);
+
+            // Assert
+            _mockEventPayloadValidator.Verify(x => x.ValidateExportComplete(It.IsAny<ExportCompleteEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), It.IsAny<bool>()), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+        }
+
         private static MessageReceivedEventArgs CreateMessageReceivedEventArgs(string destination)
         {
             var exportRequestMessage = new ExportRequestEvent
