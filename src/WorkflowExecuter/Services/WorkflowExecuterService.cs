@@ -203,18 +203,18 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return false;
             }
 
-            var workflow = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId);
-
-            if (workflow is null)
-            {
-                _logger.TypeNotFound(nameof(workflow));
-
-                return false;
-            }
-
             if (message.Status.Equals(ExportStatus.Success)
                 && TaskExecutionStatus.Succeeded.IsTaskExecutionStatusUpdateValid(task.Status))
             {
+                var workflow = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId);
+
+                if (workflow is null)
+                {
+                    _logger.TypeNotFound(nameof(workflow));
+
+                    return false;
+                }
+
                 var currentTaskDestinations = workflow.Workflow?.Tasks?.SingleOrDefault(t => t.Id == task.TaskId)?.TaskDestinations;
                 var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, currentTaskDestinations);
 
