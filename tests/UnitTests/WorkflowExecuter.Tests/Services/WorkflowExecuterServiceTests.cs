@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -29,7 +30,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         private readonly Mock<IWorkflowRepository> _workflowRepository;
         private readonly Mock<ILogger<WorkflowExecuterService>> _logger;
         private readonly Mock<IWorkflowInstanceRepository> _workflowInstanceRepository;
-        private readonly Mock<IWorkflowMetadataRepository> _workflowMetadataRepository;
         private readonly Mock<IMessageBrokerPublisherService> _messageBrokerPublisherService;
         private readonly IOptions<WorkflowManagerOptions> _configuration;
         private readonly IOptions<StorageServiceConfiguration> _storageConfiguration;
@@ -39,7 +39,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowRepository = new Mock<IWorkflowRepository>();
             _logger = new Mock<ILogger<WorkflowExecuterService>>();
             _workflowInstanceRepository = new Mock<IWorkflowInstanceRepository>();
-            _workflowMetadataRepository = new Mock<IWorkflowMetadataRepository>();
             _messageBrokerPublisherService = new Mock<IMessageBrokerPublisherService>();
             _configuration = Options.Create(new WorkflowManagerOptions()
             {
@@ -60,7 +59,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 _workflowRepository.Object,
                 _workflowInstanceRepository.Object,
                 _messageBrokerPublisherService.Object,
-                _workflowMetadataRepository.Object,
                 new ConditionalParameterParser(_logger.Object));
         }
 
@@ -660,7 +658,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
-            _workflowMetadataRepository.Setup(m => m.UpdateForTaskAsync(It.IsAny<string>(), It.IsAny<List<TaskMetadata>>())).ReturnsAsync(true);
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 
@@ -759,7 +756,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
-            _workflowMetadataRepository.Setup(m => m.UpdateForTaskAsync(It.IsAny<string>(), It.IsAny<List<TaskMetadata>>())).ReturnsAsync(false);
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 
@@ -767,5 +763,137 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             response.Should().BeTrue();
         }
+
+        [Fact]
+        public async Task HandleTaskDestinations_ShouldReturnOnlyRequiredExecutions_ReturnsCoffeeDoughnutsButNotSalad()
+        {
+            #region TaskDestinations/Condtionals
+            var tdCoffee = new TaskDestination
+            {
+                Name = "coffee",
+            };
+
+            var tdDoughnuts = new TaskDestination
+            {
+                Name = "doughnuts",
+                Conditions = "{{ context.executions.task['doughnuts'].'A' }} == 'B'"
+            };
+
+            var tdSalad = new TaskDestination
+            {
+                Name = "salad",
+                Conditions = "{{ context.executions.task['doughnuts'].'A' }} == 'A'"
+            };
+
+            var currentTaskDestinations = new TaskDestination[]
+            {
+                tdCoffee, tdDoughnuts, tdSalad
+            };
+            #endregion
+
+            #region TaskExecutiuons/MetaData
+            var metadata = new Dictionary<string, object>() { { "A", "B" } };
+
+            var tePizza = new TaskExecution
+            {
+                TaskId = "pizza",
+                Status = TaskExecutionStatus.Created
+            };
+
+            var teDoughnuts = new TaskExecution
+            {
+                TaskId = "doughnuts",
+                Status = TaskExecutionStatus.Created,
+                Metadata = metadata
+            };
+
+            var teCoffee = new TaskExecution
+            {
+                TaskId = "coffee",
+                Status = TaskExecutionStatus.Created,
+            };
+
+            var teSalad = new TaskExecution
+            {
+                TaskId = "salad",
+                Status = TaskExecutionStatus.Created,
+            };
+            #endregion
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = Guid.NewGuid().ToString(),
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                {
+                    tePizza, teCoffee, teDoughnuts
+                }
+            };
+
+            var workflow = new WorkflowRevision
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = Guid.NewGuid().ToString(),
+                Revision = 1,
+                Workflow = new Workflow
+                {
+                    Name = "Workflowname2",
+                    Description = "Workflowdesc2",
+                    Version = "1",
+                    InformaticsGateway = new InformaticsGateway
+                    {
+                        AeTitle = "aetitle"
+                    },
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject {
+                            Id = "pizza",
+                            Type = "type",
+                            Description = "taskdesc",
+                            TaskDestinations = new TaskDestination[]
+                            {
+                                tdCoffee, tdDoughnuts
+                            }
+                        },
+                        new TaskObject
+                        {
+                            Id = "doughnuts",
+                            Type = "type",
+                            Description = "taskdesc",
+                            InputParameters = new Dictionary<string, object>
+                            {
+                                { "param1", @"{{ context.executions.task['doughnuts'].'A' }}" },
+                                { "param2", @"hello" }
+                            }
+                        },
+                        new TaskObject
+                        {
+                            Id = "coffee",
+                            Type = "type",
+                            Description = "taskdesc"
+                        }
+                    }
+                }
+            };
+
+            var result = WorkflowExecuterService.HandleTaskDestinations(workflowInstance,
+                                                                          workflow,
+                                                                          currentTaskDestinations,
+                                                                          metadata);
+
+            Assert.Contains(result, r => r.TaskId == teCoffee.TaskId);
+            Assert.Contains(result, r => r.TaskId == teDoughnuts.TaskId);
+            Assert.DoesNotContain(result, r => r.TaskId == teSalad.TaskId);
+
+            var param1Result = result.First(r => r.TaskId == "doughnuts").InputParameters["param1"].Equals("'B'");
+            var param2Result = result.First(r => r.TaskId == "doughnuts").InputParameters["param2"].Equals("hello");
+
+            Assert.True(param1Result);
+            Assert.True(param2Result);
+        }
+
     }
 }

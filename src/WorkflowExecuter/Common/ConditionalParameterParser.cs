@@ -13,28 +13,35 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
     public enum ParameterContext
     {
         Undefined,
+        TaskExecutions,
         Executions,
         Dicom
     }
 
     public class ConditionalParameterParser
     {
+        private const string ExecutionsTask = "context.executions.task";
+        private const string ContextExecutions = "context.executions";
+        private const string ContextDicomTags = "context.dicom.tags";
+
         private readonly ILogger<WorkflowExecuterService> _logger;
 
         private readonly Regex _regex = new Regex(@"\{{(.*?)\}}");
+
+        public WorkflowInstance? WorkflowInstance { get; private set; } = null;
 
         public ConditionalParameterParser(ILogger<WorkflowExecuterService> logger)
         {
             _logger = logger;
         }
 
-        public bool TryParse(string conditions, WorkflowInstance? workflowInstance = null)
+        public bool TryParse(string conditions, WorkflowInstance workflowInstance)
         {
             Guard.Against.NullOrEmpty(conditions);
-
+            Guard.Against.Null(workflowInstance);
             try
             {
-                conditions = ResolveParameters(conditions, null);
+                conditions = ResolveParameters(conditions, workflowInstance);
                 var conditionalGroup = ConditionalGroup.Create(conditions);
                 return conditionalGroup.Evaluate();
             }
@@ -45,59 +52,90 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
             }
         }
 
-        public string ResolveParameters(string conditions, WorkflowInstance? workflowInstance)
+        public string ResolveParameters(string conditions, WorkflowInstance workflowInstance)
         {
-             Guard.Against.NullOrEmpty(conditions);
-            //Guard.Against.Null(workflowInstance); // TODO Uncomment
+            Guard.Against.NullOrEmpty(conditions);
+            Guard.Against.Null(workflowInstance);
 
-            var matches = _regex.Matches(conditions);
-            if (!matches.Any())
+            WorkflowInstance = workflowInstance;
+
+            try
             {
+                var matches = _regex.Matches(conditions);
+                if (!matches.Any())
+                {
+                    WorkflowInstance = null;
+                    return conditions;
+                }
+
+                var parameters = ParseMatches(matches).Reverse();
+                foreach (var parameter in parameters)
+                {
+                    conditions = conditions
+                        .Remove(parameter.Key.Index, parameter.Key.Length)
+                        .Insert(parameter.Key.Index, $"'{parameter.Value.Result ?? "null"}'");
+                }
+                WorkflowInstance = null;
                 return conditions;
             }
-
-            var parameters = ParseMatches(matches).Reverse();
-            var index = parameters.Count() + 1;
-            foreach (var parameter in parameters)
+            finally
             {
-                index--;
-                conditions = conditions
-                    .Remove(parameter.Key.Index, parameter.Key.Length)
-                    .Insert(parameter.Key.Index, $"'{parameter.Value.Result} {index}'");
+                WorkflowInstance = null;
             }
-
-            return conditions;
         }
 
-        private Dictionary<Match, (string Result, ParameterContext Context)> ParseMatches(MatchCollection matches)
+        private Dictionary<Match, (string? Result, ParameterContext Context)> ParseMatches(MatchCollection matches)
         {
-            var valuePairs = new Dictionary<Match, (string Value, ParameterContext Context)>();
-            var index = 0;
+            var valuePairs = new Dictionary<Match, (string? Value, ParameterContext Context)>();
             foreach (Match match in matches)
             {
-                index++;
                 valuePairs.Add(match, ResolveMatch(match.Value));
             }
             return valuePairs;
         }
 
-        private (string Result, ParameterContext Context) ResolveMatch(string value)
+        private (string? Result, ParameterContext Context) ResolveMatch(string originalValue)
         {
+            Guard.Against.NullOrWhiteSpace(originalValue);
+
+            originalValue = originalValue.Substring(2, originalValue.Length - 4).Trim();
+            //"{{ context.executions.task['2dbd1af7-b699-4467-8e99-05a0c22422b4'].'Fred' }}"
+            var value = originalValue;
             var context = ParameterContext.Undefined;
-            var result = "";
-            if (value.StartsWith("{{context.executions"))
+            if (originalValue.StartsWith(ExecutionsTask))
+            {
+                context = ParameterContext.TaskExecutions;
+                var subValue = value.Trim().Substring(ExecutionsTask.Length, value.Length - ExecutionsTask.Length);
+                // "['2dbd1af7-b699-4467-8e99-05a0c22422b4'].'Fred'"
+                var subValues = subValue.Split('[', ']');
+                var id = subValues[1].Trim('\'');
+                var task = WorkflowInstance?.Tasks.First(t => t.TaskId == id);
+                if (task is null || (task is not null && !task.Metadata.Any()))
+                {
+                    return (Result: null, Context: context);
+                }
+                var metadataKey = subValues[2].Split('\'')[1];
+                if (task.Metadata.Keys.Contains(metadataKey))
+                {
+                    var result = task.Metadata[metadataKey];
+                    if (result is not null && result is string resultStr)
+                    {
+                        return (Result: resultStr, Context: context);
+                    }
+                }
+            }
+            else if (originalValue.StartsWith(ContextExecutions))
             {
                 context = ParameterContext.Executions;
-                //TODO: handle excution context parameter resoultion
-                result = "match";
+                //TODO: handle context executions parameter resoultion
             }
-            if (value.StartsWith("{{context.dicom.tags"))
+            if (originalValue.StartsWith(ContextDicomTags))
             {
                 context = ParameterContext.Dicom;
                 //TODO: handle dicom context parameter resoultion
             }
             //TODO: part2
-            return (Result: result, Context: context);
+            return (Result: null, Context: context);
         }
     }
 }

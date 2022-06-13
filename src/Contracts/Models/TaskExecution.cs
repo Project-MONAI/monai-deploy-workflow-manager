@@ -32,5 +32,8 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         [JsonProperty(PropertyName = "metadata")]
         public Dictionary<string, object> Metadata { get; set; }
+
+        [JsonProperty(PropertyName = "input_parameters")]
+        public Dictionary<string, object> InputParameters { get; set; }
     }
 }

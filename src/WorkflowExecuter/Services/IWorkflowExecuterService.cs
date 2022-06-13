@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkloadManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
 {
@@ -18,5 +20,18 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
         /// </summary>
         /// <param name="message">The workflow request message event.</param>
         Task<bool> ProcessTaskUpdate(TaskUpdateEvent message);
+
+        /// <summary>
+        /// Handles task destinations
+        /// </summary>
+        /// <param name="workflowInstance"></param>
+        /// <param name="workflow"></param>
+        /// <param name="currentTaskDestinations"></param>
+        /// <param name="metadata"></param>
+        /// <returns></returns>
+        List<TaskExecution> HandleTaskDestinations(WorkflowInstance workflowInstance,
+                                                    WorkflowRevision workflow,
+                                                    TaskDestination[]? currentTaskDestinations,
+                                                    Dictionary<string, object> metadata);
     }
 }
