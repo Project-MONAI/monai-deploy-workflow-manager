@@ -102,5 +102,39 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 _messageSubscriber.Reject(message.Message, true);
             }
         }
+
+        public async Task ExportCompletePayload(MessageReceivedEventArgs message)
+        {
+            try
+            {
+                var payload = message.Message.ConvertTo<ExportCompleteEvent>();
+
+                if (!PayloadValidator.ValidateExportComplete(payload))
+                {
+                    Logger.EventRejectedNoQueue(message.Message.MessageId);
+                    _messageSubscriber.Reject(message.Message, false);
+
+                    return;
+                }
+
+                if (!await WorkflowExecuterService.ProcessExportComplete(payload))
+                {
+                    Logger.EventRejectedRequeue(message.Message.MessageId);
+
+                    _messageSubscriber.Reject(message.Message, true);
+
+                    return;
+                }
+
+                _messageSubscriber.Acknowledge(message.Message);
+            }
+            catch (Exception e)
+            {
+                Logger.Exception($"Failed to serialize {nameof(ExportCompleteEvent)}", e);
+                Logger.EventRejectedRequeue(message.Message.MessageId);
+
+                _messageSubscriber.Reject(message.Message, true);
+            }
+        }
     }
 }

@@ -29,6 +29,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         private readonly StorageServiceConfiguration _storageConfiguration;
 
         private string TaskDispatchRoutingKey { get; }
+        private string ExportRequestRoutingKey { get; }
 
         public WorkflowExecuterService(
             ILogger<WorkflowExecuterService> logger,
@@ -53,6 +54,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             _storageConfiguration = storageConfiguration.Value;
 
             TaskDispatchRoutingKey = configuration.Value.Messaging.Topics.TaskDispatchRequest;
+            ExportRequestRoutingKey = configuration.Value.Messaging.Topics.ExportRequestPrefix;
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _workflowRepository = workflowRepository ?? throw new ArgumentNullException(nameof(workflowRepository));
@@ -163,6 +165,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
             }
 
+            await HandleOutputArtifacts(workflowInstance, message.Outputs, currentTask, message.CorrelationId);
+
             var workflow = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId);
 
             if (workflow is null)
@@ -171,54 +175,46 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
                 return false;
             }
-            var artifactDict = message.Outputs.ToArtifactDictionary();
-
-            var validOutputArtifacts = _storageService.VerifyObjectsExist(workflowInstance.BucketId, artifactDict);
-
-            workflowInstance.Tasks?.ForEach(t =>
-            {
-                if (t.TaskId == message.TaskId)
-                {
-                    t.OutputArtifacts = validOutputArtifacts;
-                }
-            });
 
             var currentTaskDestinations = workflow.Workflow?.Tasks?.SingleOrDefault(t => t.Id == message.TaskId)?.TaskDestinations;
-            var newTaskExecutions = await HandleTaskDestinations(workflowInstance, workflow, currentTaskDestinations);
+            var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, currentTaskDestinations);
 
             if (!newTaskExecutions.Any())
             {
                 await UpdateWorkflowInstanceStatus(workflowInstance, message.TaskId, message.Status);
 
-                await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, message.TaskId, validOutputArtifacts);
-
                 return await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
             }
 
-            workflowInstance.Tasks?.AddRange(newTaskExecutions);
-
-            if (!await _workflowInstanceRepository.UpdateTasksAsync(message.WorkflowInstanceId, workflowInstance.Tasks))
-            {
-                return false;
-            }
-
-            var processed = true;
-
-            foreach (var taskExec in newTaskExecutions)
-            {
-                processed &= await DispatchTask(workflowInstance, taskExec, message.CorrelationId);
-
-                if (!processed)
-                {
-                    continue;
-                }
-
-                processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, taskExec.TaskId, TaskExecutionStatus.Dispatched);
-            }
+            var processed = await HandleTaskDestinations(workflowInstance, message.CorrelationId, newTaskExecutions);
 
             processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
 
             return processed;
+        }
+
+        public async Task<bool> ProcessExportComplete(ExportCompleteEvent message)
+        {
+            var workflowInstance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(message.WorkflowId);
+            var task = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId == message.ExportTaskId);
+
+            if (task is null)
+            {
+                return false;
+            }
+
+            if (message.Status.Equals(ExportStatus.Success)
+                && TaskExecutionStatus.Succeeded.IsTaskExecutionStatusUpdateValid(task.Status))
+            {
+                await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, message.ExportTaskId, TaskExecutionStatus.Succeeded);
+            }
+            else if ((message.Status.Equals(ExportStatus.Failure) || message.Status.Equals(ExportStatus.PartialFailure))
+                && TaskExecutionStatus.Failed.IsTaskExecutionStatusUpdateValid(task.Status))
+            {
+                await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, message.ExportTaskId, TaskExecutionStatus.Failed);
+            }
+
+            return true;
         }
 
         private async Task<bool> UpdateWorkflowInstanceStatus(WorkflowInstance workflowInstance, string taskId, TaskExecutionStatus currentTaskStatus)
@@ -249,7 +245,66 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return true;
         }
 
-        private async Task<List<TaskExecution>> HandleTaskDestinations(WorkflowInstance workflowInstance, WorkflowRevision workflow, TaskDestination[]? currentTaskDestinations)
+        private async Task<bool> HandleOutputArtifacts(WorkflowInstance workflowInstance, List<Messaging.Common.Storage> outputs, TaskExecution task, string correlationId)
+        {
+            var artifactDict = outputs.ToArtifactDictionary();
+
+            var validOutputArtifacts = _storageService.VerifyObjectsExist(workflowInstance.BucketId, artifactDict);
+
+            workflowInstance.Tasks?.ForEach(t =>
+            {
+                if (t.TaskId == task.TaskId)
+                {
+                    t.OutputArtifacts = validOutputArtifacts;
+                }
+            });
+
+            if (validOutputArtifacts is not null && validOutputArtifacts.Any())
+            {
+                var artifactsProcessed = true;
+
+                foreach (var artifact in validOutputArtifacts)
+                {
+                    artifactsProcessed &= await ExportRequest(workflowInstance, task, validOutputArtifacts, correlationId);
+                }
+
+                await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, task.TaskId, validOutputArtifacts);
+
+                artifactsProcessed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Exported);
+
+                return artifactsProcessed;
+            }
+
+            return true;
+        }
+
+        private async Task<bool> HandleTaskDestinations(WorkflowInstance workflowInstance, string correlationId, IList<TaskExecution> taskExecutions)
+        {
+            workflowInstance.Tasks?.AddRange(taskExecutions);
+
+            if (!await _workflowInstanceRepository.UpdateTasksAsync(workflowInstance.Id, workflowInstance.Tasks))
+            {
+                return false;
+            }
+
+            var processed = true;
+
+            foreach (var taskExec in taskExecutions)
+            {
+                processed &= await DispatchTask(workflowInstance, taskExec, correlationId);
+
+                if (!processed)
+                {
+                    continue;
+                }
+
+                processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, taskExec.TaskId, TaskExecutionStatus.Dispatched);
+            }
+
+            return processed;
+        }
+
+        private async Task<List<TaskExecution>> CreateTaskDestinations(WorkflowInstance workflowInstance, WorkflowRevision workflow, TaskDestination[]? currentTaskDestinations)
         {
             var newTaskExecutions = new List<TaskExecution>();
 
@@ -293,6 +348,15 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             await _messageBrokerPublisherService.Publish(TaskDispatchRoutingKey, jsonMesssage.ToMessage());
 
             return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, taskExec.TaskId, TaskExecutionStatus.Dispatched);
+        }
+
+        private async Task<bool> ExportRequest(WorkflowInstance workflowInstance, TaskExecution taskExec, Dictionary<string, string> validOutputArtifacts, string correlationId)
+        {
+            var exportRequestEvent = EventMapper.ToExportRequestEvent(taskExec, validOutputArtifacts, workflowInstance.Id, correlationId);
+            var jsonMesssage = new JsonMessage<ExportRequestEvent>(exportRequestEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, exportRequestEvent.CorrelationId, Guid.NewGuid().ToString());
+
+            await _messageBrokerPublisherService.Publish(ExportRequestRoutingKey, jsonMesssage.ToMessage());
+            return true;
         }
 
         private async Task<WorkflowInstance> CreateWorkflowInstanceAsync(WorkflowRequestEvent message, WorkflowRevision workflow)

@@ -70,5 +70,23 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
 
             return true;
         }
+
+        public bool ValidateExportComplete(ExportCompleteEvent payload)
+        {
+            Guard.Against.Null(payload, nameof(payload));
+
+            try
+            {
+                payload.Validate();
+            }
+            catch (MessageValidationException e)
+            {
+                Logger.Exception($"Failed to validate {nameof(ExportCompleteEvent)}", e);
+
+                return false;
+            }
+
+            return true;
+        }
     }
 }

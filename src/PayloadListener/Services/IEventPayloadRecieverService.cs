@@ -20,5 +20,12 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         /// </summary>
         /// <param name="message">The workflow message event.</param>
         Task TaskUpdatePayload(MessageReceivedEventArgs message);
+
+        /// <summary>
+        /// Receives an export complete message payload and validates it,
+        /// then goes on to update the workflow instance database record
+        /// </summary>
+        /// <param name="message">The export complete event.</param>
+        Task ExportCompletePayload(MessageReceivedEventArgs message);
     }
 }

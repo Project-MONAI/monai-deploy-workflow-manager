@@ -55,5 +55,23 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 }
             };
         }
+
+        public static ExportRequestEvent ToExportRequestEvent(TaskExecution task, Dictionary<string, string> validOutputArtifacts, string workflowId, string correlationId)
+        {
+            Guard.Against.Null(task, nameof(task));
+            Guard.Against.Null(workflowId, nameof(workflowId));
+            Guard.Against.Null(correlationId, nameof(correlationId));
+            Guard.Against.Null(validOutputArtifacts, nameof(validOutputArtifacts));
+
+            return new ExportRequestEvent
+            {
+                WorkflowId = workflowId,
+                ExportTaskId = task.TaskId,
+                CorrelationId = correlationId,
+                Files = validOutputArtifacts.Values.ToList(),
+                SucceededFiles = validOutputArtifacts.Count
+
+            };
+        }
     }
 }

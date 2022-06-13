@@ -28,6 +28,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 
         public string WorkflowRequestRoutingKey { get; set; }
         public string TaskStatusUpdateRoutingKey { get; set; }
+        public string ExportCompleteRoutingKey { get; set; }
         protected int Concurrency { get; set; }
         public ServiceStatus Status { get; set; } = ServiceStatus.Unknown;
         public string ServiceName => "Payload Listener Service";
@@ -50,6 +51,8 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 
             TaskStatusUpdateRoutingKey = configuration.Value.Messaging.Topics.TaskUpdateRequest;
             WorkflowRequestRoutingKey = configuration.Value.Messaging.Topics.WorkflowRequest;
+            ExportCompleteRoutingKey = configuration.Value.Messaging.Topics.ExportComplete;
+
             Concurrency = 2;
 
             _eventPayloadListenerService = eventPayloadListenerService ?? throw new ArgumentNullException(nameof(eventPayloadListenerService));
@@ -81,6 +84,9 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 
             _messageSubscriber.Subscribe(TaskStatusUpdateRoutingKey, String.Empty, OnTaskUpdateStatusReceivedCallback);
             _logger.EventSubscription(ServiceName, TaskStatusUpdateRoutingKey);
+
+            _messageSubscriber.Subscribe(ExportCompleteRoutingKey, String.Empty, OnExportCompleteReceivedCallback);
+            _logger.EventSubscription(ServiceName, ExportCompleteRoutingKey);
         }
 
         private void OnWorkflowRequestReceivedCallback(MessageReceivedEventArgs eventArgs)
@@ -96,6 +102,14 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             Task.Run(async () =>
             {
                 await _eventPayloadListenerService.TaskUpdatePayload(eventArgs);
+            }).ConfigureAwait(false);
+        }
+
+        private void OnExportCompleteReceivedCallback(MessageReceivedEventArgs eventArgs)
+        {
+            Task.Run(async () =>
+            {
+                await _eventPayloadListenerService.ExportCompletePayload(eventArgs);
             }).ConfigureAwait(false);
         }
 

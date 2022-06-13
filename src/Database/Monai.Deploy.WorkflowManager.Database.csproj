@@ -20,7 +20,7 @@
     <PackageReference Include="Ardalis.GuardClauses" Version="4.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0040" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0042" />
     <PackageReference Include="MongoDB.Bson" Version="2.15.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
   </ItemGroup>
