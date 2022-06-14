@@ -1,5 +1,4 @@
 ﻿using Minio;
-//using Minio.DataModel;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Polly;
 using Polly.Retry;
@@ -16,8 +15,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             Client = new MinioClient(
                 TestExecutionConfig.MinioConfig.Endpoint,
                 TestExecutionConfig.MinioConfig.AccessKey,
-                TestExecutionConfig.MinioConfig.AccessToken,
-                TestExecutionConfig.MinioConfig.Region);
+                TestExecutionConfig.MinioConfig.AccessToken);
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
