@@ -59,7 +59,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 _workflowRepository.Object,
                 _workflowInstanceRepository.Object,
                 _messageBrokerPublisherService.Object,
-                new ConditionalParameterParser((ILogger<ConditionalParameterParser>)_logger.Object));
+                new ConditionalParameterParser(new Mock<ILogger<ConditionalParameterParser>>().Object));
         }
 
         [Fact]

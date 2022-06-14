@@ -10,7 +10,6 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkloadManager.Contracts.Models;
 using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
-using Monai.Deploy.WorkloadManager.WorkfowExecuter.Services;
 using Moq;
 using Xunit;
 
@@ -18,11 +17,11 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 {
     public class ConditionalParameterParserTests
     {
-        private readonly Mock<ILogger<WorkflowExecuterService>>? _logger;
+        private readonly Mock<ILogger<ConditionalParameterParser>>? _logger;
 
         public ConditionalParameterParserTests()
         {
-            _logger = new Mock<ILogger<WorkflowExecuterService>>();
+            _logger = new Mock<ILogger<ConditionalParameterParser>>();
         }
 
         [Theory]
@@ -42,7 +41,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             var testData = CreateTestData();
             var workflow = testData.First();
 
-            var conditionalParameterParser = new ConditionalParameterParser((ILogger<ConditionalParameterParser>)_logger.Object);
+            var conditionalParameterParser = new ConditionalParameterParser(_logger.Object);
             var actualResult = conditionalParameterParser.TryParse(input, workflow);
 
             Assert.Equal(expectedResult, actualResult);
