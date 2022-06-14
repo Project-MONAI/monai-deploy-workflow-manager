@@ -27,6 +27,7 @@ using Monai.Deploy.WorkflowManager.PayloadListener.Services;
 using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
+using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
 using Monai.Deploy.WorkloadManager.WorkfowExecuter.Services;
 using MongoDB.Driver;
 
@@ -122,6 +123,12 @@ namespace Monai.Deploy.WorkflowManager
                     });
 
                     services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
+
+                    services.AddSingleton<IConditionalParameterParser, ConditionalParameterParser>(s =>
+                    {
+                        var logger = s.GetService<ILogger<ConditionalParameterParser>>();
+                        return new ConditionalParameterParser(logger);
+                    });
 
                     services.AddSingleton<IEventPayloadReceiverService, EventPayloadReceiverService>();
                     services.AddTransient<IEventPayloadValidator, EventPayloadValidator>();

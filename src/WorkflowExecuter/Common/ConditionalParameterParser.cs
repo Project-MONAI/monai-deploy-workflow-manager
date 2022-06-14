@@ -6,7 +6,6 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver;
 using Monai.Deploy.WorkloadManager.Contracts.Models;
-using Monai.Deploy.WorkloadManager.WorkfowExecuter.Services;
 
 namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
 {
@@ -18,19 +17,19 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
         Dicom
     }
 
-    public class ConditionalParameterParser
+    public class ConditionalParameterParser : IConditionalParameterParser
     {
         private const string ExecutionsTask = "context.executions.task";
         private const string ContextExecutions = "context.executions";
         private const string ContextDicomTags = "context.dicom.tags";
 
-        private readonly ILogger<WorkflowExecuterService> _logger;
+        private readonly ILogger<ConditionalParameterParser> _logger;
 
         private readonly Regex _regex = new Regex(@"\{{(.*?)\}}");
 
         public WorkflowInstance? WorkflowInstance { get; private set; } = null;
 
-        public ConditionalParameterParser(ILogger<WorkflowExecuterService> logger)
+        public ConditionalParameterParser(ILogger<ConditionalParameterParser> logger)
         {
             _logger = logger;
         }

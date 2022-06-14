@@ -42,7 +42,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             var testData = CreateTestData();
             var workflow = testData.First();
 
-            var conditionalParameterParser = new ConditionalParameterParser(_logger.Object);
+            var conditionalParameterParser = new ConditionalParameterParser((ILogger<ConditionalParameterParser>)_logger.Object);
             var actualResult = conditionalParameterParser.TryParse(input, workflow);
 
             Assert.Equal(expectedResult, actualResult);

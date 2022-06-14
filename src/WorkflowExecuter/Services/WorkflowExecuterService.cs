@@ -23,7 +23,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
         private readonly IWorkflowRepository _workflowRepository;
         private readonly IWorkflowInstanceRepository _workflowInstanceRepository;
         private readonly IMessageBrokerPublisherService _messageBrokerPublisherService;
-        private readonly ConditionalParameterParser _conditionalParameterParser;
+        private readonly IConditionalParameterParser _conditionalParameterParser;
         private readonly StorageServiceConfiguration _storageConfiguration;
 
         private string TaskDispatchRoutingKey { get; }
@@ -35,7 +35,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
             IWorkflowRepository workflowRepository,
             IWorkflowInstanceRepository workflowInstanceRepository,
             IMessageBrokerPublisherService messageBrokerPublisherService,
-            ConditionalParameterParser conditionalParser)
+            IConditionalParameterParser conditionalParser)
         {
             if (configuration is null)
             {
