@@ -14,7 +14,6 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
-using Monai.Deploy.WorkloadManager.Contracts.Models;
 using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Database
@@ -39,6 +38,13 @@ namespace Monai.Deploy.WorkflowManager.Database
             _workflowInstanceCollection = mongoDatabase.GetCollection<WorkflowInstance>(bookStoreDatabaseSettings.Value.WorkflowInstanceCollectionName);
         }
 
+        public async Task<IList<WorkflowInstance>> GetListAsync()
+        {
+            var workflowIstances = await _workflowInstanceCollection.Find(Builders<WorkflowInstance>.Filter.Empty).ToListAsync();
+
+            return workflowIstances ?? new List<WorkflowInstance>();
+        }
+
         public async Task<IList<WorkflowInstance>> GetByWorkflowsIdsAsync(List<string> workflowIds)
         {
             Guard.Against.NullOrEmpty(workflowIds, nameof(workflowIds));
@@ -55,6 +61,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             catch (Exception e)
             {
                 _logger.DbCallFailed(nameof(GetByWorkflowsIdsAsync), e);
+
                 return new List<WorkflowInstance>();
             }
         }
@@ -66,11 +73,13 @@ namespace Monai.Deploy.WorkflowManager.Database
             try
             {
                 await _workflowInstanceCollection.InsertManyAsync(workflowInstances);
+
                 return true;
             }
             catch (Exception e)
             {
                 _logger.DbCallFailed(nameof(CreateAsync), e);
+
                 return false;
             }
         }
@@ -83,14 +92,38 @@ namespace Monai.Deploy.WorkflowManager.Database
 
             try
             {
-                var result = await _workflowInstanceCollection.FindOneAndUpdateAsync(
+                await _workflowInstanceCollection.FindOneAndUpdateAsync(
                     i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.TaskId == taskId),
                     Builders<WorkflowInstance>.Update.Set(w => w.Tasks[-1].Status, status));
+
                 return true;
             }
             catch (Exception e)
             {
                 _logger.DbCallFailed(nameof(UpdateTaskStatusAsync), e);
+
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateTaskOutputArtifactsAsync(string workflowInstanceId, string taskId, Dictionary<string, string> outputArtifacts)
+        {
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));
+            Guard.Against.Null(outputArtifacts, nameof(outputArtifacts));
+
+            try
+            {
+                await _workflowInstanceCollection.FindOneAndUpdateAsync(
+                    i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.TaskId == taskId),
+                    Builders<WorkflowInstance>.Update.Set(w => w.Tasks[-1].OutputArtifacts, outputArtifacts));
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.DbCallFailed(nameof(UpdateTaskOutputArtifactsAsync), e);
+
                 return false;
             }
         }
@@ -111,6 +144,27 @@ namespace Monai.Deploy.WorkflowManager.Database
             {
                 _logger.DbCallFailed(nameof(UpdateWorkflowInstanceStatusAsync), e);
                 return false;
+            }
+        }
+
+        public async Task<TaskExecution> GetTaskByIdAsync(string workflowInstanceId, string taskId)
+        {
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));
+
+            try
+            {
+                var workflowInstance = await _workflowInstanceCollection
+                                            .Find(x => x.Id == workflowInstanceId)
+                                            .FirstOrDefaultAsync();
+
+                return workflowInstance?.Tasks?.FirstOrDefault(t => t.TaskId == taskId);
+            }
+            catch (Exception e)
+            {
+                _logger.DbCallFailed(nameof(GetTaskByIdAsync), e);
+
+                return null;
             }
         }
 

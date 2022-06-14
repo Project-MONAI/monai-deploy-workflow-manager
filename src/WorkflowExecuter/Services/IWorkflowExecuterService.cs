@@ -3,9 +3,8 @@
 
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkloadManager.Contracts.Models;
 
-namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
+namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 {
     public interface IWorkflowExecuterService
     {
@@ -29,9 +28,8 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Services
         /// <param name="currentTaskDestinations"></param>
         /// <param name="metadata"></param>
         /// <returns></returns>
-        List<TaskExecution> HandleTaskDestinations(WorkflowInstance workflowInstance,
-                                                    WorkflowRevision workflow,
-                                                    TaskDestination[]? currentTaskDestinations,
-                                                    Dictionary<string, object> metadata);
+        Task<List<TaskExecution>> HandleTaskDestinationsAsync(WorkflowInstance workflowInstance,
+                                                              WorkflowRevision workflow,
+                                                              TaskDestination[]? currentTaskDestinations);
     }
 }

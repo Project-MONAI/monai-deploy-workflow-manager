@@ -2,7 +2,8 @@
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
-using Monai.Deploy.WorkloadManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
+
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
@@ -77,6 +78,48 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public void WorkflowInstanceStatus(string status, WorkflowInstance workflowInstance)
         {
             workflowInstance.Status.Should().Be((Status)Enum.Parse(typeof(Status), status));
+        }
+
+        public void AssertWorkflowList(List<WorkflowRevision> expectedWorkflowRevisions, List<WorkflowRevision> actualWorkflowRevisions)
+        {
+            actualWorkflowRevisions.Should().HaveCount(expectedWorkflowRevisions.Count);
+            expectedWorkflowRevisions.OrderBy(x => x.Id).Should().BeEquivalentTo(actualWorkflowRevisions.OrderBy(x => x.Id));
+        }
+
+        public void AssertWorkflowRevisionDetailsAfterUpdateRequest(List<WorkflowRevision> actualWorkflowRevisions, List<Workflow> workflowUpdate, List<WorkflowRevision> originalWorkflowRevisions)
+        {
+            actualWorkflowRevisions.Count.Should().Be(originalWorkflowRevisions.Count + 1);
+
+            foreach (var originalWorkflowRevision in originalWorkflowRevisions)
+            {
+                var actualWorkflowRevision = actualWorkflowRevisions.FirstOrDefault(x => x.Revision.Equals(originalWorkflowRevision.Revision));
+                actualWorkflowRevision.Should().BeEquivalentTo(originalWorkflowRevision);
+            }
+
+            var actualWorkflow = actualWorkflowRevisions[actualWorkflowRevisions.Count - 1].Workflow;
+
+            actualWorkflowRevisions[actualWorkflowRevisions.Count - 1].Revision.Should().Be(originalWorkflowRevisions[originalWorkflowRevisions.Count - 1].Revision + 1);
+
+            actualWorkflow.Should().BeEquivalentTo(workflowUpdate[0]);
+        }
+
+        public void AssertWorkflowInstanceList(List<WorkflowInstance> expectedWorkflowInstances, List<WorkflowInstance> actualWorkflowInstances)
+        {
+            actualWorkflowInstances.Should().HaveCount(expectedWorkflowInstances.Count);
+            foreach (var actualWorkflowInstance in actualWorkflowInstances)
+            {
+                var expectedWorkflowInstance = expectedWorkflowInstances.FirstOrDefault(x => x.Id.Equals(actualWorkflowInstance.Id));
+                actualWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss").Should().Be(expectedWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss"));
+            }
+            actualWorkflowInstances.OrderBy(x => x.Id).Should().BeEquivalentTo(expectedWorkflowInstances.OrderBy(x => x.Id),
+                options => options.Excluding(x => x.StartTime));
+        }
+
+        public void AssertWorkflowInstance(List<WorkflowInstance> expectedWorkflowInstances, WorkflowInstance? actualWorkflowInstance)
+        {
+            var expectedWorkflowInstance = expectedWorkflowInstances.FirstOrDefault(x => x.Id.Equals(actualWorkflowInstance.Id));
+            actualWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss").Should().Be(expectedWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss"));
+            actualWorkflowInstance.Should().BeEquivalentTo(expectedWorkflowInstance, options => options.Excluding(x => x.StartTime));
         }
     }
 }

@@ -78,26 +78,26 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             }
         }
 
-        [Scope(Tag = "TaskUpdate")]
-        [AfterScenario(Order = 1)]
-        public void DeleteTestData()
-        {
-            if (DataHelper.WorkflowRevisions.Count > 0)
-            {
-                foreach (var workflowRevision in DataHelper.WorkflowRevisions)
-                {
-                    MongoClient.DeleteWorkflowDocument(workflowRevision.Id);
-                }
-            }
+        //[Scope(Tag = "TaskUpdate")]
+        //[AfterScenario(Order = 1)]
+        //public void DeleteTestData()
+        //{
+        //    if (DataHelper.WorkflowRevisions.Count > 0)
+        //    {
+        //        foreach (var workflowRevision in DataHelper.WorkflowRevisions)
+        //        {
+        //            MongoClient.DeleteWorkflowRevisionDocument(workflowRevision.Id);
+        //        }
+        //    }
 
-            if (DataHelper.WorkflowInstances.Count > 0)
-            {
-                foreach (var workflowInstance in DataHelper.WorkflowInstances)
-                {
-                    MongoClient.DeleteWorkflowInstance(workflowInstance.Id);
-                }
-            }
-        }
+        //    if (DataHelper.WorkflowInstances.Count > 0)
+        //    {
+        //        foreach (var workflowInstance in DataHelper.WorkflowInstances)
+        //        {
+        //            MongoClient.DeleteWorkflowInstance(workflowInstance.Id);
+        //        }
+        //    }
+        //}
 
     }
 }

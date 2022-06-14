@@ -46,5 +46,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.POCO
 
             public static string WorkflowInstanceCollection { get; set; }
         }
+
+        public static class ApiConfig
+        {
+            public static string BaseUrl { get; set; }
+        }
     }
 }

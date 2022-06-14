@@ -519,6 +519,38 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     }
                 }
             },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Basic_Workflow_1_static",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = "66678af8-e8ac-4b77-a431-9d1a289d6c3b",
+                    WorkflowId = "c86a437d-d026-4bdf-b1df-c7a6372b89e3",
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Basic workflow",
+                        Description = "Basic workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Basic_task",
+                                Description = "Basic Workflow 1 Task 1",
+                                Args = new Dictionary<string, string> { { "test", "test" } }
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Basic_AE",
+                            DataOrigins = new string[]{"test"},
+                            ExportDestinations = new string[]{"test"}
+                        }
+                    }
+                }
+            },
         };
     }
 }

@@ -11,6 +11,8 @@ using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage;
+using Monai.Deploy.Storage.Common.Policies;
+using Monai.Deploy.Storage.MinioAdmin.Interfaces;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.Configuration;
@@ -27,6 +29,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         private readonly ILogger<TaskManager> _logger;
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IMinioAdmin _minioAdmin;
         private readonly IServiceScope _scope;
         private readonly IDictionary<string, TaskRunnerInstance> _activeExecutions;
         private readonly CancellationTokenSource _cancellationTokenSource;
@@ -56,6 +59,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             _activeExecutions = new Dictionary<string, TaskRunnerInstance>();
             _cancellationTokenSource = new CancellationTokenSource();
 
+            _minioAdmin = _scope.ServiceProvider.GetRequiredService<IMinioAdmin>() ?? throw new ServiceNotFoundException(nameof(IStorageService));
             _storageService = _scope.ServiceProvider.GetRequiredService<IStorageService>() ?? throw new ServiceNotFoundException(nameof(IStorageService));
             _messageBrokerPublisherService = null;
             _messageBrokerSubscriberService = null;
@@ -153,19 +157,55 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 return;
             }
 
+            var metadataAssembly = string.Empty;
+            JsonMessage<TaskUpdateEvent>? updateMessage = null;
+
             try
             {
+                metadataAssembly = _options.Value.TaskManager.MetadataAssemblyMappings[runner.Event.TaskPluginType];
                 var executionStatus = await runner.Runner.GetStatus(message.Body.Identity, _cancellationTokenSource.Token).ConfigureAwait(false);
-                AcknowledgeMessage(message);
-                var updateMessage = GenerateUpdateEventMessage(message, message.Body.ExecutionId, message.Body.WorkflowInstanceId, message.Body.TaskId, executionStatus);
+                updateMessage = GenerateUpdateEventMessage(message, message.Body.ExecutionId, message.Body.WorkflowInstanceId, message.Body.TaskId, executionStatus);
                 updateMessage.Body.Metadata.Add(Strings.JobIdentity, message.Body.Identity);
-                await SendUpdateEvent(updateMessage).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 _logger.ErrorExecutingTask(ex);
                 await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+
+                return;
             }
+
+            IMetadataRepository? metadataRepository = null;
+            try
+            {
+                metadataRepository = typeof(IMetadataRepository).CreateInstance<IMetadataRepository>(serviceProvider: _scope.ServiceProvider, typeString: metadataAssembly, _serviceScopeFactory, runner.Event, message.Body);
+            }
+            catch (Exception ex)
+            {
+                _logger.UnsupportedRunner(metadataAssembly, ex);
+                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                metadataRepository?.Dispose();
+
+                return;
+            }
+
+            try
+            {
+                var metadata = await metadataRepository.RetrieveMetadata().ConfigureAwait(false);
+
+                foreach (var item in metadata)
+                    updateMessage.Body.Metadata.Add(item.Key, item.Value);
+            }
+            catch (Exception ex)
+            {
+                updateMessage.Body.Status = TaskExecutionStatus.Failed;
+                updateMessage.Body.Reason = FailureReason.PluginError;
+
+                _logger.MetadataRetrievalFailed(ex);
+            }
+
+            AcknowledgeMessage(message);
+            await SendUpdateEvent(updateMessage).ConfigureAwait(false);
 
             Interlocked.Decrement(ref _activeJobs);
             _activeExecutions.Remove(message.Body.ExecutionId);
@@ -198,9 +238,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             try
             {
-                PopulateTemporaryStorageCredentials(message.Body.Inputs.ToArray());
-                PopulateTemporaryStorageCredentials(message.Body.IntermediateStorage);
-                PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray());
+                if (string.Equals(message.Body.TaskPluginType,
+                                  PluginStrings.Argo,
+                                  StringComparison.InvariantCultureIgnoreCase))
+                {
+                    AddCredentialsToPlugin(message);
+                }
+                else
+                {
+                    await Task.WhenAll(
+                        PopulateTemporaryStorageCredentials(message.Body.Inputs.ToArray()),
+                        PopulateTemporaryStorageCredentials(message.Body.IntermediateStorage),
+                        PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray())
+                    ).ConfigureAwait(true);
+                }
             }
             catch (Exception ex)
             {
@@ -237,24 +288,52 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
         }
 
-        private void PopulateTemporaryStorageCredentials(params Messaging.Common.Storage[] storages)
+        private void AddCredentialsToPlugin(JsonMessage<TaskDispatchEvent> message)
+        {
+            var storages = new List<Messaging.Common.Storage>();
+            storages.Add(message.Body.IntermediateStorage);
+            storages.AddRange(message.Body.Outputs);
+            storages.AddRange(message.Body.Inputs);
+
+            var storageBuckets = storages.Select(storage => storage.Bucket)
+                .Distinct()
+                .ToList();
+            var policyRequest = storageBuckets.Select(
+                    bucket => new PolicyRequest(bucket, "")
+                ).ToArray();
+
+            var creds = _minioAdmin.CreateReadOnlyUser(
+                $"TM{Guid.NewGuid()}",
+                policyRequest);
+
+            if (creds is null)
+            {
+                _logger.LogError("Credentials not generated");
+                return;
+            }
+
+            foreach (var storage in storages)
+            {
+                storage.Credentials = new Credentials
+                {
+                    AccessKey = creds.AccessKeyId,
+                    AccessToken = creds.SecretAccessKey
+                };
+            }
+        }
+
+        private async Task PopulateTemporaryStorageCredentials(params Messaging.Common.Storage[] storages)
         {
             Guard.Against.Null(storages, nameof(storages));
 
             foreach (var storage in storages)
             {
-                // TODO: https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/102
-                //var credeentials = await _storageService.CreateTemporaryCredentials(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
-                // storage.Credentials = new Credentials
-                // {
-                //     AccessKey = credeentials.AccessKeyId,
-                //     AccessToken = credeentials.SecretAccessKey,
-                //     SessionToken = credeentials.SessionToken,
-                // };
+                var credeentials = await _storageService.CreateTemporaryCredentials(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
                 storage.Credentials = new Credentials
                 {
-                    AccessKey = _options.Value.Storage.Settings["accessKey"],
-                    AccessToken = _options.Value.Storage.Settings["accessToken"],
+                    AccessKey = credeentials.AccessKeyId,
+                    AccessToken = credeentials.SecretAccessKey,
+                    SessionToken = credeentials.SessionToken,
                 };
             }
         }
@@ -276,7 +355,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
         }
 
-        private static JsonMessage<TaskUpdateEvent> GenerateUpdateEventMessage<T>(JsonMessage<T> message, string executionId, string WorkflowInstanceId, string taskId, ExecutionStatus executionStatus)
+        private static JsonMessage<TaskUpdateEvent> GenerateUpdateEventMessage<T>(JsonMessage<T> message, string executionId, string WorkflowInstanceId, string taskId, ExecutionStatus executionStatus, List<Messaging.Common.Storage> outputs = null)
         {
             Guard.Against.Null(message, nameof(message));
             Guard.Against.Null(executionStatus, nameof(executionStatus));
@@ -290,6 +369,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 WorkflowInstanceId = WorkflowInstanceId,
                 TaskId = taskId,
                 Message = executionStatus.Errors,
+                Outputs = outputs ?? new List<Messaging.Common.Storage>(),
             }, TaskManagerApplicationId, message.CorrelationId);
         }
 

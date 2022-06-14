@@ -6,7 +6,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 
-namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
+namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 {
     public static class EventMapper
     {
@@ -43,7 +43,16 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
                 Status = TaskExecutionStatus.Created,
                 TaskPluginArguments = task.TaskPluginArguments,
                 Inputs = inputs,
-                Metadata = task.Metadata
+                TaskPluginType = task.TaskType,
+                Metadata = task.Metadata,
+                IntermediateStorage = new Messaging.Common.Storage
+                {
+                    Bucket = configuration.Settings["bucket"],
+                    RelativeRootPath = $"{task.OutputDirectory}/tmp",
+                    Endpoint = configuration.Settings["endpoint"],
+                    Name = task.TaskId,
+                    SecuredConnection = bool.Parse(configuration.Settings["securedConnection"])
+                }
             };
         }
     }

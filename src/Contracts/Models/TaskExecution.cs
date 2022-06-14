@@ -27,6 +27,9 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "input_artifacts")]
         public Dictionary<string, string> InputArtifacts { get; set; }
 
+        [JsonProperty(PropertyName = "output_artifacts")]
+        public Dictionary<string, string> OutputArtifacts { get; set; }
+
         [JsonProperty(PropertyName = "output_directory")]
         public string OutputDirectory { get; set; }
 

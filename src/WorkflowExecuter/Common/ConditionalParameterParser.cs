@@ -5,7 +5,8 @@ using System.Text.RegularExpressions;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver;
-using Monai.Deploy.WorkloadManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 
 namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
 {

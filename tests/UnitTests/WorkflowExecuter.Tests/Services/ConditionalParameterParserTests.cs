@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkloadManager.Contracts.Models;
 using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
 using Moq;
 using Xunit;

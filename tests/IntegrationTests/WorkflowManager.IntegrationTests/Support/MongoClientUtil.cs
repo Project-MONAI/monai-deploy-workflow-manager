@@ -3,7 +3,7 @@
 
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
-using Monai.Deploy.WorkloadManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 using MongoDB.Driver;
 using Polly;
 using Polly.Retry;
@@ -35,7 +35,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             });
         }
 
-        public void DeleteWorkflowDocument(string id)
+        public void DeleteWorkflowRevisionDocument(string id)
         {
             RetryMongo.Execute(() =>
             {
@@ -43,9 +43,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             });
         }
 
-        public void DeleteAllWorkflowDocuments()
+        public void DeleteAllWorkflowRevisionDocuments()
         {
             WorkflowRevisionCollection.DeleteMany("{ }");
+        }
+
+        public List<WorkflowRevision> GetWorkflowRevisionsByWorkflowId(string workflowId)
+        {
+            return WorkflowRevisionCollection.Find(x => x.WorkflowId == workflowId).ToList();
         }
 
         public void CreateWorkflowInstanceDocument(WorkflowInstance workflowInstance)
