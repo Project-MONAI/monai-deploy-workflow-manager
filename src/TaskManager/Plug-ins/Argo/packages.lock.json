@@ -34,9 +34,9 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0036, )",
-        "resolved": "0.1.0-rc0036",
-        "contentHash": "ONfPbkd0bsJGJHOPVn7U5z0FDNirYuvMswLauN8rxHNSat0GbhFDnObrY8iIuCFY02zfPfpoL9mywkksVwsUAA==",
+        "requested": "[0.1.0-rc0041, )",
+        "resolved": "0.1.0-rc0041",
+        "contentHash": "GNDHtcuhfhKxlTTRTrnRooB2ygYTYujjcM7EJafl7Oy0sQESoSmUQnDUW2wzvyl9PHOA/Fz1f3BS1StkgQTuvQ==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -48,9 +48,9 @@
       },
       "Monai.Deploy.Storage": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0019, )",
-        "resolved": "0.1.0-rc0019",
-        "contentHash": "YAXgTE7vTqeMc+ZhprUg/muQ+JDVMaix1Ha1vLJTSSjfZWBOnxyK5SugS50uNlvByJcqHEXh+ygd9219wK1S+Q==",
+        "requested": "[0.1.0-rc0033, )",
+        "resolved": "0.1.0-rc0033",
+        "contentHash": "GP5/OnrRsstJF8/2hJK2s98diQiH/fn3x/jBhPEXzuoqXGYIsEdfKSz7SLqY0tiWqLafqbZt+q8avguJZ6qxGg==",
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.141",
           "Ardalis.GuardClauses": "4.0.0",
@@ -601,7 +601,7 @@
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.141",
           "Microsoft.Extensions.Configuration": "6.0.1",
-          "Monai.Deploy.Messaging": "0.1.0-rc0036",
+          "Monai.Deploy.Messaging": "0.1.0-rc0040",
           "MongoDB.Bson": "2.15.0",
           "Newtonsoft.Json": "13.0.1"
         }
@@ -612,7 +612,7 @@
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.0-rc0036",
+          "Monai.Deploy.Messaging": "0.1.0-rc0040",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
           "MongoDB.Bson": "2.15.0",
@@ -628,8 +628,8 @@
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.0-rc0036",
-          "Monai.Deploy.Storage": "0.1.0-rc0019"
+          "Monai.Deploy.Messaging": "0.1.0-rc0041",
+          "Monai.Deploy.Storage": "0.1.0-rc0033"
         }
       }
     }

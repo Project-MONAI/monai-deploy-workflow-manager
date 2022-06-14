@@ -22,8 +22,8 @@ SPDX-License-Identifier: Apache License 2.0
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0036" />
-    <PackageReference Include="Monai.Deploy.Storage" Version="0.1.0-rc0019" />
+    <PackageReference Include="Monai.Deploy.Storage" Version="0.1.0-rc0033" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0041" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
@@ -34,7 +34,6 @@ SPDX-License-Identifier: Apache License 2.0
 
   <PropertyGroup>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <RestoreLockedMode>true</RestoreLockedMode>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     <CodeAnalysisRuleSet>..\..\..\.sonarlint\project-monai_monai-deploy-workflow-managercsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>

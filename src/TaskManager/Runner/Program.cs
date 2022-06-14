@@ -16,6 +16,7 @@ using Monai.Deploy.Messaging.RabbitMq;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.Storage.MinIo;
+using Monai.Deploy.Storage.MinioAdmin.Interfaces;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo;
@@ -94,7 +95,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                 TaskId = Guid.NewGuid().ToString(),
                 ExecutionId = Guid.NewGuid().ToString(),
                 CorrelationId = correlationId,
-                TaskPluginType = "argo",
+                TaskPluginType = PluginStrings.Argo,
             }, applicationId: "TaskManagerRunner", correlationId: correlationId, deliveryTag: "1");
             message.Body.TaskPluginArguments.Add(Keys.BaseUrl, argBaseUri);
             message.Body.TaskPluginArguments.Add(Keys.WorkflowTemplateName, "list-input-artifacts-template");
@@ -166,6 +167,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                     services.AddSingleton<IStorageService, MinIoStorageService>();
                     services.AddSingleton<IMessageBrokerPublisherService, RabbitMqMessagePublisherService>();
                     services.AddSingleton<IMessageBrokerSubscriberService, RabbitMqMessageSubscriberService>();
+                    services.AddSingleton<IMinioAdmin>((shell) =>
+                    {
+                        var storage = hostContext.Configuration.GetSection("WorkflowManager:storage") as StorageServiceConfiguration;
+                        var executable = storage.Settings["executableLocation"];
+                        var endpoint = storage.Settings["endpoint"];
+                        var secretKey = storage.Settings["accessToken"];
+                        var accessKey = storage.Settings["accessKey"];
+                        return new Storage.MinioAdmin.Shell(executable, "minioApp", endpoint, accessKey, secretKey);
+                    });
 
                     services.AddSingleton<TaskManager>();
                     services.AddSingleton<IArgoProvider, ArgoProvider>();

@@ -10,25 +10,30 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
     public interface IWorkflowRepository
     {
         /// <summary>
-        /// Get Retrieves a worklow based on an Id.
+        /// Gets a list of the latest workflow revisions.
+        /// </summary>
+        List<WorkflowRevision> GetWorkflowsList();
+
+        /// <summary>
+        /// Retrieves a workflow based on an Id.
         /// </summary>
         /// <param name="workflowId">The workflow Id.</param>
         Task<WorkflowRevision> GetByWorkflowIdAsync(string workflowId);
 
         /// <summary>
-        /// Get Retrieves a list of worklows based on a list of Ids.
+        /// Retrieves a list of workflows based on a list of Ids.
         /// </summary>
         /// <param name="workflowIds">The workflow Ids.</param>
         Task<IList<WorkflowRevision>> GetByWorkflowsIdsAsync(IEnumerable<string> workflowIds);
 
         /// <summary>
-        /// Get Retrieves a worklow based on an aeTitle.
+        /// Retrieves a workflow based on an aeTitle.
         /// </summary>
         /// <param name="aeTitle">An aeTitle to retrieve.</param>
         Task<WorkflowRevision> GetByAeTitleAsync(string aeTitle);
 
         /// <summary>
-        /// Get Retrieves a list of worklows based on an aeTitle.
+        /// Retrieves a list of workflows based on an aeTitle.
         /// </summary>
         /// <param name="aeTitle">An aeTitle to retrieve workflows for.</param>
         Task<IList<WorkflowRevision>> GetWorkflowsByAeTitleAsync(string aeTitle);
@@ -40,10 +45,10 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         Task<string> CreateAsync(Workflow workflow);
 
         /// <summary>
-        /// Hard deletes workflow
+        /// Updates a workflow object and creates a new revision.
         /// </summary>
-        /// <param name="workflow"></param>
-        /// <returns></returns>
-        Task<bool> DeleteAsync(string id);
+        /// <param name="workflow">Workflow object to create.</param>
+        /// <param name="existingWorkflow">Existing Workflow object to update.</param>
+        Task<string> UpdateAsync(Workflow workflow, WorkflowRevision existingWorkflow);
     }
 }

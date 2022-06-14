@@ -8,6 +8,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
     public interface IWorkflowService
     {
         /// <summary>
+        /// Gets a list of the latest workflow revisions from the workflow repository.
+        /// </summary>
+        List<WorkflowRevision> GetList();
+
+        /// <summary>
         /// Gets a workflow from the workflow repository.
         /// </summary>
         /// <param name="id">Id used to retrieve a Workflow.</param>
@@ -20,10 +25,10 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         Task<string> CreateAsync(Workflow workflow);
 
         /// <summary>
-        /// Hard deletes a workflow
+        /// Updates a workflow within the workflow repository.
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        Task<bool> DeleteAsync(string id);
+        /// <param name="workflow">Workflow to Update.</param>
+        /// <param name="id">Id of the workflow to Update.</param>
+        Task<string?> UpdateAsync(Workflow workflow, string id);
     }
 }

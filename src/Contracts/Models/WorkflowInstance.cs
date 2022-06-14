@@ -6,11 +6,11 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace Monai.Deploy.WorkloadManager.Contracts.Models
+namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
     public class WorkflowInstance
     {
-        [JsonIgnore]
+        [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
 
         [JsonProperty(PropertyName = "ae_title")]
