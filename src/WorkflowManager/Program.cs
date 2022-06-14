@@ -23,8 +23,7 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Database;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.PayloadListener.Services;
-using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
+using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
 using Monai.Deploy.WorkflowManager.Storage.Services;
@@ -88,11 +87,8 @@ namespace Monai.Deploy.WorkflowManager
                     services.AddHostedService<DataRetentionService>(p => p.GetService<DataRetentionService>());
 
                     // Services
-                    services.AddTransient<IWorkflowService, WorkflowService>();
-                    services.AddTransient<IWorkflowInstanceService, WorkflowInstanceService>();
-                    services.AddTransient<IPayloadService, PayloadService>();
-                    services.AddTransient<IDicomService, DicomService>();
                     services.AddTransient<IFileSystem, FileSystem>();
+                    services.AddHttpClient();
 
                     // Mongo DB
                     services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
@@ -108,23 +104,10 @@ namespace Monai.Deploy.WorkflowManager
                     services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
                     services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
 
-                    services.AddSingleton<IConditionalParameterParser, ConditionalParameterParser>(s =>
-                    {
-                        var logger = s.GetService<ILogger<ConditionalParameterParser>>();
-                        var storage = s.GetService<IStorageService>();
-                        var dicomStore = s.GetService<IDicomService>();
+                    services.AddHostedService(p => p.GetService<DataRetentionService>());
 
-                        return new ConditionalParameterParser(logger, storage, dicomStore);
-                    });
-
-                    services.AddSingleton<IEventPayloadReceiverService, EventPayloadReceiverService>();
-                    services.AddTransient<IEventPayloadValidator, EventPayloadValidator>();
-                    services.AddSingleton<IWorkflowExecuterService, WorkflowExecuterService>();
-                    services.AddSingleton<IArtifactMapper, ArtifactMapper>();
-
-                    services.AddSingleton<PayloadListenerService>();
-
-                    services.AddHostedService<PayloadListenerService>(p => p.GetService<PayloadListenerService>());
+                    services.AddTaskManager(hostContext);
+                    services.AddWorkflowExecutor(hostContext);
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
