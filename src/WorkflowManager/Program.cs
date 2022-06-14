@@ -17,23 +17,19 @@ using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.Storage.MinIo;
 using Monai.Deploy.WorkflowManager.Common;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Database;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.PayloadListener.Services;
-using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
+using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
-using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
-using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
 using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager
 {
 #pragma warning disable SA1600 // Elements should be documented
+
     internal class Program
     {
         protected Program()
@@ -82,11 +78,7 @@ namespace Monai.Deploy.WorkflowManager
 
                     services.AddSingleton<DataRetentionService>();
 
-                    services.AddHostedService<DataRetentionService>(p => p.GetService<DataRetentionService>());
-
-                    // Services
-                    services.AddTransient<IWorkflowService, WorkflowService>();
-                    services.AddTransient<IWorkflowInstanceService, WorkflowInstanceService>();
+                    services.AddHttpClient();
 
                     // Mongo DB
                     services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
@@ -105,6 +97,7 @@ namespace Monai.Deploy.WorkflowManager
                     });
 
                     // MessageBroker
+                    services.UseRabbitMq();
                     services.AddSingleton<RabbitMqMessagePublisherService>();
                     services.AddSingleton<IMessageBrokerPublisherService>(implementationFactory =>
                     {
@@ -123,16 +116,10 @@ namespace Monai.Deploy.WorkflowManager
                         return serviceProvider.LocateService<IMessageBrokerSubscriberService>(logger, options.Value.Messaging.SubscriberServiceAssemblyName);
                     });
 
-                    services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
+                    services.AddHostedService(p => p.GetService<DataRetentionService>());
 
-                    services.AddSingleton<IEventPayloadReceiverService, EventPayloadReceiverService>();
-                    services.AddTransient<IEventPayloadValidator, EventPayloadValidator>();
-                    services.AddSingleton<IWorkflowExecuterService, WorkflowExecuterService>();
-                    services.AddSingleton<IArtifactMapper, ArtifactMapper>();
-
-                    services.AddSingleton<PayloadListenerService>();
-
-                    services.AddHostedService<PayloadListenerService>(p => p.GetService<PayloadListenerService>());
+                    services.AddTaskManagerIfEnabled(hostContext);
+                    services.AddWorkflowExecutorIfEnabled(hostContext);
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

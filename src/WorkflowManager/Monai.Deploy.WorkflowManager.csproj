@@ -34,7 +34,7 @@ SPDX-License-Identifier: Apache License 2.0
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0040" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0041" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
@@ -51,6 +51,8 @@ SPDX-License-Identifier: Apache License 2.0
     <ProjectReference Include="..\Common\Monai.Deploy.WorkflowManager.Common.csproj" />
     <ProjectReference Include="..\PayloadListener\Monai.Deploy.WorkflowManager.PayloadListener.csproj" />
     <ProjectReference Include="..\Logging\Monai.Deploy.WorkflowManager.Logging.csproj" />
+    <ProjectReference Include="..\TaskManager\Monai.Deploy.WorkflowManager.TaskManager.csproj" />
+    <ProjectReference Include="..\TaskManager\Plug-ins\Argo\Monai.Deploy.WorkflowManager.TaskManager.Argo.csproj" />
   </ItemGroup>
 
   <ItemGroup>
