@@ -76,7 +76,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Features
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Publish a valid workflow request which creates a single workflow instance")]
         [NUnit.Framework.CategoryAttribute("WorkflowRequest")]
-        [NUnit.Framework.TestCaseAttribute("Basic_Workflow_1", "Basic_AeTitle_WF_Request", null)]
         [NUnit.Framework.TestCaseAttribute("Basic_Workflow_1", "Basic_Id_WF_Request", null)]
         public virtual void PublishAValidWorkflowRequestWhichCreatesASingleWorkflowInstance(string workflow, string workflowRequestMessage, string[] exampleTags)
         {

@@ -36,6 +36,11 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
 
             valid &= payloadValid;
 
+            if (payload.Workflows is null)
+            {
+                return valid;
+            }
+
             foreach (var workflow in payload.Workflows)
             {
                 Guard.Against.Null(workflow, nameof(workflow));

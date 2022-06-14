@@ -10,7 +10,7 @@ Scenario Outline: Publish a valid workflow request which creates a single workfl
     And 1 Task Dispatch event is published
     Examples:
     | workflow              | workflowRequestMessage     |
-    | Basic_Workflow_1      | Basic_AeTitle_WF_Request   |
+    #| Basic_Workflow_1      | Basic_AeTitle_WF_Request   |
     | Basic_Workflow_1      | Basic_Id_WF_Request        |
 
 @WorkflowRequest
