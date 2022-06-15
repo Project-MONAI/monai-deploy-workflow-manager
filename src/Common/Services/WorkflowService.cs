@@ -49,5 +49,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
 
             return await _workflowRepository.UpdateAsync(workflow, existingWorkflow);
         }
+
+        public Task<DateTime> DeleteWorkflowAsync(WorkflowRevision workflow)
+        {
+            Guard.Against.Null(workflow);
+            return _workflowRepository.SoftDeleteWorkflow(workflow);
+        }
     }
 }

@@ -11,7 +11,6 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System;
 using Ardalis.GuardClauses;
-using MongoDB.Bson;
 using System.Linq;
 
 namespace Monai.Deploy.WorkflowManager.Database
@@ -51,7 +50,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             return workflow;
         }
 
-    public async Task<WorkflowRevision> GetByWorkflowIdAsync(string workflowId)
+        public async Task<WorkflowRevision> GetByWorkflowIdAsync(string workflowId)
         {
             Guard.Against.NullOrWhiteSpace(workflowId, nameof(workflowId));
 
@@ -144,6 +143,19 @@ namespace Monai.Deploy.WorkflowManager.Database
             await _workflowCollection.InsertOneAsync(workflowRevision);
 
             return workflowRevision.WorkflowId;
+        }
+
+        public async Task<DateTime> SoftDeleteWorkflow(WorkflowRevision workflow)
+        {
+            Guard.Against.Null(workflow);
+
+            var deletedTimeStamp = DateTime.UtcNow;
+
+            await _workflowCollection.UpdateManyAsync(
+                wr => wr.WorkflowId == workflow.WorkflowId,
+                Builders<WorkflowRevision>.Update.Set(rec => rec.Deleted, deletedTimeStamp));
+
+            return deletedTimeStamp;
         }
     }
 }

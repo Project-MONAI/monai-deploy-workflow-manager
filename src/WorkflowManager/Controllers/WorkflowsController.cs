@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +14,11 @@ using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
 namespace Monai.Deploy.WorkflowManager.Controllers;
 
 /// <summary>
-/// Workflows Controller
+/// Workflows Controller.
 /// </summary>
 [ApiController]
 [Route("workflows")]
-public class WorkflowsController : ControllerBase
+public class WorkflowsController : ApiControllerBase
 {
     private readonly IWorkflowService _workflowService;
 
@@ -28,7 +27,9 @@ public class WorkflowsController : ControllerBase
     /// <summary>
     /// Initializes a new instance of the <see cref="WorkflowsController"/> class.
     /// </summary>
-    /// <param name="workflowService"></param>
+    /// <param name="workflowService">IWorkflowService</param>
+    /// <param name="logger">ILogger<WorkflowsController></param>
+    /// <exception cref="ArgumentNullException">ArgumentNullException</exception>
     public WorkflowsController(IWorkflowService workflowService, ILogger<WorkflowsController> logger)
     {
         _workflowService = workflowService ?? throw new ArgumentNullException(nameof(workflowService));
@@ -50,7 +51,7 @@ public class WorkflowsController : ControllerBase
         }
         catch (Exception e)
         {
-            return Problem($"Unexpected error occured: {e.Message}", $"/workflows", 500);
+            return Problem($"Unexpected error occured: {e.Message}", $"/workflows", InternalServerError);
         }
     }
 
@@ -67,7 +68,7 @@ public class WorkflowsController : ControllerBase
         {
             _logger.LogDebug($"{nameof(GetAsync)} - Failed to validate {nameof(id)}");
 
-            return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", 400);
+            return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", BadRequest);
         }
 
         try
@@ -78,12 +79,12 @@ public class WorkflowsController : ControllerBase
         }
         catch (Exception e)
         {
-            return Problem($"Unexpected error occured: {e.Message}", $"/workflows/{nameof(id)}", 500);
+            return Problem($"Unexpected error occured: {e.Message}", $"/workflows/{nameof(id)}", InternalServerError);
         }
     }
 
     /// <summary>
-    /// Create a workflow
+    /// Create a workflow.
     /// </summary>
     /// <param name="workflow">The Workflow.</param>
     /// <returns>The ID of the created Workflow.</returns>
@@ -94,7 +95,7 @@ public class WorkflowsController : ControllerBase
         {
             _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
 
-            return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", 400);
+            return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", BadRequest);
         }
 
         try
@@ -105,12 +106,12 @@ public class WorkflowsController : ControllerBase
         }
         catch (Exception e)
         {
-            return Problem($"Unexpected error occured: {e.Message}", $"/workflows", 500);
+            return Problem($"Unexpected error occured: {e.Message}", $"/workflows", InternalServerError);
         }
     }
 
     /// <summary>
-    /// Updates a workflow and creates a new revision
+    /// Updates a workflow and creates a new revision.
     /// </summary>
     /// <param name="workflow">The Workflow.</param>
     /// <returns>The ID of the created Workflow.</returns>
@@ -124,14 +125,14 @@ public class WorkflowsController : ControllerBase
         {
             _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(id)}");
 
-            return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", (int)HttpStatusCode.BadRequest);
+            return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", BadRequest);
         }
 
         if (!workflow.IsValid(out var validationErrors))
         {
             _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
 
-            return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/{id}", (int)HttpStatusCode.BadRequest);
+            return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/{id}", BadRequest);
         }
 
         try
@@ -149,7 +150,46 @@ public class WorkflowsController : ControllerBase
         }
         catch (Exception e)
         {
-            return Problem($"Unexpected error occured: {e.Message}", $"/workflows", (int)HttpStatusCode.InternalServerError);
+            return Problem($"Unexpected error occured: {e.Message}", $"/workflows", InternalServerError);
+        }
+    }
+
+    /// <summary>
+    /// Soft deletes a workflow by the ID.
+    /// </summary>
+    /// <param name="id">The Workflow Id</param>
+    /// <returns>The specified workflow for a given Id.</returns>
+    [Route("{id}")]
+    [HttpGet]
+    public async Task<IActionResult> DeleteAsync([FromRoute] string id)
+    {
+        if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
+        {
+            _logger.LogDebug($"{nameof(GetAsync)} - Failed to validate {nameof(id)}");
+
+            return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", BadRequest);
+        }
+
+        try
+        {
+            var workflow = await _workflowService.GetAsync(id);
+            if (workflow == null || workflow.IsDeleted)
+            {
+                return Problem($"Failed to validate {nameof(id)}, workflow not found", $"/workflows/{id}", NotFound);
+            }
+
+            workflow.Deleted = DateTime.UtcNow;
+
+            var workflowId = await _workflowService.DeleteWorkflowAsync(workflow);
+
+            return Ok(workflow);
+        }
+        catch (Exception e)
+        {
+            return Problem(
+                $"Unexpected error occured: {e.Message}",
+                $"/workflows/{nameof(id)}",
+                InternalServerError);
         }
     }
 }

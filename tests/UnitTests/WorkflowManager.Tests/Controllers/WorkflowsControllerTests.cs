@@ -273,5 +273,77 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             Assert.Equal(201, objectResult.StatusCode);
             objectResult.Value.Should().BeEquivalentTo(response);
         }
+
+        [Fact]
+        public async Task DeleteAsync_WorkflowsExist_SoftDeltesWorjflow()
+        {
+            var workflowRevisionId = Guid.NewGuid().ToString();
+            var newWorkflow = new Workflow
+            {
+                Name = "Workflowname",
+                Description = "Workflowdesc",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    DataOrigins = new[] { "test" },
+                    ExportDestinations = new[] { "test" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject {
+                        Id = Guid.NewGuid().ToString(),
+                        Type = "type",
+                        Description = "taskdesc",
+                        Args = new Dictionary<string, string>
+                        {
+                            { "test", "test" }
+                        }
+                    }
+                }
+            };
+
+            var workflowRevision = new WorkflowRevision
+            {
+                Id = workflowRevisionId,
+                WorkflowId = Guid.NewGuid().ToString(),
+                Revision = 1,
+                Workflow = new Workflow
+                {
+                    Name = "Workflowname",
+                    Description = "Workflowdesc",
+                    Version = "2",
+                    InformaticsGateway = new InformaticsGateway
+                    {
+                        AeTitle = "aetitle",
+                        DataOrigins = new[] { "test" },
+                        ExportDestinations = new[] { "test" }
+
+                    },
+                    Tasks = new TaskObject[]
+                        {
+                            new TaskObject {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "type",
+                                Description = "taskdesc"
+                            }
+                        }
+                }
+            };
+
+            var response = new CreateWorkflowResponse(workflowRevision.WorkflowId);
+
+            var dateNow = DateTime.UtcNow;
+
+            _workflowService.Setup(w => w.DeleteWorkflowAsync(workflowRevision)).ReturnsAsync(dateNow);
+            _workflowService.Setup(w => w.GetAsync(workflowRevisionId)).ReturnsAsync(workflowRevision);
+
+            var result = await WorkflowsController.DeleteAsync(workflowRevisionId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal(201, objectResult.StatusCode);
+            objectResult.Value.Should().BeEquivalentTo(response);
+        }
     }
 }
