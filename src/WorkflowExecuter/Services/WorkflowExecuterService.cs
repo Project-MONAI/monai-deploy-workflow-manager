@@ -178,7 +178,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
             }
 
-            await HandleOutputArtifacts(workflowInstance, message.Outputs, currentTask, message.CorrelationId);
+            await HandleOutputArtifacts(workflowInstance, message.Outputs, currentTask);
 
             var dicomImages = _dicomService.GetDicomPathsForTask(currentTask.OutputDirectory, workflowInstance.BucketId)?.ToList();
 
@@ -293,7 +293,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return processed;
         }
 
-        private async Task<bool> HandleOutputArtifacts(WorkflowInstance workflowInstance, List<Messaging.Common.Storage> outputs, TaskExecution task, string correlationId)
+        private async Task<bool> HandleOutputArtifacts(WorkflowInstance workflowInstance, List<Messaging.Common.Storage> outputs, TaskExecution task)
         {
             var artifactDict = outputs.ToArtifactDictionary();
 

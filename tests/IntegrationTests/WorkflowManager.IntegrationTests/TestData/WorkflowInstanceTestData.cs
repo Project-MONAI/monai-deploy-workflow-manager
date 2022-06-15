@@ -83,7 +83,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     WorkflowId = Helper.GetWorkflowByName("Task_Status_Update_Workflow").WorkflowRevision.WorkflowId,
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
-                    BucketId = "bucket1",
+                    BucketId = "monai",
                     Status = Status.Created,
                     InputMetaData = new Dictionary<string, string>()
                     {
@@ -197,7 +197,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
-                    BucketId = "bucket1",
+                    BucketId = "monai",
                     InputMetaData = new Dictionary<string, string>()
                     {
                         { "", "" }
@@ -226,7 +226,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
-                    BucketId = "bucket1",
+                    BucketId = "monai",
                     InputMetaData = new Dictionary<string, string>()
                     {
                         { "", "" }
@@ -255,7 +255,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
-                    BucketId = "bucket1",
+                    BucketId = "monai",
                     InputMetaData = new Dictionary<string, string>()
                     {
                         { "", "" }
@@ -284,7 +284,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
-                    BucketId = "bucket1",
+                    BucketId = "monai",
                     InputMetaData = new Dictionary<string, string>()
                     {
                         { "", "" }
@@ -321,7 +321,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
-                    BucketId = "bucket1",
+                    BucketId = "monai",
                     InputMetaData = new Dictionary<string, string>()
                     {
                         { "", "" }
@@ -358,7 +358,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
-                    BucketId = "bucket1",
+                    BucketId = "monai",
                     InputMetaData = new Dictionary<string, string>()
                     {
                         { "", "" }
@@ -395,7 +395,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
-                    BucketId = "bucket1",
+                    BucketId = "monai",
                     InputMetaData = new Dictionary<string, string>()
                     {
                         { "", "" }
@@ -424,7 +424,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
-                    BucketId = "bucket1",
+                    BucketId = "monai",
                     InputMetaData = new Dictionary<string, string>()
                     {
                         { "", "" }
