@@ -56,21 +56,22 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             };
         }
 
-        public static ExportRequestEvent ToExportRequestEvent(TaskExecution task, Dictionary<string, string> validOutputArtifacts, string workflowId, string correlationId)
+        public static ExportRequestEvent ToExportRequestEvent(IList<string> dicomImages, string[] exportDestinations, string taskId, string workflowInstanceId, string correlationId)
         {
-            Guard.Against.Null(task, nameof(task));
-            Guard.Against.Null(workflowId, nameof(workflowId));
-            Guard.Against.Null(correlationId, nameof(correlationId));
-            Guard.Against.Null(validOutputArtifacts, nameof(validOutputArtifacts));
+            Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            Guard.Against.NullOrWhiteSpace(correlationId, nameof(correlationId));
+            Guard.Against.NullOrEmpty(dicomImages, nameof(dicomImages));
+            Guard.Against.NullOrEmpty(exportDestinations, nameof(exportDestinations));
 
             return new ExportRequestEvent
             {
-                WorkflowId = workflowId,
-                ExportTaskId = task.TaskId,
+                WorkflowId = workflowInstanceId,
+                ExportTaskId = taskId,
                 CorrelationId = correlationId,
-                Files = validOutputArtifacts.Values.ToList(),
-                SucceededFiles = validOutputArtifacts.Count
-
+                Files = dicomImages,
+                SucceededFiles = dicomImages.Count,
+                Destination = exportDestinations.First() //Talk to victor
             };
         }
     }

@@ -110,10 +110,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 OutputDirectory = "minio/workflowid/taskid"
             };
 
-            var validOutputArtifacts = new Dictionary<string, string>
-            {
-                { "key", "value" }
-            };
+            var exportDestinations = new string[] { "test" };
+
+            var dicomImages = new List<string> { "dicom" };
 
             var workflowId = Guid.NewGuid().ToString();
             var correlationId = Guid.NewGuid().ToString();
@@ -123,11 +122,12 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 WorkflowId = workflowId,
                 ExportTaskId = task.TaskId,
                 CorrelationId = correlationId,
-                Files = validOutputArtifacts.Values.ToList(),
-                SucceededFiles = validOutputArtifacts.Count
+                Files = dicomImages,
+                SucceededFiles = dicomImages.Count,
+                Destination = exportDestinations.First()
             };
 
-            var exportRequest = EventMapper.ToExportRequestEvent(task, validOutputArtifacts, workflowId, correlationId);
+            var exportRequest = EventMapper.ToExportRequestEvent(dicomImages, exportDestinations, task.TaskId, workflowId, correlationId);
 
             exportRequest.Should().BeEquivalentTo(expected);
         }

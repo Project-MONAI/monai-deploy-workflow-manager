@@ -14,6 +14,7 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 
 namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
@@ -26,6 +27,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         private readonly IMessageBrokerPublisherService _messageBrokerPublisherService;
         private readonly IArtifactMapper _artifactMapper;
         private readonly IStorageService _storageService;
+        private readonly IDicomService _dicomService;
         private readonly StorageServiceConfiguration _storageConfiguration;
 
         private string TaskDispatchRoutingKey { get; }
@@ -39,7 +41,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             IWorkflowInstanceRepository workflowInstanceRepository,
             IMessageBrokerPublisherService messageBrokerPublisherService,
             IArtifactMapper artifactMapper,
-            IStorageService storageService)
+            IStorageService storageService,
+            IDicomService dicomService)
         {
             if (configuration is null)
             {
@@ -62,6 +65,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             _messageBrokerPublisherService = messageBrokerPublisherService ?? throw new ArgumentNullException(nameof(messageBrokerPublisherService));
             _artifactMapper = artifactMapper ?? throw new ArgumentNullException(nameof(artifactMapper));
             _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
+            _dicomService = dicomService ?? throw new ArgumentNullException(nameof(dicomService));
         }
 
         public async Task<bool> ProcessPayload(WorkflowRequestEvent message)
@@ -149,6 +153,15 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return false;
             }
 
+            var workflow = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId);
+
+            if (workflow is null)
+            {
+                _logger.TypeNotFound(nameof(workflow));
+
+                return false;
+            }
+
             if (!message.Status.IsTaskExecutionStatusUpdateValid(currentTask.Status))
             {
                 _logger.TaskStatusUpdateNotValid(workflowInstance.PayloadId, message.TaskId, currentTask.Status.ToString(), message.Status.ToString());
@@ -167,17 +180,14 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             await HandleOutputArtifacts(workflowInstance, message.Outputs, currentTask, message.CorrelationId);
 
-            var workflow = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId);
+            var dicomImages = _dicomService.GetDicomPathsForTask(currentTask.OutputDirectory, workflowInstance.BucketId)?.ToList();
 
-            if (workflow is null)
+            if (dicomImages is not null && dicomImages.Any())
             {
-                _logger.TypeNotFound(nameof(workflow));
-
-                return false;
+                return await HandleDicomExport(workflowInstance, currentTask, workflow.Workflow.InformaticsGateway.ExportDestinations, dicomImages, message.CorrelationId);
             }
 
-            var currentTaskDestinations = workflow.Workflow?.Tasks?.SingleOrDefault(t => t.Id == message.TaskId)?.TaskDestinations;
-            var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, currentTaskDestinations);
+            var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, message.TaskId);
 
             if (!newTaskExecutions.Any())
             {
@@ -215,8 +225,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                     return false;
                 }
 
-                var currentTaskDestinations = workflow.Workflow?.Tasks?.SingleOrDefault(t => t.Id == task.TaskId)?.TaskDestinations;
-                var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, currentTaskDestinations);
+                var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, task.TaskId);
 
                 if (!newTaskExecutions.Any())
                 {
@@ -269,6 +278,21 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return true;
         }
 
+        private async Task<bool> HandleDicomExport(WorkflowInstance workflowInstance, TaskExecution task, string[] exportDestinations, IList<string> dicomImages, string correlationId)
+        {
+            var processed = true;
+
+            if (dicomImages is null || !dicomImages.Any())
+            {
+                return processed;
+            }
+
+            processed &= await ExportRequest(workflowInstance, task, exportDestinations, dicomImages, correlationId);
+            processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Exported);
+
+            return processed;
+        }
+
         private async Task<bool> HandleOutputArtifacts(WorkflowInstance workflowInstance, List<Messaging.Common.Storage> outputs, TaskExecution task, string correlationId)
         {
             var artifactDict = outputs.ToArtifactDictionary();
@@ -285,9 +309,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (validOutputArtifacts is not null && validOutputArtifacts.Any())
             {
-                return await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, task.TaskId, validOutputArtifacts) &&
-                    await ExportRequest(workflowInstance, task, validOutputArtifacts, correlationId) &&
-                    await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Exported);
+                return await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, task.TaskId, validOutputArtifacts);
             }
 
             return true;
@@ -319,8 +341,10 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return processed;
         }
 
-        private async Task<List<TaskExecution>> CreateTaskDestinations(WorkflowInstance workflowInstance, WorkflowRevision workflow, TaskDestination[]? currentTaskDestinations)
+        private async Task<List<TaskExecution>> CreateTaskDestinations(WorkflowInstance workflowInstance, WorkflowRevision workflow, string taskId)
         {
+            var currentTaskDestinations = workflow.Workflow?.Tasks?.SingleOrDefault(t => t.Id == taskId)?.TaskDestinations;
+
             var newTaskExecutions = new List<TaskExecution>();
 
             if (currentTaskDestinations is null)
@@ -365,9 +389,9 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, taskExec.TaskId, TaskExecutionStatus.Dispatched);
         }
 
-        private async Task<bool> ExportRequest(WorkflowInstance workflowInstance, TaskExecution taskExec, Dictionary<string, string> validOutputArtifacts, string correlationId)
+        private async Task<bool> ExportRequest(WorkflowInstance workflowInstance, TaskExecution taskExec, string[] exportDestinations, IList<string> dicomImages, string correlationId)
         {
-            var exportRequestEvent = EventMapper.ToExportRequestEvent(taskExec, validOutputArtifacts, workflowInstance.Id, correlationId);
+            var exportRequestEvent = EventMapper.ToExportRequestEvent(dicomImages, exportDestinations, taskExec.TaskId, workflowInstance.Id, correlationId);
             var jsonMesssage = new JsonMessage<ExportRequestEvent>(exportRequestEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, exportRequestEvent.CorrelationId, Guid.NewGuid().ToString());
 
             await _messageBrokerPublisherService.Publish(ExportRequestRoutingKey, jsonMesssage.ToMessage());

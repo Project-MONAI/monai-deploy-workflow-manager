@@ -38,6 +38,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = "2dbd1af7-b699-4467-8e99-05a0c22422b4",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             TaskType = "Multi_task",
                             Status = TaskExecutionStatus.Created
                         }
@@ -65,6 +66,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = "7d7c8b83-6628-413c-9912-a89314e5e2d5",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             TaskType = "Multi_task",
                             Status = TaskExecutionStatus.Dispatched
                         }
@@ -94,6 +96,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Helper.GetWorkflowByName("Task_Status_Update_Workflow").WorkflowRevision.Workflow.Tasks[0].Id,
                             TaskType = Helper.GetWorkflowByName("Task_Status_Update_Workflow").WorkflowRevision.Workflow.Tasks[0].Type,
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
@@ -121,6 +124,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Guid.NewGuid().ToString(),
                             TaskType = "Multi_task_5",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Succeeded
                         }
                     }
@@ -148,6 +152,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Guid.NewGuid().ToString(),
                             TaskType = "Multi_task_6",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Failed
                         }
                     }
@@ -175,6 +180,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Guid.NewGuid().ToString(),
                             TaskType = "Multi_task_7",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Canceled
                         }
                     }
@@ -191,7 +197,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
-                    BucketId = "bucket_1",
+                    BucketId = "bucket1",
                     InputMetaData = new Dictionary<string, string>()
                     {
                         { "", "" }
@@ -203,6 +209,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Id,
                             TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Type,
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
@@ -219,7 +226,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
-                    BucketId = "bucket_1",
+                    BucketId = "bucket1",
                     InputMetaData = new Dictionary<string, string>()
                     {
                         { "", "" }
@@ -231,6 +238,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_2").WorkflowRevision.Workflow.Tasks[0].Id,
                             TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_2").WorkflowRevision.Workflow.Tasks[0].Type,
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
@@ -247,7 +255,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
-                    BucketId = "bucket_1",
+                    BucketId = "bucket1",
                     InputMetaData = new Dictionary<string, string>()
                     {
                         { "", "" }
@@ -259,6 +267,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_3").WorkflowRevision.Workflow.Tasks[0].Id,
                             TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_3").WorkflowRevision.Workflow.Tasks[0].Type,
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
@@ -275,7 +284,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
-                    BucketId = "bucket_1",
+                    BucketId = "bucket1",
                     InputMetaData = new Dictionary<string, string>()
                     {
                         { "", "" }
@@ -287,6 +296,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Id,
                             TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Type,
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         },
                         new TaskExecution()
@@ -294,6 +304,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Id,
                             TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Type,
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
@@ -310,7 +321,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
-                    BucketId = "bucket_1",
+                    BucketId = "bucket1",
                     InputMetaData = new Dictionary<string, string>()
                     {
                         { "", "" }
@@ -322,6 +333,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Id,
                             TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Type,
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         },
                         new TaskExecution()
@@ -329,6 +341,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Id,
                             TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Type,
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Accepted
                         }
                     }
@@ -345,7 +358,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
-                    BucketId = "bucket_1",
+                    BucketId = "bucket1",
                     InputMetaData = new Dictionary<string, string>()
                     {
                         { "", "" }
@@ -357,6 +370,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Id,
                             TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Type,
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         },
                         new TaskExecution()
@@ -364,6 +378,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Id,
                             TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Type,
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Succeeded
                         }
                     }
@@ -380,7 +395,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
-                    BucketId = "bucket_1",
+                    BucketId = "bucket1",
                     InputMetaData = new Dictionary<string, string>()
                     {
                         { "", "" }
@@ -392,6 +407,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Helper.GetWorkflowByName("Multi_Independent_Task_Workflow").WorkflowRevision.Workflow.Tasks[0].Id,
                             TaskType = Helper.GetWorkflowByName("Multi_Independent_Task_Workflow").WorkflowRevision.Workflow.Tasks[0].Type,
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
@@ -408,7 +424,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
-                    BucketId = "bucket_1",
+                    BucketId = "bucket1",
                     InputMetaData = new Dictionary<string, string>()
                     {
                         { "", "" }
@@ -420,6 +436,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Id,
                             TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Type,
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
@@ -446,6 +463,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = "2dbd1af7-b699-4467-8e99-05a0c22422b4",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             TaskType = "Multi_task",
                             Status = TaskExecutionStatus.Created
                         }
@@ -473,6 +491,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = "7d7c8b83-6628-413c-9912-a89314e5e2d5",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             TaskType = "Multi_task",
                             Status = TaskExecutionStatus.Dispatched
                         }

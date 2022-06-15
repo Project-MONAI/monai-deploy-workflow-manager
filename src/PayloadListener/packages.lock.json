@@ -393,6 +393,13 @@
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1"
         }
       },
+      "monai.deploy.workflowmanager.storage": {
+        "type": "Project",
+        "dependencies": {
+          "Ardalis.GuardClauses": "4.0.1",
+          "Monai.Deploy.Storage": "0.1.0-rc0033"
+        }
+      },
       "monai.deploy.workloadmanager.workfowexecuter": {
         "type": "Project",
         "dependencies": {
@@ -405,6 +412,7 @@
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Database": "1.0.0",
           "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Storage": "1.0.0",
           "Newtonsoft.Json": "13.0.1"
         }
       }
