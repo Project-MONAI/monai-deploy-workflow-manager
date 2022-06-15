@@ -2,8 +2,6 @@
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
@@ -101,6 +99,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             actualWorkflowRevisions[actualWorkflowRevisions.Count - 1].Revision.Should().Be(originalWorkflowRevisions[originalWorkflowRevisions.Count - 1].Revision + 1);
 
             actualWorkflow.Should().BeEquivalentTo(workflowUpdate[0]);
+        }
+
+        internal void AssertWorkflowMarkedAsDeleted(List<WorkflowRevision> workflowRevisions)
+        {
+            foreach (var workflowRevision in workflowRevisions)
+            {
+                //workflowRevision.Workflow.deleted.Should().BeTrue;
+            }
         }
 
         public void AssertWorkflowInstanceList(List<WorkflowInstance> expectedWorkflowInstances, List<WorkflowInstance> actualWorkflowInstances)

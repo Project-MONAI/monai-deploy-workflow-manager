@@ -127,19 +127,5 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 Thread.Sleep(1000);
             }
         }
-
-        //[Scope(Tag = "WorkflowRequest")]
-        //[Scope(Tag = "WorkflowUpdateAPI")]
-        //[AfterScenario(Order = 1)]
-        //public void DeleteTestData()
-        //{
-        //    if (DataHelper.WorkflowRevisions.Count > 0)
-        //    {
-        //        foreach (var workflowRevision in DataHelper.WorkflowRevisions)
-        //        {
-        //            MongoClient.DeleteWorkflowRevisionDocument(workflowRevision.Id);
-        //        }
-        //    }
-        //}
     }
 }
