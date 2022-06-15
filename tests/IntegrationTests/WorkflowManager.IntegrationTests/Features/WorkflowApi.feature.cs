@@ -472,7 +472,7 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Given("I have a clinical workflow Basic_Workflow_1_static", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 79
-    testRunner.And("I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I have an endpoint /workflows/1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 80
     testRunner.When("I send a DELETE request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -529,8 +529,7 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Then("I will get a 404 response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 90
-    testRunner.And("I will recieve the error message Failed to find workflow with Id: 52b87b54-a728-4" +
-                        "796-9a79-d30867da2a6e", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I will recieve the error message Failed to validate id, workflow not found", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -581,8 +580,7 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Then("I will get a 404 response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 99
-    testRunner.And("I will recieve the error message Failed to find workflow with Id: c86a437d-d026-4" +
-                        "bdf-b1df-c7a6372b89e3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I will recieve the error message Failed to validate id, workflow not found", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -627,10 +625,10 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.And("I send a DELETE request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 106
-    testRunner.When("I send a PUT request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.And("I have a body Basic_Workflow_Update_1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 107
-    testRunner.And("I have a body Basic_Workflow_Update_1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.When("I send a PUT request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 108
     testRunner.Then("I will get a 404 response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

@@ -74,6 +74,10 @@ public class WorkflowsController : ApiControllerBase
         try
         {
             var workflow = await _workflowService.GetAsync(id);
+            if (workflow is null)
+            {
+                return Problem($"Failed to validate {nameof(id)}, workflow not found", $"/workflows/{id}", NotFound);
+            }
 
             return Ok(workflow);
         }
@@ -160,7 +164,7 @@ public class WorkflowsController : ApiControllerBase
     /// <param name="id">The Workflow Id</param>
     /// <returns>The specified workflow for a given Id.</returns>
     [Route("{id}")]
-    [HttpGet]
+    [HttpDelete]
     public async Task<IActionResult> DeleteAsync([FromRoute] string id)
     {
         if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))

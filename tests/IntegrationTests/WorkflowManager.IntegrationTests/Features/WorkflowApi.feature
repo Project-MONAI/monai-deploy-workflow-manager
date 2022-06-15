@@ -76,7 +76,7 @@ Scenario: Delete a workflow
 @DeleteWorkflows
 Scenario: Delete workflow with invalid details
     Given I have a clinical workflow Basic_Workflow_1_static
-    And  I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
+    And  I have an endpoint /workflows/1
     When I send a DELETE request
     Then I will get a 400 response
     And I will recieve the error message Failed to validate id, not a valid guid  
@@ -87,8 +87,8 @@ Scenario: Delete workflow where workflow ID does not exist
     And  I have an endpoint /workflows/52b87b54-a728-4796-9a79-d30867da2a6e
     When I send a DELETE request
     Then I will get a 404 response
-    And I will recieve the error message Failed to find workflow with Id: 52b87b54-a728-4796-9a79-d30867da2a6e
-
+    And I will recieve the error message Failed to validate id, workflow not found
+    
 @DeleteWorkflows
 Scenario: Delete a workflow and recieve 404 when trying to GET by ID
     Given I have a clinical workflow Basic_Workflow_1_static
@@ -96,15 +96,15 @@ Scenario: Delete a workflow and recieve 404 when trying to GET by ID
     And I send a DELETE request
     When I send a GET request
     Then I will get a 404 response
-    And I will recieve the error message Failed to find workflow with Id: c86a437d-d026-4bdf-b1df-c7a6372b89e3
+    And I will recieve the error message Failed to validate id, workflow not found
 
 @DeleteWorkflows
 Scenario: Delete a workflow and recieve 404 when trying to UPDATE by ID
     Given I have a clinical workflow Basic_Workflow_1_static
     And  I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
     And I send a DELETE request
-    When I send a PUT request
     And I have a body Basic_Workflow_Update_1
+    When I send a PUT request
     Then I will get a 404 response
     And I will recieve the error message Failed to find workflow with Id: c86a437d-d026-4bdf-b1df-c7a6372b89e3
 
