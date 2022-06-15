@@ -189,7 +189,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         {
             var exportEvent = new ExportCompleteEvent
             {
-                WorkflowId = Guid.NewGuid().ToString(),
+                WorkflowInstanceId = Guid.NewGuid().ToString(),
                 ExportTaskId = Guid.NewGuid().ToString(),
                 Status = ExportStatus.Success,
                 Message = "This is a message"
@@ -205,7 +205,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         {
             var exportEvent = new ExportCompleteEvent
             {
-                WorkflowId = "     ",
+                WorkflowInstanceId = "     ",
                 ExportTaskId = Guid.NewGuid().ToString(),
                 Status = ExportStatus.Success,
                 Message = "This is a message"

@@ -180,11 +180,18 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             await HandleOutputArtifacts(workflowInstance, message.Outputs, currentTask);
 
-            var dicomImages = _dicomService.GetDicomPathsForTask(currentTask.OutputDirectory, workflowInstance.BucketId)?.ToList();
+            var exportDestinations = workflow.Workflow?.InformaticsGateway?.ExportDestinations;
 
-            if (dicomImages is not null && dicomImages.Any())
+            if (exportDestinations is not null && exportDestinations.Any())
             {
-                return await HandleDicomExport(workflowInstance, currentTask, workflow.Workflow.InformaticsGateway.ExportDestinations, dicomImages, message.CorrelationId);
+                var dicomImages = _dicomService.GetDicomPathsForTask(currentTask.OutputDirectory, workflowInstance.BucketId)?.ToList();
+
+                if (dicomImages is not null && dicomImages.Any())
+                {
+                    return await HandleDicomExport(workflowInstance, currentTask, exportDestinations, dicomImages, message.CorrelationId);
+                }
+
+                _logger.ExportFilesNotFound(currentTask.TaskId, workflowInstance.Id);
             }
 
             var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, message.TaskId);
@@ -205,7 +212,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
         public async Task<bool> ProcessExportComplete(ExportCompleteEvent message, string correlationId)
         {
-            var workflowInstance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(message.WorkflowId);
+            var workflowInstance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId);
             var task = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId == message.ExportTaskId);
 
             if (task is null)

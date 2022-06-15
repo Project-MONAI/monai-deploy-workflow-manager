@@ -66,12 +66,11 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
             return new ExportRequestEvent
             {
-                WorkflowId = workflowInstanceId,
+                WorkflowInstanceId = workflowInstanceId,
                 ExportTaskId = taskId,
                 CorrelationId = correlationId,
                 Files = dicomImages,
-                SucceededFiles = dicomImages.Count,
-                Destination = exportDestinations.First() //Talk to victor
+                Destinations = exportDestinations
             };
         }
     }

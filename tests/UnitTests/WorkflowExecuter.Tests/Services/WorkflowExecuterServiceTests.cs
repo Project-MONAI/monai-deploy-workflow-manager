@@ -1078,7 +1078,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             var exportEvent = new ExportCompleteEvent
             {
-                WorkflowId = workflowInstanceId,
+                WorkflowInstanceId = workflowInstanceId,
                 ExportTaskId = "pizza",
                 Status = ExportStatus.Success,
                 Message = "This is a message"
@@ -1174,7 +1174,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             var exportEvent = new ExportCompleteEvent
             {
-                WorkflowId = workflowInstanceId,
+                WorkflowInstanceId = workflowInstanceId,
                 ExportTaskId = "pizza",
                 Status = ExportStatus.Failure,
                 Message = "This is a message"

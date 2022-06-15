@@ -114,20 +114,19 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
 
             var dicomImages = new List<string> { "dicom" };
 
-            var workflowId = Guid.NewGuid().ToString();
+            var workflowInstanceId = Guid.NewGuid().ToString();
             var correlationId = Guid.NewGuid().ToString();
 
             var expected = new ExportRequestEvent
             {
-                WorkflowId = workflowId,
+                WorkflowInstanceId = workflowInstanceId,
                 ExportTaskId = task.TaskId,
                 CorrelationId = correlationId,
                 Files = dicomImages,
-                SucceededFiles = dicomImages.Count,
-                Destination = exportDestinations.First()
+                Destinations = exportDestinations
             };
 
-            var exportRequest = EventMapper.ToExportRequestEvent(dicomImages, exportDestinations, task.TaskId, workflowId, correlationId);
+            var exportRequest = EventMapper.ToExportRequestEvent(dicomImages, exportDestinations, task.TaskId, workflowInstanceId, correlationId);
 
             exportRequest.Should().BeEquivalentTo(expected);
         }
