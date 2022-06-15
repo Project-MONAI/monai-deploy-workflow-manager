@@ -419,71 +419,30 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         [Fact]
         public async Task DeleteAsync_WorkflowsServiceThrowsException_Should500Error()
         {
-            var wrongGuid = Guid.NewGuid().ToString();
             var workflowRevisionId = Guid.NewGuid().ToString();
-            var newWorkflow = new Workflow
-            {
-                Name = "Workflowname",
-                Description = "Workflowdesc",
-                Version = "1",
-                InformaticsGateway = new InformaticsGateway
-                {
-                    AeTitle = "aetitle",
-                    DataOrigins = new[] { "test" },
-                    ExportDestinations = new[] { "test" }
-                },
-                Tasks = new TaskObject[]
-                {
-                    new TaskObject {
-                        Id = Guid.NewGuid().ToString(),
-                        Type = "type",
-                        Description = "taskdesc",
-                        Args = new Dictionary<string, string>
-                        {
-                            { "test", "test" }
-                        }
-                    }
-                }
-            };
-
-            var workflowRevision = new WorkflowRevision
-            {
-                Id = workflowRevisionId,
-                WorkflowId = Guid.NewGuid().ToString(),
-                Revision = 1,
-                Workflow = new Workflow
-                {
-                    Name = "Workflowname",
-                    Description = "Workflowdesc",
-                    Version = "2",
-                    InformaticsGateway = new InformaticsGateway
-                    {
-                        AeTitle = "aetitle",
-                        DataOrigins = new[] { "test" },
-                        ExportDestinations = new[] { "test" }
-
-                    },
-                    Tasks = new TaskObject[]
-                    {
-                        new TaskObject {
-                            Id = Guid.NewGuid().ToString(),
-                            Type = "type",
-                            Description = "taskdesc"
-                        }
-                    }
-                }
-            };
-            var dateNow = DateTime.UtcNow;
 
             _workflowService.Setup(w => w.GetAsync(It.IsAny<string>()))
                 .Throws(new ApplicationException());
 
-            var result = await WorkflowsController.DeleteAsync(wrongGuid);
+            var result = await WorkflowsController.DeleteAsync(workflowRevisionId);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal(result.As<ObjectResult>().Value.As<ProblemDetails>().Detail, "Unexpected error occured: Error in the application.");
 
             Assert.Equal(500, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_WorkflowsGivenInvalidId_ShouldBadRequest()
+        {
+            var invalidId = "1";
+
+            var result = await WorkflowsController.DeleteAsync(invalidId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(result.As<ObjectResult>().Value.As<ProblemDetails>().Detail, "Failed to validate id, not a valid guid");
+
+            Assert.Equal(400, objectResult.StatusCode);
         }
     }
 }
