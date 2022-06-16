@@ -72,7 +72,8 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             TaskDispatchConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
             TaskUpdatePublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
             MongoClient = new MongoClientUtil();
-            MinioClient = new MinioClientUtil();
+            //commented out to avoid tests failing until we have a working minio image in ci
+            //MinioClient = new MinioClientUtil();
             HttpClient = WebAppFactory.SetupWorkflowManger();
         }
 
