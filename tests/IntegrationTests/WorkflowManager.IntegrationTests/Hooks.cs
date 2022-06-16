@@ -124,7 +124,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             var dataHelper = new DataHelper(TaskDispatchConsumer, MongoClient);
             ObjectContainer.RegisterInstanceAs(dataHelper);
             ObjectContainer.RegisterInstanceAs(HttpClient);
-            ObjectContainer.RegisterInstanceAs(MinioClient);
+            //ObjectContainer.RegisterInstanceAs(MinioClient);
         }
 
         [BeforeTestRun(Order = 1)]
