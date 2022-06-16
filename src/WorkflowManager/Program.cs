@@ -118,6 +118,12 @@ namespace Monai.Deploy.WorkflowManager
         private static void Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
+
+            if (args.Length == 0)
+            {
+                host.Services.GetService<TaskManager.TaskManager>().StartAsync(System.Threading.CancellationToken.None).RunSynchronously();
+            }
+
             host.Run();
         }
 
