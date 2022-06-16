@@ -255,6 +255,38 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     }
                 }
             },
+            new TaskUpdateTestData()
+            {
+                Name = "output_artefact_file",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Invalid_Task_Destination").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Invalid_Task_Destination").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Invalid_Task_Destination").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "output_artefact_dir",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Invalid_Task_Destination").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Invalid_Task_Destination").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Invalid_Task_Destination").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
         };
     }
 }
