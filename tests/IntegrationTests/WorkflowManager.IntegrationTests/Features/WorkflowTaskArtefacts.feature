@@ -2,21 +2,21 @@
 
 Artefacts can get passed into and between tasks
 
-@WorkflowTaskArtefacts
+@WorkflowTaskArtefacts @ignore
 Scenario Outline: Bucket exists in MinIO, publish workflow request which uses input artefacts
-    Given I have a bucket in MinIO dicom
+    Given I have a bucket in MinIO monai
     And I have a clinical workflow Single_Task_Context_Input
     When I publish a Workflow Request Message Context_Input_AE
     Then I can see 1 Workflow Instance is created 
     And 1 Task Dispatch event is published
 
-@WorkflowTaskArtefacts
+@WorkflowTaskArtefacts @ignore
 Scenario Outline: Bucket does not exist in MinIO, publish workflow request which uses non existant bucket
     Given I have a clinical workflow Single_Task_Context_Input
     When I publish a Workflow Request Message Context_Input_AE
     Then The workflow instance fails
 
-@WorkflowTaskArtefacts
+@WorkflowTaskArtefacts @ignore
 Scenario Outline: Create artefact in MinIO, publish task update message with artefact as output
     Given I have a bucket in MinIO outputArtefact
     And I have a clinical workflow Multi_Task_Output_Artifact
@@ -30,7 +30,7 @@ Scenario Outline: Create artefact in MinIO, publish task update message with art
     | output_artefact_file |
     | output_artefact_dir  |
 
-@WorkflowTaskArtefacts
+@WorkflowTaskArtefacts @ignore
 Scenario Outline: Bucket exists in MinIO, send task dispatch with non existant file path
     Given I have a bucket in MinIO dicom
     And I have a clinical workflow Single_Task_Context_Input
@@ -38,7 +38,7 @@ Scenario Outline: Bucket exists in MinIO, send task dispatch with non existant f
     When I publish a task update message output_artefact
     Then The workflow instance fails
 
-@WorkflowTaskArtefacts
+@WorkflowTaskArtefacts @ignore
 Scenario Outline: Bucket exists in MinIO, send task dispatch with non existant artefact
     Given I have a bucket in MinIO dicom
     And I have a clinical workflow Single_Task_Context_Input

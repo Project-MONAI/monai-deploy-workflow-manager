@@ -15,7 +15,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private RabbitPublisher WorkflowPublisher { get; set; }
         private RabbitConsumer TaskDispatchConsumer { get; set; }
         private MongoClientUtil MongoClient { get; set; }
-        //private MinioClientUtil MinioClient { get; set; }
+        private MinioClientUtil MinioClient { get; set; }
         private Assertions Assertions { get; set; }
         private DataHelper DataHelper { get; set; }
 
@@ -24,7 +24,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             WorkflowPublisher = objectContainer.Resolve<RabbitPublisher>("WorkflowPublisher");
             TaskDispatchConsumer = objectContainer.Resolve<RabbitConsumer>("TaskDispatchConsumer");
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
-            //MinioClient = objectContainer.Resolve<MinioClientUtil>();
+            MinioClient = objectContainer.Resolve<MinioClientUtil>();
             Assertions = new Assertions();
             DataHelper = objectContainer.Resolve<DataHelper>();
         }
@@ -32,7 +32,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Given(@"I have a bucket in MinIO (.*)")]
         public async Task GivenIHaveABucketInMinIO(string name)
         {
-            //await MinioClient.AddFileToStorage(Path.Combine(GetDirectory(), "DICOMs", "MR000000.dcm"), TestExecutionConfig.MinIOConfig.BucketName, DataHelper.GetPayloadId());
+            var pathname = Path.Combine(GetDirectory(), "DICOMs", "MR000000.dcm");
+            await MinioClient.AddFileToStorage(pathname, name, DataHelper.GetPayloadId());
         }
 
         [Then(@"I can see a task dispatch event with a path to the DICOM bucket")]
@@ -88,11 +89,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
 
-        //[AfterScenario]
-        //public async Task DeleteObjects()
-        //{
-        //    //await MinioClient.RemoveObjects(TestExecutionConfig.MinIOConfig.BucketName, DataHelper.PayloadId);
-        //}
+        [AfterScenario]
+        public async Task DeleteObjects()
+        {
+            await MinioClient.RemoveObjects(TestExecutionConfig.MinioConfig.Bucket, DataHelper.PayloadId);
+        }
 
     }
 }

@@ -31,4 +31,10 @@
     <ProjectReference Include="..\..\..\src\WorkflowManager\Monai.Deploy.WorkflowManager.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="DICOMs\MR000000.dcm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

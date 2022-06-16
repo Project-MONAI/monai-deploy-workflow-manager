@@ -75,11 +75,13 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Features
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Bucket exists in MinIO, publish workflow request which uses input artefacts")]
+        [NUnit.Framework.IgnoreAttribute("Ignored scenario")]
         [NUnit.Framework.CategoryAttribute("WorkflowTaskArtefacts")]
         public virtual void BucketExistsInMinIOPublishWorkflowRequestWhichUsesInputArtefacts()
         {
             string[] tagsOfScenario = new string[] {
-                    "WorkflowTaskArtefacts"};
+                    "WorkflowTaskArtefacts",
+                    "ignore"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Bucket exists in MinIO, publish workflow request which uses input artefacts", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 6
@@ -103,7 +105,7 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 7
-    testRunner.Given("I have a bucket in MinIO dicom", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+    testRunner.Given("I have a bucket in MinIO monai", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 8
     testRunner.And("I have a clinical workflow Single_Task_Context_Input", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -124,11 +126,13 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Bucket does not exist in MinIO, publish workflow request which uses non existant " +
             "bucket")]
+        [NUnit.Framework.IgnoreAttribute("Ignored scenario")]
         [NUnit.Framework.CategoryAttribute("WorkflowTaskArtefacts")]
         public virtual void BucketDoesNotExistInMinIOPublishWorkflowRequestWhichUsesNonExistantBucket()
         {
             string[] tagsOfScenario = new string[] {
-                    "WorkflowTaskArtefacts"};
+                    "WorkflowTaskArtefacts",
+                    "ignore"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Bucket does not exist in MinIO, publish workflow request which uses non existant " +
                     "bucket", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
@@ -167,13 +171,15 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Create artefact in MinIO, publish task update message with artefact as output")]
+        [NUnit.Framework.IgnoreAttribute("Ignored scenario")]
         [NUnit.Framework.CategoryAttribute("WorkflowTaskArtefacts")]
         [NUnit.Framework.TestCaseAttribute("output_artefact_file", null)]
         [NUnit.Framework.TestCaseAttribute("output_artefact_dir", null)]
         public virtual void CreateArtefactInMinIOPublishTaskUpdateMessageWithArtefactAsOutput(string task_Update_Message, string[] exampleTags)
         {
             string[] @__tags = new string[] {
-                    "WorkflowTaskArtefacts"};
+                    "WorkflowTaskArtefacts",
+                    "ignore"};
             if ((exampleTags != null))
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
@@ -229,11 +235,13 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Bucket exists in MinIO, send task dispatch with non existant file path")]
+        [NUnit.Framework.IgnoreAttribute("Ignored scenario")]
         [NUnit.Framework.CategoryAttribute("WorkflowTaskArtefacts")]
         public virtual void BucketExistsInMinIOSendTaskDispatchWithNonExistantFilePath()
         {
             string[] tagsOfScenario = new string[] {
-                    "WorkflowTaskArtefacts"};
+                    "WorkflowTaskArtefacts",
+                    "ignore"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Bucket exists in MinIO, send task dispatch with non existant file path", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 34
@@ -277,11 +285,13 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Bucket exists in MinIO, send task dispatch with non existant artefact")]
+        [NUnit.Framework.IgnoreAttribute("Ignored scenario")]
         [NUnit.Framework.CategoryAttribute("WorkflowTaskArtefacts")]
         public virtual void BucketExistsInMinIOSendTaskDispatchWithNonExistantArtefact()
         {
             string[] tagsOfScenario = new string[] {
-                    "WorkflowTaskArtefacts"};
+                    "WorkflowTaskArtefacts",
+                    "ignore"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Bucket exists in MinIO, send task dispatch with non existant artefact", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 42

@@ -1,5 +1,5 @@
 ﻿using Minio;
-using Minio.DataModel;
+//using Minio.DataModel;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Polly;
 using Polly.Retry;
@@ -13,10 +13,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         public MinioClientUtil()
         {
-            Client = new MinioClient()
-                .WithEndpoint(TestExecutionConfig.MinioConfig.Endpoint)
-                .WithCredentials(TestExecutionConfig.MinioConfig.AccessKey, TestExecutionConfig.MinioConfig.AccessToken)
-                .Build();
+            Client = new MinioClient(
+                TestExecutionConfig.MinioConfig.Endpoint,
+                TestExecutionConfig.MinioConfig.AccessKey,
+                TestExecutionConfig.MinioConfig.AccessToken,
+                TestExecutionConfig.MinioConfig.Region);
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
@@ -26,10 +27,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             {
                 try
                 {
-                    await Client.MakeBucketAsync(
-                        new MakeBucketArgs()
-                            .WithBucket(bucketName)
-                    );
+                    await Client.MakeBucketAsync(bucketName, "eu-west-2");
                 }
                 catch (Exception e)
                 {
@@ -52,14 +50,12 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     {
                                 { "Test-Metadata", "Test  Test" }
                     };
-                        PutObjectArgs args = new PutObjectArgs()
-                                                        .WithBucket(bucketName)
-                                                        .WithObject(objectName)
-                                                        .WithStreamData(filestream)
-                                                        .WithObjectSize(filestream.Length)
-                                                        .WithContentType("application/octet-stream")
-                                                        .WithHeaders(metaData);
-                        await Client.PutObjectAsync(args);
+                        await Client.PutObjectAsync(
+                            bucketName,
+                            objectName,
+                            fileLocation,
+                            "application/octet-stream",
+                            metaData);
                     }
                 }
                 catch (Exception e)
@@ -69,13 +65,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             });
         }
 
-        public async Task<ObjectStat> GetFile(string bucketName, string objectName, string fileName)
+        public async Task GetFile(string bucketName, string objectName, string fileName)
         {
-            var args = new GetObjectArgs()
-                                         .WithBucket(bucketName)
-                                         .WithObject(objectName)
-                                         .WithFile(fileName);
-            return await Client.GetObjectAsync(args);
+            await Client.GetObjectAsync(bucketName, objectName, fileName);
         }
 
         public async Task DeleteBucket(string bucketName)
@@ -85,8 +77,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             {
                 await RetryPolicy.ExecuteAsync(async () =>
                 {
-                    var args = new RemoveBucketArgs().WithBucket(bucketName);
-                    await Client.RemoveBucketAsync(args);
+                    await Client.RemoveBucketAsync(bucketName);
                 });
             }
         }
@@ -96,10 +87,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             bool found = await Client.BucketExistsAsync(bucketName);
             if (found)
             {
-                var args = new RemoveObjectArgs()
-                                         .WithBucket(bucketName)
-                                         .WithObject(objectName);
-                await Client.RemoveObjectAsync(args);
+                await Client.RemoveObjectAsync(bucketName, objectName);
             }
         }
     }

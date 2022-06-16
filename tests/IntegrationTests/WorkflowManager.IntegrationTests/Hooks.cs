@@ -29,7 +29,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         private static RabbitConsumer? TaskDispatchConsumer { get; set; }
         private static RabbitPublisher? TaskUpdatePublisher { get; set; }
         private static MongoClientUtil? MongoClient { get; set; }
-        //private static MinioClientUtil? MinioClient { get; set; }
+        private static MinioClientUtil? MinioClient { get; set; }
         private IObjectContainer ObjectContainer { get; set; }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             TaskDispatchConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
             TaskUpdatePublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
             MongoClient = new MongoClientUtil();
-            //MinioClient = new MinioClientUtil();
+            MinioClient = new MinioClientUtil();
             HttpClient = WebAppFactory.SetupWorkflowManger();
         }
 
@@ -123,6 +123,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             var dataHelper = new DataHelper(TaskDispatchConsumer, MongoClient);
             ObjectContainer.RegisterInstanceAs(dataHelper);
             ObjectContainer.RegisterInstanceAs(HttpClient);
+            ObjectContainer.RegisterInstanceAs(MinioClient);
         }
 
         [BeforeTestRun(Order = 1)]
