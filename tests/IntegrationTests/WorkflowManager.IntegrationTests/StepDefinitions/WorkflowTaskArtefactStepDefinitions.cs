@@ -89,11 +89,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
 
-        [AfterScenario]
+        /*[AfterScenario]
         public async Task DeleteObjects()
         {
             await MinioClient.RemoveObjects(TestExecutionConfig.MinioConfig.Bucket, DataHelper.PayloadId);
-        }
+        }*/
 
     }
 }
