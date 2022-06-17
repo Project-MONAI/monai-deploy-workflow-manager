@@ -49,7 +49,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _messageBrokerPublisherService = new Mock<IMessageBrokerPublisherService>();
             _storageService = new Mock<IStorageService>();
             _dicomService = new Mock<IDicomService>();
-            _configuration = Options.Create(new WorkflowManagerOptions() { Messaging = new MessageBrokerConfiguration { Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch" } } });
+            _configuration = Options.Create(new WorkflowManagerOptions() { Messaging = new MessageBrokerConfiguration { Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch", ExportRequestPrefix = "md.export.request" }, DicomAgents = new DicomAgentConfiguration { DicomWebAgentName = "monaidicomweb" } } });
             _storageConfiguration = Options.Create(new StorageServiceConfiguration() { Settings = new Dictionary<string, string> { { "bucket", "testbucket" }, { "endpoint", "localhost" }, { "securedConnection", "False" } } });
 
             WorkflowExecuterService = new WorkflowExecuterService(_logger.Object, _configuration, _storageConfiguration, _workflowRepository.Object, _workflowInstanceRepository.Object, _messageBrokerPublisherService.Object, _artifactMapper.Object, _storageService.Object, _dicomService.Object);
@@ -971,7 +971,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 
             _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.TaskDispatchRequest, It.IsAny<Message>()), Times.Exactly(0));
-            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.ExportRequestPrefix, It.IsAny<Message>()), Times.Exactly(1));
+            _messageBrokerPublisherService.Verify(w => w.Publish($"{_configuration.Value.Messaging.Topics.ExportRequestPrefix}.{_configuration.Value.Messaging.DicomAgents.DicomWebAgentName}", It.IsAny<Message>()), Times.Exactly(1));
 
             response.Should().BeTrue();
         }
