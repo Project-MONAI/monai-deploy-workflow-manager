@@ -19,25 +19,6 @@ services:
         interval: 15s
         timeout: 30s
         retries: 3
-  
-  createbuckets:
-    image: minio/mc
-    environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
-      BUCKET_NAME: monai
-      ENDPOINT: http://minio:9000
-    depends_on:
-      minio:
-        condition: service_healthy
-    entrypoint: >
-      /bin/sh -c "
-      until (/usr/bin/mc config host add myminio $$ENDPOINT $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD) do echo '...waiting...' && sleep 1; done;
-      /usr/bin/mc mb myminio/$$BUCKET_NAME;
-      /usr/bin/mc policy set public myminio/$$BUCKET_NAME;
-      /usr/bin/mc ls myminio;
-      # exit 0
-      "
   rabbit1:
     image: "rabbitmq:3.8.18-management"
     hostname: "rabbit1"

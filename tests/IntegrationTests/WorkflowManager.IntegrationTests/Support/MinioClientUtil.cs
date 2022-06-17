@@ -25,7 +25,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             {
                 try
                 {
-                    await Client.MakeBucketAsync(bucketName, "eu-west-2");
+                    await Client.MakeBucketAsync(bucketName);
                 }
                 catch (Exception e)
                 {
