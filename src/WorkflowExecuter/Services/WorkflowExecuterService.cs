@@ -57,7 +57,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             _storageConfiguration = storageConfiguration.Value;
 
             TaskDispatchRoutingKey = configuration.Value.Messaging.Topics.TaskDispatchRequest;
-            ExportRequestRoutingKey = configuration.Value.Messaging.Topics.ExportRequestPrefix;
+            ExportRequestRoutingKey = $"{configuration.Value.Messaging.Topics.ExportRequestPrefix}.{configuration.Value.Messaging.DicomAgents.DicomWebAgentName}";
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _workflowRepository = workflowRepository ?? throw new ArgumentNullException(nameof(workflowRepository));

@@ -8,11 +8,11 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
 {
     public class DicomService : IDicomService
     {
-        private IStorageService StorageService { get; set; }
+        private readonly IStorageService _storageService;
 
         public DicomService(IStorageService storageService)
         {
-            StorageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
+            _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
         }
 
         public IEnumerable<string> GetDicomPathsForTask(string outputDirectory, string bucketName)
@@ -20,7 +20,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             Guard.Against.NullOrWhiteSpace(outputDirectory);
             Guard.Against.NullOrWhiteSpace(bucketName);
 
-            var files = StorageService.ListObjects(bucketName, outputDirectory, true);
+            var files = _storageService.ListObjects(bucketName, outputDirectory, true);
 
             var dicomFiles = files?.Where(f => f.FilePath.EndsWith(".dcm"));
 
