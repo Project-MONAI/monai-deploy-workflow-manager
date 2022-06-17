@@ -213,6 +213,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             var processed = await HandleTaskDestinations(workflowInstance, message.CorrelationId, newTaskExecutions);
 
+            _logger.TaskComplete(currentTask, workflowInstance.Id, message.CorrelationId, message.Status.ToString());
+
             processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
 
             return processed;
@@ -250,6 +252,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 }
 
                 var processed = await HandleTaskDestinations(workflowInstance, correlationId, newTaskExecutions);
+
+                _logger.TaskComplete(task, workflowInstance.Id, correlationId, message.Status.ToString());
 
                 processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Succeeded);
 
