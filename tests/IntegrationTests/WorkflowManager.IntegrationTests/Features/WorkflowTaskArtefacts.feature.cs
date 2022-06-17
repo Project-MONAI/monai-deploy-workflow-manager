@@ -75,13 +75,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Features
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Bucket exists in MinIO, publish workflow request which uses input artefacts")]
-        [NUnit.Framework.IgnoreAttribute("Ignored scenario")]
         [NUnit.Framework.CategoryAttribute("WorkflowTaskArtefacts")]
         public virtual void BucketExistsInMinIOPublishWorkflowRequestWhichUsesInputArtefacts()
         {
             string[] tagsOfScenario = new string[] {
-                    "WorkflowTaskArtefacts",
-                    "ignore"};
+                    "WorkflowTaskArtefacts"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Bucket exists in MinIO, publish workflow request which uses input artefacts", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 6
