@@ -42,6 +42,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             });
         }
 
+        public void DeleteWorkflowRevisionDocumentByWorkflowId(string workflowId)
+        {
+            RetryMongo.Execute(() =>
+            {
+                WorkflowRevisionCollection.DeleteMany(x => x.WorkflowId.Equals(workflowId));
+            });
+        }
+
         public void DeleteAllWorkflowRevisionDocuments()
         {
             WorkflowRevisionCollection.DeleteMany("{ }");
