@@ -75,6 +75,15 @@ jobs:
         - "15672:15672"
         - "5672:5672"
 
+      minio:
+        image: minio/minio:latest
+        env:
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+        ports:
+          - "9000:9000"
+          - "9001:9001"
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
