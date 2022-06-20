@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
+using Monai.Deploy.WorkflowManager.Common.Interfaces;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 {
@@ -24,6 +25,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         private Mock<ILogger<EventPayloadReceiverService>> _mockLogger;
         private Mock<IMessageBrokerSubscriberService> _mockMessageBrokerSubscriberService;
         private Mock<IWorkflowExecuterService> _workflowExecuterService;
+        private Mock<IPayloadService> _payloadService;
 
         [SetUp]
         public void Setup()
@@ -32,7 +34,8 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
             _mockLogger = new Mock<ILogger<EventPayloadReceiverService>>();
             _mockMessageBrokerSubscriberService = new Mock<IMessageBrokerSubscriberService>();
             _workflowExecuterService = new Mock<IWorkflowExecuterService>();
-            _eventPayloadReceiverService = new EventPayloadReceiverService(_mockLogger.Object, _mockEventPayloadValidator.Object, _mockMessageBrokerSubscriberService.Object, _workflowExecuterService.Object);
+            _payloadService = new Mock<IPayloadService>();
+            _eventPayloadReceiverService = new EventPayloadReceiverService(_mockLogger.Object, _mockEventPayloadValidator.Object, _mockMessageBrokerSubscriberService.Object, _workflowExecuterService.Object, _payloadService.Object);
         }
 
         [Test]
