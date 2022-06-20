@@ -2,7 +2,6 @@
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.TestData;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Polly;
 using Polly.Retry;
 
@@ -20,6 +19,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         private RetryPolicy<List<TaskDispatchEvent>> RetryTaskDispatches { get; set; }
         private RabbitConsumer TaskDispatchConsumer { get; set; }
         private MongoClientUtil MongoClient { get; set; }
+        public string PayloadId { get; private set; }
 
         public DataHelper(RabbitConsumer taskDispatchConsumer, MongoClientUtil mongoClient)
         {
@@ -192,6 +192,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             });
 
             return res;
+        }
+
+        public string GetPayloadId()
+        {
+            return PayloadId = Guid.NewGuid().ToString();
         }
     }
 }

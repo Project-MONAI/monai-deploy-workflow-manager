@@ -47,6 +47,19 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.POCO
             public static string WorkflowInstanceCollection { get; set; }
         }
 
+        public static class MinioConfig
+        {
+            public static string Endpoint { get; set; }
+
+            public static string AccessKey { get; set; }
+
+            public static string AccessToken { get; set; }
+
+            public static string Bucket { get; set; }
+
+            public static string Region { get; set; }
+        }
+
         public static class ApiConfig
         {
             public static string BaseUrl { get; set; }
