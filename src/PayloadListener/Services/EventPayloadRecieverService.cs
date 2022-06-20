@@ -8,6 +8,7 @@ using Monai.Deploy.WorkflowManager.Logging.Logging;
 using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
+using Monai.Deploy.WorkflowManager.Common.Interfaces;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 {
@@ -17,17 +18,21 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             ILogger<EventPayloadReceiverService> logger,
             IEventPayloadValidator payloadValidator,
             IMessageBrokerSubscriberService messageBrokerSubscriberService,
-            IWorkflowExecuterService workflowExecuterService)
+            IWorkflowExecuterService workflowExecuterService,
+            IPayloadService payloadService)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             PayloadValidator = payloadValidator ?? throw new ArgumentNullException(nameof(payloadValidator));
             _messageSubscriber = messageBrokerSubscriberService ?? throw new ArgumentNullException(nameof(messageBrokerSubscriberService));
             WorkflowExecuterService = workflowExecuterService ?? throw new ArgumentNullException(nameof(workflowExecuterService));
+            PayloadService = payloadService ?? throw new ArgumentNullException(nameof(payloadService));
         }
 
         private IEventPayloadValidator PayloadValidator { get; }
 
         private IWorkflowExecuterService WorkflowExecuterService { get; }
+
+        private IPayloadService PayloadService { get; }
 
         private ILogger<EventPayloadReceiverService> Logger { get; }
 
@@ -48,6 +53,8 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 
                     return;
                 }
+
+                await PayloadService.CreateAsync(payload);
 
                 if (!await WorkflowExecuterService.ProcessPayload(payload))
                 {
