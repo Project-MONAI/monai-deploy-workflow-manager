@@ -31,7 +31,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Given(@"I have a clinical workflow (.*)")]
         public void GivenIHaveAClinicalWorkflow(string name)
         {
-            MongoClient.CreateWorkflowRevisionDocument(DataHelper.GetWorkflowRevisionTestData(name));
+            if (!string.IsNullOrEmpty(name))
+            {
+                MongoClient.CreateWorkflowRevisionDocument(DataHelper.GetWorkflowRevisionTestData(name));
+            }
         }
 
         [Given(@"I have a Workflow Instance (.*)")]

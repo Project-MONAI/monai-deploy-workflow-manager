@@ -105,7 +105,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             foreach (var workflowRevision in workflowRevisions)
             {
-                //workflowRevision.Workflow.deleted.Should().BeTrue;
+                workflowRevision.IsDeleted.Should().BeTrue();
             }
         }
 

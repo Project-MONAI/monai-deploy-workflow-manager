@@ -12,9 +12,9 @@ using Newtonsoft.Json;
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
     [Binding]
-    public class ApiStepDefinitions
+    public class WorkflowApiStepDefinitions
     {
-        public ApiStepDefinitions(ObjectContainer objectContainer)
+        public WorkflowApiStepDefinitions(ObjectContainer objectContainer)
         {
             var httpClient = objectContainer.Resolve<HttpClient>();
             DataHelper = objectContainer.Resolve<DataHelper>();

@@ -394,11 +394,21 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Delete a workflow")]
         [NUnit.Framework.CategoryAttribute("DeleteWorkflows")]
-        public virtual void DeleteAWorkflow()
+        [NUnit.Framework.TestCaseAttribute("Basic_Workflow_1_static", "", "c86a437d-d026-4bdf-b1df-c7a6372b89e3", null)]
+        [NUnit.Framework.TestCaseAttribute("Basic_Workflow_multiple_revisions_1", "Basic_Workflow_multiple_revisions_2", "570611d3-ad74-43a4-ae84-539164ee8f0c", null)]
+        public virtual void DeleteAWorkflow(string workflow1, string workflow2, string workflow_Id, string[] exampleTags)
         {
-            string[] tagsOfScenario = new string[] {
+            string[] @__tags = new string[] {
                     "DeleteWorkflows"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("workflow1", workflow1);
+            argumentsOfScenario.Add("workflow2", workflow2);
+            argumentsOfScenario.Add("workflow_id", workflow_Id);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Delete a workflow", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 69
 this.ScenarioInitialize(scenarioInfo);
@@ -421,18 +431,21 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 70
-    testRunner.Given("I have a clinical workflow Basic_Workflow_1_static", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+    testRunner.Given(string.Format("I have a clinical workflow {0}", workflow1), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 71
-    testRunner.And("I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And(string.Format("I have a clinical workflow {0}", workflow2), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 72
-    testRunner.When("I send a DELETE request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.And(string.Format("I have an endpoint /workflows/{0}", workflow_Id), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 73
-    testRunner.Then("I will get a 200 response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.When("I send a DELETE request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 74
+    testRunner.Then("I will get a 200 response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 75
     testRunner.And("all revisions of the workflow are marked as deleted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -448,7 +461,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "DeleteWorkflows"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Delete workflow with invalid details", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 77
+#line 82
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -468,19 +481,19 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 78
+#line 83
     testRunner.Given("I have a clinical workflow Basic_Workflow_1_static", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 79
+#line 84
     testRunner.And("I have an endpoint /workflows/1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 80
+#line 85
     testRunner.When("I send a DELETE request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 81
+#line 86
     testRunner.Then("I will get a 400 response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 82
+#line 87
     testRunner.And("I will recieve the error message Failed to validate id, not a valid guid", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -496,7 +509,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "DeleteWorkflows"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Delete workflow where workflow ID does not exist", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 85
+#line 90
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -516,19 +529,19 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 86
+#line 91
     testRunner.Given("I have a clinical workflow Basic_Workflow_1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 87
+#line 92
     testRunner.And("I have an endpoint /workflows/52b87b54-a728-4796-9a79-d30867da2a6e", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 88
+#line 93
     testRunner.When("I send a DELETE request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 89
+#line 94
     testRunner.Then("I will get a 404 response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 90
+#line 95
     testRunner.And("I will recieve the error message Failed to validate id, workflow not found", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -544,7 +557,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "DeleteWorkflows"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Delete a workflow and recieve 404 when trying to GET by ID", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 93
+#line 98
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -564,22 +577,22 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 94
+#line 99
     testRunner.Given("I have a clinical workflow Basic_Workflow_1_static", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 95
+#line 100
     testRunner.And("I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 96
+#line 101
     testRunner.And("I send a DELETE request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 97
+#line 102
     testRunner.When("I send a GET request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 98
+#line 103
     testRunner.Then("I will get a 404 response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 99
+#line 104
     testRunner.And("I will recieve the error message Failed to validate id, workflow not found", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -595,7 +608,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "DeleteWorkflows"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Delete a workflow and recieve 404 when trying to UPDATE by ID", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 102
+#line 107
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -615,25 +628,25 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 103
+#line 108
     testRunner.Given("I have a clinical workflow Basic_Workflow_1_static", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 104
+#line 109
     testRunner.And("I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 105
+#line 110
     testRunner.And("I send a DELETE request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 106
+#line 111
     testRunner.And("I have a body Basic_Workflow_Update_1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 107
+#line 112
     testRunner.When("I send a PUT request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 108
+#line 113
     testRunner.Then("I will get a 404 response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 109
+#line 114
     testRunner.And("I will recieve the error message Failed to find workflow with Id: c86a437d-d026-4" +
                         "bdf-b1df-c7a6372b89e3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -650,7 +663,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "DeleteWorkflows"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Delete a workflow and recieve 404 when trying to GET all", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 112
+#line 117
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -670,22 +683,22 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 113
+#line 118
     testRunner.Given("I have a clinical workflow Basic_Workflow_1_static", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 114
+#line 119
     testRunner.And("I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 115
+#line 120
     testRunner.And("I send a DELETE request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 116
+#line 121
     testRunner.And("I have an endpoint /workflows", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 117
+#line 122
     testRunner.When("I send a GET request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 118
+#line 123
     testRunner.Then("the deleted workflow is not returned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
