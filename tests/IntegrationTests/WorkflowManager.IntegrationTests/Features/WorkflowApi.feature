@@ -66,9 +66,18 @@ Scenario: Update workflow where workflow ID does not exist
     And I will recieve the error message Failed to find workflow with Id: 52b87b54-a728-4796-9a79-d30867da2a6e
 
 @DeleteWorkflows
-Scenario: Delete a workflow
-    Given I have a clinical workflow Basic_Workflow_1_static
+Scenario: Delete a workflow with one revision
+    Given I have a clinical workflow Basic_Workflow_1_static 
     And  I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
+    When I send a DELETE request
+    Then I will get a 200 response
+    And all revisions of the workflow are marked as deleted
+
+@DeleteWorkflows
+Scenario: Delete a workflow with multiple revisions
+    Given I have a clinical workflow Basic_Workflow_multiple_revisions_1
+    And I have a clinical workflow Basic_Workflow_multiple_revisions_2
+    And  I have an endpoint /workflows/570611d3-ad74-43a4-ae84-539164ee8f0c
     When I send a DELETE request
     Then I will get a 200 response
     And all revisions of the workflow are marked as deleted
