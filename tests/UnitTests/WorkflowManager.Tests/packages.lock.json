@@ -98,6 +98,15 @@
           "System.ComponentModel.Annotations": "4.3.0"
         }
       },
+      "AutoMapper": {
+        "type": "Transitive",
+        "resolved": "10.1.1",
+        "contentHash": "uMgbqOdu9ZG5cIOty0C85hzzayBH2i9BthnS5FlMqKtMSHDv4ts81a2jS1VFaDBVhlBeIqJ/kQKjQY95BZde9w==",
+        "dependencies": {
+          "Microsoft.CSharp": "4.7.0",
+          "System.Reflection.Emit": "4.7.0"
+        }
+      },
       "AWSSDK.Core": {
         "type": "Transitive",
         "resolved": "3.7.10.10",
@@ -152,6 +161,28 @@
           "NETStandard.Library": "1.6.1"
         }
       },
+      "Fractions": {
+        "type": "Transitive",
+        "resolved": "7.0.0",
+        "contentHash": "1uv2IqQ6AsLtrcsibOTEyyHLQpxgjONssPrI0Ug84AIuSVqVDcotaNkTaJTprFvxbCNi7Kp/3WAAtnytuQP3qQ==",
+        "dependencies": {
+          "System.Runtime.Numerics": "4.3.0"
+        }
+      },
+      "IdentityModel": {
+        "type": "Transitive",
+        "resolved": "5.2.0",
+        "contentHash": "nuhkbaDH9l5QzNJp2MtP3qio57MPtiRneUN8Ocr7od0JvSYaIe3gBj/vxllr11S/Qvu1AG4GZXoyv5469ewYDA=="
+      },
+      "IdentityModel.OidcClient": {
+        "type": "Transitive",
+        "resolved": "5.0.0",
+        "contentHash": "4KTG0+M3UBxr0UraGo8MfqEGT9MeMDtaBvPyZccmwW+JH+UG3psW5IVITKgobpgWmK+OKoE2FQQ4XBlaLfyCyw==",
+        "dependencies": {
+          "IdentityModel": "5.2.0",
+          "Microsoft.Extensions.Logging": "6.0.0"
+        }
+      },
       "JetBrains.Annotations": {
         "type": "Transitive",
         "resolved": "2021.3.0",
@@ -166,6 +197,38 @@
           "Microsoft.Extensions.Logging.Configuration": "3.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "3.0.0",
           "System.Threading.Channels": "4.7.1"
+        }
+      },
+      "KubernetesClient": {
+        "type": "Transitive",
+        "resolved": "7.2.19",
+        "contentHash": "wycP/ApzjNToo6N0is0cDVK6m282MOXSlJDaZPmMibpdgZf2MKjS289MRUIXz3+Syftu4zsqlinDMGbmi5Xjog==",
+        "dependencies": {
+          "IdentityModel.OidcClient": "4.0.0",
+          "KubernetesClient.Basic": "7.2.19",
+          "KubernetesClient.Models": "7.2.19",
+          "System.IO.Abstractions": "13.2.47",
+          "System.IdentityModel.Tokens.Jwt": "6.13.1",
+          "prometheus-net": "5.0.1"
+        }
+      },
+      "KubernetesClient.Basic": {
+        "type": "Transitive",
+        "resolved": "7.2.19",
+        "contentHash": "1LboFwnEg9gxB8gF9BqaS8gnNVetqRGS9XWyVMlzAxpeYaTF5mNCoj4OCZyLj8Ogo0kdrASjG9qOjozpQDWZlg==",
+        "dependencies": {
+          "KubernetesClient.Models": "7.2.19"
+        }
+      },
+      "KubernetesClient.Models": {
+        "type": "Transitive",
+        "resolved": "7.2.19",
+        "contentHash": "ekEK90+eJTKN1KzW7kFcJofSjv3X+Q4MhLxAZdgn7pTCJg0qk4/FhV8sYJ/ZMw20Ue5Rob3vAw9WROHZaLNIdQ==",
+        "dependencies": {
+          "AutoMapper": "10.1.1",
+          "Fractions": "7.0.0",
+          "System.Text.Json": "6.0.2",
+          "YamlDotNet": "11.2.1"
         }
       },
       "Microsoft.AspNetCore.JsonPatch": {
@@ -432,6 +495,16 @@
           "Microsoft.Extensions.FileProviders.Abstractions": "6.0.0"
         }
       },
+      "Microsoft.Extensions.Http": {
+        "type": "Transitive",
+        "resolved": "3.1.9",
+        "contentHash": "sRyrkBJGS+8ucKak+RmAPkAiIm6amA5ztpIkp0zrPn5+kDX2j8XJdRARr4Eh003RIGQxzvNGQ+j/voAhlPoXyw==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "3.1.9",
+          "Microsoft.Extensions.Logging": "3.1.9",
+          "Microsoft.Extensions.Options": "3.1.9"
+        }
+      },
       "Microsoft.Extensions.Logging": {
         "type": "Transitive",
         "resolved": "6.0.0",
@@ -537,6 +610,29 @@
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
+      "Microsoft.IdentityModel.JsonWebTokens": {
+        "type": "Transitive",
+        "resolved": "6.13.1",
+        "contentHash": "seLGCIo8bDz93PGgKY9vV4PAHpu1iXwH4Xm6O+HOJbIcnpiJz4f4C/MVFKfOb+yKGMtix2qyFkQMKOdVmArn0Q==",
+        "dependencies": {
+          "Microsoft.IdentityModel.Tokens": "6.13.1"
+        }
+      },
+      "Microsoft.IdentityModel.Logging": {
+        "type": "Transitive",
+        "resolved": "6.13.1",
+        "contentHash": "pUr0kicIy3cNgrapB7old+N+OithDcowO/uqOg/z9dMC8u25/1YS7QirJWKi/0z31fBOE/uEFBHfSfnRCKRxsA=="
+      },
+      "Microsoft.IdentityModel.Tokens": {
+        "type": "Transitive",
+        "resolved": "6.13.1",
+        "contentHash": "tUTbP9/wMuOGDiTBPXEN24M9rVAEJ8EOvk4pwoo5UKRNUK3bAZYqkzFpcgNOAY3PHHjwZJ2stk4Gf5jvspz0yg==",
+        "dependencies": {
+          "Microsoft.CSharp": "4.5.0",
+          "Microsoft.IdentityModel.Logging": "6.13.1",
+          "System.Security.Cryptography.Cng": "4.5.0"
+        }
+      },
       "Microsoft.NETCore.Platforms": {
         "type": "Transitive",
         "resolved": "5.0.0",
@@ -592,8 +688,8 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Transitive",
-        "resolved": "0.1.0-rc0040",
-        "contentHash": "q5t6h24M+22JQqeBTD9wOOYYAvb1Vk29nkadcOJ05wT569jnF+MGmEherDn1moX45Ehj4TsCvQl3TD4HJlC1mA==",
+        "resolved": "0.1.0-rc0041",
+        "contentHash": "GNDHtcuhfhKxlTTRTrnRooB2ygYTYujjcM7EJafl7Oy0sQESoSmUQnDUW2wzvyl9PHOA/Fz1f3BS1StkgQTuvQ==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -676,6 +772,14 @@
         "type": "Transitive",
         "resolved": "5.11.0",
         "contentHash": "eaiXkUjC4NPcquGWzAGMXjuxvLwc6XGKMptSyOGQeT0X70BUZObuybJFZLA0OfTdueLd3US23NBPTBb6iF3V1Q=="
+      },
+      "prometheus-net": {
+        "type": "Transitive",
+        "resolved": "5.0.1",
+        "contentHash": "tg+vGeKCUqaWPzHAuKI87/rqQD4RKjb/jlRqSPaAdGRFd/SFDFRHPE8Rcy5Rx2f4xqdR+s3qTQ/0Y/IHbI3D1Q==",
+        "dependencies": {
+          "Microsoft.Extensions.Http": "3.1.9"
+        }
       },
       "RabbitMQ.Client": {
         "type": "Transitive",
@@ -923,6 +1027,15 @@
           "System.Runtime.InteropServices": "4.3.0"
         }
       },
+      "System.IdentityModel.Tokens.Jwt": {
+        "type": "Transitive",
+        "resolved": "6.13.1",
+        "contentHash": "BTVPnmvqpKxv+ucl3Ii7HnRVvXvfm/P5iq3rnTnJ0YuneZUS7zGtE+DRrVQWSd431ntjZuHBGPbjaB+nCSq9Uw==",
+        "dependencies": {
+          "Microsoft.IdentityModel.JsonWebTokens": "6.13.1",
+          "Microsoft.IdentityModel.Tokens": "6.13.1"
+        }
+      },
       "System.IO": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -1051,15 +1164,8 @@
       },
       "System.Reflection.Emit": {
         "type": "Transitive",
-        "resolved": "4.3.0",
-        "contentHash": "228FG0jLcIwTVJyz8CLFKueVqQK36ANazUManGaJHkO0icjiIypKW7YLWLIWahyIkdh5M7mV2dJepllLyA1SKg==",
-        "dependencies": {
-          "System.IO": "4.3.0",
-          "System.Reflection": "4.3.0",
-          "System.Reflection.Emit.ILGeneration": "4.3.0",
-          "System.Reflection.Primitives": "4.3.0",
-          "System.Runtime": "4.3.0"
-        }
+        "resolved": "4.7.0",
+        "contentHash": "VR4kk8XLKebQ4MZuKuIni/7oh+QGFmZW3qORd1GvBq/8026OpW501SzT/oypwiQl4TvT8ErnReh/NzY9u+C6wQ=="
       },
       "System.Reflection.Emit.ILGeneration": {
         "type": "Transitive",
@@ -1184,6 +1290,17 @@
           "System.Runtime": "4.3.0"
         }
       },
+      "System.Runtime.Numerics": {
+        "type": "Transitive",
+        "resolved": "4.3.0",
+        "contentHash": "yMH+MfdzHjy17l2KESnPiF2dwq7T+xLnSJar7slyimAkUh/gTrS9/UQOtv7xarskJ2/XDSNvfLGOBQPjL7PaHQ==",
+        "dependencies": {
+          "System.Globalization": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0"
+        }
+      },
       "System.Security.AccessControl": {
         "type": "Transitive",
         "resolved": "5.0.0",
@@ -1192,6 +1309,11 @@
           "Microsoft.NETCore.Platforms": "5.0.0",
           "System.Security.Principal.Windows": "5.0.0"
         }
+      },
+      "System.Security.Cryptography.Cng": {
+        "type": "Transitive",
+        "resolved": "4.5.0",
+        "contentHash": "WG3r7EyjUe9CMPFSs6bty5doUqT+q9pbI80hlNzo2SkPkZ4VTuZkGWjpp77JB8+uaL4DFPRdBsAY+DX3dBK92A=="
       },
       "System.Security.Cryptography.ProtectedData": {
         "type": "Transitive",
@@ -1234,8 +1356,8 @@
       },
       "System.Text.Json": {
         "type": "Transitive",
-        "resolved": "6.0.0",
-        "contentHash": "zaJsHfESQvJ11vbXnNlkrR46IaMULk/gHxYsJphzSF+07kTjPHv+Oc14w6QEOfo3Q4hqLJgStUaYB9DBl0TmWg==",
+        "resolved": "6.0.2",
+        "contentHash": "0nE2gwXLn3PTBOPwORLqwuYvWB+Beomt9ZBX+6LmogMNKUvfD1SoDb/ycB1vBntT94rGaB/SvxEyeLu14H6aEg==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0",
           "System.Text.Encodings.Web": "6.0.0"
@@ -1362,6 +1484,11 @@
           "xunit.extensibility.core": "[2.4.1]"
         }
       },
+      "YamlDotNet": {
+        "type": "Transitive",
+        "resolved": "11.2.1",
+        "contentHash": "tBt8K+korVfrjH9wyDEhiLKxbs8qoLCLIFwvYgkSUuMC9//w3z0cFQ8LQAI/5MCKq+BMil0cfRTRvPeE7eXhQw=="
+      },
       "monai.deploy.workflowmanager": {
         "type": "Project",
         "dependencies": {
@@ -1376,7 +1503,7 @@
           "Microsoft.Extensions.Logging": "6.0.0",
           "Microsoft.Extensions.Logging.Console": "6.0.0",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.0-rc0040",
+          "Monai.Deploy.Messaging": "0.1.0-rc0041",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
@@ -1407,7 +1534,7 @@
         "dependencies": {
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.0-rc0040",
+          "Monai.Deploy.Messaging": "0.1.0-rc0041",
           "Monai.Deploy.Storage": "0.1.0-rc0033",
           "Newtonsoft.Json": "13.0.1",
           "System.IO.Abstractions": "16.1.25"
@@ -1418,7 +1545,7 @@
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.141",
           "Microsoft.Extensions.Configuration": "6.0.1",
-          "Monai.Deploy.Messaging": "0.1.0-rc0040",
+          "Monai.Deploy.Messaging": "0.1.0-rc0041",
           "MongoDB.Bson": "2.15.0",
           "Newtonsoft.Json": "13.0.1"
         }
@@ -1429,7 +1556,7 @@
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.0-rc0040",
+          "Monai.Deploy.Messaging": "0.1.0-rc0041",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
           "MongoDB.Bson": "2.15.0",
@@ -1447,7 +1574,7 @@
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.0-rc0040",
+          "Monai.Deploy.Messaging": "0.1.0-rc0041",
           "Monai.Deploy.Storage": "0.1.0-rc0033",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
@@ -1456,12 +1583,31 @@
           "Monai.Deploy.WorkloadManager.WorkfowExecuter": "1.0.0"
         }
       },
+      "monai.deploy.workflowmanager.taskmanager.api": {
+        "type": "Project",
+        "dependencies": {
+          "Monai.Deploy.Messaging": "0.1.0-rc0041",
+          "Monai.Deploy.Storage": "0.1.0-rc0033"
+        }
+      },
+      "monai.deploy.workflowmanager.taskmanager.argo": {
+        "type": "Project",
+        "dependencies": {
+          "IdentityModel.OidcClient": "5.0.0",
+          "KubernetesClient": "7.2.19",
+          "Monai.Deploy.Messaging": "0.1.0-rc0041",
+          "Monai.Deploy.Storage": "0.1.0-rc0033",
+          "Monai.Deploy.WorkflowManager.Common": "1.0.0",
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
+          "Newtonsoft.Json": "13.0.1"
+        }
+      },
       "monai.deploy.workloadmanager.workfowexecuter": {
         "type": "Project",
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.141",
           "Ardalis.GuardClauses": "4.0.1",
-          "Monai.Deploy.Messaging": "0.1.0-rc0040",
+          "Monai.Deploy.Messaging": "0.1.0-rc0041",
           "Monai.Deploy.Storage": "0.1.0-rc0033",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.ConditionsResolver": "1.0.0",
@@ -1469,6 +1615,8 @@
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Database": "1.0.0",
           "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
+          "Monai.Deploy.WorkflowManager.TaskManager.Argo": "1.0.0",
           "Newtonsoft.Json": "13.0.1"
         }
       }

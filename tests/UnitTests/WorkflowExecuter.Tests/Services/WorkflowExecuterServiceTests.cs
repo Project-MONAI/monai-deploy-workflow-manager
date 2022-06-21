@@ -49,7 +49,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _storageService = new Mock<IStorageService>();
             _configuration = Options.Create(new WorkflowManagerOptions() { Messaging = new MessageBrokerConfiguration { Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch" } } });
             _storageConfiguration = Options.Create(new StorageServiceConfiguration() { Settings = new Dictionary<string, string> { { "bucket", "testbucket" }, { "endpoint", "localhost" }, { "securedConnection", "False" } } });
-            var conditionalParser = new ConditionalParameterParser(new Mock<ILogger<ConditionalParameterParser>>().Object);
+            var conditionalParser = new ConditionalParameterParser(new Mock<ILogger<ConditionalParameterParser>>().Object, _storageService.Object);
             WorkflowExecuterService = new WorkflowExecuterService(_logger.Object,
                                                                   _configuration,
                                                                   _storageConfiguration,

@@ -129,7 +129,8 @@ namespace Monai.Deploy.WorkflowManager
                     services.AddSingleton<IConditionalParameterParser, ConditionalParameterParser>(s =>
                     {
                         var logger = s.GetService<ILogger<ConditionalParameterParser>>();
-                        return new ConditionalParameterParser(logger);
+                        var storage = s.GetService<IStorageService>();
+                        return new ConditionalParameterParser(logger, storage);
                     });
 
                     services.AddSingleton<IEventPayloadReceiverService, EventPayloadReceiverService>();
