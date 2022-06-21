@@ -35,7 +35,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Features
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "WorkflowInstancesApi", "Workflow instances get requests", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "WorkflowInstancesApi", "API to interact with WorkflowInstances collection", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -75,11 +75,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Features
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Get all workflows instances - multiple")]
-        [NUnit.Framework.CategoryAttribute("WorkflowInstanceApi")]
+        [NUnit.Framework.CategoryAttribute("GetWorkflowInstances")]
         public virtual void GetAllWorkflowsInstances_Multiple()
         {
             string[] tagsOfScenario = new string[] {
-                    "WorkflowInstanceApi"};
+                    "GetWorkflowInstances"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get all workflows instances - multiple", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 6
@@ -129,11 +129,11 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Get all workflows instances - single")]
-        [NUnit.Framework.CategoryAttribute("WorkflowInstanceApi")]
+        [NUnit.Framework.CategoryAttribute("GetWorkflowInstances")]
         public virtual void GetAllWorkflowsInstances_Single()
         {
             string[] tagsOfScenario = new string[] {
-                    "WorkflowInstanceApi"};
+                    "GetWorkflowInstances"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get all workflows instances - single", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 16
@@ -177,11 +177,11 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Get all workflows instances - empty")]
-        [NUnit.Framework.CategoryAttribute("WorkflowInstanceApi")]
+        [NUnit.Framework.CategoryAttribute("GetWorkflowInstances")]
         public virtual void GetAllWorkflowsInstances_Empty()
         {
             string[] tagsOfScenario = new string[] {
-                    "WorkflowInstanceApi"};
+                    "GetWorkflowInstances"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get all workflows instances - empty", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 24
@@ -222,11 +222,11 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Get all workflows instances by Id")]
-        [NUnit.Framework.CategoryAttribute("WorkflowInstanceApi")]
+        [NUnit.Framework.CategoryAttribute("GetWorkflowInstances")]
         public virtual void GetAllWorkflowsInstancesById()
         {
             string[] tagsOfScenario = new string[] {
-                    "WorkflowInstanceApi"};
+                    "GetWorkflowInstances"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get all workflows instances by Id", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 31
@@ -273,11 +273,11 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Get all workflows instances by Id. Id Not Found")]
-        [NUnit.Framework.CategoryAttribute("WorkflowInstanceApi")]
+        [NUnit.Framework.CategoryAttribute("GetWorkflowInstances")]
         public virtual void GetAllWorkflowsInstancesById_IdNotFound()
         {
             string[] tagsOfScenario = new string[] {
-                    "WorkflowInstanceApi"};
+                    "GetWorkflowInstances"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get all workflows instances by Id. Id Not Found", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 40
@@ -318,11 +318,11 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Get all workflows instances by Id. Id Bad Request")]
-        [NUnit.Framework.CategoryAttribute("WorkflowInstanceApi")]
+        [NUnit.Framework.CategoryAttribute("GetWorkflowInstances")]
         public virtual void GetAllWorkflowsInstancesById_IdBadRequest()
         {
             string[] tagsOfScenario = new string[] {
-                    "WorkflowInstanceApi"};
+                    "GetWorkflowInstances"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get all workflows instances by Id. Id Bad Request", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 47

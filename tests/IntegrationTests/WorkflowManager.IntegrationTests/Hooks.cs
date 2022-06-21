@@ -143,7 +143,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             {
                 foreach (var workflowRevision in dataHelper.WorkflowRevisions)
                 {
-                    MongoClient.DeleteWorkflowRevisionDocument(workflowRevision.Id);
+                    MongoClient.DeleteWorkflowRevisionDocumentByWorkflowId(workflowRevision.WorkflowId);
                 }
             }
 
@@ -154,6 +154,8 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
                     MongoClient.DeleteWorkflowInstance(workflowInstance.Id);
                 }
             }
+
+
         }
 
         /// <summary>

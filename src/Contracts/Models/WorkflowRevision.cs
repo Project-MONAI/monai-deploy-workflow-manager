@@ -1,9 +1,10 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using System;
+using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
-    public class WorkflowRevision
+    public class WorkflowRevision : ISoftDeleteable
     {
         [BsonId]
         [JsonProperty(PropertyName = "id")]
@@ -17,5 +18,11 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         [JsonProperty(PropertyName = "workflow")]
         public Workflow Workflow { get; set; }
+
+        [JsonIgnore]
+        public DateTime? Deleted { get; set; } = null;
+
+        [JsonIgnore]
+        public bool IsDeleted { get => Deleted is not null; }
     }
 }

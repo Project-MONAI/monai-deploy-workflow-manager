@@ -1,4 +1,7 @@
-﻿using Monai.Deploy.Messaging.Events;
+﻿// SPDX-FileCopyrightText: © 2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.TestData;

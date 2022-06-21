@@ -1,10 +1,12 @@
-﻿using System.Net;
+﻿// SPDX-FileCopyrightText: © 2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using System.Net;
 using BoDi;
 using FluentAssertions;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
@@ -29,6 +31,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Given(@"I have an endpoint (.*)")]
         public void GivenIHaveAnEndpoint(string endpoint) => ApiHelper.SetUrl(new Uri(TestExecutionConfig.ApiConfig.BaseUrl + endpoint));
 
+        [Given(@"I send a (.*) request")]
         [When(@"I send a (.*) request")]
         public void WhenISendARequest(string verb)
         {
@@ -67,6 +70,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             Assertions.AssertWorkflowInstance(DataHelper.WorkflowInstances, actualWorkflowInstance);
         }
 
+        [When(@"I have a body (.*)")]
         [Given(@"I have a body (.*)")]
         public void GivenIHaveABody(string name)
         {
@@ -92,17 +96,18 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             Assertions.AssertWorkflowRevisionDetailsAfterUpdateRequest(workflowRevisions, DataHelper.Workflows, DataHelper.WorkflowRevisions);
         }
 
-        //[Scope(Tag = "WorkflowInstanceApi")]
-        //[AfterScenario(Order = 1)]
-        //public void DeleteTestData()
-        //{
-        //    if (DataHelper.WorkflowInstances.Count > 0)
-        //    {
-        //        foreach (var workflowInstance in DataHelper.WorkflowInstances)
-        //        {
-        //            MongoClient.DeleteWorkflowInstance(workflowInstance.Id);
-        //        }
-        //    }
-        //}
+        [Then(@"all revisions of the workflow are marked as deleted")]
+        public void ThenAllRevisionsOfTheWorkflowAreMarkedAsDeleted()
+        {
+            var workflowRevisions = MongoClient.GetWorkflowRevisionsByWorkflowId(DataHelper.WorkflowRevisions[0].WorkflowId);
+            Assertions.AssertWorkflowMarkedAsDeleted(workflowRevisions);
+        }
+
+        [Then(@"the deleted workflow is not returned")]
+        public void ThenTheDeletedWorkflowIsNotReturned()
+        {
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            result.Should().Be("[]");
+        }
     }
 }
