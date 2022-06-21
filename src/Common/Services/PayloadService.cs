@@ -3,6 +3,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Storage.Services;
 
 namespace Monai.Deploy.WorkflowManager.Common.Services
 {
@@ -10,9 +11,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
     {
         private readonly IPayloadRepsitory _payloadRepsitory;
 
-        public PayloadService(IPayloadRepsitory payloadRepsitory)
+        private readonly IDicomService _dicomService;
+
+        public PayloadService(IPayloadRepsitory payloadRepsitory, IDicomService dicomService)
         {
             _payloadRepsitory = payloadRepsitory ?? throw new ArgumentNullException(nameof(payloadRepsitory));
+            _dicomService = dicomService ?? throw new ArgumentNullException(nameof(dicomService));
         }
 
         public async Task<bool> CreateAsync(WorkflowRequestEvent eventPayload)
