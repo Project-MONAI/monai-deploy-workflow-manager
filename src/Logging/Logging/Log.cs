@@ -72,5 +72,8 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
 
         [LoggerMessage(EventId = 22, Level = LogLevel.Error, Message = "The task execution status for task {taskId} cannot be updated from {oldStatus} to {newStatus}. Payload: {payloadId}")]
         public static partial void TaskStatusUpdateNotValid(this ILogger logger, string payloadId, string taskId, string oldStatus, string newStatus);
+
+        [LoggerMessage(EventId = 23, Level = LogLevel.Debug, Message = "No files to export for task {taskId} within workflow instance {workflowInstanceId}.")]
+        public static partial void ExportFilesNotFound(this ILogger logger, string taskId, string workflowInstanceId);
     }
 }

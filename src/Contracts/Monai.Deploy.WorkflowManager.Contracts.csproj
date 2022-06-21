@@ -18,7 +18,7 @@ SPDX-License-Identifier: Apache License 2.0
   <ItemGroup>
     <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.141" />
     <PackageReference Include="MongoDB.Bson" Version="2.15.0" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0040" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0044" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
   </ItemGroup>

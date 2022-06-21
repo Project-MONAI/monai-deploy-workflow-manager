@@ -38,7 +38,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         [Test]
         public void ReceiveWorkflowPayload_ValidateWorkFlowRequest()
         {
-            var message = CreateMessageReceivedEventArgs("destination");
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
             _eventPayloadReceiverService.ReceiveWorkflowPayload(message);
 
             _mockEventPayloadValidator.Verify(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>()), Times.Once());
@@ -47,7 +47,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         [Test]
         public void ReceiveWorkflowPayload_WorkFlowRequestIsNotValid_MessageSubscriberRejectsTheMessage()
         {
-            var message = CreateMessageReceivedEventArgs("destination");
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
 
 
             _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(false);
@@ -60,7 +60,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         [Test]
         public void ReceiveWorkflowPayload_WorkFlowRequestIsValid_MessageSubscriberAcknowledgeTheMessage()
         {
-            var message = CreateMessageReceivedEventArgs("destination");
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
 
 
             _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(true);
@@ -75,7 +75,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         [Test]
         public void TaskUpdatePayload_ValidateTaskUpdate()
         {
-            var message = CreateMessageReceivedEventArgs("destination");
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
 
             _eventPayloadReceiverService.TaskUpdatePayload(message);
 
@@ -86,7 +86,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         [Test]
         public void TaskUpdatePayload_TaskUpdateIsNotValid_MessageSubscriberRejectsTheMessage()
         {
-            var message = CreateMessageReceivedEventArgs("destination");
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
 
             _mockEventPayloadValidator.Setup(p => p.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>())).Returns(false);
 
@@ -102,7 +102,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         [Test]
         public void TaskUpdatePayload_TaskUpdateIsValid_MessageSubscriberAcknowledgeTheMessage()
         {
-            var message = CreateMessageReceivedEventArgs("destination");
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
 
             _mockEventPayloadValidator.Setup(p => p.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>())).Returns(true);
             _workflowExecuterService.Setup(p => p.ProcessTaskUpdate(It.IsAny<TaskUpdateEvent>())).ReturnsAsync(true);
@@ -120,7 +120,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         public void TaskUpdatePayload_FailsToProcessUpdateTask_MessageIsRejectedAndRequeued()
         {
             // Arrange
-            var message = CreateMessageReceivedEventArgs("destination");
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
 
             _mockEventPayloadValidator.Setup(p => p.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>())).Returns(true);
             _workflowExecuterService.Setup(p => p.ProcessTaskUpdate(It.IsAny<TaskUpdateEvent>())).ReturnsAsync(false);
@@ -140,7 +140,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         public void TaskUpdatePayload_ErrorIsThrown_MessageIsRejectedAndRequeued()
         {
             // Arrange
-            var message = CreateMessageReceivedEventArgs("destination");
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
 
             _mockEventPayloadValidator.Setup(p => p.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>())).Returns(true);
             _workflowExecuterService.Setup(p => p.ProcessTaskUpdate(It.IsAny<TaskUpdateEvent>())).Throws<Exception>();
@@ -156,16 +156,100 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
             _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
         }
 
-        private static MessageReceivedEventArgs CreateMessageReceivedEventArgs(string destination)
+        [Test]
+        public void ExportCompletePayload_ValidateExportComplete()
+        {
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
+
+            _eventPayloadReceiverService.ExportCompletePayload(message);
+
+            _mockEventPayloadValidator.Verify(p => p.ValidateExportComplete(It.IsAny<ExportCompleteEvent>()), Times.Once());
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public void ExportCompletePayload_ExportCompleteIsNotValid_MessageSubscriberRejectsTheMessage()
+        {
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateExportComplete(It.IsAny<ExportCompleteEvent>())).Returns(false);
+
+            _eventPayloadReceiverService.ExportCompletePayload(message);
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), false), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+
+            _mockEventPayloadValidator.Verify(x => x.ValidateExportComplete(It.IsAny<ExportCompleteEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public void ExportCompletePayload_ExportCompleteIsValid_MessageSubscriberAcknowledgeTheMessage()
+        {
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateExportComplete(It.IsAny<ExportCompleteEvent>())).Returns(true);
+            _workflowExecuterService.Setup(p => p.ProcessExportComplete(It.IsAny<ExportCompleteEvent>(), It.IsAny<string>())).ReturnsAsync(true);
+
+            _eventPayloadReceiverService.ExportCompletePayload(message);
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.Acknowledge(It.IsAny<Message>()), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+
+            _mockEventPayloadValidator.Verify(x => x.ValidateExportComplete(It.IsAny<ExportCompleteEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public void ExportCompletePayload_FailsToProcessExportComplete_MessageIsRejectedAndRequeued()
+        {
+            // Arrange
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateExportComplete(It.IsAny<ExportCompleteEvent>())).Returns(true);
+            _workflowExecuterService.Setup(p => p.ProcessExportComplete(It.IsAny<ExportCompleteEvent>(), It.IsAny<string>())).ReturnsAsync(false);
+
+            // Act
+            _eventPayloadReceiverService.ExportCompletePayload(message);
+
+            // Assert
+            _mockEventPayloadValidator.Verify(x => x.ValidateExportComplete(It.IsAny<ExportCompleteEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), It.IsAny<bool>()), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public void ExportCompletePayload_ErrorIsThrown_MessageIsRejectedAndRequeued()
+        {
+            // Arrange
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateExportComplete(It.IsAny<ExportCompleteEvent>())).Returns(true);
+            _workflowExecuterService.Setup(p => p.ProcessExportComplete(It.IsAny<ExportCompleteEvent>(), It.IsAny<string>())).Throws<Exception>();
+
+            // Act
+            _eventPayloadReceiverService.ExportCompletePayload(message);
+
+            // Assert
+            _mockEventPayloadValidator.Verify(x => x.ValidateExportComplete(It.IsAny<ExportCompleteEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), It.IsAny<bool>()), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+        }
+
+        private static MessageReceivedEventArgs CreateMessageReceivedEventArgs(string[] destinations)
         {
             var exportRequestMessage = new ExportRequestEvent
             {
                 ExportTaskId = Guid.NewGuid().ToString(),
                 CorrelationId = Guid.NewGuid().ToString(),
-                Destination = destination,
+                Destinations = destinations,
                 Files = new[] { "file1" },
                 MessageId = Guid.NewGuid().ToString(),
-                WorkflowId = Guid.NewGuid().ToString(),
+                WorkflowInstanceId = Guid.NewGuid().ToString(),
             };
             var jsonMessage = new JsonMessage<ExportRequestEvent>(exportRequestMessage, MessageBrokerConfiguration.WorkflowManagerApplicationId, exportRequestMessage.CorrelationId, exportRequestMessage.DeliveryTag);
 

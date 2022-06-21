@@ -20,6 +20,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
         [InlineData(TaskExecutionStatus.Dispatched, TaskExecutionStatus.Canceled, true)]
         [InlineData(TaskExecutionStatus.Accepted, TaskExecutionStatus.Succeeded, true)]
         [InlineData(TaskExecutionStatus.Accepted, TaskExecutionStatus.Failed, true)]
+        [InlineData(TaskExecutionStatus.Dispatched, TaskExecutionStatus.Exported, true)]
+        [InlineData(TaskExecutionStatus.Exported, TaskExecutionStatus.Succeeded, true)]
+        [InlineData(TaskExecutionStatus.Exported, TaskExecutionStatus.Failed, true)]
         public void IsTaskExecutionStatusUpdateValid_ReturnesExpected(TaskExecutionStatus oldStatus, TaskExecutionStatus newStatus, bool expected) => Assert.Equal(expected, newStatus.IsTaskExecutionStatusUpdateValid(oldStatus));
     }
 }
