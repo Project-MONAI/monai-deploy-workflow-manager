@@ -160,7 +160,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 }
                 else
                 {
-                    throw new Exception($"{count} workflow instances could not be found for payloadId {payloadId}");
+                    throw new Exception($"{count} workflow instances could not be found for payloadId {payloadId}. Actual count is {WorkflowInstances.Count}");
                 }
             });
 

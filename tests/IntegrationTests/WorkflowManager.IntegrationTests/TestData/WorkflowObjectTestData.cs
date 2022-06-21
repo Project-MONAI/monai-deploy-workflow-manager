@@ -36,7 +36,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     },
                     InformaticsGateway = new InformaticsGateway()
                     {
-                        AeTitle = "Basic_AE",
+                        AeTitle = "Update",
                         DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }

@@ -36,6 +36,11 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
 
             valid &= payloadValid;
 
+            if (payload.Workflows is null)
+            {
+                return valid;
+            }
+
             foreach (var workflow in payload.Workflows)
             {
                 Guard.Against.Null(workflow, nameof(workflow));
@@ -64,6 +69,24 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
             catch (MessageValidationException e)
             {
                 Logger.Exception($"Failed to validate {nameof(TaskUpdateEvent)}", e);
+
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool ValidateExportComplete(ExportCompleteEvent payload)
+        {
+            Guard.Against.Null(payload, nameof(payload));
+
+            try
+            {
+                payload.Validate();
+            }
+            catch (MessageValidationException e)
+            {
+                Logger.Exception($"Failed to validate {nameof(ExportCompleteEvent)}", e);
 
                 return false;
             }

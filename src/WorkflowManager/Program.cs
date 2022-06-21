@@ -27,6 +27,7 @@ using Monai.Deploy.WorkflowManager.PayloadListener.Services;
 using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
+using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
 using MongoDB.Driver;
@@ -87,6 +88,7 @@ namespace Monai.Deploy.WorkflowManager
                     // Services
                     services.AddTransient<IWorkflowService, WorkflowService>();
                     services.AddTransient<IWorkflowInstanceService, WorkflowInstanceService>();
+                    services.AddTransient<IDicomService, DicomService>();
 
                     // Mongo DB
                     services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));

@@ -197,7 +197,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 {
                     Id = Guid.NewGuid().ToString(),
                     WorkflowId = "85c48175-f4db-4d3c-bf3a-14f736edaccd",
-                    Revision = 1,
+                    Revision = 2,
                     Workflow = new Workflow()
                     {
                         Name = "Basic workflow multiple revisions 2",
@@ -544,7 +544,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Basic_AE",
+                            AeTitle = "Static_AE",
                             DataOrigins = new string[]{"test"},
                             ExportDestinations = new string[]{"test"}
                         }
