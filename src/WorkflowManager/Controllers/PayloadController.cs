@@ -67,7 +67,14 @@ public class PayloadController : ControllerBase
 
         try
         {
-            var payload = await _payloadService.GeyByIdAsync(id);
+            var payload = await _payloadService.GetByIdAsync(id);
+
+            if (payload is null)
+            {
+                _logger.LogDebug($"{nameof(GetAsync)} - Failed to find payload with payload id: {id}");
+
+                return NotFound($"Faild to find payload with payload id: {id}");
+            }
 
             return Ok(payload);
         }

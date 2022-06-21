@@ -35,7 +35,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             return await _payloadRepsitory.CreateAsync(payload);
         }
 
-        public async Task<Payload> GeyByIdAsync(string payloadId)
+        public async Task<Payload> GetByIdAsync(string payloadId)
         {
             Guard.Against.NullOrWhiteSpace(payloadId);
 

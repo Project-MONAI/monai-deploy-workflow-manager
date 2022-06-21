@@ -5,10 +5,21 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
 {
     public interface IPayloadService
     {
+        /// <summary>
+        /// Creates a payload and appends patient details.
+        /// </summary>
+        /// <param name="eventPayload">request event payload to insert.</param>
         Task<bool> CreateAsync(WorkflowRequestEvent eventPayload);
 
-        Task<Payload> GeyByIdAsync(string payloadId);
+        /// <summary>
+        /// Gets a payload by id.
+        /// </summary>
+        /// <param name="payloadId">payload id to retrieve.</param>
+        Task<Payload> GetByIdAsync(string payloadId);
 
+        /// <summary>
+        /// Gets a list of payloads.
+        /// </summary>
         Task<IList<Payload>> GetAllAsync();
     }
 }
