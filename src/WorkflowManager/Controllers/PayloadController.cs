@@ -23,7 +23,8 @@ public class PayloadController : ControllerBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PayloadController"/> class.
     /// </summary>
-    /// <param name="payloadService"></param>
+    /// <param name="payloadService">paylod service to retrieve payloads.</param>
+    /// <param name="logger">logger.</param>
     public PayloadController(IPayloadService payloadService, ILogger<PayloadController> logger)
     {
         _payloadService = payloadService ?? throw new ArgumentNullException(nameof(payloadService));
