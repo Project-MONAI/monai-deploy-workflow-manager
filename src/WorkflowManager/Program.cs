@@ -68,12 +68,12 @@ namespace Monai.Deploy.WorkflowManager
                         {
                         });
                     services.AddOptions<MessageBrokerServiceConfiguration>()
-                        .Bind(hostContext.Configuration.GetSection("messageConnection"))
+                        .Bind(hostContext.Configuration.GetSection("WorkflowManager:messaging"))
                         .PostConfigure(options =>
                         {
                         });
                     services.AddOptions<StorageServiceConfiguration>()
-                        .Bind(hostContext.Configuration.GetSection("storage"))
+                        .Bind(hostContext.Configuration.GetSection("WorkflowManager:storage"))
                         .PostConfigure(options =>
                         {
                         });
@@ -97,7 +97,7 @@ namespace Monai.Deploy.WorkflowManager
                     services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
 
                     // StorageService
-                    services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("InformaticsGateway:storage:serviceAssemblyName").Value);
+                    services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
 
                     // MessageBroker
                     services.AddSingleton<RabbitMqMessagePublisherService>();
