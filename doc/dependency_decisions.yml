@@ -391,6 +391,12 @@
     :versions: []
     :when: 2022-04-14 10:32:31.000000000 +01:00
 - - :approve
+  - System.ValueTuple
+  - :who: Victor Chang (mocsharp)
+    :why: Dotnet - https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+    :versions: []
+    :when: 2022-06-22 14:36:31.000000000 +07:00
+- - :approve
   - System.Xml.XDocument
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
@@ -1026,6 +1032,12 @@
     :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
     :versions: []
     :when: 2022-05-09 14:46:00.000000000 +01:00
+- - :approve
+  - Monai.Deploy.Storage.MinIO
+  - :who: Victor Chang (mocsharp)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-06-22 13:18:00.000000000 +07:00
 - - :approve
   - Monai.Deploy.Storage.S3Policy
   - :who: Victor Chang (mocsharp)
