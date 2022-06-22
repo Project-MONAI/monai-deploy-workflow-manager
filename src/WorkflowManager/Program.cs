@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.IO.Abstractions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -89,6 +90,7 @@ namespace Monai.Deploy.WorkflowManager
                     services.AddTransient<IWorkflowService, WorkflowService>();
                     services.AddTransient<IWorkflowInstanceService, WorkflowInstanceService>();
                     services.AddTransient<IDicomService, DicomService>();
+                    services.AddTransient<IFileSystem, FileSystem>();
 
                     // Mongo DB
                     services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));

@@ -1,4 +1,5 @@
-﻿using Minio;
+﻿using Ardalis.GuardClauses;
+using Minio;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Polly;
 using Polly.Retry;
@@ -12,10 +13,13 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         public MinioClientUtil()
         {
-            Client = new MinioClient(
-                TestExecutionConfig.MinioConfig.Endpoint,
-                TestExecutionConfig.MinioConfig.AccessKey,
-                TestExecutionConfig.MinioConfig.AccessToken);
+            Guard.Against.NullOrWhiteSpace(TestExecutionConfig.MinioConfig.Endpoint, nameof(TestExecutionConfig.MinioConfig.Endpoint));
+            Guard.Against.NullOrWhiteSpace(TestExecutionConfig.MinioConfig.AccessKey, nameof(TestExecutionConfig.MinioConfig.AccessKey));
+            Guard.Against.NullOrWhiteSpace(TestExecutionConfig.MinioConfig.AccessToken, nameof(TestExecutionConfig.MinioConfig.AccessToken));
+            
+            Client = new MinioClient();
+            Client.WithEndpoint(TestExecutionConfig.MinioConfig.Endpoint)
+                  .WithCredentials(TestExecutionConfig.MinioConfig.AccessKey, TestExecutionConfig.MinioConfig.AccessToken);
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
