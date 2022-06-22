@@ -60,11 +60,11 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             TestExecutionConfig.MongoConfig.WorkflowCollection = config.GetValue<string>("WorkloadManagerDatabase:WorkflowCollectionName");
             TestExecutionConfig.MongoConfig.WorkflowInstanceCollection = config.GetValue<string>("WorkloadManagerDatabase:WorkflowInstanceCollectionName");
 
-            TestExecutionConfig.MinioConfig.Endpoint = config.GetValue<string>("storage:settings:endpoint");
-            TestExecutionConfig.MinioConfig.AccessKey = config.GetValue<string>("storage:settings:accessKey");
-            TestExecutionConfig.MinioConfig.AccessToken = config.GetValue<string>("storage:settings:accessToken");
-            TestExecutionConfig.MinioConfig.Bucket = config.GetValue<string>("storage:settings:bucket");
-            TestExecutionConfig.MinioConfig.Region = config.GetValue<string>("storage:settings:region");
+            TestExecutionConfig.MinioConfig.Endpoint = config.GetValue<string>("WorkflowManager:storage:settings:endpoint");
+            TestExecutionConfig.MinioConfig.AccessKey = config.GetValue<string>("WorkflowManager:storage:settings:accessKey");
+            TestExecutionConfig.MinioConfig.AccessToken = config.GetValue<string>("WorkflowManager:storage:settings:accessToken");
+            TestExecutionConfig.MinioConfig.Bucket = config.GetValue<string>("WorkflowManager:storage:settings:bucket");
+            TestExecutionConfig.MinioConfig.Region = config.GetValue<string>("WorkflowManager:storage:settings:region");
 
             TestExecutionConfig.ApiConfig.BaseUrl = "http://localhost:5000";
 
