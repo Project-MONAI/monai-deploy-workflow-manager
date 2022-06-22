@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
-using Monai.Deploy.Storage;
-using Monai.Deploy.Storage.Common;
+using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Storage.Services;
 using Moq;
 using Xunit;
@@ -29,11 +29,11 @@ namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
         [Fact]
         public void GetDicomPathsForTask_NullInput_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => DicomService.GetDicomPathsForTask(null, null));
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await DicomService.GetDicomPathsForTask(null, null));
         }
 
         [Fact]
-        public void GetDicomPathsForTask_MultipleValidFiles_ReturnsPaths()
+        public async Task GetDicomPathsForTask_MultipleValidFiles_ReturnsPaths()
         {
             var bucketName = "bucket";
             var outputDir = "output/dir";
@@ -50,15 +50,15 @@ namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
                 new VirtualFileInfo("filename", "/dicom2.dcm", "tag2", 25),
             };
 
-            _storageService.Setup(s => s.ListObjects(bucketName, outputDir, true, It.IsAny<CancellationToken>())).Returns(returnedFiles);
+            _storageService.Setup(s => s.ListObjectsAsync(bucketName, outputDir, true, It.IsAny<CancellationToken>())).ReturnsAsync(returnedFiles);
 
-            var files = DicomService.GetDicomPathsForTask(outputDir, bucketName);
+            var files = await DicomService.GetDicomPathsForTask(outputDir, bucketName);
 
             files.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public void GetDicomPathsForTask_MultipleNonDicom_ReturnsEmptyList()
+        public async Task GetDicomPathsForTask_MultipleNonDicom_ReturnsEmptyList()
         {
             var bucketName = "bucket";
             var outputDir = "output/dir";
@@ -71,9 +71,9 @@ namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
                 new VirtualFileInfo("filename", "/dicom2.json", "tag2", 25),
             };
 
-            _storageService.Setup(s => s.ListObjects(bucketName, outputDir, true, It.IsAny<CancellationToken>())).Returns(returnedFiles);
+            _storageService.Setup(s => s.ListObjectsAsync(bucketName, outputDir, true, It.IsAny<CancellationToken>())).ReturnsAsync(returnedFiles);
 
-            var files = DicomService.GetDicomPathsForTask(outputDir, bucketName);
+            var files = await DicomService.GetDicomPathsForTask(outputDir, bucketName);
 
             files.Should().BeEquivalentTo(expected);
         }

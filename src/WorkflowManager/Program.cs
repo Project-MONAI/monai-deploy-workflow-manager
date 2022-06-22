@@ -15,7 +15,6 @@ using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.RabbitMq;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.Storage.MinIo;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Services;
@@ -35,6 +34,7 @@ using MongoDB.Driver;
 namespace Monai.Deploy.WorkflowManager
 {
 #pragma warning disable SA1600 // Elements should be documented
+
     internal class Program
     {
         protected Program()
@@ -97,14 +97,7 @@ namespace Monai.Deploy.WorkflowManager
                     services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
 
                     // StorageService
-                    services.AddSingleton<MinIoStorageService>();
-                    services.AddSingleton<IStorageService>(implementationFactory =>
-                    {
-                        var options = implementationFactory.GetService<IOptions<StorageServiceConfiguration>>();
-                        var serviceProvider = implementationFactory.GetService<IServiceProvider>();
-                        var logger = implementationFactory.GetService<ILogger<Program>>();
-                        return serviceProvider.LocateService<IStorageService>(logger, options.Value.ServiceAssemblyName);
-                    });
+                    services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("InformaticsGateway:storage:serviceAssemblyName").Value);
 
                     // MessageBroker
                     services.AddSingleton<RabbitMqMessagePublisherService>();

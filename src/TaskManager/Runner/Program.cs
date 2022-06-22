@@ -15,8 +15,6 @@ using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Messaging.RabbitMq;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.Storage.MinIo;
-using Monai.Deploy.Storage.MinioAdmin.Interfaces;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo;
@@ -162,20 +160,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                     services.AddOptions<StorageServiceConfiguration>().Bind(hostContext.Configuration.GetSection("WorkflowManager:storage"));
                     services.AddOptions<MessageBrokerServiceConfiguration>().Bind(hostContext.Configuration.GetSection("WorkflowManager:messaging"));
 
+                    services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
+
                     services.AddHttpClient();
                     services.UseRabbitMq();
-                    services.AddSingleton<IStorageService, MinIoStorageService>();
                     services.AddSingleton<IMessageBrokerPublisherService, RabbitMqMessagePublisherService>();
                     services.AddSingleton<IMessageBrokerSubscriberService, RabbitMqMessageSubscriberService>();
-                    services.AddSingleton<IMinioAdmin>((shell) =>
-                    {
-                        var storage = hostContext.Configuration.GetSection("WorkflowManager:storage") as StorageServiceConfiguration;
-                        var executable = storage.Settings["executableLocation"];
-                        var endpoint = storage.Settings["endpoint"];
-                        var secretKey = storage.Settings["accessToken"];
-                        var accessKey = storage.Settings["accessKey"];
-                        return new Storage.MinioAdmin.Shell(executable, "minioApp", endpoint, accessKey, secretKey);
-                    });
 
                     services.AddSingleton<TaskManager>();
                     services.AddSingleton<IArgoProvider, ArgoProvider>();

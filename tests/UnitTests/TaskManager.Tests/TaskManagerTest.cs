@@ -12,12 +12,10 @@ using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.Storage;
-using Monai.Deploy.Storage.MinioAdmin.Interfaces;
+using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Rest;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
-using Monai.Deploy.WorkflowManager.TaskManager.Logging;
 using Moq;
 using Xunit;
 
@@ -90,7 +88,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
         private readonly Mock<IServiceScopeFactory> _serviceScopeFactory;
         private readonly Mock<IServiceScope> _serviceScope;
         private readonly Mock<IStorageService> _storageService;
-        private readonly Mock<IMinioAdmin> _minioAdmin;
+        private readonly Mock<IStorageAdminService> _minioAdmin;
         private readonly Mock<IMessageBrokerPublisherService> _messageBrokerPublisherService;
         private readonly Mock<IMessageBrokerSubscriberService> _messageBrokerSubscriberService;
         private readonly Mock<ITestRunnerCallback> _testRunnerCallback;
@@ -106,7 +104,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _storageService = new Mock<IStorageService>();
             _messageBrokerPublisherService = new Mock<IMessageBrokerPublisherService>();
             _messageBrokerSubscriberService = new Mock<IMessageBrokerSubscriberService>();
-            _minioAdmin = new Mock<IMinioAdmin>();
+            _minioAdmin = new Mock<IStorageAdminService>();
             _testRunnerCallback = new Mock<ITestRunnerCallback>();
             _testMetadataRepositoryCallback = new Mock<ITestMetadataRepositoryCallback>();
             _cancellationTokenSource = new CancellationTokenSource();
@@ -130,7 +128,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 .Setup(x => x.GetService(typeof(IStorageService)))
                 .Returns(_storageService.Object);
             serviceProvider
-                .Setup(x => x.GetService(typeof(IMinioAdmin)))
+                .Setup(x => x.GetService(typeof(IStorageAdminService)))
                 .Returns(_minioAdmin.Object);
 
             _serviceScope.Setup(x => x.ServiceProvider).Returns(serviceProvider.Object);
@@ -237,7 +235,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
         //    _messageBrokerSubscriberService
         //        .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
         //        .Callback(() => resetEvent.Set());
-        //    _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+        //    _storageService.Setup(p => p.CreateTemporaryCredentialsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
         //        .ThrowsAsync(new Exception("error"));
 
         //    var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Objec);
@@ -268,7 +266,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
                 .Callback(() => resetEvent.Set());
-            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _storageService.Setup(p => p.CreateTemporaryCredentialsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
                 {
                     AccessKeyId = Guid.NewGuid().ToString(),
@@ -306,7 +304,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
                 .Callback(() => resetEvent.Set());
-            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _storageService.Setup(p => p.CreateTemporaryCredentialsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
                 {
                     AccessKeyId = Guid.NewGuid().ToString(),
@@ -350,7 +348,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerPublisherService
                 .Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
                 .Callback(() => resetEvent.Signal());
-            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _storageService.Setup(p => p.CreateTemporaryCredentialsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
                 {
                     AccessKeyId = Guid.NewGuid().ToString(),
@@ -390,7 +388,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
                 .Callback(() => resetEvent.Set());
-            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _storageService.Setup(p => p.CreateTemporaryCredentialsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
                 {
                     AccessKeyId = Guid.NewGuid().ToString(),
@@ -424,7 +422,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
                 .Callback(() => resetEvent.Set());
-            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _storageService.Setup(p => p.CreateTemporaryCredentialsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
                 {
                     AccessKeyId = Guid.NewGuid().ToString(),
@@ -458,7 +456,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerSubscriberService
                 .Setup(p => p.Acknowledge(It.IsAny<MessageBase>()))
                 .Callback(() => resetEvent.Signal());
-            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _storageService.Setup(p => p.CreateTemporaryCredentialsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
                 {
                     AccessKeyId = Guid.NewGuid().ToString(),
@@ -575,16 +573,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerPublisherService
                 .Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
                 .Callback(() => resetEvent.Signal());
-            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _storageService.Setup(p => p.CreateTemporaryCredentialsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
                 {
                     AccessKeyId = Guid.NewGuid().ToString(),
                     SecretAccessKey = Guid.NewGuid().ToString()
                 });
-            _minioAdmin.Setup(a => a.CreateReadOnlyUser(
+            _minioAdmin.Setup(a => a.CreateUserAsync(
                 It.IsAny<string>(),
-                It.IsAny<Storage.Common.Policies.PolicyRequest[]>()
-            )).Returns(new Amazon.SecurityToken.Model.Credentials()
+                It.IsAny<AccessPermissions>(),
+                It.IsAny<string[]>()
+            )).ReturnsAsync(new Amazon.SecurityToken.Model.Credentials()
             {
                 AccessKeyId = "a",
                 SecretAccessKey = "b",
@@ -660,16 +659,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerPublisherService
                 .Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
                 .Callback(() => resetEvent.Signal());
-            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _storageService.Setup(p => p.CreateTemporaryCredentialsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
                 {
                     AccessKeyId = Guid.NewGuid().ToString(),
                     SecretAccessKey = Guid.NewGuid().ToString()
                 });
-            _minioAdmin.Setup(a => a.CreateReadOnlyUser(
+            _minioAdmin.Setup(a => a.CreateUserAsync(
                 It.IsAny<string>(),
-                It.IsAny<Storage.Common.Policies.PolicyRequest[]>()
-            )).Returns(() => null);
+                It.IsAny<AccessPermissions>(),
+                It.IsAny<string[]>()
+            )).ReturnsAsync(() => null);
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
@@ -734,7 +734,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerPublisherService
                 .Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
                 .Callback(() => resetEvent.Signal());
-            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _storageService.Setup(p => p.CreateTemporaryCredentialsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
                 {
                     AccessKeyId = Guid.NewGuid().ToString(),
@@ -807,7 +807,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerPublisherService
                 .Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
                 .Callback(() => resetEvent.Signal());
-            _storageService.Setup(p => p.CreateTemporaryCredentials(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _storageService.Setup(p => p.CreateTemporaryCredentialsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
                 {
                     AccessKeyId = Guid.NewGuid().ToString(),

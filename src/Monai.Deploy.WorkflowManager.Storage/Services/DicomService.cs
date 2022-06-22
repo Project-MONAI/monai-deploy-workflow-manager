@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using Ardalis.GuardClauses;
-using Monai.Deploy.Storage;
+using Monai.Deploy.Storage.API;
 
 namespace Monai.Deploy.WorkflowManager.Storage.Services
 {
@@ -15,12 +15,12 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
         }
 
-        public IEnumerable<string> GetDicomPathsForTask(string outputDirectory, string bucketName)
+        public async Task<IEnumerable<string>> GetDicomPathsForTask(string outputDirectory, string bucketName)
         {
             Guard.Against.NullOrWhiteSpace(outputDirectory);
             Guard.Against.NullOrWhiteSpace(bucketName);
 
-            var files = _storageService.ListObjects(bucketName, outputDirectory, true);
+            var files = await _storageService.ListObjectsAsync(bucketName, outputDirectory, true);
 
             var dicomFiles = files?.Where(f => f.FilePath.EndsWith(".dcm"));
 
