@@ -1027,6 +1027,12 @@
     :versions: []
     :when: 2022-05-09 14:46:00.000000000 +01:00
 - - :approve
+  - Monai.Deploy.Messaging.RabbitMQ
+  - :who: Victor Chang (mocsharp)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-06-23 15:46:00.000000000 +07:00
+- - :approve
   - Monai.Deploy.Storage
   - :who: Jack Schofield (JackSchofield23)
     :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
