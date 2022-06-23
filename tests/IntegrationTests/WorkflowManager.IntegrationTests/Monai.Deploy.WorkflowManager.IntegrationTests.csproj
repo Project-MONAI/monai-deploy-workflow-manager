@@ -50,4 +50,13 @@
       <Copy SourceFiles="@(Minio)" DestinationFolder="$(TargetDir)plug-ins\" />
       <Copy SourceFiles="@(MonaiDeployStorage)" DestinationFolder="$(TargetDir)plug-ins\" />
   </Target>
+
+  <Target Name="CopyMessagingPlugin" AfterTargets="Build">
+    <ItemGroup>
+      <MonaiDeployMessaging Include="$(TargetDir)Monai.Deploy.Messaging.RabbitMQ.*" />
+      <RabbitMQ Include="$(TargetDir)RabbitMQ.Client.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(MonaiDeployMessaging)" DestinationFolder="$(TargetDir)plug-ins\" />
+    <Copy SourceFiles="@(RabbitMQ)" DestinationFolder="$(TargetDir)plug-ins\" />
+  </Target>
 </Project>
