@@ -12,11 +12,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging;
+using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Configuration;
-using Monai.Deploy.Messaging.RabbitMq;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.Configuration;
@@ -102,25 +101,8 @@ namespace Monai.Deploy.WorkflowManager
                     services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
 
                     // MessageBroker
-                    services.AddSingleton<RabbitMqMessagePublisherService>();
-                    services.AddSingleton<IMessageBrokerPublisherService>(implementationFactory =>
-                    {
-                        var options = implementationFactory.GetService<IOptions<WorkflowManagerOptions>>();
-                        var serviceProvider = implementationFactory.GetService<IServiceProvider>();
-                        var logger = implementationFactory.GetService<ILogger<Program>>();
-                        return serviceProvider.LocateService<IMessageBrokerPublisherService>(logger, options.Value.Messaging.PublisherServiceAssemblyName);
-                    });
-
-                    services.AddSingleton<RabbitMqMessageSubscriberService>();
-                    services.AddSingleton<IMessageBrokerSubscriberService>(implementationFactory =>
-                    {
-                        var options = implementationFactory.GetService<IOptions<WorkflowManagerOptions>>();
-                        var serviceProvider = implementationFactory.GetService<IServiceProvider>();
-                        var logger = implementationFactory.GetService<ILogger<Program>>();
-                        return serviceProvider.LocateService<IMessageBrokerSubscriberService>(logger, options.Value.Messaging.SubscriberServiceAssemblyName);
-                    });
-
-                    services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
+                    services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
+                    services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
 
                     services.AddSingleton<IEventPayloadReceiverService, EventPayloadReceiverService>();
                     services.AddTransient<IEventPayloadValidator, EventPayloadValidator>();
