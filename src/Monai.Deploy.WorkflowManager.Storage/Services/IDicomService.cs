@@ -10,6 +10,6 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
         /// </summary>
         /// <param name="outputDirectory">Output dir of the task.</param>
         /// <param name="bucketName">Name of the bucket.</param>
-        IEnumerable<string> GetDicomPathsForTask(string outputDirectory, string bucketName);
+        Task<IEnumerable<string>> GetDicomPathsForTask(string outputDirectory, string bucketName);
     }
 }

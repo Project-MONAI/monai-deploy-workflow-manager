@@ -38,6 +38,12 @@ SPDX-License-Identifier: Apache License 2.0
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\WorkflowManager\Monai.Deploy.WorkflowManager.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   
   <PropertyGroup>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>

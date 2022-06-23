@@ -18,9 +18,9 @@ SPDX-License-Identifier: Apache License 2.0
 
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" Version="4.0.1" />
-    <PackageReference Include="Monai.Deploy.Storage" Version="0.1.0-rc0033" />
+    <PackageReference Include="Monai.Deploy.Storage" Version="0.1.0-rc0058" />
     <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.0-rc0044" />
-    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.141" />
+    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.165" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 

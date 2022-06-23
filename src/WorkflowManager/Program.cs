@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.IO.Abstractions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +16,6 @@ using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.RabbitMq;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.Storage.MinIo;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Services;
@@ -35,6 +35,7 @@ using MongoDB.Driver;
 namespace Monai.Deploy.WorkflowManager
 {
 #pragma warning disable SA1600 // Elements should be documented
+
     internal class Program
     {
         protected Program()
@@ -68,12 +69,12 @@ namespace Monai.Deploy.WorkflowManager
                         {
                         });
                     services.AddOptions<MessageBrokerServiceConfiguration>()
-                        .Bind(hostContext.Configuration.GetSection("messageConnection"))
+                        .Bind(hostContext.Configuration.GetSection("WorkflowManager:messaging"))
                         .PostConfigure(options =>
                         {
                         });
                     services.AddOptions<StorageServiceConfiguration>()
-                        .Bind(hostContext.Configuration.GetSection("storage"))
+                        .Bind(hostContext.Configuration.GetSection("WorkflowManager:storage"))
                         .PostConfigure(options =>
                         {
                         });
@@ -89,6 +90,7 @@ namespace Monai.Deploy.WorkflowManager
                     services.AddTransient<IWorkflowService, WorkflowService>();
                     services.AddTransient<IWorkflowInstanceService, WorkflowInstanceService>();
                     services.AddTransient<IDicomService, DicomService>();
+                    services.AddTransient<IFileSystem, FileSystem>();
 
                     // Mongo DB
                     services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
@@ -97,14 +99,7 @@ namespace Monai.Deploy.WorkflowManager
                     services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
 
                     // StorageService
-                    services.AddSingleton<MinIoStorageService>();
-                    services.AddSingleton<IStorageService>(implementationFactory =>
-                    {
-                        var options = implementationFactory.GetService<IOptions<StorageServiceConfiguration>>();
-                        var serviceProvider = implementationFactory.GetService<IServiceProvider>();
-                        var logger = implementationFactory.GetService<ILogger<Program>>();
-                        return serviceProvider.LocateService<IStorageService>(logger, options.Value.ServiceAssemblyName);
-                    });
+                    services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
 
                     // MessageBroker
                     services.AddSingleton<RabbitMqMessagePublisherService>();

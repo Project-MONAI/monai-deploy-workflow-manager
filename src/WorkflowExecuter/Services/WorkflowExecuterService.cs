@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.Storage;
+using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Configuration;
@@ -184,7 +184,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (exportDestinations is not null && exportDestinations.Any())
             {
-                var dicomImages = _dicomService.GetDicomPathsForTask(currentTask.OutputDirectory, workflowInstance.BucketId)?.ToList();
+                var dicomImages = (await _dicomService.GetDicomPathsForTask(currentTask.OutputDirectory, workflowInstance.BucketId))?.ToList();
 
                 if (dicomImages is not null && dicomImages.Any())
                 {
@@ -304,7 +304,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         {
             var artifactDict = outputs.ToArtifactDictionary();
 
-            var validOutputArtifacts = _storageService.VerifyObjectsExist(workflowInstance.BucketId, artifactDict);
+            var validOutputArtifacts = await _storageService.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactDict);
 
             workflowInstance.Tasks?.ForEach(t =>
             {

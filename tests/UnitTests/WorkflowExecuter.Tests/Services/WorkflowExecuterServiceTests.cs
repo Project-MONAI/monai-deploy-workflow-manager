@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.Storage;
+using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Configuration;
@@ -847,7 +847,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
-            _storageService.Setup(w => w.VerifyObjectsExist(workflowInstance.BucketId, artifactDict)).Returns(artifactDict);
+            _storageService.Setup(w => w.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactDict)).ReturnsAsync(artifactDict);
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 
@@ -965,8 +965,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
-            _storageService.Setup(w => w.VerifyObjectsExist(workflowInstance.BucketId, artifactDict)).Returns(artifactDict);
-            _dicomService.Setup(d => d.GetDicomPathsForTask(workflowInstance.Tasks.First().OutputDirectory, workflowInstance.BucketId)).Returns(dicomFiles);
+            _storageService.Setup(w => w.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactDict)).ReturnsAsync(artifactDict);
+            _dicomService.Setup(d => d.GetDicomPathsForTask(workflowInstance.Tasks.First().OutputDirectory, workflowInstance.BucketId)).ReturnsAsync(dicomFiles);
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 
