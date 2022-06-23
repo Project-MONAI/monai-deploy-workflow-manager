@@ -19,7 +19,7 @@ jobs:
         fetch-depth: '0'
 
     - name: Secret detection
-      uses: zricethezav/gitleaks-action@master
+      uses: gitleaks/gitleaks-action@v1.6.0
 
   dependency-scan:
     runs-on: ubuntu-latest
