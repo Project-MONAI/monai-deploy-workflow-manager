@@ -1,5 +1,4 @@
-﻿using Ardalis.GuardClauses;
-using Minio;
+﻿using Minio;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Polly;
 using Polly.Retry;
@@ -13,13 +12,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         public MinioClientUtil()
         {
-            Guard.Against.NullOrWhiteSpace(TestExecutionConfig.MinioConfig.Endpoint, nameof(TestExecutionConfig.MinioConfig.Endpoint));
-            Guard.Against.NullOrWhiteSpace(TestExecutionConfig.MinioConfig.AccessKey, nameof(TestExecutionConfig.MinioConfig.AccessKey));
-            Guard.Against.NullOrWhiteSpace(TestExecutionConfig.MinioConfig.AccessToken, nameof(TestExecutionConfig.MinioConfig.AccessToken));
-            
-            Client = new MinioClient();
-            Client.WithEndpoint(TestExecutionConfig.MinioConfig.Endpoint)
-                  .WithCredentials(TestExecutionConfig.MinioConfig.AccessKey, TestExecutionConfig.MinioConfig.AccessToken);
+            Client = new MinioClient(
+                TestExecutionConfig.MinioConfig.Endpoint,
+                TestExecutionConfig.MinioConfig.AccessKey,
+                TestExecutionConfig.MinioConfig.AccessToken);
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
@@ -34,7 +30,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 catch (Exception e)
                 {
                     Console.WriteLine($"[Bucket]  Exception: {e}");
-                    throw e;
+                    if (e.Message != "MinIO API responded with message=Your previous request to create the named bucket succeeded and you already own it.")
+                    {
+                        throw e;
+                    }
                 }
             });
         }
