@@ -27,6 +27,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
 
             var payload = new Payload
             {
+                Id = Guid.NewGuid().ToString(),
                 PayloadId = eventPayload.PayloadId.ToString(),
                 Workflows = eventPayload.Workflows,
                 FileCount = eventPayload.FileCount,

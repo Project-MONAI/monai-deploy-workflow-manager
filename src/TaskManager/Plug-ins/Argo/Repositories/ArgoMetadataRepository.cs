@@ -63,15 +63,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Repositories
 
         private async Task<string> RetrieveJsonFromFile(string bucketName, string path)
         {
-            var stream = new MemoryStream();
-
             var jsonStr = string.Empty;
 
             try
             {
-                await _storageService.GetObjectAsync(bucketName, path, s => s.CopyTo(stream));
+                var stream = await _storageService.GetObjectAsync(bucketName, path);
 
-                jsonStr = Encoding.UTF8.GetString(stream.ToArray());
+                jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
 
             }
             catch (Exception)

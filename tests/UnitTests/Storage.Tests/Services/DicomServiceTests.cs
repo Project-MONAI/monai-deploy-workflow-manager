@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Monai.Deploy.Storage.API;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Storage;
-using Monai.Deploy.Storage.Common;
 using Monai.Deploy.WorkflowManager.Storage.Services;
 using Moq;
 using Xunit;
@@ -96,7 +94,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
                 new VirtualFileInfo("filename", $"{payloadId}/dcm/dicom2.dcm", "tag2", 25),
             };
 
-            _storageService.Setup(s => s.ListObjects(bucketName, $"{payloadId}/dcm/", true, It.IsAny<CancellationToken>())).Returns(returnedFiles);
+            _storageService.Setup(s => s.ListObjectsAsync(bucketName, $"{payloadId}/dcm/", true, It.IsAny<CancellationToken>())).ReturnsAsync(returnedFiles);
 
             var files = DicomService.GetPayloadPatientDetails(payloadId, bucketName);
 

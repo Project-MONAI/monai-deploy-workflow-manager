@@ -4,8 +4,6 @@
 using System.Text;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Storage;
-using Monai.Deploy.Storage.Common;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
 using Monai.Deploy.WorkflowManager.Storage.Constants;
@@ -30,7 +28,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             Guard.Against.NullOrWhiteSpace(bucketName);
             Guard.Against.NullOrWhiteSpace(payloadId);
 
-            var items = _storageService.ListObjects(bucketName, $"{payloadId}/dcm", true);
+            var items = await _storageService.ListObjectsAsync(bucketName, $"{payloadId}/dcm", true);
 
             var patientDetails = new PatientDetails
             {
@@ -71,9 +69,8 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
                         continue;
                     }
 
-                    var stream = new MemoryStream();
-                    await _storageService.GetObject(bucketId, $"{payloadId}/dcm/{item.Filename}", s => s.CopyTo(stream));
-                    jsonStr = Encoding.UTF8.GetString(stream.ToArray());
+                    var stream = await _storageService.GetObjectAsync(bucketId, $"{payloadId}/dcm/{item.Filename}");
+                    jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
 
                     var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
                     dict.TryGetValue(keyId, out value);
@@ -98,7 +95,6 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             return string.Empty;
         }
 
-        public IEnumerable<string> GetDicomPathsForTask(string outputDirectory, string bucketName)
         public async Task<IEnumerable<string>> GetDicomPathsForTask(string outputDirectory, string bucketName)
         {
             Guard.Against.NullOrWhiteSpace(outputDirectory);
