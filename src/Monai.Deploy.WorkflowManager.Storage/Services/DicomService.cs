@@ -69,7 +69,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
                         continue;
                     }
 
-                    var stream = await _storageService.GetObjectAsync(bucketId, $"{payloadId}/dcm/{item.Filename}");
+                    var stream = await _storageService.GetObjectAsync(bucketId, item.FilePath);
                     jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
 
                     var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
