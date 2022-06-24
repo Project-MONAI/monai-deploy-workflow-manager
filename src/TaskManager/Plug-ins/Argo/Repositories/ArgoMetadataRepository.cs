@@ -6,7 +6,7 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.Storage;
+using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
 using Newtonsoft.Json;
@@ -69,7 +69,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Repositories
 
             try
             {
-                await _storageService.GetObject(bucketName, path, s => s.CopyTo(stream));
+                await _storageService.GetObjectAsync(bucketName, path, s => s.CopyTo(stream));
 
                 jsonStr = Encoding.UTF8.GetString(stream.ToArray());
 

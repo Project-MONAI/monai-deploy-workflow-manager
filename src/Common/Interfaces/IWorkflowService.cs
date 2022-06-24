@@ -30,5 +30,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// <param name="workflow">Workflow to Update.</param>
         /// <param name="id">Id of the workflow to Update.</param>
         Task<string?> UpdateAsync(Workflow workflow, string id);
+
+        /// <summary>
+        /// Soft deletes a given workflow and all revisions
+        /// </summary>
+        /// <param name="workflow">Workflow to delete.</param>
+        Task<DateTime> DeleteWorkflowAsync(WorkflowRevision workflow);
     }
 }

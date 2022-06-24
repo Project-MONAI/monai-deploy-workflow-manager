@@ -62,11 +62,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             {
                 foreach (var workflowInstance in workflowInstances)
                 {
-                    var workflow = DataHelper.WorkflowRevisions.FirstOrDefault(x => x.WorkflowId.Equals(workflowInstance.WorkflowId));
+                    var workflowRevision = DataHelper.WorkflowRevisions.OrderByDescending(x => x.Revision).FirstOrDefault(x => x.WorkflowId.Equals(workflowInstance.WorkflowId));
 
-                    if (workflow != null)
+                    if (workflowRevision != null)
                     {
-                        Assertions.AssertWorkflowInstanceMatchesExpectedWorkflow(workflowInstance, workflow, DataHelper.WorkflowRequestMessage);
+                        Assertions.AssertWorkflowInstanceMatchesExpectedWorkflow(workflowInstance, workflowRevision, DataHelper.WorkflowRequestMessage);
                     }
                     else
                     {
@@ -127,19 +127,5 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 Thread.Sleep(1000);
             }
         }
-
-        //[Scope(Tag = "WorkflowRequest")]
-        //[Scope(Tag = "WorkflowUpdateAPI")]
-        //[AfterScenario(Order = 1)]
-        //public void DeleteTestData()
-        //{
-        //    if (DataHelper.WorkflowRevisions.Count > 0)
-        //    {
-        //        foreach (var workflowRevision in DataHelper.WorkflowRevisions)
-        //        {
-        //            MongoClient.DeleteWorkflowRevisionDocument(workflowRevision.Id);
-        //        }
-        //    }
-        //}
     }
 }

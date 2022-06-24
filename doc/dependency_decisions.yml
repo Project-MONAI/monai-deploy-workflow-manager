@@ -391,6 +391,12 @@
     :versions: []
     :when: 2022-04-14 10:32:31.000000000 +01:00
 - - :approve
+  - System.ValueTuple
+  - :who: Victor Chang (mocsharp)
+    :why: Dotnet - https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+    :versions: []
+    :when: 2022-06-22 14:36:31.000000000 +07:00
+- - :approve
   - System.Xml.XDocument
   - :who: Joss Sparkes (RemakingEden)
     :why: Dotnet - http://go.microsoft.com/fwlink/?LinkId=329770
@@ -1027,6 +1033,18 @@
     :versions: []
     :when: 2022-05-09 14:46:00.000000000 +01:00
 - - :approve
+  - Monai.Deploy.Storage.MinIO
+  - :who: Victor Chang (mocsharp)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-06-22 13:18:00.000000000 +07:00
+- - :approve
+  - Monai.Deploy.Storage.S3Policy
+  - :who: Victor Chang (mocsharp)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-06-22 13:18:00.000000000 +07:00
+- - :approve
   - System.Security.Principal.Windows
   - :who: Jack Schofield (JackSchofield23)
     :why: MIT - https://licenses.nuget.org/MIT
@@ -1220,49 +1238,49 @@
     :when: 2022-05-11 11:00:00.000000000 +01:00
 - - :approve
   - IdentityModel
-  - :who: Victor Chang
+  - :who: Victor Chang (mocsharp)
     :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
     :versions: []
     :when: 2022-05-16 20:36:08.189955789 Z
 - - :approve
   - IdentityModel.OidcClient
-  - :who: Victor Chang
+  - :who: Victor Chang (mocsharp)
     :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
     :versions: []
     :when: 2022-05-16 20:36:08.594911480 Z
 - - :approve
   - KubernetesClient
-  - :who: Victor Chang
+  - :who: Victor Chang (mocsharp)
     :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
     :versions: []
     :when: 2022-05-16 20:36:09.013355762 Z
 - - :approve
   - KubernetesClient.Basic
-  - :who: Victor Chang
+  - :who: Victor Chang (mocsharp)
     :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
     :versions: []
     :when: 2022-05-16 20:36:09.429917058 Z
 - - :approve
   - KubernetesClient.Models
-  - :who: Victor Chang
+  - :who: Victor Chang (mocsharp)
     :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
     :versions: []
     :when: 2022-05-16 20:36:09.848173630 Z
 - - :approve
   - Microsoft.Extensions.Http
-  - :who: Victor Chang
+  - :who: Victor Chang (mocsharp)
     :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
     :versions: []
     :when: 2022-05-16 20:36:10.277235933 Z
 - - :approve
   - Fractions
-  - :who: Victor Chang
+  - :who: Victor Chang (mocsharp)
     :why: BSD 2-Clause Simplified License - https://github.com/danm-de/Fractions/blob/master/license.txt
     :versions: []
     :when: 2022-05-16 20:39:54.749024684 Z
 - - :approve
   - YamlDotNet
-  - :who: Victor Chang
+  - :who: Victor Chang (mocsharp)
     :why: MIT - https://github.com/aaubry/YamlDotNet/blob/master/LICENSE.txt
     :versions: []
     :when: 2022-05-16 20:42:18.749052054 Z

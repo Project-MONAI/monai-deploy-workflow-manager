@@ -184,6 +184,47 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
             });
         }
 
+        [Test]
+        public void ValidateExportComplete_ExportCompleteEventIsValid_ReturnsTrue()
+        {
+            var exportEvent = new ExportCompleteEvent
+            {
+                WorkflowInstanceId = Guid.NewGuid().ToString(),
+                ExportTaskId = Guid.NewGuid().ToString(),
+                Status = ExportStatus.Success,
+                Message = "This is a message"
+            };
+
+            var result = _eventPayloadValidator.ValidateExportComplete(exportEvent);
+
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public void ValidateExportComplete_ExportCompleteEventIsInvalid_ReturnsFalse()
+        {
+            var exportEvent = new ExportCompleteEvent
+            {
+                WorkflowInstanceId = "     ",
+                ExportTaskId = Guid.NewGuid().ToString(),
+                Status = ExportStatus.Success,
+                Message = "This is a message"
+            };
+
+            var result = _eventPayloadValidator.ValidateExportComplete(exportEvent);
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void ValidateExportComplete_ExportCompleteEventIsNull_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                _eventPayloadValidator.ValidateExportComplete(null);
+            });
+        }
+
         private static WorkflowRequestEvent CreateWorkflowRequestMessageWithNoWorkFlow()
         {
             return new WorkflowRequestEvent

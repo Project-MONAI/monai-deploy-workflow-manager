@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,7 +15,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
-    <PackageReference Include="Minio" Version="3.1.13" />
+    <PackageReference Include="Minio" Version="4.0.4" />
+    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.1.0-rc0058" />
     <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
     <PackageReference Include="Polly" Version="7.2.3" />
     <PackageReference Include="RabbitMQ.Client" Version="6.2.4" />
@@ -1801,4 +1803,14 @@
     </None>
   </ItemGroup>
 
+  <Target Name="CopyStoragePlugin" AfterTargets="Build">
+    <ItemGroup>
+        <AWSSDK Include="$(TargetDir)AWSSDK*.dll" />
+        <Minio Include="$(TargetDir)Minio.dll" />
+        <MonaiDeployStorage Include="$(TargetDir)Monai.Deploy.Storage.*.dll" />
+    </ItemGroup>
+      <Copy SourceFiles="@(AWSSDK)" DestinationFolder="$(TargetDir)plug-ins\" />
+      <Copy SourceFiles="@(Minio)" DestinationFolder="$(TargetDir)plug-ins\" />
+      <Copy SourceFiles="@(MonaiDeployStorage)" DestinationFolder="$(TargetDir)plug-ins\" />
+  </Target>
 </Project>

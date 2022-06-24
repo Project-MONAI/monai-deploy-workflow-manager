@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using Ardalis.GuardClauses;
-using Monai.Deploy.Storage;
+using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 
@@ -76,7 +76,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
         {
             if (variableString.StartsWith("context.input"))
             {
-                return _storageService.VerifyObjectExists(bucketId, new KeyValuePair<string, string>(artifact.Name, $"{payloadId}/dcm/"));
+                return await _storageService.VerifyObjectExistsAsync(bucketId, new KeyValuePair<string, string>(artifact.Name, $"{payloadId}/dcm/"));
             }
 
             if (variableString.StartsWith("context.executions"))
@@ -90,7 +90,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
                 if (variableLocation == "output_dir")
                 {
-                    return _storageService.VerifyObjectExists(bucketId, new KeyValuePair<string, string>(artifact.Name, task.OutputDirectory));
+                    return await _storageService.VerifyObjectExistsAsync(bucketId, new KeyValuePair<string, string>(artifact.Name, task.OutputDirectory));
                 }
 
                 if (variableLocation == "artifacts")
@@ -100,7 +100,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
                     if (!outputArtifact.Equals(default(KeyValuePair<string, string>)))
                     {
-                        return _storageService.VerifyObjectExists(bucketId, new KeyValuePair<string, string>(outputArtifact.Key, outputArtifact.Value));
+                        return await _storageService.VerifyObjectExistsAsync(bucketId, new KeyValuePair<string, string>(outputArtifact.Key, outputArtifact.Value));
                     }
                 }
             }

@@ -75,5 +75,8 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
 
         [LoggerMessage(EventId = 23, Level = LogLevel.Error, Message = "The task {taskId} metadata store update failed. Payload: {payloadId}")]
         public static partial void TaskMetaDataUpdateFailed(this ILogger logger, string payloadId, string taskId, Dictionary<string, object> metadata);
+        
+        [LoggerMessage(EventId = 24, Level = LogLevel.Debug, Message = "No files to export for task {taskId} within workflow instance {workflowInstanceId}.")]
+        public static partial void ExportFilesNotFound(this ILogger logger, string taskId, string workflowInstanceId);
     }
 }

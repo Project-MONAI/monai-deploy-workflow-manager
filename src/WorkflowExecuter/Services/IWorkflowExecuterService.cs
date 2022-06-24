@@ -17,7 +17,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         /// <summary>
         /// Processes the task update payload and updates the workflow instance.
         /// </summary>
-        /// <param name="message">The workflow request message event.</param>
+        /// <param name="message">The task update message event.</param>
         Task<bool> ProcessTaskUpdate(TaskUpdateEvent message);
 
         /// <summary>
@@ -31,5 +31,10 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         Task<List<TaskExecution>> HandleTaskDestinationsAsync(WorkflowInstance workflowInstance,
                                                               WorkflowRevision workflow,
                                                               TaskDestination[]? currentTaskDestinations);
+                                                              
+        /// Processes the export complete payload and updates the workflow instance.
+        /// </summary>
+        /// <param name="message">The export complete message event.</param>
+        Task<bool> ProcessExportComplete(ExportCompleteEvent message, string correlationId);
     }
 }

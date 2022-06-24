@@ -11,7 +11,6 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System;
 using Ardalis.GuardClauses;
-using MongoDB.Bson;
 using System.Linq;
 
 namespace Monai.Deploy.WorkflowManager.Database
@@ -37,6 +36,7 @@ namespace Monai.Deploy.WorkflowManager.Database
         {
             var workflow = _workflowCollection
                             .AsQueryable()
+                              .Where(w => w.Deleted == null)
                               .OrderByDescending(e => e.Revision)
                               .GroupBy(e => e.WorkflowId)
                               .Select(g => new WorkflowRevision
@@ -51,12 +51,12 @@ namespace Monai.Deploy.WorkflowManager.Database
             return workflow;
         }
 
-    public async Task<WorkflowRevision> GetByWorkflowIdAsync(string workflowId)
+        public async Task<WorkflowRevision> GetByWorkflowIdAsync(string workflowId)
         {
             Guard.Against.NullOrWhiteSpace(workflowId, nameof(workflowId));
 
             var workflow = await _workflowCollection
-                .Find(x => x.WorkflowId == workflowId)
+                .Find(x => x.WorkflowId == workflowId && x.Deleted == null)
                 .Sort(Builders<WorkflowRevision>.Sort.Descending("Revision"))
                 .FirstOrDefaultAsync();
 
@@ -71,7 +71,10 @@ namespace Monai.Deploy.WorkflowManager.Database
 
             var filterDef = new FilterDefinitionBuilder<WorkflowRevision>();
 
-            var filter = filterDef.In(x => x.WorkflowId, workflowIds);
+            var filter = filterDef.And(
+                filterDef.In(x => x.WorkflowId, workflowIds),
+                filterDef.Where(x => x.Deleted == null)
+            );
 
             workflows = await _workflowCollection
                 .Find(filter)
@@ -88,7 +91,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             Guard.Against.NullOrWhiteSpace(aeTitle, nameof(aeTitle));
 
             var workflow = await _workflowCollection
-                .Find(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle)
+                .Find(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle && x.Deleted == null)
                 .Sort(Builders<WorkflowRevision>.Sort.Descending("Revision"))
                 .FirstOrDefaultAsync();
 
@@ -144,6 +147,19 @@ namespace Monai.Deploy.WorkflowManager.Database
             await _workflowCollection.InsertOneAsync(workflowRevision);
 
             return workflowRevision.WorkflowId;
+        }
+
+        public async Task<DateTime> SoftDeleteWorkflow(WorkflowRevision workflow)
+        {
+            Guard.Against.Null(workflow);
+
+            var deletedTimeStamp = DateTime.UtcNow;
+
+            await _workflowCollection.UpdateManyAsync(
+                wr => wr.WorkflowId == workflow.WorkflowId,
+                Builders<WorkflowRevision>.Update.Set(rec => rec.Deleted, deletedTimeStamp));
+
+            return deletedTimeStamp;
         }
     }
 }
