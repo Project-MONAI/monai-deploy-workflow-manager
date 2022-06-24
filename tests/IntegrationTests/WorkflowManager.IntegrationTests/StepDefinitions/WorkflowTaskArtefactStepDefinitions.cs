@@ -29,12 +29,13 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             DataHelper = objectContainer.Resolve<DataHelper>();
         }
 
+        [Given(@"I have a bucket in MinIO (.*) and payload (.*)")]
         [Given(@"I have a bucket in MinIO (.*)")]
-        public async Task GivenIHaveABucketInMinIO(string name)
+        public async Task GivenIHaveABucketInMinIO(string name, string payloadId)
         {
             await MinioClient.CreateBucket(name);
-            var pathname = Path.Combine(GetDirectory(), "DICOMs", "MR000000.dcm");
-            await MinioClient.AddFileToStorage(pathname, name, DataHelper.GetPayloadId());
+            var pathname = Path.Combine(GetDirectory(), "DICOMs", "dcm");
+            await MinioClient.AddFileToStorage(pathname, name, DataHelper.GetPayloadId(payloadId));
         }
 
         [Then(@"I can see a task dispatch event with a path to the DICOM bucket")]

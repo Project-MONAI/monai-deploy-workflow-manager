@@ -30,6 +30,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 catch (Exception e)
                 {
                     Console.WriteLine($"[Bucket]  Exception: {e}");
+                    throw e;
                 }
             });
         }
@@ -40,25 +41,54 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             {
                 try
                 {
-                    byte[] bs = File.ReadAllBytes(fileLocation);
-                    using (MemoryStream filestream = new MemoryStream(bs))
+                    FileAttributes fileAttributes = File.GetAttributes(fileLocation);
+                    if (fileAttributes.HasFlag(FileAttributes.Directory))
                     {
-                        FileInfo fileInfo = new FileInfo(fileLocation);
-                        var metaData = new Dictionary<string, string>
+                        var files = Directory.GetFiles($"{fileLocation}", "*.*", SearchOption.AllDirectories);
+                        foreach (var file in files)
+                        {
+                            var relativePath = Path.GetRelativePath(fileLocation, file);
+
+                            byte[] bs = File.ReadAllBytes(file);
+                            using (var filestream = new MemoryStream(bs))
+                            {
+                                var fileInfo = new FileInfo(file);
+                                var metaData = new Dictionary<string, string>
+                                {
+                                            { "Test-Metadata", "Test  Test" }
+                                };
+                                await Client.PutObjectAsync(
+                                    bucketName,
+                                    objectName,
+                                    file,
+                                    "application/octet-stream",
+                                    metaData);
+                            }
+                        }
+                    }
+                    else
                     {
-                                { "Test-Metadata", "Test  Test" }
-                    };
-                        await Client.PutObjectAsync(
-                            bucketName,
-                            objectName,
-                            fileLocation,
-                            "application/octet-stream",
-                            metaData);
+                        byte[] bs = File.ReadAllBytes(fileLocation);
+                        using (MemoryStream filestream = new MemoryStream(bs))
+                        {
+                            FileInfo fileInfo = new FileInfo(fileLocation);
+                            var metaData = new Dictionary<string, string>
+                        {
+                                    { "Test-Metadata", "Test  Test" }
+                        };
+                            await Client.PutObjectAsync(
+                                bucketName,
+                                objectName,
+                                fileLocation,
+                                "application/octet-stream",
+                                metaData);
+                        }
                     }
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine($"[Bucket]  Exception: {e}");
+                    throw e;
                 }
             });
         }

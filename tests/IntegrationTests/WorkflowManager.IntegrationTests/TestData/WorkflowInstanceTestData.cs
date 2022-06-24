@@ -19,6 +19,34 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
         {
             new WorkflowInstanceTestData()
             {
+                Name = "Workflow_instance_for_bucket_minio",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = "Multi_Req",
+                    WorkflowId = Helper.GetWorkflowByName("Workflow_Revision_for_bucket_minio").WorkflowRevision.WorkflowId,
+                    PayloadId = "donkeypayload",
+                    BucketId = "donkeybucket",
+                    StartTime = DateTime.UtcNow,
+                    Status = Status.Created,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = "pizza",
+                            TaskType = "Multi_task",
+                            Status = TaskExecutionStatus.Dispatched,
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
                 Name = "Existing_WFI_Created",
                 WorkflowInstance = new WorkflowInstance()
                 {

@@ -155,6 +155,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
             var valueArr = subValue.Split('\'');
             var keyId = $"{valueArr[1]}{valueArr[3]}";
 
+            //_dicom.readfiles
             if (subValue.StartsWith(".any"))
             {
                 var dicomValue = _dicom.GetAnyValue(keyId, WorkflowInstance.PayloadId, WorkflowInstance.BucketId);
@@ -236,6 +237,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
         }
 
         /// <summary>
+        /// If series contains given value
         /// if all values exist for given key example 0010 0040 then and
         /// they are all same value return that value otherwise return
         /// 'null'
@@ -249,6 +251,18 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
             Guard.Against.NullOrWhiteSpace(keyId);
             Guard.Against.NullOrWhiteSpace(payloadId);
             Guard.Against.NullOrWhiteSpace(bucketId);
+
+            // look at dcm folder
+
+            // look at series folders
+
+            // get first json
+
+            // jump to series 2 does it match with series 1
+
+            // check agianst rest of series
+
+
 
             var path = $"{payloadId}/dcm";
             var fileCount = GetFileCount(path, bucketId);
@@ -278,7 +292,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
             Guard.Against.NullOrWhiteSpace(path);
             Guard.Against.NullOrWhiteSpace(keyId);
 
-            var count = GetFileCount(path, bucketId);
+            var count = GetFileCount(path, bucketId); //TODO get rid off
             if (index > count)
             {
                 return string.Empty;
