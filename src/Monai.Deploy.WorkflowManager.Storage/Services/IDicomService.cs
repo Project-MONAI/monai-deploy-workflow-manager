@@ -16,5 +16,6 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
 
         PatientDetails GetPayloadPatientDetails(string payloadId, string bucketName);
         Task<IEnumerable<string>> GetDicomPathsForTask(string outputDirectory, string bucketName);
+        Task<PatientDetails> GetPayloadPatientDetails(string payloadId, string bucketName);
     }
 }

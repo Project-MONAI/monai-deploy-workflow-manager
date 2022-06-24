@@ -23,6 +23,7 @@ SPDX-License-Identifier: Apache License 2.0
 
   <ItemGroup>
     <ProjectReference Include="..\Contracts\Monai.Deploy.WorkflowManager.Contracts.csproj" />
+    <ProjectReference Include="..\Logging\Monai.Deploy.WorkflowManager.Logging.csproj" />
   </ItemGroup>
   
   <PropertyGroup>

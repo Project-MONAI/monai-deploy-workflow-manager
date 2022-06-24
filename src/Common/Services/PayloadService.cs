@@ -23,6 +23,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
         {
             Guard.Against.Null(eventPayload);
 
+            var patientDetails = await _dicomService.GetPayloadPatientDetails(eventPayload.PayloadId.ToString(), eventPayload.Bucket);
+
             var payload = new Payload
             {
                 PayloadId = eventPayload.PayloadId.ToString(),
@@ -33,7 +35,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
                 CalledAeTitle = eventPayload.CalledAeTitle,
                 CallingAeTitle = eventPayload.CallingAeTitle,
                 Timestamp = eventPayload.Timestamp,
-                PatientDetails = new PatientDetails { }
+                PatientDetails = patientDetails
             };
 
             return await _payloadRepsitory.CreateAsync(payload);

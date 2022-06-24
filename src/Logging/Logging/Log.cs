@@ -75,5 +75,8 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
 
         [LoggerMessage(EventId = 23, Level = LogLevel.Debug, Message = "No files to export for task {taskId} within workflow instance {workflowInstanceId}.")]
         public static partial void ExportFilesNotFound(this ILogger logger, string taskId, string workflowInstanceId);
+
+        [LoggerMessage(EventId = 24, Level = LogLevel.Error, Message = "Failed to get dicom tag {keyId} in bucket {bucketId}. Payload: {payloadId}")]
+        public static partial void FailedToGetDicomTag(this ILogger logger, string payloadId, string keyId, string bucketId, Exception ex);
     }
 }

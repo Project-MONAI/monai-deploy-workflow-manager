@@ -11,6 +11,9 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "patient_name")]
         public string PatientName { get; set; }
 
+        [JsonProperty(PropertyName = "patient_sex")]
+        public string PatientSex { get; set; }
+
         [JsonProperty(PropertyName = "patient_dob")]
         public DateTime PatientDob { get; set; }
     }
