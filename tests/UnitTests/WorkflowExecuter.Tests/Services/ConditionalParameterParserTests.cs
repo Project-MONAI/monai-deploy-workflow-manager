@@ -40,12 +40,13 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         //[InlineData("{{ context.executions.task['other task'].'Derick' }} == 'lordge'", true)]
         public async Task ConditionalParameterParser_WhenGivenCorrectString_ShouldEvaluate(string input, bool expectedResult)
         {
-            //  {{context.executions.task['TaskID'].'Key'}}
             var testData = CreateTestData();
             var workflow = testData.First();
             workflow.BucketId = "bucket1";
             var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _storageService.Object);
             var actualResult = conditionalParameterParser.TryParse(input, workflow);
+
+
 
             Assert.Equal(expectedResult, actualResult);
         }

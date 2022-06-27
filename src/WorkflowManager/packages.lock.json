@@ -1332,7 +1332,7 @@
       "monai.deploy.workloadmanager.workfowexecuter": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.SecurityToken": "3.7.1.165",
+          "AWSSDK.SecurityToken": "3.7.1.167",
           "Ardalis.GuardClauses": "4.0.1",
           "Monai.Deploy.Messaging": "0.1.0-rc0047",
           "Monai.Deploy.Storage": "0.1.0-rc0060",
