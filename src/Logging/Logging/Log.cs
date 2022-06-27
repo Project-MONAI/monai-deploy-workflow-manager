@@ -78,5 +78,8 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
 
         [LoggerMessage(EventId = 24, Level = LogLevel.Error, Message = "Failed to get dicom tag {keyId} in bucket {bucketId}. Payload: {payloadId}")]
         public static partial void FailedToGetDicomTag(this ILogger logger, string payloadId, string keyId, string bucketId, Exception ex);
+
+        [LoggerMessage(EventId = 25, Level = LogLevel.Error, Message = "Failed to get patient details in bucket {bucketId}. Payload: {payloadId}")]
+        public static partial void FailedToGetPatientDetails(this ILogger logger, string payloadId, string bucketId, Exception ex);
     }
 }

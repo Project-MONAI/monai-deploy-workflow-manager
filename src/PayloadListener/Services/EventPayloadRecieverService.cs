@@ -54,12 +54,17 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                     return;
                 }
 
-                await PayloadService.CreateAsync(payload);
+                if (!await PayloadService.CreateAsync(payload))
+                {
+                    Logger.EventRejectedRequeue(message.Message.MessageId);
+                    _messageSubscriber.Reject(message.Message, true);
+
+                    return;
+                }
 
                 if (!await WorkflowExecuterService.ProcessPayload(payload))
                 {
                     Logger.EventRejectedRequeue(message.Message.MessageId);
-
                     _messageSubscriber.Reject(message.Message, true);
 
                     return;

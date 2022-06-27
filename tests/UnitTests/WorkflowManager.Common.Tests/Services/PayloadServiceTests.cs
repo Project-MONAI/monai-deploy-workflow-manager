@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Services;
@@ -16,13 +17,15 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
 
         private readonly Mock<IPayloadRepsitory> _payloadRepository;
         private readonly Mock<IDicomService> _dicomService;
+        private readonly Mock<ILogger<PayloadService>> _logger;
 
         public PayloadServiceTests()
         {
             _payloadRepository = new Mock<IPayloadRepsitory>();
             _dicomService = new Mock<IDicomService>();
+            _logger = new Mock<ILogger<PayloadService>>();
 
-            PayloadService = new PayloadService(_payloadRepository.Object, _dicomService.Object);
+            PayloadService = new PayloadService(_payloadRepository.Object, _dicomService.Object, _logger.Object);
         }
 
         [Fact]
