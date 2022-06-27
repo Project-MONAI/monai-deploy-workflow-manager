@@ -68,11 +68,32 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             for (int i = 0; i < 2; i++)
             {
+                Thread.Sleep(5000);
+
+                var updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
+
+                Thread.Sleep(5000);
+
+                var orignalWorkflowInstance = DataHelper.WorkflowInstances.FirstOrDefault(x => x.Id.Equals(DataHelper.TaskUpdateEvent.WorkflowInstanceId));
+
+                Thread.Sleep(5000);
+
+                updatedWorkflowInstance.Tasks[0].Status.Should().Be(orignalWorkflowInstance.Tasks[0].Status);
+
+                Thread.Sleep(5000);
+            }
+        }
+
+        [Then(@"I can see the status of the Task is Succeeded")]
+        public void ThenICanSeeTheStatusOfTheTaskIsSucceeded()
+        {
+            for (int i = 0; i < 2; i++)
+            {
                 var updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
 
                 var orignalWorkflowInstance = DataHelper.WorkflowInstances.FirstOrDefault(x => x.Id.Equals(DataHelper.TaskUpdateEvent.WorkflowInstanceId));
 
-                updatedWorkflowInstance.Tasks[0].Status.Should().Be(orignalWorkflowInstance.Tasks[0].Status);
+                updatedWorkflowInstance.Tasks[0].Status.Should().Be(TaskExecutionStatus.Succeeded);
 
                 Thread.Sleep(1000);
             }

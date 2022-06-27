@@ -2,6 +2,8 @@
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Polly;
 using Polly.Retry;
+using System.Reactive.Linq;
+
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
@@ -12,10 +14,12 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         public MinioClientUtil()
         {
-            Client = new MinioClient(
-                TestExecutionConfig.MinioConfig.Endpoint,
-                TestExecutionConfig.MinioConfig.AccessKey,
-                TestExecutionConfig.MinioConfig.AccessToken);
+            Client = new MinioClient()
+                .WithEndpoint(TestExecutionConfig.MinioConfig.Endpoint)
+                .WithCredentials(
+                    TestExecutionConfig.MinioConfig.AccessKey,
+                    TestExecutionConfig.MinioConfig.AccessToken
+                ).Build();
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
@@ -25,7 +29,32 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             {
                 try
                 {
-                    await Client.MakeBucketAsync(bucketName);
+                    if (await Client.BucketExistsAsync(bucketName))
+                    {
+                        try
+                        {
+                            var listOfKeys = new List<string>();
+                            var count = 0;
+                            var listArgs = new ListObjectsArgs()
+                                .WithBucket(bucketName)
+                                .WithPrefix("")
+                                .WithRecursive(true);
+
+                            var objs = await Client.ListObjectsAsync(listArgs).ToList();
+                            foreach (var obj in objs)
+                            {
+                                await Client.RemoveObjectAsync(bucketName, obj.Key);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        await Client.MakeBucketAsync(bucketName);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -50,8 +79,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                         var files = Directory.GetFiles($"{fileLocation}", "*.*", SearchOption.AllDirectories);
                         foreach (var file in files)
                         {
-                            var relativePath = Path.GetRelativePath(fileLocation, file);
-
+                            var relativePath = $"{objectName}\\dcm\\{Path.GetRelativePath(fileLocation, file)}";
+                            var fileName = Path.GetFileName(file);
                             byte[] bs = File.ReadAllBytes(file);
                             using (var filestream = new MemoryStream(bs))
                             {
@@ -62,7 +91,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                                 };
                                 await Client.PutObjectAsync(
                                     bucketName,
-                                    objectName,
+                                    relativePath,
                                     file,
                                     "application/octet-stream",
                                     metaData);

@@ -53,8 +53,17 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _dicomService = new Mock<IDicomService>();
             _configuration = Options.Create(new WorkflowManagerOptions() { Messaging = new MessageBrokerConfiguration { Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch", ExportRequestPrefix = "md.export.request" }, DicomAgents = new DicomAgentConfiguration { DicomWebAgentName = "monaidicomweb" } } });
             _storageConfiguration = Options.Create(new StorageServiceConfiguration() { Settings = new Dictionary<string, string> { { "bucket", "testbucket" }, { "endpoint", "localhost" }, { "securedConnection", "False" } } });
-
-            WorkflowExecuterService = new WorkflowExecuterService(_logger.Object, _configuration, _storageConfiguration, _workflowRepository.Object, _workflowInstanceRepository.Object, _messageBrokerPublisherService.Object, _artifactMapper.Object, _storageService.Object, _dicomService.Object);
+            var conditionalParser = new ConditionalParameterParser((new Mock<ILogger<ConditionalParameterParser>>()).Object, _storageService.Object);
+            WorkflowExecuterService = new WorkflowExecuterService(_logger.Object,
+                                                                  _configuration,
+                                                                  _storageConfiguration,
+                                                                  _workflowRepository.Object,
+                                                                  _workflowInstanceRepository.Object,
+                                                                  _messageBrokerPublisherService.Object,
+                                                                  conditionalParser,
+                                                                  _artifactMapper.Object,
+                                                                  _storageService.Object,
+                                                                  _dicomService.Object);
         }
 
         [Fact]
@@ -1222,136 +1231,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.TaskDispatchRequest, It.IsAny<Message>()), Times.Exactly(0));
 
             response.Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task HandleTaskDestinations_ShouldReturnOnlyRequiredExecutions_ReturnsCoffeeDoughnutsButNotSalad()
-        {
-            #region TaskDestinations/Condtionals
-            var tdCoffee = new TaskDestination
-            {
-                Name = "coffee",
-            };
-
-            var tdDoughnuts = new TaskDestination
-            {
-                Name = "doughnuts",
-                Conditions = "{{ context.executions.task['doughnuts'].'A' }} == 'B'"
-            };
-
-            var tdSalad = new TaskDestination
-            {
-                Name = "salad",
-                Conditions = "{{ context.executions.task['doughnuts'].'A' }} == 'A'"
-            };
-
-            var currentTaskDestinations = new TaskDestination[]
-            {
-                tdCoffee, tdDoughnuts, tdSalad
-            };
-            #endregion
-
-            #region TaskExecutiuons/MetaData
-            var metadata = new Dictionary<string, object>() { { "A", "B" } };
-
-            var tePizza = new TaskExecution
-            {
-                TaskId = "pizza",
-                Status = TaskExecutionStatus.Created
-            };
-
-            var teDoughnuts = new TaskExecution
-            {
-                TaskId = "doughnuts",
-                Status = TaskExecutionStatus.Created,
-                Metadata = metadata
-            };
-
-            var teCoffee = new TaskExecution
-            {
-                TaskId = "coffee",
-                Status = TaskExecutionStatus.Created,
-            };
-
-            var teSalad = new TaskExecution
-            {
-                TaskId = "salad",
-                Status = TaskExecutionStatus.Created,
-            };
-            #endregion
-
-            var workflowInstance = new WorkflowInstance
-            {
-                Id = Guid.NewGuid().ToString(),
-                WorkflowId = Guid.NewGuid().ToString(),
-                PayloadId = Guid.NewGuid().ToString(),
-                Status = Status.Created,
-                BucketId = "bucket",
-                Tasks = new List<TaskExecution>
-                {
-                    tePizza, teCoffee, teDoughnuts
-                }
-            };
-
-            var workflow = new WorkflowRevision
-            {
-                Id = Guid.NewGuid().ToString(),
-                WorkflowId = Guid.NewGuid().ToString(),
-                Revision = 1,
-                Workflow = new Workflow
-                {
-                    Name = "Workflowname2",
-                    Description = "Workflowdesc2",
-                    Version = "1",
-                    InformaticsGateway = new InformaticsGateway
-                    {
-                        AeTitle = "aetitle"
-                    },
-                    Tasks = new TaskObject[]
-                    {
-                        new TaskObject {
-                            Id = "pizza",
-                            Type = "type",
-                            Description = "taskdesc",
-                            TaskDestinations = new TaskDestination[]
-                            {
-                                tdCoffee, tdDoughnuts
-                            }
-                        },
-                        new TaskObject
-                        {
-                            Id = "doughnuts",
-                            Type = "type",
-                            Description = "taskdesc",
-                            InputParameters = new Dictionary<string, object>
-                            {
-                                { "param1", @"{{ context.executions.task['doughnuts'].'A' }}" },
-                                { "param2", @"hello" }
-                            }
-                        },
-                        new TaskObject
-                        {
-                            Id = "coffee",
-                            Type = "type",
-                            Description = "taskdesc"
-                        }
-                    }
-                }
-            };
-
-            var result = await WorkflowExecuterService.HandleTaskDestinationsAsync(workflowInstance,
-                                                                          workflow,
-                                                                          currentTaskDestinations);
-
-            Assert.Contains(result, r => r.TaskId == teCoffee.TaskId);
-            Assert.Contains(result, r => r.TaskId == teDoughnuts.TaskId);
-            Assert.DoesNotContain(result, r => r.TaskId == teSalad.TaskId);
-
-            var param1Result = result.First(r => r.TaskId == "doughnuts").InputParameters["param1"].Equals("'B'");
-            var param2Result = result.First(r => r.TaskId == "doughnuts").InputParameters["param2"].Equals("hello");
-
-            Assert.True(param1Result);
-            Assert.True(param2Result);
         }
     }
 }

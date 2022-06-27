@@ -52,4 +52,5 @@ Scenario: Workflow task update test for bucket minio
     And I have a Workflow Instance Workflow_instance_for_bucket_minio
     And I have a bucket in MinIO donkeybucket and payload donkeypayload
     When I publish a Task Update Message Task_status_update_for_bucket_minio with status Succeeded 
-    Then I can see the status of the Task is not updated
+    Then I can see the status of the Task is Succeeded
+

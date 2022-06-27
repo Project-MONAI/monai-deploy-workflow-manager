@@ -41,6 +41,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             TaskId = "pizza",
                             TaskType = "Multi_task",
                             Status = TaskExecutionStatus.Dispatched,
+                            OutputDirectory = "none"
                         }
                     }
                 }

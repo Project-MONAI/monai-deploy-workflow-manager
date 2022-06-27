@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Storage;
+using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
@@ -95,9 +95,11 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
                 WorkflowInstance = null;
                 return conditions;
             }
-            finally
+            catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 WorkflowInstance = null;
+                throw e;
             }
         }
 
@@ -155,16 +157,20 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
             var valueArr = subValue.Split('\'');
             var keyId = $"{valueArr[1]}{valueArr[3]}";
 
-            //_dicom.readfiles
             if (subValue.StartsWith(".any"))
             {
-                var dicomValue = _dicom.GetAnyValue(keyId, WorkflowInstance.PayloadId, WorkflowInstance.BucketId);
+                var task = Task.Run(async () => await _dicom.GetAnyValueAsync(keyId, WorkflowInstance.PayloadId, WorkflowInstance.BucketId));
+                task.Wait();
+                var dicomValue = task.Result;
+                return (Result: dicomValue, Context: ParameterContext.DicomSeries);
             }
             if (subValue.StartsWith(".all"))
             {
-                var dicomValue = _dicom.GetAllValue(keyId, WorkflowInstance.PayloadId, WorkflowInstance.BucketId);
+                var task = Task.Run(async () => await _dicom.GetAllValueAsync(keyId, WorkflowInstance.PayloadId, WorkflowInstance.BucketId));
+                task.Wait();
+                var dicomValue = task.Result;
+                return (Result: dicomValue, Context: ParameterContext.DicomSeries);
             }
-            // loop through files
             return (Result: null, Context: ParameterContext.DicomSeries);
         }
 
@@ -196,7 +202,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
         }
     }
 
-    public class DicomStore : IDicomStore
+    public class DicomStore
     {
         private readonly Lazy<IStorageService> _storageService;
 
@@ -207,7 +213,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
 
         public IStorageService StorageService => _storageService.Value;
 
-        private int GetFileCount(string path, string bucketId) => StorageService.ListObjects(bucketId, path, true).Count;
+        private async Task<int> GetFileCountAsync(string path, string bucketId) => (await StorageService.ListObjectsAsync(bucketId, path, true)).Count;
 
         /// <summary>
         /// If any keyid exists return first occurance
@@ -216,17 +222,19 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
         /// <param name="keyId">example of keyId 00100040</param>
         /// <param name="workflowInstance"></param>
         /// <returns></returns>
-        public string GetAnyValue(string keyId, string payloadId, string bucketId)
+        public async Task<string> GetAnyValueAsync(string keyId, string payloadId, string bucketId)
         {
             Guard.Against.NullOrWhiteSpace(keyId);
             Guard.Against.NullOrWhiteSpace(payloadId);
             Guard.Against.NullOrWhiteSpace(bucketId);
 
-            var path = $"{payloadId}/dcm";
-            var fileCount = GetFileCount(path, bucketId);
+            var path = $"{payloadId}\\dcm";
+            var listOfFiles = await StorageService.ListObjectsAsync(bucketId, path, true);
+            var listOfJsonFiles = listOfFiles.Where(file => file.Filename.EndsWith(".json")).ToList();
+            var fileCount = listOfJsonFiles.Count;
             for (int i = 0; i < fileCount; i++)
             {
-                var matchValue = GetDcmFileValueAtIndex(i, path, bucketId, keyId);
+                var matchValue = await GetDcmJsonFileValueAtIndexAsync(i, path, bucketId, keyId, listOfJsonFiles);
 
                 if (matchValue != null)
                 {
@@ -246,7 +254,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
         /// <param name="matchValue"></param>
         /// <param name="workflowInstance"></param>
         /// <returns></returns>
-        public string GetAllValue(string keyId, string payloadId, string bucketId)
+        public async Task<string> GetAllValueAsync(string keyId, string payloadId, string bucketId)
         {
             Guard.Against.NullOrWhiteSpace(keyId);
             Guard.Against.NullOrWhiteSpace(payloadId);
@@ -265,14 +273,19 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
 
 
             var path = $"{payloadId}/dcm";
-            var fileCount = GetFileCount(path, bucketId);
-            var matchValue = GetDcmFileValueAtIndex(0, path, bucketId, keyId);
+            var listOfFiles = await StorageService.ListObjectsAsync(bucketId, path, true);
+            var listOfJsonFiles = listOfFiles.Where(file => file.Filename.EndsWith(".json")).ToList();
+            var matchValue = await GetDcmJsonFileValueAtIndexAsync(0, path, bucketId, keyId, listOfJsonFiles);
+            var fileCount = listOfJsonFiles.Count;
             for (int i = 0; i < fileCount; i++)
             {
-                var currentValue = GetDcmFileValueAtIndex(i, path, bucketId, keyId);
-                if (currentValue != matchValue)
+                if (listOfJsonFiles[i].Filename.EndsWith(".dcm"))
                 {
-                    return string.Empty;
+                    var currentValue = await GetDcmJsonFileValueAtIndexAsync(i, path, bucketId, keyId, listOfJsonFiles);
+                    if (currentValue != matchValue)
+                    {
+                        return string.Empty;
+                    }
                 }
             }
             return matchValue;
@@ -286,65 +299,90 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
         /// <param name="bucketId"></param>
         /// <param name="keyId"></param>
         /// <returns></returns>
-        public string GetDcmFileValueAtIndex(int index, string path, string bucketId, string keyId)
+        public async Task<string> GetDcmJsonFileValueAtIndexAsync(int index,
+                                                              string path,
+                                                              string bucketId,
+                                                              string keyId,
+                                                              List<VirtualFileInfo> items)
         {
             Guard.Against.NullOrWhiteSpace(bucketId);
             Guard.Against.NullOrWhiteSpace(path);
             Guard.Against.NullOrWhiteSpace(keyId);
+            Guard.Against.Null(items);
 
-            var count = GetFileCount(path, bucketId); //TODO get rid off
-            if (index > count)
+            if (index > items.Count)
             {
                 return string.Empty;
             }
 
-            var items = StorageService.ListObjects(bucketId, path, true);
-            var jsonStr = string.Empty;
+            var stream = await StorageService.GetObjectAsync(bucketId, items[index].FilePath);
+            var jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
 
-            if (items is null)
-            {
-                return string.Empty;
-            }
-
-            var stream = new MemoryStream();
-            StorageService.GetObject(bucketId, items[index].Filename, s => s.CopyTo(stream));
-            jsonStr = Encoding.UTF8.GetString(stream.ToArray());
-
-            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonStr);
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
             dict.TryGetValue(keyId, out var value);
-
-            return value ?? string.Empty;
+            var str = string.Concat(value?.Value.Cast<string>());
+            if (str is not null)
+            {
+                return string.Concat(str);
+            }
+            return string.Empty;
         }
 
-        public string GetFirstValue(string payloadId, string bucketId, string keyId)
+        public async Task<string> GetFirstValueAsync(IList<VirtualFileInfo> items, string payloadId, string bucketId, string keyId)
         {
             Guard.Against.NullOrWhiteSpace(bucketId);
             Guard.Against.NullOrWhiteSpace(payloadId);
             Guard.Against.NullOrWhiteSpace(keyId);
 
-            var items = StorageService.ListObjects(bucketId, $"{payloadId}/dcm", true);
-            var jsonStr = string.Empty;
-            var value = string.Empty;
-            if (items is null || items.Count == 0)
+            try
             {
-                return string.Empty;
-            }
-
-            foreach (var item in items)
-            {
-                var stream = new MemoryStream();
-                StorageService.GetObject(bucketId, item.Filename, s => s.CopyTo(stream));
-                jsonStr = Encoding.UTF8.GetString(stream.ToArray());
-
-                var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonStr);
-                dict.TryGetValue(keyId, out value);
-                if (value is not null && value.Trim() != string.Empty)
+                var jsonStr = string.Empty;
+                var value = new DicomValue();
+                if (items is null || items.Count == 0)
                 {
-                    return value;
+                    return string.Empty;
+                }
+
+                foreach (var item in items)
+                {
+                    if (!item.FilePath.EndsWith(".dcm.json"))
+                    {
+                        continue;
+                    }
+
+                    var stream = await StorageService.GetObjectAsync(bucketId, $"{payloadId}/dcm/{item.Filename}");
+                    jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
+
+                    var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
+                    dict.TryGetValue(keyId, out value);
+                    if (value is null || value.Value is null)
+                    {
+                        continue;
+                    }
+
+                    var firstValue = value.Value.FirstOrDefault()?.ToString();
+
+                    if (!string.IsNullOrWhiteSpace(firstValue))
+                    {
+                        return firstValue;
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                //_logger.FailedToGetDicomTag(payloadId, keyId, bucketId, e);
+            }
 
-            return value ?? string.Empty;
+            return string.Empty;
         }
+
     }
+    public class DicomValue
+    {
+        [JsonProperty(PropertyName = "vr")]
+        public string Vr { get; set; }
+        [JsonProperty(PropertyName = "Value")]
+        public object[] Value { get; set; }
+    }
+
 }

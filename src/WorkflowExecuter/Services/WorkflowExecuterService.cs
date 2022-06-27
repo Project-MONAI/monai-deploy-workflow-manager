@@ -198,10 +198,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 {
                     return await HandleDicomExport(workflowInstance, currentTask, exportDestinations, dicomImages, message.CorrelationId);
                 }
-
-            var currentTaskDestinations = workflow.Workflow?.Tasks?.SingleOrDefault(t => t.Id == message.TaskId)?.TaskDestinations;
-            var newTaskExecutions = await HandleTaskDestinationsAsync(workflowInstance, workflow, currentTaskDestinations);
-                _logger.ExportFilesNotFound(currentTask.TaskId, workflowInstance.Id);
             }
 
             var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, message.TaskId);
@@ -358,7 +354,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return processed;
         }
 
-        private async Task<List<TaskExecution>> CreateTaskDestinations(WorkflowInstance workflowInstance, WorkflowRevision workflow, string taskId)
+        public async Task<List<TaskExecution>> CreateTaskDestinations(WorkflowInstance workflowInstance, WorkflowRevision workflow, string taskId)
         {
             var currentTaskDestinations = workflow.Workflow?.Tasks?.SingleOrDefault(t => t.Id == taskId)?.TaskDestinations;
 
