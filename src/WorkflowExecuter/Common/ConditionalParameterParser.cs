@@ -213,8 +213,6 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
 
         public IStorageService StorageService => _storageService.Value;
 
-        private async Task<int> GetFileCountAsync(string path, string bucketId) => (await StorageService.ListObjectsAsync(bucketId, path, true)).Count;
-
         /// <summary>
         /// If any keyid exists return first occurance
         /// if no matchs return 'null'
@@ -320,10 +318,13 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
 
             var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
             dict.TryGetValue(keyId, out var value);
-            var str = string.Concat(value?.Value.Cast<string>());
-            if (str is not null)
+            if (value is not null && value.Value is not null)
             {
-                return string.Concat(str);
+                var str = value?.Value.Cast<string>();
+                if (str is not null)
+                {
+                    return string.Concat(str);
+                }
             }
             return string.Empty;
         }
