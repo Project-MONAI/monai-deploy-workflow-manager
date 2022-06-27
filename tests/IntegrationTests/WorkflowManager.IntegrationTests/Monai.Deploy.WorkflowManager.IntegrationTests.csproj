@@ -16,10 +16,11 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="Minio" Version="4.0.4" />
+    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.0-rc0047" />
     <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.1.0-rc0060" />
     <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
     <PackageReference Include="Polly" Version="7.2.3" />
-    <PackageReference Include="RabbitMQ.Client" Version="6.2.4" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
     <PackageReference Include="Snapshooter.NUnit" Version="0.7.1" />
     <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
     <PackageReference Include="SpecFlow.NUnit" Version="3.9.40" />
@@ -1812,5 +1813,14 @@
       <Copy SourceFiles="@(AWSSDK)" DestinationFolder="$(TargetDir)plug-ins\" />
       <Copy SourceFiles="@(Minio)" DestinationFolder="$(TargetDir)plug-ins\" />
       <Copy SourceFiles="@(MonaiDeployStorage)" DestinationFolder="$(TargetDir)plug-ins\" />
+  </Target>
+
+  <Target Name="CopyMessagingPlugin" AfterTargets="Build">
+    <ItemGroup>
+      <MonaiDeployMessaging Include="$(TargetDir)Monai.Deploy.Messaging.*" />
+      <RabbitMQ Include="$(TargetDir)RabbitMQ.Client.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(MonaiDeployMessaging)" DestinationFolder="$(TargetDir)plug-ins\" />
+    <Copy SourceFiles="@(RabbitMQ)" DestinationFolder="$(TargetDir)plug-ins\" />
   </Target>
 </Project>

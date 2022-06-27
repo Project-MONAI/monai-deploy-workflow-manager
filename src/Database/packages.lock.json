@@ -29,16 +29,17 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0044, )",
-        "resolved": "0.1.0-rc0044",
-        "contentHash": "jDUtoquERtAqkLMYLlKYqjhFf9A8xRcySNQS1n1m/7yBSga3aT5Li5cXw3TvulYUt2NqLNrL41/98tO3uU1D7w==",
+        "requested": "[0.1.0-rc0047, )",
+        "resolved": "0.1.0-rc0047",
+        "contentHash": "6d2aGuxubGA96+eQhE3ybQPEbjkjZm5srlBN8/Ru44Xutv/IGlplZl9YHcrjclYh/7t6fnJ+06vR/tUqlsM2Fg==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Logging": "6.0.0",
           "Newtonsoft.Json": "13.0.1",
-          "RabbitMQ.Client": "6.2.4",
-          "System.ComponentModel.Annotations": "5.0.0"
+          "RabbitMQ.Client": "6.4.0",
+          "System.ComponentModel.Annotations": "5.0.0",
+          "System.IO.Abstractions": "17.0.18"
         }
       },
       "MongoDB.Bson": {
@@ -63,15 +64,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.10.10",
-        "contentHash": "eieuNNym2E63hAnUwZiEQtNCNT5knh2PTqcFVuFQsZpYCw22cGXLq9miC8TDENLFRHh2I1mkTBRiC9E8UlKQhw=="
+        "resolved": "3.7.12.2",
+        "contentHash": "P0VKY4Y3/UWaj7Spn/q/A2utEu5NMuJ7tHWLAB7rcTubsPR7LCuIzBlIypSUgDyS4OWnFxwB1hBHF2iklAR0KA=="
       },
       "AWSSDK.SecurityToken": {
         "type": "Transitive",
-        "resolved": "3.7.1.141",
-        "contentHash": "paspGCeiN5Qjl6vJanqP1Ll8l3t9hqUmVWmeHMELXyvUgozvVzaSh+PTQ/gj6gmFQ64Us7aeCFSQlfBPZag+vQ==",
+        "resolved": "3.7.1.167",
+        "contentHash": "ITsuRFaz3qSsWKrjsjOMFeOEp8+7EFdQbg/GXk6YuBKuPurmBCz+ydaLNfbe5Imc+NdG1A/4vCebYFBghZIEWg==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.10.10, 4.0.0)"
+          "AWSSDK.Core": "[3.7.12.2, 4.0.0)"
         }
       },
       "DnsClient": {
@@ -176,8 +177,8 @@
       },
       "RabbitMQ.Client": {
         "type": "Transitive",
-        "resolved": "6.2.4",
-        "contentHash": "ttM7F+Ymb00EyQ25UCC44djr5GN/+cZNey2B3xD6JdJQQx7UcCtHdKBCE09zcmWuB+Afp07tFzetE14l/U8xQw==",
+        "resolved": "6.4.0",
+        "contentHash": "1znR1gGU+xYVSpO5z8nQolcUKA/yydnxQn7Ug9+RUXxTSLMm/eE58VKGwahPBjELXvDnX0k/kBrAitFLRjx9LA==",
         "dependencies": {
           "System.Memory": "4.5.4",
           "System.Threading.Channels": "4.7.1"
@@ -205,6 +206,11 @@
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
+      },
+      "System.IO.Abstractions": {
+        "type": "Transitive",
+        "resolved": "17.0.18",
+        "contentHash": "x0iIMdP+PCLIkz8h13xHCecaiysFgHPe9mM3FdyfSmkl5+MtMCmgFFIe38Aibkzd0UAY/OMoXMKGR2RK10rebQ=="
       },
       "System.Memory": {
         "type": "Transitive",
@@ -238,9 +244,9 @@
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.SecurityToken": "3.7.1.141",
+          "AWSSDK.SecurityToken": "3.7.1.167",
           "Microsoft.Extensions.Configuration": "6.0.1",
-          "Monai.Deploy.Messaging": "0.1.0-rc0044",
+          "Monai.Deploy.Messaging": "0.1.0-rc0047",
           "MongoDB.Bson": "2.15.0",
           "Newtonsoft.Json": "13.0.1"
         }
