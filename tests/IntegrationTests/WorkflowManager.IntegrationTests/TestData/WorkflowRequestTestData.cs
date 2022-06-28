@@ -21,7 +21,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 Name = "Basic_AeTitle_WF_Request",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
-                    Bucket = "bucket_1",
+                    Bucket = "bucket1",
                     PayloadId = Guid.NewGuid(),
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
@@ -35,7 +35,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 Name = "Basic_Id_WF_Request",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
-                    Bucket = "bucket_1",
+                    Bucket = "bucket1",
                     PayloadId = Guid.NewGuid(),
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_1").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
@@ -49,7 +49,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 Name = "Basic_Multi_Id_WF_Request",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
-                    Bucket = "bucket_1",
+                    Bucket = "bucket1",
                     PayloadId = Guid.NewGuid(),
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_1").WorkflowRevision.WorkflowId, Helper.GetWorkflowByName("Basic_Workflow_2").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
@@ -63,7 +63,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 Name = "Mismatch_Id_AeTitle_WF_Request",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
-                    Bucket = "bucket_1",
+                    Bucket = "bucket1",
                     PayloadId = Guid.NewGuid(),
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_1").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
@@ -77,7 +77,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 Name = "AeTitle_Multi_Revision_WF_Request",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
-                    Bucket = "bucket_1",
+                    Bucket = "bucket1",
                     PayloadId = Guid.NewGuid(),
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
@@ -91,7 +91,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 Name = "WorkflowID_Multi_Revision_WF_Request",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
-                    Bucket = "bucket_1",
+                    Bucket = "bucket1",
                     PayloadId = Guid.NewGuid(),
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_Multiple_Revisions_2").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
@@ -105,7 +105,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 Name = "Missing_PayloadID_Invalid_WF_Request ",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
-                    Bucket = "bucket_1",
+                    Bucket = "bucket1",
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_3").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.Now,
@@ -118,7 +118,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 Name = "Missing_WorkflowID_Invalid_WF_Request ",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
-                    Bucket = "bucket_1",
+                    Bucket = "bucket1",
                     PayloadId = Guid.NewGuid(),
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.Now,
@@ -144,7 +144,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 Name = "Missing_CorrelationID_Invalid_WF_Request",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
-                    Bucket = "bucket_1",
+                    Bucket = "bucket1",
                     PayloadId = Guid.NewGuid(),
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_3").WorkflowRevision.WorkflowId },
                     Timestamp = DateTime.Now,
@@ -157,7 +157,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 Name = "Missing_CallingAETitle_Invalid_WF_Request",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
-                    Bucket = "bucket_1",
+                    Bucket = "bucket1",
                     PayloadId = Guid.NewGuid(),
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_3").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
@@ -170,7 +170,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 Name = "Missing_CalledAETitle_Invalid_WF_Request",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
-                    Bucket = "bucket_1",
+                    Bucket = "bucket1",
                     PayloadId = Guid.NewGuid(),
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_3").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
@@ -183,7 +183,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 Name = "Multi_WF_Created",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
-                    Bucket = "bucket_1",
+                    Bucket = "bucket1",
                     PayloadId = Guid.NewGuid(),
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
@@ -197,7 +197,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 Name = "Multi_WF_Dispatched",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
-                    Bucket = "bucket_1",
+                    Bucket = "bucket1",
                     PayloadId = Guid.NewGuid(),
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
@@ -211,7 +211,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 Name = "Same_AeTitle",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
-                    Bucket = "bucket_1",
+                    Bucket = "bucket1",
                     PayloadId = Guid.NewGuid(),
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),

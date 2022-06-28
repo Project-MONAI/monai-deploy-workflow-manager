@@ -1098,7 +1098,8 @@
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
-          "Monai.Deploy.WorkflowManager.Database": "1.0.0"
+          "Monai.Deploy.WorkflowManager.Database": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Storage": "1.0.0"
         }
       },
       "monai.deploy.workflowmanager.configuration": {
@@ -1140,6 +1141,16 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1"
+        }
+      },
+      "monai.deploy.workflowmanager.storage": {
+        "type": "Project",
+        "dependencies": {
+          "Ardalis.GuardClauses": "4.0.1",
+          "Monai.Deploy.Storage": "0.1.0-rc0060",
+          "Monai.Deploy.Storage.MinIO": "0.1.0-rc0060",
+          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Logging": "1.0.0"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.api": {

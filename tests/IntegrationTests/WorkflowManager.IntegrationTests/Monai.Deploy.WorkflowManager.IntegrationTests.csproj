@@ -16,6 +16,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="Minio" Version="4.0.4" />
+    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.1.0-rc0060" />
     <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.0-rc0047" />
     <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.1.0-rc0060" />
     <PackageReference Include="MongoDB.Driver" Version="2.15.0" />

@@ -90,6 +90,7 @@ namespace Monai.Deploy.WorkflowManager
                     // Services
                     services.AddTransient<IWorkflowService, WorkflowService>();
                     services.AddTransient<IWorkflowInstanceService, WorkflowInstanceService>();
+                    services.AddTransient<IPayloadService, PayloadService>();
                     services.AddTransient<IDicomService, DicomService>();
                     services.AddTransient<IFileSystem, FileSystem>();
 
@@ -98,6 +99,7 @@ namespace Monai.Deploy.WorkflowManager
                     services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
                     services.AddTransient<IWorkflowRepository, WorkflowRepository>();
                     services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
+                    services.AddTransient<IPayloadRepsitory, PayloadRepository>();
 
                     // StorageService
                     services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
