@@ -110,7 +110,10 @@ namespace Monai.Deploy.WorkflowManager
                     {
                         var logger = s.GetService<ILogger<ConditionalParameterParser>>();
                         var storage = s.GetService<IStorageService>();
-                        return new ConditionalParameterParser(logger, storage);
+                        var dicomStore = new DicomStore(
+                         new Lazy<IStorageService>(() => storage ?? throw new ArgumentNullException(nameof(storage))));
+
+                        return new ConditionalParameterParser(logger, storage, dicomStore);
                     });
 
                     services.AddSingleton<IEventPayloadReceiverService, EventPayloadReceiverService>();

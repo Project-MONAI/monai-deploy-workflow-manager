@@ -19,31 +19,41 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
     {
         private readonly Mock<ILogger<ConditionalParameterParser>>? _logger;
         private readonly Mock<IStorageService> _storageService;
+        private readonly Mock<IDicomStore> _dicom;
 
         public ConditionalParameterParserTests()
         {
             _logger = new Mock<ILogger<ConditionalParameterParser>>();
             _storageService = new Mock<IStorageService>();
+            _dicom = new Mock<IDicomStore>();
         }
 
-        //[InlineData(false, "{{context.dicom.tags[('0010','0040')]}} == 'F' AND {{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
-        //[InlineData(false, "{{context.dicom.tags[('0010','0040')]}} == 'F' OR {{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
         [Theory]
-        [InlineData("{{ context.dicom.series.any('0010','0040') }} == 'lordge'", true)]
-        //[InlineData(
-        //    "{{ context.executions.task['2dbd1af7-b699-4467-8e99-05a0c22422b4'].'Fred' }} == 'Bob' AND " +
-        //    "{{ context.executions.task['2dbd1af7-b699-4467-8e99-05a0c22422b4'].'fred' }} == 'lowercasefred' AND " +
-        //    "{{ context.executions.task['2dbd1af7-b699-4467-8e99-05a0c22422b4'].'Sandra' }} == 'YassQueen' OR " +
-        //    "{{ context.executions.task['other task'].'Fred' }} >= '32' OR " +
-        //    "{{ context.executions.task['other task'].'Sandra' }} == 'other YassQueen' OR " +
-        //    "{{ context.executions.task['other task'].'Derick' }} == 'lordge'", true)]
+        [InlineData("{{ context.dicom.series.any('0010','0040') }} == 'lordge'", true, "lordge")]
+        [InlineData("{{ context.dicom.series.all('0010','0040') }} == 'lordge'", true, "lordge")]
+        [InlineData("{{ context.dicom.series.all('0010','0040') }} == 'lordge' AND " +
+            "{{ context.executions.task['2dbd1af7-b699-4467-8e99-05a0c22422b4'].'Fred' }} == 'Bob' AND " +
+            "{{ context.executions.task['2dbd1af7-b699-4467-8e99-05a0c22422b4'].'fred' }} == 'lowercasefred'", true, "lordge")]
+        [InlineData(
+            "{{ context.executions.task['2dbd1af7-b699-4467-8e99-05a0c22422b4'].'Fred' }} == 'Bob' AND " +
+            "{{ context.executions.task['2dbd1af7-b699-4467-8e99-05a0c22422b4'].'fred' }} == 'lowercasefred' AND " +
+            "{{ context.executions.task['2dbd1af7-b699-4467-8e99-05a0c22422b4'].'Sandra' }} == 'YassQueen' OR " +
+            "{{ context.executions.task['other task'].'Fred' }} >= '32' OR " +
+            "{{ context.executions.task['other task'].'Sandra' }} == 'other YassQueen' OR " +
+            "{{ context.executions.task['other task'].'Derick' }} == 'lordge'", true)]
         //[InlineData("{{ context.executions.task['other task'].'Derick' }} == 'lordge'", true)]
-        public async Task ConditionalParameterParser_WhenGivenCorrectString_ShouldEvaluate(string input, bool expectedResult)
+        public async Task ConditionalParameterParser_WhenGivenCorrectString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
         {
+            _dicom.Setup(w => w.GetAnyValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(() => expectedDicomReturn);
+            _dicom.Setup(w => w.GetAllValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(() => expectedDicomReturn);
+
+
             var testData = CreateTestData();
             var workflow = testData.First();
             workflow.BucketId = "bucket1";
-            var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _storageService.Object);
+            var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _storageService.Object, _dicom.Object);
             var actualResult = conditionalParameterParser.TryParse(input, workflow);
 
 

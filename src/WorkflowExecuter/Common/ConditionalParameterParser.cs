@@ -27,21 +27,17 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
         private const string ContextDicomSeries = "context.dicom.series";
 
         private readonly ILogger<ConditionalParameterParser> _logger;
-        private readonly DicomStore _dicom;
+        private readonly IDicomStore _dicom;
 
 
         private readonly Regex _squigglyBracketsRegex = new Regex(@"\{{(.*?)\}}");
 
         public WorkflowInstance? WorkflowInstance { get; private set; } = null;
 
-        public ConditionalParameterParser(ILogger<ConditionalParameterParser> logger, IStorageService storageService)
+        public ConditionalParameterParser(ILogger<ConditionalParameterParser> logger, IStorageService storageService, IDicomStore dicomStore)
         {
             _logger = logger;
-            //TODO: Fix DI
-            //_storageService = new Lazy<IStorageService>(() => storageService ?? throw new ArgumentNullException(nameof(storageService)));
-            _dicom = new DicomStore(
-                new Lazy<IStorageService>(() => storageService ?? throw new ArgumentNullException(nameof(storageService)))
-            );
+            _dicom = dicomStore;
         }
 
 
@@ -202,7 +198,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
         }
     }
 
-    public class DicomStore
+    public class DicomStore : IDicomStore
     {
         private readonly Lazy<IStorageService> _storageService;
 
