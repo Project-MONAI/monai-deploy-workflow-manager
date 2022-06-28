@@ -1,15 +1,14 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
-using System.Text;
 using System.Text.RegularExpressions;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
-using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
 {
@@ -27,17 +26,17 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
         private const string ContextDicomSeries = "context.dicom.series";
 
         private readonly ILogger<ConditionalParameterParser> _logger;
-        private readonly IDicomStore _dicom;
+        private readonly IDicomService _dicom;
 
 
         private readonly Regex _squigglyBracketsRegex = new Regex(@"\{{(.*?)\}}");
 
         public WorkflowInstance? WorkflowInstance { get; private set; } = null;
 
-        public ConditionalParameterParser(ILogger<ConditionalParameterParser> logger, IStorageService storageService, IDicomStore dicomStore)
+        public ConditionalParameterParser(ILogger<ConditionalParameterParser> logger, IStorageService storageService, IDicomService dicomService)
         {
             _logger = logger;
-            _dicom = dicomStore;
+            _dicom = dicomService;
         }
 
 
@@ -197,189 +196,4 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
             return (Result: null, Context: ParameterContext.TaskExecutions);
         }
     }
-
-    public class DicomStore : IDicomStore
-    {
-        private readonly Lazy<IStorageService> _storageService;
-
-        public DicomStore(Lazy<IStorageService> storageService)
-        {
-            _storageService = storageService;
-        }
-
-        public IStorageService StorageService => _storageService.Value;
-
-        /// <summary>
-        /// If any keyid exists return first occurance
-        /// if no matchs return 'null'
-        /// </summary>
-        /// <param name="keyId">example of keyId 00100040</param>
-        /// <param name="workflowInstance"></param>
-        /// <returns></returns>
-        public async Task<string> GetAnyValueAsync(string keyId, string payloadId, string bucketId)
-        {
-            Guard.Against.NullOrWhiteSpace(keyId);
-            Guard.Against.NullOrWhiteSpace(payloadId);
-            Guard.Against.NullOrWhiteSpace(bucketId);
-
-            var path = $"{payloadId}\\dcm";
-            var listOfFiles = await StorageService.ListObjectsAsync(bucketId, path, true);
-            var listOfJsonFiles = listOfFiles.Where(file => file.Filename.EndsWith(".json")).ToList();
-            var fileCount = listOfJsonFiles.Count;
-            for (int i = 0; i < fileCount; i++)
-            {
-                var matchValue = await GetDcmJsonFileValueAtIndexAsync(i, path, bucketId, keyId, listOfJsonFiles);
-
-                if (matchValue != null)
-                {
-                    return matchValue;
-                }
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// If series contains given value
-        /// if all values exist for given key example 0010 0040 then and
-        /// they are all same value return that value otherwise return
-        /// 'null'
-        /// </summary>
-        /// <param name="keyId"></param>
-        /// <param name="matchValue"></param>
-        /// <param name="workflowInstance"></param>
-        /// <returns></returns>
-        public async Task<string> GetAllValueAsync(string keyId, string payloadId, string bucketId)
-        {
-            Guard.Against.NullOrWhiteSpace(keyId);
-            Guard.Against.NullOrWhiteSpace(payloadId);
-            Guard.Against.NullOrWhiteSpace(bucketId);
-
-            // look at dcm folder
-
-            // look at series folders
-
-            // get first json
-
-            // jump to series 2 does it match with series 1
-
-            // check agianst rest of series
-
-
-
-            var path = $"{payloadId}/dcm";
-            var listOfFiles = await StorageService.ListObjectsAsync(bucketId, path, true);
-            var listOfJsonFiles = listOfFiles.Where(file => file.Filename.EndsWith(".json")).ToList();
-            var matchValue = await GetDcmJsonFileValueAtIndexAsync(0, path, bucketId, keyId, listOfJsonFiles);
-            var fileCount = listOfJsonFiles.Count;
-            for (int i = 0; i < fileCount; i++)
-            {
-                if (listOfJsonFiles[i].Filename.EndsWith(".dcm"))
-                {
-                    var currentValue = await GetDcmJsonFileValueAtIndexAsync(i, path, bucketId, keyId, listOfJsonFiles);
-                    if (currentValue != matchValue)
-                    {
-                        return string.Empty;
-                    }
-                }
-            }
-            return matchValue;
-        }
-
-        /// <summary>
-        /// Gets file at position
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="path"></param>
-        /// <param name="bucketId"></param>
-        /// <param name="keyId"></param>
-        /// <returns></returns>
-        public async Task<string> GetDcmJsonFileValueAtIndexAsync(int index,
-                                                              string path,
-                                                              string bucketId,
-                                                              string keyId,
-                                                              List<VirtualFileInfo> items)
-        {
-            Guard.Against.NullOrWhiteSpace(bucketId);
-            Guard.Against.NullOrWhiteSpace(path);
-            Guard.Against.NullOrWhiteSpace(keyId);
-            Guard.Against.Null(items);
-
-            if (index > items.Count)
-            {
-                return string.Empty;
-            }
-
-            var stream = await StorageService.GetObjectAsync(bucketId, items[index].FilePath);
-            var jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
-
-            var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
-            dict.TryGetValue(keyId, out var value);
-            if (value is not null && value.Value is not null)
-            {
-                var str = value?.Value.Cast<string>();
-                if (str is not null)
-                {
-                    return string.Concat(str);
-                }
-            }
-            return string.Empty;
-        }
-
-        public async Task<string> GetFirstValueAsync(IList<VirtualFileInfo> items, string payloadId, string bucketId, string keyId)
-        {
-            Guard.Against.NullOrWhiteSpace(bucketId);
-            Guard.Against.NullOrWhiteSpace(payloadId);
-            Guard.Against.NullOrWhiteSpace(keyId);
-
-            try
-            {
-                var jsonStr = string.Empty;
-                var value = new DicomValue();
-                if (items is null || items.Count == 0)
-                {
-                    return string.Empty;
-                }
-
-                foreach (var item in items)
-                {
-                    if (!item.FilePath.EndsWith(".dcm.json"))
-                    {
-                        continue;
-                    }
-
-                    var stream = await StorageService.GetObjectAsync(bucketId, $"{payloadId}/dcm/{item.Filename}");
-                    jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
-
-                    var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
-                    dict.TryGetValue(keyId, out value);
-                    if (value is null || value.Value is null)
-                    {
-                        continue;
-                    }
-
-                    var firstValue = value.Value.FirstOrDefault()?.ToString();
-
-                    if (!string.IsNullOrWhiteSpace(firstValue))
-                    {
-                        return firstValue;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                //_logger.FailedToGetDicomTag(payloadId, keyId, bucketId, e);
-            }
-
-            return string.Empty;
-        }
-
-    }
-    public class DicomValue
-    {
-        [JsonProperty(PropertyName = "vr")]
-        public string Vr { get; set; }
-        [JsonProperty(PropertyName = "Value")]
-        public object[] Value { get; set; }
-    }
-
 }

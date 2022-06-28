@@ -192,7 +192,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (exportDestinations is not null && exportDestinations.Any())
             {
-                var dicomImages = (await _dicomService.GetDicomPathsForTask(currentTask.OutputDirectory, workflowInstance.BucketId))?.ToList();
+                var dicomImages = (await _dicomService.GetDicomPathsForTaskAsync(currentTask.OutputDirectory, workflowInstance.BucketId))?.ToList();
 
                 if (dicomImages is not null && dicomImages.Any())
                 {

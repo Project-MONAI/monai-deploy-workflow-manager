@@ -112,8 +112,7 @@ namespace Monai.Deploy.WorkflowManager
                     {
                         var logger = s.GetService<ILogger<ConditionalParameterParser>>();
                         var storage = s.GetService<IStorageService>();
-                        var dicomStore = new DicomStore(
-                         new Lazy<IStorageService>(() => storage ?? throw new ArgumentNullException(nameof(storage))));
+                        var dicomStore = s.GetService<IDicomService>();
 
                         return new ConditionalParameterParser(logger, storage, dicomStore);
                     });

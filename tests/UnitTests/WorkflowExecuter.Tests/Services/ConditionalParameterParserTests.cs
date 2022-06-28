@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
 using Moq;
 using Xunit;
@@ -19,13 +20,13 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
     {
         private readonly Mock<ILogger<ConditionalParameterParser>>? _logger;
         private readonly Mock<IStorageService> _storageService;
-        private readonly Mock<IDicomStore> _dicom;
+        private readonly Mock<IDicomService> _dicom;
 
         public ConditionalParameterParserTests()
         {
             _logger = new Mock<ILogger<ConditionalParameterParser>>();
             _storageService = new Mock<IStorageService>();
-            _dicom = new Mock<IDicomStore>();
+            _dicom = new Mock<IDicomService>();
         }
 
         [Theory]
