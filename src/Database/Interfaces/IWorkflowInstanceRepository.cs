@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using System.Threading.Tasks;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Database.Interfaces
 {

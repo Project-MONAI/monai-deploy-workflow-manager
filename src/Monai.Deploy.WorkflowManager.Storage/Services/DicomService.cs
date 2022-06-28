@@ -55,8 +55,6 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
 
             try
             {
-                var jsonStr = string.Empty;
-                var value = new DicomValue();
                 if (items is null || items.Count == 0)
                 {
                     return string.Empty;
@@ -70,20 +68,23 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
                     }
 
                     var stream = await _storageService.GetObjectAsync(bucketId, item.FilePath);
-                    jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
+                    var jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
 
                     var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
-                    dict.TryGetValue(keyId, out value);
-                    if (value is null || value.Value is null)
+                    if (dict is not null)
                     {
-                        continue;
-                    }
+                        dict.TryGetValue(keyId, out var value);
+                        if (value is null || value.Value is null)
+                        {
+                            continue;
+                        }
 
-                    var firstValue = value.Value.FirstOrDefault()?.ToString();
+                        var firstValue = value.Value.FirstOrDefault()?.ToString();
 
-                    if (!string.IsNullOrWhiteSpace(firstValue))
-                    {
-                        return firstValue;
+                        if (!string.IsNullOrWhiteSpace(firstValue))
+                        {
+                            return firstValue;
+                        }
                     }
                 }
             }
@@ -199,47 +200,5 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
 
             return string.Empty;
         }
-
-        //public async Task<string> GetFirstValueAsync(IList<VirtualFileInfo> items, string payloadId, string bucketId, string keyId)
-        //{
-        //    Guard.Against.NullOrWhiteSpace(bucketId);
-        //    Guard.Against.NullOrWhiteSpace(payloadId);
-        //    Guard.Against.NullOrWhiteSpace(keyId);
-
-        //    if (items is null || items.Count == 0)
-        //    {
-        //        return string.Empty;
-        //    }
-
-        //    foreach (var item in items)
-        //    {
-        //        if (!item.FilePath.EndsWith(".dcm.json"))
-        //        {
-        //            continue;
-        //        }
-
-        //        var stream = await _storageService.GetObjectAsync(bucketId, $"{payloadId}/dcm/{item.Filename}");
-        //        var jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
-        //        var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
-        //        if (dict is not null)
-        //        {
-        //            dict.TryGetValue(keyId, out var value);
-
-        //            if (value is null || value.Value is null)
-        //            {
-        //                continue;
-        //            }
-
-        //            var firstValue = value.Value.FirstOrDefault()?.ToString();
-
-        //            if (!string.IsNullOrWhiteSpace(firstValue))
-        //            {
-        //                return firstValue;
-        //            }
-        //        }
-        //    }
-
-        //    return string.Empty;
-        //}
     }
 }
