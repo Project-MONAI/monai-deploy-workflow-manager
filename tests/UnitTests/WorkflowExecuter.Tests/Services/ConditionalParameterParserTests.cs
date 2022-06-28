@@ -64,9 +64,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
         public List<WorkflowInstance> CreateTestData()
         {
-            //  {{context.executions.task['TaskID'].'Key'}}
-            //  {{context.executions.task['2dbd1af7-b699-4467-8e99-05a0c22422b4'].'Fred'}}
-
             return new List<WorkflowInstance>()
             {
                 new WorkflowInstance()
