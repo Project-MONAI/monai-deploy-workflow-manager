@@ -27,19 +27,13 @@
           "Microsoft.Extensions.Primitives": "6.0.0"
         }
       },
-      "Monai.Deploy.Messaging": {
+      "Monai.Deploy.Messaging.RabbitMQ": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0047, )",
-        "resolved": "0.1.0-rc0047",
-        "contentHash": "6d2aGuxubGA96+eQhE3ybQPEbjkjZm5srlBN8/Ru44Xutv/IGlplZl9YHcrjclYh/7t6fnJ+06vR/tUqlsM2Fg==",
+        "requested": "[0.1.2, )",
+        "resolved": "0.1.2",
+        "contentHash": "pACJuXAqp/OQkLVdUflrxClc+cqKeFGOsOSccikUXQfXdbu4iWZolrFkhN5aGY6g2M8ypGk3iTrwFFonbZkkTQ==",
         "dependencies": {
-          "Ardalis.GuardClauses": "4.0.1",
-          "Microsoft.Extensions.Configuration": "6.0.1",
-          "Microsoft.Extensions.Logging": "6.0.0",
-          "Newtonsoft.Json": "13.0.1",
-          "RabbitMQ.Client": "6.4.0",
-          "System.ComponentModel.Annotations": "5.0.0",
-          "System.IO.Abstractions": "17.0.18"
+          "Monai.Deploy.Messaging": "0.1.2"
         }
       },
       "MongoDB.Bson": {
@@ -153,6 +147,20 @@
           "System.Security.Principal.Windows": "5.0.0"
         }
       },
+      "Monai.Deploy.Messaging": {
+        "type": "Transitive",
+        "resolved": "0.1.2",
+        "contentHash": "q8G92ilvXtGZXVHPIYw/h2XODRY472Fxa7I4k7rekV4nMvSml5bZG2zGP/foVwg0z0sx33QUpqwEz2+qkNPzsA==",
+        "dependencies": {
+          "Ardalis.GuardClauses": "4.0.1",
+          "Microsoft.Extensions.Configuration": "6.0.1",
+          "Microsoft.Extensions.Logging": "6.0.0",
+          "Newtonsoft.Json": "13.0.1",
+          "RabbitMQ.Client": "6.4.0",
+          "System.ComponentModel.Annotations": "5.0.0",
+          "System.IO.Abstractions": "17.0.18"
+        }
+      },
       "MongoDB.Driver.Core": {
         "type": "Transitive",
         "resolved": "2.15.0",
@@ -246,7 +254,7 @@
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.167",
           "Microsoft.Extensions.Configuration": "6.0.1",
-          "Monai.Deploy.Messaging": "0.1.0-rc0047",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
           "MongoDB.Bson": "2.15.0",
           "Newtonsoft.Json": "13.0.1"
         }

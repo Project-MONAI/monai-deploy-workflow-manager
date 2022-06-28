@@ -2,26 +2,6 @@
   "version": 1,
   "dependencies": {
     "net6.0": {
-      "Microsoft.Extensions.Configuration": {
-        "type": "Direct",
-        "requested": "[6.0.1, )",
-        "resolved": "6.0.1",
-        "contentHash": "BUyFU9t+HzlSE7ri4B+AQN2BgTgHv/uM82s5ZkgU1BApyzWzIl48nDsG5wR1t0pniNuuyTBzG3qCW8152/NtSw==",
-        "dependencies": {
-          "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
-          "Microsoft.Extensions.Primitives": "6.0.0"
-        }
-      },
-      "Microsoft.Extensions.Options": {
-        "type": "Direct",
-        "requested": "[6.0.0, )",
-        "resolved": "6.0.0",
-        "contentHash": "dzXN0+V1AyjOe2xcJ86Qbo233KHuLEY0njf/P2Kw8SfJU+d45HNS2ctJdnEnrWbM9Ye2eFgaC5Mj9otRMU6IsQ==",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
-          "Microsoft.Extensions.Primitives": "6.0.0"
-        }
-      },
       "Monai.Deploy.Messaging.RabbitMQ": {
         "type": "Direct",
         "requested": "[0.1.2, )",
@@ -30,33 +10,6 @@
         "dependencies": {
           "Monai.Deploy.Messaging": "0.1.2"
         }
-      },
-      "Monai.Deploy.Storage.MinIO": {
-        "type": "Direct",
-        "requested": "[0.1.0, )",
-        "resolved": "0.1.0",
-        "contentHash": "IEqw1ugxsNRDAUkNRoq41fcKmw3C2uYTLzcWdPhnmFe6iRqTQj3nex8nTivp7kcOtKBjdn1UAYdIldTRnHqcpg==",
-        "dependencies": {
-          "AWSSDK.SecurityToken": "3.7.1.165",
-          "Ardalis.GuardClauses": "4.0.1",
-          "Microsoft.Extensions.Logging": "6.0.0",
-          "Microsoft.Extensions.Options": "6.0.0",
-          "Minio": "4.0.4",
-          "Monai.Deploy.Storage": "0.1.0",
-          "Monai.Deploy.Storage.S3Policy": "0.1.0"
-        }
-      },
-      "Newtonsoft.Json": {
-        "type": "Direct",
-        "requested": "[13.0.1, )",
-        "resolved": "13.0.1",
-        "contentHash": "ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A=="
-      },
-      "System.IO.Abstractions": {
-        "type": "Direct",
-        "requested": "[17.0.18, )",
-        "resolved": "17.0.18",
-        "contentHash": "x0iIMdP+PCLIkz8h13xHCecaiysFgHPe9mM3FdyfSmkl5+MtMCmgFFIe38Aibkzd0UAY/OMoXMKGR2RK10rebQ=="
       },
       "Ardalis.GuardClauses": {
         "type": "Transitive",
@@ -97,6 +50,15 @@
         "resolved": "4.7.0",
         "contentHash": "pTj+D3uJWyN3My70i2Hqo+OXixq3Os2D1nJ2x92FFo6sk8fYS1m1WLNTs0Dc1uPaViH0YvEEwvzddQ7y4rhXmA=="
       },
+      "Microsoft.Extensions.Configuration": {
+        "type": "Transitive",
+        "resolved": "6.0.1",
+        "contentHash": "BUyFU9t+HzlSE7ri4B+AQN2BgTgHv/uM82s5ZkgU1BApyzWzIl48nDsG5wR1t0pniNuuyTBzG3qCW8152/NtSw==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Primitives": "6.0.0"
+        }
+      },
       "Microsoft.Extensions.Configuration.Abstractions": {
         "type": "Transitive",
         "resolved": "6.0.0",
@@ -135,6 +97,15 @@
         "type": "Transitive",
         "resolved": "6.0.0",
         "contentHash": "/HggWBbTwy8TgebGSX5DBZ24ndhzi93sHUBDvP1IxbZD7FDokYzdAr6+vbWGjw2XAfR2EJ1sfKUotpjHnFWPxA=="
+      },
+      "Microsoft.Extensions.Options": {
+        "type": "Transitive",
+        "resolved": "6.0.0",
+        "contentHash": "dzXN0+V1AyjOe2xcJ86Qbo233KHuLEY0njf/P2Kw8SfJU+d45HNS2ctJdnEnrWbM9Ye2eFgaC5Mj9otRMU6IsQ==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Primitives": "6.0.0"
+        }
       },
       "Microsoft.Extensions.Primitives": {
         "type": "Transitive",
@@ -195,6 +166,20 @@
           "System.IO.Abstractions": "17.0.18"
         }
       },
+      "Monai.Deploy.Storage.MinIO": {
+        "type": "Transitive",
+        "resolved": "0.1.0",
+        "contentHash": "IEqw1ugxsNRDAUkNRoq41fcKmw3C2uYTLzcWdPhnmFe6iRqTQj3nex8nTivp7kcOtKBjdn1UAYdIldTRnHqcpg==",
+        "dependencies": {
+          "AWSSDK.SecurityToken": "3.7.1.165",
+          "Ardalis.GuardClauses": "4.0.1",
+          "Microsoft.Extensions.Logging": "6.0.0",
+          "Microsoft.Extensions.Options": "6.0.0",
+          "Minio": "4.0.4",
+          "Monai.Deploy.Storage": "0.1.0",
+          "Monai.Deploy.Storage.S3Policy": "0.1.0"
+        }
+      },
       "Monai.Deploy.Storage.S3Policy": {
         "type": "Transitive",
         "resolved": "0.1.0",
@@ -211,6 +196,11 @@
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0"
         }
+      },
+      "Newtonsoft.Json": {
+        "type": "Transitive",
+        "resolved": "13.0.1",
+        "contentHash": "ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A=="
       },
       "RabbitMQ.Client": {
         "type": "Transitive",
@@ -424,6 +414,11 @@
           "System.Text.Encoding": "4.3.0",
           "System.Threading.Tasks": "4.3.0"
         }
+      },
+      "System.IO.Abstractions": {
+        "type": "Transitive",
+        "resolved": "17.0.18",
+        "contentHash": "x0iIMdP+PCLIkz8h13xHCecaiysFgHPe9mM3FdyfSmkl5+MtMCmgFFIe38Aibkzd0UAY/OMoXMKGR2RK10rebQ=="
       },
       "System.IO.FileSystem": {
         "type": "Transitive",
@@ -802,6 +797,24 @@
         "type": "Transitive",
         "resolved": "4.4.0",
         "contentHash": "BahUww/+mdP4ARCAh2RQhQTg13wYLVrBb9SYVgW8ZlrwjraGCXHGjo0oIiUfZ34LUZkMMR+RAzR7dEY4S1HeQQ=="
+      },
+      "monai.deploy.workflowmanager.configuration": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "6.0.1",
+          "Microsoft.Extensions.Options": "6.0.0",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
+          "Monai.Deploy.Storage.MinIO": "0.1.0",
+          "Newtonsoft.Json": "13.0.1",
+          "System.IO.Abstractions": "17.0.18"
+        }
+      },
+      "monai.deploy.workflowmanager.taskmanager.api": {
+        "type": "Project",
+        "dependencies": {
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
+          "Monai.Deploy.Storage.MinIO": "0.1.0"
+        }
       }
     }
   }

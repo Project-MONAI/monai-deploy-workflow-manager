@@ -496,12 +496,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             var executionId = Guid.NewGuid().ToString();
             var newInputParameters = GetInputParameters(task, workflowInstance);
+            var newTaskArgs = GetTaskArgs(task, workflowInstance);
 
             return new TaskExecution()
             {
                 ExecutionId = executionId,
                 TaskType = task.Type,
-                TaskPluginArguments = task.Args ?? new Dictionary<string, string> { },
+                TaskPluginArguments = newTaskArgs,
                 TaskId = task.Id,
                 Status = TaskExecutionStatus.Created,
                 InputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(task?.Artifacts?.Input ?? new Artifact[] { }, payloadId, workflowInstanceId, bucketName),
@@ -534,6 +535,31 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 }
             }
             return newInputParameters;
+        }
+
+        /// <summary>
+        /// Gets and resolves task arguments
+        /// </summary>
+        /// <param name="task"></param>
+        /// <param name="workflowInstance"></param>
+        /// <returns></returns>
+        private Dictionary<string, string> GetTaskArgs(TaskObject task,
+                                                              WorkflowInstance workflowInstance)
+        {
+            var newArgs = new Dictionary<string, string>();
+            if (task.Args is not null)
+            {
+                foreach (var item in task.Args)
+                {
+                    var newValue = item.Value;
+                    if (item.Value is string itemValueString)
+                    {
+                        newValue = _conditionalParameterParser.ResolveParameters(itemValueString, workflowInstance);
+                    }
+                    newArgs.Add(item.Key, newValue);
+                }
+            }
+            return newArgs;
         }
     }
 }

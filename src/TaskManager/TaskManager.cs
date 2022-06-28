@@ -160,7 +160,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             try
             {
-                metadataAssembly = _options.Value.TaskManager.MetadataAssemblyMappings[runner.Event.TaskPluginType];
+                if (_options.Value.TaskManager.MetadataAssemblyMappings.TryGetValue(runner.Event.TaskPluginType, out var metadataMappingValue))
+                {
+                    metadataAssembly = metadataMappingValue;
+                }
                 var executionStatus = await runner.Runner.GetStatus(message.Body.Identity, _cancellationTokenSource.Token).ConfigureAwait(false);
                 updateMessage = GenerateUpdateEventMessage(message, message.Body.ExecutionId, message.Body.WorkflowInstanceId, message.Body.TaskId, executionStatus);
                 updateMessage.Body.Metadata.Add(Strings.JobIdentity, message.Body.Identity);
@@ -173,33 +176,37 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 return;
             }
 
-            IMetadataRepository? metadataRepository = null;
-            try
+            if (!string.IsNullOrWhiteSpace(metadataAssembly))
             {
-                metadataRepository = typeof(IMetadataRepository).CreateInstance<IMetadataRepository>(serviceProvider: _scope.ServiceProvider, typeString: metadataAssembly, _serviceScopeFactory, runner.Event, message.Body);
-            }
-            catch (Exception ex)
-            {
-                _logger.UnsupportedRunner(metadataAssembly, ex);
-                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
-                metadataRepository?.Dispose();
+                IMetadataRepository? metadataRepository = null;
 
-                return;
-            }
+                try
+                {
+                    metadataRepository = typeof(IMetadataRepository).CreateInstance<IMetadataRepository>(serviceProvider: _scope.ServiceProvider, typeString: metadataAssembly, _serviceScopeFactory, runner.Event, message.Body);
+                }
+                catch (Exception ex)
+                {
+                    _logger.UnsupportedRunner(metadataAssembly, ex);
+                    await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                    metadataRepository?.Dispose();
 
-            try
-            {
-                var metadata = await metadataRepository.RetrieveMetadata().ConfigureAwait(false);
+                    return;
+                }
 
-                foreach (var item in metadata)
-                    updateMessage.Body.Metadata.Add(item.Key, item.Value);
-            }
-            catch (Exception ex)
-            {
-                updateMessage.Body.Status = TaskExecutionStatus.Failed;
-                updateMessage.Body.Reason = FailureReason.PluginError;
+                try
+                {
+                    var metadata = await metadataRepository.RetrieveMetadata().ConfigureAwait(false);
 
-                _logger.MetadataRetrievalFailed(ex);
+                    foreach (var item in metadata)
+                        updateMessage.Body.Metadata.Add(item.Key, item.Value);
+                }
+                catch (Exception ex)
+                {
+                    updateMessage.Body.Status = TaskExecutionStatus.Failed;
+                    updateMessage.Body.Reason = FailureReason.PluginError;
+
+                    _logger.MetadataRetrievalFailed(ex);
+                }
             }
 
             AcknowledgeMessage(message);
