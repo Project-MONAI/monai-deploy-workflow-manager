@@ -197,7 +197,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             return res;
         }
 
-        public string GetPayloadId(string? payloadId)
+        public string GetPayloadId(string? payloadId = null)
         {
             return PayloadId = payloadId ?? Guid.NewGuid().ToString();
         }
