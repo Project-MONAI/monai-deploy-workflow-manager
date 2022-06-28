@@ -37,8 +37,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             await MinioClient.AddFileToStorage(pathname, name, DataHelper.GetPayloadId());
         }
 
-        [Given(@"I have a bucket in MinIO (.*) and payload (.*)")]
-        public async Task GivenIHaveABucketInMinIOAndPayloadId(string name, string? payloadId)
+        [Given(@"I have a payload (.*) and bucket in MinIO (.*)")]
+        public async Task GivenIHaveABucketInMinIOAndPayloadId(string payloadId, string name)
         {
             await MinioClient.CreateBucket(name);
             var pathname = Path.Combine(GetDirectory(), "DICOMs", "dcm");

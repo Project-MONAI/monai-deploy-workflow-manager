@@ -322,7 +322,7 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.And("I have a Workflow Instance Workflow_instance_for_bucket_minio", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 53
-    testRunner.And("I have a bucket in MinIO donkeybucket and payload donkeypayload", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I have a payload donkeypayload and bucket in MinIO donkeybucket", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 54
     testRunner.When("I publish a Task Update Message Task_status_update_for_bucket_minio with status S" +
