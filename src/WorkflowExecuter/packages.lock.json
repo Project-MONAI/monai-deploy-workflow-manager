@@ -20,48 +20,28 @@
           "AWSSDK.Core": "[3.7.12.2, 4.0.0)"
         }
       },
-      "Monai.Deploy.Messaging": {
+      "Monai.Deploy.Messaging.RabbitMQ": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0047, )",
-        "resolved": "0.1.0-rc0047",
-        "contentHash": "6d2aGuxubGA96+eQhE3ybQPEbjkjZm5srlBN8/Ru44Xutv/IGlplZl9YHcrjclYh/7t6fnJ+06vR/tUqlsM2Fg==",
+        "requested": "[0.1.2, )",
+        "resolved": "0.1.2",
+        "contentHash": "pACJuXAqp/OQkLVdUflrxClc+cqKeFGOsOSccikUXQfXdbu4iWZolrFkhN5aGY6g2M8ypGk3iTrwFFonbZkkTQ==",
         "dependencies": {
-          "Ardalis.GuardClauses": "4.0.1",
-          "Microsoft.Extensions.Configuration": "6.0.1",
-          "Microsoft.Extensions.Logging": "6.0.0",
-          "Newtonsoft.Json": "13.0.1",
-          "RabbitMQ.Client": "6.4.0",
-          "System.ComponentModel.Annotations": "5.0.0",
-          "System.IO.Abstractions": "17.0.18"
-        }
-      },
-      "Monai.Deploy.Storage": {
-        "type": "Direct",
-        "requested": "[0.1.0-rc0060, )",
-        "resolved": "0.1.0-rc0060",
-        "contentHash": "OMWXg/DbTxjBtQxJhVq16+8SDb4URRoQhUAVcwvdQJOlDrNm0dIWOW5ec1uCSD/UKTj1fMipT4zv/3xz5wfH/w==",
-        "dependencies": {
-          "AWSSDK.SecurityToken": "3.7.1.165",
-          "Ardalis.GuardClauses": "4.0.1",
-          "Microsoft.Extensions.Configuration": "6.0.1",
-          "Microsoft.Extensions.Logging": "6.0.0",
-          "Monai.Deploy.Storage.S3Policy": "0.1.0-rc0060",
-          "System.IO.Abstractions": "17.0.18"
+          "Monai.Deploy.Messaging": "0.1.2"
         }
       },
       "Monai.Deploy.Storage.MinIO": {
         "type": "Direct",
-        "requested": "[0.1.0-rc0060, )",
-        "resolved": "0.1.0-rc0060",
-        "contentHash": "IamR9bqCROhCyrVm2w+i1ISTQjahP2nje7A5r3sLEuBvZxlNjaPZGeKcK1XnuK8vuZSV7A1y42dI4YcIrnAY6w==",
+        "requested": "[0.1.0, )",
+        "resolved": "0.1.0",
+        "contentHash": "IEqw1ugxsNRDAUkNRoq41fcKmw3C2uYTLzcWdPhnmFe6iRqTQj3nex8nTivp7kcOtKBjdn1UAYdIldTRnHqcpg==",
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.165",
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Logging": "6.0.0",
           "Microsoft.Extensions.Options": "6.0.0",
           "Minio": "4.0.4",
-          "Monai.Deploy.Storage": "0.1.0-rc0060",
-          "Monai.Deploy.Storage.S3Policy": "0.1.0-rc0060"
+          "Monai.Deploy.Storage": "0.1.0",
+          "Monai.Deploy.Storage.S3Policy": "0.1.0"
         }
       },
       "Newtonsoft.Json": {
@@ -199,10 +179,37 @@
           "System.ValueTuple": "4.4.0"
         }
       },
+      "Monai.Deploy.Messaging": {
+        "type": "Transitive",
+        "resolved": "0.1.2",
+        "contentHash": "q8G92ilvXtGZXVHPIYw/h2XODRY472Fxa7I4k7rekV4nMvSml5bZG2zGP/foVwg0z0sx33QUpqwEz2+qkNPzsA==",
+        "dependencies": {
+          "Ardalis.GuardClauses": "4.0.1",
+          "Microsoft.Extensions.Configuration": "6.0.1",
+          "Microsoft.Extensions.Logging": "6.0.0",
+          "Newtonsoft.Json": "13.0.1",
+          "RabbitMQ.Client": "6.4.0",
+          "System.ComponentModel.Annotations": "5.0.0",
+          "System.IO.Abstractions": "17.0.18"
+        }
+      },
+      "Monai.Deploy.Storage": {
+        "type": "Transitive",
+        "resolved": "0.1.0",
+        "contentHash": "BA9MH3EoFuyOGym/Wy28sFlOW5PGtHSmo83xXwHeXJE1V0lcmTn30ZiSjzDK77hvHUb04TJRL3pvcXMKpdwK2Q==",
+        "dependencies": {
+          "AWSSDK.SecurityToken": "3.7.1.165",
+          "Ardalis.GuardClauses": "4.0.1",
+          "Microsoft.Extensions.Configuration": "6.0.1",
+          "Microsoft.Extensions.Logging": "6.0.0",
+          "Monai.Deploy.Storage.S3Policy": "0.1.0",
+          "System.IO.Abstractions": "17.0.18"
+        }
+      },
       "Monai.Deploy.Storage.S3Policy": {
         "type": "Transitive",
-        "resolved": "0.1.0-rc0060",
-        "contentHash": "5i/7wlkm4oWMEtJxiR0lAql8E+5RL1pK6vULpTu3l+tmqSwCrRaLfbJ7Y3j1YEJDxbMXAHwpCcCMC3D1nM54Sw==",
+        "resolved": "0.1.0",
+        "contentHash": "yITzMBKwppORGoP3BL9f0lVjWodHRqSwuo9Y8huyvhVBto6fF6j42j8bBNg1tgnsz/SI7hjn1TpQIImn709nTA==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Newtonsoft.Json": "13.0.1"
@@ -892,9 +899,8 @@
         "dependencies": {
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.0-rc0047",
-          "Monai.Deploy.Storage": "0.1.0-rc0060",
-          "Monai.Deploy.Storage.MinIO": "0.1.0-rc0060",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
+          "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Newtonsoft.Json": "13.0.1",
           "System.IO.Abstractions": "17.0.18"
         }
@@ -904,7 +910,7 @@
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.167",
           "Microsoft.Extensions.Configuration": "6.0.1",
-          "Monai.Deploy.Messaging": "0.1.0-rc0047",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
           "MongoDB.Bson": "2.15.0",
           "Newtonsoft.Json": "13.0.1"
         }
@@ -915,7 +921,7 @@
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.0-rc0047",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
           "MongoDB.Bson": "2.15.0",
@@ -932,8 +938,7 @@
         "type": "Project",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
-          "Monai.Deploy.Storage": "0.1.0-rc0060",
-          "Monai.Deploy.Storage.MinIO": "0.1.0-rc0060",
+          "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Logging": "1.0.0"
         }

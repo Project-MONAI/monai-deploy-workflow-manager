@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.Globalization;
+using System.IO.Abstractions;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,11 +30,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "Test application")]
         private static async Task Main(string[] args)
         {
-            if (args.Length != 1)
-            {
-                PrintHelp();
-                return;
-            }
+ 
 
             var exitEvent = new ManualResetEvent(false);
             var host = CreateHostBuilder(args).Build();
@@ -169,6 +166,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                     services.AddSingleton<TaskManager>();
                     services.AddSingleton<IArgoProvider, ArgoProvider>();
                     services.AddSingleton<IKubernetesProvider, KubernetesProvider>();
+                    services.AddTransient<IFileSystem, FileSystem>();
 
                     services.AddHostedService<TaskManager>(p => p.GetRequiredService<TaskManager>());
                 });
