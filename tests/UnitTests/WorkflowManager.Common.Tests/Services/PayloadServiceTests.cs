@@ -67,7 +67,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
 
             _payloadRepository.Setup(w => w.CreateAsync(It.IsAny<Payload>())).ReturnsAsync(true);
 
-            _dicomService.Setup(d => d.GetPayloadPatientDetails(workflowRequest.PayloadId.ToString(), workflowRequest.Bucket)).ReturnsAsync(patientDetails);
+            _dicomService.Setup(d => d.GetPayloadPatientDetailsAsync(workflowRequest.PayloadId.ToString(), workflowRequest.Bucket)).ReturnsAsync(patientDetails);
 
             var result = await PayloadService.CreateAsync(workflowRequest);
 

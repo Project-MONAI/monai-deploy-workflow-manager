@@ -31,6 +31,7 @@ Scenario Outline: Publish a valid workflow request which creates multiple workfl
 Scenario: Publish a valid workflow request with mismatched AE title and workflow ID
     Given I have a clinical workflow Basic_Workflow_1
     And I have a clinical workflow Basic_Workflow_3
+    And I have a bucket in MinIO bucket1
     When I publish a Workflow Request Message Mismatch_Id_AeTitle_WF_Request
     Then I can see 1 Workflow Instance is created
 
@@ -38,6 +39,7 @@ Scenario: Publish a valid workflow request with mismatched AE title and workflow
 Scenario: Publish a valid workflow request triggering a workflow with multiple revisions
     Given I have a clinical workflow Basic_Workflow_Multiple_Revisions_1
     And I have a clinical workflow Basic_Workflow_Multiple_Revisions_2
+    And I have a bucket in MinIO bucket1
     When I publish a Workflow Request Message <workflowRequestMessage> 
     Then I can see 1 Workflow Instances are created
     Examples:

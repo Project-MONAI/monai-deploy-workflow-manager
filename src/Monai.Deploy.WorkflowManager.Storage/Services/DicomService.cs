@@ -23,7 +23,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<PatientDetails> GetPayloadPatientDetails(string payloadId, string bucketName)
+        public async Task<PatientDetails> GetPayloadPatientDetailsAsync(string payloadId, string bucketName)
         {
             Guard.Against.NullOrWhiteSpace(bucketName);
             Guard.Against.NullOrWhiteSpace(payloadId);
@@ -32,12 +32,12 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
 
             var patientDetails = new PatientDetails
             {
-                PatientName = await GetFirstValue(items, payloadId, bucketName, DicomTagConstants.PatientNameTag),
-                PatientId = await GetFirstValue(items, payloadId, bucketName, DicomTagConstants.PatientIdTag),
-                PatientSex = await GetFirstValue(items, payloadId, bucketName, DicomTagConstants.PatientSexTag)
+                PatientName = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientNameTag),
+                PatientId = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientIdTag),
+                PatientSex = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientSexTag)
             };
 
-            var dob = await GetFirstValue(items, payloadId, bucketName, DicomTagConstants.PatientDateOfBirthTag);
+            var dob = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientDateOfBirthTag);
 
             if (DateTime.TryParse(dob, out var dateOfBirth))
             {
@@ -47,7 +47,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             return patientDetails;
         }
 
-        public async Task<string> GetFirstValue(IList<VirtualFileInfo> items, string payloadId, string bucketId, string keyId)
+        public async Task<string> GetFirstValueAsync(IList<VirtualFileInfo> items, string payloadId, string bucketId, string keyId)
         {
             Guard.Against.NullOrWhiteSpace(bucketId);
             Guard.Against.NullOrWhiteSpace(payloadId);
@@ -55,8 +55,6 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
 
             try
             {
-                var jsonStr = string.Empty;
-                var value = new DicomValue();
                 if (items is null || items.Count == 0)
                 {
                     return string.Empty;
@@ -70,20 +68,23 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
                     }
 
                     var stream = await _storageService.GetObjectAsync(bucketId, item.FilePath);
-                    jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
+                    var jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
 
                     var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
-                    dict.TryGetValue(keyId, out value);
-                    if (value is null || value.Value is null)
+                    if (dict is not null)
                     {
-                        continue;
-                    }
+                        dict.TryGetValue(keyId, out var value);
+                        if (value is null || value.Value is null)
+                        {
+                            continue;
+                        }
 
-                    var firstValue = value.Value.FirstOrDefault()?.ToString();
+                        var firstValue = value.Value.FirstOrDefault()?.ToString();
 
-                    if (!string.IsNullOrWhiteSpace(firstValue))
-                    {
-                        return firstValue;
+                        if (!string.IsNullOrWhiteSpace(firstValue))
+                        {
+                            return firstValue;
+                        }
                     }
                 }
             }
@@ -95,7 +96,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             return string.Empty;
         }
 
-        public async Task<IEnumerable<string>> GetDicomPathsForTask(string outputDirectory, string bucketName)
+        public async Task<IEnumerable<string>> GetDicomPathsForTaskAsync(string outputDirectory, string bucketName)
         {
             Guard.Against.NullOrWhiteSpace(outputDirectory);
             Guard.Against.NullOrWhiteSpace(bucketName);
@@ -105,6 +106,99 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             var dicomFiles = files?.Where(f => f.FilePath.EndsWith(".dcm"));
 
             return dicomFiles?.Select(d => d.FilePath)?.ToList() ?? new List<string>();
+        }
+
+        public async Task<string> GetAnyValueAsync(string keyId, string payloadId, string bucketId)
+        {
+            Guard.Against.NullOrWhiteSpace(keyId);
+            Guard.Against.NullOrWhiteSpace(payloadId);
+            Guard.Against.NullOrWhiteSpace(bucketId);
+
+            var path = $"{payloadId}\\dcm";
+            var listOfFiles = await _storageService.ListObjectsAsync(bucketId, path, true);
+            var listOfJsonFiles = listOfFiles.Where(file => file.Filename.EndsWith(".json")).ToList();
+            var fileCount = listOfJsonFiles.Count;
+
+            for (int i = 0; i < fileCount; i++)
+            {
+                var matchValue = await GetDcmJsonFileValueAtIndexAsync(i, path, bucketId, keyId, listOfJsonFiles);
+
+                if (matchValue != null)
+                {
+                    return matchValue;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        public async Task<string> GetAllValueAsync(string keyId, string payloadId, string bucketId)
+        {
+            Guard.Against.NullOrWhiteSpace(keyId);
+            Guard.Against.NullOrWhiteSpace(payloadId);
+            Guard.Against.NullOrWhiteSpace(bucketId);
+
+            var path = $"{payloadId}/dcm";
+            var listOfFiles = await _storageService.ListObjectsAsync(bucketId, path, true);
+            var listOfJsonFiles = listOfFiles.Where(file => file.Filename.EndsWith(".json")).ToList();
+            var matchValue = await GetDcmJsonFileValueAtIndexAsync(0, path, bucketId, keyId, listOfJsonFiles);
+            var fileCount = listOfJsonFiles.Count;
+
+            for (int i = 0; i < fileCount; i++)
+            {
+                if (listOfJsonFiles[i].Filename.EndsWith(".dcm"))
+                {
+                    var currentValue = await GetDcmJsonFileValueAtIndexAsync(i, path, bucketId, keyId, listOfJsonFiles);
+                    if (currentValue != matchValue)
+                    {
+                        return string.Empty;
+                    }
+                }
+            }
+
+            return matchValue;
+        }
+
+        /// <summary>
+        /// Gets file at position
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="path"></param>
+        /// <param name="bucketId"></param>
+        /// <param name="keyId"></param>
+        /// <returns></returns>
+        public async Task<string> GetDcmJsonFileValueAtIndexAsync(int index,
+                                                              string path,
+                                                              string bucketId,
+                                                              string keyId,
+                                                              List<VirtualFileInfo> items)
+        {
+            Guard.Against.NullOrWhiteSpace(bucketId);
+            Guard.Against.NullOrWhiteSpace(path);
+            Guard.Against.NullOrWhiteSpace(keyId);
+            Guard.Against.Null(items);
+
+            if (index > items.Count)
+            {
+                return string.Empty;
+            }
+
+            var stream = await _storageService.GetObjectAsync(bucketId, items[index].FilePath);
+            var jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
+
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
+            dict.TryGetValue(keyId, out var value);
+
+            if (value is not null && value.Value is not null)
+            {
+                var str = value?.Value.Cast<string>();
+                if (str is not null)
+                {
+                    return string.Concat(str);
+                }
+            }
+
+            return string.Empty;
         }
     }
 }

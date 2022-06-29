@@ -15,6 +15,7 @@ using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Storage;
+using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Services;
@@ -29,6 +30,7 @@ using Monai.Deploy.WorkflowManager.Services.Http;
 using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
+using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
 using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager
@@ -105,6 +107,15 @@ namespace Monai.Deploy.WorkflowManager
                     // MessageBroker
                     services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
                     services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
+
+                    services.AddSingleton<IConditionalParameterParser, ConditionalParameterParser>(s =>
+                    {
+                        var logger = s.GetService<ILogger<ConditionalParameterParser>>();
+                        var storage = s.GetService<IStorageService>();
+                        var dicomStore = s.GetService<IDicomService>();
+
+                        return new ConditionalParameterParser(logger, storage, dicomStore);
+                    });
 
                     services.AddSingleton<IEventPayloadReceiverService, EventPayloadReceiverService>();
                     services.AddTransient<IEventPayloadValidator, EventPayloadValidator>();

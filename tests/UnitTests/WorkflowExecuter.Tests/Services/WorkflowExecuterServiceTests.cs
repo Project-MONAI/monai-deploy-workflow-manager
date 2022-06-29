@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -21,8 +22,8 @@ using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
 using Moq;
 using Xunit;
+using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
 using Monai.Deploy.WorkflowManager.Storage.Services;
-using System.Linq;
 
 namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 {
@@ -51,8 +52,18 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _dicomService = new Mock<IDicomService>();
             _configuration = Options.Create(new WorkflowManagerOptions() { Messaging = new MessageBrokerConfiguration { Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch", ExportRequestPrefix = "md.export.request" }, DicomAgents = new DicomAgentConfiguration { DicomWebAgentName = "monaidicomweb" } } });
             _storageConfiguration = Options.Create(new StorageServiceConfiguration() { Settings = new Dictionary<string, string> { { "bucket", "testbucket" }, { "endpoint", "localhost" }, { "securedConnection", "False" } } });
-
-            WorkflowExecuterService = new WorkflowExecuterService(_logger.Object, _configuration, _storageConfiguration, _workflowRepository.Object, _workflowInstanceRepository.Object, _messageBrokerPublisherService.Object, _artifactMapper.Object, _storageService.Object, _dicomService.Object);
+            Mock<IDicomService> _dicom = new();
+            var conditionalParser = new ConditionalParameterParser((new Mock<ILogger<ConditionalParameterParser>>()).Object, _storageService.Object, _dicom.Object);
+            WorkflowExecuterService = new WorkflowExecuterService(_logger.Object,
+                                                                  _configuration,
+                                                                  _storageConfiguration,
+                                                                  _workflowRepository.Object,
+                                                                  _workflowInstanceRepository.Object,
+                                                                  _messageBrokerPublisherService.Object,
+                                                                  conditionalParser,
+                                                                  _artifactMapper.Object,
+                                                                  _storageService.Object,
+                                                                  _dicomService.Object);
         }
 
         [Fact]
@@ -652,6 +663,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         {
             var workflowInstanceId = Guid.NewGuid().ToString();
 
+            var metadata = new Dictionary<string, object>();
+            metadata.Add("a", "b");
+            metadata.Add("c", "d");
             var updateEvent = new TaskUpdateEvent
             {
                 WorkflowInstanceId = workflowInstanceId,
@@ -660,7 +674,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 Status = TaskExecutionStatus.Succeeded,
                 Reason = FailureReason.None,
                 Message = "This is a message",
-                Metadata = new Dictionary<string, object>(),
+                Metadata = metadata,
                 CorrelationId = Guid.NewGuid().ToString()
             };
 
@@ -966,7 +980,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
             _storageService.Setup(w => w.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactDict)).ReturnsAsync(artifactDict);
-            _dicomService.Setup(d => d.GetDicomPathsForTask(workflowInstance.Tasks.First().OutputDirectory, workflowInstance.BucketId)).ReturnsAsync(dicomFiles);
+            _dicomService.Setup(d => d.GetDicomPathsForTaskAsync(workflowInstance.Tasks.First().OutputDirectory, workflowInstance.BucketId)).ReturnsAsync(dicomFiles);
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 
@@ -981,6 +995,10 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         {
             var workflowInstanceId = Guid.NewGuid().ToString();
 
+            var metadata = new Dictionary<string, object>();
+            metadata.Add("a", "b");
+            metadata.Add("c", "d");
+
             var updateEvent = new TaskUpdateEvent
             {
                 WorkflowInstanceId = workflowInstanceId,
@@ -989,7 +1007,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 Status = TaskExecutionStatus.Succeeded,
                 Reason = FailureReason.None,
                 Message = "This is a message",
-                Metadata = new Dictionary<string, object>(),
+                Metadata = metadata,
                 CorrelationId = Guid.NewGuid().ToString()
             };
 

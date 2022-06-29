@@ -25,6 +25,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         private readonly IWorkflowRepository _workflowRepository;
         private readonly IWorkflowInstanceRepository _workflowInstanceRepository;
         private readonly IMessageBrokerPublisherService _messageBrokerPublisherService;
+        private readonly IConditionalParameterParser _conditionalParameterParser;
         private readonly IArtifactMapper _artifactMapper;
         private readonly IStorageService _storageService;
         private readonly IDicomService _dicomService;
@@ -40,6 +41,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             IWorkflowRepository workflowRepository,
             IWorkflowInstanceRepository workflowInstanceRepository,
             IMessageBrokerPublisherService messageBrokerPublisherService,
+            IConditionalParameterParser conditionalParser,
             IArtifactMapper artifactMapper,
             IStorageService storageService,
             IDicomService dicomService)
@@ -63,6 +65,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             _workflowRepository = workflowRepository ?? throw new ArgumentNullException(nameof(workflowRepository));
             _workflowInstanceRepository = workflowInstanceRepository ?? throw new ArgumentNullException(nameof(workflowInstanceRepository));
             _messageBrokerPublisherService = messageBrokerPublisherService ?? throw new ArgumentNullException(nameof(messageBrokerPublisherService));
+            _conditionalParameterParser = conditionalParser ?? throw new ArgumentNullException(nameof(artifactMapper));
             _artifactMapper = artifactMapper ?? throw new ArgumentNullException(nameof(artifactMapper));
             _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
             _dicomService = dicomService ?? throw new ArgumentNullException(nameof(dicomService));
@@ -178,13 +181,18 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
             }
 
+            if (message.Metadata.Any())
+            {
+                currentTask.Metadata = message.Metadata;
+            }
+
             await HandleOutputArtifacts(workflowInstance, message.Outputs, currentTask);
 
             var exportDestinations = workflow.Workflow?.InformaticsGateway?.ExportDestinations;
 
             if (exportDestinations is not null && exportDestinations.Any())
             {
-                var dicomImages = (await _dicomService.GetDicomPathsForTask(currentTask.OutputDirectory, workflowInstance.BucketId))?.ToList();
+                var dicomImages = (await _dicomService.GetDicomPathsForTaskAsync(currentTask.OutputDirectory, workflowInstance.BucketId))?.ToList();
 
                 if (dicomImages is not null && dicomImages.Any())
                 {
@@ -361,6 +369,14 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             foreach (var taskDest in currentTaskDestinations)
             {
+                //Evaluate Conditional
+                if (!string.IsNullOrEmpty(taskDest.Conditions)
+                    && taskDest.Conditions != string.Empty
+                    && !_conditionalParameterParser.TryParse(taskDest.Conditions, workflowInstance))
+                {
+                    continue;
+                }
+
                 var existingTask = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId == taskDest.Name);
 
                 if (existingTask is not null
@@ -380,7 +396,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                     continue;
                 }
 
-                newTaskExecutions.Add(await CreateTaskExecutionAsync(newTask, workflowInstance.Id, workflowInstance.BucketId, workflowInstance.PayloadId));
+                newTaskExecutions.Add(await CreateTaskExecutionAsync(newTask, workflowInstance));
             }
 
             return newTaskExecutions;
@@ -441,7 +457,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
                 try
                 {
-                    tasks.Add(await CreateTaskExecutionAsync(firstTask, workflowInstance.Id, message.Bucket, message.PayloadId.ToString()));
+                    tasks.Add(await CreateTaskExecutionAsync(firstTask, workflowInstance, message.Bucket, message.PayloadId.ToString()));
                 }
                 catch (FileNotFoundException)
                 {
@@ -454,8 +470,23 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return workflowInstance;
         }
 
-        private async Task<TaskExecution> CreateTaskExecutionAsync(TaskObject task, string workflowInstanceId, string bucketName, string payloadId)
+        private async Task<TaskExecution> CreateTaskExecutionAsync(TaskObject task,
+                                                  WorkflowInstance workflowInstance,
+                                                  string? bucketName = null,
+                                                  string? payloadId = null)
         {
+            Guard.Against.Null(workflowInstance, nameof(workflowInstance));
+
+            var workflowInstanceId = workflowInstance.Id;
+            if (bucketName is null)
+            {
+                bucketName = workflowInstance.BucketId;
+            }
+            if (payloadId is null)
+            {
+                payloadId = workflowInstance.PayloadId;
+            }
+
             Guard.Against.Null(task, nameof(task));
             Guard.Against.NullOrWhiteSpace(task.Type, nameof(task.Type));
             Guard.Against.NullOrWhiteSpace(task.Id, nameof(task.Id));
@@ -464,6 +495,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
 
             var executionId = Guid.NewGuid().ToString();
+            var newInputParameters = GetInputParameters(task, workflowInstance);
 
             return new TaskExecution()
             {
@@ -474,8 +506,34 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 Status = TaskExecutionStatus.Created,
                 InputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(task?.Artifacts?.Input ?? new Artifact[] { }, payloadId, workflowInstanceId, bucketName),
                 OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/",
-                Metadata = { }
+                Metadata = { },
+                InputParameters = newInputParameters
             };
+        }
+
+        /// <summary>
+        /// Gets and resolves input parameters
+        /// </summary>
+        /// <param name="task"></param>
+        /// <param name="workflowInstance"></param>
+        /// <returns></returns>
+        private Dictionary<string, object> GetInputParameters(TaskObject task,
+                                                              WorkflowInstance workflowInstance)
+        {
+            var newInputParameters = new Dictionary<string, object>();
+            if (task.InputParameters is not null)
+            {
+                foreach (var item in task.InputParameters)
+                {
+                    var newValue = item.Value;
+                    if (item.Value is string itemValueString)
+                    {
+                        newValue = _conditionalParameterParser.ResolveParameters(itemValueString, workflowInstance);
+                    }
+                    newInputParameters.Add(item.Key, newValue);
+                }
+            }
+            return newInputParameters;
         }
     }
 }

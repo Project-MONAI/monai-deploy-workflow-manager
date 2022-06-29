@@ -38,7 +38,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
         [Fact]
         public void GetDicomPathsForTask_NullInput_ThrowsException()
         {
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await DicomService.GetDicomPathsForTask(null, null));
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await DicomService.GetDicomPathsForTaskAsync(null, null));
         }
 
         [Fact]
@@ -61,7 +61,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
 
             _storageService.Setup(s => s.ListObjectsAsync(bucketName, outputDir, true, It.IsAny<CancellationToken>())).ReturnsAsync(returnedFiles);
 
-            var files = await DicomService.GetDicomPathsForTask(outputDir, bucketName);
+            var files = await DicomService.GetDicomPathsForTaskAsync(outputDir, bucketName);
 
             files.Should().BeEquivalentTo(expected);
         }
@@ -82,7 +82,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
 
             _storageService.Setup(s => s.ListObjectsAsync(bucketName, outputDir, true, It.IsAny<CancellationToken>())).ReturnsAsync(returnedFiles);
 
-            var files = await DicomService.GetDicomPathsForTask(outputDir, bucketName);
+            var files = await DicomService.GetDicomPathsForTaskAsync(outputDir, bucketName);
 
             files.Should().BeEquivalentTo(expected);
         }
@@ -122,7 +122,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
             _storageService.Setup(s => s.ListObjectsAsync(bucketName, $"{payloadId}/dcm", true, It.IsAny<CancellationToken>())).ReturnsAsync(returnedFiles);
             _storageService.Setup(s => s.GetObjectAsync(bucketName, $"{payloadId}/dcm/folder/dicom.dcm.json", It.IsAny<CancellationToken>())).ReturnsAsync(stream);
 
-            var result = await DicomService.GetPayloadPatientDetails(payloadId, bucketName);
+            var result = await DicomService.GetPayloadPatientDetailsAsync(payloadId, bucketName);
 
             result.Should().BeEquivalentTo(expected);
         }

@@ -1048,6 +1048,7 @@
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Monai.Deploy.Storage": "0.1.0-rc0060",
+          "Monai.Deploy.Storage.MinIO": "0.1.0-rc0060",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Logging": "1.0.0"
         }

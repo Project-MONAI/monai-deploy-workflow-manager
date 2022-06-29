@@ -87,6 +87,21 @@
           "System.IO.Abstractions": "17.0.18"
         }
       },
+      "Monai.Deploy.Storage.MinIO": {
+        "type": "Direct",
+        "requested": "[0.1.0-rc0060, )",
+        "resolved": "0.1.0-rc0060",
+        "contentHash": "IamR9bqCROhCyrVm2w+i1ISTQjahP2nje7A5r3sLEuBvZxlNjaPZGeKcK1XnuK8vuZSV7A1y42dI4YcIrnAY6w==",
+        "dependencies": {
+          "AWSSDK.SecurityToken": "3.7.1.165",
+          "Ardalis.GuardClauses": "4.0.1",
+          "Microsoft.Extensions.Logging": "6.0.0",
+          "Microsoft.Extensions.Options": "6.0.0",
+          "Minio": "4.0.4",
+          "Monai.Deploy.Storage": "0.1.0-rc0060",
+          "Monai.Deploy.Storage.S3Policy": "0.1.0-rc0060"
+        }
+      },
       "Ardalis.GuardClauses": {
         "type": "Transitive",
         "resolved": "4.0.1",
@@ -376,20 +391,6 @@
           "System.Net.Primitives": "4.3.1",
           "System.Reactive.Linq": "5.0.0",
           "System.ValueTuple": "4.4.0"
-        }
-      },
-      "Monai.Deploy.Storage.MinIO": {
-        "type": "Transitive",
-        "resolved": "0.1.0-rc0060",
-        "contentHash": "IamR9bqCROhCyrVm2w+i1ISTQjahP2nje7A5r3sLEuBvZxlNjaPZGeKcK1XnuK8vuZSV7A1y42dI4YcIrnAY6w==",
-        "dependencies": {
-          "AWSSDK.SecurityToken": "3.7.1.165",
-          "Ardalis.GuardClauses": "4.0.1",
-          "Microsoft.Extensions.Logging": "6.0.0",
-          "Microsoft.Extensions.Options": "6.0.0",
-          "Minio": "4.0.4",
-          "Monai.Deploy.Storage": "0.1.0-rc0060",
-          "Monai.Deploy.Storage.S3Policy": "0.1.0-rc0060"
         }
       },
       "Monai.Deploy.Storage.S3Policy": {
@@ -1108,6 +1109,7 @@
           "Microsoft.Extensions.Options": "6.0.0",
           "Monai.Deploy.Messaging": "0.1.0-rc0047",
           "Monai.Deploy.Storage": "0.1.0-rc0060",
+          "Monai.Deploy.Storage.MinIO": "0.1.0-rc0060",
           "Newtonsoft.Json": "13.0.1",
           "System.IO.Abstractions": "17.0.18"
         }
@@ -1146,6 +1148,7 @@
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Monai.Deploy.Storage": "0.1.0-rc0060",
+          "Monai.Deploy.Storage.MinIO": "0.1.0-rc0060",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Logging": "1.0.0"
         }
