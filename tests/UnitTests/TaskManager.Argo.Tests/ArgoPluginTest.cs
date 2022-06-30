@@ -19,6 +19,7 @@ using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.SharedTest;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
+using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
 using Moq;
 using Moq.Language.Flow;
 using Xunit;
@@ -284,6 +285,8 @@ public class ArgoPluginTest
         Assert.NotNull(argoTemplate);
 
         var message = GenerateTaskDispatchEventWithValidArguments();
+        message.TaskPluginArguments["resources"] = "{\"memory_reservation\": \"string\",\"cpu_reservation\": \"string\",\"gpu_limit\": 1,\"memory_limit\": \"string\",\"cpu_limit\": \"string\"}";
+        message.TaskPluginArguments["priority_class"] = "Helo";
         Workflow? submittedArgoTemplate = null;
 
         _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
@@ -371,11 +374,32 @@ public class ArgoPluginTest
 
     private static void ValidateSimpleTemplate(TaskDispatchEvent message, Workflow workflow)
     {
-        var template = workflow.Spec.Templates.FirstOrDefault(p => p.Name.Equals("my-entrypoint", StringComparison.Ordinal));
+        var firstTemplate = workflow.Spec.Templates.FirstOrDefault(p => p.Name.Equals("my-entrypoint", StringComparison.Ordinal));
 
-        Assert.NotNull(template);
+        foreach (var template in workflow.Spec.Templates.Where(w => w.Container is not null))
+        {
+            Assert.True(template.Container.Resources is not null);
+            Assert.True(template.Container.Resources?.Limits is not null);
+            Assert.True(template.Container.Resources?.Requests is not null);
+            var value = "";
 
-        Assert.Equal(message.Inputs.First(p => p.Name.Equals("input-dicom")).RelativeRootPath, template!.Inputs.Artifacts.ElementAt(0).S3.Key);
+            Assert.True(template.Container.Resources?.Requests?.TryGetValue("requests.memory", out value));
+            Assert.True(value == "string");
+            Assert.True(template.Container.Resources?.Requests?.TryGetValue("requests.cpu", out value));
+            Assert.True(value == "string");
+            Assert.True(template.Container.Resources?.Limits?.TryGetValue("limits.memory", out value));
+            Assert.True(value == "string");
+            Assert.True(template.Container.Resources?.Limits?.TryGetValue("limits.cpu", out value));
+            Assert.True(value == "string");
+            Assert.True(template.Container.Resources?.Requests?.TryGetValue("nvidia.com/gpu", out value));
+            Assert.True(value == "1");
+
+            Assert.True(template.PriorityClassName == "Helo");
+        }
+        
+        Assert.NotNull(firstTemplate);
+
+        Assert.Equal(message.Inputs.First(p => p.Name.Equals("input-dicom")).RelativeRootPath, firstTemplate!.Inputs.Artifacts.ElementAt(0).S3.Key);
     }
 
     [Fact(DisplayName = "ExecuteTask - Waits until Succeeded Phase")]

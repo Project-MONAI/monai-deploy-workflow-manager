@@ -20,7 +20,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
     public class ArgoProviderTest
     {
         [Fact(DisplayName = "Generates Argo client with API Token")]
-        public async Task GeneratesArgoClientWIthAPIToken()
+        public async Task GeneratesArgoClientWithApiToken()
         {
             var logger = new Mock<ILogger<ArgoProvider>>();
             var httpFactory = new Mock<IHttpClientFactory>();
