@@ -1,8 +1,10 @@
-﻿using Monai.Deploy.Messaging.Events;
+﻿// SPDX-FileCopyrightText: © 2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.TestData;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Polly;
 using Polly.Retry;
 
@@ -20,6 +22,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         private RetryPolicy<List<TaskDispatchEvent>> RetryTaskDispatches { get; set; }
         private RabbitConsumer TaskDispatchConsumer { get; set; }
         private MongoClientUtil MongoClient { get; set; }
+        public string PayloadId { get; private set; }
 
         public DataHelper(RabbitConsumer taskDispatchConsumer, MongoClientUtil mongoClient)
         {
@@ -157,7 +160,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 }
                 else
                 {
-                    throw new Exception($"{count} workflow instances could not be found for payloadId {payloadId}");
+                    throw new Exception($"{count} workflow instances could not be found for payloadId {payloadId}. Actual count is {WorkflowInstances.Count}");
                 }
             });
 
@@ -192,6 +195,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             });
 
             return res;
+        }
+
+        public string GetPayloadId(string? payloadId = null)
+        {
+            return PayloadId = payloadId ?? Guid.NewGuid().ToString();
         }
     }
 }

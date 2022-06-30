@@ -15,6 +15,23 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
         {
             new TaskUpdateTestData()
             {
+                Name = "Task_status_update_for_bucket_minio",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("Workflow_instance_for_bucket_minio").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("Workflow_instance_for_bucket_minio").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Succeeded,
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("Workflow_instance_for_bucket_minio").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
                 Name = "Task_Status_Update",
                 TaskUpdateEvent = new TaskUpdateEvent()
                 {
@@ -242,6 +259,38 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
             new TaskUpdateTestData()
             {
                 Name = "Task_Update_Invalid_Task_Destination",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Invalid_Task_Destination").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Invalid_Task_Destination").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Invalid_Task_Destination").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "output_artefact_file",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Invalid_Task_Destination").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Invalid_Task_Destination").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Invalid_Task_Destination").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "output_artefact_dir",
                 TaskUpdateEvent = new TaskUpdateEvent()
                 {
                     WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Invalid_Task_Destination").WorkflowInstance.Id,

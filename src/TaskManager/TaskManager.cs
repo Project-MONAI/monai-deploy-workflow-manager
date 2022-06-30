@@ -6,13 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.Messaging;
+using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.Storage;
-using Monai.Deploy.Storage.Common.Policies;
-using Monai.Deploy.Storage.MinioAdmin.Interfaces;
+using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.Configuration;
@@ -29,7 +27,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         private readonly ILogger<TaskManager> _logger;
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IServiceScopeFactory _serviceScopeFactory;
-        private readonly IMinioAdmin _minioAdmin;
+        private readonly IStorageAdminService _storageAdminService;
         private readonly IServiceScope _scope;
         private readonly IDictionary<string, TaskRunnerInstance> _activeExecutions;
         private readonly CancellationTokenSource _cancellationTokenSource;
@@ -59,7 +57,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             _activeExecutions = new Dictionary<string, TaskRunnerInstance>();
             _cancellationTokenSource = new CancellationTokenSource();
 
-            _minioAdmin = _scope.ServiceProvider.GetRequiredService<IMinioAdmin>() ?? throw new ServiceNotFoundException(nameof(IStorageService));
+            _storageAdminService = _scope.ServiceProvider.GetRequiredService<IStorageAdminService>() ?? throw new ServiceNotFoundException(nameof(IStorageAdminService));
             _storageService = _scope.ServiceProvider.GetRequiredService<IStorageService>() ?? throw new ServiceNotFoundException(nameof(IStorageService));
             _messageBrokerPublisherService = null;
             _messageBrokerSubscriberService = null;
@@ -242,7 +240,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                                   PluginStrings.Argo,
                                   StringComparison.InvariantCultureIgnoreCase))
                 {
-                    AddCredentialsToPlugin(message);
+                    await AddCredentialsToPlugin(message).ConfigureAwait(false);
                 }
                 else
                 {
@@ -288,7 +286,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
         }
 
-        private void AddCredentialsToPlugin(JsonMessage<TaskDispatchEvent> message)
+        private async Task AddCredentialsToPlugin(JsonMessage<TaskDispatchEvent> message)
         {
             var storages = new List<Messaging.Common.Storage>();
             storages.Add(message.Body.IntermediateStorage);
@@ -297,14 +295,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             var storageBuckets = storages.Select(storage => storage.Bucket)
                 .Distinct()
-                .ToList();
-            var policyRequest = storageBuckets.Select(
-                    bucket => new PolicyRequest(bucket, "")
-                ).ToArray();
+                .ToArray();
 
-            var creds = _minioAdmin.CreateReadOnlyUser(
+            var creds = await _storageAdminService.CreateUserAsync(
                 $"TM{Guid.NewGuid()}",
-                policyRequest);
+                 AccessPermissions.Read,
+                 storageBuckets);
 
             if (creds is null)
             {
@@ -328,7 +324,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             foreach (var storage in storages)
             {
-                var credeentials = await _storageService.CreateTemporaryCredentials(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
+                var credeentials = await _storageService.CreateTemporaryCredentialsAsync(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
                 storage.Credentials = new Credentials
                 {
                     AccessKey = credeentials.AccessKeyId,

@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,9 +15,12 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Include="Minio" Version="4.0.4" />
+    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.0-rc0047" />
+    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.1.0-rc0060" />
     <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
     <PackageReference Include="Polly" Version="7.2.3" />
-    <PackageReference Include="RabbitMQ.Client" Version="6.2.4" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
     <PackageReference Include="Snapshooter.NUnit" Version="0.7.1" />
     <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
     <PackageReference Include="SpecFlow.NUnit" Version="3.9.40" />
@@ -30,4 +34,1793 @@
     <ProjectReference Include="..\..\..\src\WorkflowManager\Monai.Deploy.WorkflowManager.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="DICOMs\dcm\series1\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\0b5e5bf1-323a-4590-8b6d-8b69a664e5a8.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\0b5e5bf1-323a-4590-8b6d-8b69a664e5a8.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\116b7e72-1521-4794-91c0-b4672a066dc8.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\116b7e72-1521-4794-91c0-b4672a066dc8.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\143d620f-f69d-4ddd-9ed6-9002ba86c8ec.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\143d620f-f69d-4ddd-9ed6-9002ba86c8ec.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\14f68ebb-a8c4-429b-8a60-6da51486d603.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\14f68ebb-a8c4-429b-8a60-6da51486d603.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\179d755c-3763-421c-af2a-23a0324f1ecd.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\179d755c-3763-421c-af2a-23a0324f1ecd.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\18ca9437-71a4-4a50-b21f-1e1cc3b7e845.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\18ca9437-71a4-4a50-b21f-1e1cc3b7e845.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\1b157c55-2e66-45cf-8a76-a4991c3133e5.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\1b157c55-2e66-45cf-8a76-a4991c3133e5.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\1b9d8ee2-5387-430b-9afe-dde9c794ddeb.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\1b9d8ee2-5387-430b-9afe-dde9c794ddeb.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\1bc4e1f0-4031-4459-9090-1e76ab0fde60.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\1bc4e1f0-4031-4459-9090-1e76ab0fde60.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\1e1af24b-1f48-4b96-bc40-f1d2a8992d61.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\1e1af24b-1f48-4b96-bc40-f1d2a8992d61.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\1fc49b71-b358-40cc-829c-4377892143b3.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\1fc49b71-b358-40cc-829c-4377892143b3.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\21dc363a-2e1c-4fd1-9f2c-3e690ee6b6ff.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\21dc363a-2e1c-4fd1-9f2c-3e690ee6b6ff.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\22a20114-44d7-46cc-b53e-82cf63bdc815.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\22a20114-44d7-46cc-b53e-82cf63bdc815.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\23e43d3a-eb24-4d20-b8e7-30545ea7c737.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\23e43d3a-eb24-4d20-b8e7-30545ea7c737.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\25936bdd-55a2-47a7-8f40-45ffdf2d9a52.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\25936bdd-55a2-47a7-8f40-45ffdf2d9a52.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\28727b41-3b1c-444a-9f99-d69330b97033.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\28727b41-3b1c-444a-9f99-d69330b97033.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\2a08cb18-3946-47ea-b84f-993054d6bcfb.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\2a08cb18-3946-47ea-b84f-993054d6bcfb.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\32476f44-4b5b-4df7-8638-629c4d526156.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\32476f44-4b5b-4df7-8638-629c4d526156.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\3264e12a-0851-4584-9991-9d97530a2762.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\3264e12a-0851-4584-9991-9d97530a2762.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\365bd3c5-de24-4a0e-8951-3c95673c6a62.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\365bd3c5-de24-4a0e-8951-3c95673c6a62.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\39b4c45e-3ed0-4a69-9bda-916c06b6b75e.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\39b4c45e-3ed0-4a69-9bda-916c06b6b75e.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\3a5bc0b2-d850-4e87-93d1-a1a941e9fddc.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\3a5bc0b2-d850-4e87-93d1-a1a941e9fddc.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\3bcc4eb4-a6af-408b-9794-322aa5a02abd.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\3bcc4eb4-a6af-408b-9794-322aa5a02abd.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\3c0f76df-d93b-431d-878b-4cc958608cb0.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\3c0f76df-d93b-431d-878b-4cc958608cb0.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\3d20e3ff-55c4-4618-bfc3-6471ac393145.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\3d20e3ff-55c4-4618-bfc3-6471ac393145.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\3d5cad5c-0d40-412d-adae-e5800f5e5818.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\3d5cad5c-0d40-412d-adae-e5800f5e5818.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\3e17bfe9-fd75-4713-ac67-b1b9d4a6c943.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\3e17bfe9-fd75-4713-ac67-b1b9d4a6c943.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\3fe38137-a356-4361-af91-f4259bee5aee.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\3fe38137-a356-4361-af91-f4259bee5aee.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\41152ba6-39fa-4454-9829-83180628a617.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\41152ba6-39fa-4454-9829-83180628a617.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\4237486e-e675-4b0c-b761-e681c9470d27.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\4237486e-e675-4b0c-b761-e681c9470d27.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\444d6076-8b1a-428e-802c-4dec185ae46b.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\444d6076-8b1a-428e-802c-4dec185ae46b.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\44a5bd9a-06ec-445e-91d8-af1ad730e840.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\44a5bd9a-06ec-445e-91d8-af1ad730e840.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\462e5165-56ec-4f7d-8864-132fab49ae05.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\462e5165-56ec-4f7d-8864-132fab49ae05.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\46ec637f-91ae-4e02-ac4e-1d5f73c9297f.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\46ec637f-91ae-4e02-ac4e-1d5f73c9297f.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\4804d5c8-f6ec-4412-aa80-193d4ca1b3d8.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\4804d5c8-f6ec-4412-aa80-193d4ca1b3d8.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\4922549c-ac6d-47a7-b31e-390f0bf60073.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\4922549c-ac6d-47a7-b31e-390f0bf60073.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\4cb8206a-4c06-4ac2-86e5-1d72bde09cdc.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\4cb8206a-4c06-4ac2-86e5-1d72bde09cdc.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\4e5c7792-7255-4d06-93a5-195008287d3b.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\4e5c7792-7255-4d06-93a5-195008287d3b.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\4ef63629-768e-4429-b01e-1b85b221b356.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\4ef63629-768e-4429-b01e-1b85b221b356.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\50647f8c-7d8f-443a-8a97-417d9b74f5e7.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\50647f8c-7d8f-443a-8a97-417d9b74f5e7.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\50bb0529-4432-4b15-aaad-7101b131987f.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\50bb0529-4432-4b15-aaad-7101b131987f.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\584ecfe0-d05e-4181-b0c5-821a64d99921.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\584ecfe0-d05e-4181-b0c5-821a64d99921.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\5a6392ee-c161-4c4c-a600-2107a03a8a85.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\5a6392ee-c161-4c4c-a600-2107a03a8a85.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\5b4a5f88-bb30-40dd-bcf7-4e79140bae3b.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\5b4a5f88-bb30-40dd-bcf7-4e79140bae3b.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\5b4f5029-55b5-478f-8b18-880932566ca5.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\5b4f5029-55b5-478f-8b18-880932566ca5.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\5c914c76-9e12-4bd2-8c4c-3885f43bf5d5.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\5c914c76-9e12-4bd2-8c4c-3885f43bf5d5.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\5cbfe095-8885-4242-a143-dfcadce62ffe.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\5cbfe095-8885-4242-a143-dfcadce62ffe.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\5d8525f1-435e-4ee7-a5a2-334c9a9b9c67.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\5d8525f1-435e-4ee7-a5a2-334c9a9b9c67.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\5f883d14-1362-4f42-9612-2effeb1df990.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\5f883d14-1362-4f42-9612-2effeb1df990.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\60b0163a-5bd0-4bc9-b9c4-619b9615226a.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\60b0163a-5bd0-4bc9-b9c4-619b9615226a.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\62e89ade-275a-4bdf-b483-e6a92998531d.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\62e89ade-275a-4bdf-b483-e6a92998531d.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\63b611b7-6082-4f93-9682-7827d409d105.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\63b611b7-6082-4f93-9682-7827d409d105.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\65ad8d10-d05d-4de8-88a1-550fc3580d6c.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\65ad8d10-d05d-4de8-88a1-550fc3580d6c.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\6a02403f-9c9d-4cd8-af45-e077abbac359.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\6a02403f-9c9d-4cd8-af45-e077abbac359.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\6d54734c-0d0e-4bef-9176-60467c385ee7.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\6d54734c-0d0e-4bef-9176-60467c385ee7.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\6f5f7c30-e3fc-49ab-9c8c-1dca628e8139.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\6f5f7c30-e3fc-49ab-9c8c-1dca628e8139.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\7128bbbe-b0c7-44cd-9800-ed0d0543d064.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\7128bbbe-b0c7-44cd-9800-ed0d0543d064.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\74754d96-9647-4ee6-98d7-ce6c12509d91.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\74754d96-9647-4ee6-98d7-ce6c12509d91.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\799af2c5-de5a-46ae-9442-af48f9802056.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\799af2c5-de5a-46ae-9442-af48f9802056.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\7bc3df5c-3891-426a-b898-cf03828a6cb2.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\7bc3df5c-3891-426a-b898-cf03828a6cb2.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\7ca8272a-fbe0-4dc5-b6d6-db72d77b0193.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\7ca8272a-fbe0-4dc5-b6d6-db72d77b0193.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\7d19671a-0f20-472f-ab88-f732eefe9f4e.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\7d19671a-0f20-472f-ab88-f732eefe9f4e.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\7dd0a024-ca60-4787-a975-2b64deda5920.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\7dd0a024-ca60-4787-a975-2b64deda5920.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\7f18db19-67dc-40b7-bda9-e303c3342695.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\7f18db19-67dc-40b7-bda9-e303c3342695.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\7f3e869e-8e4d-4190-9156-71e568c70785.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\7f3e869e-8e4d-4190-9156-71e568c70785.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\804b33f3-5e77-49f0-8ce3-60c2186f07a5.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\804b33f3-5e77-49f0-8ce3-60c2186f07a5.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\80efdc4e-2d01-4791-9cb6-9e867718dde6.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\80efdc4e-2d01-4791-9cb6-9e867718dde6.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\80f9291d-8176-49c1-b662-0096c666dc62.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\80f9291d-8176-49c1-b662-0096c666dc62.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\810d6a77-93ad-418c-a4e4-0abbd6e7005e.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\810d6a77-93ad-418c-a4e4-0abbd6e7005e.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\81da7bd8-3275-4fb1-a6c7-6ad1b0f8004a.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\81da7bd8-3275-4fb1-a6c7-6ad1b0f8004a.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\8482ef3f-cff3-4169-8cfe-02c0efd58eed.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\8482ef3f-cff3-4169-8cfe-02c0efd58eed.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\87499656-6136-4291-bfe1-1486348ba7f9.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\87499656-6136-4291-bfe1-1486348ba7f9.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\880a0129-9d9e-49d8-9aa8-450068d60d86.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\880a0129-9d9e-49d8-9aa8-450068d60d86.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\88f9d185-ae94-476e-b308-a4be07596221.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\88f9d185-ae94-476e-b308-a4be07596221.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\8befa50b-1478-47fc-99a0-ebbc022b3f51.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\8befa50b-1478-47fc-99a0-ebbc022b3f51.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\8c76166c-e5bc-4acc-8d92-f0fe114c0e4e.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\8c76166c-e5bc-4acc-8d92-f0fe114c0e4e.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\8c888291-c080-40d9-b46c-68776a361d81.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\8c888291-c080-40d9-b46c-68776a361d81.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\8e06f1da-f2e7-4ad1-be8d-000fa19e780d.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\8e06f1da-f2e7-4ad1-be8d-000fa19e780d.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\8e473cd1-7e55-4e9a-b9e3-48d2ce1e92a6.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\8e473cd1-7e55-4e9a-b9e3-48d2ce1e92a6.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\907d1f5d-f361-4f9d-8a89-8098b3b67905.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\907d1f5d-f361-4f9d-8a89-8098b3b67905.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\9607b7a1-7e36-441f-96cd-119ea8bbc49a.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\9607b7a1-7e36-441f-96cd-119ea8bbc49a.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\96b617b8-9e83-499d-8b6e-f2891eb136de.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\96b617b8-9e83-499d-8b6e-f2891eb136de.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\98b41d09-ee6d-4dec-9690-02d570a71c41.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\98b41d09-ee6d-4dec-9690-02d570a71c41.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\9a3d3ff9-bbbc-45f6-b703-65ca93df1f98.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\9a3d3ff9-bbbc-45f6-b703-65ca93df1f98.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\9da4338b-06ac-48f8-b653-fd534ee4b819.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\9da4338b-06ac-48f8-b653-fd534ee4b819.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\9e7344a4-6355-48f1-aebb-3f88e47a7bbb.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\9e7344a4-6355-48f1-aebb-3f88e47a7bbb.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\9eb87abe-a7cb-4cb7-8f45-3c573ccf4697.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\9eb87abe-a7cb-4cb7-8f45-3c573ccf4697.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\9fc6ac76-daa5-44ee-9ece-0b2ff44893a2.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\9fc6ac76-daa5-44ee-9ece-0b2ff44893a2.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a0094575-ef47-4e9b-847c-b5a408da1676.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a0094575-ef47-4e9b-847c-b5a408da1676.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a17d781f-69cb-48cb-b272-33bd3d43e4a0.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a17d781f-69cb-48cb-b272-33bd3d43e4a0.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a2021394-a356-4fe8-bcdd-4786e41bd5f6.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a2021394-a356-4fe8-bcdd-4786e41bd5f6.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a3551468-0746-4ab7-8701-793d4856482a.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a3551468-0746-4ab7-8701-793d4856482a.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a5c279cd-329e-4dcc-8f72-6af98143e61d.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a5c279cd-329e-4dcc-8f72-6af98143e61d.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a5d5b8a8-386c-483a-8e8d-6e636fdf9921.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a5d5b8a8-386c-483a-8e8d-6e636fdf9921.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a5db4fe1-d7ed-4b82-a7ba-f6d38748292f.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a5db4fe1-d7ed-4b82-a7ba-f6d38748292f.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a6f3420d-06c0-4da5-835c-20f7c4b8f7b6.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a6f3420d-06c0-4da5-835c-20f7c4b8f7b6.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a77ed106-33e8-46c5-b87b-5bffc0a24d40.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a77ed106-33e8-46c5-b87b-5bffc0a24d40.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a9337e2b-ffe8-4c66-95e1-96b5f1d8a8b7.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\a9337e2b-ffe8-4c66-95e1-96b5f1d8a8b7.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\ab220098-f6b7-4832-be36-b5b18b4cbf55.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\ab220098-f6b7-4832-be36-b5b18b4cbf55.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\aefc799c-4728-4aa2-b20e-c12c066bb4ad.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\aefc799c-4728-4aa2-b20e-c12c066bb4ad.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\af3ad866-7c68-4141-bef9-4ba44626675c.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\af3ad866-7c68-4141-bef9-4ba44626675c.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\afa5edaa-62da-4566-93e6-4a8a5a3c6d4d.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\afa5edaa-62da-4566-93e6-4a8a5a3c6d4d.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\b1b76388-96ef-41cb-9f5e-71da403ae944.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\b1b76388-96ef-41cb-9f5e-71da403ae944.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\b318eff3-c5d1-4371-a699-9d46f91977fc.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\b318eff3-c5d1-4371-a699-9d46f91977fc.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\b6c153ed-5b0e-43c4-add3-b8e819e15ba0.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\b6c153ed-5b0e-43c4-add3-b8e819e15ba0.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\b70c8714-0139-4c1a-9ec3-e47a333bc7c4.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\b70c8714-0139-4c1a-9ec3-e47a333bc7c4.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\b8ef0624-53de-400c-b1b8-5152ea7f4022.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\b8ef0624-53de-400c-b1b8-5152ea7f4022.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\b9547850-14bb-4be9-ade3-c5121d48ca86.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\b9547850-14bb-4be9-ade3-c5121d48ca86.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\c00c7c0d-3013-445c-96f0-3e26b38fb648.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\c00c7c0d-3013-445c-96f0-3e26b38fb648.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\c08f271e-0ae1-4ec9-b380-00d9e15d3f89.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\c08f271e-0ae1-4ec9-b380-00d9e15d3f89.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\c2428c44-3562-4afd-b34a-f9c5743b6a6f.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\c2428c44-3562-4afd-b34a-f9c5743b6a6f.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\c3275080-5791-4cd4-9b59-4b7464d50ecd.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\c3275080-5791-4cd4-9b59-4b7464d50ecd.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\c34359fe-30e9-43e6-b088-8330caf0e396.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\c34359fe-30e9-43e6-b088-8330caf0e396.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\c3afab41-3616-4487-8689-c3225f1230b1.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\c3afab41-3616-4487-8689-c3225f1230b1.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\c6f86163-ed72-4c79-b112-0800be427678.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\c6f86163-ed72-4c79-b112-0800be427678.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\ccdf287e-77da-4c4d-a63b-e15f0856dc8d.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\ccdf287e-77da-4c4d-a63b-e15f0856dc8d.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\d06b4d81-6793-4dca-bdf8-ca7a695a28a2.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\d06b4d81-6793-4dca-bdf8-ca7a695a28a2.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\d230e8e0-7945-460e-9178-a315d9c32fef.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\d230e8e0-7945-460e-9178-a315d9c32fef.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\d2a48c1d-ab2d-4a1c-a025-4ebe523d7f94.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\d2a48c1d-ab2d-4a1c-a025-4ebe523d7f94.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\d7beb005-6b18-4540-a3b0-e6d21d60c176.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\d7beb005-6b18-4540-a3b0-e6d21d60c176.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\d8891671-6df5-4130-9849-3e1dea027519.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\d8891671-6df5-4130-9849-3e1dea027519.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\d8f57c77-4939-4c87-84a1-354360fd909d.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\d8f57c77-4939-4c87-84a1-354360fd909d.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\d968fcae-aa28-4e1c-badf-7f354b434a74.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\d968fcae-aa28-4e1c-badf-7f354b434a74.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\dd6fd07a-82ce-4a15-8944-04619f595904.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\dd6fd07a-82ce-4a15-8944-04619f595904.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\dd8ccdd1-f6bd-4d94-9e9c-7534e0a2d012.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\dd8ccdd1-f6bd-4d94-9e9c-7534e0a2d012.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\de5c62fe-79b9-41d0-85e7-0221dd0dd005.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\de5c62fe-79b9-41d0-85e7-0221dd0dd005.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\dea2d516-50c3-493c-8384-7b63c46e2dfc.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\dea2d516-50c3-493c-8384-7b63c46e2dfc.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\decd12c9-82b6-4011-af42-8cca04e641b3.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\decd12c9-82b6-4011-af42-8cca04e641b3.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\e08526c2-1d9b-4e3d-8304-28c4dfad5e92.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\e08526c2-1d9b-4e3d-8304-28c4dfad5e92.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\e22683df-44c2-4c59-9244-8adf01427692.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\e22683df-44c2-4c59-9244-8adf01427692.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\e427ef46-16da-43cd-b72a-0aa2ba81b8f2.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\e427ef46-16da-43cd-b72a-0aa2ba81b8f2.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\e6a5638a-905c-4236-9c08-d69a211aecc9.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\e6a5638a-905c-4236-9c08-d69a211aecc9.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\e7b5f0cd-fa5f-47d8-8b69-ef05283ab96e.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\e7b5f0cd-fa5f-47d8-8b69-ef05283ab96e.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\e7e237fb-e49e-45a0-b829-452bee9d5720.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\e7e237fb-e49e-45a0-b829-452bee9d5720.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\e8e37167-8976-4113-9e6a-d9b68aeb2ba5.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\e8e37167-8976-4113-9e6a-d9b68aeb2ba5.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\e98d9eb8-341a-4d88-a78c-abf464b9e07c.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\e98d9eb8-341a-4d88-a78c-abf464b9e07c.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\f14372f0-a2a7-4f9e-8786-31fa80fe5ebc.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\f14372f0-a2a7-4f9e-8786-31fa80fe5ebc.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\f4097f8f-2b7c-4a84-9599-8f7df37b0a77.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\f4097f8f-2b7c-4a84-9599-8f7df37b0a77.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\f5553d3c-1d55-41aa-a334-e2f771e0b5ad.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\f5553d3c-1d55-41aa-a334-e2f771e0b5ad.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\f588631a-9aee-44eb-b9fc-3b5c6c93af5b.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\f588631a-9aee-44eb-b9fc-3b5c6c93af5b.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\fa1aadfa-511c-49df-becc-94fbcf296283.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\fa1aadfa-511c-49df-becc-94fbcf296283.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\fb86b8ee-77c9-4bce-a556-2287100b2ccb.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\fb86b8ee-77c9-4bce-a556-2287100b2ccb.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\fd9adea1-dd91-4f0b-bd91-5e21f4a72bda.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\fd9adea1-dd91-4f0b-bd91-5e21f4a72bda.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\fee4b383-d2a5-4acc-8e13-3e0a13c8e38e.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\fee4b383-d2a5-4acc-8e13-3e0a13c8e38e.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\ff3fb297-25b9-4b40-b6c3-6cd79b087917.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\ff3fb297-25b9-4b40-b6c3-6cd79b087917.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\ff6810ad-9398-4cb4-a8b4-5c5dfbe6b5aa.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\ff6810ad-9398-4cb4-a8b4-5c5dfbe6b5aa.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\0b5e5bf1-323a-4590-8b6d-8b69a664e5a8.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\0b5e5bf1-323a-4590-8b6d-8b69a664e5a8.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\116b7e72-1521-4794-91c0-b4672a066dc8.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\116b7e72-1521-4794-91c0-b4672a066dc8.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\143d620f-f69d-4ddd-9ed6-9002ba86c8ec.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\143d620f-f69d-4ddd-9ed6-9002ba86c8ec.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\14f68ebb-a8c4-429b-8a60-6da51486d603.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\14f68ebb-a8c4-429b-8a60-6da51486d603.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\179d755c-3763-421c-af2a-23a0324f1ecd.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\179d755c-3763-421c-af2a-23a0324f1ecd.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\18ca9437-71a4-4a50-b21f-1e1cc3b7e845.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\18ca9437-71a4-4a50-b21f-1e1cc3b7e845.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\1b157c55-2e66-45cf-8a76-a4991c3133e5.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\1b157c55-2e66-45cf-8a76-a4991c3133e5.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\1b9d8ee2-5387-430b-9afe-dde9c794ddeb.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\1b9d8ee2-5387-430b-9afe-dde9c794ddeb.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\1bc4e1f0-4031-4459-9090-1e76ab0fde60.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\1bc4e1f0-4031-4459-9090-1e76ab0fde60.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\1e1af24b-1f48-4b96-bc40-f1d2a8992d61.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\1e1af24b-1f48-4b96-bc40-f1d2a8992d61.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\1fc49b71-b358-40cc-829c-4377892143b3.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\1fc49b71-b358-40cc-829c-4377892143b3.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\21dc363a-2e1c-4fd1-9f2c-3e690ee6b6ff.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\21dc363a-2e1c-4fd1-9f2c-3e690ee6b6ff.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\22a20114-44d7-46cc-b53e-82cf63bdc815.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\22a20114-44d7-46cc-b53e-82cf63bdc815.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\23e43d3a-eb24-4d20-b8e7-30545ea7c737.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\23e43d3a-eb24-4d20-b8e7-30545ea7c737.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\25936bdd-55a2-47a7-8f40-45ffdf2d9a52.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\25936bdd-55a2-47a7-8f40-45ffdf2d9a52.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\28727b41-3b1c-444a-9f99-d69330b97033.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\28727b41-3b1c-444a-9f99-d69330b97033.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\2a08cb18-3946-47ea-b84f-993054d6bcfb.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\2a08cb18-3946-47ea-b84f-993054d6bcfb.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\32476f44-4b5b-4df7-8638-629c4d526156.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\32476f44-4b5b-4df7-8638-629c4d526156.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\3264e12a-0851-4584-9991-9d97530a2762.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\3264e12a-0851-4584-9991-9d97530a2762.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\365bd3c5-de24-4a0e-8951-3c95673c6a62.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\365bd3c5-de24-4a0e-8951-3c95673c6a62.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\39b4c45e-3ed0-4a69-9bda-916c06b6b75e.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\39b4c45e-3ed0-4a69-9bda-916c06b6b75e.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\3a5bc0b2-d850-4e87-93d1-a1a941e9fddc.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\3a5bc0b2-d850-4e87-93d1-a1a941e9fddc.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\3bcc4eb4-a6af-408b-9794-322aa5a02abd.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\3bcc4eb4-a6af-408b-9794-322aa5a02abd.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\3c0f76df-d93b-431d-878b-4cc958608cb0.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\3c0f76df-d93b-431d-878b-4cc958608cb0.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\3d20e3ff-55c4-4618-bfc3-6471ac393145.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\3d20e3ff-55c4-4618-bfc3-6471ac393145.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\3d5cad5c-0d40-412d-adae-e5800f5e5818.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\3d5cad5c-0d40-412d-adae-e5800f5e5818.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\3e17bfe9-fd75-4713-ac67-b1b9d4a6c943.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\3e17bfe9-fd75-4713-ac67-b1b9d4a6c943.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\3fe38137-a356-4361-af91-f4259bee5aee.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\3fe38137-a356-4361-af91-f4259bee5aee.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\41152ba6-39fa-4454-9829-83180628a617.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\41152ba6-39fa-4454-9829-83180628a617.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\4237486e-e675-4b0c-b761-e681c9470d27.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\4237486e-e675-4b0c-b761-e681c9470d27.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\444d6076-8b1a-428e-802c-4dec185ae46b.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\444d6076-8b1a-428e-802c-4dec185ae46b.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\44a5bd9a-06ec-445e-91d8-af1ad730e840.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\44a5bd9a-06ec-445e-91d8-af1ad730e840.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\462e5165-56ec-4f7d-8864-132fab49ae05.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\462e5165-56ec-4f7d-8864-132fab49ae05.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\46ec637f-91ae-4e02-ac4e-1d5f73c9297f.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\46ec637f-91ae-4e02-ac4e-1d5f73c9297f.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\4804d5c8-f6ec-4412-aa80-193d4ca1b3d8.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\4804d5c8-f6ec-4412-aa80-193d4ca1b3d8.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\4922549c-ac6d-47a7-b31e-390f0bf60073.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\4922549c-ac6d-47a7-b31e-390f0bf60073.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\4cb8206a-4c06-4ac2-86e5-1d72bde09cdc.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\4cb8206a-4c06-4ac2-86e5-1d72bde09cdc.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\4e5c7792-7255-4d06-93a5-195008287d3b.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\4e5c7792-7255-4d06-93a5-195008287d3b.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\4ef63629-768e-4429-b01e-1b85b221b356.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\4ef63629-768e-4429-b01e-1b85b221b356.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\50647f8c-7d8f-443a-8a97-417d9b74f5e7.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\50647f8c-7d8f-443a-8a97-417d9b74f5e7.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\50bb0529-4432-4b15-aaad-7101b131987f.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\50bb0529-4432-4b15-aaad-7101b131987f.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\584ecfe0-d05e-4181-b0c5-821a64d99921.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\584ecfe0-d05e-4181-b0c5-821a64d99921.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\5a6392ee-c161-4c4c-a600-2107a03a8a85.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\5a6392ee-c161-4c4c-a600-2107a03a8a85.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\5b4a5f88-bb30-40dd-bcf7-4e79140bae3b.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\5b4a5f88-bb30-40dd-bcf7-4e79140bae3b.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\5b4f5029-55b5-478f-8b18-880932566ca5.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\5b4f5029-55b5-478f-8b18-880932566ca5.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\5c914c76-9e12-4bd2-8c4c-3885f43bf5d5.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\5c914c76-9e12-4bd2-8c4c-3885f43bf5d5.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\5cbfe095-8885-4242-a143-dfcadce62ffe.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\5cbfe095-8885-4242-a143-dfcadce62ffe.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\5d8525f1-435e-4ee7-a5a2-334c9a9b9c67.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\5d8525f1-435e-4ee7-a5a2-334c9a9b9c67.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\5f883d14-1362-4f42-9612-2effeb1df990.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\5f883d14-1362-4f42-9612-2effeb1df990.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\60b0163a-5bd0-4bc9-b9c4-619b9615226a.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\60b0163a-5bd0-4bc9-b9c4-619b9615226a.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\62e89ade-275a-4bdf-b483-e6a92998531d.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\62e89ade-275a-4bdf-b483-e6a92998531d.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\63b611b7-6082-4f93-9682-7827d409d105.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\63b611b7-6082-4f93-9682-7827d409d105.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\65ad8d10-d05d-4de8-88a1-550fc3580d6c.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\65ad8d10-d05d-4de8-88a1-550fc3580d6c.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\6a02403f-9c9d-4cd8-af45-e077abbac359.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\6a02403f-9c9d-4cd8-af45-e077abbac359.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\6d54734c-0d0e-4bef-9176-60467c385ee7.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\6d54734c-0d0e-4bef-9176-60467c385ee7.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\6f5f7c30-e3fc-49ab-9c8c-1dca628e8139.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\6f5f7c30-e3fc-49ab-9c8c-1dca628e8139.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\7128bbbe-b0c7-44cd-9800-ed0d0543d064.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\7128bbbe-b0c7-44cd-9800-ed0d0543d064.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\74754d96-9647-4ee6-98d7-ce6c12509d91.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\74754d96-9647-4ee6-98d7-ce6c12509d91.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\799af2c5-de5a-46ae-9442-af48f9802056.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\799af2c5-de5a-46ae-9442-af48f9802056.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\7bc3df5c-3891-426a-b898-cf03828a6cb2.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\7bc3df5c-3891-426a-b898-cf03828a6cb2.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\7ca8272a-fbe0-4dc5-b6d6-db72d77b0193.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\7ca8272a-fbe0-4dc5-b6d6-db72d77b0193.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\7d19671a-0f20-472f-ab88-f732eefe9f4e.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\7d19671a-0f20-472f-ab88-f732eefe9f4e.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\7dd0a024-ca60-4787-a975-2b64deda5920.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\7dd0a024-ca60-4787-a975-2b64deda5920.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\7f18db19-67dc-40b7-bda9-e303c3342695.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\7f18db19-67dc-40b7-bda9-e303c3342695.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\7f3e869e-8e4d-4190-9156-71e568c70785.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\7f3e869e-8e4d-4190-9156-71e568c70785.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\804b33f3-5e77-49f0-8ce3-60c2186f07a5.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\804b33f3-5e77-49f0-8ce3-60c2186f07a5.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\80efdc4e-2d01-4791-9cb6-9e867718dde6.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\80efdc4e-2d01-4791-9cb6-9e867718dde6.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\80f9291d-8176-49c1-b662-0096c666dc62.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\80f9291d-8176-49c1-b662-0096c666dc62.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\810d6a77-93ad-418c-a4e4-0abbd6e7005e.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\810d6a77-93ad-418c-a4e4-0abbd6e7005e.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\81da7bd8-3275-4fb1-a6c7-6ad1b0f8004a.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\81da7bd8-3275-4fb1-a6c7-6ad1b0f8004a.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\8482ef3f-cff3-4169-8cfe-02c0efd58eed.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\8482ef3f-cff3-4169-8cfe-02c0efd58eed.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\87499656-6136-4291-bfe1-1486348ba7f9.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\87499656-6136-4291-bfe1-1486348ba7f9.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\880a0129-9d9e-49d8-9aa8-450068d60d86.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\880a0129-9d9e-49d8-9aa8-450068d60d86.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\88f9d185-ae94-476e-b308-a4be07596221.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\88f9d185-ae94-476e-b308-a4be07596221.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\8befa50b-1478-47fc-99a0-ebbc022b3f51.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\8befa50b-1478-47fc-99a0-ebbc022b3f51.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\8c76166c-e5bc-4acc-8d92-f0fe114c0e4e.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\8c76166c-e5bc-4acc-8d92-f0fe114c0e4e.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\8c888291-c080-40d9-b46c-68776a361d81.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\8c888291-c080-40d9-b46c-68776a361d81.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\8e06f1da-f2e7-4ad1-be8d-000fa19e780d.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\8e06f1da-f2e7-4ad1-be8d-000fa19e780d.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\8e473cd1-7e55-4e9a-b9e3-48d2ce1e92a6.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\8e473cd1-7e55-4e9a-b9e3-48d2ce1e92a6.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\907d1f5d-f361-4f9d-8a89-8098b3b67905.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\907d1f5d-f361-4f9d-8a89-8098b3b67905.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\9607b7a1-7e36-441f-96cd-119ea8bbc49a.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\9607b7a1-7e36-441f-96cd-119ea8bbc49a.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\96b617b8-9e83-499d-8b6e-f2891eb136de.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\96b617b8-9e83-499d-8b6e-f2891eb136de.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\98b41d09-ee6d-4dec-9690-02d570a71c41.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\98b41d09-ee6d-4dec-9690-02d570a71c41.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\9a3d3ff9-bbbc-45f6-b703-65ca93df1f98.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\9a3d3ff9-bbbc-45f6-b703-65ca93df1f98.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\9da4338b-06ac-48f8-b653-fd534ee4b819.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\9da4338b-06ac-48f8-b653-fd534ee4b819.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\9e7344a4-6355-48f1-aebb-3f88e47a7bbb.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\9e7344a4-6355-48f1-aebb-3f88e47a7bbb.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\9eb87abe-a7cb-4cb7-8f45-3c573ccf4697.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\9eb87abe-a7cb-4cb7-8f45-3c573ccf4697.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\9fc6ac76-daa5-44ee-9ece-0b2ff44893a2.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\9fc6ac76-daa5-44ee-9ece-0b2ff44893a2.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a0094575-ef47-4e9b-847c-b5a408da1676.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a0094575-ef47-4e9b-847c-b5a408da1676.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a17d781f-69cb-48cb-b272-33bd3d43e4a0.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a17d781f-69cb-48cb-b272-33bd3d43e4a0.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a2021394-a356-4fe8-bcdd-4786e41bd5f6.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a2021394-a356-4fe8-bcdd-4786e41bd5f6.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a3551468-0746-4ab7-8701-793d4856482a.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a3551468-0746-4ab7-8701-793d4856482a.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a5c279cd-329e-4dcc-8f72-6af98143e61d.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a5c279cd-329e-4dcc-8f72-6af98143e61d.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a5d5b8a8-386c-483a-8e8d-6e636fdf9921.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a5d5b8a8-386c-483a-8e8d-6e636fdf9921.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a5db4fe1-d7ed-4b82-a7ba-f6d38748292f.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a5db4fe1-d7ed-4b82-a7ba-f6d38748292f.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a6f3420d-06c0-4da5-835c-20f7c4b8f7b6.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a6f3420d-06c0-4da5-835c-20f7c4b8f7b6.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a77ed106-33e8-46c5-b87b-5bffc0a24d40.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a77ed106-33e8-46c5-b87b-5bffc0a24d40.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a9337e2b-ffe8-4c66-95e1-96b5f1d8a8b7.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\a9337e2b-ffe8-4c66-95e1-96b5f1d8a8b7.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\ab220098-f6b7-4832-be36-b5b18b4cbf55.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\ab220098-f6b7-4832-be36-b5b18b4cbf55.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\aefc799c-4728-4aa2-b20e-c12c066bb4ad.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\aefc799c-4728-4aa2-b20e-c12c066bb4ad.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\af3ad866-7c68-4141-bef9-4ba44626675c.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\af3ad866-7c68-4141-bef9-4ba44626675c.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\afa5edaa-62da-4566-93e6-4a8a5a3c6d4d.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\afa5edaa-62da-4566-93e6-4a8a5a3c6d4d.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\b1b76388-96ef-41cb-9f5e-71da403ae944.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\b1b76388-96ef-41cb-9f5e-71da403ae944.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\b318eff3-c5d1-4371-a699-9d46f91977fc.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\b318eff3-c5d1-4371-a699-9d46f91977fc.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\b6c153ed-5b0e-43c4-add3-b8e819e15ba0.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\b6c153ed-5b0e-43c4-add3-b8e819e15ba0.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\b70c8714-0139-4c1a-9ec3-e47a333bc7c4.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\b70c8714-0139-4c1a-9ec3-e47a333bc7c4.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\b8ef0624-53de-400c-b1b8-5152ea7f4022.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\b8ef0624-53de-400c-b1b8-5152ea7f4022.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\b9547850-14bb-4be9-ade3-c5121d48ca86.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\b9547850-14bb-4be9-ade3-c5121d48ca86.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\c00c7c0d-3013-445c-96f0-3e26b38fb648.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\c00c7c0d-3013-445c-96f0-3e26b38fb648.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\c08f271e-0ae1-4ec9-b380-00d9e15d3f89.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\c08f271e-0ae1-4ec9-b380-00d9e15d3f89.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\c2428c44-3562-4afd-b34a-f9c5743b6a6f.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\c2428c44-3562-4afd-b34a-f9c5743b6a6f.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\c3275080-5791-4cd4-9b59-4b7464d50ecd.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\c3275080-5791-4cd4-9b59-4b7464d50ecd.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\c34359fe-30e9-43e6-b088-8330caf0e396.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\c34359fe-30e9-43e6-b088-8330caf0e396.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\c3afab41-3616-4487-8689-c3225f1230b1.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\c3afab41-3616-4487-8689-c3225f1230b1.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\c6f86163-ed72-4c79-b112-0800be427678.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\c6f86163-ed72-4c79-b112-0800be427678.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\ccdf287e-77da-4c4d-a63b-e15f0856dc8d.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\ccdf287e-77da-4c4d-a63b-e15f0856dc8d.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\d06b4d81-6793-4dca-bdf8-ca7a695a28a2.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\d06b4d81-6793-4dca-bdf8-ca7a695a28a2.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\d230e8e0-7945-460e-9178-a315d9c32fef.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\d230e8e0-7945-460e-9178-a315d9c32fef.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\d2a48c1d-ab2d-4a1c-a025-4ebe523d7f94.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\d2a48c1d-ab2d-4a1c-a025-4ebe523d7f94.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\d7beb005-6b18-4540-a3b0-e6d21d60c176.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\d7beb005-6b18-4540-a3b0-e6d21d60c176.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\d8891671-6df5-4130-9849-3e1dea027519.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\d8891671-6df5-4130-9849-3e1dea027519.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\d8f57c77-4939-4c87-84a1-354360fd909d.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\d8f57c77-4939-4c87-84a1-354360fd909d.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\d968fcae-aa28-4e1c-badf-7f354b434a74.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\d968fcae-aa28-4e1c-badf-7f354b434a74.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\dd6fd07a-82ce-4a15-8944-04619f595904.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\dd6fd07a-82ce-4a15-8944-04619f595904.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\dd8ccdd1-f6bd-4d94-9e9c-7534e0a2d012.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\dd8ccdd1-f6bd-4d94-9e9c-7534e0a2d012.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\de5c62fe-79b9-41d0-85e7-0221dd0dd005.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\de5c62fe-79b9-41d0-85e7-0221dd0dd005.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\dea2d516-50c3-493c-8384-7b63c46e2dfc.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\dea2d516-50c3-493c-8384-7b63c46e2dfc.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\decd12c9-82b6-4011-af42-8cca04e641b3.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\decd12c9-82b6-4011-af42-8cca04e641b3.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\e08526c2-1d9b-4e3d-8304-28c4dfad5e92.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\e08526c2-1d9b-4e3d-8304-28c4dfad5e92.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\e22683df-44c2-4c59-9244-8adf01427692.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\e22683df-44c2-4c59-9244-8adf01427692.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\e427ef46-16da-43cd-b72a-0aa2ba81b8f2.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\e427ef46-16da-43cd-b72a-0aa2ba81b8f2.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\e6a5638a-905c-4236-9c08-d69a211aecc9.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\e6a5638a-905c-4236-9c08-d69a211aecc9.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\e7b5f0cd-fa5f-47d8-8b69-ef05283ab96e.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\e7b5f0cd-fa5f-47d8-8b69-ef05283ab96e.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\e7e237fb-e49e-45a0-b829-452bee9d5720.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\e7e237fb-e49e-45a0-b829-452bee9d5720.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\e8e37167-8976-4113-9e6a-d9b68aeb2ba5.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\e8e37167-8976-4113-9e6a-d9b68aeb2ba5.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\e98d9eb8-341a-4d88-a78c-abf464b9e07c.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\e98d9eb8-341a-4d88-a78c-abf464b9e07c.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\f14372f0-a2a7-4f9e-8786-31fa80fe5ebc.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\f14372f0-a2a7-4f9e-8786-31fa80fe5ebc.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\f4097f8f-2b7c-4a84-9599-8f7df37b0a77.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\f4097f8f-2b7c-4a84-9599-8f7df37b0a77.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\f5553d3c-1d55-41aa-a334-e2f771e0b5ad.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\f5553d3c-1d55-41aa-a334-e2f771e0b5ad.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\f588631a-9aee-44eb-b9fc-3b5c6c93af5b.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\f588631a-9aee-44eb-b9fc-3b5c6c93af5b.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\fa1aadfa-511c-49df-becc-94fbcf296283.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\fa1aadfa-511c-49df-becc-94fbcf296283.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\fb86b8ee-77c9-4bce-a556-2287100b2ccb.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\fb86b8ee-77c9-4bce-a556-2287100b2ccb.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\fd9adea1-dd91-4f0b-bd91-5e21f4a72bda.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\fd9adea1-dd91-4f0b-bd91-5e21f4a72bda.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\fee4b383-d2a5-4acc-8e13-3e0a13c8e38e.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\fee4b383-d2a5-4acc-8e13-3e0a13c8e38e.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\ff3fb297-25b9-4b40-b6c3-6cd79b087917.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\ff3fb297-25b9-4b40-b6c3-6cd79b087917.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\ff6810ad-9398-4cb4-a8b4-5c5dfbe6b5aa.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\ff6810ad-9398-4cb4-a8b4-5c5dfbe6b5aa.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\MR000000.dcm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="CopyStoragePlugin" AfterTargets="Build">
+    <ItemGroup>
+        <AWSSDK Include="$(TargetDir)AWSSDK*.dll" />
+        <Minio Include="$(TargetDir)Minio.dll" />
+        <MonaiDeployStorage Include="$(TargetDir)Monai.Deploy.Storage.*.dll" />
+    </ItemGroup>
+      <Copy SourceFiles="@(AWSSDK)" DestinationFolder="$(TargetDir)plug-ins\" />
+      <Copy SourceFiles="@(Minio)" DestinationFolder="$(TargetDir)plug-ins\" />
+      <Copy SourceFiles="@(MonaiDeployStorage)" DestinationFolder="$(TargetDir)plug-ins\" />
+  </Target>
+
+  <Target Name="CopyMessagingPlugin" AfterTargets="Build">
+    <ItemGroup>
+      <MonaiDeployMessaging Include="$(TargetDir)Monai.Deploy.Messaging.*" />
+      <RabbitMQ Include="$(TargetDir)RabbitMQ.Client.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(MonaiDeployMessaging)" DestinationFolder="$(TargetDir)plug-ins\" />
+    <Copy SourceFiles="@(RabbitMQ)" DestinationFolder="$(TargetDir)plug-ins\" />
+  </Target>
 </Project>

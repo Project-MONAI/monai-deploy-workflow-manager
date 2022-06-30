@@ -1,4 +1,7 @@
-﻿using Ardalis.GuardClauses;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
 
 namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
@@ -19,6 +22,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 TaskExecutionStatus.Succeeded => newStatus.SucceededValidStatuses(oldStatus),
                 TaskExecutionStatus.Failed => newStatus.FailedValidStatuses(oldStatus),
                 TaskExecutionStatus.Canceled => newStatus.CanceledValidStatuses(oldStatus),
+                TaskExecutionStatus.Exported => newStatus.ExportedValidStatuses(oldStatus),
                 _ => false,
             };
         }
@@ -67,5 +71,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             newStatus == TaskExecutionStatus.Canceled &&
                 oldStatus != TaskExecutionStatus.Succeeded &&
                 oldStatus != TaskExecutionStatus.Failed;
+
+        private static bool ExportedValidStatuses(this TaskExecutionStatus newStatus, TaskExecutionStatus oldStatus) =>
+            newStatus == TaskExecutionStatus.Exported &&
+                oldStatus != TaskExecutionStatus.Succeeded &&
+                oldStatus != TaskExecutionStatus.Failed &&
+                oldStatus != TaskExecutionStatus.Created &&
+                oldStatus != TaskExecutionStatus.Canceled;
     }
 }

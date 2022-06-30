@@ -21,5 +21,11 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         /// </summary>
         [ConfigurationKeyName("topics")]
         public MessageBrokerConfigurationKeys Topics { get; set; } = new MessageBrokerConfigurationKeys();
+
+        /// <summary>
+        /// Gets or sets the dicom agents for events
+        /// </summary>
+        [ConfigurationKeyName("dicomAgents")]
+        public DicomAgentConfiguration DicomAgents { get; set; } = new DicomAgentConfiguration();
     }
 }

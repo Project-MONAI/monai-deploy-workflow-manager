@@ -31,5 +31,8 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         [JsonProperty(PropertyName = "artifacts")]
         public ArtifactMap Artifacts { get; set; }
+
+        [JsonProperty(PropertyName = "input_parameters")]
+        public Dictionary<string, object>? InputParameters { get; set; }
     }
 }

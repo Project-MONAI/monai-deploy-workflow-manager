@@ -7,10 +7,9 @@ using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.Storage;
+using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 using Moq;
 using Xunit;
@@ -100,9 +99,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
             var value2 = new KeyValuePair<string, string>("dicomimage", $"{payloadId}/dcm/");
             var value3 = new KeyValuePair<string, string>("outputtaskdir", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/");
 
-            _storageService.Setup(w => w.VerifyObjectExists(workflowInstance.BucketId, value1)).Returns(value1);
-            _storageService.Setup(w => w.VerifyObjectExists(workflowInstance.BucketId, value2)).Returns(value2);
-            _storageService.Setup(w => w.VerifyObjectExists(workflowInstance.BucketId, value3)).Returns(value3);
+            _storageService.Setup(w => w.VerifyObjectExistsAsync(workflowInstance.BucketId, value1)).ReturnsAsync(value1);
+            _storageService.Setup(w => w.VerifyObjectExistsAsync(workflowInstance.BucketId, value2)).ReturnsAsync(value2);
+            _storageService.Setup(w => w.VerifyObjectExistsAsync(workflowInstance.BucketId, value3)).ReturnsAsync(value3);
 
             var response = await ArtifactMapper.ConvertArtifactVariablesToPath(artifacts, workflowInstance.PayloadId, workflowInstance.Id, workflowInstance.BucketId);
 
@@ -180,9 +179,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
             var value2 = new KeyValuePair<string, string>("dicomimage", $"{payloadId}/dcm/");
             var value3 = new KeyValuePair<string, string>("outputtaskdir", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/");
 
-            _storageService.Setup(w => w.VerifyObjectExists(workflowInstance.BucketId, value1)).Returns(new KeyValuePair<string, string>());
-            _storageService.Setup(w => w.VerifyObjectExists(workflowInstance.BucketId, value2)).Returns(value2);
-            _storageService.Setup(w => w.VerifyObjectExists(workflowInstance.BucketId, value3)).Returns(value3);
+            _storageService.Setup(w => w.VerifyObjectExistsAsync(workflowInstance.BucketId, value1)).ReturnsAsync(new KeyValuePair<string, string>());
+            _storageService.Setup(w => w.VerifyObjectExistsAsync(workflowInstance.BucketId, value2)).ReturnsAsync(value2);
+            _storageService.Setup(w => w.VerifyObjectExistsAsync(workflowInstance.BucketId, value3)).ReturnsAsync(value3);
 
             await Assert.ThrowsAsync<FileNotFoundException>(() => ArtifactMapper.ConvertArtifactVariablesToPath(artifacts, workflowInstance.PayloadId, workflowInstance.Id, workflowInstance.BucketId));
         }

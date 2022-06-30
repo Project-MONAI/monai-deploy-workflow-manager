@@ -29,6 +29,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         private static RabbitConsumer? TaskDispatchConsumer { get; set; }
         private static RabbitPublisher? TaskUpdatePublisher { get; set; }
         private static MongoClientUtil? MongoClient { get; set; }
+        private static MinioClientUtil? MinioClient { get; set; }
         private IObjectContainer ObjectContainer { get; set; }
 
         /// <summary>
@@ -59,12 +60,19 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             TestExecutionConfig.MongoConfig.WorkflowCollection = config.GetValue<string>("WorkloadManagerDatabase:WorkflowCollectionName");
             TestExecutionConfig.MongoConfig.WorkflowInstanceCollection = config.GetValue<string>("WorkloadManagerDatabase:WorkflowInstanceCollectionName");
 
+            TestExecutionConfig.MinioConfig.Endpoint = config.GetValue<string>("WorkflowManager:storage:settings:endpoint");
+            TestExecutionConfig.MinioConfig.AccessKey = config.GetValue<string>("WorkflowManager:storage:settings:accessKey");
+            TestExecutionConfig.MinioConfig.AccessToken = config.GetValue<string>("WorkflowManager:storage:settings:accessToken");
+            TestExecutionConfig.MinioConfig.Bucket = config.GetValue<string>("WorkflowManager:storage:settings:bucket");
+            TestExecutionConfig.MinioConfig.Region = config.GetValue<string>("WorkflowManager:storage:settings:region");
+
             TestExecutionConfig.ApiConfig.BaseUrl = "http://localhost:5000";
 
             WorkflowPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
             TaskDispatchConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
             TaskUpdatePublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
             MongoClient = new MongoClientUtil();
+            MinioClient = new MinioClientUtil();
             HttpClient = WebAppFactory.SetupWorkflowManger();
         }
 
@@ -115,6 +123,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             var dataHelper = new DataHelper(TaskDispatchConsumer, MongoClient);
             ObjectContainer.RegisterInstanceAs(dataHelper);
             ObjectContainer.RegisterInstanceAs(HttpClient);
+            ObjectContainer.RegisterInstanceAs(MinioClient);
         }
 
         [BeforeTestRun(Order = 1)]
@@ -134,7 +143,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             {
                 foreach (var workflowRevision in dataHelper.WorkflowRevisions)
                 {
-                    MongoClient.DeleteWorkflowRevisionDocument(workflowRevision.Id);
+                    MongoClient.DeleteWorkflowRevisionDocumentByWorkflowId(workflowRevision.WorkflowId);
                 }
             }
 
@@ -145,6 +154,8 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
                     MongoClient.DeleteWorkflowInstance(workflowInstance.Id);
                 }
             }
+
+
         }
 
         /// <summary>

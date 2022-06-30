@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -43,6 +44,13 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// </summary>
         /// <param name="workflow">Workflow object to create.</param>
         Task<string> CreateAsync(Workflow workflow);
+
+        /// <summary>
+        /// Soft deletes all workflow revisions of given workflow.
+        /// </summary>
+        /// <param name="workflow"></param>
+        /// <returns></returns>
+        Task<DateTime> SoftDeleteWorkflow(WorkflowRevision workflow);
 
         /// <summary>
         /// Updates a workflow object and creates a new revision.
