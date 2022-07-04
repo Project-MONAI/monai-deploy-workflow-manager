@@ -1,6 +1,6 @@
 # Clinical Workflow Specification Language
 
-
+# Note: this document is not currently up-to-date. It will be updated before the first release of the workflow manager.
 ## Overview
 
 The MONAI Workflow Manager is responsible for executing pre-registered clinical workflows. This document describes how to create a workflow file and what the language allows.
@@ -20,6 +20,8 @@ The MONAI Workflow Manager is responsible for executing pre-registered clinical 
 - [Pre Evaluators](#pre-evaluators)
 - [Retention Policies](#retention-policies)
 
+
+
 ### Workflow Object
 This is the top-level object in a workflow spec. It contains the following properties:
 
@@ -34,12 +36,12 @@ This is the top-level object in a workflow spec. It contains the following prope
 |retention_policy|Optional[list[[RetentionPolicy](#retention-policies)]]|
 
 
-## Example
+## Examples
 The following is an example of a complete workflow:
 ![scenario1](static/workflow_examples/scenario1.png)
 
 The JSON implementing that scenario is available [here](static/workflow_examples/scenario1.json).
-
+*Note: the examples are not up to date. Please do not rely on them*
 ### Informatics Gateway
 This section contains the IG configuration. Specifically, it contains the following properties:
 
