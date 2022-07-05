@@ -4,6 +4,7 @@
 using System.Diagnostics;
 using BoDi;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 
@@ -24,13 +25,14 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             ObjectContainer = objectContainer;
         }
 
-        private static HttpClient HttpClient { get; set; }
+        private static HttpClient? HttpClient { get; set; }
         private static RabbitPublisher? WorkflowPublisher { get; set; }
         private static RabbitConsumer? TaskDispatchConsumer { get; set; }
         private static RabbitPublisher? TaskUpdatePublisher { get; set; }
         private static MongoClientUtil? MongoClient { get; set; }
         private static MinioClientUtil? MinioClient { get; set; }
         private IObjectContainer ObjectContainer { get; set; }
+        private static IHost Host { get; set; }
 
         /// <summary>
         /// Runs before all tests to create static implementions of Rabbit and Mongo clients as well as starting the WorkflowManager using WebApplicationFactory.
@@ -73,7 +75,8 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             TaskUpdatePublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
             MongoClient = new MongoClientUtil();
             MinioClient = new MinioClientUtil();
-            HttpClient = WebAppFactory.SetupWorkflowManger();
+            Host = WorkflowExecutorStartup.StartWorkflowExecutor();
+            HttpClient = new HttpClient();
         }
 
         /// <summary>
@@ -84,7 +87,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         [BeforeTestRun(Order = 1)]
         public static async Task CheckWorkflowConsumerStarted()
         {
-            var response = await WebAppFactory.GetConsumers();
+            var response = await WorkflowExecutorStartup.GetConsumers();
             var content = response.Content.ReadAsStringAsync().Result;
 
             for (var i = 1; i <= 10; i++)
@@ -92,7 +95,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
                 if (string.IsNullOrEmpty(content) || content == "[]")
                 {
                     Debug.Write($"Workflow consumer not started. Recheck times {i}");
-                    response = await WebAppFactory.GetConsumers();
+                    response = await WorkflowExecutorStartup.GetConsumers();
                     content = response.Content.ReadAsStringAsync().Result;
                 }
                 else
@@ -130,8 +133,8 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         [AfterTestRun(Order = 0)]
         public static void ClearTestData()
         {
-            MongoClient.DeleteAllWorkflowRevisionDocuments();
-            MongoClient.DeleteAllWorkflowInstances();
+            MongoClient?.DeleteAllWorkflowRevisionDocuments();
+            MongoClient?.DeleteAllWorkflowInstances();
         }
 
         [AfterScenario]
@@ -151,7 +154,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             {
                 foreach (var workflowInstance in dataHelper.WorkflowInstances)
                 {
-                    MongoClient.DeleteWorkflowInstance(workflowInstance.Id);
+                    MongoClient?.DeleteWorkflowInstance(workflowInstance.Id);
                 }
             }
 
@@ -162,17 +165,13 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         /// Runs after all tests to closes Rabbit connections.
         /// </summary>
         [AfterTestRun(Order = 1)]
-        public static void TearDownRabbit()
+        public static void StopServices()
         {
-            if (WorkflowPublisher != null)
-            {
-                WorkflowPublisher.CloseConnection();
-            }
+            WorkflowPublisher?.CloseConnection();
 
-            if (TaskDispatchConsumer != null)
-            {
-                TaskDispatchConsumer.CloseConnection();
-            }
+            TaskDispatchConsumer?.CloseConnection();
+
+            Host?.StopAsync();
         }
     }
 }
