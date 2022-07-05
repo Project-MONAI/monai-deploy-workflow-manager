@@ -9,6 +9,8 @@ on:
 
 env:
   DOTNET_VERSION: '6.0.x'
+  # See https://github.com/goodwithtech/dockle/issues/188
+  DOCKLE_HOST: "unix:///var/run/docker.sock"
 
 jobs:
   publish-and-scan:
