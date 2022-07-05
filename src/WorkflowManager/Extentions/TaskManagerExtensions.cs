@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.Storage.MinioAdmin.Interfaces;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo;
 
 namespace Monai.Deploy.WorkflowManager.Services
@@ -19,16 +18,6 @@ namespace Monai.Deploy.WorkflowManager.Services
 
             services.AddSingleton<IArgoProvider, ArgoProvider>();
             services.AddSingleton<IKubernetesProvider, KubernetesProvider>();
-
-            services.AddSingleton<IMinioAdmin>((implementationFactory) =>
-            {
-                var options = implementationFactory.GetService<IOptions<StorageServiceConfiguration>>();
-                var executable = options.Value.Settings["executableLocation"];
-                var endpoint = options.Value.Settings["endpoint"];
-                var secretKey = options.Value.Settings["accessToken"];
-                var accessKey = options.Value.Settings["accessKey"];
-                return new Storage.MinioAdmin.Shell(executable, "minioApp", endpoint, accessKey, secretKey);
-            });
 
             services.AddSingleton<TaskManager.TaskManager>();
             services.AddHostedService(p => p.GetRequiredService<TaskManager.TaskManager>());
