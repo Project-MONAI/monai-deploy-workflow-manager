@@ -155,9 +155,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 return;
             }
 
-            var metadataAssembly = string.Empty;
-            JsonMessage<TaskUpdateEvent>? updateMessage = null;
-
+            string? metadataAssembly;
+            JsonMessage<TaskUpdateEvent>? updateMessage;
             try
             {
                 metadataAssembly = _options.Value.TaskManager.MetadataAssemblyMappings[runner.Event.TaskPluginType];
