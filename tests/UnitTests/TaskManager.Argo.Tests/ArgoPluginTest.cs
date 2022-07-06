@@ -287,7 +287,7 @@ public class ArgoPluginTest
 
         var message = GenerateTaskDispatchEventWithValidArguments();
         message.TaskPluginArguments["resources"] = "{\"memory_reservation\": \"string\",\"cpu_reservation\": \"string\",\"gpu_limit\": 1,\"memory_limit\": \"string\",\"cpu_limit\": \"string\"}";
-        message.TaskPluginArguments["priority_class"] = "Helo";
+        message.TaskPluginArguments["priorityClass"] = "Helo";
         Workflow? submittedArgoTemplate = null;
 
         _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
@@ -397,7 +397,7 @@ public class ArgoPluginTest
 
             Assert.True(template.PriorityClassName == "Helo");
         }
-        
+
         Assert.NotNull(firstTemplate);
 
         Assert.Equal(message.Inputs.First(p => p.Name.Equals("input-dicom")).RelativeRootPath, firstTemplate!.Inputs.Artifacts.ElementAt(0).S3.Key);

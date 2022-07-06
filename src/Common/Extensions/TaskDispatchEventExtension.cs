@@ -10,7 +10,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Extensions
     {
         public static string? GetTaskPluginArgumentsParameter(this TaskDispatchEvent taskDispatchEvent, string key)
         {
-            if (taskDispatchEvent.TaskPluginArguments.TryGetValue(key, out string? value))
+            if (!taskDispatchEvent.TaskPluginArguments.TryGetValue(key, out string? value))
             {
                 return null;
             }
