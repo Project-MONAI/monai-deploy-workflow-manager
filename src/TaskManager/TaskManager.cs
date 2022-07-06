@@ -155,9 +155,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 return;
             }
 
-            var metadataAssembly = string.Empty;
-            JsonMessage<TaskUpdateEvent>? updateMessage = null;
-
+            string? metadataAssembly;
+            JsonMessage<TaskUpdateEvent>? updateMessage;
             try
             {
                 metadataAssembly = _options.Value.TaskManager.MetadataAssemblyMappings[runner.Event.TaskPluginType];
@@ -362,6 +361,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 ExecutionId = executionId,
                 Reason = executionStatus.FailureReason,
                 Status = executionStatus.Status,
+                ExecutionStats = executionStatus.Stats,
                 WorkflowInstanceId = WorkflowInstanceId,
                 TaskId = taskId,
                 Message = executionStatus.Errors,

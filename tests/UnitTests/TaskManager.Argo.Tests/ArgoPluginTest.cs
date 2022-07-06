@@ -22,6 +22,7 @@ using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
 using Moq;
 using Moq.Language.Flow;
+using Newtonsoft.Json;
 using Xunit;
 using YamlDotNet.Serialization;
 
@@ -426,7 +427,7 @@ public class ArgoPluginTest
                     Status = new WorkflowStatus
                     {
                         Phase = Strings.ArgoPhaseSucceeded,
-                        Message = Strings.ArgoPhaseSucceeded
+                        Message = Strings.ArgoPhaseSucceeded,
                     }
                 };
             });
@@ -442,6 +443,65 @@ public class ArgoPluginTest
 
         _argoClient.Verify(p => p.WorkflowService_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
     }
+
+    [Fact(DisplayName = "ExecuteTask - Stats contains info")]
+    public async Task ArgoPlugin_GetStatus_HasStatsInfo()
+    {
+        var tryCount = 0;
+        _argoClient.Setup(p => p.WorkflowService_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((string ns, string name, string version, string fields, CancellationToken cancellationToken) =>
+            {
+                if (tryCount++ < 2)
+                {
+                    return new Workflow
+                    {
+                        Status = new WorkflowStatus
+                        {
+                            Phase = Strings.ArgoPhaseRunning,
+                            Message = string.Empty
+                        }
+                    };
+                }
+
+                return new Workflow
+                {
+                    Status = new WorkflowStatus
+                    {
+                        Phase = Strings.ArgoPhaseSucceeded,
+                        Message = Strings.ArgoPhaseSucceeded,
+                        Nodes = new Dictionary<string, NodeStatus>
+                        {
+                            { "first", new NodeStatus { Id = "firstId" } },
+                            { "second", new NodeStatus { Id = "secondId" } },
+                            { "third", new NodeStatus { Id = "thirdId" } },
+                        }
+                    }
+                };
+            });
+
+        var message = GenerateTaskDispatchEventWithValidArguments();
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, message);
+        var result = await runner.GetStatus("identity", CancellationToken.None).ConfigureAwait(false);
+
+        var objNodeInfo = result?.Stats?["nodeInfo"];
+        Assert.NotNull(objNodeInfo);
+        var nodeInfo = ToDictionary<Dictionary<string, object>>(objNodeInfo);
+
+        Assert.Equal(3, nodeInfo.Values.Count);
+        Assert.Equal("firstId", nodeInfo["first"]["id"]);
+        Assert.Empty(result?.Errors);
+
+        _argoClient.Verify(p => p.WorkflowService_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
+    }
+
+    public static Dictionary<string, TValue> ToDictionary<TValue>(object obj)
+    {
+        var json = JsonConvert.SerializeObject(obj, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore});
+        var dictionary = JsonConvert.DeserializeObject<Dictionary<string, TValue>>(json);
+        return dictionary;
+    }
+
 
     [Theory(DisplayName = "GetStatus - returns ExecutionStatus on success")]
     [InlineData(Strings.ArgoPhaseSucceeded)]
