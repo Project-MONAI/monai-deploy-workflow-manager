@@ -17,7 +17,7 @@ using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
 
 namespace Monai.Deploy.WorkflowManager.Services
 {
-    internal static class WorkflowExecutorExtensions
+    public static class WorkflowExecutorExtensions
     {
         public static IServiceCollection AddWorkflowExecutor(this IServiceCollection services, HostBuilderContext hostContext)
         {

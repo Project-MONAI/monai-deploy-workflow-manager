@@ -10,7 +10,7 @@ using Monai.Deploy.WorkflowManager.TaskManager.Argo;
 
 namespace Monai.Deploy.WorkflowManager.Services
 {
-    internal static class TaskManagerExtensions
+    public static class TaskManagerExtensions
     {
         public static IServiceCollection AddTaskManager(this IServiceCollection services, HostBuilderContext hostContext)
         {
