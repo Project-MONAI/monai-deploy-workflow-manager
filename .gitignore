@@ -543,3 +543,6 @@ FodyWeavers.xsd
 # Results from tests
 src/results
 /tests/IntegrationTests/WorkflowManager.IntegrationTests/.run/minio/data
+
+# minio state
+*.run
