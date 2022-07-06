@@ -10,6 +10,7 @@ using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Extensions;
+using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
@@ -29,6 +30,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         private readonly IArtifactMapper _artifactMapper;
         private readonly IStorageService _storageService;
         private readonly IDicomService _dicomService;
+        private readonly IPayloadService _payloadService;
         private readonly StorageServiceConfiguration _storageConfiguration;
 
         private string TaskDispatchRoutingKey { get; }
@@ -44,6 +46,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             IConditionalParameterParser conditionalParser,
             IArtifactMapper artifactMapper,
             IStorageService storageService,
+            IPayloadService payloadService,
             IDicomService dicomService)
         {
             if (configuration is null)
@@ -69,6 +72,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             _artifactMapper = artifactMapper ?? throw new ArgumentNullException(nameof(artifactMapper));
             _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
             _dicomService = dicomService ?? throw new ArgumentNullException(nameof(dicomService));
+            _payloadService = payloadService ?? throw new ArgumentNullException(nameof(payloadService));
         }
 
         public async Task<bool> ProcessPayload(WorkflowRequestEvent message)
@@ -178,7 +182,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 await UpdateWorkflowInstanceStatus(workflowInstance, message.TaskId, message.Status);
 
-                return await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
+                return await CompleteTask(currentTask, workflowInstance, message.CorrelationId, message.Status);
             }
 
             if (message.Metadata.Any())
@@ -208,14 +212,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 await UpdateWorkflowInstanceStatus(workflowInstance, message.TaskId, message.Status);
 
-                return await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
+                return await CompleteTask(currentTask, workflowInstance, message.CorrelationId, message.Status);
             }
 
             var processed = await HandleTaskDestinations(workflowInstance, message.CorrelationId, newTaskExecutions);
 
-            _logger.TaskComplete(currentTask, workflowInstance.Id, message.CorrelationId, message.Status.ToString());
-
-            processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(message.WorkflowInstanceId, message.TaskId, message.Status);
+            processed &= await CompleteTask(currentTask, workflowInstance, message.CorrelationId, message.Status);
 
             return processed;
         }
@@ -248,14 +250,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 {
                     await UpdateWorkflowInstanceStatus(workflowInstance, task.TaskId, TaskExecutionStatus.Succeeded);
 
-                    return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Succeeded);
+                    return await CompleteTask(task, workflowInstance, correlationId, TaskExecutionStatus.Succeeded);
                 }
 
                 var processed = await HandleTaskDestinations(workflowInstance, correlationId, newTaskExecutions);
 
-                _logger.TaskComplete(task, workflowInstance.Id, correlationId, message.Status.ToString());
-
-                processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Succeeded);
+                processed &= await CompleteTask(task, workflowInstance, correlationId, TaskExecutionStatus.Succeeded);
 
                 return processed;
             }
@@ -263,10 +263,18 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             if ((message.Status.Equals(ExportStatus.Failure) || message.Status.Equals(ExportStatus.PartialFailure)) &&
                 TaskExecutionStatus.Failed.IsTaskExecutionStatusUpdateValid(task.Status))
             {
-                return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, message.ExportTaskId, TaskExecutionStatus.Failed);
+                return await CompleteTask(task, workflowInstance, correlationId, TaskExecutionStatus.Failed);
             }
 
             return true;
+        }
+
+        private async Task<bool> CompleteTask(TaskExecution task, WorkflowInstance workflowInstance, string correlationId, TaskExecutionStatus status)
+        {
+            var payload = await _payloadService.GetByIdAsync(workflowInstance.PayloadId);
+            _logger.TaskComplete(task, workflowInstance, payload?.PatientDetails, correlationId, status.ToString());
+
+            return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, status);
         }
 
         private async Task<bool> UpdateWorkflowInstanceStatus(WorkflowInstance workflowInstance, string taskId, TaskExecutionStatus currentTaskStatus)
@@ -505,6 +513,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 ExecutionId = executionId,
                 TaskType = task.Type,
+                TaskStartTime = DateTime.UtcNow,
                 TaskPluginArguments = task.Args ?? new Dictionary<string, string> { },
                 TaskId = task.Id,
                 Status = TaskExecutionStatus.Created,

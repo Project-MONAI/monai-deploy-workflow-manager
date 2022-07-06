@@ -88,17 +88,17 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
         [LoggerMessage(EventId = 25, Level = LogLevel.Error, Message = "Failed to get patient details in bucket {bucketId}. Payload: {payloadId}")]
         public static partial void FailedToGetPatientDetails(this ILogger logger, string payloadId, string bucketId, Exception ex);
 
-        public static void TaskComplete(this ILogger logger, TaskExecution task, string workflowInstanceId, string correlationId, string taskStatus)
+        public static void TaskComplete(this ILogger logger, TaskExecution task, WorkflowInstance workflowInstance, PatientDetails patientDetails, string correlationId, string taskStatus)
         {
             var objectLog = new ObjectLog
             {
                 Message = "Task Complete",
-                Object = LoggerHelpers.ToTaskCompleteObject(task, workflowInstanceId, correlationId, taskStatus)
+                Object = LoggerHelpers.ToTaskCompleteObject(task, workflowInstance, patientDetails, correlationId, taskStatus)
             };
 
             var jsonString = JsonConvert.SerializeObject(objectLog);
 
-            logger.LogInformation(24, message: jsonString);
+            logger.LogInformation(26, message: jsonString);
         }
     }
 }

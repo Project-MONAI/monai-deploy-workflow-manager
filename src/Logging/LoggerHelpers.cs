@@ -7,17 +7,21 @@ namespace Monai.Deploy.WorkflowManager.Logging
 {
     public static class LoggerHelpers
     {
-        public static object ToTaskCompleteObject(TaskExecution task, string workflowInstanceId, string correlationId, string taskStatus)
+        public static object ToTaskCompleteObject(TaskExecution task, WorkflowInstance workflowInstance, PatientDetails patientDetails, string correlationId, string taskStatus)
         {
             return new
             {
                 ExecutionId = task.ExecutionId,
                 TaskId = task.TaskId,
-                WorkflowInstanceId = workflowInstanceId,
+                WorkflowInstanceId = workflowInstance.Id,
+                WorkflowId = workflowInstance.WorkflowId,
                 CorrelationId = correlationId,
                 TaskStatus = taskStatus,
                 TaskType = task.TaskType,
+                TaskStartTime = task.TaskStartTime,
+                TaskEndTime = DateTime.UtcNow,
                 TaskStatsObject = "", //Comes later
+                PatientDetails = patientDetails
             };
         }
     }
