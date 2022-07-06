@@ -361,6 +361,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 ExecutionId = executionId,
                 Reason = executionStatus.FailureReason,
                 Status = executionStatus.Status,
+                TaskStats = executionStatus.Stats,
                 WorkflowInstanceId = WorkflowInstanceId,
                 TaskId = taskId,
                 Message = executionStatus.Errors,
