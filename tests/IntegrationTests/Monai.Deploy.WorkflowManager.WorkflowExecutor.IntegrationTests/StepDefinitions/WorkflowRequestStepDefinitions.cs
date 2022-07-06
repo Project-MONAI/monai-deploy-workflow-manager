@@ -7,6 +7,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
@@ -18,26 +19,34 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private MongoClientUtil MongoClient { get; set; }
         private Assertions Assertions { get; set; }
         private DataHelper DataHelper { get; set; }
+        private readonly ISpecFlowOutputHelper _outputHelper;
 
-        public WorkflowRequestStepDefinitions(ObjectContainer objectContainer, ScenarioContext scenarioContext)
+
+        public WorkflowRequestStepDefinitions(ObjectContainer objectContainer, ScenarioContext scenarioContext, ISpecFlowOutputHelper outputHelper)
         {
             WorkflowPublisher = objectContainer.Resolve<RabbitPublisher>("WorkflowPublisher");
             TaskDispatchConsumer = objectContainer.Resolve<RabbitConsumer>("TaskDispatchConsumer");
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
             Assertions = new Assertions();
             DataHelper = objectContainer.Resolve<DataHelper>();
+            _outputHelper = outputHelper;
         }
 
         [Given(@"I have a clinical workflow (.*)")]
         public void GivenIHaveAClinicalWorkflow(string name)
         {
+            _outputHelper.WriteLine($"Retrieving workflow revision with name={name}");
             MongoClient.CreateWorkflowRevisionDocument(DataHelper.GetWorkflowRevisionTestData(name));
+            _outputHelper.WriteLine("Retrieved workflow revision");
+
         }
 
         [Given(@"I have a Workflow Instance (.*)")]
         public void GivenIHaveAWorkflowInstance(string name)
         {
+            _outputHelper.WriteLine($"Retrieving workflow instance with name={name}");
             MongoClient.CreateWorkflowInstanceDocument(DataHelper.GetWorkflowInstanceTestData(name));
+            _outputHelper.WriteLine("Retrieved workflow instance");
         }
 
         [When(@"I publish a Workflow Request Message (.*)")]
@@ -56,7 +65,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"I can see (.*) Workflow Instance is created")]
         public void ThenICanSeeAWorkflowInstanceIsCreated(int count)
         {
+            _outputHelper.WriteLine($"Retrieving {count} workflow instance/s using the payloadid={DataHelper.WorkflowRequestMessage.PayloadId}");
             var workflowInstances = DataHelper.GetWorkflowInstances(count, DataHelper.WorkflowRequestMessage.PayloadId.ToString());
+            _outputHelper.WriteLine($"Retrieved {count} workflow instance/s");
 
             if (workflowInstances != null)
             {
@@ -80,7 +91,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"(.*) Task Dispatch events are published")]
         public void TaskDispatchEventIsPublished(int count)
         {
+            _outputHelper.WriteLine($"Retrieving {count} task dispatch event/s");
             var taskDispatchEvents = DataHelper.GetTaskDispatchEvents(count, DataHelper.WorkflowInstances);
+            _outputHelper.WriteLine($"Retrieved {count} task dispatch event/s");
 
             foreach (var taskDispatchEvent in taskDispatchEvents)
             {
@@ -102,7 +115,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"I can see an additional Workflow Instance is not created")]
         public void ThenICanSeeAnAdditionalWorkflowInstanceIsNotCreated()
         {
+            _outputHelper.WriteLine($"Retrieving workflow instance with payloadid={DataHelper.WorkflowRequestMessage.PayloadId}");
             var workflowInstances = MongoClient.GetWorkflowInstancesByPayloadId(DataHelper.WorkflowRequestMessage.PayloadId.ToString());
+            _outputHelper.WriteLine("Retrieved workflow instance");
 
             workflowInstances.Count.Should().Be(1);
         }
