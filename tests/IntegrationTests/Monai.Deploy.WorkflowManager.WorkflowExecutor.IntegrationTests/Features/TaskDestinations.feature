@@ -41,3 +41,55 @@ Scenario: Publish a valid Task Update event as failed which does not trigger a n
     When I publish a Task Update Message Task_Update_Dispatches_Single_Task with status Failed
     Then A Task Dispatch event is not published
     And Workflow Instance status is Failed
+
+@TaskUpdate
+Scenario: Task destination with condition true, WFI is updated with Task and task dispatch message is published
+    Given I have a clinical workflow Multi_Task_Workflow_Destination_Single_Condition_True
+    And I have a Workflow Instance WFI_Task_Destination_Condition_True
+    When I publish a Task Update Message Task_Update_Task_Destination_Condition_True with status Succeeded
+    Then 1 Task Dispatch event is published
+
+@TaskUpdate
+Scenario: Task destination with condition false, WFI is not updated with Task and task dispatch message is not published
+    Given I have a clinical workflow Multi_Task_Workflow_Destination_Single_Condition_False
+    And I have a Workflow Instance WFI_Task_Destination_Condition_False
+    When I publish a Task Update Message Task_Update_Task_Destination_Condition_False with status Succeeded
+    Then A Task Dispatch event is not published
+
+@TaskUpdate
+Scenario: Multiple task destinations with condition true, multiple task dispatch messages sent
+    Given I have a clinical workflow Multi_Task_Workflow_Multiple_Destination_Single_Condition_True
+    And I have a Workflow Instance WFI_Task_Multiple_Destination_Condition_True
+    When I publish a Task Update Message Task_Update_Task_Multiple_Destination_Condition_True with status Succeeded
+    Then 3 Task Dispatch events are published
+
+@TaskUpdate
+Scenario: Multiple task destinations with condition false, no task dispatch messages sent
+    Given I have a clinical workflow Multi_Task_Workflow_Multiple_Destination_Single_Condition_False
+    And I have a Workflow Instance WFI_Task_Multiple_Destination_Condition_False
+    When I publish a Task Update Message Task_Update_Task_Multiple_Destination_Condition_False with status Succeeded
+    Then A Task Dispatch event is not published
+
+@TaskUpdate
+Scenario: Multiple task destinations one with condition true and one with false, 1 task dispatch message published for task which is true
+    Given I have a clinical workflow Multi_Task_Workflow_Destination_Multiple_Condition_True_And_False
+    And I have a Workflow Instance WFI_Task_Destination_Condition_True_And_False
+    When I publish a Task Update Message Task_Update_Task_Destination_Condition_True_And_False with status Succeeded
+    Then 1 Task Dispatch event is published
+    And The Task Dispatch event is for Task Id b9964b10-acb4-4050-a610-374fdbe2100d
+
+@TaskUpdate
+Scenario: Workflow instance status remains created when any task status is either dispatch or accepted
+    Given I have a clinical workflow Multi_Task_Workflow_Destination_Single_Condition_True
+    And I have a Workflow Instance WFI_Task_Destination_Condition_True
+    When I publish a Task Update Message Task_Update_Task_Destination_Condition_True with status Succeeded
+    Then 1 Task Dispatch event is published
+    And Workflow Instance status is Created
+
+@TaskUpdate
+Scenario: Workflow instance status is failed when a condition is invalid
+    Given I have a clinical workflow Multi_Task_Workflow_Task_Destination_Invalid_Condition
+    And I have a Workflow Instance WFI_Task_Destination_Invalid_Condition
+    When I publish a Task Update Message Task_Update_Task_Destination_Invalid_Condition with status Succeeded
+    Then A Task Dispatch event is not published
+    And Workflow Instance status is Failed
