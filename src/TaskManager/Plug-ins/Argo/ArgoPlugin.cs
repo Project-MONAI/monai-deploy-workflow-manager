@@ -139,24 +139,68 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     workflow = await client.WorkflowService_GetWorkflowAsync(_namespace, identity, null, null, cancellationToken).ConfigureAwait(false);
                 }
 
+                var stats = GetExecutuionStats(workflow);
+                if (stats is null)
+                {
+                    stats = new Dictionary<string, object?>();
+                }
                 if (Strings.ArgoFailurePhases.Contains(workflow.Status.Phase, StringComparer.OrdinalIgnoreCase))
                 {
-                    return new ExecutionStatus { Status = TaskExecutionStatus.Failed, FailureReason = FailureReason.ExternalServiceError, Errors = workflow.Status.Message };
+                    return new ExecutionStatus
+                    {
+                        Status = TaskExecutionStatus.Failed,
+                        FailureReason = FailureReason.ExternalServiceError,
+                        Errors = workflow.Status.Message,
+                        Stats = stats
+                    };
                 }
                 else if (workflow.Status.Phase.Equals(Strings.ArgoPhaseSucceeded, StringComparison.OrdinalIgnoreCase))
                 {
-                    return new ExecutionStatus { Status = TaskExecutionStatus.Succeeded, FailureReason = FailureReason.None };
+                    return new ExecutionStatus
+                    {
+                        Status = TaskExecutionStatus.Succeeded,
+                        FailureReason = FailureReason.None,
+                        Stats = stats
+                    };
                 }
                 else
                 {
-                    return new ExecutionStatus { Status = TaskExecutionStatus.Unknown, FailureReason = FailureReason.Unknown, Errors = $"Argo status = '{workflow.Status.Phase}'. Messages = '{workflow.Status.Message}'." };
+                    return new ExecutionStatus
+                    {
+                        Status = TaskExecutionStatus.Unknown,
+                        FailureReason = FailureReason.Unknown,
+                        Errors = $"Argo status = '{workflow.Status.Phase}'. Messages = '{workflow.Status.Message}'.",
+                        Stats = stats
+                    };
                 }
             }
             catch (Exception ex)
             {
                 _logger.ErrorCreatingWorkflow(ex);
-                return new ExecutionStatus { Status = TaskExecutionStatus.Failed, FailureReason = FailureReason.PluginError, Errors = ex.Message };
+                return new ExecutionStatus
+                {
+                    Status = TaskExecutionStatus.Failed,
+                    FailureReason = FailureReason.PluginError,
+                    Errors = ex.Message
+                };
             }
+        }
+
+        private Dictionary<string, object?> GetExecutuionStats(Workflow workflow)
+        {
+            Guard.Against.Null(workflow);
+
+            var stats = new Dictionary<string, object?>
+            {
+                { "workflowId", Event.WorkflowInstanceId },
+                { "duration", workflow.Status?.EstimatedDuration ?? -1 },
+                { "resourceDuration", workflow.Status?.ResourcesDuration },
+                { "nodeInfo", workflow.Status?.Nodes },
+                { "startedAt", workflow.Status?.StartedAt },
+                { "finishedAt", workflow.Status?.FinishedAt }
+            };
+
+            return stats;
         }
 
         private async Task<Workflow> BuildWorkflowWrapper(CancellationToken cancellationToken)
