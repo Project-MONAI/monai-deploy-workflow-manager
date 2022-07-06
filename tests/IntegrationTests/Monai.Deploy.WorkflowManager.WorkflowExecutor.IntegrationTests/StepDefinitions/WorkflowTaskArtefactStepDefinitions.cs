@@ -5,6 +5,7 @@ using System.Reflection;
 using BoDi;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
@@ -18,8 +19,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private MinioClientUtil MinioClient { get; set; }
         private Assertions Assertions { get; set; }
         private DataHelper DataHelper { get; set; }
+        private readonly ISpecFlowOutputHelper _outputHelper;
 
-        public WorkflowTaskArtefactStepDefinitions(ObjectContainer objectContainer, ScenarioContext scenarioContext)
+        public WorkflowTaskArtefactStepDefinitions(ObjectContainer objectContainer, ScenarioContext scenarioContext, ISpecFlowOutputHelper outputHelper)
         {
             WorkflowPublisher = objectContainer.Resolve<RabbitPublisher>("WorkflowPublisher");
             TaskDispatchConsumer = objectContainer.Resolve<RabbitConsumer>("TaskDispatchConsumer");
@@ -27,20 +29,29 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             MinioClient = objectContainer.Resolve<MinioClientUtil>();
             Assertions = new Assertions();
             DataHelper = objectContainer.Resolve<DataHelper>();
+            _outputHelper = outputHelper;
         }
 
         [Given(@"I have a bucket in MinIO (.*)")]
         public async Task GivenIHaveABucketInMinIO(string name)
         {
+            _outputHelper.WriteLine($"Creating bucket {name}");
             await MinioClient.CreateBucket(name);
+            _outputHelper.WriteLine($"{name} bucket created");
         }
 
         [Given(@"I have a payload (.*) and bucket in MinIO (.*)")]
         public async Task GivenIHaveABucketInMinIOAndPayloadId(string payloadId, string name)
         {
+            _outputHelper.WriteLine($"Creating bucket {name}");
             await MinioClient.CreateBucket(name);
+            _outputHelper.WriteLine($"{name} bucket created");
+            _outputHelper.WriteLine("Retrieving pathname");
             var pathname = Path.Combine(GetDirectory(), "DICOMs", "dcm");
+            _outputHelper.WriteLine($"Retrieved pathname {pathname}");
+            _outputHelper.WriteLine($"Adding {payloadId} file");
             await MinioClient.AddFileToStorage(pathname, name, DataHelper.GetPayloadId(payloadId));
+            _outputHelper.WriteLine($"File added");
         }
 
         [Then(@"I can see a task dispatch event with a path to the DICOM bucket")]

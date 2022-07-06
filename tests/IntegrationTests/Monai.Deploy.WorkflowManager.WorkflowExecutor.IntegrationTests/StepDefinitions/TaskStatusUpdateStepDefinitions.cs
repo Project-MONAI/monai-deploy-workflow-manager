@@ -8,6 +8,7 @@ using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Polly;
 using Polly.Retry;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
@@ -18,13 +19,15 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private RabbitPublisher TaskUpdatePublisher { get; set; }
         private RetryPolicy RetryPolicy { get; set; }
         private DataHelper DataHelper { get; set; }
+        private readonly ISpecFlowOutputHelper _outputHelper;
 
-        public TaskStatusUpdateStepDefinitions(ObjectContainer objectContainer)
+        public TaskStatusUpdateStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             TaskUpdatePublisher = objectContainer.Resolve<RabbitPublisher>("TaskUpdatePublisher");
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
             DataHelper = objectContainer.Resolve<DataHelper>();
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+            _outputHelper = outputHelper;
         }
 
         [When(@"I publish a Task Update Message (.*) with status (.*)")]
@@ -45,7 +48,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             RetryPolicy.Execute(() =>
             {
+                _outputHelper.WriteLine($"Retrieving workflow instance by id={DataHelper.TaskUpdateEvent.WorkflowInstanceId}");
                 var workflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
+                _outputHelper.WriteLine("Retrieved workflow instance");
 
                 var taskUpdated = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(DataHelper.TaskUpdateEvent.TaskId));
 
@@ -69,11 +74,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             for (int i = 0; i < 2; i++)
             {
                 Thread.Sleep(2000);
-
                 var updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
-
                 var orignalWorkflowInstance = DataHelper.WorkflowInstances.FirstOrDefault(x => x.Id.Equals(DataHelper.TaskUpdateEvent.WorkflowInstanceId));
-
                 updatedWorkflowInstance.Tasks[0].Status.Should().Be(orignalWorkflowInstance?.Tasks[0].Status);
             }
         }
@@ -82,7 +84,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         public void ThenICanSeeTheStatusOfTheTaskIsSucceeded()
         {
             var counter = 0;
+            _outputHelper.WriteLine($"Retrieving workflow instance by id={DataHelper.TaskUpdateEvent.WorkflowInstanceId}");
             var updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
+            _outputHelper.WriteLine("Retrieved workflow instance");
+
             while (updatedWorkflowInstance.Tasks[0].Status == TaskExecutionStatus.Dispatched || updatedWorkflowInstance.Tasks.Count < 2)
             {
                 updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
