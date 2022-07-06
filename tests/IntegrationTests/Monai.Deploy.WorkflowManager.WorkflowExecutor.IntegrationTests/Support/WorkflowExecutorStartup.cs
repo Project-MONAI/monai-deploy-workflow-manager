@@ -1,9 +1,6 @@
-﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
-// SPDX-License-Identifier: Apache License 2.0
-
-using System;
-using System.IO;
-using System.IO.Abstractions;
+﻿using System.IO.Abstractions;
+using System.Net.Http.Headers;
+using System.Text;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,12 +13,16 @@ using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.Configuration;
+
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Database;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
+using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.PayloadListener.Services;
+using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
@@ -31,35 +32,24 @@ using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
 using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
 using MongoDB.Driver;
 
-namespace Monai.Deploy.WorkflowManager
+namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
-#pragma warning disable SA1600 // Elements should be documented
-
-    internal class Program
+    public static class WorkflowExecutorStartup
     {
-        protected Program()
-        {
-        }
-
-        internal static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureHostConfiguration(configHost =>
-                {
-                    configHost.SetBasePath(Directory.GetCurrentDirectory());
-                    configHost.AddCommandLine(args);
-                })
-                .ConfigureAppConfiguration((builderContext, config) =>
-                {
-                    var env = builderContext.HostingEnvironment;
-                    config
-                        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
-                })
-                .ConfigureLogging((builderContext, configureLogging) =>
-                {
-                    configureLogging.AddConfiguration(builderContext.Configuration.GetSection("Logging"));
-                    configureLogging.AddFile(o => o.RootPath = AppContext.BaseDirectory);
-                })
+        private static IHostBuilder CreateHostBuilder() =>
+            Host.CreateDefaultBuilder()
+            .ConfigureAppConfiguration((builderContext, config) =>
+            {
+                var env = builderContext.HostingEnvironment;
+                config
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+            })
+            .ConfigureLogging((builderContext, configureLogging) =>
+            {
+                configureLogging.AddConfiguration(builderContext.Configuration.GetSection("Logging"));
+                configureLogging.AddFile(o => o.RootPath = AppContext.BaseDirectory);
+            })
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddOptions<WorkflowManagerOptions>()
@@ -105,27 +95,30 @@ namespace Monai.Deploy.WorkflowManager
 
                     services.AddHostedService(p => p.GetService<DataRetentionService>());
 
-                    services.AddTaskManager(hostContext);
                     services.AddWorkflowExecutor(hostContext);
                 })
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.CaptureStartupErrors(true);
-                    webBuilder.UseStartup<Startup>();
-                });
-
-        private static void Main(string[] args)
-        {
-            var host = CreateHostBuilder(args).Build();
-
-            if (args.Length == 0)
+            .ConfigureWebHostDefaults(webBuilder =>
             {
-                host.Services.GetService<TaskManager.TaskManager>().StartAsync(System.Threading.CancellationToken.None).RunSynchronously();
-            }
+                webBuilder.CaptureStartupErrors(true);
+                webBuilder.UseStartup<Startup>();
+            });
 
-            host.Run();
+        public static IHost StartWorkflowExecutor()
+        {
+            var host = CreateHostBuilder().Build();
+            host.RunAsync();
+            return host;
         }
 
-#pragma warning restore SA1600 // Elements should be documented
+        public static async Task<HttpResponseMessage> GetConsumers()
+        {
+            var httpClient = new HttpClient();
+
+            var svcCredentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(TestExecutionConfig.RabbitConfig.User + ":" + TestExecutionConfig.RabbitConfig.Password));
+
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", svcCredentials);
+
+            return await httpClient.GetAsync($"http://{TestExecutionConfig.RabbitConfig.Host}:{TestExecutionConfig.RabbitConfig.Port}/api/consumers");
+        }
     }
 }

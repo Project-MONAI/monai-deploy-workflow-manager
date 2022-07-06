@@ -23,8 +23,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{71DDEE7B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkloadManager.WorkfowExecuter", "WorkflowExecuter\Monai.Deploy.WorkloadManager.WorkfowExecuter.csproj", "{BF0FB5E4-2C58-4AC3-9D68-5FB6BD196C45}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.IntegrationTests", "..\tests\IntegrationTests\WorkflowManager.IntegrationTests\Monai.Deploy.WorkflowManager.IntegrationTests.csproj", "{60687B1C-691D-48D7-85DD-B58BDC3F4461}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.CLI.Tests", "..\tests\UnitTests\CLI.Tests\Monai.Deploy.WorkflowManager.CLI.Tests.csproj", "{D593E28A-0FD2-45EA-9A75-10433AE517C8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Configuration.Tests", "..\tests\UnitTests\Configuration.Tests\Monai.Deploy.WorkflowManager.Configuration.Tests.csproj", "{A3E8A54A-063A-4274-8C1F-EE65AC1AF588}"
@@ -59,7 +57,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManage
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Storage", "Monai.Deploy.WorkflowManager.Storage\Monai.Deploy.WorkflowManager.Storage.csproj", "{3CCAEF98-6A23-4CFB-8030-D3A754A97AD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monai.Deploy.WorkflowManager.Storage.Tests", "..\tests\UnitTests\Storage.Tests\Monai.Deploy.WorkflowManager.Storage.Tests.csproj", "{722C0D57-49F8-4178-88F0-06E369B797A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Storage.Tests", "..\tests\UnitTests\Storage.Tests\Monai.Deploy.WorkflowManager.Storage.Tests.csproj", "{722C0D57-49F8-4178-88F0-06E369B797A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests", "..\tests\IntegrationTests\Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests\Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.csproj", "{0325A986-7E8B-4688-B4FA-0680F220BE90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,10 +103,6 @@ Global
 		{BF0FB5E4-2C58-4AC3-9D68-5FB6BD196C45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF0FB5E4-2C58-4AC3-9D68-5FB6BD196C45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF0FB5E4-2C58-4AC3-9D68-5FB6BD196C45}.Release|Any CPU.Build.0 = Release|Any CPU
-		{60687B1C-691D-48D7-85DD-B58BDC3F4461}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{60687B1C-691D-48D7-85DD-B58BDC3F4461}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{60687B1C-691D-48D7-85DD-B58BDC3F4461}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{60687B1C-691D-48D7-85DD-B58BDC3F4461}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D593E28A-0FD2-45EA-9A75-10433AE517C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D593E28A-0FD2-45EA-9A75-10433AE517C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D593E28A-0FD2-45EA-9A75-10433AE517C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -175,12 +171,15 @@ Global
 		{722C0D57-49F8-4178-88F0-06E369B797A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{722C0D57-49F8-4178-88F0-06E369B797A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{722C0D57-49F8-4178-88F0-06E369B797A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0325A986-7E8B-4688-B4FA-0680F220BE90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0325A986-7E8B-4688-B4FA-0680F220BE90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0325A986-7E8B-4688-B4FA-0680F220BE90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0325A986-7E8B-4688-B4FA-0680F220BE90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{60687B1C-691D-48D7-85DD-B58BDC3F4461} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{D593E28A-0FD2-45EA-9A75-10433AE517C8} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{A3E8A54A-063A-4274-8C1F-EE65AC1AF588} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{24DC4287-D24B-41BD-9135-19F68B190AC4} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
@@ -196,6 +195,7 @@ Global
 		{918E4DE3-A7BF-4B7F-9B5A-5C36FEFA3C30} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{A44F975E-70CA-49D6-8513-78F2D5210EAF} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{722C0D57-49F8-4178-88F0-06E369B797A3} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
+		{0325A986-7E8B-4688-B4FA-0680F220BE90} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC0D56C8-D8CB-45CE-B528-F3DCF86D63ED}
