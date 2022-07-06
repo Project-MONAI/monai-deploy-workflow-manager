@@ -189,28 +189,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         private Dictionary<string, object?> GetExecutuionStats(Workflow workflow)
         {
             Guard.Against.Null(workflow);
-            var listOfPodStats =
-                (from node in workflow.Status.Nodes
-                 let dict = new Dictionary<string, object?>
-                 {
-                     { "id", node.Value.Id },
-                     { "name", node.Value.Name },
-                     { "resourcesDuration", node.Value.ResourcesDuration },
-                     { "displayName", node.Value.DisplayName },
-                     { "duration", node.Value.EstimatedDuration ?? -1 },
-                     { "startedAt", node.Value.StartedAt },
-                     { "finishedAt", node.Value.FinishedAt }
-                 }
-                 select dict).ToList();
 
             var stats = new Dictionary<string, object?>
             {
-                { "WorkflowId", Event.WorkflowInstanceId },
-                { "duration", workflow.Status.EstimatedDuration ?? -1 },
-                { "resourceDuration", workflow.Status.ResourcesDuration },
-                { "podStats", listOfPodStats },
-                { "resourceDuration", workflow.Status.StartedAt },
-                { "resourceDuration", workflow.Status.FinishedAt }
+                { "workflowId", Event.WorkflowInstanceId },
+                { "duration", workflow.Status?.EstimatedDuration ?? -1 },
+                { "resourceDuration", workflow.Status?.ResourcesDuration },
+                { "nodeInfo", workflow.Status?.Nodes },
+                { "startedAt", workflow.Status?.StartedAt },
+                { "finishedAt", workflow.Status?.FinishedAt }
             };
 
             return stats;
