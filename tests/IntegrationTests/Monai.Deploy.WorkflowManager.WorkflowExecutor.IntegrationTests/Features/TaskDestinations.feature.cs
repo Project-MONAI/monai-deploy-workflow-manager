@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Features
+namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Features
 {
     using TechTalk.SpecFlow;
     using System;

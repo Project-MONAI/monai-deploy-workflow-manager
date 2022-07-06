@@ -68,19 +68,13 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             for (int i = 0; i < 2; i++)
             {
-                Thread.Sleep(5000);
+                Thread.Sleep(2000);
 
                 var updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
 
-                Thread.Sleep(5000);
-
                 var orignalWorkflowInstance = DataHelper.WorkflowInstances.FirstOrDefault(x => x.Id.Equals(DataHelper.TaskUpdateEvent.WorkflowInstanceId));
 
-                Thread.Sleep(5000);
-
-                updatedWorkflowInstance.Tasks[0].Status.Should().Be(orignalWorkflowInstance.Tasks[0].Status);
-
-                Thread.Sleep(5000);
+                updatedWorkflowInstance.Tasks[0].Status.Should().Be(orignalWorkflowInstance?.Tasks[0].Status);
             }
         }
 
