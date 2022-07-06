@@ -656,6 +656,211 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                         }
                     }
                 }
+            },
+                            new WorkflowRevisionTestData()
+            {
+                Name = "Multi_Task_Workflow_Destination_Single_Condition_True",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Multi Task workflow 3",
+                        Description = "Multi Task workflow 3",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination()
+                                    {
+                                        Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
+                                        Conditions = "'true'=='true'"
+                                    },
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "b9964b10-acb4-4050-a610-374fdbe2100d",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Multi_Task_3"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Multi_Task_Workflow_Destination_Single_Condition_False",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Multi Task workflow 3",
+                        Description = "Multi Task workflow 3",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination()
+                                    {
+                                        Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
+                                        Conditions = "'false'=='true'" 
+                                    },
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "b9964b10-acb4-4050-a610-374fdbe2100d",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Multi_Task_3"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Multi_Task_Workflow_Multiple_Destination_Single_Condition_True",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Multi Task workflow 3",
+                        Description = "Multi Task workflow 3",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination()
+                                    {
+                                        Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
+                                        Conditions = "'true'=='true'" 
+                                    },
+                                    new TaskDestination()
+                                    {
+                                        Name = "e12849f3-247d-47eb-95c8-5aa16f551f62",
+                                        Conditions = "'true'=='true'"
+                                    },
+                                    new TaskDestination()
+                                    {
+                                        Name = "d2e5219d-9ccb-4584-b078-5216ee4b9b8b",
+                                        Conditions = "'true'=='true'"
+                                    },
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "b9964b10-acb4-4050-a610-374fdbe2100d",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                            },
+                            new TaskObject
+                            {
+                                Id = "e12849f3-247d-47eb-95c8-5aa16f551f62",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                            },
+                            new TaskObject
+                            {
+                                Id = "d2e5219d-9ccb-4584-b078-5216ee4b9b8b",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Multi_Task_3"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Multi_Task_Workflow_Multiple_Destination_Single_Condition_False",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Multi Task workflow 3",
+                        Description = "Multi Task workflow 3",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination()
+                                    {
+                                        Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
+                                        Conditions = "'false'=='true'"
+                                    },
+                                    new TaskDestination()
+                                    {
+                                        Name = "e12849f3-247d-47eb-95c8-5aa16f551f62",
+                                        Conditions = "'false'=='true'"
+                                    },
+                                    new TaskDestination()
+                                    {
+                                        Name = "d2e5219d-9ccb-4584-b078-5216ee4b9b8b",
+                                        Conditions = "'false'=='true'"
+                                    },
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "b9964b10-acb4-4050-a610-374fdbe2100d",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                            },
+                            new TaskObject
+                            {
+                                Id = "e12849f3-247d-47eb-95c8-5aa16f551f62",
+                                Type = "Multi_task",
+                            }
+                        }
+                    }
+                }
             }
         };
     }

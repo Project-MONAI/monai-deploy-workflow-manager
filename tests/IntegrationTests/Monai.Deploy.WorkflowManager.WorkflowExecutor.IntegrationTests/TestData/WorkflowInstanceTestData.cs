@@ -564,6 +564,174 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     }
                 }
             },
+            new WorkflowInstanceTestData()
+            {
+                Name = "WFI_Task_Destination_Condition_True",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_True").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_True").WorkflowRevision.WorkflowId,
+                    PayloadId = Guid.NewGuid().ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = "bucket_1",
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_True").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_True").WorkflowRevision.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "WFI_Task_Destination_Condition_False",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_False").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_False").WorkflowRevision.WorkflowId,
+                    PayloadId = Guid.NewGuid().ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = "bucket_1",
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_False").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_False").WorkflowRevision.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "WFI_Task_Multiple_Destination_Condition_True",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_True").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_True").WorkflowRevision.WorkflowId,
+                    PayloadId = Guid.NewGuid().ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = "bucket_1",
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_True").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_True").WorkflowRevision.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "WFI_Task_Multiple_Destination_Condition_False",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_False").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_False").WorkflowRevision.WorkflowId,
+                    PayloadId = Guid.NewGuid().ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = "bucket_1",
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_False").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_False").WorkflowRevision.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "WFI_Task_Destination_Condition_True_And_False",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Multiple_Condition_True_And_False").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Multiple_Condition_True_And_False").WorkflowRevision.WorkflowId,
+                    PayloadId = Guid.NewGuid().ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = "bucket_1",
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Multiple_Condition_True_And_False").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Multiple_Condition_True_And_False").WorkflowRevision.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "WFI_Task_Destination_Invalid_Condition",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Task_Destination_Invalid_Condition").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Task_Destination_Invalid_Condition").WorkflowRevision.WorkflowId,
+                    PayloadId = Guid.NewGuid().ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = "bucket_1",
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Task_Destination_Invalid_Condition").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Task_Destination_Invalid_Condition").WorkflowRevision.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+                }
+            },
         };
     }
 }

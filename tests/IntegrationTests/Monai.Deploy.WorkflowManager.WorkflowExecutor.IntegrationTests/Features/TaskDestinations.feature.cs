@@ -290,6 +290,352 @@ this.ScenarioInitialize(scenarioInfo);
             }
             this.ScenarioCleanup();
         }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Task destination with condition true, WFI is updated with Task and task dispatch " +
+            "message is published")]
+        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        public virtual void TaskDestinationWithConditionTrueWFIIsUpdatedWithTaskAndTaskDispatchMessageIsPublished()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "TaskUpdate"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Task destination with condition true, WFI is updated with Task and task dispatch " +
+                    "message is published", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 46
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 47
+    testRunner.Given("I have a clinical workflow Multi_Task_Workflow_Destination_Single_Condition_True", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 48
+    testRunner.And("I have a Workflow Instance WFI_Task_Destination_Condition_True", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 49
+    testRunner.When("I publish a Task Update Message Task_Update_Task_Destination_Condition_True with " +
+                        "status Succeeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 50
+    testRunner.Then("1 Task Dispatch event is published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Task destination with condition false, WFI is not updated with Task and task disp" +
+            "atch message is not published")]
+        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        public virtual void TaskDestinationWithConditionFalseWFIIsNotUpdatedWithTaskAndTaskDispatchMessageIsNotPublished()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "TaskUpdate"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Task destination with condition false, WFI is not updated with Task and task disp" +
+                    "atch message is not published", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 53
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 54
+    testRunner.Given("I have a clinical workflow Multi_Task_Workflow_Destination_Single_Condition_False" +
+                        "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 55
+    testRunner.And("I have a Workflow Instance WFI_Task_Destination_Condition_False", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 56
+    testRunner.When("I publish a Task Update Message Task_Update_Task_Destination_Condition_False with" +
+                        " status Succeeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 57
+    testRunner.Then("A Task Dispatch event is not published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Multiple task destinations with condition true, multiple task dispatch messages s" +
+            "ent")]
+        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        public virtual void MultipleTaskDestinationsWithConditionTrueMultipleTaskDispatchMessagesSent()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "TaskUpdate"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Multiple task destinations with condition true, multiple task dispatch messages s" +
+                    "ent", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 60
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 61
+    testRunner.Given("I have a clinical workflow Multi_Task_Workflow_Multiple_Destination_Single_Condit" +
+                        "ion_True", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 62
+    testRunner.And("I have a Workflow Instance WFI_Task_Multiple_Destination_Condition_True", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 63
+    testRunner.When("I publish a Task Update Message Task_Update_Task_Multiple_Destination_Condition_T" +
+                        "rue with status Succeeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 64
+    testRunner.Then("3 Task Dispatch events are published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Multiple task destinations with condition false, no task dispatch messages sent")]
+        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        public virtual void MultipleTaskDestinationsWithConditionFalseNoTaskDispatchMessagesSent()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "TaskUpdate"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Multiple task destinations with condition false, no task dispatch messages sent", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 67
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 68
+    testRunner.Given("I have a clinical workflow Multi_Task_Workflow_Multiple_Destination_Single_Condit" +
+                        "ion_False", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 69
+    testRunner.And("I have a Workflow Instance WFI_Task_Multiple_Destination_Condition_False", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 70
+    testRunner.When("I publish a Task Update Message Task_Update_Task_Multiple_Destination_Condition_F" +
+                        "alse with status Succeeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 71
+    testRunner.Then("A Task Dispatch event is not published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Multiple task destinations one with condition true and one with false, 1 task dis" +
+            "patch message published for task which is true")]
+        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        public virtual void MultipleTaskDestinationsOneWithConditionTrueAndOneWithFalse1TaskDispatchMessagePublishedForTaskWhichIsTrue()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "TaskUpdate"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Multiple task destinations one with condition true and one with false, 1 task dis" +
+                    "patch message published for task which is true", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 74
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 75
+    testRunner.Given("I have a clinical workflow Multi_Task_Workflow_Destination_Multiple_Condition_Tru" +
+                        "e_And_False", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 76
+    testRunner.And("I have a Workflow Instance WFI_Task_Destination_Condition_True_And_False", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 77
+    testRunner.When("I publish a Task Update Message Task_Update_Task_Destination_Condition_True_And_F" +
+                        "alse with status Succeeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 78
+    testRunner.Then("1 Task Dispatch event is published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 79
+    testRunner.And("The Task Dispatch event is for Task Id b9964b10-acb4-4050-a610-374fdbe2100d", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Workflow instance status remains created when any task status is either dispatch " +
+            "or accepted")]
+        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        public virtual void WorkflowInstanceStatusRemainsCreatedWhenAnyTaskStatusIsEitherDispatchOrAccepted()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "TaskUpdate"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Workflow instance status remains created when any task status is either dispatch " +
+                    "or accepted", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 82
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 83
+    testRunner.Given("I have a clinical workflow Multi_Task_Workflow_Destination_Single_Condition_True", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 84
+    testRunner.And("I have a Workflow Instance WFI_Task_Destination_Condition_True", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 85
+    testRunner.When("I publish a Task Update Message Task_Update_Task_Destination_Condition_True with " +
+                        "status Succeeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 86
+    testRunner.Then("1 Task Dispatch event is published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 87
+    testRunner.And("Workflow Instance status is Created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Workflow instance status is failed when a condition is invalid")]
+        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        public virtual void WorkflowInstanceStatusIsFailedWhenAConditionIsInvalid()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "TaskUpdate"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Workflow instance status is failed when a condition is invalid", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 90
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 91
+    testRunner.Given("I have a clinical workflow Multi_Task_Workflow_Task_Destination_Invalid_Condition" +
+                        "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 92
+    testRunner.And("I have a Workflow Instance WFI_Task_Destination_Invalid_Condition", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 93
+    testRunner.When("I publish a Task Update Message Task_Update_Task_Destination_Invalid_Condition wi" +
+                        "th status Succeeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 94
+    testRunner.Then("A Task Dispatch event is not published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 95
+    testRunner.And("Workflow Instance status is Failed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore
