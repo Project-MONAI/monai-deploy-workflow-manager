@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: © 2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
+namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
 {
     internal static class Keys
     {
@@ -54,6 +54,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         /// Key for setting the exchange of the message broker.
         /// </summary>
         public static readonly string MessagingExchange = "messagingExchange";
+
+        /// <summary>
+        /// Key for resource limitations
+        /// </summary>
+        public static readonly string ArgoResource = "resources";
+
+        /// <summary>
+        /// Key for priority classnames on task plugin arguments side
+        /// </summary>
+        public static readonly string TaskPriorityClassName = "priorityClass";
 
         /// <summary>
         /// Required arguments to run the Argo workflow.
