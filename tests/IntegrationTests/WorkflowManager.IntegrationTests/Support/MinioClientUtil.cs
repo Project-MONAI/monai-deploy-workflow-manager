@@ -20,6 +20,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     TestExecutionConfig.MinioConfig.AccessKey,
                     TestExecutionConfig.MinioConfig.AccessToken
                 ).Build();
+
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
@@ -119,8 +120,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"[Bucket]  Exception: {e}");
-                    throw e;
+                    throw new Exception($"[Bucket]  Exception: {e}");
                 }
             });
         }

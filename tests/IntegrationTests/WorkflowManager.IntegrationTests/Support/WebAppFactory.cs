@@ -4,15 +4,26 @@
 using System.Net.Http.Headers;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
+
+    public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
+    {
+        protected override IHostBuilder CreateHostBuilder() =>
+            base.CreateHostBuilder()
+            .ConfigureHostConfiguration(
+                config => config.AddCommandLine(new[] { "--test=yes" }));
+    }
+
     public static class WebAppFactory
     {
         public static HttpClient SetupWorkflowManger()
         {
-            var webApplicationFactory = new WebApplicationFactory<Program>();
+            var webApplicationFactory = new CustomWebApplicationFactory<Program>();
 
             return webApplicationFactory.CreateClient();
         }
