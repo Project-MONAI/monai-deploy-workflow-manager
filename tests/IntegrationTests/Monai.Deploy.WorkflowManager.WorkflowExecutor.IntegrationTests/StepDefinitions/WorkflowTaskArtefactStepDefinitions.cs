@@ -49,9 +49,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             _outputHelper.WriteLine("Retrieving pathname");
             var pathname = Path.Combine(GetDirectory(), "DICOMs", "dcm");
             _outputHelper.WriteLine($"Retrieved pathname {pathname}");
-            _outputHelper.WriteLine($"Adding files to bucket from {pathname}");
+            _outputHelper.WriteLine($"Adding {payloadId} file");
             await MinioClient.AddFileToStorage(pathname, name, DataHelper.GetPayloadId(payloadId));
-            _outputHelper.WriteLine($"Files added");
+            _outputHelper.WriteLine($"File added");
         }
 
         [Then(@"I can see a task dispatch event with a path to the DICOM bucket")]
