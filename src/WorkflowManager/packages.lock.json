@@ -1454,9 +1454,8 @@
           "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.0-rc0047",
-          "Monai.Deploy.Storage": "0.1.0-rc0060",
-          "Monai.Deploy.Storage.MinIO": "0.1.0-rc0060",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
+          "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0"
@@ -1465,9 +1464,8 @@
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.0-rc0047",
-          "Monai.Deploy.Storage": "0.1.0-rc0060",
-          "Monai.Deploy.Storage.MinIO": "0.1.0-rc0060"
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
+          "Monai.Deploy.Storage.MinIO": "0.1.0"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.argo": {
@@ -1475,9 +1473,8 @@
         "dependencies": {
           "IdentityModel.OidcClient": "5.0.0",
           "KubernetesClient": "7.2.19",
-          "Monai.Deploy.Messaging": "0.1.0-rc0047",
-          "Monai.Deploy.Storage": "0.1.0-rc0060",
-          "Monai.Deploy.Storage.MinIO": "0.1.0-rc0060",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
+          "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
           "Newtonsoft.Json": "13.0.1"
