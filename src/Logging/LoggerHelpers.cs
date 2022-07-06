@@ -20,7 +20,7 @@ namespace Monai.Deploy.WorkflowManager.Logging
                 TaskType = task.TaskType,
                 TaskStartTime = task.TaskStartTime,
                 TaskEndTime = DateTime.UtcNow,
-                TaskStatsObject = "", //Comes later
+                TaskStatsObject = task.ExecutionStats,
                 PatientDetails = patientDetails
             };
         }
