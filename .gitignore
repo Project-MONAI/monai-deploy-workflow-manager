@@ -547,7 +547,7 @@ src/results
 # minio state
 *.run
 
-#SpecFlow Stuff
+# SpecFlow
 !lib/**
 TechTalk.SpecFlow.Tools/app.config
 TechTalk.SpecFlow.Tools/plugincompability.config
