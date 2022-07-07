@@ -49,5 +49,12 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 Assertions.WorkflowInstanceStatus(status, workflowInstance);
             });
         }
+
+        [Then(@"The Task Dispatch event is for Task Id (.*)")]
+        public void ThenTheTaskDispatchEventIsForTaskId(string taskId)
+        {
+            var taskDispatchEvents = DataHelper.TaskDispatchEvents;
+            taskDispatchEvents[0].TaskId.Should().Be(taskId);
+        }
     }
 }
