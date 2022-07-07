@@ -92,4 +92,4 @@ Scenario: Workflow instance status is failed when a condition is invalid
     And I have a Workflow Instance WFI_Task_Destination_Invalid_Condition
     When I publish a Task Update Message Task_Update_Task_Destination_Invalid_Condition with status Succeeded
     Then A Task Dispatch event is not published
-    And Workflow Instance status is Failed
+    And Workflow Instance status is Succeeded

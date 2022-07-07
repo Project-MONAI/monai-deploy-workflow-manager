@@ -631,7 +631,7 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Then("A Task Dispatch event is not published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 95
-    testRunner.And("Workflow Instance status is Failed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("Workflow Instance status is Succeeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
