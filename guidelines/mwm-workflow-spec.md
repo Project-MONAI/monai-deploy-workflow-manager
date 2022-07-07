@@ -247,7 +247,7 @@ Example:
 
 ##### DICOM Tags
 When the input data is DICOM, Evaluators can use DICOM tag values in conditional statements.
-DICOM tags are available in `context.dicom`. The reference for that object is as follows:
+DICOM tags are available in `context.input.dicom`. The reference for that object is as follows:
 
 | Property | Type | Description |
 |------|------|------|
@@ -259,12 +259,12 @@ Each `Series` object contains the tags of that series. They can be accessed eith
 
 The DICOM tag matching engine allows evaluating conditions against all series and resulting in True if the condition matches _any one_ of them:
 ```python
-{{context.dicom.series.any('0018','0050')}} < 5
+{{context.input.dicom.series.any('0018','0050')}} < 5
 ```
 
 In order to check a certain tag across _all_ series, use the study level tags. For example, to only evaluate True for Female patients:
 ```python
-{{context.dicom.series.all('0010','0040')}} == 'F'
+{{context.input.dicom.series.all('0010','0040')}} == 'F'
 ```
 
 ### Destinations
@@ -291,7 +291,7 @@ Example (run my-task-id when the patient is female):
     "task_destinations": [
         {
             "name": "my-task-id",
-            "conditions": ["{{context.dicom.series.all('0010','0040')}} == 'F'"]
+            "conditions": ["{{context.input.dicom.series.all('0010','0040')}} == 'F'"]
         },
     ],
     ...
@@ -305,7 +305,6 @@ Export destinations define an external location to which the output of the task 
 | Property | Type | Description |
 |------|------|------|
 |name|str|The name of the destination. This can either be an export destinations already defined within the [Informatics Gateway](#informatics-gateway) section of  the workflow configuration.|
-|conditions|Optional[list[Evaluator]]|An optional array of [Evaluators](#evaluators) that need to be met in order for this destination to be used.|
 |artifacts|list[Artifact]|An array of [Artifacts](#artifacts) that should be sent to this export destination.|
 
 Example (output sent to another task if the patient is female, otherwise to PACS):
@@ -314,14 +313,13 @@ Example (output sent to another task if the patient is female, otherwise to PACS
     ...task...
     "export_destinations": [
         {
-            "name": "PROD_PACS",
-            "conditions": ["{{context.dicom.series.all('0010','0040')}} != 'F'"]
+            "name": "PROD_PACS"
         }
     ],
     "task_destinations": [
         {
             "name": "my-task-id",
-            "conditions": ["{{context.dicom.series.all('0010','0040')}} == 'F'"]
+            "conditions": ["{{context.input.dicom.series.all('0010','0040')}} == 'F'"]
         }
     ],
     ...
