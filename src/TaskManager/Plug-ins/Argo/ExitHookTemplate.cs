@@ -3,6 +3,7 @@
 
 using Argo;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
