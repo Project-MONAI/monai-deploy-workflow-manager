@@ -57,7 +57,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             _activeExecutions = new Dictionary<string, TaskRunnerInstance>();
             _cancellationTokenSource = new CancellationTokenSource();
 
-            _storageAdminService = _scope.ServiceProvider.GetRequiredService<IStorageAdminService>() ?? throw new ServiceNotFoundException(nameof(IStorageAdminService));
+            try
+            {
+                _storageAdminService = _scope.ServiceProvider.GetRequiredService<IStorageAdminService>() ?? throw new ServiceNotFoundException(nameof(IStorageAdminService));
+            }
+            catch (Exception e)
+            {
+                Console.Write(e);
+            }
+            
             _storageService = _scope.ServiceProvider.GetRequiredService<IStorageService>() ?? throw new ServiceNotFoundException(nameof(IStorageService));
             _messageBrokerPublisherService = null;
             _messageBrokerSubscriberService = null;

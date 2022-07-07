@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Include="Minio" Version="4.0.4" />
+    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.0-rc0047" />
+    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.1.0-rc0060" />
+    <PackageReference Include="Polly" Version="7.2.3" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
+    <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
+    <PackageReference Include="SpecFlow.NUnit" Version="3.9.40" />
+    <PackageReference Include="nunit" Version="3.13.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.1.0" />
+    <PackageReference Include="FluentAssertions" Version="6.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\WorkflowManager\Monai.Deploy.WorkflowManager.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DICOMs\dcm\series1\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series1\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\dcm\series2\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="CopyStoragePlugin" AfterTargets="Build">
+    <ItemGroup>
+      <AWSSDK Include="$(TargetDir)AWSSDK*.dll" />
+      <Minio Include="$(TargetDir)Minio.dll" />
+      <MonaiDeployStorage Include="$(TargetDir)Monai.Deploy.Storage.*.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(AWSSDK)" DestinationFolder="$(TargetDir)plug-ins\" />
+    <Copy SourceFiles="@(Minio)" DestinationFolder="$(TargetDir)plug-ins\" />
+    <Copy SourceFiles="@(MonaiDeployStorage)" DestinationFolder="$(TargetDir)plug-ins\" />
+  </Target>
+
+  <Target Name="CopyMessagingPlugin" AfterTargets="Build">
+    <ItemGroup>
+      <MonaiDeployMessaging Include="$(TargetDir)Monai.Deploy.Messaging.*" />
+      <RabbitMQ Include="$(TargetDir)RabbitMQ.Client.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(MonaiDeployMessaging)" DestinationFolder="$(TargetDir)plug-ins\" />
+    <Copy SourceFiles="@(RabbitMQ)" DestinationFolder="$(TargetDir)plug-ins\" />
+  </Target>
+
+</Project>

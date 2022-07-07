@@ -16,15 +16,15 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Database;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
+using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests;
 using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
-    public static class WorkflowExecutorStartup
+    public static class TaskManagerStartup
     {
         private static IHostBuilder CreateHostBuilder() =>
             Host.CreateDefaultBuilder()
@@ -85,7 +85,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
                     services.AddHostedService(p => p.GetService<DataRetentionService>());
 
-                    services.AddWorkflowExecutor(hostContext);
+                    services.AddTaskManager(hostContext);
                 })
             .ConfigureWebHostDefaults(webBuilder =>
             {
@@ -93,20 +93,20 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 webBuilder.UseStartup<Startup>();
             });
 
-        public static IHost StartWorkflowExecutor()
+        public static IHost StartTaskManager()
         {
             var host = CreateHostBuilder().Build();
             host.RunAsync();
             return host;
         }
 
-        public static async Task<HttpResponseMessage> GetConsumers(HttpClient httpClient)
+        public static async Task<HttpResponseMessage> GetQueues(HttpClient httpClient)
         {
             var svcCredentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(TestExecutionConfig.RabbitConfig.User + ":" + TestExecutionConfig.RabbitConfig.Password));
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", svcCredentials);
 
-            return await httpClient.GetAsync($"http://{TestExecutionConfig.RabbitConfig.Host}:{TestExecutionConfig.RabbitConfig.Port}/api/consumers");
+            return await httpClient.GetAsync($"http://{TestExecutionConfig.RabbitConfig.Host}:{TestExecutionConfig.RabbitConfig.Port}/api/queues");
         }
     }
 }
