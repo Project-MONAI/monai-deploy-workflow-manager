@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Common.Extensions;
+using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
@@ -23,6 +24,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         private readonly IServiceScope _scope;
         private readonly IKubernetesProvider _kubernetesProvider;
         private readonly IArgoProvider _argoProvider;
+        private readonly IConditionalParameterParser _conditionalParser;
         private readonly ILogger<ArgoPlugin> _logger;
         private int? _activeDeadlineSeconds;
         private string _namespace;
@@ -43,6 +45,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             _kubernetesProvider = _scope.ServiceProvider.GetRequiredService<IKubernetesProvider>() ?? throw new ServiceNotFoundException(nameof(IKubernetesProvider));
             _argoProvider = _scope.ServiceProvider.GetRequiredService<IArgoProvider>() ?? throw new ServiceNotFoundException(nameof(IArgoProvider));
+            _conditionalParser = _scope.ServiceProvider.GetRequiredService<IConditionalParameterParser>() ?? throw new ServiceNotFoundException(nameof(IConditionalParameterParser));
+
             _logger = logger;
             _namespace = Strings.DefaultNamespace;
 
@@ -264,6 +268,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             var resources = Event.GetTaskPluginArgumentsParameter<Dictionary<string, string>>(Keys.ArgoResource);
             var priorityClassName = Event.GetTaskPluginArgumentsParameter(Keys.TaskPriorityClassName);
+            var argoParameters = Event.GetTaskPluginArgumentsParameter<Dictionary<string, string>>(Keys.ArgoParameters);
+
+            foreach (var item in argoParameters)
+            {
+                var value = _conditionalParser.ResolveParameters(item.Value, Event.WorkflowInstanceId);
+                workflow.Spec.Arguments.Parameters.Add(new Parameter() { Name = item.Key, Value = value });
+            }
 
             foreach (var template in workflow.Spec.Templates)
             {

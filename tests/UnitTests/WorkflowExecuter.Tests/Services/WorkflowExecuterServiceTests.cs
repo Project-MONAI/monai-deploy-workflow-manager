@@ -22,8 +22,9 @@ using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
 using Moq;
 using Xunit;
-using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
 using Monai.Deploy.WorkflowManager.Storage.Services;
+using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
+using Monai.Deploy.WorkflowManager.Common.Interfaces;
 
 namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 {
@@ -35,6 +36,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         private readonly Mock<IArtifactMapper> _artifactMapper;
         private readonly Mock<ILogger<WorkflowExecuterService>> _logger;
         private readonly Mock<IWorkflowInstanceRepository> _workflowInstanceRepository;
+        private readonly Mock<IWorkflowInstanceService> _workflowInstanceService;
         private readonly Mock<IMessageBrokerPublisherService> _messageBrokerPublisherService;
         private readonly Mock<IStorageService> _storageService;
         private readonly Mock<IDicomService> _dicomService;
@@ -47,13 +49,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _artifactMapper = new Mock<IArtifactMapper>();
             _logger = new Mock<ILogger<WorkflowExecuterService>>();
             _workflowInstanceRepository = new Mock<IWorkflowInstanceRepository>();
+            _workflowInstanceService = new Mock<IWorkflowInstanceService>();
             _messageBrokerPublisherService = new Mock<IMessageBrokerPublisherService>();
             _storageService = new Mock<IStorageService>();
             _dicomService = new Mock<IDicomService>();
             _configuration = Options.Create(new WorkflowManagerOptions() { Messaging = new MessageBrokerConfiguration { Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch", ExportRequestPrefix = "md.export.request" }, DicomAgents = new DicomAgentConfiguration { DicomWebAgentName = "monaidicomweb" } } });
             _storageConfiguration = Options.Create(new StorageServiceConfiguration() { Settings = new Dictionary<string, string> { { "bucket", "testbucket" }, { "endpoint", "localhost" }, { "securedConnection", "False" } } });
             Mock<IDicomService> _dicom = new();
-            var conditionalParser = new ConditionalParameterParser((new Mock<ILogger<ConditionalParameterParser>>()).Object, _storageService.Object, _dicom.Object);
+            var conditionalParser = new ConditionalParameterParser((new Mock<ILogger<ConditionalParameterParser>>()).Object, _dicom.Object, _workflowInstanceService.Object);
             WorkflowExecuterService = new WorkflowExecuterService(_logger.Object,
                                                                   _configuration,
                                                                   _storageConfiguration,

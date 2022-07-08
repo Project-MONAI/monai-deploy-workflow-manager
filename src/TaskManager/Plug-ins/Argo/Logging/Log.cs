@@ -54,5 +54,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging
 
         [LoggerMessage(EventId = 1015, Level = LogLevel.Debug, Message = "Metadata file in {path} in bucket {bucket} was not found.")]
         public static partial void MetadataFileNotFound(this ILogger logger, string bucket, string path);
+
+        [LoggerMessage(EventId = 1016, Level = LogLevel.Debug, Message = "Submitting Argo workflow: {generateName}")]
+        public static partial void SubmitingArgoWorkflow(this ILogger logger, string generateName);
     }
 }

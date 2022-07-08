@@ -48,7 +48,7 @@ public class WorkflowInstanceController : ControllerBase
         }
         catch (Exception e)
         {
-            this._logger.LogError($"{nameof(GetListAsync)} - Failed to get workflowInstances", e);
+            _logger.LogError($"{nameof(GetListAsync)} - Failed to get workflowInstances", e);
 
             return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances", (int)HttpStatusCode.InternalServerError);
         }
@@ -65,7 +65,7 @@ public class WorkflowInstanceController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
         {
-            this._logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to validate {nameof(id)}");
+            _logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to validate {nameof(id)}");
 
             return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", (int)HttpStatusCode.BadRequest);
         }
@@ -76,7 +76,7 @@ public class WorkflowInstanceController : ControllerBase
 
             if (workflowInstance is null)
             {
-                this._logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to find workflow instance with Id: {id}");
+                _logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to find workflow instance with Id: {id}");
 
                 return NotFound($"Faild to find workflow instance with Id: {id}");
             }
