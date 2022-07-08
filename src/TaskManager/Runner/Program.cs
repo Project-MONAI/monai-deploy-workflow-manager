@@ -18,6 +18,7 @@ using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo;
+using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
 {

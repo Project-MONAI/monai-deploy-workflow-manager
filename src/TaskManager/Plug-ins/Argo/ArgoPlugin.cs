@@ -8,8 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common;
+using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
+using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
@@ -44,7 +46,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             _logger = logger;
             _namespace = Strings.DefaultNamespace;
 
-            ValidateEventAndInit();
+            ValidateEvent();
             Initialize();
         }
 
@@ -71,7 +73,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             _logger.Initialized(_namespace, _baseUrl, _activeDeadlineSeconds, (!string.IsNullOrWhiteSpace(_apiToken)));
         }
 
-        private void ValidateEventAndInit()
+        private void ValidateEvent()
         {
             if (Event.TaskPluginArguments is null || Event.TaskPluginArguments.Count == 0)
             {
@@ -239,6 +241,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             // Add the exit template for the exit hook
             await AddExitHookTemplate(workflow, cancellationToken).ConfigureAwait(false);
 
+            ProcessTaskPluginArguments(workflow);
+
             _logger.ArgoWorkflowTemplateGenerated(workflow.Metadata.GenerateName);
             var workflowJson = JsonConvert.SerializeObject(workflow, Formatting.Indented);
             workflowJson = workflowJson.Replace(Event.TaskPluginArguments[Keys.MessagingPassword], "*****");
@@ -246,6 +250,75 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             _logger.ArgoWorkflowTemplateJson(workflow.Metadata.GenerateName, workflowJson);
 
             return workflow;
+        }
+
+        /// <summary>
+        /// Adds limits and requests from task plugin arguments to templates inside given workflow.
+        /// </summary>
+        /// <param name="resources"></param>
+        /// <param name="workflow"></param>
+        /// <param name="cancellationToken"></param>
+        private void ProcessTaskPluginArguments(Workflow workflow)
+        {
+            Guard.Against.Null(workflow);
+
+            var resources = Event.GetTaskPluginArgumentsParameter<Dictionary<string, string>>(Keys.ArgoResource);
+            var priorityClassName = Event.GetTaskPluginArgumentsParameter(Keys.TaskPriorityClassName);
+
+            foreach (var template in workflow.Spec.Templates)
+            {
+                AddLimit(resources, template, ResourcesKeys.CpuLimit);
+                AddLimit(resources, template, ResourcesKeys.MemoryLimit);
+                AddRequest(resources, template, ResourcesKeys.CpuReservation);
+                AddRequest(resources, template, ResourcesKeys.MemoryReservation);
+                AddRequest(resources, template, ResourcesKeys.GpuLimit);
+
+                if (priorityClassName is not null)
+                {
+                    template.PriorityClassName = priorityClassName;
+                }
+            }
+        }
+
+        private static void AddLimit(Dictionary<string, string>? resources, Template2 template, ResourcesKey key)
+        {
+            Guard.Against.Null(template);
+            Guard.Against.Null(key);
+            if (template.Container is null || resources is null || !resources.TryGetValue(key.TaskKey, out var value))
+            {
+                return;
+            }
+            if (template.Container.Resources is null)
+            {
+                template.Container.Resources = new ResourceRequirements();
+            }
+            if (template.Container.Resources.Limits is null)
+            {
+                template.Container.Resources.Limits = new Dictionary<string, string>();
+            }
+
+            template.Container.Resources.Limits.Add(key.ArgoKey, value);
+        }
+
+        private static void AddRequest(Dictionary<string, string>? resources, Template2 template, ResourcesKey key)
+        {
+            Guard.Against.Null(template);
+            Guard.Against.Null(key);
+            if (template.Container is null || resources is null || !resources.TryGetValue(key.TaskKey, out var value) || string.IsNullOrWhiteSpace(value))
+            {
+                return;
+            }
+
+            if (template.Container.Resources is null)
+            {
+                template.Container.Resources = new ResourceRequirements();
+            }
+            if (template.Container.Resources.Requests is null)
+            {
+                template.Container.Resources.Requests = new Dictionary<string, string>();
+            }
+
+            template.Container.Resources.Requests.Add(key.ArgoKey, value);
         }
 
         private async Task AddMainWorkflowTemplate(Workflow workflow, CancellationToken cancellationToken)
@@ -258,7 +331,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             {
                 throw new TemplateNotFoundException(Event.TaskPluginArguments![Keys.WorkflowTemplateName]);
             }
-
             var mainTemplateSteps = new Template2()
             {
                 Name = Strings.WorkflowEntrypoint,
