@@ -25,6 +25,7 @@ using Xunit;
 using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
 using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Services;
 
 namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 {
@@ -69,6 +70,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                                                                   conditionalParser,
                                                                   _artifactMapper.Object,
                                                                   _storageService.Object,
+                                                                  _payloadService.Object,
                                                                   _dicomService.Object);
         }
 
@@ -466,6 +468,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Payload { PatientDetails = new PatientDetails { } });
             _artifactMapper.Setup(a => a.ConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new Dictionary<string, string>());
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
@@ -562,6 +565,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Payload { PatientDetails = new PatientDetails { } });
             _artifactMapper.Setup(a => a.ConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new Dictionary<string, string>());
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
@@ -656,6 +660,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Payload { PatientDetails = new PatientDetails { } });
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 
@@ -758,6 +763,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Payload { PatientDetails = new PatientDetails { } });
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 
@@ -868,6 +874,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
             _storageService.Setup(w => w.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactDict)).ReturnsAsync(artifactDict);
+            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Payload { PatientDetails = new PatientDetails { } });
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 
@@ -1086,6 +1093,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Payload { PatientDetails = new PatientDetails { } });
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 
@@ -1182,6 +1190,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Payload { PatientDetails = new PatientDetails { } });
 
             var response = await WorkflowExecuterService.ProcessExportComplete(exportEvent, correlationId);
 
@@ -1231,6 +1240,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Payload { PatientDetails = new PatientDetails { } });
 
             var response = await WorkflowExecuterService.ProcessExportComplete(exportEvent, correlationId);
 
