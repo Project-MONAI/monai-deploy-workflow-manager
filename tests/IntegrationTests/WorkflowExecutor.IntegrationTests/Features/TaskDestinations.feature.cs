@@ -294,11 +294,11 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Task destination with condition true, WFI is updated with Task and task dispatch " +
             "message is published")]
-        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        [NUnit.Framework.CategoryAttribute("TaskDestinationConditions")]
         public virtual void TaskDestinationWithConditionTrueWFIIsUpdatedWithTaskAndTaskDispatchMessageIsPublished()
         {
             string[] tagsOfScenario = new string[] {
-                    "TaskUpdate"};
+                    "TaskDestinationConditions"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Task destination with condition true, WFI is updated with Task and task dispatch " +
                     "message is published", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
@@ -342,11 +342,11 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Task destination with condition false, WFI is not updated with Task and task disp" +
             "atch message is not published")]
-        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        [NUnit.Framework.CategoryAttribute("TaskDestinationConditions")]
         public virtual void TaskDestinationWithConditionFalseWFIIsNotUpdatedWithTaskAndTaskDispatchMessageIsNotPublished()
         {
             string[] tagsOfScenario = new string[] {
-                    "TaskUpdate"};
+                    "TaskDestinationConditions"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Task destination with condition false, WFI is not updated with Task and task disp" +
                     "atch message is not published", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
@@ -391,11 +391,11 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Multiple task destinations with condition true, multiple task dispatch messages s" +
             "ent")]
-        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        [NUnit.Framework.CategoryAttribute("TaskDestinationConditions")]
         public virtual void MultipleTaskDestinationsWithConditionTrueMultipleTaskDispatchMessagesSent()
         {
             string[] tagsOfScenario = new string[] {
-                    "TaskUpdate"};
+                    "TaskDestinationConditions"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Multiple task destinations with condition true, multiple task dispatch messages s" +
                     "ent", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
@@ -439,11 +439,11 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Multiple task destinations with condition false, no task dispatch messages sent")]
-        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        [NUnit.Framework.CategoryAttribute("TaskDestinationConditions")]
         public virtual void MultipleTaskDestinationsWithConditionFalseNoTaskDispatchMessagesSent()
         {
             string[] tagsOfScenario = new string[] {
-                    "TaskUpdate"};
+                    "TaskDestinationConditions"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Multiple task destinations with condition false, no task dispatch messages sent", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 67
@@ -487,11 +487,11 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Multiple task destinations one with condition true and one with false, 1 task dis" +
             "patch message published for task which is true")]
-        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        [NUnit.Framework.CategoryAttribute("TaskDestinationConditions")]
         public virtual void MultipleTaskDestinationsOneWithConditionTrueAndOneWithFalse1TaskDispatchMessagePublishedForTaskWhichIsTrue()
         {
             string[] tagsOfScenario = new string[] {
-                    "TaskUpdate"};
+                    "TaskDestinationConditions"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Multiple task destinations one with condition true and one with false, 1 task dis" +
                     "patch message published for task which is true", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
@@ -539,11 +539,11 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Workflow instance status remains created when any task status is either dispatch " +
             "or accepted")]
-        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        [NUnit.Framework.CategoryAttribute("TaskDestinationConditions")]
         public virtual void WorkflowInstanceStatusRemainsCreatedWhenAnyTaskStatusIsEitherDispatchOrAccepted()
         {
             string[] tagsOfScenario = new string[] {
-                    "TaskUpdate"};
+                    "TaskDestinationConditions"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Workflow instance status remains created when any task status is either dispatch " +
                     "or accepted", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
@@ -589,11 +589,11 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Workflow instance status is failed when a condition is invalid")]
-        [NUnit.Framework.CategoryAttribute("TaskUpdate")]
+        [NUnit.Framework.CategoryAttribute("TaskDestinationConditions")]
         public virtual void WorkflowInstanceStatusIsFailedWhenAConditionIsInvalid()
         {
             string[] tagsOfScenario = new string[] {
-                    "TaskUpdate"};
+                    "TaskDestinationConditions"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Workflow instance status is failed when a condition is invalid", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 90
