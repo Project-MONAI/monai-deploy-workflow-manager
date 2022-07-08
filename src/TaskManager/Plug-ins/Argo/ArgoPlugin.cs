@@ -270,10 +270,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             var priorityClassName = Event.GetTaskPluginArgumentsParameter(Keys.TaskPriorityClassName);
             var argoParameters = Event.GetTaskPluginArgumentsParameter<Dictionary<string, string>>(Keys.ArgoParameters);
 
-            foreach (var item in argoParameters)
+            if (argoParameters is not null)
             {
-                var value = _conditionalParser.ResolveParameters(item.Value, Event.WorkflowInstanceId);
-                workflow.Spec.Arguments.Parameters.Add(new Parameter() { Name = item.Key, Value = value });
+                foreach (var item in argoParameters)
+                {
+                    var value = _conditionalParser.ResolveParameters(item.Value, Event.WorkflowInstanceId);
+                    workflow.Spec.Arguments.Parameters.Add(new Parameter() { Name = item.Key, Value = value });
+                }
             }
 
             foreach (var template in workflow.Spec.Templates)
