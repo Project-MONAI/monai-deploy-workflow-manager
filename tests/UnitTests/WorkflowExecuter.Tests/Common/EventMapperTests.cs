@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using FluentAssertions;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.Configuration;
