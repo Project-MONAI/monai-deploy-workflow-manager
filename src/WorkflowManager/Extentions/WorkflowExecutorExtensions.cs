@@ -5,7 +5,6 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.PayloadListener.Services;
@@ -36,12 +35,13 @@ namespace Monai.Deploy.WorkflowManager.Services
             services.AddSingleton<IConditionalParameterParser, ConditionalParameterParser>(s =>
             {
                 var logger = s.GetService<ILogger<ConditionalParameterParser>>();
-                var storage = s.GetService<IStorageService>();
+                var payloadService = s.GetService<IPayloadService>();
+                var workflowService = s.GetService<IWorkflowService>();
                 var dicomStore = s.GetService<IDicomService>();
 
-                return new ConditionalParameterParser(logger, storage, dicomStore);
+                return new ConditionalParameterParser(logger, payloadService, workflowService, dicomStore);
             });
-            
+
             services.AddSingleton<PayloadListenerService>();
             services.AddHostedService(p => p.GetService<PayloadListenerService>());
 

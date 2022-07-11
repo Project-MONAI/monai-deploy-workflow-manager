@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.Storage.API;
+using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
@@ -19,14 +19,16 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
     public class ConditionalParameterParserTests
     {
         private readonly Mock<ILogger<ConditionalParameterParser>>? _logger;
-        private readonly Mock<IStorageService> _storageService;
+        private readonly Mock<IPayloadService> _payloadService;
         private readonly Mock<IDicomService> _dicom;
+        private readonly Mock<IWorkflowService> _workflowService;
 
         public ConditionalParameterParserTests()
         {
             _logger = new Mock<ILogger<ConditionalParameterParser>>();
-            _storageService = new Mock<IStorageService>();
+            _payloadService = new Mock<IPayloadService>();
             _dicom = new Mock<IDicomService>();
+            _workflowService = new Mock<IWorkflowService>();
         }
 
         [Theory]
@@ -54,10 +56,52 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             var testData = CreateTestData();
             var workflow = testData.First();
             workflow.BucketId = "bucket1";
-            var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _storageService.Object, _dicom.Object);
+            var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _payloadService.Object, _workflowService.Object, _dicom.Object);
             var actualResult = conditionalParameterParser.TryParse(input, workflow);
 
 
+
+            Assert.Equal(expectedResult, actualResult);
+        }
+
+        [Theory]
+        [InlineData("{{ context.input.patient_details.id }}", "'patientid'")]
+        [InlineData("{{ context.input.patient_details.name }}", "'patientname'")]
+        [InlineData("{{ context.input.patient_details.sex }}", "'patientsex'")]
+        [InlineData("{{ context.input.patient_details.dob }}", "'19/10/2000'")]
+        [InlineData("{{ context.workflow.name }}", "'workflowname'")]
+        public async Task ResolveParametersWhenGivenPatientDetailsString_ShouldReturnValue(string input, string expectedResult)
+        {
+            var testData = CreateTestData();
+            var workflow = testData.First();
+
+            var payload = new Payload
+            {
+                PayloadId = "workflow1payload1",
+                PatientDetails = new PatientDetails
+                {
+                    PatientDob = new DateTime(2000, 10, 19),
+                    PatientId = "patientid",
+                    PatientName = "patientname",
+                    PatientSex = "patientsex"
+                }
+            };
+
+            var workflowRevision = new WorkflowRevision
+            {
+                Workflow = new Workflow
+                {
+                    Name = "workflowname"
+                }
+            };
+
+            _payloadService.Setup(w => w.GetByIdAsync(payload.PayloadId))
+                .ReturnsAsync(() => payload);
+
+            _workflowService.Setup(w => w.GetAsync("workflow1")).ReturnsAsync(workflowRevision);
+
+            var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _payloadService.Object, _workflowService.Object, _dicom.Object);
+            var actualResult = conditionalParameterParser.ResolveParameters(input, workflow);
 
             Assert.Equal(expectedResult, actualResult);
         }
