@@ -15,6 +15,17 @@ Scenario Outline: Publish a valid workflow request which creates a single workfl
     | Basic_Workflow_1      | Basic_Id_WF_Request        |
 
 @WorkflowRequest
+Scenario Outline: Publish a valid workflow request which creates a single workflow instance with routing task
+    Given I have a clinical workflow <workflow>
+    And I have a bucket in MinIO bucket1
+    When I publish a Workflow Request Message <workflowRequestMessage>
+    Then I can see 1 Workflow Instance is created
+    And 2 Task Dispatch event is published
+    Examples:
+    | workflow              | workflowRequestMessage     |
+    | Routing_Workflow_1    | Basic_AeTitle_WF_Request   |
+
+@WorkflowRequest
 Scenario Outline: Publish a valid workflow request which creates multiple workflow instances
     Given I have a clinical workflow <workflow_1>
     And I have a clinical workflow <workflow_2>

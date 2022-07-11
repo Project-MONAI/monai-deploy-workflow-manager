@@ -47,6 +47,52 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
             },
             new WorkflowRevisionTestData()
             {
+                Name = "Routing_Workflow_1",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Basic workflow 1",
+                        Description = "Basic workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "router",
+                                Description = "Router Workflow 1 Task 1",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination { Name = "task1" },
+                                    new TaskDestination { Name = "task2" }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "task1",
+                                Type = "Basic_task",
+                                Description = "Basic Workflow 1 Task 1"
+                            },
+                            new TaskObject
+                            {
+                                Id = "task2",
+                                Type = "Basic_task",
+                                Description = "Basic Workflow 1 Task 2"
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Basic_AE"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
                 Name = "Basic_Workflow_2",
                 WorkflowRevision = new WorkflowRevision()
                 {
