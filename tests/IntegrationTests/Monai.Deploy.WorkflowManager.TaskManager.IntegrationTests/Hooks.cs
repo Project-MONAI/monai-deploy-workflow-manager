@@ -62,9 +62,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 
             Host = TaskManagerStartup.StartTaskManager();
             HttpClient = new HttpClient();
-            TaskDispatchPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-            TaskCallbackPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
-            TaskUpdateConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
             //MinioClient = new MinioClientUtil();
         }
 
@@ -73,34 +70,38 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         // </summary>
         // <returns>Error if the TaskManager consumer is not started.</returns>
         // <exception cref = "Exception" ></ exception >
-        //[BeforeTestRun(Order = 1)]
-        //public static async Task CheckTaskManagerQueuesStarted()
-        //{
-        //    var response = await TaskManagerStartup.GetQueues(HttpClient);
-        //    var content = response.Content.ReadAsStringAsync().Result;
+        [BeforeTestRun(Order = 1)]
+        public static async Task CheckTaskManagerConsumersStarted()
+        {
+            var response = await TaskManagerStartup.GetConsumers(HttpClient);
+            var content = response.Content.ReadAsStringAsync().Result;
 
-        //    for (var i = 1; i <= 10; i++)
-        //    {
-        //        if (string.IsNullOrEmpty(content) || content == "[]")
-        //        {
-        //            Debug.Write($"Task Manager consumer not started. Recheck times {i}");
-        //            response = await TaskManagerStartup.GetQueues(HttpClient);
-        //            content = response.Content.ReadAsStringAsync().Result;
-        //        }
-        //        else
-        //        {
-        //            Debug.Write("Consumer started. Integration tests will begin!");
-        //            break;
-        //        }
+            for (var i = 1; i <= 10; i++)
+            {
+                if (string.IsNullOrEmpty(content) || content == "[]")
+                {
+                    Debug.Write($"Task Manager not started. Recheck times {i}");
+                    response = await TaskManagerStartup.GetConsumers(HttpClient);
+                    content = response.Content.ReadAsStringAsync().Result;
+                }
+                else
+                {
+                    Debug.Write("Task Manager started. Integration tests will begin!");
+                    break;
+                }
 
-        //        if (i == 10)
-        //        {
-        //            throw new Exception("Task Manager Consumer not started! Integration tests will not continue");
-        //        }
+                if (i == 10)
+                {
+                    throw new Exception("Task Manager not started! Integration tests will not continue");
+                }
 
-        //        Thread.Sleep(1000);
-        //    }
-        //}
+                Thread.Sleep(1000);
+            }
+
+            TaskDispatchPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            TaskCallbackPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
+            TaskUpdateConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+        }
 
         /// <summary>
         /// Adds Rabbit and Mongo clients to Specflow IoC container for test scenario being executed.

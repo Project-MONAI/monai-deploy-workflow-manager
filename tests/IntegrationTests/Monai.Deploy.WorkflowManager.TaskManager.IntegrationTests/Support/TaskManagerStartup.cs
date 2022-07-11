@@ -100,13 +100,13 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             return host;
         }
 
-        public static async Task<HttpResponseMessage> GetQueues(HttpClient httpClient)
+        public static async Task<HttpResponseMessage> GetConsumers(HttpClient httpClient)
         {
             var svcCredentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(TestExecutionConfig.RabbitConfig.User + ":" + TestExecutionConfig.RabbitConfig.Password));
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", svcCredentials);
 
-            return await httpClient.GetAsync($"http://{TestExecutionConfig.RabbitConfig.Host}:{TestExecutionConfig.RabbitConfig.Port}/api/queues");
+            return await httpClient.GetAsync($"http://{TestExecutionConfig.RabbitConfig.Host}:{TestExecutionConfig.RabbitConfig.Port}/api/consumers");
         }
     }
 }

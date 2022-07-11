@@ -18,12 +18,42 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                 Name = "Task_Dispatch",
                 TaskDispatchEvent = new TaskDispatchEvent()
                 {
+                    PayloadId = Guid.NewGuid().ToString(),
                     CorrelationId = Guid.NewGuid().ToString(),
                     ExecutionId = Guid.NewGuid().ToString(),
                     WorkflowInstanceId = Guid.NewGuid().ToString(),
                     TaskId = Guid.NewGuid().ToString(),
                     Status = TaskExecutionStatus.Dispatched,
-                    TaskPluginType = "argo"
+                    TaskPluginType = "router",
+                    Inputs = new List<Messaging.Common.Storage>()
+                    {
+                        new Messaging.Common.Storage
+                        {
+                            Bucket = "test",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test",
+                                AccessToken = "test",
+                                SessionToken = "test"
+                            },
+                            Name = "test name",
+                            Endpoint = "//test",
+                            RelativeRootPath = "//test//test"
+                        }
+                    },
+                    IntermediateStorage = new Messaging.Common.Storage()
+                    {
+                        Bucket = "test",
+                        Credentials = new Messaging.Common.Credentials()
+                        {
+                            AccessKey = "test",
+                            AccessToken = "test",
+                            SessionToken = "test"
+                        },
+                        Name = "test name",
+                        Endpoint = "//test",
+                        RelativeRootPath = "//test//test"
+                    }
                 }
             },
         };
