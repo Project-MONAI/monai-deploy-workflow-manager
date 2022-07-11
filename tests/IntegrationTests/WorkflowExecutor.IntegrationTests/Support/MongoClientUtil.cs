@@ -15,6 +15,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         private IMongoDatabase Database { get; set; }
         private IMongoCollection<WorkflowRevision> WorkflowRevisionCollection { get; set; }
         private IMongoCollection<WorkflowInstance> WorkflowInstanceCollection { get; set; }
+        private IMongoCollection<Payload> PayloadCollection { get; set; }
         private RetryPolicy RetryMongo { get; set; }
 
         public MongoClientUtil()
@@ -23,9 +24,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             Database = Client.GetDatabase($"{TestExecutionConfig.MongoConfig.Database}");
             WorkflowRevisionCollection = Database.GetCollection<WorkflowRevision>($"{TestExecutionConfig.MongoConfig.WorkflowCollection}");
             WorkflowInstanceCollection = Database.GetCollection<WorkflowInstance>($"{TestExecutionConfig.MongoConfig.WorkflowInstanceCollection}");
+            PayloadCollection = Database.GetCollection<Payload>($"{TestExecutionConfig.MongoConfig.PayloadCollection}");
             RetryMongo = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
         }
 
+        #region WorkflowRevision
         public void CreateWorkflowRevisionDocument(WorkflowRevision workflowRevision)
         {
             RetryMongo.Execute(() =>
@@ -59,7 +62,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             return WorkflowRevisionCollection.Find(x => x.WorkflowId == workflowId).ToList();
         }
+        #endregion
 
+        #region WorkflowInstances
         public void CreateWorkflowInstanceDocument(WorkflowInstance workflowInstance)
         {
             RetryMongo.Execute(() =>
@@ -95,6 +100,38 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 WorkflowInstanceCollection.DeleteOne(x => x.Id.Equals(id));
             });
         }
+        #endregion
+
+        #region Payload
+        public void CreatePayloadDocument(Payload payload)
+        {
+            RetryMongo.Execute(() =>
+            {
+                PayloadCollection.InsertOne(payload);
+            });
+        }
+
+        public void DeletePayloadDocument(string id)
+        {
+            RetryMongo.Execute(() =>
+            {
+                PayloadCollection.DeleteOne(x => x.Id.Equals(id));
+            });
+        }
+
+        public void DeletePayloadDocumentByPayloadId(string payloadId)
+        {
+            RetryMongo.Execute(() =>
+            {
+                PayloadCollection.DeleteMany(x => x.PayloadId.Equals(payloadId));
+            });
+        }
+
+        public void DeleteAllPayloadDocuments()
+        {
+            PayloadCollection.DeleteMany("{ }");
+        }
+        #endregion
 
         public void DropDatabase(string dbName)
         {

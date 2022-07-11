@@ -61,6 +61,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             TestExecutionConfig.MongoConfig.Database = config.GetValue<string>("WorkloadManagerDatabase:DatabaseName");
             TestExecutionConfig.MongoConfig.WorkflowCollection = config.GetValue<string>("WorkloadManagerDatabase:WorkflowCollectionName");
             TestExecutionConfig.MongoConfig.WorkflowInstanceCollection = config.GetValue<string>("WorkloadManagerDatabase:WorkflowInstanceCollectionName");
+            TestExecutionConfig.MongoConfig.PayloadCollection = config.GetValue<string>("WorkloadManagerDatabase:PayloadCollectionName");
 
             TestExecutionConfig.MinioConfig.Endpoint = config.GetValue<string>("WorkflowManager:storage:settings:endpoint");
             TestExecutionConfig.MinioConfig.AccessKey = config.GetValue<string>("WorkflowManager:storage:settings:accessKey");
@@ -123,10 +124,11 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             ObjectContainer.RegisterInstanceAs(TaskDispatchConsumer, "TaskDispatchConsumer");
             ObjectContainer.RegisterInstanceAs(TaskUpdatePublisher, "TaskUpdatePublisher");
             ObjectContainer.RegisterInstanceAs(MongoClient);
+            ObjectContainer.RegisterInstanceAs(MinioClient);
             var dataHelper = new DataHelper(TaskDispatchConsumer, MongoClient);
             ObjectContainer.RegisterInstanceAs(dataHelper);
-            ObjectContainer.RegisterInstanceAs(HttpClient);
-            ObjectContainer.RegisterInstanceAs(MinioClient);
+            var apiHelper = new ApiHelper(HttpClient);
+            ObjectContainer.RegisterInstanceAs(apiHelper);
         }
 
         [BeforeTestRun(Order = 1)]
@@ -135,6 +137,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         {
             MongoClient?.DeleteAllWorkflowRevisionDocuments();
             MongoClient?.DeleteAllWorkflowInstances();
+            MongoClient?.DeleteAllPayloadDocuments();
         }
 
         [AfterScenario]
@@ -158,7 +161,13 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
                 }
             }
 
-
+            if (dataHelper.Payload.Count > 0)
+            {
+                foreach (var payload in dataHelper.Payload)
+                {
+                    MongoClient?.DeletePayloadDocumentByPayloadId(payload.PayloadId);
+                }
+            }
         }
 
         /// <summary>

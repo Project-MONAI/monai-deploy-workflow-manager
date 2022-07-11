@@ -15,6 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\WorkflowApi - Copy.feature.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
@@ -46,6 +50,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Features\PayloadApi.feature.cs">
+      <DependentUpon>PayloadApi.feature</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="DICOMs\dcm\series1\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -58,6 +68,13 @@
     <None Update="DICOMs\dcm\series2\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <SpecFlowFeatureFiles Update="Features\PayloadApi.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
   </ItemGroup>
 
   <Target Name="CopyStoragePlugin" AfterTargets="Build">
