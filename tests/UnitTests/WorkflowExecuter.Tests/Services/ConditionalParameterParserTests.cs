@@ -68,7 +68,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         [InlineData("{{ context.input.patient_details.id }}", "'patientid'")]
         [InlineData("{{ context.input.patient_details.name }}", "'patientname'")]
         [InlineData("{{ context.input.patient_details.sex }}", "'patientsex'")]
-        [InlineData("{{ context.input.patient_details.dob }}", "'19/10/2000 00:00:00'")]
+        [InlineData("{{ context.input.patient_details.dob }}", "'19/10/2000'")]
         [InlineData("{{ context.workflow.name }}", "'workflowname'")]
         public async Task ResolveParametersWhenGivenPatientDetailsString_ShouldReturnValue(string input, string expectedResult)
         {

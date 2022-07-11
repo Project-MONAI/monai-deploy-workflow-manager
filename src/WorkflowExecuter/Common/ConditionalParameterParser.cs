@@ -279,7 +279,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
                         resultStr = patientValue.PatientSex;
                         break;
                     case "dob":
-                        resultStr = patientValue.PatientDob?.ToString();
+                        resultStr = patientValue.PatientDob?.ToString("dd/MM/yyyy");
                         break;
                     default:
                         break;
