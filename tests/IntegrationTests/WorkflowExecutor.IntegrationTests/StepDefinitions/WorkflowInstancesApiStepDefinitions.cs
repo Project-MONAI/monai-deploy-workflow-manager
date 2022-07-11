@@ -13,9 +13,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
     {
         public WorkflowInstancesApiStepDefinitions(ObjectContainer objectContainer)
         {
-            var httpClient = objectContainer.Resolve<HttpClient>();
             DataHelper = objectContainer.Resolve<DataHelper>();
-            ApiHelper = new ApiHelper(httpClient);
+            ApiHelper = objectContainer.Resolve<ApiHelper>();
             Assertions = new Assertions();
         }
 
