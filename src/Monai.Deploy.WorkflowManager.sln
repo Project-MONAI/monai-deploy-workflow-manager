@@ -65,9 +65,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.AideClinicalRev
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests", "..\tests\IntegrationTests\WorkflowExecutor.IntegrationTests\Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.csproj", "{91A0D599-472F-4238-A1A3-07807F9C5F61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monai.Deploy.WorkflowManager.TaskManager.TestPlugin", "TaskManager\Plug-ins\TestPlugin\Monai.Deploy.WorkflowManager.TaskManager.TestPlugin.csproj", "{7D85E95C-A263-429F-BF8B-8F4A922FD579}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests", "..\tests\IntegrationTests\Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests\Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.csproj", "{0325A986-7E8B-4688-B4FA-0680F220BE90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.TaskManager.TestPlugin", "TaskManager\Plug-ins\TestPlugin\Monai.Deploy.WorkflowManager.TaskManager.TestPlugin.csproj", "{7D85E95C-A263-429F-BF8B-8F4A922FD579}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -195,10 +193,6 @@ Global
 		{7D85E95C-A263-429F-BF8B-8F4A922FD579}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D85E95C-A263-429F-BF8B-8F4A922FD579}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D85E95C-A263-429F-BF8B-8F4A922FD579}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0325A986-7E8B-4688-B4FA-0680F220BE90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0325A986-7E8B-4688-B4FA-0680F220BE90}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0325A986-7E8B-4688-B4FA-0680F220BE90}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0325A986-7E8B-4688-B4FA-0680F220BE90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -223,7 +217,6 @@ Global
 		{57D00445-0798-4D86-97D4-1586E1B020BC} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{91A0D599-472F-4238-A1A3-07807F9C5F61} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{7D85E95C-A263-429F-BF8B-8F4A922FD579} = {78B0EB6E-2636-48A7-8FDB-4334C3F3FFF1}
-		{0325A986-7E8B-4688-B4FA-0680F220BE90} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC0D56C8-D8CB-45CE-B528-F3DCF86D63ED}
