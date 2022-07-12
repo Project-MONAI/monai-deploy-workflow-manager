@@ -384,7 +384,9 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return await CompleteTask(task, workflowInstance, correlationId, TaskExecutionStatus.Succeeded);
             }
 
-            return await DispatchTaskDestinations(workflowInstance, workflow, correlationId, newTaskExecutions);
+            await DispatchTaskDestinations(workflowInstance, workflow, correlationId, newTaskExecutions);
+
+            return await CompleteTask(task, workflowInstance, correlationId, TaskExecutionStatus.Succeeded);
         }
 
         private async Task<List<TaskExecution>> CreateTaskDestinations(WorkflowInstance workflowInstance, WorkflowRevision workflow, string taskId)
