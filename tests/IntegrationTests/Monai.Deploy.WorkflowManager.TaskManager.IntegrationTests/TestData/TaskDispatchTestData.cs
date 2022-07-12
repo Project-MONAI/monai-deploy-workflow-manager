@@ -24,7 +24,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     WorkflowInstanceId = Guid.NewGuid().ToString(),
                     TaskId = Guid.NewGuid().ToString(),
                     Status = TaskExecutionStatus.Dispatched,
-                    TaskPluginType = "test",
+                    TaskPluginType = "aide_clinical_review",
                     Inputs = new List<Messaging.Common.Storage>()
                     {
                         new Messaging.Common.Storage
