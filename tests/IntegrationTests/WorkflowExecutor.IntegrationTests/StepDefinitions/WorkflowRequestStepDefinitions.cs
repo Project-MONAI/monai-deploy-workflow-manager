@@ -21,8 +21,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private DataHelper DataHelper { get; set; }
         private readonly ISpecFlowOutputHelper _outputHelper;
 
-
-        public WorkflowRequestStepDefinitions(ObjectContainer objectContainer, ScenarioContext scenarioContext, ISpecFlowOutputHelper outputHelper)
+        public WorkflowRequestStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             WorkflowPublisher = objectContainer.Resolve<RabbitPublisher>("WorkflowPublisher");
             TaskDispatchConsumer = objectContainer.Resolve<RabbitConsumer>("TaskDispatchConsumer");
@@ -38,7 +37,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             _outputHelper.WriteLine($"Retrieving workflow revision with name={name}");
             MongoClient.CreateWorkflowRevisionDocument(DataHelper.GetWorkflowRevisionTestData(name));
             _outputHelper.WriteLine("Retrieved workflow revision");
-
         }
 
         [Given(@"I have a Workflow Instance (.*)")]

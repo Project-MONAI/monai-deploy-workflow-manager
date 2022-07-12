@@ -5,6 +5,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.TestData;
+using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
 using Polly;
 using Polly.Retry;
 
@@ -18,6 +19,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public List<TaskDispatchEvent> TaskDispatchEvents = new List<TaskDispatchEvent>();
         public List<WorkflowRevision> WorkflowRevisions = new List<WorkflowRevision>();
         public List<Workflow> Workflows = new List<Workflow>();
+        public List<Payload> Payload = new List<Payload>();
         private RetryPolicy<List<WorkflowInstance>> RetryWorkflowInstances { get; set; }
         private RetryPolicy<List<TaskDispatchEvent>> RetryTaskDispatches { get; set; }
         private RabbitConsumer TaskDispatchConsumer { get; set; }
@@ -195,6 +197,28 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             });
 
             return res;
+        }
+
+        public Payload GetPayloadTestData(string name)
+        {
+            var payload = PayloadsTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));
+
+            if (payload != null)
+            {
+                if (payload.Payload != null)
+                {
+                    Payload.Add(payload.Payload);
+                    return payload.Payload;
+                }
+                else
+                {
+                    throw new Exception($"Payload {name} does not have any applicable test data, please check and try again!");
+                }
+            }
+            else
+            {
+                throw new Exception($"Payload {name} does not have any applicable test data, please check and try again!");
+            }
         }
 
         public string GetPayloadId(string? payloadId = null)
