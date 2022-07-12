@@ -705,10 +705,10 @@
       },
       "Monai.Deploy.Messaging.RabbitMQ": {
         "type": "Transitive",
-        "resolved": "0.1.2",
-        "contentHash": "pACJuXAqp/OQkLVdUflrxClc+cqKeFGOsOSccikUXQfXdbu4iWZolrFkhN5aGY6g2M8ypGk3iTrwFFonbZkkTQ==",
+        "resolved": "0.1.3-rc0006",
+        "contentHash": "cW2vVga8tBIerlRXQJOlAtfGt08mLYWwXH4BPJQkDMaPMTel2Qz1VVLwcX+o6eqSf8DMPuAahanRvcwly20RNA==",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.2"
+          "Monai.Deploy.Messaging": "0.1.3-rc0006"
         }
       },
       "Monai.Deploy.Storage": {
@@ -1826,7 +1826,7 @@
           "Microsoft.Extensions.Logging.Console": "6.0.0",
           "Microsoft.Extensions.Options": "6.0.0",
           "Monai.Deploy.Messaging": "0.1.3-rc0006",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0006",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
@@ -1861,7 +1861,7 @@
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
           "Monai.Deploy.Messaging": "0.1.3-rc0006",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0006",
           "Monai.Deploy.Storage": "0.1.1",
           "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Newtonsoft.Json": "13.0.1",
@@ -1874,7 +1874,7 @@
           "AWSSDK.SecurityToken": "3.7.1.167",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Monai.Deploy.Messaging": "0.1.3-rc0006",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0006",
           "MongoDB.Bson": "2.15.0",
           "Newtonsoft.Json": "13.0.1"
         }
@@ -1886,7 +1886,7 @@
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
           "Monai.Deploy.Messaging": "0.1.3-rc0006",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0006",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
           "MongoDB.Bson": "2.15.0",
@@ -1906,7 +1906,7 @@
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
           "Monai.Deploy.Messaging": "0.1.3-rc0006",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0006",
           "Monai.Deploy.Storage": "0.1.1",
           "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
@@ -1933,7 +1933,7 @@
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
           "Monai.Deploy.Messaging": "0.1.3-rc0006",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0006",
           "Monai.Deploy.Storage": "0.1.1",
           "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
@@ -1945,7 +1945,7 @@
         "type": "Project",
         "dependencies": {
           "Monai.Deploy.Messaging": "0.1.3-rc0006",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0006",
           "Monai.Deploy.Storage": "0.1.1",
           "Monai.Deploy.Storage.MinIO": "0.1.0"
         }
@@ -1956,7 +1956,7 @@
           "IdentityModel.OidcClient": "5.0.0",
           "KubernetesClient": "7.2.19",
           "Monai.Deploy.Messaging": "0.1.3-rc0006",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0006",
           "Monai.Deploy.Storage": "0.1.1",
           "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
@@ -1970,7 +1970,7 @@
           "AWSSDK.SecurityToken": "3.7.1.167",
           "Ardalis.GuardClauses": "4.0.1",
           "Monai.Deploy.Messaging": "0.1.3-rc0006",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0006",
           "Monai.Deploy.Storage": "0.1.1",
           "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
