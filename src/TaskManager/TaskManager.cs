@@ -242,29 +242,29 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 return;
             }
 
-            try
-            {
-                if (string.Equals(message.Body.TaskPluginType,
-                                  PluginStrings.Argo,
-                                  StringComparison.InvariantCultureIgnoreCase))
-                {
-                    await AddCredentialsToPlugin(message).ConfigureAwait(false);
-                }
-                else
-                {
-                    await Task.WhenAll(
-                        PopulateTemporaryStorageCredentials(message.Body.Inputs.ToArray()),
-                        PopulateTemporaryStorageCredentials(message.Body.IntermediateStorage),
-                        PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray())
-                    ).ConfigureAwait(true);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.GenerateTemporaryCredentialsException(ex);
-                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, true).ConfigureAwait(false);
-                return;
-            }
+            //try
+            //{
+            //    if (string.Equals(message.Body.TaskPluginType,
+            //                      PluginStrings.Argo,
+            //                      StringComparison.InvariantCultureIgnoreCase))
+            //    {
+            //        await AddCredentialsToPlugin(message).ConfigureAwait(false);
+            //    }
+            //    else
+            //    {
+            //        //await Task.WhenAll(
+            //        //    PopulateTemporaryStorageCredentials(message.Body.Inputs.ToArray()),
+            //        //    PopulateTemporaryStorageCredentials(message.Body.IntermediateStorage),
+            //        //    PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray())
+            //        //).ConfigureAwait(true);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.GenerateTemporaryCredentialsException(ex);
+            //    await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, true).ConfigureAwait(false);
+            //    return;
+            //}
 
             ITaskPlugin? taskRunner = null;
             try

@@ -1475,6 +1475,14 @@
           "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0"
         }
       },
+      "monai.deploy.workflowmanager.taskmanager.aideclinicalreview": {
+        "type": "Project",
+        "dependencies": {
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2",
+          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0"
+        }
+      },
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
@@ -1497,6 +1505,12 @@
           "Monai.Deploy.WorkflowManager.ConditionsResolver": "1.0.0",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
           "Newtonsoft.Json": "13.0.1"
+        }
+      },
+      "monai.deploy.workflowmanager.taskmanager.testplugin": {
+        "type": "Project",
+        "dependencies": {
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0"
         }
       },
       "monai.deploy.workloadmanager.workfowexecuter": {

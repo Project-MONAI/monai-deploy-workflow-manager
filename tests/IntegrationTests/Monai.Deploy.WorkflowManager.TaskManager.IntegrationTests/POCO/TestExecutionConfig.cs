@@ -28,6 +28,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             public static string WorkflowCompleteQueue { get; set; }
 
             public static string TaskUpdateQueue { get; set; }
+
+            public static string ClinicalReviewQueue { get; set; }
         }
 
         public static class MinioConfig

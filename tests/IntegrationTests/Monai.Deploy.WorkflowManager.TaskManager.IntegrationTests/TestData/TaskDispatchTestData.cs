@@ -15,7 +15,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
         {
             new TaskDispatchTestData
             {
-                Name = "Task_Dispatch",
+                Name = "Task_Dispatch_Clinical_Review",
                 TaskDispatchEvent = new TaskDispatchEvent()
                 {
                     PayloadId = Guid.NewGuid().ToString(),
@@ -24,35 +24,33 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     WorkflowInstanceId = Guid.NewGuid().ToString(),
                     TaskId = Guid.NewGuid().ToString(),
                     Status = TaskExecutionStatus.Dispatched,
-                    TaskPluginType = "router",
+                    TaskPluginType = "test",
                     Inputs = new List<Messaging.Common.Storage>()
                     {
                         new Messaging.Common.Storage
                         {
-                            Bucket = "test",
+                            Name = "input",
+                            Endpoint = "//test",
                             Credentials = new Messaging.Common.Credentials()
                             {
                                 AccessKey = "test",
                                 AccessToken = "test",
-                                SessionToken = "test"
                             },
-                            Name = "test name",
-                            Endpoint = "//test",
-                            RelativeRootPath = "//test//test"
+                            Bucket = "bucket1",
+                            RelativeRootPath = "//dcm"
                         }
                     },
-                    IntermediateStorage = new Messaging.Common.Storage()
+                    IntermediateStorage = new Messaging.Common.Storage
                     {
-                        Bucket = "test",
+                        Name = "input",
+                        Endpoint = "//test",
                         Credentials = new Messaging.Common.Credentials()
                         {
-                            AccessKey = "test",
+                            AccessKey = "test1",
                             AccessToken = "test",
-                            SessionToken = "test"
                         },
-                        Name = "test name",
-                        Endpoint = "//test",
-                        RelativeRootPath = "//test//test"
+                        Bucket = "bucket1",
+                        RelativeRootPath = "//dcm"
                     }
                 }
             },

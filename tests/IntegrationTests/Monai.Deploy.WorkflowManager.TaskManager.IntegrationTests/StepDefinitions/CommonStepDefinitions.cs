@@ -1,5 +1,4 @@
 using System.Reflection;
-using BoDi;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
@@ -9,26 +8,37 @@ using Polly.Retry;
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefinitions
 {
     [Binding]
-    public class TaskDispatchStepDefinitions
+    public class CommonStepDefinitions
     {
         private RetryPolicy RetryPolicy { get; set; }
         private DataHelper DataHelper { get; set; }
         private Assertions Assertions { get; set; }
+        private readonly ISpecFlowOutputHelper _outputHelper;
         private RabbitPublisher TaskDispatchPublisher { get; set; }
         private MinioClientUtil MinioClient { get; set; }
 
-        public TaskDispatchStepDefinitions(ObjectContainer objectContainer)
+        public CommonStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             TaskDispatchPublisher = objectContainer.Resolve<RabbitPublisher>("TaskDispatchPublisher");
             MinioClient = objectContainer.Resolve<MinioClientUtil>();
             DataHelper = objectContainer.Resolve<DataHelper>();
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             Assertions = new Assertions();
+            _outputHelper = outputHelper;
+        }
+
+        [Given(@"I have a bucket in MinIO (.*)")]
+        public async Task GivenIHaveABucketInMinIO(string name)
+        {
+            _outputHelper.WriteLine($"Creating bucket {name}");
+            await MinioClient.CreateBucket(name);
+            _outputHelper.WriteLine($"{name} bucket created");
         }
 
         [When(@"A Task Dispatch event is published (.*)")]
         public void ATaskDispatchEventIsPublished(string name)
         {
+            _outputHelper.WriteLine($"Creating json for TaskDispatchEvent with name={name}");
             var message = new JsonMessage<TaskDispatchEvent>(
                 DataHelper.GetTaskDispatchTestData(name),
                 "16988a78-87b5-4168-a5c3-2cfc2bab8e54",
@@ -36,12 +46,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
                 string.Empty);
 
             TaskDispatchPublisher.PublishMessage(message.ToMessage());
-        }
-
-        [Then(@"I can see the event is consumed")]
-        public void ThenICanSeeTheEventIsConsumed()
-        {
-            Console.Write("Test");
+            _outputHelper.WriteLine($"Successfully published TaskDispatchEvent with name={name}");
         }
 
         private string GetDirectory()

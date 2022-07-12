@@ -31,7 +31,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "Test application")]
         private static async Task Main(string[] args)
         {
- 
 
             var exitEvent = new ManualResetEvent(false);
             var host = CreateHostBuilder(args).Build();

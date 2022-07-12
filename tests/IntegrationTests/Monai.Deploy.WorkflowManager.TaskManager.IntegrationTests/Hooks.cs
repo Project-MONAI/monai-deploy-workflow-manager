@@ -28,6 +28,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         private static RabbitPublisher? TaskDispatchPublisher { get; set; }
         private static RabbitPublisher? TaskCallbackPublisher { get; set; }
         private static RabbitConsumer? TaskUpdateConsumer { get; set; }
+        public static RabbitConsumer? ClinicalReviewConsumer { get; private set; }
         private static MinioClientUtil? MinioClient { get; set; }
         private IObjectContainer ObjectContainer { get; set; }
         private static IHost? Host { get; set; }
@@ -53,6 +54,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             TestExecutionConfig.RabbitConfig.TaskDispatchQueue = "md.tasks.dispatch";
             TestExecutionConfig.RabbitConfig.TaskCallbackQueue = "md.tasks.callback";
             TestExecutionConfig.RabbitConfig.TaskUpdateQueue = "md.tasks.update";
+            TestExecutionConfig.RabbitConfig.ClinicalReviewQueue = "aide.clinical_review.request";
 
             TestExecutionConfig.MinioConfig.Endpoint = "localhost:9000";
             TestExecutionConfig.MinioConfig.AccessKey = "minioadmin";
@@ -101,6 +103,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             TaskDispatchPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
             TaskCallbackPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
             TaskUpdateConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            ClinicalReviewConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
         }
 
         /// <summary>
@@ -112,6 +115,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             ObjectContainer.RegisterInstanceAs(TaskDispatchPublisher, "TaskDispatchPublisher");
             ObjectContainer.RegisterInstanceAs(TaskCallbackPublisher, "TaskCallbackPublisher");
             ObjectContainer.RegisterInstanceAs(TaskUpdateConsumer, "TaskUpdateConsumer");
+            ObjectContainer.RegisterInstanceAs(ClinicalReviewConsumer, "ClincicalReviewConsumer");
             //ObjectContainer.RegisterInstanceAs(MinioClient);
             var dataHelper = new DataHelper();
             ObjectContainer.RegisterInstanceAs(dataHelper);
