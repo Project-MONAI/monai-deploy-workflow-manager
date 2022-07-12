@@ -33,7 +33,7 @@ Scenario: Update workflow with valid details
     And I have a body Basic_Workflow_Update_1
     When I send a PUT request
     Then I will get a 201 response
-    And the Id c86a437d-d026-4bdf-b1df-c7a6372b89e3 is returned in the response body
+    And the Workflow Id c86a437d-d026-4bdf-b1df-c7a6372b89e3 is returned in the response body
     And multiple workflow revisions now exist with correct details
     
 @UpdateWorkflows
