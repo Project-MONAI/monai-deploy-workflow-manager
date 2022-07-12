@@ -42,13 +42,8 @@
         /// </summary>
         public static readonly IReadOnlyList<string> RequiredParameters =
             new List<string> {
-                PatientId,
-                PatientName,
-                PatientSex,
-                PatientDob,
                 QueueName,
-                WorkflowName,
-                ReviewedTaskDetails
+                WorkflowName
             };
     }
 }

@@ -28,8 +28,14 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "task_id")]
         public string TaskId { get; set; }
 
+        [JsonProperty(PropertyName = "previous_task_id")]
+        public string PreviousTaskId { get; set; }
+
         [JsonProperty(PropertyName = "status")]
         public TaskExecutionStatus Status { get; set; }
+
+        [JsonProperty(PropertyName = "reason")]
+        public FailureReason Reason { get; set; }
 
         [JsonProperty(PropertyName = "input_artifacts")]
         public Dictionary<string, string> InputArtifacts { get; set; }

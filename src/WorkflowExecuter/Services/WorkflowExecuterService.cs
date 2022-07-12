@@ -187,9 +187,11 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return false;
             }
 
-            if (message.ExecutionStats is not null)
+            if (message.ExecutionStats is not null
+                || message.Reason != FailureReason.None)
             {
                 currentTask.ExecutionStats = message.ExecutionStats;
+                currentTask.Reason = message.Reason;
                 await _workflowInstanceRepository.UpdateTaskAsync(workflowInstance.Id, currentTask.TaskId, currentTask);
             }
 
@@ -429,7 +431,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                     continue;
                 }
 
-                newTaskExecutions.Add(await CreateTaskExecutionAsync(newTask, workflowInstance));
+                newTaskExecutions.Add(await CreateTaskExecutionAsync(newTask, workflowInstance, null, null, taskId));
             }
 
             return newTaskExecutions;
@@ -506,7 +508,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         private async Task<TaskExecution> CreateTaskExecutionAsync(TaskObject task,
                                                   WorkflowInstance workflowInstance,
                                                   string? bucketName = null,
-                                                  string? payloadId = null)
+                                                  string? payloadId = null,
+                                                  string? previousTaskId = null)
         {
             Guard.Against.Null(workflowInstance, nameof(workflowInstance));
 
@@ -542,7 +545,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 InputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(task?.Artifacts?.Input ?? new Artifact[] { }, payloadId, workflowInstanceId, bucketName),
                 OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/",
                 Metadata = { },
-                InputParameters = newInputParameters
+                InputParameters = newInputParameters,
+                PreviousTaskId = previousTaskId
             };
         }
 
