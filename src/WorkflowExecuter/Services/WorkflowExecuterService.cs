@@ -350,7 +350,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 {
                     processed &= await HandleTaskDestinations(workflowInstance, workflow, taskExec, correlationId);
 
-                    if (!processed)
+                    if (processed is false)
                     {
                         continue;
                     }
@@ -362,7 +362,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
                 processed &= await DispatchTask(workflowInstance, taskExec, correlationId);
 
-                if (!processed)
+                if (processed is false)
                 {
                     continue;
                 }
@@ -377,7 +377,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         {
             var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, task.TaskId);
 
-            if (!newTaskExecutions.Any())
+            if (newTaskExecutions.Any() is false)
             {
                 await UpdateWorkflowInstanceStatus(workflowInstance, task.TaskId, TaskExecutionStatus.Succeeded);
 
