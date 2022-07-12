@@ -75,7 +75,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             _payloadService = payloadService ?? throw new ArgumentNullException(nameof(payloadService));
         }
 
-        public async Task<bool> ProcessPayload(WorkflowRequestEvent message)
+        public async Task<bool> ProcessPayload(WorkflowRequestEvent message, Payload payload)
         {
             Guard.Against.Null(message, nameof(message));
 
@@ -93,14 +93,22 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             var workflowInstances = new List<WorkflowInstance>();
 
-            workflows.ForEach(async (workflow) => workflowInstances.Add(await CreateWorkflowInstanceAsync(message, workflow)));
+            workflows.ForEach(async (workflow) =>
+            {
+                var workflowInstance = await CreateWorkflowInstanceAsync(message, workflow);
+                workflowInstances.Add(workflowInstance);
+            });
 
             var existingInstances = await _workflowInstanceRepository.GetByWorkflowsIdsAsync(workflowInstances.Select(w => w.WorkflowId).ToList());
-            workflowInstances.RemoveAll(i => existingInstances.ToList().Exists(e => e.WorkflowId == i.WorkflowId && e.PayloadId == i.PayloadId));
 
+            workflowInstances.RemoveAll(i => existingInstances.Any(e => e.WorkflowId == i.WorkflowId
+                                                                           && e.PayloadId == i.PayloadId));
             if (workflowInstances.Any())
             {
                 processed &= await _workflowInstanceRepository.CreateAsync(workflowInstances);
+
+                var workflowInstanceIds = workflowInstances.Select(workflowInstance => workflowInstance.WorkflowId);
+                await _payloadService.UpdateWorkflowInstanceIdsAsync(payload.Id, workflowInstanceIds).ConfigureAwait(false);
             }
 
             workflowInstances.AddRange(existingInstances.Where(e => e.PayloadId == message.PayloadId.ToString()));

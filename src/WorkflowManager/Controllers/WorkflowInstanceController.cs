@@ -2,11 +2,13 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Controllers;
 
@@ -36,19 +38,25 @@ public class WorkflowInstanceController : ControllerBase
     /// <summary>
     /// Get a list of workflowInstances.
     /// </summary>
+    /// <param name="status">Workflow instance status filter.</param>
     /// <returns>A list of workflow instances.</returns>
     [HttpGet]
-    public async Task<IActionResult> GetListAsync()
+    public async Task<IActionResult> GetListAsync([FromQuery] string? status = null)
     {
         try
         {
             var workflowsInstances = await _workflowInstanceService.GetListAsync();
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                workflowsInstances = workflowsInstances.Where(wf =>
+                    wf.Status == Enum.Parse<Status>(status, true)).ToList();
+            }
 
             return Ok(workflowsInstances);
         }
         catch (Exception e)
         {
-            this._logger.LogError($"{nameof(GetListAsync)} - Failed to get workflowInstances", e);
+            _logger.LogError($"{nameof(GetListAsync)} - Failed to get workflowInstances", e);
 
             return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances", (int)HttpStatusCode.InternalServerError);
         }
@@ -65,7 +73,7 @@ public class WorkflowInstanceController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
         {
-            this._logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to validate {nameof(id)}");
+            _logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to validate {nameof(id)}");
 
             return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", (int)HttpStatusCode.BadRequest);
         }
@@ -76,7 +84,7 @@ public class WorkflowInstanceController : ControllerBase
 
             if (workflowInstance is null)
             {
-                this._logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to find workflow instance with Id: {id}");
+                _logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to find workflow instance with Id: {id}");
 
                 return NotFound($"Faild to find workflow instance with Id: {id}");
             }

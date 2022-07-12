@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -34,15 +35,17 @@ public class PayloadController : ControllerBase
     /// <summary>
     /// Gets a list of all workflows.
     /// </summary>
+    /// <param name="patientId">Optional paient Id.</param>
+    /// <param name="patientName">Optional patient name.</param>
     /// <returns>The ID of the created Workflow.</returns>
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAllAsync([FromQuery] string patientId = "", [FromQuery] string patientName = "")
     {
         try
         {
-            var payloads = await _payloadService.GetAllAsync();
+            var payloads = await _payloadService.GetAllAsync(patientId, patientName);
 
-            return Ok(payloads);
+            return Ok(payloads.OrderByDescending(p => p.Timestamp));
         }
         catch (Exception e)
         {

@@ -53,11 +53,22 @@ namespace Monai.Deploy.WorkflowManager.Database
             }
         }
 
-        public async Task<IList<Payload>> GetAllAsync()
+        public async Task<IList<Payload>> GetAllAsync(string? patientId = "", string? patientName = "")
         {
+            var builder = Builders<Payload>.Filter;
+            var filter = builder.Empty;
+            if (!string.IsNullOrEmpty(patientId))
+            {
+                filter &= builder.Eq(p => p.PatientDetails.PatientId, patientId);
+            }
+            if (!string.IsNullOrEmpty(patientName))
+            {
+                filter &= builder.Eq(p => p.PatientDetails.PatientName, patientName);
+            }
+
             var payloads = await _payloadCollection
-                .Find(Builders<Payload>.Filter.Empty)
-                .Sort(Builders<Payload>.Sort.Descending("Timestamp"))
+                .Find(filter)
+                .Sort(Builders<Payload>.Sort.Descending(p => p.Timestamp))
                 .ToListAsync();
 
             return payloads;
@@ -72,6 +83,26 @@ namespace Monai.Deploy.WorkflowManager.Database
                 .FirstOrDefaultAsync();
 
             return payload;
+        }
+
+        public async Task<bool> UpdateAssociatedWorkflowInstancesAsync(string payloadId, IEnumerable<string> workflowInstances)
+        {
+            Guard.Against.NullOrEmpty(workflowInstances);
+            Guard.Against.NullOrWhiteSpace(payloadId);
+
+            try
+            {
+                await _payloadCollection.FindOneAndUpdateAsync(
+                    i => i.Id == payloadId,
+                    Builders<Payload>.Update.Set(p => p.WorkflowInstanceIds, workflowInstances));
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.DbCallFailed(nameof(UpdateAssociatedWorkflowInstancesAsync), ex);
+                return false;
+            }
         }
     }
 }

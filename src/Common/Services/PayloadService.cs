@@ -27,7 +27,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<bool> CreateAsync(WorkflowRequestEvent eventPayload)
+        public async Task<Payload?> CreateAsync(WorkflowRequestEvent eventPayload)
         {
             Guard.Against.Null(eventPayload);
 
@@ -49,15 +49,17 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
                     PatientDetails = patientDetails
                 };
 
-                return await _payloadRepsitory.CreateAsync(payload);
-
+                if (await _payloadRepsitory.CreateAsync(payload))
+                {
+                    return payload;
+                }
             }
             catch (Exception e)
             {
                 _logger.FailedToGetPatientDetails(eventPayload.PayloadId.ToString(), eventPayload.Bucket, e);
             }
 
-            return false;
+            return null;
         }
 
         public async Task<Payload> GetByIdAsync(string payloadId)
@@ -67,6 +69,10 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             return await _payloadRepsitory.GetByIdAsync(payloadId);
         }
 
-        public async Task<IList<Payload>> GetAllAsync() => await _payloadRepsitory.GetAllAsync();
+        public async Task<IList<Payload>> GetAllAsync(string? patientId = "", string? patientName = "")
+            => await _payloadRepsitory.GetAllAsync(patientId, patientName);
+
+        public async Task<bool> UpdateWorkflowInstanceIdsAsync(string payloadId, IEnumerable<string> workflowInstances)
+            => await _payloadRepsitory.UpdateAssociatedWorkflowInstancesAsync(payloadId, workflowInstances);
     }
 }
