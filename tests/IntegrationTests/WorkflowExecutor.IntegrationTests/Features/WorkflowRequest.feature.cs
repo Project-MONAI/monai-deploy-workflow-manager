@@ -134,7 +134,7 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.DescriptionAttribute("Publish a valid workflow request which creates a single workflow instance with ro" +
             "uting task")]
         [NUnit.Framework.CategoryAttribute("WorkflowRequest")]
-        [NUnit.Framework.TestCaseAttribute("Routing_Workflow_1", "Basic_AeTitle_WF_Request", null)]
+        [NUnit.Framework.TestCaseAttribute("Routing_Workflow_1", "Routing_Id_WF_Request", null)]
         public virtual void PublishAValidWorkflowRequestWhichCreatesASingleWorkflowInstanceWithRoutingTask(string workflow, string workflowRequestMessage, string[] exampleTags)
         {
             string[] @__tags = new string[] {

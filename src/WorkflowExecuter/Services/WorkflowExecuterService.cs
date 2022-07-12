@@ -356,6 +356,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                     }
 
                     await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, taskExec.TaskId, TaskExecutionStatus.Succeeded);
+
+                    continue;
                 }
 
                 processed &= await DispatchTask(workflowInstance, taskExec, correlationId);

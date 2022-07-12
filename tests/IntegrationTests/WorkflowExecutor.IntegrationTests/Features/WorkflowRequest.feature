@@ -23,7 +23,7 @@ Scenario Outline: Publish a valid workflow request which creates a single workfl
     And 2 Task Dispatch event is published
     Examples:
     | workflow              | workflowRequestMessage     |
-    | Routing_Workflow_1    | Basic_AeTitle_WF_Request   |
+    | Routing_Workflow_1    | Routing_Id_WF_Request   |
 
 @WorkflowRequest
 Scenario Outline: Publish a valid workflow request which creates multiple workflow instances
