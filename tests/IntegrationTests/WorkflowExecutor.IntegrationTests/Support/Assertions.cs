@@ -56,6 +56,24 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             taskDetails.Status.Should().Be(TaskExecutionStatus.Dispatched);
         }
 
+        public void AssertPayload(Payload payload, Payload? actualPayload)
+        {
+            actualPayload.Should().BeEquivalentTo(payload, options => options.Excluding(x => x.Timestamp));
+            actualPayload.Timestamp.ToString(format: "yyyy-MM-dd hh:mm:ss").Should().Be(payload.Timestamp.ToString(format: "yyyy-MM-dd hh:mm:ss"));
+        }
+
+        public void AssertPayloadList(List<Payload> payload, List<Payload>? actualPayloads)
+        {
+            actualPayloads.Count.Should().Be(payload.Count);
+
+            foreach (var p in payload)
+            {
+                var actualPayload = actualPayloads.FirstOrDefault(x => x.PayloadId.Equals(p.PayloadId));
+
+                AssertPayload(p, actualPayload);
+            }
+        }
+
         public void AssertWorkflowIstanceMatchesExpectedTaskStatusUpdate(WorkflowInstance updatedWorkflowInstance, TaskExecutionStatus taskExecutionStatus)
         {
             updatedWorkflowInstance.Tasks[0].Status.Should().Be(taskExecutionStatus);

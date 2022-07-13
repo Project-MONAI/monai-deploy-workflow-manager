@@ -16,31 +16,41 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
         Undefined,
         TaskExecutions,
         Executions,
-        DicomSeries
+        DicomSeries,
+        PatientDetails,
+        Workflow
     }
 
     public class ConditionalParameterParser : IConditionalParameterParser
     {
         private const string ExecutionsTask = "context.executions.task";
         private const string ContextDicomSeries = "context.dicom.series";
-        private readonly Lazy<IWorkflowInstanceService> _workflowInstanceService;
+        private const string PatientDetails = "context.input.patient_details";
+        private const string ContextWorkflow = "context.workflow";
+
+        private readonly IWorkflowInstanceService _workflowInstanceService;
         private readonly ILogger<ConditionalParameterParser> _logger;
         private readonly IDicomService _dicom;
+        private readonly IPayloadService _payloadService;
+        private readonly IWorkflowService _workflowService;
 
         private readonly Regex _squigglyBracketsRegex = new Regex(@"\{{(.*?)\}}");
+
         private WorkflowInstance? _workflowInstance = null;
         private string? _workflowInstanceId = null;
 
         public ConditionalParameterParser(ILogger<ConditionalParameterParser> logger,
                                           IDicomService dicomService,
-                                          IWorkflowInstanceService workflowInstanceService)
+                                          IWorkflowInstanceService workflowInstanceService,
+                                          IPayloadService payloadService,
+                                          IWorkflowService workflowService)
         {
-            _workflowInstanceService = new Lazy<IWorkflowInstanceService>(() => workflowInstanceService);
+            _workflowInstanceService = workflowInstanceService;
             _logger = logger;
             _dicom = dicomService;
+            _payloadService = payloadService;
+            _workflowService = workflowService;
         }
-
-        public IWorkflowInstanceService WorkflowInstanceRepository { get => _workflowInstanceService.Value; }
 
         public WorkflowInstance? WorkflowInstance
         {
@@ -48,7 +58,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             {
                 if (_workflowInstance is null && _workflowInstanceId is not null)
                 {
-                    var task = Task.Run(async () => await WorkflowInstanceRepository.GetByIdAsync(_workflowInstanceId));
+                    var task = Task.Run(async () => await _workflowInstanceService.GetByIdAsync(_workflowInstanceId));
                     task.Wait();
                     var wf = task.Result;
                     _workflowInstance = wf;
@@ -179,6 +189,15 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             {
                 return ResolveDicom(value);
             }
+            if (value.StartsWith(PatientDetails))
+            {
+                return ResolvePatientDetails(value);
+            }
+            if (value.StartsWith(ContextWorkflow))
+            {
+                return ResolveContextWorkflow(value);
+            }
+
             return (Result: null, Context: context);
         }
 
@@ -213,6 +232,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             var subValue = value.Trim().Substring(ExecutionsTask.Length, value.Length - ExecutionsTask.Length);
             var subValues = subValue.Split('[', ']');
             var id = subValues[1].Trim('\'');
+
             var task = WorkflowInstance?.Tasks.First(t => t.TaskId == id);
 
             if (task is null || task is not null && !task.Metadata.Any())
@@ -234,5 +254,85 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 
             return (Result: null, Context: ParameterContext.TaskExecutions);
         }
+
+        private (string? Result, ParameterContext Context) ResolveContextWorkflow(string value)
+        {
+            var subValue = value.Trim().Substring(ContextWorkflow.Length, value.Length - ContextWorkflow.Length);
+            var keyValue = subValue.Replace(".", "");
+            var workflowId = WorkflowInstance?.WorkflowId;
+
+            if (workflowId is null || keyValue is null)
+            {
+                return (Result: null, Context: ParameterContext.Workflow);
+            }
+
+            var task = Task.Run(async () => await _workflowService.GetAsync(workflowId));
+            task.Wait();
+            var workflowSpecValue = task.Result?.Workflow;
+
+            if (workflowSpecValue is not null)
+            {
+                var resultStr = null as string;
+                switch (keyValue)
+                {
+                    case "name":
+                        resultStr = workflowSpecValue.Name;
+                        break;
+                    case "description":
+                        resultStr = workflowSpecValue.Description;
+                        break;
+                    default:
+                        break;
+                }
+
+                return (Result: resultStr, Context: ParameterContext.Workflow);
+            }
+
+            return (Result: null, Context: ParameterContext.Workflow);
+        }
+
+        private (string? Result, ParameterContext Context) ResolvePatientDetails(string value)
+        {
+            var subValue = value.Trim().Substring(PatientDetails.Length, value.Length - PatientDetails.Length);
+            var keyValue = subValue.Replace(".", "");
+            var payloadId = WorkflowInstance?.PayloadId;
+
+            if (payloadId is null || keyValue is null)
+            {
+                return (Result: null, Context: ParameterContext.PatientDetails);
+            }
+
+            var task = Task.Run(async () => await _payloadService.GetByIdAsync(payloadId));
+            task.Wait();
+            var patientValue = task.Result?.PatientDetails;
+
+            if (patientValue is not null)
+            {
+                var resultStr = null as string;
+                switch (keyValue)
+                {
+                    case "id":
+                        resultStr = patientValue.PatientId;
+                        break;
+                    case "name":
+                        resultStr = patientValue.PatientName;
+                        break;
+                    case "sex":
+                        resultStr = patientValue.PatientSex;
+                        break;
+                    case "dob":
+                        resultStr = patientValue.PatientDob?.ToString("dd/MM/yyyy");
+                        break;
+                    default:
+                        break;
+                }
+
+                return (Result: resultStr, Context: ParameterContext.PatientDetails);
+            }
+
+            return (Result: null, Context: ParameterContext.PatientDetails);
+        }
+
+
     }
 }

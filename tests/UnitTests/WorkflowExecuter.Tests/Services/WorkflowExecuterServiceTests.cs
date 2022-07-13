@@ -41,6 +41,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         private readonly Mock<IStorageService> _storageService;
         private readonly Mock<IDicomService> _dicomService;
         private readonly Mock<IPayloadService> _payloadService;
+        private readonly Mock<IWorkflowService> _workflowService;
         private readonly IOptions<WorkflowManagerOptions> _configuration;
         private readonly IOptions<StorageServiceConfiguration> _storageConfiguration;
 
@@ -55,10 +56,20 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _storageService = new Mock<IStorageService>();
             _dicomService = new Mock<IDicomService>();
             _payloadService = new Mock<IPayloadService>();
+            _workflowService = new Mock<IWorkflowService>();
+
             _configuration = Options.Create(new WorkflowManagerOptions() { Messaging = new MessageBrokerConfiguration { Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch", ExportRequestPrefix = "md.export.request" }, DicomAgents = new DicomAgentConfiguration { DicomWebAgentName = "monaidicomweb" } } });
             _storageConfiguration = Options.Create(new StorageServiceConfiguration() { Settings = new Dictionary<string, string> { { "bucket", "testbucket" }, { "endpoint", "localhost" }, { "securedConnection", "False" } } });
-            Mock<IDicomService> _dicom = new();
-            var conditionalParser = new ConditionalParameterParser((new Mock<ILogger<ConditionalParameterParser>>()).Object, _dicom.Object, _workflowInstanceService.Object);
+
+            var dicom = new Mock<IDicomService>();
+            var logger = new Mock<ILogger<ConditionalParameterParser>>();
+
+            var conditionalParser = new ConditionalParameterParser(logger.Object,
+                                                                   dicom.Object,
+                                                                   _workflowInstanceService.Object,
+                                                                   _payloadService.Object,
+                                                                   _workflowService.Object);
+
             WorkflowExecuterService = new WorkflowExecuterService(_logger.Object,
                                                                   _configuration,
                                                                   _storageConfiguration,

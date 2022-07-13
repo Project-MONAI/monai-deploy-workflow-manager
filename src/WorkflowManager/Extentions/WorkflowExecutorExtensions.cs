@@ -35,10 +35,12 @@ namespace Monai.Deploy.WorkflowManager.Services
             services.AddSingleton<IConditionalParameterParser, ConditionalParameterParser>(s =>
             {
                 var logger = s.GetService<ILogger<ConditionalParameterParser>>();
+                var payloadService = s.GetService<IPayloadService>();
+                var workflowService = s.GetService<IWorkflowService>();
                 var dicomStore = s.GetService<IDicomService>();
                 var workflowInstanceService = s.GetService<IWorkflowInstanceService>();
 
-                return new ConditionalParameterParser(logger, dicomStore, workflowInstanceService);
+                return new ConditionalParameterParser(logger, dicomStore, workflowInstanceService, payloadService, workflowService);
             });
 
             services.AddSingleton<PayloadListenerService>();

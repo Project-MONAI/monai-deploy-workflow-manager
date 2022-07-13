@@ -54,13 +54,18 @@ public class ArgoPluginTest
         _argoClient = new Mock<IArgoClient>();
         _kubernetesClient = new Mock<IKubernetes>();
 
-        var _dicomService = new Mock<IDicomService>();
+        var dicomService = new Mock<IDicomService>();
         var workflowInstanceService = new Mock<IWorkflowInstanceService>();
+        var workflowService = new Mock<IWorkflowService>();
+        var payloadService = new Mock<IPayloadService>();
         var parserLogger = new Mock<ILogger<ConditionalParameterParser>>();
+
         _conditionalParameterParser = new ConditionalParameterParser(
             parserLogger.Object,
-            _dicomService.Object,
-            workflowInstanceService.Object);
+            dicomService.Object,
+            workflowInstanceService.Object,
+            payloadService.Object,
+            workflowService.Object);
 
         _options = Options.Create(new MessageBrokerServiceConfiguration());
         _options.Value.PublisherSettings.Add("username", "username");
