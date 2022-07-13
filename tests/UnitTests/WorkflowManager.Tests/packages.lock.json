@@ -1852,7 +1852,11 @@
       "monai.deploy.workflowmanager.conditionsresolver": {
         "type": "Project",
         "dependencies": {
-          "Ardalis.GuardClauses": "4.0.1"
+          "Ardalis.GuardClauses": "4.0.1",
+          "Monai.Deploy.WorkflowManager.Common": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Database": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Storage": "1.0.0"
         }
       },
       "monai.deploy.workflowmanager.configuration": {
@@ -1960,6 +1964,7 @@
           "Monai.Deploy.Storage": "0.1.1",
           "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
+          "Monai.Deploy.WorkflowManager.ConditionsResolver": "1.0.0",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
           "Newtonsoft.Json": "13.0.1"
         }

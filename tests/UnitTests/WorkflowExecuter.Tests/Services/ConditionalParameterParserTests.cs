@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Storage.Services;
-using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
 using Moq;
 using Xunit;
 
@@ -18,14 +18,16 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 {
     public class ConditionalParameterParserTests
     {
+        private readonly Mock<IDicomService> _dicom;
+        private readonly Mock<IWorkflowInstanceService> _workflowInstanceService;
         private readonly Mock<ILogger<ConditionalParameterParser>>? _logger;
         private readonly Mock<IPayloadService> _payloadService;
-        private readonly Mock<IDicomService> _dicom;
         private readonly Mock<IWorkflowService> _workflowService;
 
         public ConditionalParameterParserTests()
         {
             _logger = new Mock<ILogger<ConditionalParameterParser>>();
+            _workflowInstanceService = new Mock<IWorkflowInstanceService>();
             _payloadService = new Mock<IPayloadService>();
             _dicom = new Mock<IDicomService>();
             _workflowService = new Mock<IWorkflowService>();
@@ -44,6 +46,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             "{{ context.executions.task['other task'].'Fred' }} >= '32' OR " +
             "{{ context.executions.task['other task'].'Sandra' }} == 'other YassQueen' OR " +
             "{{ context.executions.task['other task'].'Derick' }} == 'lordge'", true)]
+        [InlineData("'invalid' > 'false'", false)]
         //[InlineData("{{ context.executions.task['other task'].'Derick' }} == 'lordge'", true)]
         public async Task ConditionalParameterParser_WhenGivenCorrectString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
         {
@@ -56,10 +59,10 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             var testData = CreateTestData();
             var workflow = testData.First();
             workflow.BucketId = "bucket1";
-            var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _payloadService.Object, _workflowService.Object, _dicom.Object);
+
+            var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _dicom.Object, _workflowInstanceService.Object, _payloadService.Object, _workflowService.Object);
+
             var actualResult = conditionalParameterParser.TryParse(input, workflow);
-
-
 
             Assert.Equal(expectedResult, actualResult);
         }
@@ -100,7 +103,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             _workflowService.Setup(w => w.GetAsync("workflow1")).ReturnsAsync(workflowRevision);
 
-            var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _payloadService.Object, _workflowService.Object, _dicom.Object);
+            var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _dicom.Object, _workflowInstanceService.Object, _payloadService.Object, _workflowService.Object);
             var actualResult = conditionalParameterParser.ResolveParameters(input, workflow);
 
             Assert.Equal(expectedResult, actualResult);

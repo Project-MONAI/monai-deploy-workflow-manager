@@ -61,6 +61,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
         public static readonly string ArgoResource = "resources";
 
         /// <summary>
+        /// Key for resource limitations
+        /// </summary>
+        public static readonly string ArgoParameters = "parameters";
+
+        /// <summary>
         /// Key for priority classnames on task plugin arguments side
         /// </summary>
         public static readonly string TaskPriorityClassName = "priorityClass";
