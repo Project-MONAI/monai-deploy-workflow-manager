@@ -44,14 +44,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
             taskDispatchEvent.WorkflowInstanceId.Should().Match(workflowInstance.Id);
 
-            if (taskUpdateEvent == null)
-            {
-                taskDispatchEvent.TaskId.Should().Match(workflowRevision.Workflow.Tasks[0].Id);
-            }
-            else
-            {
-                taskDispatchEvent.TaskId.Should().Match(taskDetails.TaskId);
-            }
+            taskDispatchEvent.TaskId.Should().Match(taskDetails.TaskId);
 
             taskDetails.Status.Should().Be(TaskExecutionStatus.Dispatched);
         }

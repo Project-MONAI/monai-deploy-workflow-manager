@@ -13,6 +13,7 @@ using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Contracts.Constants;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
@@ -125,6 +126,15 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                     continue;
                 }
 
+                if (string.Equals(task.TaskType, TaskTypeConstants.RouterTask, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var workflow = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId);
+
+                    await HandleTaskDestinations(workflowInstance, workflow, task, message.CorrelationId);
+
+                    continue;
+                }
+
                 if (task.Status != TaskExecutionStatus.Created)
                 {
                     _logger.TaskPreviouslyDispatched(workflowInstance.PayloadId, task.TaskId);
@@ -213,20 +223,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 _logger.ExportFilesNotFound(currentTask.TaskId, workflowInstance.Id);
             }
 
-            var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, message.TaskId);
-
-            if (!newTaskExecutions.Any())
-            {
-                await UpdateWorkflowInstanceStatus(workflowInstance, message.TaskId, message.Status);
-
-                return await CompleteTask(currentTask, workflowInstance, message.CorrelationId, message.Status);
-            }
-
-            var processed = await HandleTaskDestinations(workflowInstance, message.CorrelationId, newTaskExecutions);
-
-            processed &= await CompleteTask(currentTask, workflowInstance, message.CorrelationId, message.Status);
-
-            return processed;
+            return await HandleTaskDestinations(workflowInstance, workflow, currentTask, message.CorrelationId);
         }
 
         public async Task<bool> ProcessExportComplete(ExportCompleteEvent message, string correlationId)
@@ -251,20 +248,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                     return false;
                 }
 
-                var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, task.TaskId);
-
-                if (!newTaskExecutions.Any())
-                {
-                    await UpdateWorkflowInstanceStatus(workflowInstance, task.TaskId, TaskExecutionStatus.Succeeded);
-
-                    return await CompleteTask(task, workflowInstance, correlationId, TaskExecutionStatus.Succeeded);
-                }
-
-                var processed = await HandleTaskDestinations(workflowInstance, correlationId, newTaskExecutions);
-
-                processed &= await CompleteTask(task, workflowInstance, correlationId, TaskExecutionStatus.Succeeded);
-
-                return processed;
+                return await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
             }
 
             if ((message.Status.Equals(ExportStatus.Failure) || message.Status.Equals(ExportStatus.PartialFailure)) &&
@@ -349,7 +333,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return true;
         }
 
-        private async Task<bool> HandleTaskDestinations(WorkflowInstance workflowInstance, string correlationId, IList<TaskExecution> taskExecutions)
+        private async Task<bool> DispatchTaskDestinations(WorkflowInstance workflowInstance, WorkflowRevision workflow, string correlationId, IList<TaskExecution> taskExecutions)
         {
             workflowInstance.Tasks?.AddRange(taskExecutions);
 
@@ -362,9 +346,23 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             foreach (var taskExec in taskExecutions)
             {
+                if (string.Equals(taskExec.TaskType, TaskTypeConstants.RouterTask, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    processed &= await HandleTaskDestinations(workflowInstance, workflow, taskExec, correlationId);
+
+                    if (processed is false)
+                    {
+                        continue;
+                    }
+
+                    await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, taskExec.TaskId, TaskExecutionStatus.Succeeded);
+
+                    continue;
+                }
+
                 processed &= await DispatchTask(workflowInstance, taskExec, correlationId);
 
-                if (!processed)
+                if (processed is false)
                 {
                     continue;
                 }
@@ -373,6 +371,22 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             }
 
             return processed;
+        }
+
+        private async Task<bool> HandleTaskDestinations(WorkflowInstance workflowInstance, WorkflowRevision workflow, TaskExecution task, string correlationId)
+        {
+            var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, task.TaskId);
+
+            if (newTaskExecutions.Any() is false)
+            {
+                await UpdateWorkflowInstanceStatus(workflowInstance, task.TaskId, TaskExecutionStatus.Succeeded);
+
+                return await CompleteTask(task, workflowInstance, correlationId, TaskExecutionStatus.Succeeded);
+            }
+
+            await DispatchTaskDestinations(workflowInstance, workflow, correlationId, newTaskExecutions);
+
+            return await CompleteTask(task, workflowInstance, correlationId, TaskExecutionStatus.Succeeded);
         }
 
         private async Task<List<TaskExecution>> CreateTaskDestinations(WorkflowInstance workflowInstance, WorkflowRevision workflow, string taskId)
