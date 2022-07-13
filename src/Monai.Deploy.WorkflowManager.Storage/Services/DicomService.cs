@@ -34,7 +34,9 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             {
                 PatientName = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientNameTag),
                 PatientId = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientIdTag),
-                PatientSex = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientSexTag)
+                PatientSex = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientSexTag),
+                PatientAge = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientAgeTag),
+                PatientHospitalId = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientHospitalIdTag)
             };
 
             var dob = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientDateOfBirthTag);

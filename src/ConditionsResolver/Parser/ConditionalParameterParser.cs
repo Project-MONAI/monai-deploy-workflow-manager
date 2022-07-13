@@ -323,6 +323,12 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                     case "dob":
                         resultStr = patientValue.PatientDob?.ToString("dd/MM/yyyy");
                         break;
+                    case "age":
+                        resultStr = patientValue.PatientAge;
+                        break;
+                    case "hospital_id":
+                        resultStr = patientValue.PatientHospitalId;
+                        break;
                     default:
                         break;
                 }

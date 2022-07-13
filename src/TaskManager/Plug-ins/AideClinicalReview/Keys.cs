@@ -23,6 +23,16 @@
         public static readonly string PatientDob = "patient_dob";
 
         /// <summary>
+        /// Key for the patient age.
+        /// </summary>
+        public static readonly string PatientAge = "patient_age";
+
+        /// <summary>
+        /// Key for the patient hospital id.
+        /// </summary>
+        public static readonly string PatientHospitalId = "patient_hospital_id";
+
+        /// <summary>
         /// Key for the workflow name.
         /// </summary>
         public static readonly string WorkflowName = "workflow_name";

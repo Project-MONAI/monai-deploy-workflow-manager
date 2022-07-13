@@ -22,6 +22,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         private string _patientName;
         private string _patientSex;
         private string _patientDob;
+        private string _patientAge;
+        private string _patientHospitalId;
         private string _queueName;
         private string _workflowName;
 
@@ -63,6 +65,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             if (Event.TaskPluginArguments.ContainsKey(Keys.PatientDob))
             {
                 _patientDob = Event.TaskPluginArguments[Keys.PatientDob];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(Keys.PatientAge))
+            {
+                _patientAge = Event.TaskPluginArguments[Keys.PatientAge];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(Keys.PatientHospitalId))
+            {
+                _patientHospitalId = Event.TaskPluginArguments[Keys.PatientHospitalId];
             }
 
             if (Event.TaskPluginArguments.ContainsKey(Keys.QueueName))
@@ -123,7 +135,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
                     PatientId = _patientId,
                     PatientSex = _patientSex,
                     PatientName = _patientName,
-                    PatientDob = _patientDob
+                    PatientDob = _patientDob,
+                    PatientAge = _patientAge,
+                    PatientHospitalId = _patientHospitalId
                 }
             }, TaskManagerApplicationId, Event.CorrelationId);
         }
