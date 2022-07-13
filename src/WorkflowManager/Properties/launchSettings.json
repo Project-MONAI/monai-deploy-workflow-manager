@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Monai.Deploy.WorkflowManager": {
+      "commandName": "Project",
+      //"commandLineArgs": " "
+      //"commandLineArgs": " "
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
