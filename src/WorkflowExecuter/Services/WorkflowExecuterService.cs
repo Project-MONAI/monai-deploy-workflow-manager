@@ -265,7 +265,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         private async Task<bool> CompleteTask(TaskExecution task, WorkflowInstance workflowInstance, string correlationId, TaskExecutionStatus status)
         {
             var payload = await _payloadService.GetByIdAsync(workflowInstance.PayloadId);
-            _logger.TaskComplete(task, workflowInstance, payload.PatientDetails, correlationId, status.ToString());
+            _logger.TaskComplete(task, workflowInstance, payload?.PatientDetails, correlationId, status.ToString());
 
             return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, status);
         }
@@ -422,11 +422,11 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                     continue;
                 }
 
-                var newTask = workflow.Workflow.Tasks.FirstOrDefault(t => t.Id == taskDest.Name);
+                var newTask = workflow?.Workflow?.Tasks.FirstOrDefault(t => t.Id == taskDest.Name);
 
                 if (newTask is null)
                 {
-                    _logger.TaskNotFoundInWorkfow(workflowInstance.PayloadId, taskDest.Name, workflow.WorkflowId);
+                    _logger.TaskNotFoundInWorkfow(workflowInstance.PayloadId, taskDest.Name, workflow?.WorkflowId);
 
                     continue;
                 }
@@ -478,7 +478,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             var tasks = new List<TaskExecution>();
             // part of this ticket just take the first task
-            if (workflow.Workflow.Tasks.Length > 0)
+            if (workflow?.Workflow?.Tasks.Length > 0)
             {
                 var firstTask = workflow.Workflow.Tasks.First();
 
