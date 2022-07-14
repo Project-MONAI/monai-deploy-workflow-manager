@@ -18,7 +18,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 
         public void AssertClinicalReviewEvent(ClinicalReviewRequestEvent clinicalReviewRequestEvent, TaskDispatchEvent taskDispatchEvent)
         {
-            Output.WriteLine("Asserting details of clinical review request event match task dispatch event");
+            Output.WriteLine("Asserting details of ClinicalReviewRequestEvent with TaskDispatchEvent");
             clinicalReviewRequestEvent.ExecutionId.Should().Be(taskDispatchEvent.ExecutionId);
             clinicalReviewRequestEvent.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId);
             clinicalReviewRequestEvent.TaskId.Should().Be(taskDispatchEvent.TaskId);
@@ -38,7 +38,23 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                 file.Bucket.Should().Be(taskDispatchFile?.Bucket);
                 file.RelativeRootPath.Should().Be(taskDispatchFile?.RelativeRootPath);
             }
-            Output.WriteLine("Details of clinical review request match task dispatch event");
+            Output.WriteLine("Details of ClinicalReviewRequestEvent matches TaskDispatchEvent");
+        }
+
+        public void AssertTaskUpdateEventFromTaskDispatch(TaskUpdateEvent taskUpdateEvent, TaskDispatchEvent taskDispatchEvent, TaskExecutionStatus status)
+        {
+            Output.WriteLine("Asserting details of TaskUpdateEvent with TaskDispatchEvent");
+            taskUpdateEvent.ExecutionId.Should().Be(taskDispatchEvent.ExecutionId);
+            // BUG taskUpdateEvent.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId);
+            taskUpdateEvent.Status.Should().Be(status);
+            taskUpdateEvent.TaskId.Should().Be(taskDispatchEvent.TaskId);
+            taskUpdateEvent.WorkflowInstanceId.Should().Be(taskDispatchEvent.WorkflowInstanceId);
+            Output.WriteLine("Details of TaskUpdateEvent matches TaskDispatchEvent");
+        }
+
+        public void TaskUpdateEventFromTaskCallback(TaskUpdateEvent taskUpdateEvent, TaskCallbackEvent taskCallbackEvent)
+        {
+            // TODO
         }
 
         private string GetTaskPluginArguments(TaskDispatchEvent taskDispatchEvent, string key)
