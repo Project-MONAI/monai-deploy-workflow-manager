@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,9 @@ using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Contracts.Responses;
+using Monai.Deploy.WorkflowManager.Filter;
 using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
+using Monai.Deploy.WorkflowManager.Services;
 
 namespace Monai.Deploy.WorkflowManager.Controllers;
 
@@ -23,17 +26,20 @@ public class WorkflowsController : ApiControllerBase
     private readonly IWorkflowService _workflowService;
 
     private readonly ILogger<WorkflowsController> _logger;
+    private readonly IUriService _uriService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WorkflowsController"/> class.
     /// </summary>
-    /// <param name="workflowService">IWorkflowService</param>
-    /// <param name="logger">ILogger<WorkflowsController></param>
+    /// <param name="workflowService">IWorkflowService.</param>
+    /// <param name="logger">ILogger.<WorkflowsController></param>
+    /// <param name="uriService">Uri Service.</param>
     /// <exception cref="ArgumentNullException">ArgumentNullException</exception>
-    public WorkflowsController(IWorkflowService workflowService, ILogger<WorkflowsController> logger)
+    public WorkflowsController(IWorkflowService workflowService, ILogger<WorkflowsController> logger, IUriService uriService)
     {
         _workflowService = workflowService ?? throw new ArgumentNullException(nameof(workflowService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _uriService = uriService ?? throw new ArgumentNullException(nameof(uriService));
     }
 
     /// <summary>
@@ -41,13 +47,21 @@ public class WorkflowsController : ApiControllerBase
     /// </summary>
     /// <returns>The ID of the created Workflow.</returns>
     [HttpGet]
-    public IActionResult GetList()
+    public async Task<IActionResult> GetList([FromQuery] PaginationFilter filter)
     {
         try
         {
-            var workflows = _workflowService.GetList();
+            var route = Request?.Path.Value ?? string.Empty;
+            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
 
-            return Ok(workflows);
+            var pagedData = await _workflowService.GetAllAsync(
+                (validFilter.PageNumber - 1) * validFilter.PageSize,
+                validFilter.PageSize);
+
+            var dataTotal = await _workflowService.CountAsync();
+            var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
+
+            return Ok(pagedReponse);
         }
         catch (Exception e)
         {

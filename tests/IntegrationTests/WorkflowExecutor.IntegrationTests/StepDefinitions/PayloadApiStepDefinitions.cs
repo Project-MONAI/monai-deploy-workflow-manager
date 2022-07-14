@@ -4,6 +4,7 @@
 using BoDi;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Wrappers;
 using Newtonsoft.Json;
 using TechTalk.SpecFlow.Infrastructure;
 
@@ -43,8 +44,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
         public void ThenICanSeeExpectedPayloadsAreReturned()
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
-            var actualPayloads = JsonConvert.DeserializeObject<List<Payload>>(result);
-            Assertions.AssertPayloadList(DataHelper.Payload, actualPayloads);
+
+            var actualPayloads = JsonConvert.DeserializeObject<PagedResponse<List<Payload>>>(result);
+            Assertions.AssertPayloadList(DataHelper.Payload, actualPayloads.Data);
         }
 
         [Then(@"I can see expected Payload is returned")]
@@ -59,7 +61,10 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
         public void ThenICanSeeNoPayloadsAreReturned()
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
-            result.Should().Be("[]");
+            var payloads = JsonConvert.DeserializeObject<PagedResponse<List<Payload>>>(result);
+
+            payloads.Data.Should().BeNullOrEmpty();
+
         }
     }
 }

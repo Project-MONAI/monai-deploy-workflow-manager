@@ -74,10 +74,7 @@ SPDX-License-Identifier: Apache License 2.0
     <ItemGroup>
       <PluginDlls Include="$(PublishDir)Monai.Deploy.Messaging.RabbitMQ.dll;$(PublishDir)Monai.Deploy.Storage.MinIO.dll" />
     </ItemGroup>
-    <Copy
-        SourceFiles="@(PluginDlls)"
-        DestinationFolder="$(PublishDir)\plug-ins\"
-        SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(PluginDlls)" DestinationFolder="$(PublishDir)\plug-ins\" SkipUnchangedFiles="true" />
     <Message Text="Files copied successfully to $(PublishDir)\plug-ins\." Importance="high" />
   </Target>
   

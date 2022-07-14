@@ -5,13 +5,8 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Common.Interfaces
 {
-    public interface IWorkflowService
+    public interface IWorkflowService : IPaginatedApi<WorkflowRevision>
     {
-        /// <summary>
-        /// Gets a list of the latest workflow revisions from the workflow repository.
-        /// </summary>
-        List<WorkflowRevision> GetList();
-
         /// <summary>
         /// Gets a workflow from the workflow repository.
         /// </summary>

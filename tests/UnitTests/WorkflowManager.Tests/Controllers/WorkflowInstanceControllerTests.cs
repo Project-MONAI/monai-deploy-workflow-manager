@@ -11,6 +11,8 @@ using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Controllers;
+using Monai.Deploy.WorkflowManager.Services;
+using Monai.Deploy.WorkflowManager.Wrappers;
 using Moq;
 using Xunit;
 
@@ -22,13 +24,15 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
         private readonly Mock<IPayloadService> _payloadService;
         private readonly Mock<ILogger<PayloadController>> _logger;
+        private readonly Mock<IUriService> _uriService;
 
         public PayloadControllerTests()
         {
             _payloadService = new Mock<IPayloadService>();
             _logger = new Mock<ILogger<PayloadController>>();
+            _uriService = new Mock<IUriService>();
 
-            PayloadController = new PayloadController(_payloadService.Object, _logger.Object);
+            PayloadController = new PayloadController(_payloadService.Object, _logger.Object, _uriService.Object);
         }
 
         [Fact]
@@ -43,21 +47,34 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 }
             };
 
-            _payloadService.Setup(w => w.GetAllAsync()).ReturnsAsync(payloads);
+            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(payloads);
+            _payloadService.Setup(w => w.CountAsync()).ReturnsAsync(payloads.Count);
+            _uriService.Setup(s => s.GetPageUriString(It.IsAny<Filter.PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
-            var result = await PayloadController.GetAllAsync();
+            var result = await PayloadController.GetAllAsync(new Filter.PaginationFilter());
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
 
-            objectResult.Value.Should().BeEquivalentTo(payloads);
+            var responseValue = (PagedResponse<List<Payload>>)objectResult.Value;
+            responseValue.Data.Should().BeEquivalentTo(payloads);
+            responseValue.FirstPage.Should().Be("unitTest");
+            responseValue.LastPage.Should().Be("unitTest");
+            responseValue.PageNumber.Should().Be(1);
+            responseValue.PageSize.Should().Be(10);
+            responseValue.TotalPages.Should().Be(1);
+            responseValue.TotalRecords.Should().Be(1);
+            responseValue.Succeeded.Should().Be(true);
+            responseValue.PreviousPage.Should().Be(null);
+            responseValue.NextPage.Should().Be(null);
+            responseValue.Errors.Should().BeNullOrEmpty();
         }
 
         [Fact]
         public async Task GetListAsync_ServiceException_ReturnProblem()
         {
-            _payloadService.Setup(w => w.GetAllAsync()).ThrowsAsync(new Exception());
+            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>())).ThrowsAsync(new Exception());
 
-            var result = await PayloadController.GetAllAsync();
+            var result = await PayloadController.GetAllAsync(new Filter.PaginationFilter());
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);

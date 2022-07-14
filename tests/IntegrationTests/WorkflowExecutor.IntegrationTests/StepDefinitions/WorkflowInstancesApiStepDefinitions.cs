@@ -4,6 +4,7 @@
 using BoDi;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Wrappers;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
@@ -26,8 +27,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         public void ThenICanSeeExpectedWorkflowInstancesAreReturned()
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
-            var actualWorkflowInstances = JsonConvert.DeserializeObject<List<WorkflowInstance>>(result);
-            Assertions.AssertWorkflowInstanceList(DataHelper.WorkflowInstances, actualWorkflowInstances);
+            var actualWorkflowInstances = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowInstance>>>(result);
+            Assertions.AssertWorkflowInstanceList(DataHelper.WorkflowInstances, actualWorkflowInstances.Data);
         }
 
         [Then(@"I can see expected workflow instance is returned")]

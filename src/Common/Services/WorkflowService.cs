@@ -17,8 +17,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             _workflowRepository = workflowRepository ?? throw new ArgumentNullException(nameof(workflowRepository));
         }
 
-        public List<WorkflowRevision> GetList() => _workflowRepository.GetWorkflowsList();
-
         public async Task<WorkflowRevision> GetAsync(string id)
         {
             Guard.Against.NullOrWhiteSpace(id);
@@ -55,5 +53,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             Guard.Against.Null(workflow);
             return _workflowRepository.SoftDeleteWorkflow(workflow);
         }
+
+        public async Task<long> CountAsync() => await _workflowRepository.CountAsync();
+
+        public async Task<IList<WorkflowRevision>> GetAllAsync(int? skip = null, int? limit = null) => await _workflowRepository.GetAllAsync(skip, limit);
     }
 }

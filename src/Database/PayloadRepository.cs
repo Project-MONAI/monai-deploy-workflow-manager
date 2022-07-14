@@ -15,7 +15,7 @@ using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Database
 {
-    public class PayloadRepository : IPayloadRepsitory
+    public class PayloadRepository : RepositoryBase, IPayloadRepsitory
     {
         private readonly IMongoCollection<Payload> _payloadCollection;
         private readonly ILogger<PayloadRepository> _logger;
@@ -35,6 +35,8 @@ namespace Monai.Deploy.WorkflowManager.Database
             _payloadCollection = mongoDatabase.GetCollection<Payload>(databaseSettings.Value.PayloadCollectionName);
         }
 
+        public Task<long> CountAsync() => base.CountAsync(_payloadCollection, null);
+
         public async Task<bool> CreateAsync(Payload payload)
         {
             Guard.Against.Null(payload, nameof(payload));
@@ -53,15 +55,12 @@ namespace Monai.Deploy.WorkflowManager.Database
             }
         }
 
-        public async Task<IList<Payload>> GetAllAsync()
-        {
-            var payloads = await _payloadCollection
-                .Find(Builders<Payload>.Filter.Empty)
-                .Sort(Builders<Payload>.Sort.Descending("Timestamp"))
-                .ToListAsync();
-
-            return payloads;
-        }
+        public async Task<IList<Payload>> GetAllAsync(int? skip = null, int? limit = null)
+            => await base.GetAllAsync(_payloadCollection,
+                                      null,
+                                      Builders<Payload>.Sort.Descending(x => x.Timestamp),
+                                      skip,
+                                      limit);
 
         public async Task<Payload> GetByIdAsync(string payloadId)
         {

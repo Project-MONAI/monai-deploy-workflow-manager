@@ -2,10 +2,13 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Filter;
+using Monai.Deploy.WorkflowManager.Services;
 
 namespace Monai.Deploy.WorkflowManager.Controllers;
 
@@ -14,39 +17,52 @@ namespace Monai.Deploy.WorkflowManager.Controllers;
 /// </summary>
 [ApiController]
 [Route("payload")]
-public class PayloadController : ControllerBase
+public class PayloadController : ApiControllerBase
 {
     private readonly IPayloadService _payloadService;
 
     private readonly ILogger<PayloadController> _logger;
+    private readonly IUriService _uriService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PayloadController"/> class.
     /// </summary>
     /// <param name="payloadService">paylod service to retrieve payloads.</param>
     /// <param name="logger">logger.</param>
-    public PayloadController(IPayloadService payloadService, ILogger<PayloadController> logger)
+    /// <param name="uriService">Uri Service.</param>
+    public PayloadController(IPayloadService payloadService, ILogger<PayloadController> logger, IUriService uriService)
     {
         _payloadService = payloadService ?? throw new ArgumentNullException(nameof(payloadService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _uriService = uriService ?? throw new ArgumentNullException(nameof(uriService));
+
     }
 
     /// <summary>
-    /// Gets a list of all workflows.
+    /// Gets a paged response list of all workflows.
     /// </summary>
-    /// <returns>The ID of the created Workflow.</returns>
+    /// <param name="filter">Filters.</param>
+    /// <returns>paged response of subset of all workflows.</returns>
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAllAsync([FromQuery] PaginationFilter filter)
     {
         try
         {
-            var payloads = await _payloadService.GetAllAsync();
+            var route = Request?.Path.Value ?? string.Empty;
+            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
 
-            return Ok(payloads);
+            var pagedData = await _payloadService.GetAllAsync(
+                (validFilter.PageNumber - 1) * validFilter.PageSize,
+                validFilter.PageSize);
+
+            var dataTotal = await _payloadService.CountAsync();
+            var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
+
+            return Ok(pagedReponse);
         }
         catch (Exception e)
         {
-            return Problem($"Unexpected error occured: {e.Message}", $"/payload", 500);
+            return Problem($"Unexpected error occured: {e.Message}", $"/payload", InternalServerError);
         }
     }
 
@@ -63,7 +79,7 @@ public class PayloadController : ControllerBase
         {
             _logger.LogDebug($"{nameof(GetAsync)} - Failed to validate {nameof(id)}");
 
-            return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/payload/{id}", 400);
+            return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/payload/{id}", BadRequest);
         }
 
         try
@@ -81,7 +97,7 @@ public class PayloadController : ControllerBase
         }
         catch (Exception e)
         {
-            return Problem($"Unexpected error occured: {e.Message}", $"/payload/{nameof(id)}", 500);
+            return Problem($"Unexpected error occured: {e.Message}", $"/payload/{nameof(id)}", InternalServerError);
         }
     }
 }
