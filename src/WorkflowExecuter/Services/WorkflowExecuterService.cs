@@ -265,7 +265,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         private async Task<bool> CompleteTask(TaskExecution task, WorkflowInstance workflowInstance, string correlationId, TaskExecutionStatus status)
         {
             var payload = await _payloadService.GetByIdAsync(workflowInstance.PayloadId);
-            _logger.TaskComplete(task, workflowInstance, payload?.PatientDetails, correlationId, status.ToString());
+            _logger.TaskComplete(task, workflowInstance, payload.PatientDetails, correlationId, status.ToString());
 
             return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, status);
         }

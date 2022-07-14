@@ -189,6 +189,12 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             var jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
 
             var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
+
+            if (dict is null)
+            {
+                return string.Empty;
+            }
+
             dict.TryGetValue(keyId, out var value);
 
             if (value is not null && value.Value is not null)

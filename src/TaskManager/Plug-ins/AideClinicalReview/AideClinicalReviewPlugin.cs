@@ -153,7 +153,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 
         public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
         {
-            return new ExecutionStatus { Status = TaskExecutionStatus.Succeeded };
+            return await Task.Run(() => new ExecutionStatus { Status = TaskExecutionStatus.Succeeded });
         }
 
         ~AideClinicalReviewPlugin() => Dispose(disposing: false);
