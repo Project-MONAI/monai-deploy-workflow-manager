@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using BoDi;
-using FluentAssertions;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;

@@ -25,8 +25,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     Id = Guid.NewGuid().ToString(),
                     AeTitle = "Multi_Req",
                     WorkflowId = Helper.GetWorkflowByName("Workflow_Revision_for_bucket_minio").WorkflowRevision.WorkflowId,
-                    PayloadId = "donkeypayload",
-                    BucketId = "donkeybucket",
+                    PayloadId = "5450c3a9-2b19-45b0-8b17-fb10f89d1b2d",
+                    BucketId = "bucket1",
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
                     InputMetaData = new Dictionary<string, string>()

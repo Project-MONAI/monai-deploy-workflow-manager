@@ -50,7 +50,8 @@ Scenario Outline: Publish an valid Task Update event with a status that is inval
 Scenario: Workflow task update test for bucket minio
     Given I have a clinical workflow Workflow_Revision_for_bucket_minio
     And I have a Workflow Instance Workflow_instance_for_bucket_minio
-    And I have a payload donkeypayload and bucket in MinIO donkeybucket
+    And I have a bucket in MinIO bucket1
+    And I have a payload patient_1_lordge and payload id 5450c3a9-2b19-45b0-8b17-fb10f89d1b2d in the bucket bucket1
     When I publish a Task Update Message Task_status_update_for_bucket_minio with status Succeeded 
     Then I can see the status of the Task is Succeeded
 

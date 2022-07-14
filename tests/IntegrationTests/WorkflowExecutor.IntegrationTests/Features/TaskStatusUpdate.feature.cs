@@ -322,13 +322,17 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.And("I have a Workflow Instance Workflow_instance_for_bucket_minio", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 53
-    testRunner.And("I have a payload donkeypayload and bucket in MinIO donkeybucket", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("I have a bucket in MinIO bucket1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 54
+    testRunner.And("I have a payload patient_1_lordge and payload id 5450c3a9-2b19-45b0-8b17-fb10f89d" +
+                        "1b2d in the bucket bucket1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 55
     testRunner.When("I publish a Task Update Message Task_status_update_for_bucket_minio with status S" +
                         "ucceeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 55
+#line 56
     testRunner.Then("I can see the status of the Task is Succeeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }

@@ -67,6 +67,17 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
         }
 
+        public void AssertPayloadCollection(Payload payloadCollection, PatientDetails patientDetails, WorkflowRequestMessage workflowRequestMessage)
+        {
+            payloadCollection.PayloadId.Should().Be(workflowRequestMessage.PayloadId.ToString());
+            payloadCollection.Bucket.Should().Be(workflowRequestMessage.Bucket);
+            payloadCollection.CallingAeTitle.Should().Be(workflowRequestMessage.CallingAeTitle);
+            payloadCollection.CalledAeTitle.Should().Be(workflowRequestMessage.CalledAeTitle);
+            payloadCollection.CorrelationId.Should().Be(workflowRequestMessage.CorrelationId);
+            payloadCollection.Timestamp.Should().BeCloseTo(DateTime.UtcNow, precision: TimeSpan.FromMinutes(1));
+            payloadCollection.PatientDetails.Should().BeEquivalentTo(patientDetails);
+        }
+
         public void AssertWorkflowIstanceMatchesExpectedTaskStatusUpdate(WorkflowInstance updatedWorkflowInstance, TaskExecutionStatus taskExecutionStatus)
         {
             updatedWorkflowInstance.Tasks[0].Status.Should().Be(taskExecutionStatus);

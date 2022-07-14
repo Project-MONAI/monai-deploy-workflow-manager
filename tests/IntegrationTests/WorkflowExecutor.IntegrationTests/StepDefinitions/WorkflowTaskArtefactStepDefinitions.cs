@@ -40,15 +40,15 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             _outputHelper.WriteLine($"{name} bucket created");
         }
 
-        [Given(@"I have a payload (.*) in the bucket (.*)")]
-        public async Task GivenIHaveAPayloadInTheBucket(string payloadId, string name)
-        {
+        [Given(@"I have a payload (.*) and payload id (.*) in the bucket (.*)")]
+        public async Task GivenIHaveAPayloadInTheBucket(string folderName, string payloadId, string bucketName)
+       {
             _outputHelper.WriteLine("Retrieving pathname");
-            var pathname = Path.Combine(GetDirectory(), "DICOMs", "dcm");
+            var pathname = Path.Combine(GetDirectory(), "DICOMs", folderName, "dcm");
             _outputHelper.WriteLine($"Retrieved pathname {pathname}");
-            _outputHelper.WriteLine($"Adding {payloadId} file");
-            await MinioClient.AddFileToStorage(pathname, name, DataHelper.GetPayloadId(payloadId));
-            _outputHelper.WriteLine($"File added");
+            _outputHelper.WriteLine($"Adding {folderName} folder");
+            await MinioClient.AddFileToStorage(pathname, bucketName, DataHelper.GetPayloadId(payloadId));
+            _outputHelper.WriteLine($"Folder added");
         }
 
         [Given(@"I have a payload (.*) and bucket in MinIO (.*)")]
@@ -58,7 +58,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             await MinioClient.CreateBucket(name);
             _outputHelper.WriteLine($"{name} bucket created");
             _outputHelper.WriteLine("Retrieving pathname");
-            var pathname = Path.Combine(GetDirectory(), "DICOMs", "dcm");
+            var pathname = Path.Combine(GetDirectory(), "DICOMs", name, "dcm");
             _outputHelper.WriteLine($"Retrieved pathname {pathname}");
             _outputHelper.WriteLine($"Adding {payloadId} file");
             await MinioClient.AddFileToStorage(pathname, name, DataHelper.GetPayloadId(payloadId));

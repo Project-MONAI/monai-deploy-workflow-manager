@@ -90,32 +90,3 @@ Scenario: Publish a valid workflow request with an exiting Workflow Instance wit
     When I publish a Workflow Request Message Multi_WF_Dispatched
     Then I can see an additional Workflow Instance is not created
     And A Task Dispatch event is not published
-
-@PatientDetails
-Scenario: Seed MinIO with patient metadata, and payload collection has details
-    Given I have a clinical workflow Multi_Request_Workflow_Dispatched
-    And I have a bucket in MinIO bucket1
-    And I have a payload <metadata> in the bucket bucket1
-    When I publish a Workflow Request Message <workflowRequestMessage>
-    Then A payload collection is created with Dicom details
-    Examples:
-    | workflowRequestMessage                | metadata                 |
-    | Missing_PayloadID_Invalid_WF_Request  | full_patient_metadata    |
-    | Missing_WorkflowID_Invalid_WF_Request | partial_patient_metadata |
-
-@PatientDetails
-Scenario: Seed MinIO with blank patient data, and payload collection has null details
-    Given I have a clinical workflow Multi_Request_Workflow_Dispatched
-    And I have a bucket in MinIO bucket1
-    And I have a payload Blank_Patient_Metadata in the bucket bucket1 
-    When I publish a Workflow Request Message <workflowRequestMessage>
-    Then A payload collection is created with null Dicom details
-
-@PatientDetails
-Scenario: Seed MinIO with no patient data, and payload collection has null details
-    Given I have a clinical workflow Multi_Request_Workflow_Dispatched
-    And I have a bucket in MinIO bucket1
-    And I have a payload no-patient-metadata in the bucket bucket1
-    When I publish a Workflow Request Message <workflowRequestMessage>
-    Then A payload collection is created with null Dicom details
-
