@@ -64,7 +64,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 
             Host = TaskManagerStartup.StartTaskManager();
             HttpClient = new HttpClient();
-            //MinioClient = new MinioClientUtil();
+            MinioClient = new MinioClientUtil();
         }
 
         // <summary>
@@ -115,9 +115,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             ObjectContainer.RegisterInstanceAs(TaskDispatchPublisher, "TaskDispatchPublisher");
             ObjectContainer.RegisterInstanceAs(TaskCallbackPublisher, "TaskCallbackPublisher");
             ObjectContainer.RegisterInstanceAs(TaskUpdateConsumer, "TaskUpdateConsumer");
-            ObjectContainer.RegisterInstanceAs(ClinicalReviewConsumer, "ClincicalReviewConsumer");
-            //ObjectContainer.RegisterInstanceAs(MinioClient);
-            var dataHelper = new DataHelper();
+            ObjectContainer.RegisterInstanceAs(ClinicalReviewConsumer, "ClinicalReviewConsumer");
+            ObjectContainer.RegisterInstanceAs(MinioClient);
+            var dataHelper = new DataHelper(ObjectContainer);
             ObjectContainer.RegisterInstanceAs(dataHelper);
         }
 

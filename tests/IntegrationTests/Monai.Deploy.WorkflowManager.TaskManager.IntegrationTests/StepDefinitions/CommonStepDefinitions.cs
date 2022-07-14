@@ -1,18 +1,17 @@
+// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
 using System.Reflection;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
-using Polly;
-using Polly.Retry;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class CommonStepDefinitions
     {
-        private RetryPolicy RetryPolicy { get; set; }
         private DataHelper DataHelper { get; set; }
-        private Assertions Assertions { get; set; }
         private readonly ISpecFlowOutputHelper _outputHelper;
         private RabbitPublisher TaskDispatchPublisher { get; set; }
         private MinioClientUtil MinioClient { get; set; }
@@ -22,8 +21,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
             TaskDispatchPublisher = objectContainer.Resolve<RabbitPublisher>("TaskDispatchPublisher");
             MinioClient = objectContainer.Resolve<MinioClientUtil>();
             DataHelper = objectContainer.Resolve<DataHelper>();
-            RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
-            Assertions = new Assertions();
             _outputHelper = outputHelper;
         }
 
@@ -53,12 +50,5 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         {
             return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
-
-        //[AfterScenario]
-        //public async Task DeleteBucket()
-        //{
-        //    await MinioClient.RemoveObjects(TestExecutionConfig.MinIOConfig.BucketName, DataHelper.PayloadId);
-        //}
-
     }
 }

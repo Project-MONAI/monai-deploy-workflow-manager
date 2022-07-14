@@ -191,7 +191,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
 
             TaskDispatchConsumer?.CloseConnection();
 
-            Host?.StopAsync();
+            //Host?.StopAsync();
         }
     }
 }

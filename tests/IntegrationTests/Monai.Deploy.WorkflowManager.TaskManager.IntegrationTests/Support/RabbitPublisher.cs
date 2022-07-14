@@ -14,7 +14,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             RoutingKey = routingKey;
             var connection = connectionFactory.CreateConnection();
             Channel = connection.CreateModel();
-            //Channel.ExchangeDeclare(Exchange, ExchangeType.Topic, durable: true);
         }
 
         private string Exchange { get; set; }
