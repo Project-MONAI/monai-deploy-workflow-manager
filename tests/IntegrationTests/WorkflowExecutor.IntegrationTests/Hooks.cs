@@ -172,11 +172,11 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             if (dataHelper.WorkflowRequestMessage != null)
             {
                 MongoClient?.DeletePayloadDocumentByPayloadId(dataHelper.WorkflowRequestMessage.PayloadId.ToString());
-            }
 
-            if (dataHelper.WorkflowRequestMessage != null)
-            {
-                MongoClient?.DeleteWorkflowInstance(dataHelper.WorkflowRevisions[0].WorkflowId);
+                foreach (var workflowRevision in dataHelper.WorkflowRevisions)
+                {
+                    MongoClient.DeleteWorkflowRevisionDocumentByWorkflowId(workflowRevision.WorkflowId);
+                }
             }
         }
 
