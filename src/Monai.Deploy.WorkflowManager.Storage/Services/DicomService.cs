@@ -34,7 +34,9 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             {
                 PatientName = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientNameTag),
                 PatientId = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientIdTag),
-                PatientSex = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientSexTag)
+                PatientSex = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientSexTag),
+                PatientAge = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientAgeTag),
+                PatientHospitalId = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientHospitalIdTag)
             };
 
             var dob = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientDateOfBirthTag);
@@ -187,6 +189,12 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             var jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
 
             var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
+
+            if (dict is null)
+            {
+                return string.Empty;
+            }
+
             dict.TryGetValue(keyId, out var value);
 
             if (value is not null && value.Value is not null)

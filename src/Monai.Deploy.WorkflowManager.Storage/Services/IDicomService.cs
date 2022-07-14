@@ -14,6 +14,11 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
         /// <param name="bucketName">Name of the bucket.</param>
         Task<IEnumerable<string>> GetDicomPathsForTaskAsync(string outputDirectory, string bucketName);
 
+        /// <summary>
+        /// Gets patient details from the dicom metadata.
+        /// </summary>
+        /// <param name="payloadId">Payload id.</param>
+        /// <param name="bucketName">Name of the bucket.</param>
         Task<PatientDetails> GetPayloadPatientDetailsAsync(string payloadId, string bucketName);
 
         /// <summary>

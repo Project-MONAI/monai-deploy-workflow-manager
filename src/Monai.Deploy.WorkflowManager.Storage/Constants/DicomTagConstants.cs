@@ -12,5 +12,9 @@ namespace Monai.Deploy.WorkflowManager.Storage.Constants
         public const string PatientSexTag = "00100040";
 
         public const string PatientDateOfBirthTag = "00100030";
+
+        public const string PatientAgeTag = "00101010";
+
+        public const string PatientHospitalIdTag = "00100021";
     }
 }

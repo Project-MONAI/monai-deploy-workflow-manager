@@ -187,9 +187,11 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return false;
             }
 
-            if (message.ExecutionStats is not null)
+            if (message.ExecutionStats is not null
+                || message.Reason != FailureReason.None)
             {
                 currentTask.ExecutionStats = message.ExecutionStats;
+                currentTask.Reason = message.Reason;
                 await _workflowInstanceRepository.UpdateTaskAsync(workflowInstance.Id, currentTask.TaskId, currentTask);
             }
 
@@ -420,16 +422,16 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                     continue;
                 }
 
-                var newTask = workflow.Workflow.Tasks.FirstOrDefault(t => t.Id == taskDest.Name);
+                var newTask = workflow?.Workflow?.Tasks.FirstOrDefault(t => t.Id == taskDest.Name);
 
                 if (newTask is null)
                 {
-                    _logger.TaskNotFoundInWorkfow(workflowInstance.PayloadId, taskDest.Name, workflow.WorkflowId);
+                    _logger.TaskNotFoundInWorkfow(workflowInstance.PayloadId, taskDest.Name, workflow?.WorkflowId);
 
                     continue;
                 }
 
-                newTaskExecutions.Add(await CreateTaskExecutionAsync(newTask, workflowInstance));
+                newTaskExecutions.Add(await CreateTaskExecutionAsync(newTask, workflowInstance, null, null, taskId));
             }
 
             return newTaskExecutions;
@@ -437,7 +439,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
         private async Task<bool> DispatchTask(WorkflowInstance workflowInstance, TaskExecution taskExec, string correlationId)
         {
-            var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(taskExec, workflowInstance.Id, correlationId, _storageConfiguration);
+            var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(taskExec, workflowInstance.Id, correlationId, workflowInstance.PayloadId, _storageConfiguration);
             var jsonMesssage = new JsonMessage<TaskDispatchEvent>(taskDispatchEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, taskDispatchEvent.CorrelationId, Guid.NewGuid().ToString());
 
             await _messageBrokerPublisherService.Publish(TaskDispatchRoutingKey, jsonMesssage.ToMessage());
@@ -476,7 +478,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             var tasks = new List<TaskExecution>();
             // part of this ticket just take the first task
-            if (workflow.Workflow.Tasks.Length > 0)
+            if (workflow?.Workflow?.Tasks.Length > 0)
             {
                 var firstTask = workflow.Workflow.Tasks.First();
 
@@ -506,7 +508,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         private async Task<TaskExecution> CreateTaskExecutionAsync(TaskObject task,
                                                   WorkflowInstance workflowInstance,
                                                   string? bucketName = null,
-                                                  string? payloadId = null)
+                                                  string? payloadId = null,
+                                                  string? previousTaskId = null)
         {
             Guard.Against.Null(workflowInstance, nameof(workflowInstance));
 
@@ -542,7 +545,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 InputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(task?.Artifacts?.Input ?? new Artifact[] { }, payloadId, workflowInstanceId, bucketName),
                 OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/",
                 Metadata = { },
-                InputParameters = newInputParameters
+                InputParameters = newInputParameters,
+                PreviousTaskId = previousTaskId
             };
         }
 

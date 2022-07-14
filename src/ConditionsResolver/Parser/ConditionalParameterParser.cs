@@ -90,7 +90,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             }
             catch (Exception ex)
             {
-                _logger.LogWarning("Failure attemping to parse condition", conditions, ex.Message);
+                _logger.LogWarning($"Failure attemping to parse condition - {conditions}", ex);
                 return false;
             }
         }
@@ -137,7 +137,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             {
                 _logger.LogError(e.Message);
                 ClearWorkflowParser();
-                throw e;
+                throw;
             }
         }
 
@@ -322,6 +322,12 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                         break;
                     case "dob":
                         resultStr = patientValue.PatientDob?.ToString("dd/MM/yyyy");
+                        break;
+                    case "age":
+                        resultStr = patientValue.PatientAge;
+                        break;
+                    case "hospital_id":
+                        resultStr = patientValue.PatientHospitalId;
                         break;
                     default:
                         break;
