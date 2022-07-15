@@ -70,7 +70,7 @@ public class WorkflowInstanceController : ApiControllerBase
                 parsedStatus);
 
             var dataTotal = await _workflowInstanceService.CountAsync();
-            var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
+            var pagedReponse = CreatePagedReponse<WorkflowInstance>(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
 
             return Ok(pagedReponse);
         }

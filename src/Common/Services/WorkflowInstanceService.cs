@@ -29,6 +29,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
         public async Task<IList<WorkflowInstance>> GetAllAsync(int? skip = null, int? limit = null, Status? status = null)
             => await _workflowInstanceRepository.GetAllAsync(skip, limit, status);
 
-        public Task<IList<WorkflowInstance>> GetAllAsync(int? skip = null, int? limit = null) => throw new NotImplementedException();
+        public async Task<IList<WorkflowInstance>> GetAllAsync(int? skip = null, int? limit = null)
+            => await _workflowInstanceRepository.GetAllAsync(skip, limit, null);
     }
 }
