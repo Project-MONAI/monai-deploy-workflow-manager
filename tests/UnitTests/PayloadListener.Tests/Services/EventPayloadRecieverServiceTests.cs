@@ -15,6 +15,7 @@ using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 {
@@ -68,9 +69,9 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 
             _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(true);
 
-            _workflowExecuterService.Setup(p => p.ProcessPayload(It.IsAny<WorkflowRequestEvent>())).ReturnsAsync(true);
+            _workflowExecuterService.Setup(p => p.ProcessPayload(It.IsAny<WorkflowRequestEvent>(), It.IsAny<Payload>())).ReturnsAsync(true);
 
-            _payloadService.Setup(p => p.CreateAsync(It.IsAny<WorkflowRequestEvent>())).ReturnsAsync(false);
+            _payloadService.Setup(p => p.CreateAsync(It.IsAny<WorkflowRequestEvent>())).ReturnsAsync(() => null);
 
             _eventPayloadReceiverService.ReceiveWorkflowPayload(message);
 
@@ -85,9 +86,9 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 
             _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(true);
 
-            _workflowExecuterService.Setup(p => p.ProcessPayload(It.IsAny<WorkflowRequestEvent>())).ReturnsAsync(true);
+            _workflowExecuterService.Setup(p => p.ProcessPayload(It.IsAny<WorkflowRequestEvent>(), It.IsAny<Payload>())).ReturnsAsync(true);
 
-            _payloadService.Setup(p => p.CreateAsync(It.IsAny<WorkflowRequestEvent>())).ReturnsAsync(true);
+            _payloadService.Setup(p => p.CreateAsync(It.IsAny<WorkflowRequestEvent>())).ReturnsAsync(new Payload() { Id = Guid.NewGuid().ToString() });
 
             _eventPayloadReceiverService.ReceiveWorkflowPayload(message);
 

@@ -49,9 +49,11 @@ public class PayloadController : ApiControllerBase
     /// Gets a paged response list of all workflows.
     /// </summary>
     /// <param name="filter">Filters.</param>
+    /// <param name="patientId">Optional paient Id.</param>
+    /// <param name="patientName">Optional patient name.</param>
     /// <returns>paged response of subset of all workflows.</returns>
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync([FromQuery] PaginationFilter filter)
+    public async Task<IActionResult> GetAllAsync([FromQuery] PaginationFilter filter, [FromQuery] string patientId = "", [FromQuery] string patientName = "")
     {
         try
         {
@@ -61,7 +63,9 @@ public class PayloadController : ApiControllerBase
 
             var pagedData = await _payloadService.GetAllAsync(
                 (validFilter.PageNumber - 1) * validFilter.PageSize,
-                validFilter.PageSize);
+                validFilter.PageSize, 
+                patientId, 
+                patientName);
 
             var dataTotal = await _payloadService.CountAsync();
             var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);

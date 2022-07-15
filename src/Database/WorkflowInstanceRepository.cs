@@ -100,7 +100,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(UpdateTaskStatusAsync), e);
+                _logger.DbCallFailed(nameof(UpdateTaskAsync), e);
 
                 return false;
             }
@@ -157,9 +157,10 @@ namespace Monai.Deploy.WorkflowManager.Database
 
             try
             {
-                var result = await _workflowInstanceCollection.FindOneAndUpdateAsync(
+                await _workflowInstanceCollection.FindOneAndUpdateAsync(
                     i => i.Id == workflowInstanceId,
                     Builders<WorkflowInstance>.Update.Set(w => w.Status, status));
+
                 return true;
             }
             catch (Exception e)
@@ -197,9 +198,10 @@ namespace Monai.Deploy.WorkflowManager.Database
 
             try
             {
-                var result = await _workflowInstanceCollection.FindOneAndUpdateAsync(
+                await _workflowInstanceCollection.FindOneAndUpdateAsync(
                     i => i.Id == workflowInstanceId,
                     Builders<WorkflowInstance>.Update.Set(w => w.Tasks, tasks));
+
                 return true;
             }
             catch (Exception e)
@@ -222,11 +224,27 @@ namespace Monai.Deploy.WorkflowManager.Database
 
         public Task<long> CountAsync() => base.CountAsync(_workflowInstanceCollection, null);
 
-        public async Task<IList<WorkflowInstance>> GetAllAsync(int? skip = null, int? limit = null)
-            => await base.GetAllAsync(_workflowInstanceCollection,
-                                      null,
-                                      Builders<WorkflowInstance>.Sort.Descending(x => x.StartTime),
-                                      skip,
-                                      limit);
+        public async Task<IList<WorkflowInstance>> GetAllAsync(int? skip = null, int? limit = null, Status? status = null)
+        {
+            var builder = Builders<WorkflowInstance>.Filter;
+            var filter = builder.Empty;
+            if (status is not null)
+            {
+                filter &= builder.Eq(w => w.Status, status);
+            }
+
+            return await base.GetAllAsync(_workflowInstanceCollection,
+                                          filter,
+                                          Builders<WorkflowInstance>.Sort.Descending(x => x.StartTime),
+                                          skip,
+                                          limit);
+        }
+
+        public Task<IList<WorkflowInstance>> GetAllAsync(int? skip, int? limit)
+            => base.GetAllAsync(_workflowInstanceCollection,
+                                null,
+                                Builders<WorkflowInstance>.Sort.Descending(x => x.StartTime),
+                                skip,
+                                limit);
     }
 }

@@ -42,7 +42,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <param name="skip"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        Task<IList<WorkflowInstance>> GetAllAsync(int? skip, int? limit);
+        Task<IList<WorkflowInstance>> GetAllAsync(int? skip, int? limit, Status? status);
 
         /// <summary>
         /// Updates the Task Status for a given task within a workflow instance.

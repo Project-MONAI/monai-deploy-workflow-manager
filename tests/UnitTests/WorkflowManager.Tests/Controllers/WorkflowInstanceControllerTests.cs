@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -51,7 +52,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 }
             };
 
-            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(payloads);
+            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(payloads);
             _payloadService.Setup(w => w.CountAsync()).ReturnsAsync(payloads.Count);
             _uriService.Setup(s => s.GetPageUriString(It.IsAny<Filter.PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
@@ -76,7 +77,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         [Fact]
         public async Task GetListAsync_ServiceException_ReturnProblem()
         {
-            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>())).ThrowsAsync(new Exception());
+            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
 
             var result = await PayloadController.GetAllAsync(new Filter.PaginationFilter());
 

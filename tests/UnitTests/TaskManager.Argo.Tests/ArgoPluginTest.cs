@@ -17,7 +17,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.Storage.API;
+using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.SharedTest;
+using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
 using Moq;
@@ -37,6 +41,7 @@ public class ArgoPluginTest
     private readonly Mock<IArgoProvider> _argoProvider;
     private readonly Mock<IArgoClient> _argoClient;
     private readonly Mock<IKubernetes> _kubernetesClient;
+    private readonly IConditionalParameterParser _conditionalParameterParser;
     private readonly IOptions<MessageBrokerServiceConfiguration> _options;
 
     public ArgoPluginTest()
@@ -48,6 +53,20 @@ public class ArgoPluginTest
         _argoProvider = new Mock<IArgoProvider>();
         _argoClient = new Mock<IArgoClient>();
         _kubernetesClient = new Mock<IKubernetes>();
+
+        var dicomService = new Mock<IDicomService>();
+        var workflowInstanceService = new Mock<IWorkflowInstanceService>();
+        var workflowService = new Mock<IWorkflowService>();
+        var payloadService = new Mock<IPayloadService>();
+        var parserLogger = new Mock<ILogger<ConditionalParameterParser>>();
+
+        _conditionalParameterParser = new ConditionalParameterParser(
+            parserLogger.Object,
+            dicomService.Object,
+            workflowInstanceService.Object,
+            payloadService.Object,
+            workflowService.Object);
+
         _options = Options.Create(new MessageBrokerServiceConfiguration());
         _options.Value.PublisherSettings.Add("username", "username");
         _options.Value.PublisherSettings.Add("password", "password");
@@ -64,6 +83,9 @@ public class ArgoPluginTest
         serviceProvider
             .Setup(x => x.GetService(typeof(IArgoProvider)))
             .Returns(_argoProvider.Object);
+        serviceProvider
+            .Setup(x => x.GetService(typeof(IConditionalParameterParser)))
+            .Returns(_conditionalParameterParser);
 
         _serviceScope.Setup(x => x.ServiceProvider).Returns(serviceProvider.Object);
 

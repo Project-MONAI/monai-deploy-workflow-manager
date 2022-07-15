@@ -12,7 +12,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// Creates a payload and appends patient details.
         /// </summary>
         /// <param name="eventPayload">request event payload to insert.</param>
-        Task<bool> CreateAsync(WorkflowRequestEvent eventPayload);
+        Task<Payload?> CreateAsync(WorkflowRequestEvent eventPayload);
 
         /// <summary>
         /// Gets a payload by id.
@@ -23,12 +23,22 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// <summary>
         /// Gets a list of payloads.
         /// </summary>
-        Task<IList<Payload>> GetAllAsync(int? skip = null, int? limit = null);
+        Task<IList<Payload>> GetAllAsync(int? skip = null,
+                                         int? limit = null,
+                                         string? patientId = "",
+                                         string? patientName = "");
 
         /// <summary>
         /// Gets Count of objects
         /// </summary>
         /// <returns>the count of objects</returns>
         Task<long> CountAsync();
+
+        /// <summary>
+        /// Updates a payload
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <returns></returns>
+        Task<bool> UpdateWorkflowInstanceIdsAsync(string payloadId, IEnumerable<string> workflowInstances);
     }
 }

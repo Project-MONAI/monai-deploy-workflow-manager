@@ -12,6 +12,7 @@ using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Filter;
 using Monai.Deploy.WorkflowManager.Services;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Controllers;
 
@@ -51,20 +52,22 @@ public class WorkflowInstanceController : ApiControllerBase
     /// Get a list of workflowInstances.
     /// </summary>
     /// <param name="filter">Filters.</param>
+    /// <param name="status">Workflow instance status filter.</param>
     /// <returns>A list of workflow instances.</returns>
     [HttpGet]
-    public async Task<IActionResult> GetListAsync([FromQuery] PaginationFilter filter)
+    public async Task<IActionResult> GetListAsync([FromQuery] PaginationFilter filter, [FromQuery] string? status = null)
     {
         try
         {
             var route = Request?.Path.Value ?? string.Empty;
             var pageSize = filter.PageSize ?? _options.Value.EndpointSettings.DefaultPageSize;
-
+            Status? parsedStatus = status == null ? null : Enum.Parse<Status>(status, true);
             var validFilter = new PaginationFilter(filter.PageNumber, pageSize, _options.Value.EndpointSettings.MaxPageSize);
 
             var pagedData = await _workflowInstanceService.GetAllAsync(
                 (validFilter.PageNumber - 1) * validFilter.PageSize,
-                validFilter.PageSize);
+                validFilter.PageSize,
+                parsedStatus);
 
             var dataTotal = await _workflowInstanceService.CountAsync();
             var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);

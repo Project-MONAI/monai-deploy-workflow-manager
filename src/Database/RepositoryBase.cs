@@ -33,5 +33,15 @@ namespace Monai.Deploy.WorkflowManager.Database
                 .Sort(sortFunction)
                 .ToListAsync();
         }
+
+        public async Task<IList<T>> GetAllAsync<T>(IMongoCollection<T> collection, FilterDefinition<T> filterFunction, SortDefinition<T> sortFunction, int? skip = null, int? limit = null)
+        {
+            return await collection
+                .Find(filterFunction)
+                .Skip(skip)
+                .Limit(limit)
+                .Sort(sortFunction)
+                .ToListAsync();
+        }
     }
 }

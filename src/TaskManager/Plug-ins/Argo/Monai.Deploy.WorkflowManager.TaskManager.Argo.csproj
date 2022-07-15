@@ -31,6 +31,7 @@ SPDX-License-Identifier: Apache License 2.0
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Monai.Deploy.WorkflowManager.Common.csproj" />
+    <ProjectReference Include="..\..\..\ConditionsResolver\Monai.Deploy.WorkflowManager.ConditionsResolver.csproj" />
     <ProjectReference Include="..\..\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />
   </ItemGroup>
 

@@ -3,11 +3,13 @@
 
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
+namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 {
     public interface IConditionalParameterParser
     {
         string ResolveParameters(string conditions, WorkflowInstance workflowInstance);
+
+        string ResolveParameters(string conditions, string workflowInstanceId);
 
         bool TryParse(string conditions, WorkflowInstance workflowInstance);
     }
