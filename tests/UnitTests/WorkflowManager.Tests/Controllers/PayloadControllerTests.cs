@@ -69,8 +69,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             var result = await WorkflowInstanceController.GetListAsync(new Filter.PaginationFilter());
 
-            var objectResult = Assert.IsType<OkObjectResult>(result);
-
             var responseValue = (PagedResponse<List<WorkflowInstance>>)objectResult.Value;
             responseValue.Data.Should().BeEquivalentTo(workflowsInstances);
             responseValue.FirstPage.Should().Be("unitTest");
