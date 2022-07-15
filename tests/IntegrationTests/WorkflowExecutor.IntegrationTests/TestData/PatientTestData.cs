@@ -22,7 +22,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     PatientId = "1",
                     PatientName = "Patient_Full_Patient",
                     PatientSex = "male",
-                    PatientDob = null,
+                    PatientDob = new DateTime(2000, 01, 01),
+                    PatientAge = "21",
+                    PatientHospitalId = "123"
                 }
             },
             new PatientTestData()
@@ -34,6 +36,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     PatientName = "",
                     PatientSex = "female",
                     PatientDob = null,
+                    PatientAge = "",
+                    PatientHospitalId = ""
                 }
             },
             new PatientTestData()
@@ -45,6 +49,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     PatientName = "",
                     PatientSex = "",
                     PatientDob = null,
+                    PatientAge = "",
+                    PatientHospitalId = ""
                 }
             },
         };
