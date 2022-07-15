@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -64,7 +63,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 }
             };
 
-            _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>())).ReturnsAsync(workflowsInstances);
+            _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<Status>())).ReturnsAsync(workflowsInstances);
             _workflowInstanceService.Setup(w => w.CountAsync()).ReturnsAsync(workflowsInstances.Count);
             _uriService.Setup(s => s.GetPageUriString(It.IsAny<Filter.PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
@@ -89,7 +88,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         [Fact]
         public async Task GetListAsync_ServiceException_ReturnProblem()
         {
-            _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>())).ThrowsAsync(new Exception());
+            _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<Status>())).ThrowsAsync(new Exception());
             _workflowInstanceService.Setup(w => w.CountAsync()).ReturnsAsync(0);
 
             var result = await WorkflowInstanceController.GetListAsync(new Filter.PaginationFilter());
