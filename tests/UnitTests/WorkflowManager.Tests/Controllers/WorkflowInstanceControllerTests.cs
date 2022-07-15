@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Controllers;
 using Monai.Deploy.WorkflowManager.Services;
@@ -25,14 +27,16 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         private readonly Mock<IPayloadService> _payloadService;
         private readonly Mock<ILogger<PayloadController>> _logger;
         private readonly Mock<IUriService> _uriService;
+        private readonly IOptions<WorkflowManagerOptions> _options;
 
         public PayloadControllerTests()
         {
+            _options = Options.Create(new WorkflowManagerOptions());
             _payloadService = new Mock<IPayloadService>();
             _logger = new Mock<ILogger<PayloadController>>();
             _uriService = new Mock<IUriService>();
 
-            PayloadController = new PayloadController(_payloadService.Object, _logger.Object, _uriService.Object);
+            PayloadController = new PayloadController(_payloadService.Object, _logger.Object, _uriService.Object, _options);
         }
 
         [Fact]

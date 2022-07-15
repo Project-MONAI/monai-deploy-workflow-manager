@@ -6,7 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Filter;
 using Monai.Deploy.WorkflowManager.Services;
 
@@ -19,6 +21,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers;
 [Route("payload")]
 public class PayloadController : ApiControllerBase
 {
+    private readonly IOptions<WorkflowManagerOptions> _options;
     private readonly IPayloadService _payloadService;
 
     private readonly ILogger<PayloadController> _logger;
@@ -30,12 +33,16 @@ public class PayloadController : ApiControllerBase
     /// <param name="payloadService">paylod service to retrieve payloads.</param>
     /// <param name="logger">logger.</param>
     /// <param name="uriService">Uri Service.</param>
-    public PayloadController(IPayloadService payloadService, ILogger<PayloadController> logger, IUriService uriService)
+    public PayloadController(IPayloadService payloadService,
+                             ILogger<PayloadController> logger,
+                             IUriService uriService,
+                             IOptions<WorkflowManagerOptions> options)
+                            : base(options)
     {
+        _options = options;
         _payloadService = payloadService ?? throw new ArgumentNullException(nameof(payloadService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _uriService = uriService ?? throw new ArgumentNullException(nameof(uriService));
-
     }
 
     /// <summary>
@@ -49,7 +56,8 @@ public class PayloadController : ApiControllerBase
         try
         {
             var route = Request?.Path.Value ?? string.Empty;
-            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
+            var pageSize = filter.PageSize ?? _options.Value.EndpointSettings.DefaultPageSize;
+            var validFilter = new PaginationFilter(filter.PageNumber, pageSize, _options.Value.EndpointSettings.MaxPageSize);
 
             var pagedData = await _payloadService.GetAllAsync(
                 (validFilter.PageNumber - 1) * validFilter.PageSize,

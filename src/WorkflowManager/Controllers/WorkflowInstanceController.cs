@@ -7,7 +7,9 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Filter;
 using Monai.Deploy.WorkflowManager.Services;
 
@@ -20,6 +22,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers;
 [Route("workflowinstances")]
 public class WorkflowInstanceController : ApiControllerBase
 {
+    private readonly IOptions<WorkflowManagerOptions> _options;
     private readonly IWorkflowInstanceService _workflowInstanceService;
 
     private readonly ILogger<WorkflowInstanceController> _logger;
@@ -34,8 +37,11 @@ public class WorkflowInstanceController : ApiControllerBase
     public WorkflowInstanceController(
         IWorkflowInstanceService workflowInstanceService,
         ILogger<WorkflowInstanceController> logger,
-        IUriService uriService)
+        IUriService uriService,
+        IOptions<WorkflowManagerOptions> options)
+        : base(options)
     {
+        _options = options;
         _workflowInstanceService = workflowInstanceService ?? throw new ArgumentNullException(nameof(workflowInstanceService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _uriService = uriService ?? throw new ArgumentNullException(nameof(uriService));
@@ -52,7 +58,9 @@ public class WorkflowInstanceController : ApiControllerBase
         try
         {
             var route = Request?.Path.Value ?? string.Empty;
-            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
+            var pageSize = filter.PageSize ?? _options.Value.EndpointSettings.DefaultPageSize;
+
+            var validFilter = new PaginationFilter(filter.PageNumber, pageSize, _options.Value.EndpointSettings.MaxPageSize);
 
             var pagedData = await _workflowInstanceService.GetAllAsync(
                 (validFilter.PageNumber - 1) * validFilter.PageSize,

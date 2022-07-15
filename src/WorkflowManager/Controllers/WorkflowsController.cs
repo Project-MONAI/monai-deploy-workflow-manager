@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Contracts.Responses;
 using Monai.Deploy.WorkflowManager.Filter;
@@ -23,6 +25,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers;
 [Route("workflows")]
 public class WorkflowsController : ApiControllerBase
 {
+    private readonly IOptions<WorkflowManagerOptions> _options;
     private readonly IWorkflowService _workflowService;
 
     private readonly ILogger<WorkflowsController> _logger;
@@ -35,8 +38,13 @@ public class WorkflowsController : ApiControllerBase
     /// <param name="logger">ILogger.<WorkflowsController></param>
     /// <param name="uriService">Uri Service.</param>
     /// <exception cref="ArgumentNullException">ArgumentNullException</exception>
-    public WorkflowsController(IWorkflowService workflowService, ILogger<WorkflowsController> logger, IUriService uriService)
+    public WorkflowsController(IWorkflowService workflowService,
+                               ILogger<WorkflowsController> logger,
+                               IUriService uriService,
+                               IOptions<WorkflowManagerOptions> options)
+        : base(options)
     {
+        _options = options;
         _workflowService = workflowService ?? throw new ArgumentNullException(nameof(workflowService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _uriService = uriService ?? throw new ArgumentNullException(nameof(uriService));
@@ -52,7 +60,8 @@ public class WorkflowsController : ApiControllerBase
         try
         {
             var route = Request?.Path.Value ?? string.Empty;
-            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
+            var pageSize = filter.PageSize ?? _options.Value.EndpointSettings.DefaultPageSize;
+            var validFilter = new PaginationFilter(filter.PageNumber, pageSize, _options.Value.EndpointSettings.MaxPageSize);
 
             var pagedData = await _workflowService.GetAllAsync(
                 (validFilter.PageNumber - 1) * validFilter.PageSize,

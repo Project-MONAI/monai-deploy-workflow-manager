@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Controllers;
 using Monai.Deploy.WorkflowManager.Services;
@@ -26,14 +28,16 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         private readonly Mock<IWorkflowInstanceService> _workflowInstanceService;
         private readonly Mock<ILogger<WorkflowInstanceController>> _logger;
         private readonly Mock<IUriService> _uriService;
+        private readonly IOptions<WorkflowManagerOptions> _options;
 
         public WorkflowsInstanceControllerTests()
         {
+            _options = Options.Create(new WorkflowManagerOptions());
             _workflowInstanceService = new Mock<IWorkflowInstanceService>();
             _logger = new Mock<ILogger<WorkflowInstanceController>>();
             _uriService = new Mock<IUriService>();
 
-            WorkflowInstanceController = new WorkflowInstanceController(_workflowInstanceService.Object, _logger.Object, _uriService.Object);
+            WorkflowInstanceController = new WorkflowInstanceController(_workflowInstanceService.Object, _logger.Object, _uriService.Object, _options);
         }
 
         [Fact]

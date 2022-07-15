@@ -68,10 +68,10 @@ namespace Monai.Deploy.WorkflowManager
         private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
         {
             services.AddOptions<WorkflowManagerOptions>()
-                                    .Bind(hostContext.Configuration.GetSection("WorkflowManager"))
-                                    .PostConfigure(options =>
-                                    {
-                                    });
+                .Bind(hostContext.Configuration.GetSection("WorkflowManager"))
+                .PostConfigure(options =>
+                {
+                });
             services.AddOptions<MessageBrokerServiceConfiguration>()
                 .Bind(hostContext.Configuration.GetSection("WorkflowManager:messaging"))
                 .PostConfigure(options =>
@@ -79,6 +79,11 @@ namespace Monai.Deploy.WorkflowManager
                 });
             services.AddOptions<StorageServiceConfiguration>()
                 .Bind(hostContext.Configuration.GetSection("WorkflowManager:storage"))
+                .PostConfigure(options =>
+                {
+                });
+            services.AddOptions<EndpointSettings>()
+                .Bind(hostContext.Configuration.GetSection("WorkflowManager:endpointSettings"))
                 .PostConfigure(options =>
                 {
                 });

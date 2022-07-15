@@ -497,7 +497,7 @@ public class ArgoPluginTest
 
     public static Dictionary<string, TValue> ToDictionary<TValue>(object obj)
     {
-        var json = JsonConvert.SerializeObject(obj, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore});
+        var json = JsonConvert.SerializeObject(obj, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
         var dictionary = JsonConvert.DeserializeObject<Dictionary<string, TValue>>(json);
         return dictionary;
     }

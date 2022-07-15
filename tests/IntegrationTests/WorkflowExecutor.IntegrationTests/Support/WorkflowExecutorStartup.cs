@@ -58,6 +58,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                         .PostConfigure(options =>
                         {
                         });
+                    services.AddOptions<EndpointSettings>()
+                        .Bind(hostContext.Configuration.GetSection("WorkflowManager:endpointSettings"))
+                        .PostConfigure(options =>
+                        {
+                        });
                     services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkflowManagerOptions>, ConfigurationValidator>());
 
                     services.AddSingleton<ConfigurationValidator>();
