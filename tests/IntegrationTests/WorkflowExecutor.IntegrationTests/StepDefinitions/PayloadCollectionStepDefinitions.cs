@@ -22,12 +22,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
         public PayloadCollectionStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
-            WorkflowPublisher = objectContainer.Resolve<RabbitPublisher>("WorkflowPublisher");
-            TaskDispatchConsumer = objectContainer.Resolve<RabbitConsumer>("TaskDispatchConsumer");
-            MongoClient = objectContainer.Resolve<MongoClientUtil>();
             Assertions = new Assertions();
             DataHelper = objectContainer.Resolve<DataHelper>();
-            _outputHelper = outputHelper;
         }
 
         [Then(@"A payload collection is created with patient details (.*)")]
