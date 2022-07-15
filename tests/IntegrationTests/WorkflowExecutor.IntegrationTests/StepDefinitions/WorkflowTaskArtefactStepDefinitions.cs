@@ -40,9 +40,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             _outputHelper.WriteLine($"{name} bucket created");
         }
 
-        [Given(@"I have a payload (.*) and payload id (.*) in the bucket (.*)")]
-        public async Task GivenIHaveAPayloadInTheBucket(string folderName, string payloadId, string bucketName)
-       {
+        [Given(@"I have a payload (.*) in the bucket (.*) with payload id (.*)")]
+        public async Task GivenIHaveAPayloadInTheBucket(string folderName, string bucketName, string payloadId)
+        {
             _outputHelper.WriteLine("Retrieving pathname");
             var pathname = Path.Combine(GetDirectory(), "DICOMs", folderName, "dcm");
             _outputHelper.WriteLine($"Retrieved pathname {pathname}");

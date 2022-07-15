@@ -636,6 +636,61 @@ this.ScenarioInitialize(scenarioInfo);
             }
             this.ScenarioCleanup();
         }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Task destination based on Dicom data conditional is successful, and task is compl" +
+            "eted and marked as succeeded")]
+        [NUnit.Framework.CategoryAttribute("TaskDestinationConditions")]
+        public virtual void TaskDestinationBasedOnDicomDataConditionalIsSuccessfulAndTaskIsCompletedAndMarkedAsSucceeded()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "TaskDestinationConditions"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Task destination based on Dicom data conditional is successful, and task is compl" +
+                    "eted and marked as succeeded", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 98
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 99
+    testRunner.Given("I have a clinical workflow Workflow_Revision_for_bucket_minio", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 100
+    testRunner.And("I have a Workflow Instance Workflow_instance_for_bucket_minio", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 101
+    testRunner.And("I have a bucket in MinIO bucket1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 102
+    testRunner.And("I have a payload patient_1_lordge in the bucket bucket1 with payload id 5450c3a9-" +
+                        "2b19-45b0-8b17-fb10f89d1b2d", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 103
+    testRunner.When("I publish a Task Update Message Task_status_update_for_bucket_minio with status S" +
+                        "ucceeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 104
+    testRunner.Then("I can see the status of the Task is Succeeded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore

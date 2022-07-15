@@ -130,9 +130,12 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 {
                     var workflowInstance = MongoClient.GetWorkflowInstanceById(taskDispatchEvent.WorkflowInstanceId);
 
-                    if (taskDispatchEvent.ExecutionId == workflowInstance.Tasks[0].ExecutionId)
+                    if (workflowInstance != null)
                     {
-                        throw new Exception($"Task Dispatch Event has been published when workflowInstance status was {workflowInstance.Tasks[0].Status}");
+                        if (taskDispatchEvent.ExecutionId == workflowInstance.Tasks[0].ExecutionId)
+                        {
+                            throw new Exception($"Task Dispatch Event has been published when workflowInstance status was {workflowInstance.Tasks[0].Status}");
+                        }
                     }
                 }
 

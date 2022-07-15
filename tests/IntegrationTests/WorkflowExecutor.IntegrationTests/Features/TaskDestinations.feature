@@ -93,3 +93,12 @@ Scenario: Workflow instance status is failed when a condition is invalid
     When I publish a Task Update Message Task_Update_Task_Destination_Invalid_Condition with status Succeeded
     Then A Task Dispatch event is not published
     And Workflow Instance status is Succeeded
+
+@TaskDestinationConditions
+Scenario: Task destination based on Dicom data conditional is successful, and task is completed and marked as succeeded
+    Given I have a clinical workflow Workflow_Revision_for_bucket_minio
+    And I have a Workflow Instance Workflow_instance_for_bucket_minio
+    And I have a bucket in MinIO bucket1
+    And I have a payload patient_1_lordge in the bucket bucket1 with payload id 5450c3a9-2b19-45b0-8b17-fb10f89d1b2d 
+    When I publish a Task Update Message Task_status_update_for_bucket_minio with status Succeeded 
+    Then I can see the status of the Task is Succeeded
