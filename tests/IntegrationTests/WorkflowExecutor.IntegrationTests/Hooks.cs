@@ -168,6 +168,16 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
                     MongoClient?.DeletePayloadDocumentByPayloadId(payload.PayloadId);
                 }
             }
+
+            if (dataHelper.WorkflowRequestMessage != null)
+            {
+                MongoClient?.DeletePayloadDocumentByPayloadId(dataHelper.WorkflowRequestMessage.PayloadId.ToString());
+
+                foreach (var workflowRevision in dataHelper.WorkflowRevisions)
+                {
+                    MongoClient.DeleteWorkflowRevisionDocumentByWorkflowId(workflowRevision.WorkflowId);
+                }
+            }
         }
 
         /// <summary>

@@ -234,6 +234,62 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     CallingAeTitle = "MWM",
                 }
             },
+            new WorkflowRequestTestData
+            {
+                Name = "Basic_AeTitle_Payload_Collection_Request_1",
+                WorkflowRequestMessage = new WorkflowRequestMessage
+                {
+                    Bucket = "bucket1",
+                    PayloadId = new Guid("23b96697-0174-465c-b9cb-368b20a4591d"),
+                    Workflows = new List<string>() { },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.Now,
+                    CalledAeTitle = "Basic_AE",
+                    CallingAeTitle = "MWM",
+                }
+            },
+            new WorkflowRequestTestData
+            {
+                Name = "Basic_AeTitle_Payload_Collection_Request_2",
+                WorkflowRequestMessage = new WorkflowRequestMessage
+                {
+                    Bucket = "bucket1",
+                    PayloadId = new Guid("64a2b260-0379-4614-9f05-ff1279cf9e83"),
+                    Workflows = new List<string>() { },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.Now,
+                    CalledAeTitle = "Basic_AE",
+                    CallingAeTitle = "MWM",
+                }
+            },
+             new WorkflowRequestTestData
+            {
+                Name = "Basic_AeTitle_Payload_Collection_Request_3",
+                WorkflowRequestMessage = new WorkflowRequestMessage
+                {
+                    Bucket = "bucket1",
+                    PayloadId = new Guid("b91f5559-8ab2-455a-806d-961244ea22af"),
+                    Workflows = new List<string>() { },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.Now,
+                    CalledAeTitle = "Basic_AE",
+                    CallingAeTitle = "MWM",
+                }
+            },
+            new WorkflowRequestTestData
+            {
+                Name = "Basic_Non_Existant_Request",
+                WorkflowRequestMessage = new WorkflowRequestMessage
+                {
+                    Bucket = "bucket1",
+                    PayloadId = new Guid("c9c1e0f1-5994-4882-b3d4-9e1009729377"),
+                    Workflows = new List<string>() { },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.Now,
+                    CalledAeTitle = "Non_Existant_AE",
+                    CallingAeTitle = "MWM",
+                }
+            },
         };
     }
 }

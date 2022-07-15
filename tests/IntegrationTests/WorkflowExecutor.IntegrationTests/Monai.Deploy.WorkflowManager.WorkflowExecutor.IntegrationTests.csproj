@@ -49,25 +49,47 @@
     <Compile Update="Features\PayloadApi.feature.cs">
       <DependentUpon>PayloadApi.feature</DependentUpon>
     </Compile>
+    <Compile Update="Features\PayloadCollection.feature.cs">
+      <DependentUpon>PayloadCollection.feature</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="DICOMs\dcm\series1\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
+    <None Update="DICOMs\no_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="DICOMs\dcm\series1\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
+    <None Update="DICOMs\null_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="DICOMs\dcm\series2\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
+    <None Update="DICOMs\null_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="DICOMs\dcm\series2\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
+    <None Update="DICOMs\partial_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\partial_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\full_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\full_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\patient_1_lordge\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\patient_1_lordge\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
     <SpecFlowFeatureFiles Update="Features\PayloadApi.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\PayloadCollection.feature">
       <Visible>$(UsingMicrosoftNETSdk)</Visible>
       <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
     </SpecFlowFeatureFiles>

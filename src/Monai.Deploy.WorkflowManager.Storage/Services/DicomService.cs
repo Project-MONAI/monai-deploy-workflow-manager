@@ -9,6 +9,7 @@ using Monai.Deploy.WorkflowManager.Logging.Logging;
 using Monai.Deploy.WorkflowManager.Storage.Constants;
 using Newtonsoft.Json;
 using Monai.Deploy.Storage.API;
+using System.Globalization;
 
 namespace Monai.Deploy.WorkflowManager.Storage.Services
 {
@@ -41,7 +42,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
 
             var dob = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientDateOfBirthTag);
 
-            if (DateTime.TryParse(dob, out var dateOfBirth))
+            if (DateTime.TryParseExact(dob, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateOfBirth))
             {
                 patientDetails.PatientDob = dateOfBirth;
             }
@@ -116,7 +117,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             Guard.Against.NullOrWhiteSpace(payloadId);
             Guard.Against.NullOrWhiteSpace(bucketId);
 
-            var path = $"{payloadId}\\dcm";
+            var path = $"{payloadId}/dcm";
             var listOfFiles = await _storageService.ListObjectsAsync(bucketId, path, true);
             var listOfJsonFiles = listOfFiles.Where(file => file.Filename.EndsWith(".json")).ToList();
             var fileCount = listOfJsonFiles.Count;

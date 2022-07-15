@@ -80,7 +80,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                         var files = Directory.GetFiles($"{fileLocation}", "*.*", SearchOption.AllDirectories);
                         foreach (var file in files)
                         {
-                            var relativePath = $"{objectName}\\dcm\\{Path.GetRelativePath(fileLocation, file)}";
+                            var relativePath = $"{objectName}/dcm/{Path.GetRelativePath(fileLocation, file)}";
                             var fileName = Path.GetFileName(file);
                             byte[] bs = File.ReadAllBytes(file);
                             using (var filestream = new MemoryStream(bs))
