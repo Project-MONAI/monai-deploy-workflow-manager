@@ -8,9 +8,8 @@ using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Storage.Services;
-using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 
-namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
+namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 {
     public enum ParameterContext
     {
@@ -29,24 +28,55 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
         private const string PatientDetails = "context.input.patient_details";
         private const string ContextWorkflow = "context.workflow";
 
+        private readonly IWorkflowInstanceService _workflowInstanceService;
         private readonly ILogger<ConditionalParameterParser> _logger;
         private readonly IDicomService _dicom;
         private readonly IPayloadService _payloadService;
         private readonly IWorkflowService _workflowService;
 
-
         private readonly Regex _squigglyBracketsRegex = new Regex(@"\{{(.*?)\}}");
 
-        public WorkflowInstance? WorkflowInstance { get; private set; } = null;
+        private WorkflowInstance? _workflowInstance = null;
+        private string? _workflowInstanceId = null;
 
-        public ConditionalParameterParser(ILogger<ConditionalParameterParser> logger, IPayloadService payloadService, IWorkflowService workflowService, IDicomService dicomService)
+        public ConditionalParameterParser(ILogger<ConditionalParameterParser> logger,
+                                          IDicomService dicomService,
+                                          IWorkflowInstanceService workflowInstanceService,
+                                          IPayloadService payloadService,
+                                          IWorkflowService workflowService)
         {
+            _workflowInstanceService = workflowInstanceService;
             _logger = logger;
             _dicom = dicomService;
             _payloadService = payloadService;
             _workflowService = workflowService;
         }
 
+        public WorkflowInstance? WorkflowInstance
+        {
+            get
+            {
+                if (_workflowInstance is null && _workflowInstanceId is not null)
+                {
+                    var task = Task.Run(async () => await _workflowInstanceService.GetByIdAsync(_workflowInstanceId));
+                    task.Wait();
+                    var wf = task.Result;
+                    _workflowInstance = wf;
+                    _workflowInstanceId = wf.Id;
+                }
+                return _workflowInstance;
+            }
+            private set
+            {
+                if (value == null)
+                {
+                    _workflowInstance = null;
+                    _workflowInstanceId = null;
+                }
+                _workflowInstance = value;
+                _workflowInstanceId = value?.Id;
+            }
+        }
 
         public bool TryParse(string conditions, WorkflowInstance workflowInstance)
         {
@@ -60,7 +90,7 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
             }
             catch (Exception ex)
             {
-                _logger.LogWarning("Failure attemping to parse condition", conditions, ex.Message);
+                _logger.LogWarning($"Failure attemping to parse condition - {conditions}", ex);
                 return false;
             }
         }
@@ -77,13 +107,18 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
             Guard.Against.Null(workflowInstance);
 
             WorkflowInstance = workflowInstance;
+            return ResolveParameters(conditions, workflowInstance.Id);
+        }
 
+        public string ResolveParameters(string conditions, string workflowInstanceId)
+        {
+            _workflowInstanceId = workflowInstanceId;
             try
             {
                 var matches = _squigglyBracketsRegex.Matches(conditions);
                 if (!matches.Any())
                 {
-                    WorkflowInstance = null;
+                    ClearWorkflowParser();
                     return conditions;
                 }
 
@@ -95,16 +130,22 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
                         .Insert(parameter.Key.Index, $"'{parameter.Value.Result ?? "null"}'");
                 }
 
-                WorkflowInstance = null;
+                ClearWorkflowParser();
                 return conditions;
             }
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
-                WorkflowInstance = null;
-                throw e;
+                ClearWorkflowParser();
+                throw;
             }
         }
+
+        private void ClearWorkflowParser()
+        {
+            WorkflowInstance = null;
+        }
+
 
         /// <summary>
         /// Parses regex match collection for brackets
@@ -191,9 +232,10 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
             var subValue = value.Trim().Substring(ExecutionsTask.Length, value.Length - ExecutionsTask.Length);
             var subValues = subValue.Split('[', ']');
             var id = subValues[1].Trim('\'');
+
             var task = WorkflowInstance?.Tasks.First(t => t.TaskId == id);
 
-            if (task is null || (task is not null && !task.Metadata.Any()))
+            if (task is null || task is not null && !task.Metadata.Any())
             {
                 return (Result: null, Context: ParameterContext.TaskExecutions);
             }
@@ -280,6 +322,12 @@ namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Common
                         break;
                     case "dob":
                         resultStr = patientValue.PatientDob?.ToString("dd/MM/yyyy");
+                        break;
+                    case "age":
+                        resultStr = patientValue.PatientAge;
+                        break;
+                    case "hospital_id":
+                        resultStr = patientValue.PatientHospitalId;
                         break;
                     default:
                         break;

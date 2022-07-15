@@ -7,12 +7,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Services;
+using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.PayloadListener.Services;
 using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
-using Monai.Deploy.WorkloadManager.WorkfowExecuter.Common;
 
 namespace Monai.Deploy.WorkflowManager.Services
 {
@@ -38,8 +38,9 @@ namespace Monai.Deploy.WorkflowManager.Services
                 var payloadService = s.GetService<IPayloadService>();
                 var workflowService = s.GetService<IWorkflowService>();
                 var dicomStore = s.GetService<IDicomService>();
+                var workflowInstanceService = s.GetService<IWorkflowInstanceService>();
 
-                return new ConditionalParameterParser(logger, payloadService, workflowService, dicomStore);
+                return new ConditionalParameterParser(logger, dicomStore, workflowInstanceService, payloadService, workflowService);
             });
 
             services.AddSingleton<PayloadListenerService>();

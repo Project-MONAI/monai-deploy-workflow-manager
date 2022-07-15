@@ -45,6 +45,7 @@ namespace Monai.Deploy.WorkflowManager
                 {
                     var env = builderContext.HostingEnvironment;
                     config
+                        .AddEnvironmentVariables()
                         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                         .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
                 })
@@ -113,7 +114,7 @@ namespace Monai.Deploy.WorkflowManager
 
             if (args.Length == 0)
             {
-                host.Services.GetService<TaskManager.TaskManager>().StartAsync(System.Threading.CancellationToken.None).RunSynchronously();
+                host.Services.GetService<TaskManager.TaskManager>().StartAsync(System.Threading.CancellationToken.None);
             }
 
             host.Run();

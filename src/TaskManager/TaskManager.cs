@@ -166,6 +166,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 var executionStatus = await runner.Runner.GetStatus(message.Body.Identity, _cancellationTokenSource.Token).ConfigureAwait(false);
                 updateMessage = GenerateUpdateEventMessage(message, message.Body.ExecutionId, message.Body.WorkflowInstanceId, message.Body.TaskId, executionStatus);
                 updateMessage.Body.Metadata.Add(Strings.JobIdentity, message.Body.Identity);
+                foreach (var item in message.Body.Metadata)
+                    updateMessage.Body.Metadata.Add(item.Key, item.Value);
             }
             catch (Exception ex)
             {

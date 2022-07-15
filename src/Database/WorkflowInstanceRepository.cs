@@ -157,9 +157,10 @@ namespace Monai.Deploy.WorkflowManager.Database
 
             try
             {
-                var result = await _workflowInstanceCollection.FindOneAndUpdateAsync(
+                await _workflowInstanceCollection.FindOneAndUpdateAsync(
                     i => i.Id == workflowInstanceId,
                     Builders<WorkflowInstance>.Update.Set(w => w.Status, status));
+
                 return true;
             }
             catch (Exception e)
@@ -197,9 +198,10 @@ namespace Monai.Deploy.WorkflowManager.Database
 
             try
             {
-                var result = await _workflowInstanceCollection.FindOneAndUpdateAsync(
+                await _workflowInstanceCollection.FindOneAndUpdateAsync(
                     i => i.Id == workflowInstanceId,
                     Builders<WorkflowInstance>.Update.Set(w => w.Tasks, tasks));
+
                 return true;
             }
             catch (Exception e)
