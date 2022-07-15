@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -43,7 +44,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 }
             };
 
-            _payloadService.Setup(w => w.GetAllAsync()).ReturnsAsync(payloads);
+            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(payloads);
 
             var result = await PayloadController.GetAllAsync();
 
@@ -53,9 +54,48 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Fact]
+        public async Task GetListAsync_PayloadsExist_ReturnsOrderedList()
+        {
+            var payloads = new List<Payload>
+            {
+                new Payload
+                {
+                    Id = "rainbow",
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.Now,
+                },
+                new Payload
+                {
+                    Id = "unicorn",
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.Now.AddMinutes(-5),
+                },
+                new Payload
+                {
+                    Id = "sparkles",
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.Now.AddMinutes(-2),
+                },
+            };
+
+            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(payloads);
+
+            var result = await PayloadController.GetAllAsync();
+
+            var objectResult = Assert.IsType<OkObjectResult>(result);
+
+            var payloadResult = (IOrderedEnumerable<Payload>)objectResult.Value;
+            var first = payloadResult.First().Id;
+            var second = payloadResult.Skip(1).First().Id;
+            Assert.True(first == "rainbow");
+            Assert.True(second == "sparkles");
+            objectResult.Value.Should().BeEquivalentTo(payloads);
+        }
+
+        [Fact]
         public async Task GetListAsync_ServiceException_ReturnProblem()
         {
-            _payloadService.Setup(w => w.GetAllAsync()).ThrowsAsync(new Exception());
+            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
 
             var result = await PayloadController.GetAllAsync();
 

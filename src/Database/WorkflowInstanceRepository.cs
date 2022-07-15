@@ -100,7 +100,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(UpdateTaskStatusAsync), e);
+                _logger.DbCallFailed(nameof(UpdateTaskAsync), e);
 
                 return false;
             }

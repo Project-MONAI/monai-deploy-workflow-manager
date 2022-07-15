@@ -16,6 +16,9 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "workflows")]
         public IEnumerable<string> Workflows { get; set; }
 
+        [JsonProperty(PropertyName = "workflow_instance_ids")]
+        public IEnumerable<string> WorkflowInstanceIds { get; set; }
+
         [JsonProperty(PropertyName = "file_count")]
         public int FileCount { get; set; }
 

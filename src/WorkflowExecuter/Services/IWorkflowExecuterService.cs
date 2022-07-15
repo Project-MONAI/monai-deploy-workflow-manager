@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 {
@@ -11,7 +12,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         /// Processes the workflow request payload and create a new workflow instance.
         /// </summary>
         /// <param name="message">The workflow request message event.</param>
-        Task<bool> ProcessPayload(WorkflowRequestEvent message);
+        Task<bool> ProcessPayload(WorkflowRequestEvent message, Payload payload);
 
         /// <summary>
         /// Processes the task update payload and updates the workflow instance.

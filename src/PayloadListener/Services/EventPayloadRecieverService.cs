@@ -42,9 +42,9 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         {
             try
             {
-                var payload = message.Message.ConvertTo<WorkflowRequestEvent>();
+                var requestEvent = message.Message.ConvertTo<WorkflowRequestEvent>();
 
-                var validation = PayloadValidator.ValidateWorkflowRequest(payload);
+                var validation = PayloadValidator.ValidateWorkflowRequest(requestEvent);
 
                 if (!validation)
                 {
@@ -54,7 +54,8 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                     return;
                 }
 
-                if (!await PayloadService.CreateAsync(payload))
+                var payload = await PayloadService.CreateAsync(requestEvent);
+                if (payload is null)
                 {
                     Logger.EventRejectedRequeue(message.Message.MessageId);
                     _messageSubscriber.Reject(message.Message, true);
@@ -62,13 +63,14 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                     return;
                 }
 
-                if (!await WorkflowExecuterService.ProcessPayload(payload))
+                if (!await WorkflowExecuterService.ProcessPayload(requestEvent, payload))
                 {
                     Logger.EventRejectedRequeue(message.Message.MessageId);
                     _messageSubscriber.Reject(message.Message, true);
 
                     return;
                 }
+
 
                 _messageSubscriber.Acknowledge(message.Message);
             }

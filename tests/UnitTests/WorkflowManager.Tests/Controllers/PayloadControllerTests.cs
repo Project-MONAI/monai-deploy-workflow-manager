@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -62,6 +63,55 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             var objectResult = Assert.IsType<OkObjectResult>(result);
 
             objectResult.Value.Should().BeEquivalentTo(workflowsInstances);
+        }
+
+        [Fact]
+        public async Task GetListAsync_FilterWorkflowInstancesExist_ReturnsFilteredList()
+        {
+            var workflowsInstances = new List<WorkflowInstance>
+            {
+                new WorkflowInstance
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Status = Status.Created,
+                    BucketId = "bucket",
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = Guid.NewGuid().ToString(),
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+                },
+                new WorkflowInstance
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Status = Status.Failed,
+                    BucketId = "bucket",
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = Guid.NewGuid().ToString(),
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+                }
+            };
+
+            _workflowInstanceService.Setup(w => w.GetListAsync())
+                                    .ReturnsAsync(workflowsInstances);
+
+            var result = await WorkflowInstanceController.GetListAsync("Failed");
+
+            var objectResult = Assert.IsType<OkObjectResult>(result);
+
+            objectResult.Value.Should().BeEquivalentTo(workflowsInstances.Where(wf => wf.Status == Status.Failed).ToList());
         }
 
         [Fact]
