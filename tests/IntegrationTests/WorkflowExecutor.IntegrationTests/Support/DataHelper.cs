@@ -15,6 +15,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
     {
         public WorkflowRequestMessage WorkflowRequestMessage = new WorkflowRequestMessage();
         public List<WorkflowInstance> WorkflowInstances = new List<WorkflowInstance>();
+        public PatientDetails PatientDetails { get; set; }
         public TaskUpdateEvent TaskUpdateEvent = new TaskUpdateEvent();
         public List<TaskDispatchEvent> TaskDispatchEvents = new List<TaskDispatchEvent>();
         public List<WorkflowRevision> WorkflowRevisions = new List<WorkflowRevision>();
@@ -22,6 +23,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public List<Payload> Payload = new List<Payload>();
         private RetryPolicy<List<WorkflowInstance>> RetryWorkflowInstances { get; set; }
         private RetryPolicy<List<TaskDispatchEvent>> RetryTaskDispatches { get; set; }
+        private RetryPolicy<List<Payload>> RetryPayloadCollections { get; set; }
         private RabbitConsumer TaskDispatchConsumer { get; set; }
         private MongoClientUtil MongoClient { get; set; }
         public string PayloadId { get; private set; }
@@ -32,6 +34,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             MongoClient = mongoClient;
             RetryWorkflowInstances = Policy<List<WorkflowInstance>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             RetryTaskDispatches = Policy<List<TaskDispatchEvent>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+            RetryPayloadCollections = Policy<List<Payload>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
         public WorkflowRevision GetWorkflowRevisionTestData(string name)
@@ -101,6 +104,28 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
         }
 
+        public PatientDetails GetPatientDetailsTestData(string name)
+        {
+            var patientTestData = PatientsTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));
+
+            if (patientTestData != null)
+            {
+                if (patientTestData.Patient != null)
+                {
+                    PatientDetails = patientTestData.Patient;
+                    return patientTestData.Patient;
+                }
+                else
+                {
+                    throw new Exception($"Patient Details {name} does not have any applicable test data, please check and try again!");
+                }
+            }
+            else
+            {
+                throw new Exception($"Patient Details {name} does not have any applicable test data, please check and try again!");
+            }
+        }
+
         public WorkflowRequestMessage GetWorkflowRequestTestData(string name)
         {
             var workflowRequest = WorkflowRequestsTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));
@@ -163,6 +188,25 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 else
                 {
                     throw new Exception($"{count} workflow instances could not be found for payloadId {payloadId}. Actual count is {WorkflowInstances.Count}");
+                }
+            });
+
+            return res;
+        }
+        
+        public List<Payload> GetPayloadCollections(string payloadId)
+        {
+            var res = RetryPayloadCollections.Execute(() =>
+            {
+                Payload = MongoClient.GetPayloadCollectionByPayloadId(payloadId);
+
+                if (Payload != null)
+                {
+                    return Payload;
+                }
+                else
+                {
+                    throw new Exception($"Payload collection could not be found for payloadId {payloadId}");
                 }
             });
 

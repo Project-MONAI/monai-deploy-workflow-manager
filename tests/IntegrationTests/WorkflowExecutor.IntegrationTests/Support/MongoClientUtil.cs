@@ -17,6 +17,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         private IMongoCollection<WorkflowInstance> WorkflowInstanceCollection { get; set; }
         private IMongoCollection<Payload> PayloadCollection { get; set; }
         private RetryPolicy RetryMongo { get; set; }
+        private RetryPolicy<List<Payload>> RetryPayload { get; set; }
 
         public MongoClientUtil()
         {
@@ -26,6 +27,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             WorkflowInstanceCollection = Database.GetCollection<WorkflowInstance>($"{TestExecutionConfig.MongoConfig.WorkflowInstanceCollection}");
             PayloadCollection = Database.GetCollection<Payload>($"{TestExecutionConfig.MongoConfig.PayloadCollection}");
             RetryMongo = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
+            RetryPayload = Policy<List<Payload>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
         }
 
         #region WorkflowRevision
@@ -109,6 +111,22 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             {
                 PayloadCollection.InsertOne(payload);
             });
+        }
+        public List<Payload> GetPayloadCollectionByPayloadId(string payloadId)
+        {
+            var res = RetryPayload.Execute(() =>
+            {
+                var payloadCollection = PayloadCollection.Find(x => x.PayloadId == payloadId).ToList();
+                if (payloadCollection.Count != 0)
+                {
+                    return payloadCollection;
+                }
+                else
+                {
+                    throw new Exception("Payload not found");
+                }
+            });
+            return res;
         }
 
         public void DeletePayloadDocument(string id)
