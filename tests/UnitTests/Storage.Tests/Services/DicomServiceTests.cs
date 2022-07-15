@@ -114,7 +114,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
                 { DicomTagConstants.PatientNameTag, new DicomValue{ Value = new object[] { "Jack" }, Vr = "RR" } },
                 { DicomTagConstants.PatientSexTag, new DicomValue{ Value = new object[] { "Male" }, Vr = "RR" } },
                 { DicomTagConstants.PatientIdTag, new DicomValue{ Value = new object[] { "patientid" }, Vr = "RR" } },
-                { DicomTagConstants.PatientDateOfBirthTag, new DicomValue{ Value = new object[] { new DateTime(1996, 01, 20).ToString() }, Vr = "RR" } },
+                { DicomTagConstants.PatientDateOfBirthTag, new DicomValue{ Value = new object[] { "19960120" }, Vr = "RR" } },
                 { DicomTagConstants.PatientAgeTag, new DicomValue{ Value = new object[] { "25" }, Vr = "RR" } },
                 { DicomTagConstants.PatientHospitalIdTag, new DicomValue{ Value = new object[] { "hospitalid" }, Vr = "RR" } }
             };
