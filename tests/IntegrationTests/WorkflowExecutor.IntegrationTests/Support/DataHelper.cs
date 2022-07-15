@@ -4,7 +4,6 @@
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.TestData;
 using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
 using Polly;
 using Polly.Retry;

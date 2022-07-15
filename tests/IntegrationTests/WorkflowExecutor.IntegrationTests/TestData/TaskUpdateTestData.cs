@@ -1,6 +1,6 @@
 ﻿using Monai.Deploy.Messaging.Events;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
+namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
 {
     public class TaskUpdateTestData
     {

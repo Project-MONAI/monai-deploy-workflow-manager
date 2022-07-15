@@ -242,29 +242,29 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 return;
             }
 
-            //try
-            //{
-            //    if (string.Equals(message.Body.TaskPluginType,
-            //                      PluginStrings.Argo,
-            //                      StringComparison.InvariantCultureIgnoreCase))
-            //    {
-            //        await AddCredentialsToPlugin(message).ConfigureAwait(false);
-            //    }
-            //    else
-            //    {
-            //        //await Task.WhenAll(
-            //        //    PopulateTemporaryStorageCredentials(message.Body.Inputs.ToArray()),
-            //        //    PopulateTemporaryStorageCredentials(message.Body.IntermediateStorage),
-            //        //    PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray())
-            //        //).ConfigureAwait(true);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    _logger.GenerateTemporaryCredentialsException(ex);
-            //    await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, true).ConfigureAwait(false);
-            //    return;
-            //}
+            try
+            {
+                if (string.Equals(message.Body.TaskPluginType,
+                                  PluginStrings.Argo,
+                                  StringComparison.InvariantCultureIgnoreCase))
+                {
+                    await AddCredentialsToPlugin(message).ConfigureAwait(false);
+                }
+                else
+                {
+                    await Task.WhenAll(
+                        PopulateTemporaryStorageCredentials(message.Body.Inputs.ToArray()),
+                        PopulateTemporaryStorageCredentials(message.Body.IntermediateStorage),
+                        PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray())
+                    ).ConfigureAwait(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.GenerateTemporaryCredentialsException(ex);
+                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, true).ConfigureAwait(false);
+                return;
+            }
 
             ITaskPlugin? taskRunner = null;
             try
@@ -330,17 +330,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         {
             Guard.Against.Null(storages, nameof(storages));
 
-            foreach (var storage in storages)
+            try
             {
-                var credeentials = await _storageService.CreateTemporaryCredentialsAsync(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
-                storage.Credentials = new Credentials
+                foreach (var storage in storages)
                 {
-                    AccessKey = credeentials.AccessKeyId,
-                    AccessToken = credeentials.SecretAccessKey,
-                    SessionToken = credeentials.SessionToken,
-                };
+                    var credentials = await _storageService.CreateTemporaryCredentialsAsync(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
+                    storage.Credentials = new Credentials
+                    {
+                        AccessKey = credentials.AccessKeyId,
+                        AccessToken = credentials.SecretAccessKey,
+                        SessionToken = credentials.SessionToken,
+                    };
+                }
             }
-        }
+                        catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+}
 
         private void AcknowledgeMessage<T>(JsonMessage<T> message)
         {

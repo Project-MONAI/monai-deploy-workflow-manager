@@ -3,7 +3,7 @@
 
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
+namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
 {
     public class WorkflowRequestTestData
     {

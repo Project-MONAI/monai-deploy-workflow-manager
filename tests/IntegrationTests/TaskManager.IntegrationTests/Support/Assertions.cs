@@ -34,11 +34,30 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 
                 file.Name.Should().Be(taskDispatchFile?.Name);
                 file.Endpoint.Should().Be(taskDispatchFile?.Endpoint);
-                file.Credentials.Should().BeEquivalentTo(taskDispatchFile?.Credentials);
+                // file.Credentials.Should().BeEquivalentTo(taskDispatchFile?.Credentials); - WorkflowManager to pass the credentials
                 file.Bucket.Should().Be(taskDispatchFile?.Bucket);
                 file.RelativeRootPath.Should().Be(taskDispatchFile?.RelativeRootPath);
             }
             Output.WriteLine("Details of ClinicalReviewRequestEvent matches TaskDispatchEvent");
+        }
+
+        public void AssertTaskUpdateEventFromTaskCallback(TaskUpdateEvent taskUpdateEvent, TaskCallbackEvent taskCallbackEvent, TaskExecutionStatus status)
+        {
+            Output.WriteLine("Asserting details of TaskUpdateEvent with TaskCallbackEvent");
+            taskUpdateEvent.ExecutionId.Should().Be(taskCallbackEvent.ExecutionId);
+            // BUG taskUpdateEvent.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId);
+            taskUpdateEvent.Status.Should().Be(status);
+            taskUpdateEvent.TaskId.Should().Be(taskCallbackEvent.TaskId);
+            taskUpdateEvent.WorkflowInstanceId.Should().Be(taskCallbackEvent.WorkflowInstanceId);
+
+            foreach (var dict in taskCallbackEvent.Metadata)
+            {
+                object updateMetadataValue;
+                taskUpdateEvent.Metadata.TryGetValue(dict.Key, out updateMetadataValue);
+                updateMetadataValue.Should().Be(dict.Value);
+            }
+
+            Output.WriteLine("Details of TaskUpdateEvent matches TaskCallbackEvent");
         }
 
         public void AssertTaskUpdateEventFromTaskDispatch(TaskUpdateEvent taskUpdateEvent, TaskDispatchEvent taskDispatchEvent, TaskExecutionStatus status)
@@ -50,11 +69,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             taskUpdateEvent.TaskId.Should().Be(taskDispatchEvent.TaskId);
             taskUpdateEvent.WorkflowInstanceId.Should().Be(taskDispatchEvent.WorkflowInstanceId);
             Output.WriteLine("Details of TaskUpdateEvent matches TaskDispatchEvent");
-        }
-
-        public void TaskUpdateEventFromTaskCallback(TaskUpdateEvent taskUpdateEvent, TaskCallbackEvent taskCallbackEvent)
-        {
-            // TODO
         }
 
         private string GetTaskPluginArguments(TaskDispatchEvent taskDispatchEvent, string key)

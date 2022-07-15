@@ -19,8 +19,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         public DataHelper DataHelper { get; }
         public Assertions Assertions { get; }
 
-        [Then(@"A Task Update event with status (.*) is published")]
-        public void ATaskUpdateEventIsPublished(string status)
+        [Then(@"A Task Update event with status (.*) is published with Task Dispatch details")]
+        public void ATaskUpdateEventIsPublishedWithTaskDispatchDetails(string status)
         {
             var taskUpdateEvent = DataHelper.GetTaskUpdateEvent();
 
@@ -36,5 +36,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
                     throw new Exception($"Status {status} is not supported! Please check and try again!");
             }
         }
+
+        [Then(@"A Task Update event with status (.*) is published with Task Callback details")]
+        public void ATaskUpdateEventIsPublishedWithTaskCallbackDetails(string status)
+        {
+            var taskUpdateEvent = DataHelper.GetTaskUpdateEvent();
+
+            switch (status.ToLower())
+            {
+                case "succeeded":
+                    Assertions.AssertTaskUpdateEventFromTaskCallback(taskUpdateEvent, DataHelper.TaskCallbackEvent, TaskExecutionStatus.Succeeded);
+                    break;
+                case "failed":
+                    Assertions.AssertTaskUpdateEventFromTaskCallback(taskUpdateEvent, DataHelper.TaskCallbackEvent, TaskExecutionStatus.Failed);
+                    break;
+                default:
+                    throw new Exception($"Status {status} is not supported! Please check and try again!");
+            }
+        }
+
     }
 }

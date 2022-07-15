@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.IntegrationTests.TestData;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events;
 using Polly;
 using Polly.Retry;
@@ -28,6 +27,28 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             RetryClinincalReview = Policy<ClinicalReviewRequestEvent>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             RetryTaskUpdate = Policy<TaskUpdateEvent>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             OutputHelper = objectContainer.Resolve<ISpecFlowOutputHelper>();
+        }
+
+        public TaskCallbackEvent GetTaskCallbackTestData(string name)
+        {
+            var taskCallback = TaskCallbacksTestData.TestData.FirstOrDefault(c => c.Name.Equals(name));
+
+            if (taskCallback != null)
+            {
+                if (taskCallback.TaskCallbackEvent != null)
+                {
+                    TaskCallbackEvent = taskCallback.TaskCallbackEvent;
+                    return (TaskCallbackEvent);
+                }
+                else
+                {
+                    throw new Exception($"TaskCallbackEvent {name} does not have any applicable test data, please check and try again!");
+                }
+            }
+            else
+            {
+                throw new Exception($"TaskCallbackEvent {name} does not have any applicable test data, please check and try again!");
+            }
         }
 
         public TaskDispatchEvent GetTaskDispatchTestData(string name)
