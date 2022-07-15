@@ -22,6 +22,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
         public PayloadCollectionStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
+            _outputHelper = outputHelper;
             Assertions = new Assertions();
             DataHelper = objectContainer.Resolve<DataHelper>();
         }
