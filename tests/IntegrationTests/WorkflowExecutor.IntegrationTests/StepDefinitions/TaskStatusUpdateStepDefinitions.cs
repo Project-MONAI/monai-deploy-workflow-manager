@@ -92,7 +92,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
                 Thread.Sleep(1000);
                 counter++;
-                if (counter == 10)
+                if (counter == 15)
                 {
                     throw new Exception("Task Update Status did not complete in sufficient time.");
                 }
