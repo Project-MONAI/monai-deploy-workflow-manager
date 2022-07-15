@@ -116,7 +116,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             Guard.Against.NullOrWhiteSpace(payloadId);
             Guard.Against.NullOrWhiteSpace(bucketId);
 
-            var path = $"{payloadId}\\dcm";
+            var path = $"{payloadId}/dcm";
             var listOfFiles = await _storageService.ListObjectsAsync(bucketId, path, true);
             var listOfJsonFiles = listOfFiles.Where(file => file.Filename.EndsWith(".json")).ToList();
             var fileCount = listOfJsonFiles.Count;
