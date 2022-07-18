@@ -106,10 +106,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             catch (OperationCanceledException ex)
             {
                 _logger.ServiceCancelledWithException(ServiceName, ex);
+                await _messageBrokerSubscriberService!.RequeueWithDelay(message);
             }
             catch (Exception ex)
             {
                 _logger.ErrorProcessingMessage(message?.MessageId, message?.CorrelationId, ex);
+                await _messageBrokerSubscriberService!.RequeueWithDelay(message);
             }
         }
 
@@ -205,10 +207,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 }
                 catch (Exception ex)
                 {
-                    updateMessage.Body.Status = TaskExecutionStatus.Failed;
-                    updateMessage.Body.Reason = FailureReason.PluginError;
-
                     _logger.MetadataRetrievalFailed(ex);
+                    await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+
+                    return;
                 }
             }
 
@@ -240,7 +242,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             if (!TryReserveResourceForExecution())
             {
                 _logger.NoResourceAvailableForExecution();
-                _messageBrokerSubscriberService!.Reject(message, true);
+                await _messageBrokerSubscriberService!.RequeueWithDelay(message);
+
                 return;
             }
 
@@ -424,7 +427,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             try
             {
                 _logger.SendingRejectMessageNoRequeue(message.MessageDescription);
-                _messageBrokerSubscriberService!.Reject(message, requeue);
+
+                if (requeue)
+                {
+                    await _messageBrokerSubscriberService!.RequeueWithDelay(message);
+                }
+                else
+                {
+                    _messageBrokerSubscriberService!.Reject(message, false);
+                }
+
                 _logger.RejectMessageNoRequeueSent(message.MessageDescription);
             }
             catch (Exception ex)
