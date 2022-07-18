@@ -70,8 +70,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             _messageBrokerPublisherService = _scope.ServiceProvider.GetRequiredService<IMessageBrokerPublisherService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerPublisherService));
             _messageBrokerSubscriberService = _scope.ServiceProvider.GetRequiredService<IMessageBrokerSubscriberService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerSubscriberService));
 
-            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskDispatchRequest, string.Empty, TaskDispatchEventReceivedCallback);
-            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskCallbackRequest, string.Empty, TaskCallbackEventReceivedCallback);
+            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskDispatchRequest, _options.Value.Messaging.Topics.TaskDispatchRequest, TaskDispatchEventReceivedCallback);
+            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskCallbackRequest, _options.Value.Messaging.Topics.TaskCallbackRequest, TaskCallbackEventReceivedCallback);
 
             Status = ServiceStatus.Running;
             _logger.ServiceStarted(ServiceName);
@@ -96,9 +96,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         {
             Guard.Against.Null(args, nameof(args));
             using var loggingScope = _logger.BeginScope($"Message Type={args.Message.MessageDescription}, ID={args.Message.MessageId}. Correlation ID={args.Message.CorrelationId}");
-            var message = args.Message.ConvertToJsonMessage<TaskCallbackEvent>();
+
+            JsonMessage<TaskCallbackEvent>? message = null;
             try
             {
+                message = args.Message.ConvertToJsonMessage<TaskCallbackEvent>();
                 await HandleTaskCallback(message).ConfigureAwait(false);
             }
             catch (OperationCanceledException ex)

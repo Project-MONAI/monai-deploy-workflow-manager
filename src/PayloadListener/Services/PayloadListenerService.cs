@@ -79,13 +79,13 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 
         private void SetupPolling()
         {
-            _messageSubscriber.Subscribe(WorkflowRequestRoutingKey, String.Empty, OnWorkflowRequestReceivedCallback);
+            _messageSubscriber.Subscribe(WorkflowRequestRoutingKey, WorkflowRequestRoutingKey, OnWorkflowRequestReceivedCallback);
             _logger.EventSubscription(ServiceName, WorkflowRequestRoutingKey);
 
-            _messageSubscriber.Subscribe(TaskStatusUpdateRoutingKey, String.Empty, OnTaskUpdateStatusReceivedCallback);
+            _messageSubscriber.Subscribe(TaskStatusUpdateRoutingKey, TaskStatusUpdateRoutingKey, OnTaskUpdateStatusReceivedCallback);
             _logger.EventSubscription(ServiceName, TaskStatusUpdateRoutingKey);
 
-            _messageSubscriber.Subscribe(ExportCompleteRoutingKey, String.Empty, OnExportCompleteReceivedCallback);
+            _messageSubscriber.Subscribe(ExportCompleteRoutingKey, ExportCompleteRoutingKey, OnExportCompleteReceivedCallback);
             _logger.EventSubscription(ServiceName, ExportCompleteRoutingKey);
         }
 
