@@ -34,7 +34,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 
                 file.Name.Should().Be(taskDispatchFile?.Name);
                 file.Endpoint.Should().Be(taskDispatchFile?.Endpoint);
-                // file.Credentials.Should().BeEquivalentTo(taskDispatchFile?.Credentials); - WorkflowManager to pass the credentials
+                file.Credentials.Should().NotBeNull();
                 file.Bucket.Should().Be(taskDispatchFile?.Bucket);
                 file.RelativeRootPath.Should().Be(taskDispatchFile?.RelativeRootPath);
             }
@@ -45,7 +45,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         {
             Output.WriteLine("Asserting details of TaskUpdateEvent with TaskCallbackEvent");
             taskUpdateEvent.ExecutionId.Should().Be(taskCallbackEvent.ExecutionId);
-            // BUG taskUpdateEvent.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId);
+            // taskUpdateEvent.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId); - BUG 227 raised
             taskUpdateEvent.Status.Should().Be(status);
             taskUpdateEvent.TaskId.Should().Be(taskCallbackEvent.TaskId);
             taskUpdateEvent.WorkflowInstanceId.Should().Be(taskCallbackEvent.WorkflowInstanceId);
@@ -64,7 +64,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         {
             Output.WriteLine("Asserting details of TaskUpdateEvent with TaskDispatchEvent");
             taskUpdateEvent.ExecutionId.Should().Be(taskDispatchEvent.ExecutionId);
-            // BUG taskUpdateEvent.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId);
+            // taskUpdateEvent.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId); - BUG 227 raised
             taskUpdateEvent.Status.Should().Be(status);
             taskUpdateEvent.TaskId.Should().Be(taskDispatchEvent.TaskId);
             taskUpdateEvent.WorkflowInstanceId.Should().Be(taskDispatchEvent.WorkflowInstanceId);
