@@ -47,52 +47,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
             },
             new WorkflowRevisionTestData()
             {
-                Name = "Routing_Workflow_1",
-                WorkflowRevision = new WorkflowRevision()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    WorkflowId = Guid.NewGuid().ToString(),
-                    Revision = 1,
-                    Workflow = new Workflow()
-                    {
-                        Name = "Basic workflow 1",
-                        Description = "Basic workflow 1",
-                        Version = "1",
-                        Tasks = new TaskObject[]
-                        {
-                            new TaskObject
-                            {
-                                Id = Guid.NewGuid().ToString(),
-                                Type = "router",
-                                Description = "Router Workflow 1 Task 1",
-                                TaskDestinations = new TaskDestination[]
-                                {
-                                    new TaskDestination { Name = "task1" },
-                                    new TaskDestination { Name = "task2" }
-                                }
-                            },
-                            new TaskObject
-                            {
-                                Id = "task1",
-                                Type = "Basic_task",
-                                Description = "Basic Workflow 1 Task 1"
-                            },
-                            new TaskObject
-                            {
-                                Id = "task2",
-                                Type = "Basic_task",
-                                Description = "Basic Workflow 1 Task 2"
-                            }
-                        },
-                        InformaticsGateway = new InformaticsGateway()
-                        {
-                            AeTitle = "Basic_AE"
-                        }
-                    }
-                }
-            },
-            new WorkflowRevisionTestData()
-            {
                 Name = "Basic_Workflow_2",
                 WorkflowRevision = new WorkflowRevision()
                 {
@@ -1011,7 +965,285 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     }
                 }
             },
-
+            new WorkflowRevisionTestData()
+            {
+                Name = "Routing_Workflow_Multi_Destination",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Router Workflow Multi Destination",
+                        Description = "Basic workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "router",
+                                Description = "Router Task",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination { Name = "taskdest1" },
+                                    new TaskDestination { Name = "taskdest2" }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "taskdest1",
+                                Type = "argo",
+                                Description = "Argo plugin Task 1"
+                            },
+                            new TaskObject
+                            {
+                                Id = "taskdest2",
+                                Type = "argo",
+                                Description = "Argo plugin Task 2"
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Router_1"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Routing_Workflow_Single_Destination",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Router Workflow Single Destination",
+                        Description = "Basic workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "router",
+                                Description = "Router Workflow 1 Task 1",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination { Name = "taskdest1" }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "taskdest1",
+                                Type = "Basic_task",
+                                Description = "Basic Workflow 1 Task 1"
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Router_1"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Routing_Workflow_Single_Destination_Conditional",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Router Workflow Conditional Statements",
+                        Description = "Basic workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "router",
+                                Description = "Router Workflow 1 Task 1",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination { Name = "taskdest1", Conditions = "'true'=='true'" },
+                                    new TaskDestination { Name = "taskdest2", Conditions = "'false'=='true'" }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "taskdest1",
+                                Type = "argo",
+                                Description = "Argo plugin Task 1"
+                            },
+                            new TaskObject
+                            {
+                                Id = "taskdest2",
+                                Type = "argo",
+                                Description = "Argo plugin Task 2"
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Router_1"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Routing_Workflow_No_Destination_Conditional",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Router Workflow Conditional Statements",
+                        Description = "Basic workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "router",
+                                Description = "Router Workflow 1 Task 1",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination { Name = "taskdest1", Conditions = "'false'=='true'" },
+                                    new TaskDestination { Name = "taskdest2", Conditions = "'false'=='true'" }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "taskdest1",
+                                Type = "argo",
+                                Description = "Argo plugin Task 1"
+                            },
+                            new TaskObject
+                            {
+                                Id = "taskdest2",
+                                Type = "argo",
+                                Description = "Argo plugin Task 2"
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Router_1"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Routing_Workflow_Multi_Router",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Router Workflow mulit router",
+                        Description = "Basic workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "router",
+                                Description = "Router Workflow router task 1",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination { Name = "taskdest1" },
+                                    new TaskDestination { Name = "router2" }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "taskdest1",
+                                Type = "argo",
+                                Description = "Argo plugin Task 1"
+                            },
+                            new TaskObject
+                            {
+                                Id = "router2",
+                                Type = "router",
+                                Description = "Router Workflow router task 2",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination { Name = "taskdest2" },
+                                    new TaskDestination { Name = "taskdest3" }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "taskdest2",
+                                Type = "argo",
+                                Description = "Argo plugin Task 2"
+                            },
+                            new TaskObject
+                            {
+                                Id = "taskdest3",
+                                Type = "argo",
+                                Description = "Argo plugin Task 3"
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Router_1"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Routing_Workflow_Invalid_Destination",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Router Workflow Conditional Statements",
+                        Description = "Basic workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "router",
+                                Description = "Router Workflow 1 Task 1",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination { Name = "taskdest2"},
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "taskdest1",
+                                Type = "argo",
+                                Description = "Argo plugin Task 1"
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Router_1"
+                        }
+                    }
+                }
+            },
         };
     }
 }
