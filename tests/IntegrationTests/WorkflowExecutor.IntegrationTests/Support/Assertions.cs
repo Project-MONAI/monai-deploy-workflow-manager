@@ -12,7 +12,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             workflowInstance.PayloadId.Should().Match(workflowRequestMessage.PayloadId.ToString());
             workflowInstance.WorkflowId.Should().Match(workflowRevision.WorkflowId);
             workflowInstance.AeTitle.Should().Match(workflowRevision.Workflow.InformaticsGateway.AeTitle);
-            workflowInstance.Tasks.Count.Should().Be(workflowRevision.Workflow.Tasks.Length);
 
             foreach (var task in workflowInstance.Tasks)
             {

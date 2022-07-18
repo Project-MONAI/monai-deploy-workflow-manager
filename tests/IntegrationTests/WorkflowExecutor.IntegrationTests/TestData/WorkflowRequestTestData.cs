@@ -32,20 +32,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
             },
             new WorkflowRequestTestData
             {
-                Name = "Routing_Id_WF_Request",
-                WorkflowRequestMessage = new WorkflowRequestMessage
-                {
-                    Bucket = "bucket1",
-                    PayloadId = Guid.NewGuid(),
-                    Workflows = new List<string>() { Helper.GetWorkflowByName("Routing_Workflow_1").WorkflowRevision.WorkflowId },
-                    CorrelationId = Guid.NewGuid().ToString(),
-                    Timestamp = DateTime.Now,
-                    CalledAeTitle = "No_AE",
-                    CallingAeTitle = "MWM",
-                }
-            },
-            new WorkflowRequestTestData
-            {
                 Name = "Basic_Id_WF_Request",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
@@ -290,6 +276,20 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     CallingAeTitle = "MWM",
                 }
             },
+            new WorkflowRequestTestData
+            {
+                Name = "Routing_Workflow_Request",
+                WorkflowRequestMessage = new WorkflowRequestMessage
+                {
+                    Bucket = "bucket1",
+                    PayloadId = Guid.NewGuid(),
+                    Workflows = new List<string>() { },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.Now,
+                    CalledAeTitle = "Router_1",
+                    CallingAeTitle = "MWM",
+                }
+            }
         };
     }
 }

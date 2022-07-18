@@ -56,5 +56,21 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             var taskDispatchEvents = DataHelper.TaskDispatchEvents;
             taskDispatchEvents[0].TaskId.Should().Be(taskId);
         }
+
+        [Then(@"Task Dispatch events for TaskIds (.*) are published")]
+        public void ThenTaskDispatchEventsForTasksArePublished(List<string> taskIds)
+        {
+            DataHelper.GetTaskDispatchEventByTaskId(taskIds);
+        }
+
+        [StepArgumentTransformation]
+        public List<String> TransformToListOfString(string commaSeparatedList)
+        {
+            return commaSeparatedList.Split(",")
+                .Select(x => x.Trim())
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .ToList();
+        }
+
     }
 }

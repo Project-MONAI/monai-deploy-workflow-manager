@@ -243,6 +243,36 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             return res;
         }
 
+        public List<TaskDispatchEvent> GetTaskDispatchEventByTaskId(List<string> taskIds)
+        {
+            var res = RetryTaskDispatches.Execute(() =>
+            {
+                var message = TaskDispatchConsumer.GetMessage<TaskDispatchEvent>();
+
+                if (message != null)
+                {
+                    foreach (var taskId in taskIds)
+                    {
+                        if (message.TaskId == taskId)
+                        {
+                            TaskDispatchEvents.Add(message);
+                        }
+                    }
+                }
+
+                if (TaskDispatchEvents.Count == taskIds.Count)
+                {
+                    return TaskDispatchEvents;
+                }
+                else
+                {
+                    throw new Exception($"{taskIds.Count} task dispatch events could not be found");
+                }
+            });
+
+            return res;
+        }
+
         public Payload GetPayloadTestData(string name)
         {
             var payload = PayloadsTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));

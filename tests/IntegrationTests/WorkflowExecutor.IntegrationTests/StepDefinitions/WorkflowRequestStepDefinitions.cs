@@ -122,12 +122,16 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"A Task Dispatch event is not published")]
         public void ThenATaskDispatchEventIsNotPublished()
         {
+            _outputHelper.WriteLine($"Checking that no Task Dispatch Events have been published for workflowId={DataHelper.WorkflowRevisions[0].WorkflowId}");
+
             for (var i = 0; i < 3; i++)
             {
                 var taskDispatchEvent = TaskDispatchConsumer.GetMessage<TaskDispatchEvent>();
 
                 if (taskDispatchEvent != null)
                 {
+                    _outputHelper.WriteLine("Task Dispatch Event is not null");
+
                     var workflowInstance = MongoClient.GetWorkflowInstanceById(taskDispatchEvent.WorkflowInstanceId);
 
                     if (workflowInstance != null)
@@ -138,9 +142,15 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                         }
                     }
                 }
+                else
+                {
+                    _outputHelper.WriteLine("Task Dispatch Event is null");
+                }
 
                 Thread.Sleep(1000);
             }
+
+            _outputHelper.WriteLine($"No Task Dispatch Events from workflowId={DataHelper.WorkflowRevisions[0].WorkflowId} have been dispatched");
         }
     }
 }
