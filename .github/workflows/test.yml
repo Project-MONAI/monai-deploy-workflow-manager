@@ -115,6 +115,13 @@ jobs:
       run: find ~+ -type f -name "*.WorkflowExecutor.IntegrationTests.csproj" | xargs -L1 dotnet test
       working-directory: ./tests
 
+    - name: Publish report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: WorkflowExecutorIntegrationTestResults
+        path: tests/IntegrationTests/WorkflowExecutor.IntegrationTests/bin/Debug/net6.0/TestExecution.json
+
   task_executor_integration-tests:
     runs-on: ubuntu-latest
     services:
@@ -176,6 +183,13 @@ jobs:
     - name: Run WorkflowExecutor Integration Tests
       run: find ~+ -type f -name "*.TaskManager.IntegrationTests.csproj" | xargs -L1 dotnet test
       working-directory: ./tests
+
+    - name: Publish report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: TaskExecutorIntegrationTestResults
+        path: tests/IntegrationTests/TaskManager.IntegrationTests/bin/Debug/net6.0/TestExecution.json
 
   sonarscanner:
     runs-on: ubuntu-latest

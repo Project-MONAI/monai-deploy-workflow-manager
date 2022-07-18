@@ -10,6 +10,7 @@ Integration tests have also been written against the WorkflowManager API's using
 - RabbitPublisher.cs and RabbitConsumer.cs are used to interact with Rabbit.
 - MinioClientUtil.cs is used to interact with MinIO.
 - MongoClientUtil.cs is used to interact with Mongo.
+- HTML Execution Reports are generated using [Specflow+LivingDocs](https://docs.specflow.org/projects/specflow-livingdoc/en/latest/)
 
 ## Writing Tests
 
@@ -34,3 +35,13 @@ docker-compose up
 
 Tests can be executed from the Visual Studio Test Explorer or as you would run any unit tests.
 
+## Generating HTML Reports
+```bash
+dotnet tool install --global SpecFlow.Plus.LivingDoc.CLI
+```
+
+Run the integration tests to generate a TestExecution.json
+
+```bash
+livingdoc test-assembly {$PROJECT_ROOT}\monai-deploy-workflow-manager\tests\IntegrationTests\TaskManager.IntegrationTests\bin\Debug\net6.0\Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.dll -t {$PROJECT_ROOT}\monai-deploy-workflow-manager\tests\IntegrationTests\TaskManager.IntegrationTests\bin\Debug\net6.0\TestExecution.json
+```

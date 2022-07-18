@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.Diagnostics;
-using BoDi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
@@ -42,25 +41,25 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         {
             var config = new ConfigurationBuilder()
                 .AddEnvironmentVariables()
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.Test.json")
                 .Build();
 
-            TestExecutionConfig.RabbitConfig.Host = "localhost";
+            TestExecutionConfig.RabbitConfig.Host = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:endpoint");
             TestExecutionConfig.RabbitConfig.Port = 15672;
-            TestExecutionConfig.RabbitConfig.User = "admin";
-            TestExecutionConfig.RabbitConfig.Password = "admin";
-            TestExecutionConfig.RabbitConfig.VirtualHost = "monaideploy";
-            TestExecutionConfig.RabbitConfig.Exchange = "monaideploy";
+            TestExecutionConfig.RabbitConfig.User = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:username");
+            TestExecutionConfig.RabbitConfig.Password = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:password");
+            TestExecutionConfig.RabbitConfig.VirtualHost = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:virtualHost");
+            TestExecutionConfig.RabbitConfig.Exchange = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:exchange");
             TestExecutionConfig.RabbitConfig.TaskDispatchQueue = "md.tasks.dispatch";
             TestExecutionConfig.RabbitConfig.TaskCallbackQueue = "md.tasks.callback";
             TestExecutionConfig.RabbitConfig.TaskUpdateQueue = "md.tasks.update";
             TestExecutionConfig.RabbitConfig.ClinicalReviewQueue = "aide.clinical_review.request";
 
-            TestExecutionConfig.MinioConfig.Endpoint = "localhost:9000";
-            TestExecutionConfig.MinioConfig.AccessKey = "minioadmin";
-            TestExecutionConfig.MinioConfig.AccessToken = "minioadmin";
-            TestExecutionConfig.MinioConfig.Bucket = "test-bucket";
-            TestExecutionConfig.MinioConfig.Region = "eu-west-2";
+            TestExecutionConfig.MinioConfig.Endpoint = config.GetValue<string>("WorkflowManager:storage:settings:endpoint");
+            TestExecutionConfig.MinioConfig.AccessKey = config.GetValue<string>("WorkflowManager:storage:settings:accessKey");
+            TestExecutionConfig.MinioConfig.AccessToken = config.GetValue<string>("WorkflowManager:storage:settings:accessToken");
+            TestExecutionConfig.MinioConfig.Bucket = config.GetValue<string>("WorkflowManager:storage:settings:bucket");
+            TestExecutionConfig.MinioConfig.Region = config.GetValue<string>("WorkflowManager:storage:settings:region");
 
             Host = TaskManagerStartup.StartTaskManager();
             HttpClient = new HttpClient();

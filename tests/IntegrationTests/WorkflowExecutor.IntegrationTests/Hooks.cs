@@ -42,15 +42,15 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         {
             var config = new ConfigurationBuilder()
                 .AddEnvironmentVariables()
-                .AddJsonFile("appsettings.Development.json")
+                .AddJsonFile("appsettings.Test.json")
                 .Build();
 
-            TestExecutionConfig.RabbitConfig.Host = "localhost";
+            TestExecutionConfig.RabbitConfig.Host = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:endpoint");
             TestExecutionConfig.RabbitConfig.Port = 15672;
-            TestExecutionConfig.RabbitConfig.User = "admin";
-            TestExecutionConfig.RabbitConfig.Password = "admin";
-            TestExecutionConfig.RabbitConfig.VirtualHost = "monaideploy";
-            TestExecutionConfig.RabbitConfig.Exchange = "monaideploy";
+            TestExecutionConfig.RabbitConfig.User = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:username");
+            TestExecutionConfig.RabbitConfig.Password = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:password");
+            TestExecutionConfig.RabbitConfig.VirtualHost = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:virtualHost");
+            TestExecutionConfig.RabbitConfig.Exchange = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:exchange");
             TestExecutionConfig.RabbitConfig.WorkflowRequestQueue = config.GetValue<string>("WorkflowManager:messaging:topics:workflowRequest");
             TestExecutionConfig.RabbitConfig.TaskDispatchQueue = "md.tasks.dispatch";
             TestExecutionConfig.RabbitConfig.TaskCallbackQueue = "md.tasks.callback";
