@@ -34,9 +34,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             .ConfigureAppConfiguration((builderContext, config) =>
             {
                 var env = builderContext.HostingEnvironment;
-                config
-                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                config.AddJsonFile("appsettings.Test.json", optional: false, reloadOnChange: true);
             })
             .ConfigureLogging((builderContext, configureLogging) =>
             {
