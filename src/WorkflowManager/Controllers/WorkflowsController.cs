@@ -44,7 +44,7 @@ public class WorkflowsController : ApiControllerBase
                                IOptions<WorkflowManagerOptions> options)
         : base(options)
     {
-        _options = options;
+        _options = options ?? throw new ArgumentNullException(nameof(options));
         _workflowService = workflowService ?? throw new ArgumentNullException(nameof(workflowService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _uriService = uriService ?? throw new ArgumentNullException(nameof(uriService));

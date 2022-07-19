@@ -28,7 +28,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <param name="options"></param>
         public ApiControllerBase(IOptions<WorkflowManagerOptions> options)
         {
-            _options = options;
+            _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         /// <summary>

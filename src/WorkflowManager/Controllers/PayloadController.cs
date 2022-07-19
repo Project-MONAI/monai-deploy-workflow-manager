@@ -39,7 +39,7 @@ public class PayloadController : ApiControllerBase
                              IOptions<WorkflowManagerOptions> options)
                             : base(options)
     {
-        _options = options;
+        _options = options ?? throw new ArgumentNullException(nameof(options));
         _payloadService = payloadService ?? throw new ArgumentNullException(nameof(payloadService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _uriService = uriService ?? throw new ArgumentNullException(nameof(uriService));
