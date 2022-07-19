@@ -202,8 +202,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 {
                     var metadata = await metadataRepository.RetrieveMetadata().ConfigureAwait(false);
 
-                    foreach (var item in metadata)
-                        updateMessage.Body.Metadata.Add(item.Key, item.Value);
+                    if (metadata is not null)
+                    {
+                        foreach (var item in metadata)
+                            updateMessage.Body.Metadata.Add(item.Key, item.Value);
+                    }
                 }
                 catch (Exception ex)
                 {
