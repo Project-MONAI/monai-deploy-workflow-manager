@@ -1,4 +1,7 @@
-﻿using System.IO.Abstractions;
+﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+// SPDX-License-Identifier: Apache License 2.0
+
+using System.IO.Abstractions;
 using System.Net.Http.Headers;
 using System.Text;
 using Microsoft.AspNetCore.Hosting;
@@ -16,15 +19,15 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Database;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
+using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests;
 using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
-    public static class WorkflowExecutorStartup
+    public static class TaskManagerStartup
     {
         private static IHostBuilder CreateHostBuilder() =>
             Host.CreateDefaultBuilder()
@@ -85,7 +88,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
                     services.AddHostedService(p => p.GetService<DataRetentionService>());
 
-                    services.AddWorkflowExecutor(hostContext);
+                    services.AddTaskManager(hostContext);
                 })
             .ConfigureWebHostDefaults(webBuilder =>
             {
@@ -93,7 +96,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 webBuilder.UseStartup<Startup>();
             });
 
-        public static IHost StartWorkflowExecutor()
+        public static IHost StartTaskManager()
         {
             var host = CreateHostBuilder().Build();
             host.RunAsync();

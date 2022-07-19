@@ -332,12 +332,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             foreach (var storage in storages)
             {
-                var credeentials = await _storageService.CreateTemporaryCredentialsAsync(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
+                var credentials = await _storageService.CreateTemporaryCredentialsAsync(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
                 storage.Credentials = new Credentials
                 {
-                    AccessKey = credeentials.AccessKeyId,
-                    AccessToken = credeentials.SecretAccessKey,
-                    SessionToken = credeentials.SessionToken,
+                    AccessKey = credentials.AccessKeyId,
+                    AccessToken = credentials.SecretAccessKey,
+                    SessionToken = credentials.SessionToken,
                 };
             }
         }

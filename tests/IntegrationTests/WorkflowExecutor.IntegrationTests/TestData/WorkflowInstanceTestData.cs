@@ -4,7 +4,7 @@
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
+namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
 {
     public class WorkflowInstanceTestData
     {
