@@ -387,14 +387,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
                 if (string.Equals(taskExec.TaskType, TaskTypeConstants.ExportTask, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    var artifactValues = GetDicomExports(workflow, workflowInstance, taskExec);
-
-                    if (artifactValues.Any() is false)
-                    {
-                        await HandleTaskDestinations(workflowInstance, workflow, taskExec, correlationId);
-                    }
-
-                    await DispatchDicomExport(workflowInstance, taskExec, workflow.Workflow?.InformaticsGateway?.ExportDestinations, artifactValues, correlationId);
+                    await HandleDicomExport(workflow, workflowInstance, taskExec, correlationId);
 
                     continue;
                 }
