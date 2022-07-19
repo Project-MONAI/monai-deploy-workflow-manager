@@ -100,10 +100,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             return host;
         }
 
-        public static async Task<HttpResponseMessage> GetConsumers()
+        public static async Task<HttpResponseMessage> GetConsumers(HttpClient httpClient)
         {
-            var httpClient = new HttpClient();
-
             var svcCredentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(TestExecutionConfig.RabbitConfig.User + ":" + TestExecutionConfig.RabbitConfig.Password));
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", svcCredentials);

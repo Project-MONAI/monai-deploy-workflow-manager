@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: © 2019-2020 NVIDIA Corporation
 // SPDX-License-Identifier: Apache License 2.0
 
+using System.Reflection;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -38,7 +39,14 @@ namespace Monai.Deploy.WorkflowManager.Common
                       typeString,
                       (name) =>
                       {
-                          return AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(z => !string.IsNullOrWhiteSpace(z.FullName) && z.FullName.StartsWith(name.FullName));
+                          var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(z => !string.IsNullOrWhiteSpace(z.FullName) && z.FullName.StartsWith(name.FullName));
+
+                          if (assembly is null)
+                          {
+                              assembly = Assembly.Load($"{AppDomain.CurrentDomain.BaseDirectory}{name.FullName}.dll");
+                          }
+
+                          return assembly;
                       },
                       null,
                       true);
