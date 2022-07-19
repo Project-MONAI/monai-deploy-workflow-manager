@@ -25,5 +25,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         /// </summary>
         /// <param name="message">The export complete message event.</param>
         Task<bool> ProcessExportComplete(ExportCompleteEvent message, string correlationId);
+
+        /// <summary>
+        /// Validates a WorkflowRevision.
+        /// </summary>
+        /// <param name="workflow"></param>
+        /// <param name="errors"></param>
+        /// <returns></returns>
+        public bool ValidateWorkflow(WorkflowRevision workflow, out string errors);
     }
 }

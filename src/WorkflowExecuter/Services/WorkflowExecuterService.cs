@@ -19,6 +19,7 @@ using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
 using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
+using Monai.Deploy.WorkflowManager.Extentions;
 
 namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 {
@@ -95,11 +96,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             var workflowInstances = new List<WorkflowInstance>();
 
-            workflows.ForEach(async (workflow) =>
-            {
-                var workflowInstance = await CreateWorkflowInstanceAsync(message, workflow);
-                workflowInstances.Add(workflowInstance);
-            });
+            await ValidateAndCreateWorkflows(message, workflows, workflowInstances);
 
             var existingInstances = await _workflowInstanceRepository.GetByWorkflowsIdsAsync(workflowInstances.Select(w => w.WorkflowId).ToList());
 
@@ -120,6 +117,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return false;
             }
 
+            processed = await HandleWorkflowInstances(message, processed, workflowInstances);
+
+            return processed;
+        }
+
+        private async Task<bool> HandleWorkflowInstances(WorkflowRequestEvent message, bool processed, List<WorkflowInstance> workflowInstances)
+        {
             foreach (var workflowInstance in workflowInstances)
             {
                 if (workflowInstance.Status == Status.Failed)
@@ -156,6 +160,27 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return processed;
         }
 
+        /// <summary>
+        /// Validates all workflow revisions then tries to create them
+        /// 
+        /// </summary>
+        /// <param name="message">WorkflowRequestEvent</param>
+        /// <param name="workflows">List<WorkflowRevision></param>
+        /// <param name="workflowInstances">List<WorkflowInstance></param>
+        /// <returns>workflowInstances will be mutated to have the list of workflow instances created</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        private async Task ValidateAndCreateWorkflows(WorkflowRequestEvent message, List<WorkflowRevision>? workflows, List<WorkflowInstance> workflowInstances)
+            => await workflows.ForEachAsync(async (workflow) =>
+        {
+            var validator = new WorkflowValidator(_logger);
+            validator.ValidateWorkflow(workflow, out var errors);
+            if (!validator.IsWorkflowValid)
+            {
+                throw new InvalidOperationException(string.Join(", ", errors));
+            }
+            var workflowInstance = await CreateWorkflowInstanceAsync(message, workflow);
+            workflowInstances.Add(workflowInstance);
+        });
         public async Task<bool> ProcessTaskUpdate(TaskUpdateEvent message)
         {
             Guard.Against.Null(message, nameof(message));
