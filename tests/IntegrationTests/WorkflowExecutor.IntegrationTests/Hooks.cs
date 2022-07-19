@@ -32,7 +32,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         private static MongoClientUtil? MongoClient { get; set; }
         private static MinioClientUtil? MinioClient { get; set; }
         private IObjectContainer ObjectContainer { get; set; }
-        private static IHost Host { get; set; }
+        private static IHost? Host { get; set; }
 
         /// <summary>
         /// Runs before all tests to create static implementions of Rabbit and Mongo clients as well as starting the WorkflowManager using WebApplicationFactory.
@@ -71,9 +71,6 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
 
             TestExecutionConfig.ApiConfig.BaseUrl = "http://localhost:5000";
 
-            WorkflowPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
-            TaskDispatchConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-            TaskUpdatePublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
             MongoClient = new MongoClientUtil();
             MinioClient = new MinioClientUtil();
             Host = WorkflowExecutorStartup.StartWorkflowExecutor();
@@ -88,7 +85,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         [BeforeTestRun(Order = 1)]
         public static async Task CheckWorkflowConsumerStarted()
         {
-            var response = await WorkflowExecutorStartup.GetConsumers();
+            var response = await WorkflowExecutorStartup.GetConsumers(HttpClient);
             var content = response.Content.ReadAsStringAsync().Result;
 
             for (var i = 1; i <= 10; i++)
@@ -96,7 +93,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
                 if (string.IsNullOrEmpty(content) || content == "[]")
                 {
                     Debug.Write($"Workflow consumer not started. Recheck times {i}");
-                    response = await WorkflowExecutorStartup.GetConsumers();
+                    response = await WorkflowExecutorStartup.GetConsumers(HttpClient);
                     content = response.Content.ReadAsStringAsync().Result;
                 }
                 else
@@ -112,6 +109,10 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
 
                 Thread.Sleep(1000);
             }
+
+            WorkflowPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+            TaskDispatchConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            TaskUpdatePublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
         }
 
         /// <summary>
@@ -149,7 +150,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             {
                 foreach (var workflowRevision in dataHelper.WorkflowRevisions)
                 {
-                    MongoClient.DeleteWorkflowRevisionDocumentByWorkflowId(workflowRevision.WorkflowId);
+                    MongoClient?.DeleteWorkflowRevisionDocumentByWorkflowId(workflowRevision.WorkflowId);
                 }
             }
 
@@ -187,9 +188,8 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         public static void StopServices()
         {
             WorkflowPublisher?.CloseConnection();
-
             TaskDispatchConsumer?.CloseConnection();
-
+            TaskUpdatePublisher?.CloseConnection();
             Host?.StopAsync();
         }
     }
