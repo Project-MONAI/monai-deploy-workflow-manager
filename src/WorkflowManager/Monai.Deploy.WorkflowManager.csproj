@@ -53,7 +53,9 @@ SPDX-License-Identifier: Apache License 2.0
     <ProjectReference Include="..\PayloadListener\Monai.Deploy.WorkflowManager.PayloadListener.csproj" />
     <ProjectReference Include="..\Logging\Monai.Deploy.WorkflowManager.Logging.csproj" />
     <ProjectReference Include="..\TaskManager\Monai.Deploy.WorkflowManager.TaskManager.csproj" />
+    <ProjectReference Include="..\TaskManager\Plug-ins\AideClinicalReview\Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.csproj" />
     <ProjectReference Include="..\TaskManager\Plug-ins\Argo\Monai.Deploy.WorkflowManager.TaskManager.Argo.csproj" />
+    <ProjectReference Include="..\TaskManager\Plug-ins\TestPlugin\Monai.Deploy.WorkflowManager.TaskManager.TestPlugin.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,7 +4,6 @@
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.TestData;
 using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
 using Polly;
 using Polly.Retry;
@@ -193,7 +192,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
             return res;
         }
-        
+
         public List<Payload> GetPayloadCollections(string payloadId)
         {
             var res = RetryPayloadCollections.Execute(() =>
@@ -237,6 +236,36 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 else
                 {
                     throw new Exception($"{count} task dispatch events could not be found");
+                }
+            });
+
+            return res;
+        }
+
+        public List<TaskDispatchEvent> GetTaskDispatchEventByTaskId(List<string> taskIds)
+        {
+            var res = RetryTaskDispatches.Execute(() =>
+            {
+                var message = TaskDispatchConsumer.GetMessage<TaskDispatchEvent>();
+
+                if (message != null)
+                {
+                    foreach (var taskId in taskIds)
+                    {
+                        if (message.TaskId == taskId)
+                        {
+                            TaskDispatchEvents.Add(message);
+                        }
+                    }
+                }
+
+                if (TaskDispatchEvents.Count == taskIds.Count)
+                {
+                    return TaskDispatchEvents;
+                }
+                else
+                {
+                    throw new Exception($"{taskIds.Count} task dispatch events could not be found");
                 }
             });
 

@@ -23,7 +23,7 @@ Scenario: Publish a valid Task Update event which triggers multiple new tasks
     And Workflow Instance status is Created
 
 @TaskUpdate
-Scenario Outline: Publish a valid Task Update event where the next Task is not of status Created and see that a Task Dispatch event is not created
+Scenario Outline: Publish a valid Task Update event where the Task status is not created
     Given I have a clinical workflow Multi_Task_Workflow_1
     And I have a Workflow Instance <workflowInstance>
     When I publish a Task Update Message Task_Update_Dispatches_Single_Task with status Succeeded
