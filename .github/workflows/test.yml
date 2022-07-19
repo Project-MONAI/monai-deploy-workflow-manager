@@ -5,6 +5,7 @@ name: Tests & Sonarscanner/CodeCov
 
 on:
   push:
+  pull:
   workflow_dispatch:
 
 env:
