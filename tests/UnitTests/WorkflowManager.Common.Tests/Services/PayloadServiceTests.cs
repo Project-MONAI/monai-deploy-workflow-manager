@@ -135,7 +135,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
                 }
             };
 
-            _payloadRepository.Setup(p => p.GetAllAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(payload);
+            _payloadRepository.Setup(p => p.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(() => payload);
+
             var result = await PayloadService.GetAllAsync();
 
             result.Should().BeEquivalentTo(payload);

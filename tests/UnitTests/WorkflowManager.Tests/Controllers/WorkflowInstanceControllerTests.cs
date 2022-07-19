@@ -9,9 +9,13 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Controllers;
+using Monai.Deploy.WorkflowManager.Services;
+using Monai.Deploy.WorkflowManager.Wrappers;
 using Moq;
 using Xunit;
 
@@ -23,13 +27,17 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
         private readonly Mock<IPayloadService> _payloadService;
         private readonly Mock<ILogger<PayloadController>> _logger;
+        private readonly Mock<IUriService> _uriService;
+        private readonly IOptions<WorkflowManagerOptions> _options;
 
         public PayloadControllerTests()
         {
+            _options = Options.Create(new WorkflowManagerOptions());
             _payloadService = new Mock<IPayloadService>();
             _logger = new Mock<ILogger<PayloadController>>();
+            _uriService = new Mock<IUriService>();
 
-            PayloadController = new PayloadController(_payloadService.Object, _logger.Object);
+            PayloadController = new PayloadController(_payloadService.Object, _logger.Object, _uriService.Object, _options);
         }
 
         [Fact]
@@ -44,60 +52,34 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 }
             };
 
-            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(payloads);
+            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(payloads);
+            _payloadService.Setup(w => w.CountAsync()).ReturnsAsync(payloads.Count);
+            _uriService.Setup(s => s.GetPageUriString(It.IsAny<Filter.PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
-            var result = await PayloadController.GetAllAsync();
-
-            var objectResult = Assert.IsType<OkObjectResult>(result);
-
-            objectResult.Value.Should().BeEquivalentTo(payloads);
-        }
-
-        [Fact]
-        public async Task GetListAsync_PayloadsExist_ReturnsOrderedList()
-        {
-            var payloads = new List<Payload>
-            {
-                new Payload
-                {
-                    Id = "rainbow",
-                    PayloadId = Guid.NewGuid().ToString(),
-                    Timestamp = DateTime.Now,
-                },
-                new Payload
-                {
-                    Id = "unicorn",
-                    PayloadId = Guid.NewGuid().ToString(),
-                    Timestamp = DateTime.Now.AddMinutes(-5),
-                },
-                new Payload
-                {
-                    Id = "sparkles",
-                    PayloadId = Guid.NewGuid().ToString(),
-                    Timestamp = DateTime.Now.AddMinutes(-2),
-                },
-            };
-
-            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(payloads);
-
-            var result = await PayloadController.GetAllAsync();
+            var result = await PayloadController.GetAllAsync(new Filter.PaginationFilter());
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
 
-            var payloadResult = (IOrderedEnumerable<Payload>)objectResult.Value;
-            var first = payloadResult.First().Id;
-            var second = payloadResult.Skip(1).First().Id;
-            Assert.True(first == "rainbow");
-            Assert.True(second == "sparkles");
-            objectResult.Value.Should().BeEquivalentTo(payloads);
+            var responseValue = (PagedResponse<List<Payload>>)objectResult.Value;
+            responseValue.Data.Should().BeEquivalentTo(payloads);
+            responseValue.FirstPage.Should().Be("unitTest");
+            responseValue.LastPage.Should().Be("unitTest");
+            responseValue.PageNumber.Should().Be(1);
+            responseValue.PageSize.Should().Be(10);
+            responseValue.TotalPages.Should().Be(1);
+            responseValue.TotalRecords.Should().Be(1);
+            responseValue.Succeeded.Should().Be(true);
+            responseValue.PreviousPage.Should().Be(null);
+            responseValue.NextPage.Should().Be(null);
+            responseValue.Errors.Should().BeNullOrEmpty();
         }
 
         [Fact]
         public async Task GetListAsync_ServiceException_ReturnProblem()
         {
-            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
+            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
 
-            var result = await PayloadController.GetAllAsync();
+            var result = await PayloadController.GetAllAsync(new Filter.PaginationFilter());
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);

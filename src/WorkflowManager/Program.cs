@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.IO.Abstractions;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -56,57 +57,77 @@ namespace Monai.Deploy.WorkflowManager
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddOptions<WorkflowManagerOptions>()
-                        .Bind(hostContext.Configuration.GetSection("WorkflowManager"))
-                        .PostConfigure(options =>
-                        {
-                        });
-                    services.AddOptions<MessageBrokerServiceConfiguration>()
-                        .Bind(hostContext.Configuration.GetSection("WorkflowManager:messaging"))
-                        .PostConfigure(options =>
-                        {
-                        });
-                    services.AddOptions<StorageServiceConfiguration>()
-                        .Bind(hostContext.Configuration.GetSection("WorkflowManager:storage"))
-                        .PostConfigure(options =>
-                        {
-                        });
-                    services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkflowManagerOptions>, ConfigurationValidator>());
-
-                    services.AddSingleton<ConfigurationValidator>();
-
-                    services.AddSingleton<DataRetentionService>();
-
-                    services.AddHostedService<DataRetentionService>(p => p.GetService<DataRetentionService>());
-
-                    // Services
-                    services.AddTransient<IFileSystem, FileSystem>();
-                    services.AddHttpClient();
-
-                    // Mongo DB
-                    services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
-                    services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
-                    services.AddTransient<IWorkflowRepository, WorkflowRepository>();
-                    services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
-                    services.AddTransient<IPayloadRepsitory, PayloadRepository>();
-
-                    // StorageService
-                    services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
-
-                    // MessageBroker
-                    services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
-                    services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
-
-                    services.AddHostedService(p => p.GetService<DataRetentionService>());
-
-                    services.AddTaskManager(hostContext);
-                    services.AddWorkflowExecutor(hostContext);
+                    ConfigureServices(hostContext, services);
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.CaptureStartupErrors(true);
                     webBuilder.UseStartup<Startup>();
                 });
+
+        private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
+        {
+            services.AddOptions<WorkflowManagerOptions>()
+                .Bind(hostContext.Configuration.GetSection("WorkflowManager"))
+                .PostConfigure(options =>
+                {
+                });
+            services.AddOptions<MessageBrokerServiceConfiguration>()
+                .Bind(hostContext.Configuration.GetSection("WorkflowManager:messaging"))
+                .PostConfigure(options =>
+                {
+                });
+            services.AddOptions<StorageServiceConfiguration>()
+                .Bind(hostContext.Configuration.GetSection("WorkflowManager:storage"))
+                .PostConfigure(options =>
+                {
+                });
+            services.AddOptions<EndpointSettings>()
+                .Bind(hostContext.Configuration.GetSection("WorkflowManager:endpointSettings"))
+                .PostConfigure(options =>
+                {
+                });
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkflowManagerOptions>, ConfigurationValidator>());
+
+            services.AddSingleton<ConfigurationValidator>();
+
+            services.AddSingleton<DataRetentionService>();
+
+            services.AddHostedService<DataRetentionService>(p => p.GetService<DataRetentionService>());
+
+            // Services
+            services.AddTransient<IFileSystem, FileSystem>();
+            services.AddHttpClient();
+
+            // Mongo DB
+            services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
+            services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
+            services.AddTransient<IWorkflowRepository, WorkflowRepository>();
+            services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
+            services.AddTransient<IPayloadRepsitory, PayloadRepository>();
+
+            // StorageService
+            services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
+
+            // MessageBroker
+            services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
+            services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
+
+            services.AddHostedService(p => p.GetService<DataRetentionService>());
+
+            services.AddTaskManager(hostContext);
+            services.AddWorkflowExecutor(hostContext);
+
+            services.AddHttpContextAccessor();
+            services.AddSingleton<IUriService>(p =>
+            {
+                var accessor = p.GetRequiredService<IHttpContextAccessor>();
+                var request = accessor.HttpContext.Request;
+                var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+                var newUri = new Uri(uri);
+                return new UriService(newUri);
+            });
+        }
 
         private static void Main(string[] args)
         {

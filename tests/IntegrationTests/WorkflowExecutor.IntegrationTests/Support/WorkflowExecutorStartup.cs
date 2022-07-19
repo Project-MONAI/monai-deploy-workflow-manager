@@ -2,6 +2,7 @@
 using System.Net.Http.Headers;
 using System.Text;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -55,6 +56,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                         .PostConfigure(options =>
                         {
                         });
+                    services.AddOptions<EndpointSettings>()
+                        .Bind(hostContext.Configuration.GetSection("WorkflowManager:endpointSettings"))
+                        .PostConfigure(options =>
+                        {
+                        });
                     services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkflowManagerOptions>, ConfigurationValidator>());
 
                     services.AddSingleton<ConfigurationValidator>();
@@ -84,6 +90,16 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     services.AddHostedService(p => p.GetService<DataRetentionService>());
 
                     services.AddWorkflowExecutor(hostContext);
+                    services.AddHttpContextAccessor();
+                    services.AddSingleton<IUriService>(p =>
+                    {
+                        var accessor = p.GetRequiredService<IHttpContextAccessor>();
+                        var request = accessor.HttpContext.Request;
+                        var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+                        var newUri = new Uri(uri);
+                        return new UriService(newUri);
+                    });
+
                 })
             .ConfigureWebHostDefaults(webBuilder =>
             {

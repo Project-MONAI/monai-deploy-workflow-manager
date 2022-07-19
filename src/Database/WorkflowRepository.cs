@@ -15,7 +15,7 @@ using System.Linq;
 
 namespace Monai.Deploy.WorkflowManager.Database
 {
-    public class WorkflowRepository : IWorkflowRepository
+    public class WorkflowRepository : RepositoryBase, IWorkflowRepository
     {
         private readonly IMongoCollection<WorkflowRevision> _workflowCollection;
 
@@ -161,5 +161,15 @@ namespace Monai.Deploy.WorkflowManager.Database
 
             return deletedTimeStamp;
         }
+
+        public Task<long> CountAsync() => base.CountAsync(_workflowCollection, null);
+
+        public async Task<IList<WorkflowRevision>> GetAllAsync(int? skip = null, int? limit = null)
+            => await base.GetAllAsync(_workflowCollection,
+                                      x => x.Deleted == null,
+                                      Builders<WorkflowRevision>.Sort.Descending(x => x.Id),
+                                      skip,
+                                      limit);
+
     }
 }
