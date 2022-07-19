@@ -106,12 +106,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             catch (OperationCanceledException ex)
             {
                 _logger.ServiceCancelledWithException(ServiceName, ex);
-                await _messageBrokerSubscriberService!.RequeueWithDelay(message);
+                await _messageBrokerSubscriberService!.RequeueWithDelay(args.Message);
             }
             catch (Exception ex)
             {
                 _logger.ErrorProcessingMessage(message?.MessageId, message?.CorrelationId, ex);
-                await _messageBrokerSubscriberService!.RequeueWithDelay(message);
+                await _messageBrokerSubscriberService!.RequeueWithDelay(args.Message);
             }
         }
 
@@ -130,10 +130,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             catch (OperationCanceledException ex)
             {
                 _logger.ServiceCancelledWithException(ServiceName, ex);
+                await _messageBrokerSubscriberService!.RequeueWithDelay(args.Message);
             }
             catch (Exception ex)
             {
                 _logger.ErrorProcessingMessage(message?.MessageId, message?.CorrelationId, ex);
+                await _messageBrokerSubscriberService!.RequeueWithDelay(args.Message);
             }
         }
 
@@ -181,40 +183,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(metadataAssembly))
+            try
             {
-                IMetadataRepository? metadataRepository = null;
+                var metadata = await RetrievePluginMetadata(message, runner.Event, metadataAssembly).ConfigureAwait(false);
 
-                try
+                if (metadata is not null)
                 {
-                    metadataRepository = typeof(IMetadataRepository).CreateInstance<IMetadataRepository>(serviceProvider: _scope.ServiceProvider, typeString: metadataAssembly, _serviceScopeFactory, runner.Event, message.Body);
+                    foreach (var item in metadata)
+                        updateMessage.Body.Metadata.Add(item.Key, item.Value);
                 }
-                catch (Exception ex)
-                {
-                    _logger.UnsupportedRunner(metadataAssembly, ex);
-                    await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
-                    metadataRepository?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _logger.MetadataRetrievalFailed(ex);
+                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
 
-                    return;
-                }
-
-                try
-                {
-                    var metadata = await metadataRepository.RetrieveMetadata().ConfigureAwait(false);
-
-                    if (metadata is not null)
-                    {
-                        foreach (var item in metadata)
-                            updateMessage.Body.Metadata.Add(item.Key, item.Value);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.MetadataRetrievalFailed(ex);
-                    await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
-
-                    return;
-                }
+                return;
             }
 
             AcknowledgeMessage(message);
@@ -300,6 +284,30 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 _logger.ErrorExecutingTask(ex);
                 await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
             }
+        }
+
+        private async Task<Dictionary<string, object>?> RetrievePluginMetadata(JsonMessage<TaskCallbackEvent> message, TaskDispatchEvent dispatchEvent, string metadataAssembly)
+        {
+            if (string.IsNullOrWhiteSpace(metadataAssembly))
+            {
+                return null;
+            }
+
+            IMetadataRepository? metadataRepository = null;
+
+            try
+            {
+                metadataRepository = typeof(IMetadataRepository).CreateInstance<IMetadataRepository>(serviceProvider: _scope.ServiceProvider, typeString: metadataAssembly, _serviceScopeFactory, dispatchEvent, message.Body);
+            }
+            catch (Exception ex)
+            {
+                _logger.UnsupportedRunner(metadataAssembly, ex);
+                metadataRepository?.Dispose();
+
+                throw;
+            }
+
+            return await metadataRepository.RetrieveMetadata().ConfigureAwait(false);
         }
 
         private async Task AddCredentialsToPlugin(JsonMessage<TaskDispatchEvent> message)
