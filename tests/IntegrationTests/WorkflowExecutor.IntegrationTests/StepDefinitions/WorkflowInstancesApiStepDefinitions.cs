@@ -38,5 +38,15 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             var actualWorkflowInstance = JsonConvert.DeserializeObject<WorkflowInstance>(result);
             Assertions.AssertWorkflowInstance(DataHelper.WorkflowInstances, actualWorkflowInstance);
         }
+
+        [Then(@"Pagination is working correctly for the (.*) workflow instance")]
+        [Then(@"Pagination is working correctly for the (.*) workflow instances")]
+        public void ThenPaginationIsWorkingCorrectlyForTheWorkflowInstance(int count)
+        {
+            var request = ApiHelper.Request.RequestUri.Query;
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            var deserializedResult = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowInstance>>>(result);
+            Assertions.AssertPagination<PagedResponse<List<WorkflowInstance>>>(count, request, deserializedResult);
+        }
     }
 }
