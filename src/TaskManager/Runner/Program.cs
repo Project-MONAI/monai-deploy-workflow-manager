@@ -16,10 +16,15 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
+using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Database.Options;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
+using Monai.Deploy.WorkflowManager.TaskManager.Database;
+using Monai.Deploy.WorkflowManager.TaskManager.Services;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
 {
@@ -62,10 +67,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                 await Task.Delay(100).ConfigureAwait(false);
             }
             Console.CancelKeyPress += (sender, eventArgs) =>
-                    {
-                        eventArgs.Cancel = true;
-                        exitEvent.Set();
-                    };
+            {
+                eventArgs.Cancel = true;
+                exitEvent.Set();
+            };
 
             // await Task.Run(() =>
             // {
@@ -161,11 +166,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                     services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
                     services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
 
+                    // Mongo DB (Workflow Manager)
+                    services.Configure<TaskManagerDatabaseSettings>(hostContext.Configuration.GetSection("TaskManagerDatabase"));
+                    services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["TaskManagerDatabase:ConnectionString"]));
+                    services.AddTransient<ITaskDispatchEventRepository, TaskDispatchEventRepository>();
 
                     services.AddSingleton<TaskManager>();
                     services.AddSingleton<IArgoProvider, ArgoProvider>();
                     services.AddSingleton<IKubernetesProvider, KubernetesProvider>();
                     services.AddTransient<IFileSystem, FileSystem>();
+                    services.AddTransient<ITaskDispatchEventService, TaskDispatchEventService>();
 
                     services.AddHostedService<TaskManager>(p => p.GetRequiredService<TaskManager>());
                 });

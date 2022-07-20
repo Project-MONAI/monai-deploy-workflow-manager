@@ -2,19 +2,16 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.TaskManager.API;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager
+namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
 {
-    internal class TaskRunnerInstance
+    public class TaskDispatchEventInfo
     {
-        public ITaskPlugin Runner { get; }
         public TaskDispatchEvent Event { get; }
         public DateTime Started { get; }
 
-        public TaskRunnerInstance(ITaskPlugin runner, TaskDispatchEvent taskDispatchEvent)
+        public TaskDispatchEventInfo(TaskDispatchEvent taskDispatchEvent)
         {
-            Runner = runner;
             Event = taskDispatchEvent;
             Started = DateTime.UtcNow;
         }

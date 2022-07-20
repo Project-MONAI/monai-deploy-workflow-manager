@@ -1836,6 +1836,7 @@
           "Monai.Deploy.WorkflowManager.TaskManager": "1.0.0",
           "Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview": "1.0.0",
           "Monai.Deploy.WorkflowManager.TaskManager.Argo": "1.0.0",
+          "Monai.Deploy.WorkflowManager.TaskManager.Database": "1.0.0",
           "Monai.Deploy.WorkflowManager.TaskManager.TestPlugin": "1.0.0",
           "Newtonsoft.Json": "13.0.1",
           "Swashbuckle.AspNetCore": "6.3.0"
@@ -1941,10 +1942,10 @@
           "Monai.Deploy.Messaging": "0.1.3-rc0010",
           "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0010",
           "Monai.Deploy.Storage": "0.1.1",
-          "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
-          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0"
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
+          "Monai.Deploy.WorkflowManager.TaskManager.Database": "1.0.0"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.aideclinicalreview": {
@@ -1972,11 +1973,23 @@
           "Monai.Deploy.Messaging": "0.1.3-rc0010",
           "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0010",
           "Monai.Deploy.Storage": "0.1.1",
-          "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.ConditionsResolver": "1.0.0",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
           "Newtonsoft.Json": "13.0.1"
+        }
+      },
+      "monai.deploy.workflowmanager.taskmanager.database": {
+        "type": "Project",
+        "dependencies": {
+          "Ardalis.GuardClauses": "4.0.1",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
+          "Microsoft.Extensions.Options": "6.0.0",
+          "Monai.Deploy.Messaging": "0.1.3-rc0009",
+          "Monai.Deploy.WorkflowManager.Database": "1.0.0",
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
+          "MongoDB.Bson": "2.15.0",
+          "MongoDB.Driver": "2.15.0"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.testplugin": {
