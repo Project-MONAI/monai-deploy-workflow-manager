@@ -74,7 +74,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
         private async Task<KeyValuePair<string, string>> ConvertVariableStringToPath(Artifact artifact, string variableString, string workflowInstanceId, string payloadId, string bucketId)
         {
-            if (variableString.StartsWith("context.input"))
+            if (variableString.StartsWith("context.input.dicom"))
             {
                 return await _storageService.VerifyObjectExistsAsync(bucketId, new KeyValuePair<string, string>(artifact.Name, $"{payloadId}/dcm/"));
             }

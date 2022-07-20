@@ -10,9 +10,10 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 {
     public static class EventMapper
     {
-        public static TaskDispatchEvent ToTaskDispatchEvent(TaskExecution task, string workflowInstanceId, string correlationId, string payloadId, StorageServiceConfiguration configuration)
+        public static TaskDispatchEvent ToTaskDispatchEvent(TaskExecution task, string bucketName, string workflowInstanceId, string correlationId, string payloadId, StorageServiceConfiguration configuration)
         {
             Guard.Against.Null(task, nameof(task));
+            Guard.Against.NullOrWhiteSpace(bucketName, nameof(bucketName));
             Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
             Guard.Against.NullOrWhiteSpace(correlationId, nameof(correlationId));
             Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
@@ -28,7 +29,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                     {
                         SecuredConnection = bool.Parse(configuration.Settings["securedConnection"]),
                         Endpoint = configuration.Settings["endpoint"],
-                        Bucket = configuration.Settings["bucket"],
+                        Bucket = bucketName,
                         RelativeRootPath = inArtifact.Value,
                         Name = inArtifact.Key
                     });
@@ -49,7 +50,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 PayloadId = payloadId,
                 IntermediateStorage = new Messaging.Common.Storage
                 {
-                    Bucket = configuration.Settings["bucket"],
+                    Bucket = bucketName,
                     RelativeRootPath = $"{task.OutputDirectory}/tmp",
                     Endpoint = configuration.Settings["endpoint"],
                     Name = task.TaskId,

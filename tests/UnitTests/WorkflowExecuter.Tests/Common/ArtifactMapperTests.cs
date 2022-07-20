@@ -44,7 +44,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 new Artifact
                 {
                     Name = "dicomimage",
-                    Value = "{{ context.input }}"
+                    Value = "{{ context.input.dicom }}"
                 },
                 new Artifact
                 {
@@ -122,7 +122,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 new Artifact
                 {
                     Name = "dicomimage",
-                    Value = "{{ context.input }}",
+                    Value = "{{ context.input.dicom }}",
                     Mandatory = true
                 },
                 new Artifact
