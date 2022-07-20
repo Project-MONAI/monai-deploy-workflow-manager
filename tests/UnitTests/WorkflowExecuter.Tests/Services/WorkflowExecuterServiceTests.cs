@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -39,7 +38,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         private readonly Mock<IWorkflowInstanceService> _workflowInstanceService;
         private readonly Mock<IMessageBrokerPublisherService> _messageBrokerPublisherService;
         private readonly Mock<IStorageService> _storageService;
-        private readonly Mock<IDicomService> _dicomService;
         private readonly Mock<IPayloadService> _payloadService;
         private readonly Mock<IWorkflowService> _workflowService;
         private readonly IOptions<WorkflowManagerOptions> _configuration;
@@ -346,9 +344,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                                 {
                                     Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } }
                                 },
-                                TaskDestinations = new TaskDestination[]
-                                {
-                                }
+                                TaskDestinations = Array.Empty<TaskDestination>()
                             }
                         }
                     }
@@ -911,9 +907,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                             {
                                 Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } }
                             },
-                            TaskDestinations = new TaskDestination[]
-                            {
-                            }
+                            TaskDestinations = Array.Empty<TaskDestination>()
                         }
                     }
                 }
@@ -1006,9 +1000,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                             {
                                 Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } }
                             },
-                            TaskDestinations = new TaskDestination[]
-                            {
-                            }
+                            TaskDestinations = Array.Empty<TaskDestination>()
                         }
                     }
                 }
