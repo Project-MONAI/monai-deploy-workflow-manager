@@ -55,6 +55,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     AeTitle = "Multi_Req",
                     WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Created").WorkflowRevision.WorkflowId,
                     PayloadId = Helper.GetWorkflowRequestByName("Multi_WF_Created").WorkflowRequestMessage.PayloadId.ToString(),
+                    BucketId = "bucket1",
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
                     InputMetaData = new Dictionary<string, string>()
