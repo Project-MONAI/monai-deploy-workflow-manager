@@ -27,6 +27,44 @@ Scenario: Get all payloads from API - no payloads
     Then I will get a 200 response
     And I can see no Payloads are returned
 
+@PayloadPagination
+Scenario Outline: Get all payloads from API - Test pagination
+    Given I have an endpoint /payload/<pagination_query>
+    And I have <amount> Payloads
+    When I send a GET request
+    Then I will get a 200 response
+    And Pagination is working correctly for the <pagination_count> payloads
+    Examples:
+    | pagination_query           | amount | pagination_count |
+    | ?pageSize=1                | 11     | 11               |
+    | ?pageNumber=10             | 11     | 11               |
+    | ?pageNumber=1&pageSize=10  | 11     | 11               |
+    | ?pageSize=10&pageNumber=2  | 10     | 10               |
+    | ?pageNumber=2&pageSize=7   | 4      | 4                |
+    | ?pageNumber=3&pageSize=10  | 7      | 7                |
+    | ?pageNumber=1&pageSize=3   | 10     | 10               |
+    |                            | 11     | 11               |
+    |                            | 3      | 3                |
+    | ?pageNumber=3&pageSize=10  | 0      | 0                |
+    | ?pageNumber=1              | 0      | 0                |
+    |                            | 0      | 0                |
+    | ?pageNumber=1&pageSize=100 | 11     | 11               |
+
+@PayloadPagination
+Scenario Outline: Invalid pagination returns 400
+    Given I have an endpoint /payload/<pagination_query>
+    And I have 10 Payloads
+    When I send a GET request
+    Then I will get a 400 response
+    And I will recieve the error message <error_message>
+    Examples:
+    | pagination_query                           | error_message                                                                                                           |
+    | ?pageSize=NotANumber                       | The value 'NotANumber' is not valid for PageSize.                                                                       |
+    | ?pageNumber=NotANumber                     | The value 'NotANumber' is not valid for PageNumber.                                                                     |
+    | ?pageNumber=NotANumber&pageSize=NotANumber | The value 'NotANumber' is not valid for PageSize."],"PageNumber":["The value 'NotANumber' is not valid for PageNumber. |
+    | ?pageSize=10000000000000&pageNumber=2      | The value '10000000000000' is not valid for PageSize.                                                                   |
+    | ?pageNumber=10000000000000&pageSize=1      | The value '10000000000000' is not valid for PageNumber.                                                                 |
+
 @GetPayloadById
 Scenario Outline: Get payload by Id returns 200
     Given I have an endpoint /payload/c5c3636b-81dd-44a9-8c4b-71adec7d47b2

@@ -81,6 +81,190 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         PatientSex = null
                     }
                 }
+            },
+            new PayloadTestData()
+            {
+                Name = "Payload_basic_1",
+                Payload = new Payload()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    Bucket = "bucket_1",
+                    CalledAeTitle = "MIG",
+                    CallingAeTitle = "Basic_AE",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Workflows = new List<string> { Guid.NewGuid().ToString() },
+                    FileCount = 50,
+                    PatientDetails = new PatientDetails()
+                    {
+                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientId = Guid.NewGuid().ToString(),
+                        PatientName = "Jan Jones",
+                        PatientSex = "f"
+                    }
+                }
+            },
+            new PayloadTestData()
+            {
+                Name = "Payload_basic_2",
+                Payload = new Payload()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    Bucket = "bucket_1",
+                    CalledAeTitle = "MIG",
+                    CallingAeTitle = "Basic_AE",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Workflows = new List<string> { Guid.NewGuid().ToString() },
+                    FileCount = 50,
+                    PatientDetails = new PatientDetails()
+                    {
+                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientId = Guid.NewGuid().ToString(),
+                        PatientName = "Tim Apple",
+                        PatientSex = "m"
+                    }
+                }
+            },
+            new PayloadTestData()
+            {
+                Name = "Payload_basic_3",
+                Payload = new Payload()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    Bucket = "bucket_1",
+                    CalledAeTitle = "MIG",
+                    CallingAeTitle = "Basic_AE",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Workflows = new List<string> { Guid.NewGuid().ToString() },
+                    FileCount = 50,
+                    PatientDetails = new PatientDetails()
+                    {
+                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientId = Guid.NewGuid().ToString(),
+                        PatientName = "Foo Bar",
+                        PatientSex = "N/A"
+                    }
+                }
+            },
+            new PayloadTestData()
+            {
+                Name = "Payload_basic_4",
+                Payload = new Payload()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    Bucket = "bucket_1",
+                    CalledAeTitle = "MIG",
+                    CallingAeTitle = "Basic_AE",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Workflows = new List<string> { Guid.NewGuid().ToString() },
+                    FileCount = 50,
+                    PatientDetails = new PatientDetails()
+                    {
+                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientId = Guid.NewGuid().ToString(),
+                        PatientName = "Jamie",
+                        PatientSex = "male"
+                    }
+                }
+            },
+            new PayloadTestData()
+            {
+                Name = "Payload_basic_5",
+                Payload = new Payload()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    Bucket = "bucket_1",
+                    CalledAeTitle = "MIG",
+                    CallingAeTitle = "Basic_AE",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Workflows = new List<string> { Guid.NewGuid().ToString() },
+                    FileCount = 50,
+                    PatientDetails = new PatientDetails()
+                    {
+                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientId = Guid.NewGuid().ToString(),
+                        PatientName = "Jack Johnson",
+                        PatientSex = "non-binary"
+                    }
+                }
+            },
+            new PayloadTestData()
+            {
+                Name = "Payload_basic_6",
+                Payload = new Payload()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    Bucket = "bucket_1",
+                    CalledAeTitle = "MIG",
+                    CallingAeTitle = "Basic_AE",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Workflows = new List<string> { Guid.NewGuid().ToString() },
+                    FileCount = 50,
+                    PatientDetails = new PatientDetails()
+                    {
+                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientId = Guid.NewGuid().ToString(),
+                        PatientName = "Linda Croft",
+                        PatientSex = "f"
+                    }
+                }
+            },
+            new PayloadTestData()
+            {
+                Name = "Payload_basic_7",
+                Payload = new Payload()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    Bucket = "bucket_1",
+                    CalledAeTitle = "MIG",
+                    CallingAeTitle = "Basic_AE",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Workflows = new List<string> { Guid.NewGuid().ToString() },
+                    FileCount = 50,
+                    PatientDetails = new PatientDetails()
+                    {
+                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientId = Guid.NewGuid().ToString(),
+                        PatientName = "Donald Jefferson",
+                        PatientSex = "male"
+                    }
+                }
+            },
+            new PayloadTestData()
+            {
+                Name = "Payload_basic_8",
+                Payload = new Payload()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    Bucket = "bucket_1",
+                    CalledAeTitle = "MIG",
+                    CallingAeTitle = "Basic_AE",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Workflows = new List<string> { Guid.NewGuid().ToString() },
+                    FileCount = 50,
+                    PatientDetails = new PatientDetails()
+                    {
+                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientId = Guid.NewGuid().ToString(),
+                        PatientName = "Mike Mcgee",
+                        PatientSex = "male"
+                    }
+                }
             }
         };
     }

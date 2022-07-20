@@ -40,6 +40,18 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             _outputHelper.WriteLine($"Seeded payload with name={name} into Mongo");
         }
 
+        [Given(@"I have (.*) Payloads")]
+        public void GivenIHaveWorkflowInstances(int count)
+        {
+            _outputHelper.WriteLine($"Retrieving {count} payloads");
+            foreach (int index in Enumerable.Range(0, count))
+            {
+                _outputHelper.WriteLine($"Retrieving payload with index={index}");
+                MongoClient.CreatePayloadDocument(DataHelper.GetPayloadsTestDataByIndex(index));
+                _outputHelper.WriteLine("Retrieved payload");
+            }
+        }
+
         [Then(@"I can see expected Payloads are returned")]
         public void ThenICanSeeExpectedPayloadsAreReturned()
         {
@@ -47,6 +59,16 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
 
             var actualPayloads = JsonConvert.DeserializeObject<PagedResponse<List<Payload>>>(result);
             Assertions.AssertPayloadList(DataHelper.Payload, actualPayloads.Data);
+        }
+
+        [Then(@"Pagination is working correctly for the (.*) payload")]
+        [Then(@"Pagination is working correctly for the (.*) payloads")]
+        public void ThenPaginationIsWorkingCorrectlyForTheWorkflow(int count)
+        {
+            var request = ApiHelper.Request.RequestUri.Query;
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            var deserializedResult = JsonConvert.DeserializeObject<PagedResponse<List<Payload>>>(result);
+            Assertions.AssertPagination<PagedResponse<List<Payload>>>(count, request, deserializedResult);
         }
 
         [Then(@"I can see expected Payload is returned")]
