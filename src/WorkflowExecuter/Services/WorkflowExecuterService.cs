@@ -319,17 +319,17 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (exportDestinations is null || !exportDestinations.Any())
             {
-                return new string[] { };
+                return Array.Empty<string>();
             }
 
             if (!task.InputArtifacts.Any())
             {
                 _logger.ExportFilesNotFound(task.TaskId, workflowInstance.Id);
 
-                return new string[] { };
+                return Array.Empty<string>();
             }
 
-            return new List<string>(task.InputArtifacts.Values).ToArray() ?? new string[] { };
+            return new List<string>(task.InputArtifacts.Values).ToArray();
         }
 
         private async Task<bool> DispatchDicomExport(WorkflowInstance workflowInstance, TaskExecution task, string[] exportDestinations, string[] artifactValues, string correlationId)

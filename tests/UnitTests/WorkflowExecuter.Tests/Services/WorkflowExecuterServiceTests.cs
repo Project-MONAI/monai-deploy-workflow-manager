@@ -857,6 +857,197 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         }
 
         [Fact]
+        public async Task ProcessTaskUpdate_ValidTaskUpdateEventWithExportTaskDestination_ReturnsTrue()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var taskId = Guid.NewGuid().ToString();
+
+            var updateEvent = new TaskUpdateEvent
+            {
+                WorkflowInstanceId = workflowInstanceId,
+                TaskId = "pizza",
+                ExecutionId = Guid.NewGuid().ToString(),
+                Status = TaskExecutionStatus.Succeeded,
+                Reason = FailureReason.None,
+                Message = "This is a message",
+                Metadata = new Dictionary<string, object>(),
+                CorrelationId = Guid.NewGuid().ToString()
+            };
+
+            var workflowId = Guid.NewGuid().ToString();
+
+            var workflow = new WorkflowRevision
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = workflowId,
+                Revision = 1,
+                Workflow = new Workflow
+                {
+                    Name = "Workflowname2",
+                    Description = "Workflowdesc2",
+                    Version = "1",
+                    InformaticsGateway = new InformaticsGateway
+                    {
+                        AeTitle = "aetitle",
+                        ExportDestinations = new string[] { "PROD_PACS" }
+                    },
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject {
+                            Id = "pizza",
+                            Type = "type",
+                            Description = "taskdesc",
+                            TaskDestinations = new TaskDestination[]
+                            {
+                                new TaskDestination
+                                {
+                                    Name = "exporttaskid"
+                                },
+                            }
+                        },
+                        new TaskObject {
+                            Id = "exporttaskid",
+                            Type = "export",
+                            Description = "taskdesc",
+                            Artifacts = new ArtifactMap
+                            {
+                                Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } }
+                            },
+                            TaskDestinations = new TaskDestination[]
+                            {
+                            }
+                        }
+                    }
+                }
+            };
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId,
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = "pizza",
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+            };
+
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Payload { PatientDetails = new PatientDetails { } });
+            _artifactMapper.Setup(a => a.ConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new Dictionary<string, string> { { "dicomexport", "/dcm" } });
+
+            var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
+
+            _messageBrokerPublisherService.Verify(w => w.Publish($"{_configuration.Value.Messaging.Topics.ExportRequestPrefix}.{_configuration.Value.Messaging.DicomAgents.DicomWebAgentName}", It.IsAny<Message>()), Times.Exactly(1));
+
+            response.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ProcessTaskUpdate_ValidTaskUpdateEventWithExportTaskDestination_NoExportDestinations_DoesNotDispatchExport()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var taskId = Guid.NewGuid().ToString();
+
+            var updateEvent = new TaskUpdateEvent
+            {
+                WorkflowInstanceId = workflowInstanceId,
+                TaskId = "pizza",
+                ExecutionId = Guid.NewGuid().ToString(),
+                Status = TaskExecutionStatus.Succeeded,
+                Reason = FailureReason.None,
+                Message = "This is a message",
+                Metadata = new Dictionary<string, object>(),
+                CorrelationId = Guid.NewGuid().ToString()
+            };
+
+            var workflowId = Guid.NewGuid().ToString();
+
+            var workflow = new WorkflowRevision
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = workflowId,
+                Revision = 1,
+                Workflow = new Workflow
+                {
+                    Name = "Workflowname2",
+                    Description = "Workflowdesc2",
+                    Version = "1",
+                    InformaticsGateway = new InformaticsGateway
+                    {
+                        AeTitle = "aetitle"
+                    },
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject {
+                            Id = "pizza",
+                            Type = "type",
+                            Description = "taskdesc",
+                            TaskDestinations = new TaskDestination[]
+                            {
+                                new TaskDestination
+                                {
+                                    Name = "exporttaskid"
+                                },
+                            }
+                        },
+                        new TaskObject {
+                            Id = "exporttaskid",
+                            Type = "export",
+                            Description = "taskdesc",
+                            Artifacts = new ArtifactMap
+                            {
+                                Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } }
+                            },
+                            TaskDestinations = new TaskDestination[]
+                            {
+                            }
+                        }
+                    }
+                }
+            };
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId,
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = "pizza",
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+            };
+
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Payload { PatientDetails = new PatientDetails { } });
+            _artifactMapper.Setup(a => a.ConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new Dictionary<string, string> { { "dicomexport", "/dcm" } });
+
+            var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
+
+            _messageBrokerPublisherService.Verify(w => w.Publish($"{_configuration.Value.Messaging.Topics.ExportRequestPrefix}.{_configuration.Value.Messaging.DicomAgents.DicomWebAgentName}", It.IsAny<Message>()), Times.Exactly(0));
+
+            response.Should().BeTrue();
+        }
+
+        [Fact]
         public async Task ProcessTaskUpdate_ValidTaskUpdateEventNonSuccessStatus_ReturnsTrue()
         {
             var workflowInstanceId = Guid.NewGuid().ToString();
