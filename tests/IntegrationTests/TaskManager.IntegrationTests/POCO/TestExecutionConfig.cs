@@ -16,7 +16,7 @@
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 {
-    static class TestExecutionConfig
+    internal static class TestExecutionConfig
     {
         public static class RabbitConfig
         {
@@ -43,6 +43,21 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             public static string TaskUpdateQueue { get; set; }
 
             public static string ClinicalReviewQueue { get; set; }
+        }
+
+        public static class MongoConfig
+        {
+            public static string ConnectionString { get; set; }
+
+            public static int Port { get; set; }
+
+            public static string User { get; set; }
+
+            public static string Password { get; set; }
+
+            public static string Database { get; set; }
+
+            public static string TaskDispatchEventCollection { get; set; }
         }
 
         public static class MinioConfig

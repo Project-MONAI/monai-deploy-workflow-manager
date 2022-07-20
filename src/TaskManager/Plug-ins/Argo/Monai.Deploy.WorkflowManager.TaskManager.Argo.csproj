@@ -29,11 +29,11 @@
   <ItemGroup>
     <PackageReference Include="IdentityModel.OidcClient" Version="5.0.0" />
     <PackageReference Include="KubernetesClient" Version="7.2.19" />
-    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="6.0.4">
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="6.0.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-   <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.3-rc0010" />
+    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.0-rc0012" />
     <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.3-rc0010" />
     <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.0-rc0009" />
     <PackageReference Include="Monai.Deploy.Storage" Version="0.2.0-rc0009" />

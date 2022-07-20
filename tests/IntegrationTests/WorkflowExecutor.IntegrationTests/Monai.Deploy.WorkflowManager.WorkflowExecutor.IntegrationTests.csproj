@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   ~ Copyright 2022 MONAI Consortium
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,24 +32,24 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.7" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
     <PackageReference Include="Minio" Version="4.0.4" />
     <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.3-rc0010" />
-    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.0-rc0009" />
-    <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
+    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.0-rc0012" />
+    <PackageReference Include="MongoDB.Driver" Version="2.17.0" />
     <PackageReference Include="Polly" Version="7.2.3" />
     <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
     <PackageReference Include="Snapshooter.NUnit" Version="0.7.1" />
     <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
-    <PackageReference Include="SpecFlow.NUnit" Version="3.9.40" />
-    <PackageReference Include="nunit" Version="3.13.2" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.1.0" />
-    <PackageReference Include="FluentAssertions" Version="6.2.0" />
+    <PackageReference Include="SpecFlow.NUnit" Version="3.9.74" />
+    <PackageReference Include="nunit" Version="3.13.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+    <PackageReference Include="FluentAssertions" Version="6.7.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
@@ -72,7 +72,7 @@
 
   <ItemGroup>
     <None Update="appsettings.Test.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DICOMs\no_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
