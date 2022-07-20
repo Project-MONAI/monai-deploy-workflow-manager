@@ -185,7 +185,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             actualWorkflowInstance.Should().BeEquivalentTo(expectedWorkflowInstance, options => options.Excluding(x => x.StartTime));
         }
 
-        private void AssertDataCount(ICollection Data, int pageNumberQuery, int pageSizeQuery, int count)
+        private static void AssertDataCount(ICollection Data, int pageNumberQuery, int pageSizeQuery, int count)
         {
             if ((pageNumberQuery * pageSizeQuery) > count)
             {
@@ -205,7 +205,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
         }
 
-        private void AssertTotalPages(object TotalPages, int count, int pageSizeQuery)
+        private static void AssertTotalPages(object TotalPages, int count, int pageSizeQuery)
         {
             int remainder;
             int quotient = Math.DivRem(count, pageSizeQuery, out remainder);
