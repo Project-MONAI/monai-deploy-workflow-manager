@@ -75,7 +75,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 
             _eventPayloadReceiverService.ReceiveWorkflowPayload(message);
 
-            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), true), Times.Once());
+            _mockMessageBrokerSubscriberService.Verify(p => p.RequeueWithDelay(It.IsAny<Message>()), Times.Once());
         }
 
         [Test]
@@ -155,7 +155,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
             _mockEventPayloadValidator.Verify(x => x.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>()), Times.Once);
             _mockEventPayloadValidator.VerifyNoOtherCalls();
 
-            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), It.IsAny<bool>()), Times.Once());
+            _mockMessageBrokerSubscriberService.Verify(p => p.RequeueWithDelay(It.IsAny<Message>()), Times.Once());
             _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
         }
 
@@ -175,7 +175,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
             _mockEventPayloadValidator.Verify(x => x.ValidateTaskUpdate(It.IsAny<TaskUpdateEvent>()), Times.Once);
             _mockEventPayloadValidator.VerifyNoOtherCalls();
 
-            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), It.IsAny<bool>()), Times.Once());
+            _mockMessageBrokerSubscriberService.Verify(p => p.RequeueWithDelay(It.IsAny<Message>()), Times.Once());
             _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
         }
 
@@ -239,7 +239,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
             _mockEventPayloadValidator.Verify(x => x.ValidateExportComplete(It.IsAny<ExportCompleteEvent>()), Times.Once);
             _mockEventPayloadValidator.VerifyNoOtherCalls();
 
-            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), It.IsAny<bool>()), Times.Once());
+            _mockMessageBrokerSubscriberService.Verify(p => p.RequeueWithDelay(It.IsAny<Message>()), Times.Once());
             _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
         }
 
@@ -259,7 +259,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
             _mockEventPayloadValidator.Verify(x => x.ValidateExportComplete(It.IsAny<ExportCompleteEvent>()), Times.Once);
             _mockEventPayloadValidator.VerifyNoOtherCalls();
 
-            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), It.IsAny<bool>()), Times.Once());
+            _mockMessageBrokerSubscriberService.Verify(p => p.RequeueWithDelay(It.IsAny<Message>()), Times.Once());
             _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
         }
 

@@ -58,7 +58,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 if (payload is null)
                 {
                     Logger.EventRejectedRequeue(message.Message.MessageId);
-                    _messageSubscriber.Reject(message.Message, true);
+                    await _messageSubscriber.RequeueWithDelay(message.Message);
 
                     return;
                 }
@@ -66,11 +66,10 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 if (!await WorkflowExecuterService.ProcessPayload(requestEvent, payload))
                 {
                     Logger.EventRejectedRequeue(message.Message.MessageId);
-                    _messageSubscriber.Reject(message.Message, true);
+                    await _messageSubscriber.RequeueWithDelay(message.Message);
 
                     return;
                 }
-
 
                 _messageSubscriber.Acknowledge(message.Message);
             }
@@ -79,7 +78,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 Logger.Exception("Failed to serialize WorkflowRequestMessage", e);
                 Logger.EventRejectedRequeue(message.Message.MessageId);
 
-                _messageSubscriber.Reject(message.Message, true);
+                await _messageSubscriber.RequeueWithDelay(message.Message);
             }
         }
 
@@ -101,7 +100,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 {
                     Logger.EventRejectedRequeue(message.Message.MessageId);
 
-                    _messageSubscriber.Reject(message.Message, true);
+                    await _messageSubscriber.RequeueWithDelay(message.Message);
 
                     return;
                 }
@@ -113,7 +112,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 Logger.Exception($"Failed to serialize {nameof(TaskUpdateEvent)}", e);
                 Logger.EventRejectedRequeue(message.Message.MessageId);
 
-                _messageSubscriber.Reject(message.Message, true);
+                await _messageSubscriber.RequeueWithDelay(message.Message);
             }
         }
 
@@ -135,7 +134,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 {
                     Logger.EventRejectedRequeue(message.Message.MessageId);
 
-                    _messageSubscriber.Reject(message.Message, true);
+                    await _messageSubscriber.RequeueWithDelay(message.Message);
 
                     return;
                 }
@@ -147,7 +146,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 Logger.Exception($"Failed to serialize {nameof(ExportCompleteEvent)}", e);
                 Logger.EventRejectedRequeue(message.Message.MessageId);
 
-                _messageSubscriber.Reject(message.Message, true);
+                await _messageSubscriber.RequeueWithDelay(message.Message);
             }
         }
     }
