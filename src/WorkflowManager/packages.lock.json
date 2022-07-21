@@ -138,9 +138,9 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.2-mes-executuion-s0011, )",
-        "resolved": "0.1.2-mes-executuion-s0011",
-        "contentHash": "TAUPi9ptCEwLW8Kt5NZLZ+TJInJRvlXgMbLWDMIUUFV6wrc/E4BeLwaV1clip4dnWV1qHbivM+zbzPScqRaIXQ==",
+        "requested": "[0.1.3-rc0010, )",
+        "resolved": "0.1.3-rc0010",
+        "contentHash": "a/PM8627wlALmYqqB1Mf1L+tBZbPQQSRgEJuGqmrZaKRqa6v614zq+67A4ZPzwzailWhkl3h1rVzuf8S1dyPAg==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -153,11 +153,11 @@
       },
       "Monai.Deploy.Messaging.RabbitMQ": {
         "type": "Direct",
-        "requested": "[0.1.2-mes-executuion-s0011, )",
-        "resolved": "0.1.2-mes-executuion-s0011",
-        "contentHash": "1PbMJKxXj2+/AfjboGmvMXYd94mdj0Vyts6DC5maH3ETyaFC3gz1UPQAv5luhY27D7YFfD0Wtw5m1QUV77wOQg==",
+        "requested": "[0.1.3-rc0010, )",
+        "resolved": "0.1.3-rc0010",
+        "contentHash": "kbyUmtm3j1/Le4c34W6rIDZ01vb9n+DbmhwhxZ+WiyNXJ0JMubZ/2Vto7NrQSXhSoMMOgXAPA606GKpcaRvVSQ==",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.2-mes-executuion-s0011"
+          "Monai.Deploy.Messaging": "0.1.3-rc0010"
         }
       },
       "Newtonsoft.Json": {
@@ -1394,8 +1394,8 @@
         "dependencies": {
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.2-mes-executuion-s0011",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2-mes-executuion-s0011",
+          "Monai.Deploy.Messaging": "0.1.3-rc0010",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0010",
           "Monai.Deploy.Storage": "0.1.1",
           "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Newtonsoft.Json": "13.0.1",
@@ -1407,8 +1407,8 @@
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.167",
           "Microsoft.Extensions.Configuration": "6.0.1",
-          "Monai.Deploy.Messaging": "0.1.2-mes-executuion-s0011",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2-mes-executuion-s0011",
+          "Monai.Deploy.Messaging": "0.1.3-rc0010",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0010",
           "MongoDB.Bson": "2.15.0",
           "Newtonsoft.Json": "13.0.1"
         }
@@ -1419,8 +1419,8 @@
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.2-mes-executuion-s0011",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2-mes-executuion-s0011",
+          "Monai.Deploy.Messaging": "0.1.3-rc0010",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0010",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
           "MongoDB.Bson": "2.15.0",
@@ -1439,8 +1439,8 @@
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.2-mes-executuion-s0011",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2-mes-executuion-s0011",
+          "Monai.Deploy.Messaging": "0.1.3-rc0010",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0010",
           "Monai.Deploy.Storage": "0.1.1",
           "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
@@ -1466,8 +1466,8 @@
           "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.2-mes-executuion-s0011",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2-mes-executuion-s0011",
+          "Monai.Deploy.Messaging": "0.1.3-rc0010",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0010",
           "Monai.Deploy.Storage": "0.1.1",
           "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
@@ -1478,7 +1478,7 @@
       "monai.deploy.workflowmanager.taskmanager.aideclinicalreview": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2-mes-executuion-s0011",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0010",
           "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0"
         }
@@ -1486,8 +1486,8 @@
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.2-mes-executuion-s0011",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2-mes-executuion-s0011",
+          "Monai.Deploy.Messaging": "0.1.3-rc0010",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0010",
           "Monai.Deploy.Storage": "0.1.1",
           "Monai.Deploy.Storage.MinIO": "0.1.0"
         }
@@ -1497,8 +1497,8 @@
         "dependencies": {
           "IdentityModel.OidcClient": "5.0.0",
           "KubernetesClient": "7.2.19",
-          "Monai.Deploy.Messaging": "0.1.2-mes-executuion-s0011",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2-mes-executuion-s0011",
+          "Monai.Deploy.Messaging": "0.1.3-rc0010",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0010",
           "Monai.Deploy.Storage": "0.1.1",
           "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
@@ -1518,8 +1518,8 @@
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.167",
           "Ardalis.GuardClauses": "4.0.1",
-          "Monai.Deploy.Messaging": "0.1.2-mes-executuion-s0011",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2-mes-executuion-s0011",
+          "Monai.Deploy.Messaging": "0.1.3-rc0010",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0010",
           "Monai.Deploy.Storage": "0.1.1",
           "Monai.Deploy.Storage.MinIO": "0.1.0",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
