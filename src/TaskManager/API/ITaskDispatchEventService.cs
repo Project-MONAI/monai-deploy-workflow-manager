@@ -11,8 +11,8 @@ namespace Monai.Deploy.TaskManager.API
         /// Creates a task dispatch event in the database.
         /// </summary>
         /// <param name="taskDispatchEvent">A TaskDispatchEventInfo to create.</param>
-        /// <returns>True if task dispatch event created; false otherwise.</returns>
-        Task<bool> CreateAsync(TaskDispatchEventInfo taskDispatchEvent);
+        /// <returns>Returns the created TaskDispatchEventInfo.</returns>
+        Task<TaskDispatchEventInfo?> CreateAsync(TaskDispatchEventInfo taskDispatchEvent);
 
         /// <summary>
         /// Retrieves a task dispatch event by the task execution ID.

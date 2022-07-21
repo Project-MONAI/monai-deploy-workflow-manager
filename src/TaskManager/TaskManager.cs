@@ -11,12 +11,14 @@ using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.API;
+using Monai.Deploy.Storage.S3Policy.Policies;
 using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Rest;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
+using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Monai.Deploy.WorkflowManager.TaskManager.Logging;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager
@@ -165,77 +167,115 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             ITaskPlugin? taskRunner = null;
 
-            string? pluginAssembly;
             try
             {
-                pluginAssembly = _options.Value.TaskManager.PluginAssemblyMappings[taskExecution.Event.TaskPluginType];
-            }
-            catch (MessageValidationException ex)
-            {
-                _logger.InvalidMessageReceived(message.MessageId, message.CorrelationId, ex);
-                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
-                return;
-            }
-
-            try
-            {
-                taskRunner = typeof(ITaskPlugin).CreateInstance<ITaskPlugin>(serviceProvider: _scope.ServiceProvider, typeString: pluginAssembly, _serviceScopeFactory, taskExecution.Event);
-            }
-            catch (Exception ex)
-            {
-                _logger.UnsupportedRunner(pluginAssembly, ex);
-                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
-                taskRunner?.Dispose();
-                return;
-            }
-
-            string? metadataAssembly = null;
-            JsonMessage<TaskUpdateEvent>? updateMessage;
-            try
-            {
-                if (_options.Value.TaskManager.MetadataAssemblyMappings.TryGetValue(taskExecution.Event.TaskPluginType, out var metadataMappingValue))
+                string? pluginAssembly;
+                try
                 {
-                    metadataAssembly = metadataMappingValue;
+                    pluginAssembly = _options.Value.TaskManager.PluginAssemblyMappings[taskExecution.Event.TaskPluginType];
                 }
-                var executionStatus = await taskRunner.GetStatus(message.Body.Identity, _cancellationTokenSource.Token).ConfigureAwait(false);
-                updateMessage = GenerateUpdateEventMessage(message, message.Body.ExecutionId, message.Body.WorkflowInstanceId, message.Body.TaskId, executionStatus);
-                updateMessage.Body.Metadata.Add(Strings.JobIdentity, message.Body.Identity);
-                foreach (var item in message.Body.Metadata)
-                    updateMessage.Body.Metadata.Add(item.Key, item.Value);
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorExecutingTask(ex);
-                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
-
-                return;
-            }
-
-            try
-            {
-                var metadata = await RetrievePluginMetadata(message, runner.Event, metadataAssembly).ConfigureAwait(false);
-
-                if (metadata is not null)
+                catch (MessageValidationException ex)
                 {
-                    foreach (var item in metadata)
-                    {
+                    _logger.InvalidMessageReceived(message.MessageId, message.CorrelationId, ex);
+                    await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                    return;
+                }
+
+                try
+                {
+                    taskRunner = typeof(ITaskPlugin).CreateInstance<ITaskPlugin>(serviceProvider: _scope.ServiceProvider, typeString: pluginAssembly, _serviceScopeFactory, taskExecution.Event);
+                }
+                catch (Exception ex)
+                {
+                    _logger.UnsupportedRunner(pluginAssembly, ex);
+                    await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                    return;
+                }
+
+                JsonMessage<TaskUpdateEvent>? updateMessage;
+                try
+                {
+                    var executionStatus = await taskRunner.GetStatus(message.Body.Identity, _cancellationTokenSource.Token).ConfigureAwait(false);
+                    updateMessage = GenerateUpdateEventMessage(message, message.Body.ExecutionId, message.Body.WorkflowInstanceId, message.Body.TaskId, executionStatus);
+                    updateMessage.Body.Metadata.Add(Strings.JobIdentity, message.Body.Identity);
+                    foreach (var item in message.Body.Metadata)
                         updateMessage.Body.Metadata.Add(item.Key, item.Value);
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorExecutingTask(ex);
+                    await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                    return;
+                }
+
+                try
+                {
+                    if (_options.Value.TaskManager.MetadataAssemblyMappings.TryGetValue(taskExecution.Event.TaskPluginType, out var metadataMappingValue))
+                    {
+                        var metadata = await RetrievePluginMetadata(message, taskExecution.Event, metadataMappingValue).ConfigureAwait(false);
+
+                        if (metadata is not null)
+                        {
+                            foreach (var item in metadata)
+                            {
+                                updateMessage.Body.Metadata.Add(item.Key, item.Value);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _logger.MetadataPluginUndefined(taskExecution.Event.TaskPluginType);
                     }
                 }
+                catch (Exception ex)
+                {
+                    _logger.MetadataRetrievalFailed(ex);
+                    await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                    return;
+                }
+
+                AcknowledgeMessage(message);
+                await SendUpdateEvent(updateMessage).ConfigureAwait(false);
+
+                Interlocked.Decrement(ref _activeJobs);
+                await RemoveEventFromDatabase(message.Body.ExecutionId).ConfigureAwait(false);
+                await RemoveUserAccounts(taskExecution).ConfigureAwait(false);
+            }
+            finally
+            {
+                taskRunner?.Dispose();
+            }
+        }
+
+        private async Task RemoveUserAccounts(TaskDispatchEventInfo taskDispatchEventInfo)
+        {
+            Guard.Against.Null(taskDispatchEventInfo, nameof(taskDispatchEventInfo));
+
+            foreach (var user in taskDispatchEventInfo.UserAccounts)
+            {
+                try
+                {
+                    await _storageAdminService.RemoveUserAsync(user);
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorRemovingStorageUserAccount(user, ex);
+                }
+            }
+        }
+
+        private async Task RemoveEventFromDatabase(string executionId)
+        {
+            Guard.Against.NullOrWhiteSpace(executionId, nameof(executionId));
+
+            try
+            {
+                await _taskDispatchEventService.RemoveAsync(executionId).ConfigureAwait(false); ;
             }
             catch (Exception ex)
             {
-                _logger.MetadataRetrievalFailed(ex);
-                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
-
-                return;
+                _logger.ErrorRemovingDispatchEventFromDatabase(executionId, ex);
             }
-
-            AcknowledgeMessage(message);
-            await SendUpdateEvent(updateMessage).ConfigureAwait(false);
-
-            Interlocked.Decrement(ref _activeJobs);
-            await _taskDispatchEventService.RemoveAsync(message.Body.ExecutionId);
         }
 
         private async Task HandleDispatchTask(JsonMessage<TaskDispatchEvent> message)
@@ -264,13 +304,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 return;
             }
 
+            var eventInfo = new API.Models.TaskDispatchEventInfo(message.Body);
             try
             {
                 if (string.Equals(message.Body.TaskPluginType,
                                   PluginStrings.Argo,
                                   StringComparison.InvariantCultureIgnoreCase))
                 {
-                    await AddCredentialsToPlugin(message).ConfigureAwait(false);
+                    eventInfo.AddUserAccount(await AddCredentialsToPlugin(message).ConfigureAwait(false));
                 }
                 else
                 {
@@ -304,7 +345,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             try
             {
                 var executionStatus = await taskRunner.ExecuteTask(_cancellationTokenSource.Token).ConfigureAwait(false);
-                await _taskDispatchEventService.CreateAsync(new API.Models.TaskDispatchEventInfo(message.Body)).ConfigureAwait(false);
+                await _taskDispatchEventService.CreateAsync(eventInfo).ConfigureAwait(false);
                 var updateMessage = GenerateUpdateEventMessage(message, message.Body.ExecutionId, message.Body.WorkflowInstanceId, message.Body.TaskId, executionStatus);
                 await SendUpdateEvent(updateMessage).ConfigureAwait(false);
                 AcknowledgeMessage(message);
@@ -324,7 +365,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
 
             IMetadataRepository? metadataRepository = null;
-
             try
             {
                 metadataRepository = typeof(IMetadataRepository).CreateInstance<IMetadataRepository>(serviceProvider: _scope.ServiceProvider, typeString: metadataAssembly, _serviceScopeFactory, dispatchEvent, message.Body);
@@ -340,26 +380,21 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             return await metadataRepository.RetrieveMetadata().ConfigureAwait(false);
         }
 
-        private async Task AddCredentialsToPlugin(JsonMessage<TaskDispatchEvent> message)
+        private async Task<string> AddCredentialsToPlugin(JsonMessage<TaskDispatchEvent> message)
         {
             var storages = new List<Messaging.Common.Storage>();
             storages.Add(message.Body.IntermediateStorage);
             storages.AddRange(message.Body.Outputs);
             storages.AddRange(message.Body.Inputs);
 
-            var storageBuckets = storages.Select(storage => storage.Bucket)
-                .Distinct()
-                .ToArray();
+            var policyRequests = storages.Select(storage => new PolicyRequest(storage.Bucket, storage.RelativeRootPath)).ToArray();
 
-            var creds = await _storageAdminService.CreateUserAsync(
-                $"TM{Guid.NewGuid()}",
-                 AccessPermissions.Read,
-                 storageBuckets);
+            var username = $"TM{Guid.NewGuid()}";
+            var creds = await _storageAdminService.CreateUserAsync(username, policyRequests);
 
             if (creds is null)
             {
-                _logger.LogError("Credentials not generated");
-                return;
+                throw new TaskManagerException("Credentials not generated");
             }
 
             foreach (var storage in storages)
@@ -370,6 +405,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                     AccessToken = creds.SecretAccessKey
                 };
             }
+
+            return username;
         }
 
         private async Task PopulateTemporaryStorageCredentials(params Messaging.Common.Storage[] storages)

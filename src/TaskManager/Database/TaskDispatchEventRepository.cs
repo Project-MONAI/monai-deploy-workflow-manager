@@ -31,21 +31,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
             _taskDispatchEventCollection = mongoDatabase.GetCollection<TaskDispatchEventInfo>(databaseSettings.Value.TaskDispatchEventCollectionName);
         }
 
-        public async Task<bool> CreateAsync(TaskDispatchEventInfo taskDispatchEventInfo)
+        public async Task<TaskDispatchEventInfo?> CreateAsync(TaskDispatchEventInfo taskDispatchEventInfo)
         {
             Guard.Against.Null(taskDispatchEventInfo, nameof(taskDispatchEventInfo));
 
             try
             {
                 await _taskDispatchEventCollection.InsertOneAsync(taskDispatchEventInfo).ConfigureAwait(false);
-
-                return true;
+                return await GetByTaskExecutionIdAsync(taskDispatchEventInfo.Event.ExecutionId).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 _logger.DatabaseException(nameof(CreateAsync), e);
-
-                return false;
+                return default;
             }
         }
 

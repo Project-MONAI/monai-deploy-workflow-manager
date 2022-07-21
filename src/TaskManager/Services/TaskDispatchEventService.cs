@@ -22,7 +22,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<bool> CreateAsync(TaskDispatchEventInfo taskDispatchEvent)
+        public async Task<TaskDispatchEventInfo?> CreateAsync(TaskDispatchEventInfo taskDispatchEvent)
         {
             Guard.Against.Null(taskDispatchEvent, nameof(taskDispatchEvent));
 
