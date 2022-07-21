@@ -1352,6 +1352,42 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Artifact_Workflow_1",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Artifact 1",
+                        Description = "Artifact 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "input1", Value = "{{ context.input.dicom }}", Mandatory=false },
+                                    },
+                                }
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Artifact_AE"
+                        }
+                    }
+                }
+            },
         };
     }
 }

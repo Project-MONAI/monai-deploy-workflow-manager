@@ -79,3 +79,11 @@ Scenario: Publish a valid workflow request with an exiting Workflow Instance wit
     When I publish a Workflow Request Message Multi_WF_Dispatched
     Then I can see an additional Workflow Instance is not created
     And A Task Dispatch event is not published
+
+@TaskArtifacts
+Scenario: WorkflowRequestEvent triggers workflow with context.input.dicom
+    Given I have a clinical workflow Artifact_Workflow_1
+    And I have a bucket in MinIO bucket1
+    And I have a payload full_patient_metadata in the bucket bucket1 with payload id 3d22bf41-eacd-4e43-9161-d00735b31a2e
+    When I publish a Workflow Request Message Artifact_AeTitle_Request_1
+    Then I can see 1 Workflow Instance is created
