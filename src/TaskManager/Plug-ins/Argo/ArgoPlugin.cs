@@ -148,7 +148,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 var stats = GetExecutuionStats(workflow);
                 if (stats is null)
                 {
-                    stats = new Dictionary<string, object?>();
+                    stats = new Dictionary<string, string>();
                 }
                 if (Strings.ArgoFailurePhases.Contains(workflow.Status.Phase, StringComparer.OrdinalIgnoreCase))
                 {
@@ -192,19 +192,39 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             }
         }
 
-        private Dictionary<string, object?> GetExecutuionStats(Workflow workflow)
+        private Dictionary<string, string> GetExecutuionStats(Workflow workflow)
         {
             Guard.Against.Null(workflow);
 
-            var stats = new Dictionary<string, object?>
+            var stats = new Dictionary<string, string>
             {
                 { "workflowId", Event.WorkflowInstanceId },
-                { "duration", workflow.Status?.EstimatedDuration ?? -1 },
-                { "resourceDuration", workflow.Status?.ResourcesDuration },
-                { "nodeInfo", workflow.Status?.Nodes },
-                { "startedAt", workflow.Status?.StartedAt },
-                { "finishedAt", workflow.Status?.FinishedAt }
+                { "duration", workflow.Status?.EstimatedDuration.ToString() ?? string.Empty },
+                { "startedAt", workflow.Status?.StartedAt.ToString() ?? string.Empty  },
+                { "finishedAt", workflow.Status?.FinishedAt.ToString() ?? string.Empty  }
             };
+
+            if (workflow.Status is null)
+            {
+                return stats;
+            }
+
+            if (workflow.Status.ResourcesDuration is not null)
+            {
+                foreach (var item in workflow.Status.ResourcesDuration)
+                {
+                    stats.Add($"resourceDuration.{item.Key}", item.Value.ToString());
+                }
+            }
+
+            if (workflow.Status.Nodes is not null)
+            {
+                foreach (var item in workflow.Status.Nodes)
+                {
+                    var json = JsonConvert.SerializeObject(item.Value, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    stats.Add($"nodes.{item.Key}", json);
+                }
+            }
 
             return stats;
         }

@@ -29,9 +29,9 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.3-rc0008, )",
-        "resolved": "0.1.3-rc0008",
-        "contentHash": "+Eymlt3+E/h04RxVquFUB0+I4IXeVXMZcdoSBL0w7yNn18bTmQBmd4vazPLplXoJesnpzBU1wULGAPi4fb423g==",
+        "requested": "[0.1.2-mes-executuion-s0011, )",
+        "resolved": "0.1.2-mes-executuion-s0011",
+        "contentHash": "TAUPi9ptCEwLW8Kt5NZLZ+TJInJRvlXgMbLWDMIUUFV6wrc/E4BeLwaV1clip4dnWV1qHbivM+zbzPScqRaIXQ==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -44,11 +44,11 @@
       },
       "Monai.Deploy.Messaging.RabbitMQ": {
         "type": "Direct",
-        "requested": "[0.1.3-rc0008, )",
-        "resolved": "0.1.3-rc0008",
-        "contentHash": "1eQjHj8gtIRKNmhn6xDyrGEaKnuNm9Lq7Ig5juCKlbhvn2Er0b2DI67keQzFPIbrWkSkfbaE/O+MgXdYEAIH3w==",
+        "requested": "[0.1.2-mes-executuion-s0011, )",
+        "resolved": "0.1.2-mes-executuion-s0011",
+        "contentHash": "1PbMJKxXj2+/AfjboGmvMXYd94mdj0Vyts6DC5maH3ETyaFC3gz1UPQAv5luhY27D7YFfD0Wtw5m1QUV77wOQg==",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.3-rc0008"
+          "Monai.Deploy.Messaging": "0.1.2-mes-executuion-s0011"
         }
       },
       "MongoDB.Bson": {
@@ -255,8 +255,8 @@
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.167",
           "Microsoft.Extensions.Configuration": "6.0.1",
-          "Monai.Deploy.Messaging": "0.1.3-rc0008",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0008",
+          "Monai.Deploy.Messaging": "0.1.2-mes-executuion-s0011",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.2-mes-executuion-s0011",
           "MongoDB.Bson": "2.15.0",
           "Newtonsoft.Json": "13.0.1"
         }
