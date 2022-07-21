@@ -1,9 +1,7 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
-using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
-
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
+namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
 {
     public static class Helper
     {

@@ -30,12 +30,19 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         [ConfigurationKeyName("taskManager")]
         public TaskManagerConfiguration TaskManager { get; set; }
 
+        /// <summary>
+        /// Represents the <c>taskManager</c> section of the configuration file.
+        /// </summary>
+        [ConfigurationKeyName("endpointSettings")]
+        public EndpointSettings EndpointSettings { get; set; }
+
 
         public WorkflowManagerOptions()
         {
             Messaging = new MessageBrokerConfiguration();
             TaskManager = new TaskManagerConfiguration();
             Storage = new StorageConfiguration();
+            EndpointSettings = new EndpointSettings();
         }
     }
 }

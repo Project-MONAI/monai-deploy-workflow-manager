@@ -38,12 +38,36 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             _outputHelper.WriteLine("Retrieved workflow revision");
         }
 
+        [Given(@"I have (.*) clinical workflows")]
+        public void GivenIHaveClinicalWorkflows(int count)
+        {
+            _outputHelper.WriteLine($"Retrieving {count} workflow revisions");
+            foreach (int index in Enumerable.Range(0, count))
+            {
+                _outputHelper.WriteLine($"Retrieving workflow revision with index={index}");
+                MongoClient.CreateWorkflowRevisionDocument(DataHelper.GetWorkflowRevisionTestDataByIndex(index));
+                _outputHelper.WriteLine("Retrieved workflow revision");
+            }
+        }
+
         [Given(@"I have a Workflow Instance (.*)")]
         public void GivenIHaveAWorkflowInstance(string name)
         {
             _outputHelper.WriteLine($"Retrieving workflow instance with name={name}");
             MongoClient.CreateWorkflowInstanceDocument(DataHelper.GetWorkflowInstanceTestData(name));
             _outputHelper.WriteLine("Retrieved workflow instance");
+        }
+
+        [Given(@"I have (.*) Workflow Instances")]
+        public void GivenIHaveWorkflowInstances(int count)
+        {
+            _outputHelper.WriteLine($"Retrieving {count} workflow instances");
+            foreach (int index in Enumerable.Range(0, count))
+            {
+                _outputHelper.WriteLine($"Retrieving workflow instances with index={index}");
+                MongoClient.CreateWorkflowInstanceDocument(DataHelper.GetWorkflowInstanceTestDataByIndex(index));
+                _outputHelper.WriteLine("Retrieved workflow instance");
+            }
         }
 
         [When(@"I publish a Workflow Request Message (.*)")]

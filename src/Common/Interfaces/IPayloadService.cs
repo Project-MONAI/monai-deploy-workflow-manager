@@ -23,7 +23,16 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// <summary>
         /// Gets a list of payloads.
         /// </summary>
-        Task<IList<Payload>> GetAllAsync(string patientId = "", string patientName = "");
+        Task<IList<Payload>> GetAllAsync(int? skip = null,
+                                         int? limit = null,
+                                         string? patientId = "",
+                                         string? patientName = "");
+
+        /// <summary>
+        /// Gets Count of objects
+        /// </summary>
+        /// <returns>the count of objects</returns>
+        Task<long> CountAsync();
 
         /// <summary>
         /// Updates a payload

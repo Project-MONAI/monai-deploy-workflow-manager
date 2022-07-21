@@ -4,7 +4,7 @@
 name: Tests & Sonarscanner/CodeCov
 
 on:
-  push:
+  pull_request:
   workflow_dispatch:
 
 env:
@@ -53,7 +53,7 @@ jobs:
         name: code-coverage-reports
         path: ./tests/**/coverage.opencover.xml
 
-  integration-tests:
+  workflow-executor-integration-tests:
     runs-on: ubuntu-latest
     services:
       mongo:
@@ -111,9 +111,85 @@ jobs:
       run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkflowManager.sln
       working-directory: ./src
 
-    - name: Run Integration Tests
-      run: find ~+ -type f -name "*.IntegrationTests.csproj" | xargs -L1 dotnet test
+    - name: Run WorkflowExecutor Integration Tests
+      run: find ~+ -type f -name "*.WorkflowExecutor.IntegrationTests.csproj" | xargs -L1 dotnet test
       working-directory: ./tests
+
+    - name: Publish report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: WorkflowExecutorIntegrationTestResults
+        path: tests/IntegrationTests/WorkflowExecutor.IntegrationTests/bin/Debug/net6.0/TestExecution.json
+
+  task-manager-integration-tests:
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: rootpassword
+        ports:
+        - 27017:27017
+
+      rabbit:
+        image: rabbitmq:3.8.18-management
+        env:
+          RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+          RABBITMQ_DEFAULT_USER: "admin"
+          RABBITMQ_DEFAULT_PASS: "admin"
+          RABBITMQ_DEFAULT_VHOST: "monaideploy"
+        ports:
+        - "15672:15672"
+        - "5672:5672"
+
+      minio:
+        image: minio/minio:edge-cicd
+        env:
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+        ports:
+          - "9000:9000"
+          - "9001:9001"
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Install Dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Enable NuGet cache
+      uses: actions/cache@v2.1.7
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget
+
+    - name: Restore Solution
+      run: dotnet restore Monai.Deploy.WorkflowManager.sln
+      working-directory: ./src
+
+    - name: Build Solution
+      run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkflowManager.sln
+      working-directory: ./src
+
+    - name: Run WorkflowExecutor Integration Tests
+      run: find ~+ -type f -name "*.TaskManager.IntegrationTests.csproj" | xargs -L1 dotnet test
+      working-directory: ./tests
+
+    - name: Publish report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: TaskExecutorIntegrationTestResults
+        path: tests/IntegrationTests/TaskManager.IntegrationTests/bin/Debug/net6.0/TestExecution.json
 
   sonarscanner:
     runs-on: ubuntu-latest

@@ -39,17 +39,20 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 new Artifact
                 {
                     Name = "taskartifact",
-                    Value = "{{ context.executions.image_type_detector.artifacts.dicom }}"
+                    Value = "{{ context.executions.image_type_detector.artifacts.dicom }}",
+                    Mandatory = true
                 },
                 new Artifact
                 {
                     Name = "dicomimage",
-                    Value = "{{ context.input }}"
+                    Value = "{{ context.input.dicom }}",
+                    Mandatory = true
                 },
                 new Artifact
                 {
                     Name = "outputtaskdir",
-                    Value = "{{ context.executions.coffee.output_dir }}"
+                    Value = "{{ context.executions.coffee.output_dir }}",
+                    Mandatory = true
                 }
             };
 
@@ -109,6 +112,78 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
         }
 
         [Fact]
+        public async Task ConvertArtifactVariablesToPath_MultipleMissingRequiredArtifacts_ThrowsException()
+        {
+            var artifacts = new Artifact[]
+            {
+                new Artifact
+                {
+                    Name = "taskartifact",
+                    Value = "{{ context.executions.image_type_detector.artifacts.dicom }}",
+                    Mandatory = true
+                },
+                new Artifact
+                {
+                    Name = "dicomimage",
+                    Value = "{{ context.input.dicom }}",
+                    Mandatory = true
+                },
+                new Artifact
+                {
+                    Name = "outputtaskdir",
+                    Value = "{{ context.executions.coffee.output_dir }}",
+                    Mandatory = true
+                }
+            };
+
+            var payloadId = Guid.NewGuid().ToString();
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var executionId = Guid.NewGuid().ToString();
+
+            var expected = new Dictionary<string, string>
+            {
+                { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/" },
+                { "dicomimage", $"{payloadId}/dcm/" },
+                { "outputtaskdir", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/" }
+            };
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = Guid.NewGuid().ToString(),
+                PayloadId = payloadId,
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = "image_type_detector",
+                            ExecutionId = executionId,
+                            Status = TaskExecutionStatus.Dispatched,
+                            OutputArtifacts = new Dictionary<string, string>
+                            {
+                                { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/" }
+                            }
+                        },
+                        new TaskExecution
+                        {
+                            TaskId = "coffee",
+                            Status = TaskExecutionStatus.Created,
+                            OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/"
+                        }
+                    }
+            };
+
+            _workflowInstanceRepository.Setup(w => w.GetTaskByIdAsync(workflowInstance.Id, "image_type_detector")).ReturnsAsync(workflowInstance.Tasks[0]);
+            _workflowInstanceRepository.Setup(w => w.GetTaskByIdAsync(workflowInstance.Id, "coffee")).ReturnsAsync(workflowInstance.Tasks[1]);
+
+            _storageService.Setup(w => w.VerifyObjectExistsAsync(workflowInstance.BucketId, It.IsAny<KeyValuePair<string, string>>())).ReturnsAsync(default(KeyValuePair<string, string>));
+
+            await Assert.ThrowsAsync<FileNotFoundException>(async () => await ArtifactMapper.ConvertArtifactVariablesToPath(artifacts, workflowInstance.PayloadId, workflowInstance.Id, workflowInstance.BucketId));
+        }
+
+        [Fact]
         public async Task ConvertArtifactVariablesToPath_RequiredArtifact_ThrowsException()
         {
             var artifacts = new Artifact[]
@@ -122,7 +197,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 new Artifact
                 {
                     Name = "dicomimage",
-                    Value = "{{ context.input }}",
+                    Value = "{{ context.input.dicom }}",
                     Mandatory = true
                 },
                 new Artifact
@@ -194,27 +269,32 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 new Artifact
                 {
                     Name = "taskartifact",
-                    Value = "{{ test.not.an.artifact }}"
+                    Value = "{{ test.not.an.artifact }}",
+                    Mandatory = false
                 },
                 new Artifact
                 {
                     Name = "dicomimage",
-                    Value = "{{ context }}"
+                    Value = "{{ context }}",
+                    Mandatory = false
                 },
                 new Artifact
                 {
                     Name = "outputtaskdir",
-                    Value = "{{ sandwich.executions.coffee.output_dir }}"
+                    Value = "{{ sandwich.executions.coffee.output_dir }}",
+                    Mandatory = false
                 },
                 new Artifact
                 {
                     Name = "outputtaskdir4",
-                    Value = "{{ sandwich.executions.coffee.artifacts.test }}"
+                    Value = "{{ sandwich.executions.coffee.artifacts.test }}",
+                    Mandatory = false
                 },
                 new Artifact
                 {
                     Name = "outputtaskdir2",
-                    Value = "{{sandwich.executions.coffee.output_dir"
+                    Value = "{{sandwich.executions.coffee.output_dir",
+                    Mandatory = false
                 }
             };
 

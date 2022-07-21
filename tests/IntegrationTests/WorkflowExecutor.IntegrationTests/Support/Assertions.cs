@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Collections;
+using FluentAssertions;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
@@ -12,7 +13,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             workflowInstance.PayloadId.Should().Match(workflowRequestMessage.PayloadId.ToString());
             workflowInstance.WorkflowId.Should().Match(workflowRevision.WorkflowId);
             workflowInstance.AeTitle.Should().Match(workflowRevision.Workflow.InformaticsGateway.AeTitle);
-            workflowInstance.Tasks.Count.Should().Be(workflowRevision.Workflow.Tasks.Length);
 
             foreach (var task in workflowInstance.Tasks)
             {
@@ -83,6 +83,41 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             updatedWorkflowInstance.Tasks[0].Status.Should().Be(taskExecutionStatus);
         }
 
+        public void AssertPagination<T>(int count, string queries, T Response)
+        {
+            var data = Response.GetType().GetProperty("Data").GetValue(Response, null) as ICollection;
+            var totalPages = Response.GetType().GetProperty("TotalPages").GetValue(Response, null);
+            var pageSize = Response.GetType().GetProperty("PageSize").GetValue(Response, null);
+            var totalRecords = Response.GetType().GetProperty("TotalRecords").GetValue(Response, null);
+            var pageNumber = Response.GetType().GetProperty("PageNumber").GetValue(Response, null);
+            int pageNumberQuery = 1;
+            int pageSizeQuery = 10;
+            List<string> splitQuery = queries.Split("&").ToList();
+            if (queries != "")
+            {
+                foreach (var query in splitQuery)
+                {
+                    if (query.Contains("pageNumber"))
+                    {
+                        pageNumberQuery = Int32.Parse(query.Split("=")[1]);
+                    }
+                    else if (query.Contains("pageSize"))
+                    {
+                        pageSizeQuery = Int32.Parse(query.Split("=")[1]);
+                    }
+                    else
+                    {
+                        throw new Exception($"Pagination query {query} is not valid");
+                    }
+                }
+            }
+            AssertDataCount(data, pageNumberQuery, pageSizeQuery, count);
+            AssertTotalPages(totalPages, count, pageSizeQuery);
+            totalRecords.Should().Be(count);
+            pageNumber.Should().Be(pageNumberQuery);
+            pageSize.Should().Be(pageSizeQuery);
+        }
+
         public void WorkflowInstanceIncludesTaskDetails(List<TaskDispatchEvent> taskDispatchEvents, WorkflowInstance workflowInstance, WorkflowRevision workflowRevision)
         {
             foreach (var taskDispatchEvent in taskDispatchEvents)
@@ -148,6 +183,41 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             var expectedWorkflowInstance = expectedWorkflowInstances.FirstOrDefault(x => x.Id.Equals(actualWorkflowInstance.Id));
             actualWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss").Should().Be(expectedWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss"));
             actualWorkflowInstance.Should().BeEquivalentTo(expectedWorkflowInstance, options => options.Excluding(x => x.StartTime));
+        }
+
+        private static void AssertDataCount(ICollection Data, int pageNumberQuery, int pageSizeQuery, int count)
+        {
+            if ((pageNumberQuery * pageSizeQuery) > count)
+            {
+                Data.Count.Should().Be(Math.Max(count - ((pageNumberQuery - 1) * pageSizeQuery), 0));
+            }
+            else if ((pageNumberQuery * pageSizeQuery) < count)
+            {
+                Data.Count.Should().Be(pageSizeQuery);
+            }
+            else if (pageNumberQuery > 1)
+            {
+                Data.Count.Should().Be(Math.Max(count - (pageSizeQuery * (pageNumberQuery - 1)), 0));
+            }
+            else
+            {
+                Data.Count.Should().Be(count);
+            }
+        }
+
+        private static void AssertTotalPages(object TotalPages, int count, int pageSizeQuery)
+        {
+            int remainder;
+            int quotient = Math.DivRem(count, pageSizeQuery, out remainder);
+
+            if (remainder == 0)
+            {
+                TotalPages.Should().Be(quotient);
+            }
+            else
+            {
+                TotalPages.Should().Be(quotient + 1);
+            }
         }
     }
 }

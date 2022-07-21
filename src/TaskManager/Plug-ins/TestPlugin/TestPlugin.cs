@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
-using Monai.Deploy.WorkflowManager.TaskManager.TestPlugin;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin
 {
@@ -53,14 +52,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin
         {
             if (Event.TaskPluginArguments is null || Event.TaskPluginArguments.Count == 0)
             {
-                throw new InvalidTaskException($"Required parameters to execute Argo workflow are missing: {string.Join(',', Keys.RequiredParameters)}");
+                throw new InvalidTaskException($"Required parameters for test plugin are missing: {string.Join(',', Keys.RequiredParameters)}");
             }
 
             foreach (var key in Keys.RequiredParameters)
             {
                 if (!Event.TaskPluginArguments.ContainsKey(key))
                 {
-                    throw new InvalidTaskException($"Required parameter to execute Argo workflow is missing: {key}");
+                    throw new InvalidTaskException($"Required parameters for test plugin are missing: {key}");
                 }
             }
         }

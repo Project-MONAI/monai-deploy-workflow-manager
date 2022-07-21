@@ -2,6 +2,7 @@
 using System.Net.Http.Headers;
 using System.Text;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -31,9 +32,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             .ConfigureAppConfiguration((builderContext, config) =>
             {
                 var env = builderContext.HostingEnvironment;
-                config
-                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                config.AddJsonFile($"appsettings.Test.json", optional: true, reloadOnChange: true);
             })
             .ConfigureLogging((builderContext, configureLogging) =>
             {
@@ -54,6 +53,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                         });
                     services.AddOptions<StorageServiceConfiguration>()
                         .Bind(hostContext.Configuration.GetSection("WorkflowManager:storage"))
+                        .PostConfigure(options =>
+                        {
+                        });
+                    services.AddOptions<EndpointSettings>()
+                        .Bind(hostContext.Configuration.GetSection("WorkflowManager:endpointSettings"))
                         .PostConfigure(options =>
                         {
                         });
@@ -86,6 +90,16 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     services.AddHostedService(p => p.GetService<DataRetentionService>());
 
                     services.AddWorkflowExecutor(hostContext);
+                    services.AddHttpContextAccessor();
+                    services.AddSingleton<IUriService>(p =>
+                    {
+                        var accessor = p.GetRequiredService<IHttpContextAccessor>();
+                        var request = accessor.HttpContext.Request;
+                        var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+                        var newUri = new Uri(uri);
+                        return new UriService(newUri);
+                    });
+
                 })
             .ConfigureWebHostDefaults(webBuilder =>
             {
@@ -100,10 +114,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             return host;
         }
 
-        public static async Task<HttpResponseMessage> GetConsumers()
+        public static async Task<HttpResponseMessage> GetConsumers(HttpClient httpClient)
         {
-            var httpClient = new HttpClient();
-
             var svcCredentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(TestExecutionConfig.RabbitConfig.User + ":" + TestExecutionConfig.RabbitConfig.Password));
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", svcCredentials);

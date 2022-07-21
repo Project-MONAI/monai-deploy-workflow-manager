@@ -4,6 +4,7 @@
 using BoDi;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Wrappers;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
@@ -29,9 +30,20 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         public void ThenICanSeeWorkflowsAreReturned(int count)
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
-            var workflowRevisions = JsonConvert.DeserializeObject<List<WorkflowRevision>>(result);
-            Assertions.AssertWorkflowList(DataHelper.WorkflowRevisions, workflowRevisions);
+            var workflowRevisions = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowRevision>>>(result);
+            Assertions.AssertWorkflowList(DataHelper.WorkflowRevisions, workflowRevisions.Data);
         }
+
+        [Then(@"Pagination is working correctly for the (.*) workflow")]
+        [Then(@"Pagination is working correctly for the (.*) workflows")]
+        public void ThenPaginationIsWorkingCorrectlyForTheWorkflow(int count)
+        {
+            var request = ApiHelper.Request.RequestUri.Query;
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            var deserializedResult = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowRevision>>>(result);
+            Assertions.AssertPagination<PagedResponse<List<WorkflowRevision>>>(count, request, deserializedResult);
+        }
+
 
         [Then(@"the Workflow Id (.*) is returned in the response body")]
         public void ThenTheWorkflowIdIsReturned(string id)
@@ -57,7 +69,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         public void ThenTheDeletedWorkflowIsNotReturned()
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
-            result.Should().Be("[]");
+            var workflowRevisions = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowRevision>>>(result);
+
+            workflowRevisions.Data.Should().BeNullOrEmpty();
         }
     }
 }

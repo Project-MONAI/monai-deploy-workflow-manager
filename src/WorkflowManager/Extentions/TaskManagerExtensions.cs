@@ -5,7 +5,9 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.Configuration;
+using Monai.Deploy.Storage.MinIO;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo;
 
 namespace Monai.Deploy.WorkflowManager.Services
@@ -18,6 +20,8 @@ namespace Monai.Deploy.WorkflowManager.Services
 
             services.AddSingleton<IArgoProvider, ArgoProvider>();
             services.AddSingleton<IKubernetesProvider, KubernetesProvider>();
+
+            services.AddSingleton<IStorageAdminService, StorageAdminService>();
 
             services.AddSingleton<TaskManager.TaskManager>();
             services.AddHostedService(p => p.GetRequiredService<TaskManager.TaskManager>());

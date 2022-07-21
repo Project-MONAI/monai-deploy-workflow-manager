@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Contracts.Responses;
 using Monai.Deploy.WorkflowManager.Controllers;
+using Monai.Deploy.WorkflowManager.Services;
+using Monai.Deploy.WorkflowManager.Wrappers;
 using Moq;
 using Xunit;
 
@@ -22,61 +26,79 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
         private readonly Mock<IWorkflowService> _workflowService;
         private readonly Mock<ILogger<WorkflowsController>> _logger;
+        private readonly Mock<IUriService> _uriService;
+        private readonly IOptions<WorkflowManagerOptions> _options;
 
         public WorkflowsControllerTests()
         {
+            _options = Options.Create(new WorkflowManagerOptions());
             _workflowService = new Mock<IWorkflowService>();
             _logger = new Mock<ILogger<WorkflowsController>>();
+            _uriService = new Mock<IUriService>();
 
-            WorkflowsController = new WorkflowsController(_workflowService.Object, _logger.Object);
+            WorkflowsController = new WorkflowsController(_workflowService.Object, _logger.Object, _uriService.Object, _options);
         }
 
         [Fact]
-        public void GetList_WorkflowsExist_ReturnsList()
+        public async void GetList_WorkflowsExist_ReturnsList()
         {
             var workflows = new List<WorkflowRevision>
             {
                 new WorkflowRevision
                 {
-                        Id = Guid.NewGuid().ToString(),
-                WorkflowId = Guid.NewGuid().ToString(),
-                Revision = 1,
-                Workflow = new Workflow
-                {
-                    Name = "Workflowname",
-                    Description = "Workflowdesc",
-                        Version = "1",
-                    InformaticsGateway = new InformaticsGateway
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow
                     {
-                            AeTitle = "aetitle"
-                    },
-                    Tasks = new TaskObject[]
+                        Name = "Workflowname",
+                        Description = "Workflowdesc",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
                         {
-                            new TaskObject {
+                                AeTitle = "aetitle"
+                        },
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "type",
                                 Description = "taskdesc"
                             }
                         }
+                    }
                 }
-        }
             };
 
-            _workflowService.Setup(w => w.GetList()).Returns(workflows);
+            _workflowService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>())).ReturnsAsync(workflows);
+            _workflowService.Setup(w => w.CountAsync()).ReturnsAsync(workflows.Count);
+            _uriService.Setup(s => s.GetPageUriString(It.IsAny<Filter.PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
-            var result = WorkflowsController.GetList();
+            var result = await WorkflowsController.GetList(new Filter.PaginationFilter());
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
 
-            objectResult.Value.Should().BeEquivalentTo(workflows);
+            var responseValue = (PagedResponse<List<WorkflowRevision>>)objectResult.Value;
+            responseValue.Data.Should().BeEquivalentTo(workflows);
+            responseValue.FirstPage.Should().Be("unitTest");
+            responseValue.LastPage.Should().Be("unitTest");
+            responseValue.PageNumber.Should().Be(1);
+            responseValue.PageSize.Should().Be(10);
+            responseValue.TotalPages.Should().Be(1);
+            responseValue.TotalRecords.Should().Be(1);
+            responseValue.Succeeded.Should().Be(true);
+            responseValue.PreviousPage.Should().Be(null);
+            responseValue.NextPage.Should().Be(null);
+            responseValue.Errors.Should().BeNullOrEmpty();
         }
 
         [Fact]
-        public void GetList_ServiceException_ReturnProblem()
+        public async void GetList_ServiceException_ReturnProblem()
         {
-            _workflowService.Setup(w => w.GetList()).Throws(new Exception());
+            _workflowService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>())).ThrowsAsync(new Exception());
 
-            var result = WorkflowsController.GetList();
+            var result = await WorkflowsController.GetList(new Filter.PaginationFilter());
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal(500, objectResult.StatusCode);

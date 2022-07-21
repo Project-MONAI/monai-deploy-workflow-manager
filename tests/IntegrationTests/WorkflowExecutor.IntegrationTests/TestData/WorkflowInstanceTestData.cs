@@ -4,7 +4,7 @@
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
+namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
 {
     public class WorkflowInstanceTestData
     {
@@ -55,6 +55,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     AeTitle = "Multi_Req",
                     WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Created").WorkflowRevision.WorkflowId,
                     PayloadId = Helper.GetWorkflowRequestByName("Multi_WF_Created").WorkflowRequestMessage.PayloadId.ToString(),
+                    BucketId = "bucket1",
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
                     InputMetaData = new Dictionary<string, string>()

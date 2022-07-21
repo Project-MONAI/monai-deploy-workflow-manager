@@ -40,14 +40,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 Settings = new Dictionary<string, string>
                 {
                     { "securedConnection", "false" },
-                     { "endpoint", "localhost" },
-                    { "bucket", "test-bucket"}
+                     { "endpoint", "localhost" }
                 }
             };
 
             var workflowId = Guid.NewGuid().ToString();
             var correlationId = Guid.NewGuid().ToString();
             var payloadId = Guid.NewGuid().ToString();
+            var bucketName = "bucket";
 
             var expectedTask = new TaskDispatchEvent
             {
@@ -64,7 +64,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                     {
                         SecuredConnection = bool.Parse(configuration.Settings["securedConnection"]),
                         Endpoint = configuration.Settings["endpoint"],
-                        Bucket = configuration.Settings["bucket"],
+                        Bucket = bucketName,
                         RelativeRootPath = "value",
                         Name = "key"
                     }
@@ -76,7 +76,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 },
                 IntermediateStorage = new Messaging.Common.Storage
                 {
-                    Bucket = configuration.Settings["bucket"],
+                    Bucket = bucketName,
                     Endpoint = configuration.Settings["endpoint"],
                     Name = task.TaskId,
                     RelativeRootPath = "minio/workflowid/taskid/tmp",
@@ -84,7 +84,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 }
             };
 
-            var taskDispatch = EventMapper.ToTaskDispatchEvent(task, workflowId, correlationId, payloadId, configuration);
+            var taskDispatch = EventMapper.ToTaskDispatchEvent(task, bucketName, workflowId, correlationId, payloadId, configuration);
 
             taskDispatch.Should().BeEquivalentTo(expectedTask, options =>
                 options.Excluding(t => t.CorrelationId));

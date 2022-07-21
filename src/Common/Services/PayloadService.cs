@@ -12,7 +12,7 @@ using Monai.Deploy.WorkflowManager.Storage.Services;
 
 namespace Monai.Deploy.WorkflowManager.Common.Services
 {
-    public class PayloadService : IPayloadService
+    public class PayloadService : IPayloadService, IPaginatedApi<Payload>
     {
         private readonly IPayloadRepsitory _payloadRepsitory;
 
@@ -69,10 +69,19 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             return await _payloadRepsitory.GetByIdAsync(payloadId);
         }
 
-        public async Task<IList<Payload>> GetAllAsync(string? patientId = "", string? patientName = "")
-            => await _payloadRepsitory.GetAllAsync(patientId, patientName);
+        public async Task<IList<Payload>> GetAllAsync(int? skip = null,
+                                                      int? limit = null,
+                                                      string? patientId = "",
+                                                      string? patientName = "")
+            => await _payloadRepsitory.GetAllAsync(skip, limit, patientId, patientName);
+
+        public async Task<IList<Payload>> GetAllAsync(int? skip = null, int? limit = null)
+            => await _payloadRepsitory.GetAllAsync(skip, limit);
+
+        public async Task<long> CountAsync() => await _payloadRepsitory.CountAsync();
 
         public async Task<bool> UpdateWorkflowInstanceIdsAsync(string payloadId, IEnumerable<string> workflowInstances)
             => await _payloadRepsitory.UpdateAssociatedWorkflowInstancesAsync(payloadId, workflowInstances);
+
     }
 }

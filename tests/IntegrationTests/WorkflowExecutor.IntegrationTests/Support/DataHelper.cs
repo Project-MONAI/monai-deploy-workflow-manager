@@ -4,7 +4,6 @@
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.TestData;
 using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
 using Polly;
 using Polly.Retry;
@@ -59,6 +58,28 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
         }
 
+        public WorkflowRevision GetWorkflowRevisionTestDataByIndex(int index)
+        {
+            var workflowRevision = WorkflowRevisionsTestData.TestData[index];
+
+            if (workflowRevision != null)
+            {
+                if (workflowRevision.WorkflowRevision != null)
+                {
+                    WorkflowRevisions.Add(workflowRevision.WorkflowRevision);
+                    return workflowRevision.WorkflowRevision;
+                }
+                else
+                {
+                    throw new Exception($"Workflow at index {index} does not have any applicable test data, please check and try again!");
+                }
+            }
+            else
+            {
+                throw new Exception($"Workflow at index {index} does not have any applicable test data, please check and try again!");
+            }
+        }
+
         public Workflow GetWorkflowObjectTestData(string name)
         {
             var workflow = WorkflowObjectsTestData.TestData.FirstOrDefault(c => c.Name.Equals(name));
@@ -101,6 +122,28 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             else
             {
                 throw new Exception($"Workflow Intance {name} does not have any applicable test data, please check and try again!");
+            }
+        }
+
+        public WorkflowInstance GetWorkflowInstanceTestDataByIndex(int index)
+        {
+            var workflowInstance = WorkflowInstancesTestData.TestData[index];
+
+            if (workflowInstance != null)
+            {
+                if (workflowInstance.WorkflowInstance != null)
+                {
+                    WorkflowInstances.Add(workflowInstance.WorkflowInstance);
+                    return workflowInstance.WorkflowInstance;
+                }
+                else
+                {
+                    throw new Exception($"Workflow at index {index} does not have any applicable test data, please check and try again!");
+                }
+            }
+            else
+            {
+                throw new Exception($"Workflow at index {index} does not have any applicable test data, please check and try again!");
             }
         }
 
@@ -193,7 +236,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
             return res;
         }
-        
+
         public List<Payload> GetPayloadCollections(string payloadId)
         {
             var res = RetryPayloadCollections.Execute(() =>
@@ -243,6 +286,36 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             return res;
         }
 
+        public List<TaskDispatchEvent> GetTaskDispatchEventByTaskId(List<string> taskIds)
+        {
+            var res = RetryTaskDispatches.Execute(() =>
+            {
+                var message = TaskDispatchConsumer.GetMessage<TaskDispatchEvent>();
+
+                if (message != null)
+                {
+                    foreach (var taskId in taskIds)
+                    {
+                        if (message.TaskId == taskId)
+                        {
+                            TaskDispatchEvents.Add(message);
+                        }
+                    }
+                }
+
+                if (TaskDispatchEvents.Count == taskIds.Count)
+                {
+                    return TaskDispatchEvents;
+                }
+                else
+                {
+                    throw new Exception($"{taskIds.Count} task dispatch events could not be found");
+                }
+            });
+
+            return res;
+        }
+
         public Payload GetPayloadTestData(string name)
         {
             var payload = PayloadsTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));
@@ -262,6 +335,28 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             else
             {
                 throw new Exception($"Payload {name} does not have any applicable test data, please check and try again!");
+            }
+        }
+
+        public Payload GetPayloadsTestDataByIndex(int index)
+        {
+            var payload = PayloadsTestData.TestData[index];
+
+            if (payload != null)
+            {
+                if (payload.Payload != null)
+                {
+                    Payload.Add(payload.Payload);
+                    return payload.Payload;
+                }
+                else
+                {
+                    throw new Exception($"Payload at index {index} does not have any applicable test data, please check and try again!");
+                }
+            }
+            else
+            {
+                throw new Exception($"Payload at index {index} does not have any applicable test data, please check and try again!");
             }
         }
 
