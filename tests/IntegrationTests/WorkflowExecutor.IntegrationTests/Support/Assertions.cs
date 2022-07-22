@@ -21,12 +21,37 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 {
                     task.TaskId.Should().Match(workflowTask.Id);
                     task.TaskType.Should().Match(workflowTask.Type);
+                    AssertInputArtifacts(workflowRevision, workflowRequestMessage, task);
+                    AssertOutputArtifacts(workflowRevision, workflowRequestMessage, task, workflowInstance);
                 }
                 else
                 {
                     throw new Exception($"Workflow Revision Task or {task.TaskId} not found!");
                 }
             }
+        }
+        
+        public void AssertInputArtifacts(WorkflowRevision workflowRevision, WorkflowRequestMessage workflowRequestMessage, TaskExecution task)
+        {
+            foreach (var revisionTask in workflowRevision.Workflow.Tasks)
+            {
+                if (revisionTask.Artifacts.Input != null)
+                {
+                    foreach (var artifact in revisionTask.Artifacts.Input)
+                    {
+                        if (artifact.Value == "{{ context.input.dicom }}")
+                        {
+                            if (Minio.BucketExistsArgs != false)
+                            task.InputArtifacts[artifact.Name].Should().Match($"{workflowRequestMessage.PayloadId}/dcm/");
+                        }
+                    }
+                }
+            }
+        }
+
+        public void AssertOutputArtifacts(WorkflowRevision workflowRevision, WorkflowRequestMessage workflowRequestMessage, TaskExecution task, WorkflowInstance workflowInstance)
+        {
+            task.OutputDirectory.Should().Match($"{workflowRequestMessage.PayloadId}/workflows/{workflowInstance.Id}/{task.ExecutionId}/");
         }
 
         public void AssertTaskDispatchEvent(TaskDispatchEvent taskDispatchEvent, WorkflowInstance workflowInstance, WorkflowRevision workflowRevision, WorkflowRequestMessage workflowRequestMessage = null, TaskUpdateEvent taskUpdateEvent = null)
