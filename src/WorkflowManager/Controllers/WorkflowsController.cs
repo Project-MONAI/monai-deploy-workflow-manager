@@ -13,8 +13,8 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Contracts.Responses;
 using Monai.Deploy.WorkflowManager.Filter;
-using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
 using Monai.Deploy.WorkflowManager.Services;
+using Monai.Deploy.WorkflowManager.Validators;
 
 namespace Monai.Deploy.WorkflowManager.Controllers;
 
@@ -37,11 +37,13 @@ public class WorkflowsController : ApiControllerBase
     /// <param name="workflowService">IWorkflowService.</param>
     /// <param name="logger">ILogger.<WorkflowsController></param>
     /// <param name="uriService">Uri Service.</param>
+    /// <param name="options">IOptions.</param>
     /// <exception cref="ArgumentNullException">ArgumentNullException</exception>
-    public WorkflowsController(IWorkflowService workflowService,
-                               ILogger<WorkflowsController> logger,
-                               IUriService uriService,
-                               IOptions<WorkflowManagerOptions> options)
+    public WorkflowsController(
+        IWorkflowService workflowService,
+        ILogger<WorkflowsController> logger,
+        IUriService uriService,
+        IOptions<WorkflowManagerOptions> options)
         : base(options)
     {
         _options = options ?? throw new ArgumentNullException(nameof(options));
@@ -118,11 +120,14 @@ public class WorkflowsController : ApiControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] Workflow workflow)
     {
-        if (!workflow.IsValid(out var validationErrors))
-        {
-            _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+        var valiadtor = new WorkflowValidator();
 
-            return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", BadRequest);
+        if (!valiadtor.ValidateWorkflow(workflow))
+        {
+            var errors = string.Join(", ", valiadtor.Errors);
+            _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {errors}");
+
+            return Problem($"Failed to validate {nameof(workflow)}: {errors}", $"/workflows", BadRequest);
         }
 
         try
@@ -155,11 +160,14 @@ public class WorkflowsController : ApiControllerBase
             return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", BadRequest);
         }
 
-        if (!workflow.IsValid(out var validationErrors))
-        {
-            _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+        var valiadtor = new WorkflowValidator();
 
-            return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/{id}", BadRequest);
+        if (!valiadtor.ValidateWorkflow(workflow))
+        {
+            var errors = string.Join(", ", valiadtor.Errors);
+            _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {errors}");
+
+            return Problem($"Failed to validate {nameof(workflow)}: {errors}", $"/workflows/{id}", BadRequest);
         }
 
         try

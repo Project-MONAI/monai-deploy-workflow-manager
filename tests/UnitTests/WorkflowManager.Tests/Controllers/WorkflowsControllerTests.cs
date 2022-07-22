@@ -14,6 +14,7 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Contracts.Responses;
 using Monai.Deploy.WorkflowManager.Controllers;
 using Monai.Deploy.WorkflowManager.Services;
+using Monai.Deploy.WorkflowManager.Validators;
 using Monai.Deploy.WorkflowManager.Wrappers;
 using Moq;
 using Xunit;
@@ -465,6 +466,163 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             Assert.Equal(result.As<ObjectResult>().Value.As<ProblemDetails>().Detail, "Failed to validate id, not a valid guid");
 
             Assert.Equal(400, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public void ValidateWorkflow_ValidatesAWorkflow_ReturnsTrueAndHasCorrectValidationResults()
+        {
+            var workflow =
+                new WorkflowRevision
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow
+                    {
+                        Name = "Workflowname1",
+                        Description = "Workflowdesc1",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
+                        {
+                            AeTitle = "aetitle"
+                        },
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject {
+                                Id = "rootTask",
+                                Type = "type",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination
+                                    {
+                                        Name = "taskdesc1"
+                                    },
+                                    new TaskDestination
+                                    {
+                                        Name = "taskSucessdesc1"
+                                    },
+                                    new TaskDestination
+                                    {
+                                        Name = "taskLoopdesc1"
+                                    }
+                                }
+                            },
+                            #region LoopingTasks
+                            new TaskObject {
+                                Id = "taskLoopdesc4",
+                                Type = "type",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination
+                                    {
+                                        Name = "taskLoopdesc2"
+                                    }
+                                }
+                            },
+                            new TaskObject {
+                                Id = "taskLoopdesc3",
+                                Type = "type",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination
+                                    {
+                                        Name = "taskLoopdesc4"
+                                    }
+                                }
+                            },
+                             new TaskObject {
+                                Id = "taskLoopdesc2",
+                                Type = "type",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination
+                                    {
+                                        Name = "taskLoopdesc3"
+                                    }
+                                }
+                            },
+                            new TaskObject {
+                                Id = "taskLoopdesc1",
+                                Type = "type",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination
+                                    {
+                                        Name = "taskLoopdesc2"
+                                    }
+                                }
+                            },
+                            #endregion
+                            #region SuccessfulTasksPath
+                            new TaskObject {
+                                Id = "taskSucessdesc1",
+                                Type = "type",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination
+                                    {
+                                        Name = "taskSucessdesc2"
+                                    }
+                                }
+                            },
+                            new TaskObject {
+                                Id = "taskSucessdesc2",
+                                Type = "type",
+                            },
+                            #endregion
+                            #region SelfReferencingTasks
+                            new TaskObject {
+                                Id = "taskdesc1",
+                                Type = "type",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination
+                                    {
+                                        Name = "taskdesc2"
+                                    }
+                                }
+                            },
+                            new TaskObject {
+                                Id = "taskdesc2",
+                                Type = "type",
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination
+                                    {
+                                        Name = "taskdesc2"
+                                    }
+                                }
+                            },
+                            #endregion
+                            // Unreferenced task 
+                            new TaskObject {
+                                Id = "taskdesc3",
+                                Type = "type",
+                                Description = "taskdesc",
+                            }
+                        }
+                    }
+                };
+
+            var validator = new WorkflowValidator();
+
+            var workflowHasErrors = validator.ValidateWorkflow(workflow.Workflow);
+
+            Assert.True(workflowHasErrors);
+
+            Assert.Equal(24, validator.Errors.Count);
+
+            var expectedError = "Detected task convergence on path: rootTask => taskdesc1 => taskdesc2 => ∞";
+            Assert.Contains(expectedError, validator.Errors);
+
+            var successPath = "rootTask => taskSucessdesc1 => taskSucessdesc2";
+            Assert.Contains(successPath, validator.SuccessfulPaths);
+
+            var unreferencedTaskError = "Found Task(s) without any destinations to it: taskdesc3";
+            Assert.Contains(unreferencedTaskError, validator.Errors);
+
+            var loopingTasksError = "Detected task convergence on path: rootTask => taskLoopdesc1 => taskLoopdesc2 => taskLoopdesc3 => taskLoopdesc4 => ∞";
+            Assert.Contains(loopingTasksError, validator.Errors);
         }
     }
 }
