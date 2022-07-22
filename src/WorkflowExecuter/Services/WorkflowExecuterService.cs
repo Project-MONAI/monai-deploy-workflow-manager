@@ -17,7 +17,6 @@ using Monai.Deploy.WorkflowManager.Contracts.Constants;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
-using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 
 namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
@@ -31,7 +30,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         private readonly IConditionalParameterParser _conditionalParameterParser;
         private readonly IArtifactMapper _artifactMapper;
         private readonly IStorageService _storageService;
-        private readonly IDicomService _dicomService;
         private readonly IPayloadService _payloadService;
         private readonly StorageServiceConfiguration _storageConfiguration;
 
@@ -48,8 +46,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             IConditionalParameterParser conditionalParser,
             IArtifactMapper artifactMapper,
             IStorageService storageService,
-            IPayloadService payloadService,
-            IDicomService dicomService)
+            IPayloadService payloadService)
         {
             if (configuration is null)
             {
@@ -73,7 +70,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             _conditionalParameterParser = conditionalParser ?? throw new ArgumentNullException(nameof(artifactMapper));
             _artifactMapper = artifactMapper ?? throw new ArgumentNullException(nameof(artifactMapper));
             _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
-            _dicomService = dicomService ?? throw new ArgumentNullException(nameof(dicomService));
             _payloadService = payloadService ?? throw new ArgumentNullException(nameof(payloadService));
         }
 
@@ -122,38 +118,52 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             foreach (var workflowInstance in workflowInstances)
             {
-                if (workflowInstance.Status == Status.Failed)
-                {
-                    continue;
-                }
-
-                var task = workflowInstance.Tasks.FirstOrDefault();
-
-                if (task is null)
-                {
-                    continue;
-                }
-
-                if (string.Equals(task.TaskType, TaskTypeConstants.RouterTask, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    var workflow = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId);
-
-                    await HandleTaskDestinations(workflowInstance, workflow, task, message.CorrelationId);
-
-                    continue;
-                }
-
-                if (task.Status != TaskExecutionStatus.Created)
-                {
-                    _logger.TaskPreviouslyDispatched(workflowInstance.PayloadId, task.TaskId);
-
-                    continue;
-                }
-
-                processed &= await DispatchTask(workflowInstance, task, message.CorrelationId);
+                await ProcessFirstWorkflowTask(workflowInstance, message.CorrelationId);
             }
 
-            return processed;
+            return true;
+        }
+
+        public async Task ProcessFirstWorkflowTask(WorkflowInstance workflowInstance, string correlationId)
+        {
+            if (workflowInstance.Status == Status.Failed)
+            {
+                return;
+            }
+
+            var task = workflowInstance.Tasks.FirstOrDefault();
+
+            if (task is null)
+            {
+                return;
+            }
+
+            if (string.Equals(task.TaskType, TaskTypeConstants.RouterTask, StringComparison.InvariantCultureIgnoreCase))
+            {
+                var workflow = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId);
+
+                await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
+
+                return;
+            }
+
+            if (string.Equals(task.TaskType, TaskTypeConstants.ExportTask, StringComparison.InvariantCultureIgnoreCase))
+            {
+                var workflow = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId);
+
+                await HandleDicomExport(workflow, workflowInstance, task, correlationId);
+
+                return;
+            }
+
+            if (task.Status != TaskExecutionStatus.Created)
+            {
+                _logger.TaskPreviouslyDispatched(workflowInstance.PayloadId, task.TaskId);
+
+                return;
+            }
+
+            await DispatchTask(workflowInstance, task, correlationId);
         }
 
         public async Task<bool> ProcessTaskUpdate(TaskUpdateEvent message)
@@ -218,20 +228,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             }
 
             await HandleOutputArtifacts(workflowInstance, message.Outputs, currentTask);
-
-            var exportDestinations = workflow.Workflow?.InformaticsGateway?.ExportDestinations;
-
-            if (exportDestinations is not null && exportDestinations.Any())
-            {
-                var dicomImages = (await _dicomService.GetDicomPathsForTaskAsync(currentTask.OutputDirectory, workflowInstance.BucketId))?.ToList();
-
-                if (dicomImages is not null && dicomImages.Any())
-                {
-                    return await HandleDicomExport(workflowInstance, currentTask, exportDestinations, dicomImages, message.CorrelationId);
-                }
-
-                _logger.ExportFilesNotFound(currentTask.TaskId, workflowInstance.Id);
-            }
 
             return await HandleTaskDestinations(workflowInstance, workflow, currentTask, message.CorrelationId);
         }
@@ -306,19 +302,46 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return true;
         }
 
-        private async Task<bool> HandleDicomExport(WorkflowInstance workflowInstance, TaskExecution task, string[] exportDestinations, IList<string> dicomImages, string correlationId)
+        private async Task HandleDicomExport(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId)
         {
-            var processed = true;
+            var artifactValues = GetDicomExports(workflow, workflowInstance, task);
 
-            if (dicomImages is null || !dicomImages.Any())
+            if (artifactValues.Any() is false)
             {
-                return processed;
+                await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
             }
 
-            processed &= await ExportRequest(workflowInstance, task, exportDestinations, dicomImages, correlationId);
-            processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Exported);
+            await DispatchDicomExport(workflowInstance, task, workflow.Workflow?.InformaticsGateway?.ExportDestinations, artifactValues, correlationId);
+        }
 
-            return processed;
+        private string[] GetDicomExports(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task)
+        {
+            var exportDestinations = workflow.Workflow?.InformaticsGateway?.ExportDestinations;
+
+            if (exportDestinations is null || !exportDestinations.Any())
+            {
+                return Array.Empty<string>();
+            }
+
+            if (!task.InputArtifacts.Any())
+            {
+                _logger.ExportFilesNotFound(task.TaskId, workflowInstance.Id);
+
+                return Array.Empty<string>();
+            }
+
+            return new List<string>(task.InputArtifacts.Values).ToArray();
+        }
+
+        private async Task<bool> DispatchDicomExport(WorkflowInstance workflowInstance, TaskExecution task, string[] exportDestinations, string[] artifactValues, string correlationId)
+        {
+            if (exportDestinations is null || !exportDestinations.Any())
+            {
+                return false;
+            }
+
+            await ExportRequest(workflowInstance, task, exportDestinations, artifactValues, correlationId);
+            return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Exported);
         }
 
         private async Task<bool> HandleOutputArtifacts(WorkflowInstance workflowInstance, List<Messaging.Common.Storage> outputs, TaskExecution task)
@@ -358,14 +381,14 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 if (string.Equals(taskExec.TaskType, TaskTypeConstants.RouterTask, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    processed &= await HandleTaskDestinations(workflowInstance, workflow, taskExec, correlationId);
+                    await HandleTaskDestinations(workflowInstance, workflow, taskExec, correlationId);
 
-                    if (processed is false)
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, taskExec.TaskId, TaskExecutionStatus.Succeeded);
+                if (string.Equals(taskExec.TaskType, TaskTypeConstants.ExportTask, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    await HandleDicomExport(workflow, workflowInstance, taskExec, correlationId);
 
                     continue;
                 }
