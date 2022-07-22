@@ -1134,6 +1134,109 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         }
 
         [Fact]
+        public async Task ProcessTaskUpdate_ValidAcceptedTaskUpdateEventDoesNotDispatchTasks_ReturnsTrue()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+
+            var metadata = new Dictionary<string, object>();
+            metadata.Add("a", "b");
+            metadata.Add("c", "d");
+            var updateEvent = new TaskUpdateEvent
+            {
+                WorkflowInstanceId = workflowInstanceId,
+                TaskId = "pizza",
+                ExecutionId = Guid.NewGuid().ToString(),
+                Status = TaskExecutionStatus.Accepted,
+                Reason = FailureReason.None,
+                Message = "This is a message",
+                Metadata = metadata,
+                CorrelationId = Guid.NewGuid().ToString()
+            };
+
+            var workflowId = Guid.NewGuid().ToString();
+
+            var workflow = new WorkflowRevision
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = workflowId,
+                Revision = 1,
+                Workflow = new Workflow
+                {
+                    Name = "Workflowname2",
+                    Description = "Workflowdesc2",
+                    Version = "1",
+                    InformaticsGateway = new InformaticsGateway
+                    {
+                        AeTitle = "aetitle"
+                    },
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject {
+                            Id = "pizza",
+                            Type = "type",
+                            Description = "taskdesc",
+                            TaskDestinations = new TaskDestination[]
+                            {
+                                new TaskDestination
+                                {
+                                    Name = "coffee"
+                                },
+                                new TaskDestination
+                                {
+                                    Name = "doughnuts"
+                                }
+                            }
+                        },
+                        new TaskObject {
+                            Id = "coffee",
+                            Type = "type",
+                            Description = "taskdesc"
+                        },
+                        new TaskObject {
+                            Id = "doughnuts",
+                            Type = "type",
+                            Description = "taskdesc"
+                        }
+                    }
+                }
+            };
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId,
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = "pizza",
+                            Status = TaskExecutionStatus.Dispatched
+                        },
+                        new TaskExecution
+                        {
+                            TaskId = "coffee",
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+            };
+
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Payload { PatientDetails = new PatientDetails { } });
+
+            var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
+
+            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.TaskDispatchRequest, It.IsAny<Message>()), Times.Exactly(0));
+
+            response.Should().BeTrue();
+        }
+
+        [Fact]
         public async Task ProcessTaskUpdate_ValidTaskUpdateEventOneTaskDestinationDispatched_ReturnsTrue()
         {
             var workflowInstanceId = Guid.NewGuid().ToString();

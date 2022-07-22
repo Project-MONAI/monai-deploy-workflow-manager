@@ -213,11 +213,16 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             var previouslyFailed = workflowInstance.Tasks.Any(t => t.Status == TaskExecutionStatus.Failed) || workflowInstance.Status == Status.Failed;
 
-            if (message.Status != TaskExecutionStatus.Succeeded || previouslyFailed)
+            if (message.Status == TaskExecutionStatus.Failed || message.Status == TaskExecutionStatus.Canceled || previouslyFailed)
             {
                 await UpdateWorkflowInstanceStatus(workflowInstance, message.TaskId, message.Status);
 
                 return await CompleteTask(currentTask, workflowInstance, message.CorrelationId, message.Status);
+            }
+
+            if (message.Status != TaskExecutionStatus.Succeeded)
+            {
+                return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, message.TaskId, message.Status);
             }
 
             if (message.Metadata.Any())
