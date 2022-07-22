@@ -73,6 +73,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
                     // Mongo DB
                     services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
+                    services.Configure<TaskManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
                     services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
                     services.AddTransient<IWorkflowRepository, WorkflowRepository>();
                     services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
