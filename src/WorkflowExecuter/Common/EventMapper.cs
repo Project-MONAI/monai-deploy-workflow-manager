@@ -24,7 +24,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             var inputs = new List<Messaging.Common.Storage>();
             var outputs = new List<Messaging.Common.Storage>();
 
-            if (task?.InputArtifacts is not null)
+            if (task.InputArtifacts is not null)
             {
                 foreach (var inArtifact in task.InputArtifacts)
                 {
