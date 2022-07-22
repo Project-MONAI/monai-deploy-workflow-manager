@@ -132,7 +132,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             }
 
             var task = workflowInstance.Tasks.FirstOrDefault();
-            
+
             if (task is null)
             {
                 return;
