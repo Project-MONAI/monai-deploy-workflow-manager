@@ -10,18 +10,21 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 {
     public static class EventMapper
     {
-        public static TaskDispatchEvent ToTaskDispatchEvent(TaskExecution task, string bucketName, string workflowInstanceId, string correlationId, string payloadId, StorageServiceConfiguration configuration)
+        public static TaskDispatchEvent ToTaskDispatchEvent(TaskExecution task, WorkflowInstance workflowInstance, Dictionary<string, string> outputArtifacts, string correlationId, StorageServiceConfiguration configuration)
         {
+
             Guard.Against.Null(task, nameof(task));
-            Guard.Against.NullOrWhiteSpace(bucketName, nameof(bucketName));
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            Guard.Against.Null(workflowInstance, nameof(workflowInstance));
+            Guard.Against.NullOrWhiteSpace(workflowInstance.BucketId, nameof(workflowInstance.BucketId));
+            Guard.Against.NullOrWhiteSpace(workflowInstance.Id, nameof(workflowInstance.Id));
+            Guard.Against.NullOrWhiteSpace(workflowInstance.PayloadId, nameof(workflowInstance.PayloadId));
             Guard.Against.NullOrWhiteSpace(correlationId, nameof(correlationId));
-            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
             Guard.Against.Null(configuration, nameof(configuration));
 
             var inputs = new List<Messaging.Common.Storage>();
+            var outputs = new List<Messaging.Common.Storage>();
 
-            if (task?.InputArtifacts != null)
+            if (task?.InputArtifacts is not null)
             {
                 foreach (var inArtifact in task.InputArtifacts)
                 {
@@ -29,28 +32,44 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                     {
                         SecuredConnection = bool.Parse(configuration.Settings["securedConnection"]),
                         Endpoint = configuration.Settings["endpoint"],
-                        Bucket = bucketName,
+                        Bucket = workflowInstance.BucketId,
                         RelativeRootPath = inArtifact.Value,
                         Name = inArtifact.Key
                     });
                 }
             }
 
+            if (outputArtifacts is not null)
+            {
+                foreach (var outArtifact in outputArtifacts)
+                {
+                    outputs.Add(new Messaging.Common.Storage
+                    {
+                        SecuredConnection = bool.Parse(configuration.Settings["securedConnection"]),
+                        Endpoint = configuration.Settings["endpoint"],
+                        Bucket = workflowInstance.BucketId,
+                        RelativeRootPath = outArtifact.Value,
+                        Name = outArtifact.Key
+                    });
+                }
+            }
+
             return new TaskDispatchEvent
             {
-                WorkflowInstanceId = workflowInstanceId,
+                WorkflowInstanceId = workflowInstance.Id,
                 TaskId = task.TaskId,
                 ExecutionId = task.ExecutionId.ToString(),
                 CorrelationId = correlationId,
                 Status = TaskExecutionStatus.Created,
                 TaskPluginArguments = task.TaskPluginArguments,
                 Inputs = inputs,
+                Outputs = outputs,
                 TaskPluginType = task.TaskType,
                 Metadata = task.Metadata,
-                PayloadId = payloadId,
+                PayloadId = workflowInstance.PayloadId,
                 IntermediateStorage = new Messaging.Common.Storage
                 {
-                    Bucket = bucketName,
+                    Bucket = workflowInstance.BucketId,
                     RelativeRootPath = $"{task.OutputDirectory}/tmp",
                     Endpoint = configuration.Settings["endpoint"],
                     Name = task.TaskId,
