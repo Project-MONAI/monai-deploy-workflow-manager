@@ -15,6 +15,5 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Logging
 
         [LoggerMessage(EventId = 1002, Level = LogLevel.Information, Message = "Task dispatch event deleted {taskExecutionId}.")]
         public static partial void TaskDispatchEventDeleted(this ILogger logger, string taskExecutionId);
-
     }
 }

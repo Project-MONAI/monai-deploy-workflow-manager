@@ -100,6 +100,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin
 
             return Task.FromResult(new ExecutionStatus { Status = TaskExecutionStatus.Succeeded, FailureReason = FailureReason.None });
         }
+
         ~TestPlugin() => Dispose(disposing: false);
 
         protected override void Dispose(bool disposing)

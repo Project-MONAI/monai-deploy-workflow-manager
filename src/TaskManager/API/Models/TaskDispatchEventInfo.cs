@@ -44,6 +44,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
         }
 
         public bool HasTimedOut(TimeSpan taskTimeout) => DateTime.UtcNow.Subtract(Started) >= taskTimeout;
+
         public void AddUserAccount(string username)
         {
             Guard.Against.NullOrWhiteSpace(username, nameof(username));
