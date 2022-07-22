@@ -14,8 +14,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin
         private readonly ILogger<TestPlugin> _logger;
         private readonly IMessageBrokerPublisherService? _messageBrokerPublisherService;
 
-        private string _executeTaskStatus;
-        private string _getStatusStatus;
+        private string _executeTaskStatus = String.Empty;
+        private string _getStatusStatus = String.Empty;
 
         public TestPlugin(
             IServiceScopeFactory serviceScopeFactory,

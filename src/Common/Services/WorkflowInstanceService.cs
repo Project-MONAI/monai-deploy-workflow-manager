@@ -8,7 +8,7 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Common.Services
 {
-    public class WorkflowInstanceService : IWorkflowInstanceService
+    public class WorkflowInstanceService : IWorkflowInstanceService, IPaginatedApi<WorkflowInstance>
     {
         private readonly IWorkflowInstanceRepository _workflowInstanceRepository;
 
@@ -17,13 +17,19 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             _workflowInstanceRepository = workflowInstanceRepository ?? throw new ArgumentNullException(nameof(workflowInstanceRepository));
         }
 
-        public async Task<IList<WorkflowInstance>> GetListAsync() => await _workflowInstanceRepository.GetListAsync();
-
         public async Task<WorkflowInstance> GetByIdAsync(string id)
         {
             Guard.Against.NullOrWhiteSpace(id);
 
             return await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(id);
         }
+
+        public async Task<long> CountAsync() => await _workflowInstanceRepository.CountAsync();
+
+        public async Task<IList<WorkflowInstance>> GetAllAsync(int? skip = null, int? limit = null, Status? status = null)
+            => await _workflowInstanceRepository.GetAllAsync(skip, limit, status);
+
+        public async Task<IList<WorkflowInstance>> GetAllAsync(int? skip = null, int? limit = null)
+            => await _workflowInstanceRepository.GetAllAsync(skip, limit, null);
     }
 }

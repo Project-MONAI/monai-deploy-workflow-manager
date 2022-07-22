@@ -73,10 +73,10 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
 
             Assert.NotNull(result);
         }
-
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         [Fact]
         public async Task CreateAsync_NullPayload_ReturnsThrowsException() => await Assert.ThrowsAsync<ArgumentNullException>(async () => await PayloadService.CreateAsync(null));
-
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         [Fact]
         public async Task GetByIdAsync_ValidId_ReturnsPayload()
         {
@@ -105,10 +105,10 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
 
             result.Should().BeEquivalentTo(payload);
         }
-
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         [Fact]
         public async Task GetByIdAsync_NullId_ReturnsThrowsException() => await Assert.ThrowsAsync<ArgumentNullException>(async () => await PayloadService.GetByIdAsync(null));
-
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         [Fact]
         public async Task GetAll_ReturnsPayloads()
         {
@@ -135,7 +135,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
                 }
             };
 
-            _payloadRepository.Setup(p => p.GetAllAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(payload);
+            _payloadRepository.Setup(p => p.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(() => payload);
+
             var result = await PayloadService.GetAllAsync();
 
             result.Should().BeEquivalentTo(payload);

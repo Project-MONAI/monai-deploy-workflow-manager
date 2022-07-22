@@ -38,12 +38,36 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             _outputHelper.WriteLine("Retrieved workflow revision");
         }
 
+        [Given(@"I have (.*) clinical workflows")]
+        public void GivenIHaveClinicalWorkflows(int count)
+        {
+            _outputHelper.WriteLine($"Retrieving {count} workflow revisions");
+            foreach (int index in Enumerable.Range(0, count))
+            {
+                _outputHelper.WriteLine($"Retrieving workflow revision with index={index}");
+                MongoClient.CreateWorkflowRevisionDocument(DataHelper.GetWorkflowRevisionTestDataByIndex(index));
+                _outputHelper.WriteLine("Retrieved workflow revision");
+            }
+        }
+
         [Given(@"I have a Workflow Instance (.*)")]
         public void GivenIHaveAWorkflowInstance(string name)
         {
             _outputHelper.WriteLine($"Retrieving workflow instance with name={name}");
             MongoClient.CreateWorkflowInstanceDocument(DataHelper.GetWorkflowInstanceTestData(name));
             _outputHelper.WriteLine("Retrieved workflow instance");
+        }
+
+        [Given(@"I have (.*) Workflow Instances")]
+        public void GivenIHaveWorkflowInstances(int count)
+        {
+            _outputHelper.WriteLine($"Retrieving {count} workflow instances");
+            foreach (int index in Enumerable.Range(0, count))
+            {
+                _outputHelper.WriteLine($"Retrieving workflow instances with index={index}");
+                MongoClient.CreateWorkflowInstanceDocument(DataHelper.GetWorkflowInstanceTestDataByIndex(index));
+                _outputHelper.WriteLine("Retrieved workflow instance");
+            }
         }
 
         [When(@"I publish a Workflow Request Message (.*)")]
@@ -122,16 +146,12 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"A Task Dispatch event is not published")]
         public void ThenATaskDispatchEventIsNotPublished()
         {
-            _outputHelper.WriteLine($"Checking that no Task Dispatch Events have been published for workflowId={DataHelper.WorkflowRevisions[0].WorkflowId}");
-
             for (var i = 0; i < 3; i++)
             {
                 var taskDispatchEvent = TaskDispatchConsumer.GetMessage<TaskDispatchEvent>();
 
                 if (taskDispatchEvent != null)
                 {
-                    _outputHelper.WriteLine("Task Dispatch Event is not null");
-
                     var workflowInstance = MongoClient.GetWorkflowInstanceById(taskDispatchEvent.WorkflowInstanceId);
 
                     if (workflowInstance != null)
@@ -142,15 +162,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                         }
                     }
                 }
-                else
-                {
-                    _outputHelper.WriteLine("Task Dispatch Event is null");
-                }
 
                 Thread.Sleep(1000);
             }
-
-            _outputHelper.WriteLine($"No Task Dispatch Events from workflowId={DataHelper.WorkflowRevisions[0].WorkflowId} have been dispatched");
         }
     }
 }

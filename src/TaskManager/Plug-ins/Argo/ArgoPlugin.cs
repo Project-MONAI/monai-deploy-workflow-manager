@@ -29,6 +29,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         private int? _activeDeadlineSeconds;
         private string _namespace;
         private string _baseUrl = null!;
+        private bool _allowInsecure = true;
         private string? _apiToken;
 
         public ArgoPlugin(
@@ -70,6 +71,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             if (Event.TaskPluginArguments.ContainsKey(Keys.ArgoApiToken))
             {
                 _apiToken = Event.TaskPluginArguments[Keys.ArgoApiToken];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(Keys.AllowInsecureseUrl))
+            {
+                _allowInsecure = string.Compare("true", Event.TaskPluginArguments[Keys.AllowInsecureseUrl], true) == 0 ? true : false;
             }
 
             _baseUrl = Event.TaskPluginArguments[Keys.BaseUrl];
@@ -115,7 +121,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             try
             {
-                var client = _argoProvider.CreateClient(_baseUrl, _apiToken);
+                var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
                 _logger.CreatingArgoWorkflow(workflow.Metadata.GenerateName);
                 var result = await client.WorkflowService_CreateWorkflowAsync(_namespace, new WorkflowCreateRequest { Namespace = _namespace, Workflow = workflow }, cancellationToken).ConfigureAwait(false);
                 _logger.ArgoWorkflowCreated(result.Metadata.Name);
@@ -134,7 +140,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             try
             {
-                var client = _argoProvider.CreateClient(_baseUrl, _apiToken);
+                var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
                 var workflow = await client.WorkflowService_GetWorkflowAsync(_namespace, identity, null, null, cancellationToken).ConfigureAwait(false);
 
                 // it take sometime for the Argo job to be in the final state after emitting the callback event.
@@ -148,7 +154,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 var stats = GetExecutuionStats(workflow);
                 if (stats is null)
                 {
-                    stats = new Dictionary<string, object?>();
+                    stats = new Dictionary<string, string>();
                 }
                 if (Strings.ArgoFailurePhases.Contains(workflow.Status.Phase, StringComparer.OrdinalIgnoreCase))
                 {
@@ -192,19 +198,39 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             }
         }
 
-        private Dictionary<string, object?> GetExecutuionStats(Workflow workflow)
+        private Dictionary<string, string> GetExecutuionStats(Workflow workflow)
         {
             Guard.Against.Null(workflow);
 
-            var stats = new Dictionary<string, object?>
+            var stats = new Dictionary<string, string>
             {
                 { "workflowId", Event.WorkflowInstanceId },
-                { "duration", workflow.Status?.EstimatedDuration ?? -1 },
-                { "resourceDuration", workflow.Status?.ResourcesDuration },
-                { "nodeInfo", workflow.Status?.Nodes },
-                { "startedAt", workflow.Status?.StartedAt },
-                { "finishedAt", workflow.Status?.FinishedAt }
+                { "duration", workflow.Status?.EstimatedDuration.ToString() ?? string.Empty },
+                { "startedAt", workflow.Status?.StartedAt.ToString() ?? string.Empty  },
+                { "finishedAt", workflow.Status?.FinishedAt.ToString() ?? string.Empty  }
             };
+
+            if (workflow.Status is null)
+            {
+                return stats;
+            }
+
+            if (workflow.Status.ResourcesDuration is not null)
+            {
+                foreach (var item in workflow.Status.ResourcesDuration)
+                {
+                    stats.Add($"resourceDuration.{item.Key}", item.Value.ToString());
+                }
+            }
+
+            if (workflow.Status.Nodes is not null)
+            {
+                foreach (var item in workflow.Status.Nodes)
+                {
+                    var json = JsonConvert.SerializeObject(item.Value, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    stats.Add($"nodes.{item.Key}", json);
+                }
+            }
 
             return stats;
         }
@@ -414,7 +440,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             try
             {
-                var client = _argoProvider.CreateClient(_baseUrl, _apiToken);
+                var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
                 return await client.WorkflowTemplateService_GetWorkflowTemplateAsync(_namespace, workflowTemplateName, null).ConfigureAwait(false);
             }
             catch (Exception ex)

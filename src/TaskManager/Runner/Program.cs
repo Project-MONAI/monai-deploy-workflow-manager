@@ -31,7 +31,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "Test application")]
         private static async Task Main(string[] args)
         {
-
             var exitEvent = new ManualResetEvent(false);
             var host = CreateHostBuilder(args).Build();
             _ = host.StartAsync();
@@ -48,7 +47,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
             var wmConfig = host.Services.GetRequiredService<IOptions<WorkflowManagerOptions>>();
             Guard.Against.NullService(wmConfig, nameof(IOptions<WorkflowManagerOptions>));
 
-            subscriber.Subscribe(messagingKeys.TaskUpdateRequest, string.Empty, (args) =>
+            subscriber.Subscribe(messagingKeys.TaskUpdateRequest, "TaskUpdate", (args) =>
             {
                 logger.LogInformation($"{args.Message.MessageDescription} received.");
                 var updateMessage = args.Message.ConvertToJsonMessage<TaskUpdateEvent>();

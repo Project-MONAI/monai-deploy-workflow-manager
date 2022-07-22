@@ -34,8 +34,8 @@ SPDX-License-Identifier: Apache License 2.0
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.3-rc0006" />
-    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.3-rc0006" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.3-rc0010" />
+    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.3-rc0010" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
@@ -76,11 +76,16 @@ SPDX-License-Identifier: Apache License 2.0
     <ItemGroup>
       <PluginDlls Include="$(PublishDir)Monai.Deploy.Messaging.RabbitMQ.dll;$(PublishDir)Monai.Deploy.Storage.MinIO.dll" />
     </ItemGroup>
-    <Copy
-        SourceFiles="@(PluginDlls)"
-        DestinationFolder="$(PublishDir)\plug-ins\"
-        SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(PluginDlls)" DestinationFolder="$(PublishDir)\plug-ins\" SkipUnchangedFiles="true" />
     <Message Text="Files copied successfully to $(PublishDir)\plug-ins\." Importance="high" />
+  </Target>
+
+  <Target Name="CopyPluginsBuild" AfterTargets="build">
+    <ItemGroup>
+      <PluginDlls Include="$(OutDir)Monai.Deploy.Messaging.RabbitMQ.dll;$(OutDir)Monai.Deploy.Storage.MinIO.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(PluginDlls)" DestinationFolder="$(OutDir)\plug-ins\" SkipUnchangedFiles="true" />
+    <Message Text="Files copied successfully to $(OutDir)\plug-ins\." Importance="high" />
   </Target>
   
 </Project>

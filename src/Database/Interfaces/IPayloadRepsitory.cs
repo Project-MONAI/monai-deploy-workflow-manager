@@ -15,7 +15,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <summary>
         /// Retrieves a list of payloads in the database.
         /// </summary>
-        Task<IList<Payload>> GetAllAsync(string patientId, string patientName);
+        Task<IList<Payload>> GetAllAsync(int? skip = null, int? limit = null, string patientId = "", string patientName = "");
 
         /// <summary>
         /// Retrieves a payload by id in the database.
@@ -24,6 +24,11 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         Task<Payload> GetByIdAsync(string payloadId);
 
         /// <summary>
+        /// Gets count of objects
+        /// </summary>
+        /// <returns>Count of objects.</returns>
+        Task<long> CountAsync();
+        
         /// Updates a payload in the database.
         /// </summary>
         /// <param name="payloadId"></param>

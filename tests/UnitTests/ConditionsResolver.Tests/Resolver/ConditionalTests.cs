@@ -57,7 +57,9 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         public void Conditional_GiveNullStringConditionalSetNextParameter_ShouldThrowException()
         {
             var expectedMessage = "Value cannot be null. (Parameter 'value')";
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             var exception = Assert.Throws<ArgumentNullException>(() => new Conditional().SetNextParameter(null));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             Assert.Equal(expectedMessage, exception.Message);
         }
     }

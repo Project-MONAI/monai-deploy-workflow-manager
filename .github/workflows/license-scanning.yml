@@ -4,7 +4,7 @@
 name: License Finder
 
 on:
-  push:
+  pull_request:
   workflow_dispatch:
 
 env:

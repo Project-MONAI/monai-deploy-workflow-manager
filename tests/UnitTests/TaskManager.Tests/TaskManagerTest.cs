@@ -203,7 +203,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
                 });
             _messageBrokerSubscriberService
-                .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
+                .Setup(p => p.RequeueWithDelay(It.IsAny<MessageBase>()))
                 .Callback(() => resetEvent.Set());
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
@@ -212,7 +212,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
 
             Assert.True(resetEvent.WaitOne(5000));
 
-            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => message.MessageId == m.MessageId), It.Is<bool>(b => b)), Times.Once());
+            _messageBrokerSubscriberService.Verify(p => p.RequeueWithDelay(It.Is<MessageBase>(m => message.MessageId == m.MessageId)), Times.Once());
         }
 
         // TODO: https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/102
@@ -579,15 +579,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     AccessKeyId = Guid.NewGuid().ToString(),
                     SecretAccessKey = Guid.NewGuid().ToString()
                 });
+#pragma warning disable SecurityTokenService1000 // Property value too short
             _minioAdmin.Setup(a => a.CreateUserAsync(
                 It.IsAny<string>(),
-                It.IsAny<AccessPermissions>(),
-                It.IsAny<string[]>()
+                It.IsAny<Deploy.Storage.S3Policy.Policies.PolicyRequest[]>()
             )).ReturnsAsync(new Amazon.SecurityToken.Model.Credentials()
             {
                 AccessKeyId = "a",
                 SecretAccessKey = "b",
             });
+#pragma warning restore SecurityTokenService1000 // Property value too short
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
@@ -665,11 +666,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     AccessKeyId = Guid.NewGuid().ToString(),
                     SecretAccessKey = Guid.NewGuid().ToString()
                 });
+#pragma warning disable CS8603 // Possible null reference return.
             _minioAdmin.Setup(a => a.CreateUserAsync(
                 It.IsAny<string>(),
-                It.IsAny<AccessPermissions>(),
-                It.IsAny<string[]>()
+                It.IsAny<Deploy.Storage.S3Policy.Policies.PolicyRequest[]>()
             )).ReturnsAsync(() => null);
+#pragma warning restore CS8603 // Possible null reference return.
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
@@ -807,6 +809,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerPublisherService
                 .Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
                 .Callback(() => resetEvent.Signal());
+            _messageBrokerSubscriberService
+                .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
+                .Callback(() => resetEvent.Signal());
             _storageService.Setup(p => p.CreateTemporaryCredentialsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
                 {
@@ -825,7 +830,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _testRunnerCallback.Verify(p => p.GenerateExecuteTaskResult(), Times.Once());
             _testRunnerCallback.Verify(p => p.GenerateGetStatusResult(), Times.Once());
             _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == taskDispatchEventMessage.MessageId)), Times.Once());
-            _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == TaskCallbackEventMessage.MessageId)), Times.Once());
+            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m.MessageId == TaskCallbackEventMessage.MessageId), false), Times.Once());
             _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.TaskUpdateRequest), It.IsAny<Message>()), Times.Exactly(2));
         }
 

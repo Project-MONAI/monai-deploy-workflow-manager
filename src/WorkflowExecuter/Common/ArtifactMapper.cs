@@ -37,7 +37,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
                 if (!TrimArtifactVariable(artifact.Value, out var variableString))
                 {
-                    continue;
+                    if (artifact.Mandatory is false)
+                    {
+                        continue;
+                    }
+
+                    throw new FileNotFoundException($"Mandatory artifact failed to be parsed: {artifact.Name}, {artifact.Value}");
                 }
 
                 var mappedArtifact = await ConvertVariableStringToPath(artifact, variableString, workflowInstanceId, payloadId, bucketId);
@@ -45,6 +50,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 if (!mappedArtifact.Equals(default(KeyValuePair<string, string>)))
                 {
                     artifactPathDictionary.Add(mappedArtifact.Key, mappedArtifact.Value);
+
+                    continue;
                 }
 
                 if (artifact.Mandatory)
@@ -74,12 +81,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
         private async Task<KeyValuePair<string, string>> ConvertVariableStringToPath(Artifact artifact, string variableString, string workflowInstanceId, string payloadId, string bucketId)
         {
-            if (variableString.StartsWith("context.input"))
+            if (variableString.StartsWith("context.input.dicom", StringComparison.InvariantCultureIgnoreCase))
             {
                 return await _storageService.VerifyObjectExistsAsync(bucketId, new KeyValuePair<string, string>(artifact.Name, $"{payloadId}/dcm/"));
             }
 
-            if (variableString.StartsWith("context.executions"))
+            if (variableString.StartsWith("context.executions", StringComparison.InvariantCultureIgnoreCase))
             {
                 var variableWords = variableString.Split(".");
 
@@ -88,12 +95,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
                 var task = await _workflowInstanceRepository.GetTaskByIdAsync(workflowInstanceId, variableTaskId);
 
-                if (variableLocation == "output_dir")
+                if (string.Equals(variableLocation, "output_dir", StringComparison.InvariantCultureIgnoreCase))
                 {
                     return await _storageService.VerifyObjectExistsAsync(bucketId, new KeyValuePair<string, string>(artifact.Name, task.OutputDirectory));
                 }
 
-                if (variableLocation == "artifacts")
+                if (string.Equals(variableLocation, "artifacts", StringComparison.InvariantCultureIgnoreCase))
                 {
                     var artifactName = variableWords[4];
                     var outputArtifact = task.OutputArtifacts.FirstOrDefault(a => a.Key == artifactName);

@@ -58,6 +58,28 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
         }
 
+        public WorkflowRevision GetWorkflowRevisionTestDataByIndex(int index)
+        {
+            var workflowRevision = WorkflowRevisionsTestData.TestData[index];
+
+            if (workflowRevision != null)
+            {
+                if (workflowRevision.WorkflowRevision != null)
+                {
+                    WorkflowRevisions.Add(workflowRevision.WorkflowRevision);
+                    return workflowRevision.WorkflowRevision;
+                }
+                else
+                {
+                    throw new Exception($"Workflow at index {index} does not have any applicable test data, please check and try again!");
+                }
+            }
+            else
+            {
+                throw new Exception($"Workflow at index {index} does not have any applicable test data, please check and try again!");
+            }
+        }
+
         public Workflow GetWorkflowObjectTestData(string name)
         {
             var workflow = WorkflowObjectsTestData.TestData.FirstOrDefault(c => c.Name.Equals(name));
@@ -100,6 +122,28 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             else
             {
                 throw new Exception($"Workflow Intance {name} does not have any applicable test data, please check and try again!");
+            }
+        }
+
+        public WorkflowInstance GetWorkflowInstanceTestDataByIndex(int index)
+        {
+            var workflowInstance = WorkflowInstancesTestData.TestData[index];
+
+            if (workflowInstance != null)
+            {
+                if (workflowInstance.WorkflowInstance != null)
+                {
+                    WorkflowInstances.Add(workflowInstance.WorkflowInstance);
+                    return workflowInstance.WorkflowInstance;
+                }
+                else
+                {
+                    throw new Exception($"Workflow at index {index} does not have any applicable test data, please check and try again!");
+                }
+            }
+            else
+            {
+                throw new Exception($"Workflow at index {index} does not have any applicable test data, please check and try again!");
             }
         }
 
@@ -291,6 +335,28 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             else
             {
                 throw new Exception($"Payload {name} does not have any applicable test data, please check and try again!");
+            }
+        }
+
+        public Payload GetPayloadsTestDataByIndex(int index)
+        {
+            var payload = PayloadsTestData.TestData[index];
+
+            if (payload != null)
+            {
+                if (payload.Payload != null)
+                {
+                    Payload.Add(payload.Payload);
+                    return payload.Payload;
+                }
+                else
+                {
+                    throw new Exception($"Payload at index {index} does not have any applicable test data, please check and try again!");
+                }
+            }
+            else
+            {
+                throw new Exception($"Payload at index {index} does not have any applicable test data, please check and try again!");
             }
         }
 
