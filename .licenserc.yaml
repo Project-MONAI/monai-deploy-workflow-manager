@@ -27,6 +27,7 @@ header:
     - '**/*.json'
     - '**/*.nswag'
     - '**/*.ruleset'
+    - '**/*.feature.cs'
     - 'src/.sonarlint/**'
     - 'src/coverlet.runsettings'
     - 'src/.vs'
