@@ -1,4 +1,18 @@
-﻿Feature: TaskDestinations
+# Copyright 2022 MONAI Consortium
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+Feature: TaskDestinations
 
 New task is dispatched after a Task update message is received.
 
@@ -99,6 +113,6 @@ Scenario: Task destination based on Dicom data conditional is successful, and ta
     Given I have a clinical workflow Workflow_Revision_for_bucket_minio
     And I have a Workflow Instance Workflow_instance_for_bucket_minio
     And I have a bucket in MinIO bucket1
-    And I have a payload patient_1_lordge in the bucket bucket1 with payload id 5450c3a9-2b19-45b0-8b17-fb10f89d1b2d 
-    When I publish a Task Update Message Task_status_update_for_bucket_minio with status Succeeded 
+    And I have a payload patient_1_lordge in the bucket bucket1 with payload id 5450c3a9-2b19-45b0-8b17-fb10f89d1b2d
+    When I publish a Task Update Message Task_status_update_for_bucket_minio with status Succeeded
     Then I can see the status of the Task is Succeeded

@@ -1,4 +1,18 @@
-﻿Feature: WorkflowApi
+# Copyright 2022 MONAI Consortium
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+Feature: WorkflowApi
 
 API to interact with WorkflowRevisions collection
 
@@ -29,7 +43,7 @@ Scenario: Get all clinical workflows from API - No workflows
 @WorkflowPagination
 Scenario Outline: Get all clinical workflows from API - Test pagination
     Given I have an endpoint /workflows/<pagination_query>
-    And I have <amount> clinical workflows 
+    And I have <amount> clinical workflows
     When I send a GET request
     Then I will get a 200 response
     And Pagination is working correctly for the <pagination_count> workflows
@@ -52,7 +66,7 @@ Scenario Outline: Get all clinical workflows from API - Test pagination
 @WorkflowPagination
 Scenario Outline: Invalid pagination returns 400
     Given I have an endpoint /workflows/<pagination_query>
-    And I have 10 clinical workflows 
+    And I have 10 clinical workflows
     When I send a GET request
     Then I will get a 400 response
     And I will recieve the error message <error_message>
@@ -64,7 +78,7 @@ Scenario Outline: Invalid pagination returns 400
     | ?pageSize=10000000000000&pageNumber=2      | The value '10000000000000' is not valid for PageSize.                                                                   |
     | ?pageNumber=10000000000000&pageSize=1      | The value '10000000000000' is not valid for PageNumber.                                                                 |
 
-    
+
 @UpdateWorkflows
 Scenario: Update workflow with valid details
     Given I have a clinical workflow Basic_Workflow_1_static
@@ -74,7 +88,7 @@ Scenario: Update workflow with valid details
     Then I will get a 201 response
     And the Workflow Id c86a437d-d026-4bdf-b1df-c7a6372b89e3 is returned in the response body
     And multiple workflow revisions now exist with correct details
-    
+
 @UpdateWorkflows
 Scenario Outline: Update workflow with invalid details
     Given I have a clinical workflow Basic_Workflow_1_static
@@ -106,7 +120,7 @@ Scenario: Update workflow where workflow ID does not exist
 
 @DeleteWorkflows
 Scenario: Delete a workflow with one revision
-    Given I have a clinical workflow Basic_Workflow_1_static 
+    Given I have a clinical workflow Basic_Workflow_1_static
     And  I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
     When I send a DELETE request
     Then I will get a 200 response
@@ -127,7 +141,7 @@ Scenario: Delete workflow with invalid details
     And  I have an endpoint /workflows/1
     When I send a DELETE request
     Then I will get a 400 response
-    And I will recieve the error message Failed to validate id, not a valid guid  
+    And I will recieve the error message Failed to validate id, not a valid guid
 
 @DeleteWorkflows
 Scenario: Delete workflow where workflow ID does not exist
@@ -136,7 +150,7 @@ Scenario: Delete workflow where workflow ID does not exist
     When I send a DELETE request
     Then I will get a 404 response
     And I will recieve the error message Failed to validate id, workflow not found
-    
+
 @DeleteWorkflows
 Scenario: Delete a workflow and recieve 404 when trying to GET by ID
     Given I have a clinical workflow Basic_Workflow_1_static
@@ -163,4 +177,4 @@ Scenario: Delete a workflow and recieve 404 when trying to GET all
     And I send a DELETE request
     And I have an endpoint /workflows
     When I send a GET request
-    Then the deleted workflow is not returned 
+    Then the deleted workflow is not returned

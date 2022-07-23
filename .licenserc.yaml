@@ -19,14 +19,17 @@ header:
 
   paths-ignore:
     - 'LICENSE'
+    - 'VERSION'
     - '.github/**/*.md'
     - '**/*.log'
     - '**/bin/**'
     - '**/obj/**'
     - '**/*.json'
+    - '**/*.nswag'
     - '**/*.ruleset'
     - 'src/.sonarlint/**'
     - 'src/coverlet.runsettings'
+    - 'src/.vs'
 
   comment: on-failure
 
