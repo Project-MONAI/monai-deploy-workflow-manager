@@ -569,10 +569,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Acknowledge(It.IsAny<MessageBase>()))
-                .Callback(() => resetEvent.Signal());
+                .Callback(() =>
+                resetEvent.Signal()
+                );
             _messageBrokerPublisherService
                 .Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
-                .Callback(() => resetEvent.Signal());
+                .Callback(() =>
+                resetEvent.Signal()
+                );
             _storageService.Setup(p => p.CreateTemporaryCredentialsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
                 {

@@ -599,6 +599,7 @@ public class ArgoPluginTest
         message.TaskPluginArguments[Keys.MessagingUsername] = "username";
         message.TaskPluginArguments[Keys.MessagingPassword] = "password";
         message.TaskPluginArguments[Keys.MessagingExchange] = "exchange";
+        message.TaskPluginArguments[Keys.MessagingVhost] = "vhost";
         message.TaskPluginArguments[Keys.MessagingTopic] = "topic";
         message.TaskPluginArguments[Keys.Namespace] = "namespace";
         message.TaskPluginArguments[Keys.TimeoutSeconds] = "50";

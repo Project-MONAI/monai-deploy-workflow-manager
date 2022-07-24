@@ -14,31 +14,33 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
     public class ArgoProvider : IArgoProvider
     {
         private readonly ILogger<ArgoProvider> _logger;
+        private readonly HttpClientHandler? _handler;
+        private readonly IHttpClientFactory _clientFactory;
 
         public ArgoProvider(ILogger<ArgoProvider> logger, IHttpClientFactory httpClientFactory)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _clientFactory = httpClientFactory;
         }
 
         public IArgoClient CreateClient(string baseUrl, string? apiToken, bool allowInsecure = true)
         {
             Guard.Against.NullOrWhiteSpace(baseUrl, nameof(baseUrl));
+            Guard.Against.Null(_handler);
 
             _logger.CreatingArgoClient(baseUrl);
 
-            var handler = new HttpClientHandler();
-
             if (allowInsecure)
             {
-                handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-                handler.ServerCertificateCustomValidationCallback =
+                _handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+                _handler.ServerCertificateCustomValidationCallback =
                     (httpRequestMessage, cert, cetChain, policyErrors) =>
                     {
                         return true;
                     };
             }
 
-            var httpClient = new HttpClient(handler);
+            var httpClient = new HttpClient(_handler);
             if (apiToken is not null)
             {
                 httpClient.SetBearerToken(apiToken);

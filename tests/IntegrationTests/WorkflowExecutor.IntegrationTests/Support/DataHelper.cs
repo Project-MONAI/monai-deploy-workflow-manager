@@ -147,28 +147,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
         }
 
-        public WorkflowInstance GetWorkflowInstanceTestDataByIndex(int index)
-        {
-            var workflowInstance = WorkflowInstancesTestData.TestData[index];
-
-            if (workflowInstance != null)
-            {
-                if (workflowInstance.WorkflowInstance != null)
-                {
-                    WorkflowInstances.Add(workflowInstance.WorkflowInstance);
-                    return workflowInstance.WorkflowInstance;
-                }
-                else
-                {
-                    throw new Exception($"Workflow at index {index} does not have any applicable test data, please check and try again!");
-                }
-            }
-            else
-            {
-                throw new Exception($"Workflow at index {index} does not have any applicable test data, please check and try again!");
-            }
-        }
-
         public PatientDetails GetPatientDetailsTestData(string name)
         {
             var patientTestData = PatientsTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));
