@@ -10,7 +10,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
     {
         private const int WorkflowNameLimit = 15;
         private const int WorkflowDescriptionLimit = 200;
-        private const int TaskIdLengthLimit = 15;
+        private const int TaskIdLengthLimit = 50;
         private const int TaskDescriptionLengthLimit = 2000;
         private const int TaskTypeLengthLimit = 2000;
         #region Workflow

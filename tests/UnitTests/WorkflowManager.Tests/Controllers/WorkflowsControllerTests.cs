@@ -621,6 +621,8 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             Assert.True(workflowHasErrors);
 
+            Assert.False(validator.IsWorkflowValid);
+
             Assert.Equal(24, validator.Errors.Count);
 
             var successPath = "rootTask => taskSucessdesc1 => taskSucessdesc2";

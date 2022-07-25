@@ -24,7 +24,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// <summary>
         /// Gets a value indicating whether result of ValidateWorkflow which is if workflow is valid.
         /// </summary>
-        public bool IsWorkflowValid { get => Errors.Any(); }
+        public bool IsWorkflowValid { get => !Errors.Any(); }
 
         /// <summary>
         /// Gets errors from workflow validation.

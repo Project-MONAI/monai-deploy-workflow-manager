@@ -121,8 +121,8 @@ public class WorkflowsController : ApiControllerBase
     public async Task<IActionResult> CreateAsync([FromBody] Workflow workflow)
     {
         var validator = new WorkflowValidator();
-
-        if (validator.ValidateWorkflow(workflow) is false)
+        var workflowHasErrors = validator.ValidateWorkflow(workflow);
+        if (workflowHasErrors)
         {
             var errors = string.Join(", ", validator.Errors);
             _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {errors}");
@@ -162,7 +162,8 @@ public class WorkflowsController : ApiControllerBase
 
         var validator = new WorkflowValidator();
 
-        if (validator.ValidateWorkflow(workflow) is false)
+        var workflowHasErrors = validator.ValidateWorkflow(workflow);
+        if (workflowHasErrors)
         {
             var errors = string.Join(", ", validator.Errors);
             _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {errors}");
