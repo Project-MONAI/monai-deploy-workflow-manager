@@ -130,6 +130,22 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             await Client.GetObjectAsync(bucketName, objectName, fileName);
         }
 
+        public async Task<bool> CheckFileExists(string bucketName, string objectName)
+        {
+            var args = new StatObjectArgs()
+                            .WithBucket(bucketName)
+                            .WithObject(objectName);
+            try
+            {
+                await Client.StatObjectAsync(args);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public async Task DeleteBucket(string bucketName)
         {
             bool found = await Client.BucketExistsAsync(bucketName);

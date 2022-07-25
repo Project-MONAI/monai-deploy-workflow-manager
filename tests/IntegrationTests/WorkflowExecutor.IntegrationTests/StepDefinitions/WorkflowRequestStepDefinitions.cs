@@ -25,7 +25,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             WorkflowPublisher = objectContainer.Resolve<RabbitPublisher>("WorkflowPublisher");
             TaskDispatchConsumer = objectContainer.Resolve<RabbitConsumer>("TaskDispatchConsumer");
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
-            Assertions = new Assertions();
+            Assertions = new Assertions(objectContainer);
             DataHelper = objectContainer.Resolve<DataHelper>();
             _outputHelper = outputHelper;
         }

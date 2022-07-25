@@ -79,3 +79,37 @@ Scenario: Publish a valid workflow request with an exiting Workflow Instance wit
     When I publish a Workflow Request Message Multi_WF_Dispatched
     Then I can see an additional Workflow Instance is not created
     And A Task Dispatch event is not published
+
+@TaskArtifacts
+Scenario Outline: WorkflowRequestEvent triggers workflow with context.input.dicom in different states of mandatory, instance is created
+    Given I have a clinical workflow <workflow>
+    And I have a bucket in MinIO bucket1
+    And I have a payload full_patient_metadata in the bucket bucket1 with payload id 3d22bf41-eacd-4e43-9161-d00735b31a2e
+    When I publish a Workflow Request Message Artifact_AeTitle_Request_1
+    Then I can see 1 Workflow Instance is created
+    Examples:
+    | workflow                          |
+    | Artifact_Workflow_Mandatory_Null  |
+    | Artifact_Workflow_Mandatory_True  |
+    | Artifact_Workflow_Mandatory_False |
+
+@TaskArtifacts
+Scenario Outline: WorkflowRequestEvent triggers workflow with context.input.dicom and mandatory missing files, instance is set to failed
+    Given I have a clinical workflow <workflow>
+    And I have a bucket in MinIO bucket1
+    When I publish a Workflow Request Message Artifact_AeTitle_Request_1
+    Then Workflow Instance status is Failed
+    Examples:
+    | workflow                          |
+    | Artifact_Workflow_Mandatory_Null  |
+    | Artifact_Workflow_Mandatory_True  |
+
+    # Bug with no bucket in MinIO the status does not go to failed
+
+@TaskArtifacts
+Scenario Outline: WorkflowRequestEvent triggers workflow with context.input.dicom and non-mandatory missing files, instance is created
+    Given I have a clinical workflow Artifact_Workflow_Mandatory_False
+    And I have a bucket in MinIO bucket1
+    When I publish a Workflow Request Message Artifact_AeTitle_Request_1
+    Then I can see 1 Workflow Instance is created
+
