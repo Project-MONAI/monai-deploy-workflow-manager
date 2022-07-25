@@ -3,7 +3,7 @@
     "Monai.Deploy.WorkflowManager": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Local"
       }
     },
     "WSL": {
