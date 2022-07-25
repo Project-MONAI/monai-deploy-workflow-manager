@@ -122,7 +122,7 @@ public class WorkflowsController : ApiControllerBase
     {
         var valiadtor = new WorkflowValidator();
 
-        if (!valiadtor.ValidateWorkflow(workflow))
+        if (valiadtor.ValidateWorkflow(workflow) is false)
         {
             var errors = string.Join(", ", valiadtor.Errors);
             _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {errors}");
@@ -162,7 +162,7 @@ public class WorkflowsController : ApiControllerBase
 
         var valiadtor = new WorkflowValidator();
 
-        if (!valiadtor.ValidateWorkflow(workflow))
+        if (valiadtor.ValidateWorkflow(workflow) is false)
         {
             var errors = string.Join(", ", valiadtor.Errors);
             _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {errors}");

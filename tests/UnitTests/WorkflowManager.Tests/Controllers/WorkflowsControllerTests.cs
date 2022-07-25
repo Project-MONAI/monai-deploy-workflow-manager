@@ -469,7 +469,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Fact]
-        public void ValidateWorkflow_ValidatesAWorkflow_ReturnsTrueAndHasCorrectValidationResults()
+        public void ValidateWorkflow_ValidatesAWorkflow_ReturnsTrueAndHasCorrectValidationResultsAsync()
         {
             var workflow =
                 new WorkflowRevision
@@ -484,7 +484,8 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         Version = "1",
                         InformaticsGateway = new InformaticsGateway
                         {
-                            AeTitle = "aetitle"
+                            AeTitle = "aetitle",
+                            ExportDestinations = new string[] { "oneDestination", "twoDestination", "threeDestination" }
                         },
                         Tasks = new TaskObject[]
                         {
@@ -505,6 +506,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                                     {
                                         Name = "taskLoopdesc1"
                                     }
+                                },
+                                ExportDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination { Name = "oneDestination" },
+                                    new TaskDestination { Name = "twoDestination" },
                                 }
                             },
                             #region LoopingTasks
@@ -517,6 +523,12 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                                     {
                                         Name = "taskLoopdesc2"
                                     }
+                                },
+                                ExportDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination { Name = "threeDestination" },
+                                    new TaskDestination { Name = "twoDestination" },
+                                    new TaskDestination { Name = "DoesNotExistDestination" },
                                 }
                             },
                             new TaskObject {
@@ -530,7 +542,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                                     }
                                 }
                             },
-                             new TaskObject {
+                                new TaskObject {
                                 Id = "taskLoopdesc2",
                                 Type = "type",
                                 TaskDestinations = new TaskDestination[]
@@ -605,24 +617,26 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 };
 
             var validator = new WorkflowValidator();
-
             var workflowHasErrors = validator.ValidateWorkflow(workflow.Workflow);
 
             Assert.True(workflowHasErrors);
 
             Assert.Equal(24, validator.Errors.Count);
 
-            var expectedError = "Detected task convergence on path: rootTask => taskdesc1 => taskdesc2 => ∞";
-            Assert.Contains(expectedError, validator.Errors);
-
             var successPath = "rootTask => taskSucessdesc1 => taskSucessdesc2";
             Assert.Contains(successPath, validator.SuccessfulPaths);
 
-            var unreferencedTaskError = "Found Task(s) without any destinations to it: taskdesc3";
+            var expectedConvergenceError = "Detected task convergence on path: rootTask => taskdesc1 => taskdesc2 => ∞";
+            Assert.Contains(expectedConvergenceError, validator.Errors);
+
+            var unreferencedTaskError = "Found Task(s) without any task destinations to it: taskdesc3";
             Assert.Contains(unreferencedTaskError, validator.Errors);
 
             var loopingTasksError = "Detected task convergence on path: rootTask => taskLoopdesc1 => taskLoopdesc2 => taskLoopdesc3 => taskLoopdesc4 => ∞";
             Assert.Contains(loopingTasksError, validator.Errors);
+
+            var missingDestinationError = "Missing destination DoesNotExistDestination in task taskLoopdesc4";
+            Assert.Contains(missingDestinationError, validator.Errors);
         }
     }
 }
