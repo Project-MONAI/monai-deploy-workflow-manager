@@ -14,6 +14,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
         /// <param name="payloadId">Payload id to check against.</param>
         /// <param name="workflowInstanceId">Workflow instance id to check against.</param>
         /// <param name="bucketId">Bucket id used to verify.</param>
-        Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId);
+        /// <param name="shouldExistYet">Checks if it should exist yet.</param>
+        Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet = true);
     }
 }
