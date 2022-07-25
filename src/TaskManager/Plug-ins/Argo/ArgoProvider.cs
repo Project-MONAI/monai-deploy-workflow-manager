@@ -27,12 +27,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
     public class ArgoProvider : IArgoProvider
     {
         private readonly ILogger<ArgoProvider> _logger;
-        private readonly IHttpClientFactory _clientFactory;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         public ArgoProvider(ILogger<ArgoProvider> logger, IHttpClientFactory httpClientFactory)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _clientFactory = httpClientFactory;
+            _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
         public IArgoClient CreateClient(string baseUrl, string? apiToken, bool allowInsecure = true)
@@ -43,7 +43,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             var ClientName = allowInsecure is true ? "Argo-Insecure" : "Argo";
 
-            var httpClient = _clientFactory.CreateClient(ClientName);
+            var httpClient = _httpClientFactory.CreateClient(ClientName);
 
             Guard.Against.Null(httpClient);
 
