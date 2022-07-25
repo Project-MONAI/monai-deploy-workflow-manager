@@ -311,6 +311,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             return await metadataRepository.RetrieveMetadata().ConfigureAwait(false);
         }
 
+        private string GetPayloadIdFormPath(string path)
+        {
+            if (path.IndexOf("/") is -1) return path;
+            return path.Substring(0, path.IndexOf("/"));
+        }
+
         private async Task AddCredentialsToPlugin(JsonMessage<TaskDispatchEvent> message)
         {
             var storages = new List<Messaging.Common.Storage>();
@@ -320,12 +326,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             var storageBuckets = storages.Select(storage => (
                 bucket: storage.Bucket,
-                payloadId: storage.RelativeRootPath.Substring(0, storage.RelativeRootPath.IndexOf("/"))))
+                payloadId: GetPayloadIdFormPath(storage.RelativeRootPath)))
                     .Distinct()
                     .ToArray();
-
-
-
 
             var creds = await _storageAdminService.CreateUserAsync(
                 $"TM{Guid.NewGuid()}",
