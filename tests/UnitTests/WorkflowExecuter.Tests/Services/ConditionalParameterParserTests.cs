@@ -100,6 +100,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
         [Theory]
         [InlineData("{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.task_id }} == '2dbd1af7-b699-4467-8e99-05a0c22422b4' AND " +
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.output_dir }} == 'output/dir' AND " +
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.status }} == 'Succeeded' AND " +
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.start_time }} == '25/12/2022 00:00:00' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_id }} == '3c4484bd-e1a4-4347-902e-31a6503edd5f'", true)]
         public void ConditionalParameterParser_WhenGivenCorrectExecutionString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
         {
@@ -183,6 +186,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                             ExecutionId = "3c4484bd-e1a4-4347-902e-31a6503edd5f",
                             TaskId = "2dbd1af7-b699-4467-8e99-05a0c22422b4",
                             TaskType = "Multi_task",
+                            OutputDirectory = "output/dir",
+                            TaskStartTime = new DateTime(2022, 12, 25),
                             Status = TaskExecutionStatus.Succeeded,
                             Metadata = new Dictionary<string, object>()
                             {
