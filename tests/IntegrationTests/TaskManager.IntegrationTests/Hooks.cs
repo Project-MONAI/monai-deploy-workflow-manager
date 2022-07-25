@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
+using Polly;
+using Polly.Retry;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 {
@@ -30,6 +32,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         private static RabbitConsumer? TaskUpdateConsumer { get; set; }
         public static RabbitConsumer? ClinicalReviewConsumer { get; private set; }
         private static MinioClientUtil? MinioClient { get; set; }
+        public static AsyncRetryPolicy RetryPolicy { get; private set; }
         private IObjectContainer ObjectContainer { get; set; }
         private static IHost? Host { get; set; }
         private static HttpClient? HttpClient { get; set; }
@@ -65,6 +68,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             Host = TaskManagerStartup.StartTaskManager();
             HttpClient = new HttpClient();
             MinioClient = new MinioClientUtil();
+            RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
         // <summary>
@@ -75,30 +79,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         [BeforeTestRun(Order = 1)]
         public static async Task CheckTaskManagerConsumersStarted()
         {
-            var response = await TaskManagerStartup.GetConsumers(HttpClient);
-            var content = response.Content.ReadAsStringAsync().Result;
-
-            for (var i = 1; i <= 10; i++)
+            await RetryPolicy.ExecuteAsync(async () =>
             {
-                if (string.IsNullOrEmpty(content) || content == "[]")
+                var response = await TaskManagerStartup.GetQueueStatus(HttpClient, TestExecutionConfig.RabbitConfig.VirtualHost, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+                var content = response.Content.ReadAsStringAsync().Result;
+
+                if (content.Contains("error"))
                 {
-                    Debug.Write($"Task Manager not started. Recheck times {i}");
-                    response = await TaskManagerStartup.GetConsumers(HttpClient);
-                    content = response.Content.ReadAsStringAsync().Result;
+                    throw new Exception("Task Manager not started!");
                 }
                 else
                 {
-                    Debug.Write("Task Manager started. Integration tests will begin!");
-                    break;
+                    Console.WriteLine("Task Manager started. Integration Tests will begin.");
                 }
-
-                if (i == 10)
-                {
-                    throw new Exception("Task Manager not started! Integration tests will not continue");
-                }
-
-                Thread.Sleep(1000);
-            }
+            });
 
             TaskDispatchPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
             TaskCallbackPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
