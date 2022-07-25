@@ -42,6 +42,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         private int? _activeDeadlineSeconds;
         private string _namespace;
         private string _baseUrl = null!;
+        private bool _allowInsecure = true;
         private string? _apiToken;
 
         public ArgoPlugin(
@@ -83,6 +84,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             if (Event.TaskPluginArguments.ContainsKey(Keys.ArgoApiToken))
             {
                 _apiToken = Event.TaskPluginArguments[Keys.ArgoApiToken];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(Keys.AllowInsecureseUrl))
+            {
+                _allowInsecure = string.Compare("true", Event.TaskPluginArguments[Keys.AllowInsecureseUrl], true) == 0 ? true : false;
             }
 
             _baseUrl = Event.TaskPluginArguments[Keys.BaseUrl];
@@ -128,7 +134,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             try
             {
-                var client = _argoProvider.CreateClient(_baseUrl, _apiToken);
+                var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
                 _logger.CreatingArgoWorkflow(workflow.Metadata.GenerateName);
                 var result = await client.WorkflowService_CreateWorkflowAsync(_namespace, new WorkflowCreateRequest { Namespace = _namespace, Workflow = workflow }, cancellationToken).ConfigureAwait(false);
                 _logger.ArgoWorkflowCreated(result.Metadata.Name);
@@ -147,7 +153,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             try
             {
-                var client = _argoProvider.CreateClient(_baseUrl, _apiToken);
+                var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
                 var workflow = await client.WorkflowService_GetWorkflowAsync(_namespace, identity, null, null, cancellationToken).ConfigureAwait(false);
 
                 // it take sometime for the Argo job to be in the final state after emitting the callback event.
@@ -447,7 +453,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             try
             {
-                var client = _argoProvider.CreateClient(_baseUrl, _apiToken);
+                var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
                 return await client.WorkflowTemplateService_GetWorkflowTemplateAsync(_namespace, workflowTemplateName, null).ConfigureAwait(false);
             }
             catch (Exception ex)

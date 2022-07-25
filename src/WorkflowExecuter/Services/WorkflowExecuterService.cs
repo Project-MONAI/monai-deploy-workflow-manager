@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -97,19 +98,18 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 await _workflowRepository.GetWorkflowsByAeTitleAsync(message.CalledAeTitle) as List<WorkflowRevision> :
                 await _workflowRepository.GetByWorkflowsIdsAsync(message.Workflows) as List<WorkflowRevision>;
 
-            if (workflows is null)
+            if (workflows is null || workflows.Any() is false)
             {
                 return false;
             }
 
             var workflowInstances = new List<WorkflowInstance>();
 
-            foreach (var workflow in workflows)
-            {
-                var workflowInstance = await CreateWorkflowInstanceAsync(message, workflow);
-                workflowInstances.Add(workflowInstance);
-            }
+            var tasks = workflows.Select(workflow => CreateWorkflowInstanceAsync(message, workflow));
+            await Task.WhenAll(tasks);
+            workflowInstances.AddRange(tasks.Select(t => t.Result));
 
+            Debug.Assert(workflowInstances.Count > 0);
             var existingInstances = await _workflowInstanceRepository.GetByWorkflowsIdsAsync(workflowInstances.Select(w => w.WorkflowId).ToList());
 
             workflowInstances.RemoveAll(i => existingInstances.Any(e => e.WorkflowId == i.WorkflowId
@@ -219,7 +219,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             if (message.ExecutionStats is not null
                 || message.Reason != FailureReason.None)
             {
-                currentTask.ExecutionStats = message.ExecutionStats;
+                currentTask.ExecutionStats = message.ExecutionStats ?? new Dictionary<string, string>();
                 currentTask.Reason = message.Reason;
                 await _workflowInstanceRepository.UpdateTaskAsync(workflowInstance.Id, currentTask.TaskId, currentTask);
             }
@@ -593,7 +593,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 TaskId = task.Id,
                 Status = TaskExecutionStatus.Created,
                 InputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(task?.Artifacts?.Input ?? new Artifact[] { }, payloadId, workflowInstanceId, bucketName),
-                OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/",
+                OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}",
                 Metadata = { },
                 InputParameters = newInputParameters,
                 PreviousTaskId = previousTaskId

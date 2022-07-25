@@ -575,3 +575,4 @@ GitExtensions.settings.backup
 *.feature.cs
 *.AssemblyHooks.cs
 *.AssemblyHooks.vb
+/src/WorkflowManager/mc.exe

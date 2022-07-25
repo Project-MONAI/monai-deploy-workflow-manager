@@ -24,6 +24,7 @@ using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.API;
+using Monai.Deploy.Storage.S3Policy.Policies;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.Configuration;
@@ -323,6 +324,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             return await metadataRepository.RetrieveMetadata().ConfigureAwait(false);
         }
 
+        private string GetPayloadIdFormPath(string path)
+        {
+            if (path.IndexOf("/") is -1) return path;
+            return path.Substring(0, path.IndexOf("/"));
+        }
+
         private async Task AddCredentialsToPlugin(JsonMessage<TaskDispatchEvent> message)
         {
             var storages = new List<Messaging.Common.Storage>();
@@ -330,14 +337,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             storages.AddRange(message.Body.Outputs);
             storages.AddRange(message.Body.Inputs);
 
-            var storageBuckets = storages.Select(storage => storage.Bucket)
-                .Distinct()
-                .ToArray();
+            var storageBuckets = storages.Select(storage => (
+                bucket: storage.Bucket,
+                payloadId: GetPayloadIdFormPath(storage.RelativeRootPath)))
+                    .Distinct()
+                    .ToArray();
 
             var creds = await _storageAdminService.CreateUserAsync(
                 $"TM{Guid.NewGuid()}",
-                 AccessPermissions.Read,
-                 storageBuckets);
+                 storageBuckets.Select(b => new PolicyRequest(b.bucket, b.payloadId)).ToArray()
+                 );
 
             if (creds is null)
             {
@@ -353,6 +362,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                     AccessToken = creds.SecretAccessKey
                 };
             }
+
+
         }
 
         private async Task PopulateTemporaryStorageCredentials(params Messaging.Common.Storage[] storages)

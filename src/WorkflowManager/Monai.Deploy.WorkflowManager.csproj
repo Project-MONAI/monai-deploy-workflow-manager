@@ -76,6 +76,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="appsettings.Local.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <PropertyGroup>
@@ -91,4 +94,12 @@
     <Message Text="Files copied successfully to $(PublishDir)\plug-ins\." Importance="high" />
   </Target>
 
+  <Target Name="CopyPluginsBuild" AfterTargets="build">
+    <ItemGroup>
+      <PluginDlls Include="$(OutDir)Monai.Deploy.Messaging.RabbitMQ.dll;$(OutDir)Monai.Deploy.Storage.MinIO.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(PluginDlls)" DestinationFolder="$(OutDir)\plug-ins\" SkipUnchangedFiles="true" />
+    <Message Text="Files copied successfully to $(OutDir)\plug-ins\." Importance="high" />
+  </Target>
+  
 </Project>

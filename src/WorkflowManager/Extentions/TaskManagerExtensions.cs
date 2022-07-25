@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Net.Http;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,6 +39,17 @@ namespace Monai.Deploy.WorkflowManager.Services
 
             services.AddSingleton<TaskManager.TaskManager>();
             services.AddHostedService(p => p.GetRequiredService<TaskManager.TaskManager>());
+
+            services.AddHttpClient("Argo");
+            services.AddHttpClient("Argo-Insecure").ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                ClientCertificateOptions = ClientCertificateOption.Manual,
+                ServerCertificateCustomValidationCallback =
+                    (httpRequestMessage, cert, cetChain, policyErrors) =>
+                    {
+                        return true;
+                    },
+            });
 
             return services;
         }

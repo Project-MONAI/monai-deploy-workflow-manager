@@ -582,25 +582,30 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Acknowledge(It.IsAny<MessageBase>()))
-                .Callback(() => resetEvent.Signal());
+                .Callback(() =>
+                resetEvent.Signal()
+                );
             _messageBrokerPublisherService
                 .Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
-                .Callback(() => resetEvent.Signal());
+                .Callback(() =>
+                resetEvent.Signal()
+                );
             _storageService.Setup(p => p.CreateTemporaryCredentialsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
                 {
                     AccessKeyId = Guid.NewGuid().ToString(),
                     SecretAccessKey = Guid.NewGuid().ToString()
                 });
+#pragma warning disable SecurityTokenService1000 // Property value too short
             _minioAdmin.Setup(a => a.CreateUserAsync(
                 It.IsAny<string>(),
-                It.IsAny<AccessPermissions>(),
-                It.IsAny<string[]>()
+                It.IsAny<Deploy.Storage.S3Policy.Policies.PolicyRequest[]>()
             )).ReturnsAsync(new Amazon.SecurityToken.Model.Credentials()
             {
                 AccessKeyId = "accesskeyidtesttest",
                 SecretAccessKey = "b",
             });
+#pragma warning restore SecurityTokenService1000 // Property value too short
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
@@ -678,11 +683,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     AccessKeyId = Guid.NewGuid().ToString(),
                     SecretAccessKey = Guid.NewGuid().ToString()
                 });
+#pragma warning disable CS8603 // Possible null reference return.
             _minioAdmin.Setup(a => a.CreateUserAsync(
                 It.IsAny<string>(),
-                It.IsAny<AccessPermissions>(),
-                It.IsAny<string[]>()
+                It.IsAny<Deploy.Storage.S3Policy.Policies.PolicyRequest[]>()
             )).ReturnsAsync(() => null);
+#pragma warning restore CS8603 // Possible null reference return.
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
             await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);

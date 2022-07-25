@@ -28,7 +28,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         /// <returns></returns>
 #pragma warning disable CA1054 // URI-like parameters should not be strings
 
-        IArgoClient CreateClient(string baseUrl, string? apiToken);
+        IArgoClient CreateClient(string baseUrl, string? apiToken, bool allowInsecure = true);
 
 #pragma warning restore CA1054 // URI-like parameters should not be strings
     }
