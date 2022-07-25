@@ -1,6 +1,7 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
@@ -23,7 +24,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 
     public class ConditionalParameterParser : IConditionalParameterParser
     {
-        private const string ExecutionsTask = "context.executions.task";
+        private const string ExecutionsTask = "context.executions";
         private const string ContextDicomSeries = "context.dicom.series";
         private const string PatientDetails = "context.input.patient_details";
         private const string ContextWorkflow = "context.workflow";
@@ -230,29 +231,76 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
         private (string? Result, ParameterContext Context) ResolveExecutionTasks(string value)
         {
             var subValue = value.Trim().Substring(ExecutionsTask.Length, value.Length - ExecutionsTask.Length);
-            var subValues = subValue.Split('[', ']');
+            var subValues = subValue.Split('.');
             var id = subValues[1].Trim('\'');
 
-            var task = WorkflowInstance?.Tasks.First(t => t.TaskId == id);
+            var task = WorkflowInstance?.Tasks.FirstOrDefault(t => t.TaskId == id);
 
-            if (task is null || task is not null && !task.Metadata.Any())
+            if (task is null)
             {
                 return (Result: null, Context: ParameterContext.TaskExecutions);
             }
 
-            var metadataKey = subValues[2].Split('\'')[1];
+            var subValueKey = subValues[2];
+            string? keyValue = null;
 
-            if (task is not null && task.Metadata.ContainsKey(metadataKey))
+            if (subValues.Length > 3)
             {
-                var result = task.Metadata[metadataKey];
+                keyValue = subValues[3]?.Split('\'')[1];
+            }
+
+            var resultStr = null as string;
+            switch (subValueKey.ToLower())
+            {
+                case "task_id":
+                    resultStr = task.TaskId;
+                    break;
+                case "status":
+                    resultStr = task.Status.ToString();
+                    break;
+                case "execution_id":
+                    resultStr = task.ExecutionId;
+                    break;
+                case "output_dir":
+                    resultStr = task.OutputDirectory;
+                    break;
+                case "task_type":
+                    resultStr = task.TaskType;
+                    break;
+                case "previous_task_id":
+                    resultStr = task.PreviousTaskId;
+                    break;
+                case "metadata":
+                    resultStr = GetValueFromDictionary(task.Metadata, keyValue);
+                    break;
+                case "start_time":
+                    resultStr = task.TaskStartTime?.ToString(new CultureInfo("en-GB"));
+                    break;
+                default:
+                    break;
+            }
+
+            return (Result: resultStr, Context: ParameterContext.TaskExecutions);
+        }
+
+        private string? GetValueFromDictionary(Dictionary<string, object> dictionary, string key)
+        {
+            if (key is null)
+            {
+                return null;
+            }
+
+            if (dictionary.ContainsKey(key))
+            {
+                var result = dictionary[key];
 
                 if (result is string resultStr)
                 {
-                    return (Result: resultStr, Context: ParameterContext.TaskExecutions);
+                    return resultStr;
                 }
             }
 
-            return (Result: null, Context: ParameterContext.TaskExecutions);
+            return null;
         }
 
         private (string? Result, ParameterContext Context) ResolveContextWorkflow(string value)
