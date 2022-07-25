@@ -1,19 +1,3 @@
-<!--
-  ~ Copyright 2022 MONAI Consortium
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~ http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
--->
-
 # Clinical Workflow Specification Language
 
 # Note: this document is not currently up-to-date. It will be updated before the first release of the workflow manager.
@@ -206,6 +190,13 @@ The Task's "args" object should contain the following fields:
 |------|------|------|------|
 |workflow_id|str|Yes|The ID of this workflow as registered on the Argo server.|
 |server_url|url|Yes|The URL of the Argo server.|
+|allow_insecure|bool|No|Allow insecure connections to argo from the plug-in.|
+|messaging_endpoint|url|Yes|Address for RabbitMq, used for a callback message at the end of the Argo workflow.|
+|messaging_username|str|No|The username for RabbitMq.|
+|messaging_password|str|No|The password for RabbitMq.|
+|messaging_topic|str|No|The topic to post to ie. md.tasks.callback.|
+|messaging_exchange|str|No|The exchange to post to. ie monaideploy.|
+|messaging_vhost|str|No|The vhost to post to. ie monaideploy.|
 |parameters|dictionary|No|Key value pairs, Argo parameters that will be passed on to the Argo workflow.|
 |priority_class|string|No|The name of a valid Kubernetes priority class to be assigned to the Argo workflow pods|
 |resources|object|No|A resource requests & limits object (see below). These will be applied to the Argo workflow pods|

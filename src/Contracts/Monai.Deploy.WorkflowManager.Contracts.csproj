@@ -20,6 +20,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>Monai.Deploy.WorkflowManager.Contracts</RootNamespace>
     <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

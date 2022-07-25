@@ -58,7 +58,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         {
             var config = new ConfigurationBuilder()
                 .AddEnvironmentVariables()
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.Test.json")
                 .Build();
 
             TestExecutionConfig.RabbitConfig.Host = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:endpoint");

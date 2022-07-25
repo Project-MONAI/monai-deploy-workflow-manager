@@ -102,7 +102,7 @@ public class ArgoPluginTest
         _serviceScope.Setup(x => x.ServiceProvider).Returns(serviceProvider.Object);
 
         _logger.Setup(p => p.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
-        _argoProvider.Setup(p => p.CreateClient(It.IsAny<string>(), It.IsAny<string?>())).Returns(_argoClient.Object);
+        _argoProvider.Setup(p => p.CreateClient(It.IsAny<string>(), It.IsAny<string?>(), true)).Returns(_argoClient.Object);
         _kubernetesProvider.Setup(p => p.CreateClient()).Returns(_kubernetesClient.Object);
     }
 
@@ -612,6 +612,7 @@ public class ArgoPluginTest
         message.TaskPluginArguments[Keys.MessagingUsername] = "username";
         message.TaskPluginArguments[Keys.MessagingPassword] = "password";
         message.TaskPluginArguments[Keys.MessagingExchange] = "exchange";
+        message.TaskPluginArguments[Keys.MessagingVhost] = "vhost";
         message.TaskPluginArguments[Keys.MessagingTopic] = "topic";
         message.TaskPluginArguments[Keys.Namespace] = "namespace";
         message.TaskPluginArguments[Keys.TimeoutSeconds] = "50";

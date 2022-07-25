@@ -59,9 +59,9 @@ namespace Monai.Deploy.WorkflowManager
                 {
                     var env = builderContext.HostingEnvironment;
                     config
-                        .AddEnvironmentVariables()
                         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                        .AddEnvironmentVariables();
                 })
                 .ConfigureLogging((builderContext, configureLogging) =>
                 {
