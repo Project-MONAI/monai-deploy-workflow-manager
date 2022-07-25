@@ -46,21 +46,17 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         }
 
         [Theory]
-        [InlineData("{{ context.dicom.series.any('0010','0040') }} == 'lordge'", true, "lordge")]
-        [InlineData("{{ context.dicom.series.all('0010','0040') }} == 'lordge'", true, "lordge")]
         [InlineData("{{ context.dicom.series.all('0010','0040') }} == 'lordge' AND " +
-            "{{ context.executions.task['2dbd1af7-b699-4467-8e99-05a0c22422b4'].'Fred' }} == 'Bob' AND " +
-            "{{ context.executions.task['2dbd1af7-b699-4467-8e99-05a0c22422b4'].'fred' }} == 'lowercasefred'", true, "lordge")]
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.metadata.'Fred' }} == 'Bob' AND " +
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.metadata.'fred' }} == 'lowercasefred'", true, "lordge")]
         [InlineData(
-            "{{ context.executions.task['2dbd1af7-b699-4467-8e99-05a0c22422b4'].'Fred' }} == 'Bob' AND " +
-            "{{ context.executions.task['2dbd1af7-b699-4467-8e99-05a0c22422b4'].'fred' }} == 'lowercasefred' AND " +
-            "{{ context.executions.task['2dbd1af7-b699-4467-8e99-05a0c22422b4'].'Sandra' }} == 'YassQueen' OR " +
-            "{{ context.executions.task['other task'].'Fred' }} >= '32' OR " +
-            "{{ context.executions.task['other task'].'Sandra' }} == 'other YassQueen' OR " +
-            "{{ context.executions.task['other task'].'Derick' }} == 'lordge'", true)]
-        [InlineData("'invalid' > 'false'", false)]
-        //[InlineData("{{ context.executions.task['other task'].'Derick' }} == 'lordge'", true)]
-        public void ConditionalParameterParser_WhenGivenCorrectString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.metadata.'Fred' }} == 'Bob' AND " +
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.metadata.'fred' }} == 'lowercasefred' AND " +
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.metadata.'Sandra' }} == 'YassQueen' OR " +
+            "{{ context.executions.other_task.metadata.'Fred' }} >= '32' OR " +
+            "{{ context.executions.other_task.metadata.'Sandra' }} == 'other YassQueen' OR " +
+            "{{ context.executions.other_task.metadata.'Derick' }} == 'lordge'", true)]
+        public void ConditionalParameterParser_WhenGivenCorrectMetadataString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
         {
             _dicom.Setup(w => w.GetAnyValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(() => expectedDicomReturn);
@@ -68,6 +64,45 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 .ReturnsAsync(() => expectedDicomReturn);
 
 
+            var testData = CreateTestData();
+            var workflow = testData.First();
+            workflow.BucketId = "bucket1";
+
+            var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _dicom.Object, _workflowInstanceService.Object, _payloadService.Object, _workflowService.Object);
+
+            var actualResult = conditionalParameterParser.TryParse(input, workflow);
+
+            Assert.Equal(expectedResult, actualResult);
+        }
+
+        [Theory]
+        [InlineData("{{ context.dicom.series.any('0010','0040') }} == 'lordge'", true, "lordge")]
+        [InlineData("{{ context.dicom.series.all('0010','0040') }} == 'lordge'", true, "lordge")]
+        [InlineData("'invalid' > 'false'", false)]
+        public void ConditionalParameterParser_WhenGivenCorrectDicomString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
+        {
+            _dicom.Setup(w => w.GetAnyValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(() => expectedDicomReturn);
+            _dicom.Setup(w => w.GetAllValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(() => expectedDicomReturn);
+
+
+            var testData = CreateTestData();
+            var workflow = testData.First();
+            workflow.BucketId = "bucket1";
+
+            var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _dicom.Object, _workflowInstanceService.Object, _payloadService.Object, _workflowService.Object);
+
+            var actualResult = conditionalParameterParser.TryParse(input, workflow);
+
+            Assert.Equal(expectedResult, actualResult);
+        }
+
+        [Theory]
+        [InlineData("{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.task_id }} == '2dbd1af7-b699-4467-8e99-05a0c22422b4' AND " +
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_id }} == '3c4484bd-e1a4-4347-902e-31a6503edd5f'", true)]
+        public void ConditionalParameterParser_WhenGivenCorrectExecutionString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
+        {
             var testData = CreateTestData();
             var workflow = testData.First();
             workflow.BucketId = "bucket1";
@@ -145,7 +180,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                     {
                         new TaskExecution()
                         {
-                            ExecutionId = Guid.NewGuid().ToString(),
+                            ExecutionId = "3c4484bd-e1a4-4347-902e-31a6503edd5f",
                             TaskId = "2dbd1af7-b699-4467-8e99-05a0c22422b4",
                             TaskType = "Multi_task",
                             Status = TaskExecutionStatus.Succeeded,
@@ -159,7 +194,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = "other task",
+                            TaskId = "other_task",
                             TaskType = "Multi_task",
                             Status = TaskExecutionStatus.Succeeded,
                             Metadata = new Dictionary<string, object>()

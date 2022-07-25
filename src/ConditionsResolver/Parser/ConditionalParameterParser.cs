@@ -247,19 +247,19 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             var subValues = subValue.Split('.');
             var id = subValues[1].Trim('\'');
 
-            var task = WorkflowInstance?.Tasks.First(t => t.TaskId == id);
-
-            if (task is null || task is not null)
-            {
-                return (Result: null, Context: ParameterContext.TaskExecutions);
-            }
-
-            var subValueKey = subValues[2].Split('\'')[1];
-            var keyValue = subValues[3]?.Split('\'')[1];
+            var task = WorkflowInstance?.Tasks.FirstOrDefault(t => t.TaskId == id);
 
             if (task is null)
             {
                 return (Result: null, Context: ParameterContext.TaskExecutions);
+            }
+
+            var subValueKey = subValues[2];
+            string? keyValue = null;
+
+            if (subValues.Length > 3)
+            {
+                keyValue = subValues[3]?.Split('\'')[1];
             }
 
             var resultStr = null as string;
@@ -293,12 +293,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                     break;
             }
 
-            if (resultStr is not null)
-            {
-                return (Result: resultStr, Context: ParameterContext.TaskExecutions);
-            }
-
-            return (Result: null, Context: ParameterContext.TaskExecutions);
+            return (Result: resultStr, Context: ParameterContext.TaskExecutions);
         }
 
         private string? GetValueFromDictionary(Dictionary<string, object> dictionary, string key)
