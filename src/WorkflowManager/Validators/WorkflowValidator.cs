@@ -135,7 +135,8 @@ namespace Monai.Deploy.WorkflowManager.Validators
         {
             if (iterationCount > 100)
             {
-                Errors.Add($"Detected task convergence on path: {string.Join(" => ", paths)} => ∞");
+                Errors.Add($"Detected infinite task loop on path: {string.Join(" => ", paths.Take(5))} => ∞");
+                return;
             }
 
             if (paths == null)

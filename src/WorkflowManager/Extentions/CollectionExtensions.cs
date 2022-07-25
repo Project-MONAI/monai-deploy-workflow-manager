@@ -19,6 +19,5 @@ namespace Monai.Deploy.WorkflowManager.Extentions
         {
             return array is null || array.Count == 0;
         }
-
     }
 }
