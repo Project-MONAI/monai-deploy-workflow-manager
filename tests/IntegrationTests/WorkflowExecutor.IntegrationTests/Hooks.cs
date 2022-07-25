@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Polly;
+using Polly.Retry;
 
 namespace Monai.Deploy.WorkflowManagerIntegrationTests
 {
@@ -26,6 +28,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         }
 
         private static HttpClient? HttpClient { get; set; }
+        public static AsyncRetryPolicy RetryPolicy { get; private set; }
         private static RabbitPublisher? WorkflowPublisher { get; set; }
         private static RabbitConsumer? TaskDispatchConsumer { get; set; }
         private static RabbitPublisher? TaskUpdatePublisher { get; set; }
@@ -75,6 +78,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             MinioClient = new MinioClientUtil();
             Host = WorkflowExecutorStartup.StartWorkflowExecutor();
             HttpClient = new HttpClient();
+            RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
         /// <summary>
@@ -85,30 +89,20 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         [BeforeTestRun(Order = 1)]
         public static async Task CheckWorkflowConsumerStarted()
         {
-            var response = await WorkflowExecutorStartup.GetConsumers(HttpClient);
-            var content = response.Content.ReadAsStringAsync().Result;
-
-            for (var i = 1; i <= 10; i++)
+            await RetryPolicy.ExecuteAsync(async () =>
             {
-                if (string.IsNullOrEmpty(content) || content == "[]")
+                var response = await WorkflowExecutorStartup.GetQueueStatus(HttpClient, TestExecutionConfig.RabbitConfig.VirtualHost, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+                var content = response.Content.ReadAsStringAsync().Result;
+
+                if (content.Contains("error"))
                 {
-                    Debug.Write($"Workflow consumer not started. Recheck times {i}");
-                    response = await WorkflowExecutorStartup.GetConsumers(HttpClient);
-                    content = response.Content.ReadAsStringAsync().Result;
+                    throw new Exception("Workflow Executor not started!");
                 }
                 else
                 {
-                    Debug.Write("Consumer started. Integration tests will begin!");
-                    break;
+                    Console.WriteLine("Workfow Executor started. Integration Tests will begin.");
                 }
-
-                if (i == 10)
-                {
-                    throw new Exception("Workflow Mangaer Consumer not started! Integration tests will not continue");
-                }
-
-                Thread.Sleep(1000);
-            }
+            });
 
             WorkflowPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
             TaskDispatchConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
