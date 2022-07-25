@@ -1,23 +1,24 @@
 <!--
-SPDX-FileCopyrightText: � 2021-2022 MONAI Consortium
- SPDX-License-Identifier: Apache License 2.0
+  ~ Copyright 2021-2022 MONAI Consortium
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
 -->
+
 - [Introduction](#introduction)
   - [Communicate with us](#communicate-with-us)
 - [The contribution process](#the-contribution-process)
   - [Preparing pull requests](#preparing-pull-requests)
-    - [Checking the coding style](#checking-the-coding-style)
-      - [C# Coding Style](#c-coding-style)
-      - [License information](#license-information)
-      - [License Scanning](#license-scanning)
-    - [Test Projects](#test-projects)
-    - [Building the documentation](#building-the-documentation)
-    - [Automatic code formatting](#automatic-code-formatting)
-    - [Signing your work](#signing-your-work)
   - [Submitting pull requests](#submitting-pull-requests)
-    - [Branching](#branching)
-    - [Begin with Your Contribution Journey with a Pull Request](#begin-with-your-contribution-journey-with-a-pull-request)
-      - [When You Are Ready to Merge](#when-you-are-ready-to-merge)
   - [Release a new version](#release-a-new-version)
 
 
@@ -88,8 +89,19 @@ An [EditorConfig](https://editorconfig.org "EditorConfig homepage") file (`.edit
 All source code files should start with this paragraph:
 
 ```
-// SPDX-FileCopyrightText: © [YEAR]-[YEAR] MONAI Consortium
-// SPDX-License-Identifier: Apache License 2.0
+// Copyright 2022 MONAI Consortium
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 ```
 
 ##### License Scanning
