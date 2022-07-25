@@ -589,7 +589,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 It.IsAny<Deploy.Storage.S3Policy.Policies.PolicyRequest[]>()
             )).ReturnsAsync(new Amazon.SecurityToken.Model.Credentials()
             {
-                AccessKeyId = "a",
+                AccessKeyId = "accesskeyidtesttest",
                 SecretAccessKey = "b",
             });
 #pragma warning restore SecurityTokenService1000 // Property value too short

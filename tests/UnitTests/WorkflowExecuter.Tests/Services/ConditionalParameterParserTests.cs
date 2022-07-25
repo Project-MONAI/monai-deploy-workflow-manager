@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
@@ -20,7 +19,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
     {
         private readonly Mock<IDicomService> _dicom;
         private readonly Mock<IWorkflowInstanceService> _workflowInstanceService;
-        private readonly Mock<ILogger<ConditionalParameterParser>>? _logger;
+        private readonly Mock<ILogger<ConditionalParameterParser>> _logger;
         private readonly Mock<IPayloadService> _payloadService;
         private readonly Mock<IWorkflowService> _workflowService;
 
@@ -48,7 +47,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             "{{ context.executions.task['other task'].'Derick' }} == 'lordge'", true)]
         [InlineData("'invalid' > 'false'", false)]
         //[InlineData("{{ context.executions.task['other task'].'Derick' }} == 'lordge'", true)]
-        public async Task ConditionalParameterParser_WhenGivenCorrectString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
+        public void ConditionalParameterParser_WhenGivenCorrectString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
         {
             _dicom.Setup(w => w.GetAnyValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(() => expectedDicomReturn);
@@ -75,7 +74,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         [InlineData("{{ context.input.patient_details.age }}", "'32'")]
         [InlineData("{{ context.input.patient_details.hospital_id }}", "'patienthospitalid'")]
         [InlineData("{{ context.workflow.name }}", "'workflowname'")]
-        public async Task ResolveParametersWhenGivenPatientDetailsString_ShouldReturnValue(string input, string expectedResult)
+        public void ResolveParametersWhenGivenPatientDetailsString_ShouldReturnValue(string input, string expectedResult)
         {
             var testData = CreateTestData();
             var workflow = testData.First();
