@@ -44,17 +44,26 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 }
             };
 
-            var workflowId = Guid.NewGuid().ToString();
             var correlationId = Guid.NewGuid().ToString();
-            var payloadId = Guid.NewGuid().ToString();
-            var bucketName = "bucket";
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = Guid.NewGuid().ToString(),
+                PayloadId = Guid.NewGuid().ToString(),
+                BucketId = "bucket"
+            };
+
+            var outputArtifacts = new Dictionary<string, string>()
+            {
+                { "testoutput", "minio/workflowid/taskid/artifact" }
+            };
 
             var expectedTask = new TaskDispatchEvent
             {
-                WorkflowInstanceId = workflowId,
+                WorkflowInstanceId = workflowInstance.Id,
                 TaskId = task.TaskId,
                 ExecutionId = task.ExecutionId.ToString(),
-                PayloadId = payloadId,
+                PayloadId = workflowInstance.PayloadId,
                 CorrelationId = correlationId,
                 Status = TaskExecutionStatus.Created,
                 TaskPluginType = task.TaskType,
@@ -64,9 +73,20 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                     {
                         SecuredConnection = bool.Parse(configuration.Settings["securedConnection"]),
                         Endpoint = configuration.Settings["endpoint"],
-                        Bucket = bucketName,
+                        Bucket = workflowInstance.BucketId,
                         RelativeRootPath = "value",
                         Name = "key"
+                    }
+                },
+                Outputs = new List<Messaging.Common.Storage>
+                {
+                    new Messaging.Common.Storage
+                    {
+                        SecuredConnection = bool.Parse(configuration.Settings["securedConnection"]),
+                        Endpoint = configuration.Settings["endpoint"],
+                        Bucket = workflowInstance.BucketId,
+                        RelativeRootPath = "minio/workflowid/taskid/artifact",
+                        Name = "testoutput"
                     }
                 },
                 Metadata = task.Metadata,
@@ -76,7 +96,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 },
                 IntermediateStorage = new Messaging.Common.Storage
                 {
-                    Bucket = bucketName,
+                    Bucket = workflowInstance.BucketId,
                     Endpoint = configuration.Settings["endpoint"],
                     Name = task.TaskId,
                     RelativeRootPath = "minio/workflowid/taskid/tmp",
@@ -84,7 +104,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 }
             };
 
-            var taskDispatch = EventMapper.ToTaskDispatchEvent(task, bucketName, workflowId, correlationId, payloadId, configuration);
+            var taskDispatch = EventMapper.ToTaskDispatchEvent(task, workflowInstance, outputArtifacts, correlationId, configuration);
 
             taskDispatch.Should().BeEquivalentTo(expectedTask, options =>
                 options.Excluding(t => t.CorrelationId));

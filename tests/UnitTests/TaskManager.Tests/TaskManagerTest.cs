@@ -585,7 +585,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 It.IsAny<string[]>()
             )).ReturnsAsync(new Amazon.SecurityToken.Model.Credentials()
             {
-                AccessKeyId = "a",
+                AccessKeyId = "accesskeyidtesttest",
                 SecretAccessKey = "b",
             });
 

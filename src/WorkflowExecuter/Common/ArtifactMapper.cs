@@ -22,7 +22,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
         }
 
-        public async Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId)
+        public async Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet = true)
         {
             Guard.Against.Null(artifacts);
             Guard.Against.NullOrWhiteSpace(payloadId);
@@ -45,9 +45,9 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                     throw new FileNotFoundException($"Mandatory artifact failed to be parsed: {artifact.Name}, {artifact.Value}");
                 }
 
-                var mappedArtifact = await ConvertVariableStringToPath(artifact, variableString, workflowInstanceId, payloadId, bucketId);
+                var mappedArtifact = await ConvertVariableStringToPath(artifact, variableString, workflowInstanceId, payloadId, bucketId, shouldExistYet);
 
-                if (!mappedArtifact.Equals(default(KeyValuePair<string, string>)))
+                if (mappedArtifact.Equals(default(KeyValuePair<string, string>)) is false)
                 {
                     artifactPathDictionary.Add(mappedArtifact.Key, mappedArtifact.Value);
 
@@ -79,11 +79,11 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             return true;
         }
 
-        private async Task<KeyValuePair<string, string>> ConvertVariableStringToPath(Artifact artifact, string variableString, string workflowInstanceId, string payloadId, string bucketId)
+        private async Task<KeyValuePair<string, string>> ConvertVariableStringToPath(Artifact artifact, string variableString, string workflowInstanceId, string payloadId, string bucketId, bool shouldExistYet)
         {
             if (variableString.StartsWith("context.input.dicom", StringComparison.InvariantCultureIgnoreCase))
             {
-                return await _storageService.VerifyObjectExistsAsync(bucketId, new KeyValuePair<string, string>(artifact.Name, $"{payloadId}/dcm/"));
+                return await VerifyExists(new KeyValuePair<string, string>(artifact.Name, $"{payloadId}/dcm/"), bucketId, shouldExistYet);
             }
 
             if (variableString.StartsWith("context.executions", StringComparison.InvariantCultureIgnoreCase))
@@ -97,7 +97,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
                 if (string.Equals(variableLocation, "output_dir", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    return await _storageService.VerifyObjectExistsAsync(bucketId, new KeyValuePair<string, string>(artifact.Name, task.OutputDirectory));
+                    return await VerifyExists(new KeyValuePair<string, string>(artifact.Name, task.OutputDirectory), bucketId, shouldExistYet);
                 }
 
                 if (string.Equals(variableLocation, "artifacts", StringComparison.InvariantCultureIgnoreCase))
@@ -105,14 +105,26 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                     var artifactName = variableWords[4];
                     var outputArtifact = task.OutputArtifacts.FirstOrDefault(a => a.Key == artifactName);
 
-                    if (!outputArtifact.Equals(default(KeyValuePair<string, string>)))
-                    {
-                        return await _storageService.VerifyObjectExistsAsync(bucketId, new KeyValuePair<string, string>(outputArtifact.Key, outputArtifact.Value));
-                    }
+                    return await VerifyExists(outputArtifact, bucketId, shouldExistYet);
                 }
             }
 
             return default;
+        }
+
+        private async Task<KeyValuePair<string, string>> VerifyExists(KeyValuePair<string, string> artifact, string bucketId, bool shouldExistYet)
+        {
+            if (artifact.Equals(default(KeyValuePair<string, string>)))
+            {
+                return default;
+            }
+
+            if (shouldExistYet)
+            {
+                artifact = await _storageService.VerifyObjectExistsAsync(bucketId, artifact);
+            }
+
+            return artifact;
         }
     }
 }

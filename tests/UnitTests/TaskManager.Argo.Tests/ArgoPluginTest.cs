@@ -505,21 +505,21 @@ public class ArgoPluginTest
         var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, message);
         var result = await runner.GetStatus("identity", CancellationToken.None).ConfigureAwait(false);
 
-        var objNodeInfo = result?.Stats?["nodeInfo"];
+        var objNodeInfo = result?.Stats;
         Assert.NotNull(objNodeInfo);
-        var nodeInfo = ToDictionary<Dictionary<string, object>>(objNodeInfo);
+        var nodeInfo = ValiateCanConvertToDictionary(objNodeInfo);
 
-        Assert.Equal(3, nodeInfo.Values.Count);
-        Assert.Equal("firstId", nodeInfo["first"]["id"]);
+        Assert.Equal(7, nodeInfo.Values.Count);
+        Assert.Equal("{\"id\":\"firstId\"}", nodeInfo["nodes.first"]);
         Assert.Empty(result?.Errors);
 
         _argoClient.Verify(p => p.WorkflowService_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
     }
 
-    public static Dictionary<string, TValue> ToDictionary<TValue>(object obj)
+    public static Dictionary<string, string> ValiateCanConvertToDictionary(object obj)
     {
         var json = JsonConvert.SerializeObject(obj, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-        var dictionary = JsonConvert.DeserializeObject<Dictionary<string, TValue>>(json);
+        var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
         return dictionary;
     }
 
