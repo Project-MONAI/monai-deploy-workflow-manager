@@ -42,52 +42,43 @@
           "System.IO.Abstractions": "17.0.18"
         }
       },
-      "Monai.Deploy.Messaging.RabbitMQ": {
-        "type": "Direct",
-        "requested": "[0.1.3-rc0010, )",
-        "resolved": "0.1.3-rc0010",
-        "contentHash": "kbyUmtm3j1/Le4c34W6rIDZ01vb9n+DbmhwhxZ+WiyNXJ0JMubZ/2Vto7NrQSXhSoMMOgXAPA606GKpcaRvVSQ==",
-        "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.3-rc0010"
-        }
-      },
       "MongoDB.Bson": {
         "type": "Direct",
-        "requested": "[2.15.0, )",
-        "resolved": "2.15.0",
-        "contentHash": "5uPSADVLydGJ4CbmjrsQn7v3NugSdx6htJ4cMNbo8youlfBa5v6YbEqztbipnl+dT1L/YBkJKZ1DDp6LWl0Hqw==",
+        "requested": "[2.17.0, )",
+        "resolved": "2.17.0",
+        "contentHash": "wGUX8GMQ0DYG68u1ENAUtJTx6cmQTt6/BfMjqB+Q+aWu2ZkBZ09mA1QbBU5mcbVqulF5U72bGzxChtjYxaS9Dg==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "5.0.0"
         }
       },
       "MongoDB.Driver": {
         "type": "Direct",
-        "requested": "[2.15.0, )",
-        "resolved": "2.15.0",
-        "contentHash": "MaDExORt2JLBHFlG3dJZIdQlZsfK8YjfEbXJECqAU/Ez8BwbJwjHS0AjOBQZPj3U4UDU5pnGYiQn4P0dM9DnMw==",
+        "requested": "[2.17.0, )",
+        "resolved": "2.17.0",
+        "contentHash": "NFqjuDNrGNGEsblqoKBoOSUU8vx1UbZjKP3nVhxhGnK9p8ef0t3fyPcjxmYbO5vdFpDQw2A0Ly4dPzyRW3QEug==",
         "dependencies": {
-          "MongoDB.Bson": "2.15.0",
-          "MongoDB.Driver.Core": "2.15.0",
-          "MongoDB.Libmongocrypt": "1.3.0"
+          "MongoDB.Bson": "2.17.0",
+          "MongoDB.Driver.Core": "2.17.0",
+          "MongoDB.Libmongocrypt": "1.5.4"
         }
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.12.2",
-        "contentHash": "P0VKY4Y3/UWaj7Spn/q/A2utEu5NMuJ7tHWLAB7rcTubsPR7LCuIzBlIypSUgDyS4OWnFxwB1hBHF2iklAR0KA=="
+        "resolved": "3.7.12.11",
+        "contentHash": "Tb6llf5tUU8FiptuB6Xq8vaJpxXDRcWL39nkEiHkDhdctj9l2kPL0DydrCNCAVwLWWTlPXyLUD8i37Rm0mRjaw=="
       },
       "AWSSDK.SecurityToken": {
         "type": "Transitive",
-        "resolved": "3.7.1.167",
-        "contentHash": "ITsuRFaz3qSsWKrjsjOMFeOEp8+7EFdQbg/GXk6YuBKuPurmBCz+ydaLNfbe5Imc+NdG1A/4vCebYFBghZIEWg==",
+        "resolved": "3.7.1.176",
+        "contentHash": "VrUC7q6XTUUNVFlMxPKXKNRdXcZm+I7qOj3EFGOmNXVwmIGM4IsV1V5sCCb2KWZ9Thv/RlR3dA+YxjFP3a/3vw==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.12.2, 4.0.0)"
+          "AWSSDK.Core": "[3.7.12.11, 4.0.0)"
         }
       },
       "DnsClient": {
         "type": "Transitive",
-        "resolved": "1.6.0",
-        "contentHash": "kVd3IxAs5EQZSKTQhMUaJmuOQ1n2VWKExatdqNszsxxKzTB+Toaxx3M1DsN3yKfHloMXPmt6fgfcOqRwKheoUQ==",
+        "resolved": "1.6.1",
+        "contentHash": "4H/f2uYJOZ+YObZjpY9ABrKZI+JNw3uizp6oMzTXwDw6F+2qIPhpRl/1t68O/6e98+vqNiYGu+lswmwdYUy3gg==",
         "dependencies": {
           "Microsoft.Win32.Registry": "5.0.0"
         }
@@ -164,20 +155,20 @@
       },
       "MongoDB.Driver.Core": {
         "type": "Transitive",
-        "resolved": "2.15.0",
-        "contentHash": "oEfGhyxHDmH3KhRHPZqVEYSfLqFwOLrY5zMszbELKNxrgkJj82MNJ8AzGVOsayaxtrQqqcAGfyQK8Ecc1yoc0Q==",
+        "resolved": "2.17.0",
+        "contentHash": "bQLdFZNywlApJ5H5KnFXxGik3dZ/VOIUQ7YQniZd9eNmNZFEwEMr+/yoCJ8FigyzOd7iKYOLpmUWGwG2M2e2aQ==",
         "dependencies": {
-          "DnsClient": "1.6.0",
-          "MongoDB.Bson": "2.15.0",
-          "MongoDB.Libmongocrypt": "1.3.0",
+          "DnsClient": "1.6.1",
+          "MongoDB.Bson": "2.17.0",
+          "MongoDB.Libmongocrypt": "1.5.4",
           "SharpCompress": "0.30.1",
           "System.Buffers": "4.5.1"
         }
       },
       "MongoDB.Libmongocrypt": {
         "type": "Transitive",
-        "resolved": "1.3.0",
-        "contentHash": "BAvqY/otOsmAGTsmzIYXRFysvpu8X7rYkDzEBX4iBlrF57SB+fD5px9sCPR6sETgfZ6k98qUNS6go5wtY9WOBA=="
+        "resolved": "1.5.4",
+        "contentHash": "JQrfonPIGey2n38tYmhkYOjmoHeGCwvbEru/G7zciYcx198neZerSPylIt6kTGtpGQDMhjCg0Nvt9eCBm6TWZQ=="
       },
       "Newtonsoft.Json": {
         "type": "Transitive",
@@ -253,11 +244,10 @@
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.SecurityToken": "3.7.1.167",
+          "AWSSDK.SecurityToken": "3.7.1.176",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Monai.Deploy.Messaging": "0.1.3-rc0010",
-          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0010",
-          "MongoDB.Bson": "2.15.0",
+          "MongoDB.Bson": "2.17.0",
           "Newtonsoft.Json": "13.0.1"
         }
       },

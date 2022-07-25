@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.Diagnostics;
-using BoDi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
@@ -58,6 +57,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             TestExecutionConfig.RabbitConfig.TaskCallbackQueue = "md.tasks.callback";
             TestExecutionConfig.RabbitConfig.TaskUpdateQueue = "md.tasks.update";
             TestExecutionConfig.RabbitConfig.ClinicalReviewQueue = "aide.clinical_review.request";
+
+            TestExecutionConfig.MongoConfig.ConnectionString = config.GetValue<string>("WorkloadManagerDatabase:ConnectionString");
+            TestExecutionConfig.MongoConfig.Database = config.GetValue<string>("WorkloadManagerDatabase:DatabaseName");
+            TestExecutionConfig.MongoConfig.TaskDispatchEventCollection = config.GetValue<string>("WorkloadManagerDatabase:TaskDispatchEventCollectionName");
 
             TestExecutionConfig.MinioConfig.Endpoint = config.GetValue<string>("WorkflowManager:storage:settings:endpoint");
             TestExecutionConfig.MinioConfig.AccessKey = config.GetValue<string>("WorkflowManager:storage:settings:accessKey");
