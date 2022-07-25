@@ -38,9 +38,14 @@
         public static readonly string WorkflowName = "workflow_name";
 
         /// <summary>
-        /// Key for the reviewed task details.
+        /// Key for the reviewed task id.
         /// </summary>
-        public static readonly string ReviewedTaskDetails = "reviewed_task_details";
+        public static readonly string ReviewedTaskId = "reviewed_task_id";
+
+        /// <summary>
+        /// Key for the reviewed execution id.
+        /// </summary>
+        public static readonly string ReviewedExecutionId = "reviewed_execution_id";
 
         /// <summary>
         /// Key for the queue name to send the clinical review message.
@@ -53,7 +58,8 @@
         public static readonly IReadOnlyList<string> RequiredParameters =
             new List<string> {
                 QueueName,
-                WorkflowName
+                WorkflowName,
+                ReviewedTaskId
             };
     }
 }
