@@ -26,7 +26,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             TaskDispatchConsumer = objectContainer.Resolve<RabbitConsumer>("TaskDispatchConsumer");
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
             MinioClient = objectContainer.Resolve<MinioClientUtil>();
-            Assertions = new Assertions();
+            Assertions = new Assertions(objectContainer);
             DataHelper = objectContainer.Resolve<DataHelper>();
             _outputHelper = outputHelper;
         }

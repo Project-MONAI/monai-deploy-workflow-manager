@@ -21,7 +21,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
             DataHelper = objectContainer.Resolve<DataHelper>();
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
-            Assertions = new Assertions();
+            Assertions = new Assertions(objectContainer);
             _outputHelper = outputHelper;
         }
 
