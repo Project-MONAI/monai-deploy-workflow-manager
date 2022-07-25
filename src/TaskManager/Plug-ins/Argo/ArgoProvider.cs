@@ -14,7 +14,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
     public class ArgoProvider : IArgoProvider
     {
         private readonly ILogger<ArgoProvider> _logger;
-        private readonly HttpClientHandler? _handler;
         private readonly IHttpClientFactory _clientFactory;
 
         public ArgoProvider(ILogger<ArgoProvider> logger, IHttpClientFactory httpClientFactory)
@@ -26,21 +25,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         public IArgoClient CreateClient(string baseUrl, string? apiToken, bool allowInsecure = true)
         {
             Guard.Against.NullOrWhiteSpace(baseUrl, nameof(baseUrl));
-            Guard.Against.Null(_handler);
 
             _logger.CreatingArgoClient(baseUrl);
 
-            if (allowInsecure)
-            {
-                _handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-                _handler.ServerCertificateCustomValidationCallback =
-                    (httpRequestMessage, cert, cetChain, policyErrors) =>
-                    {
-                        return true;
-                    };
-            }
+            var ClientName = allowInsecure is true ? "Argo-Insecure" : "Argo";
 
-            var httpClient = new HttpClient(_handler);
+            var httpClient = _clientFactory.CreateClient(ClientName);
+
+            Guard.Against.Null(httpClient);
+
             if (apiToken is not null)
             {
                 httpClient.SetBearerToken(apiToken);

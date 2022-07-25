@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -24,7 +24,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="Minio" Version="4.0.4" />
     <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.3-rc0010" />
-    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.0-rc0012" />
+    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.0-rc0009" />
     <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
     <PackageReference Include="Polly" Version="7.2.3" />
     <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />

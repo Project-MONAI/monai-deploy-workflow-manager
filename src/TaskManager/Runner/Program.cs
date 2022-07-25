@@ -167,6 +167,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                     services.AddSingleton<IKubernetesProvider, KubernetesProvider>();
                     services.AddTransient<IFileSystem, FileSystem>();
 
+                    services.AddHttpClient("Argo");
+                    services.AddHttpClient("Argo-Insecure").ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                    {
+                        ClientCertificateOptions = ClientCertificateOption.Manual,
+                        ServerCertificateCustomValidationCallback =
+                            (httpRequestMessage, cert, cetChain, policyErrors) =>
+                            {
+                                return true;
+                            }
+                    });
+
                     services.AddHostedService<TaskManager>(p => p.GetRequiredService<TaskManager>());
                 });
     }
