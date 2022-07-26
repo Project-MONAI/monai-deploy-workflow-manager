@@ -27,7 +27,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             Exchange = exchange;
             RoutingKey = routingKey;
             Channel = channel;
-            Queue = Channel.QueueDeclare(queue: string.Empty, durable: true, exclusive: false, autoDelete: false);
+            Queue = Channel.QueueDeclare(queue: routingKey, durable: true, exclusive: false, autoDelete: false);
             Channel.QueueBind(Queue.QueueName, Exchange, RoutingKey);
             Channel.ExchangeDeclare(Exchange, ExchangeType.Topic, durable: true);
         }

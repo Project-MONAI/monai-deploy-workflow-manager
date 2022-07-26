@@ -189,7 +189,6 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         }
 
         [AfterScenario]
-        [BeforeScenario]
         public void PurgeRabbitMessages()
         {
             RabbitConnectionFactory.PurgeQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
