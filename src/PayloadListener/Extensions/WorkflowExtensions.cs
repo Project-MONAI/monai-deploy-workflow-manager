@@ -168,7 +168,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
         {
             Guard.Against.NullOrWhiteSpace(source, nameof(source));
 
-            if (args != null) return true;
+            if (!args.IsNullOrEmpty()) return true;
 
             validationErrors?.Add($"'{args}' is not a valid {nameof(args)} (source: {source}).");
 

@@ -35,18 +35,26 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
-        public IArgoClient CreateClient(string baseUrl, string? apiToken)
+        public IArgoClient CreateClient(string baseUrl, string? apiToken, bool allowInsecure = true)
         {
             Guard.Against.NullOrWhiteSpace(baseUrl, nameof(baseUrl));
 
             _logger.CreatingArgoClient(baseUrl);
-            var httpClient = _httpClientFactory.CreateClient();
+
+            var ClientName = allowInsecure is true ? "Argo-Insecure" : "Argo";
+
+            var httpClient = _httpClientFactory.CreateClient(ClientName);
+
+            Guard.Against.Null(httpClient);
+
             if (apiToken is not null)
             {
                 httpClient.SetBearerToken(apiToken);
             }
             return new ArgoClient(httpClient) { BaseUrl = baseUrl };
         }
+
+
     }
 
 #pragma warning restore CA1054 // URI-like parameters should not be strings

@@ -70,7 +70,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
 #pragma warning restore CA1822 // Mark members as static
         {
 
-            if (env.IsDevelopment())
+            if (env.IsProduction() is false)
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
