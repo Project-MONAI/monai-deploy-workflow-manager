@@ -41,7 +41,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         }
 
         private static HttpClient? HttpClient { get; set; }
-        public static AsyncRetryPolicy RetryPolicy { get; private set; }
+        public static AsyncRetryPolicy? RetryPolicy { get; private set; }
         private static RabbitPublisher? WorkflowPublisher { get; set; }
         private static RabbitConsumer? TaskDispatchConsumer { get; set; }
         private static RabbitPublisher? TaskUpdatePublisher { get; set; }
@@ -117,9 +117,9 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
                 }
             });
 
-            WorkflowPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
-            TaskDispatchConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-            TaskUpdatePublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            WorkflowPublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+            TaskDispatchConsumer = new RabbitConsumer(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            TaskUpdatePublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
         }
 
         /// <summary>
@@ -183,9 +183,17 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
 
                 foreach (var workflowRevision in dataHelper.WorkflowRevisions)
                 {
-                    MongoClient.DeleteWorkflowRevisionDocumentByWorkflowId(workflowRevision.WorkflowId);
+                    MongoClient?.DeleteWorkflowRevisionDocumentByWorkflowId(workflowRevision.WorkflowId);
                 }
             }
+        }
+
+        [AfterScenario]
+        public void PurgeRabbitMessages()
+        {
+            RabbitConnectionFactory.PurgeQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            RabbitConnectionFactory.PurgeQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            RabbitConnectionFactory.PurgeQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
         }
 
         /// <summary>
