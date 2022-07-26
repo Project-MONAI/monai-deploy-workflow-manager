@@ -296,7 +296,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             return (Result: resultStr, Context: ParameterContext.TaskExecutions);
         }
 
-        private string? GetValueFromDictionary(Dictionary<string, object> dictionary, string key)
+        private static string? GetValueFromDictionary(Dictionary<string, object> dictionary, string key)
         {
             if (key is null)
             {
