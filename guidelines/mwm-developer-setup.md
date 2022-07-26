@@ -16,8 +16,12 @@
 
 # Developer local setup
 
-## assumptions
-you have kubernetes running locally either via Docker desktop or microk8s (or similar) and have python 3 installed.
+## assumptions / prerequisites
+- kubernetes running locally either via Docker desktop or microk8s (or similar) 
+- python 3 installed.
+- Helm 3 https://helm.sh/docs/intro/install/
+- rabbitmqadmin https://www.rabbitmq.com/management-cli.html
+
 you may also have to copy mc.exe to the excuatable folder (\bin\Debug\net6.0)
 
 ### steps
