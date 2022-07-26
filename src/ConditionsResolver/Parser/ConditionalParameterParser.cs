@@ -283,8 +283,11 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 case "previous_task_id":
                     resultStr = task.PreviousTaskId;
                     break;
-                case "metadata":
-                    resultStr = GetValueFromDictionary(task.Metadata, keyValue);
+                case "error_msg":
+                    resultStr = task.Reason.ToString();
+                    break;
+                case "result":
+                    resultStr = GetValueFromDictionary(task.ResultMetadata, keyValue);
                     break;
                 case "start_time":
                     resultStr = task.TaskStartTime?.ToString(new CultureInfo("en-GB"));

@@ -176,7 +176,7 @@ Each Artifact contains at least two elements:
 |------|------|------|-----|
 |name|str|Always|The name of this artifact.|
 |value|Artifact identifier|Required for inputs, optional for outputs.|The context variable for this artifact (see example). If defined for output, that value will be used instead of a Task-generated one.|
-| mandatory| bool | No (default false) | Determines whether this artifact is mandatory. If a mandatory artifact doesn't exist the task is marked as a failure and workflow execution stops. |
+| mandatory| bool | No (default true) | Determines whether this artifact is mandatory. If a mandatory artifact doesn't exist the task is marked as a failure and workflow execution stops. |
 
 
 As you can see in the example below, input artifacts require a _value_. This is a reference to a previously generated artifact, or to `context.input` - a value for an artifact representing the original input that triggered the workflow.
@@ -271,7 +271,6 @@ The Execution object contains the following properties:
 |------|------|------|
 |execution_id|str|The unique ID identifying task execution.|
 |task_id|str|The ID of this task in the workflow.|
-|input_dir|str|Path to the input directory of this task.|
 |output_dir|str|Path to the output directory of this task.|
 |task|dict|The details of the executed task. Similar to the Task definition in the workflow spec.|
 |start_time|timestamp|The UTC timestamp of when this task execution began.

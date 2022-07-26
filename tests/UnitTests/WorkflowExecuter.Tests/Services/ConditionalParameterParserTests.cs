@@ -47,16 +47,16 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
         [Theory]
         [InlineData("{{ context.dicom.series.all('0010','0040') }} == 'lordge' AND " +
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.metadata.'Fred' }} == 'Bob' AND " +
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.metadata.'fred' }} == 'lowercasefred'", true, "lordge")]
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'Fred' }} == 'Bob' AND " +
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'fred' }} == 'lowercasefred'", true, "lordge")]
         [InlineData(
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.metadata.'Fred' }} == 'Bob' AND " +
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.metadata.'fred' }} == 'lowercasefred' AND " +
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.metadata.'Sandra' }} == 'YassQueen' OR " +
-            "{{ context.executions.other_task.metadata.'Fred' }} >= '32' OR " +
-            "{{ context.executions.other_task.metadata.'Sandra' }} == 'other YassQueen' OR " +
-            "{{ context.executions.other_task.metadata.'Derick' }} == 'lordge'", true)]
-        public void ConditionalParameterParser_WhenGivenCorrectMetadataString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'Fred' }} == 'Bob' AND " +
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'fred' }} == 'lowercasefred' AND " +
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'Sandra' }} == 'YassQueen' OR " +
+            "{{ context.executions.other_task.result.'Fred' }} >= '32' OR " +
+            "{{ context.executions.other_task.result.'Sandra' }} == 'other YassQueen' OR " +
+            "{{ context.executions.other_task.result.'Derick' }} == 'lordge'", true)]
+        public void ConditionalParameterParser_WhenGivenCorrectResultMetadataString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
         {
             _dicom.Setup(w => w.GetAnyValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(() => expectedDicomReturn);
@@ -189,7 +189,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                             OutputDirectory = "output/dir",
                             TaskStartTime = new DateTime(2022, 12, 25),
                             Status = TaskExecutionStatus.Succeeded,
-                            Metadata = new Dictionary<string, object>()
+                            ResultMetadata = new Dictionary<string, object>()
                             {
                                 { "Fred", "Bob" },
                                 { "fred", "lowercasefred" },
@@ -202,7 +202,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                             TaskId = "other_task",
                             TaskType = "Multi_task",
                             Status = TaskExecutionStatus.Succeeded,
-                            Metadata = new Dictionary<string, object>()
+                            ResultMetadata = new Dictionary<string, object>()
                             {
                                 { "Fred", "55" },
                                 { "fred", "other lowercasefred" },
