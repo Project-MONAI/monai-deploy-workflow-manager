@@ -49,7 +49,7 @@ save the file, now `http://minio:9001` will route to you local machine
 - open browser `http://minio:9001/buckets/` 
 - log in with `admin` `password`
 - using the UI make a bucket called `bucket1` 
-- and a folder called `00000000-1000-0000-0000-000000000000/dcm/`
+- and a folder called `00000000-1000-0000-0000-000000000000/dcm/` be careful not to put spaces before or after this name.
 - make an empty local file called `input_diacom` and drag this into the created folder in the browser.
 
 ### add rabbit and mongo services
