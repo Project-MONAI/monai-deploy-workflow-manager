@@ -166,5 +166,41 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 Thread.Sleep(1000);
             }
         }
+
+        [Then(@"Input artifacts are mapped")]
+        public void ThenInputArtifactsAreMapped()
+        {
+            _outputHelper.WriteLine($"Retrieving workflow instance using the payloadid={DataHelper.WorkflowRequestMessage.PayloadId}");
+            var workflowInstances = DataHelper.GetWorkflowInstances(1, DataHelper.WorkflowRequestMessage.PayloadId.ToString());
+            _outputHelper.WriteLine("Retrieved workflow instance");
+
+            if (workflowInstances != null)
+            {
+                foreach (var workflowInstance in workflowInstances)
+                {
+                    var workflowRevision = DataHelper.WorkflowRevisions.OrderByDescending(x => x.Revision).FirstOrDefault(x => x.WorkflowId.Equals(workflowInstance.WorkflowId));
+
+                    if (workflowRevision != null)
+                    {
+                        foreach (var task in workflowInstance.Tasks)
+                        {
+                            var workflowTask = workflowRevision.Workflow.Tasks.FirstOrDefault(x => x.Id.Equals(task.TaskId));
+                            if (workflowTask != null)
+                            {
+                                Assertions.AssertInputArtifacts(workflowRevision, DataHelper.WorkflowRequestMessage, task);
+                            }
+                            else
+                            {
+                                throw new Exception($"Workflow Revision Task or {task.TaskId} not found!");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception($"Workflow not found for workflowId {workflowInstance.WorkflowId}");
+                    }
+                }
+            }
+        }
     }
 }

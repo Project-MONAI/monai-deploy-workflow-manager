@@ -29,7 +29,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 {
                     task.TaskId.Should().Match(workflowTask.Id);
                     task.TaskType.Should().Match(workflowTask.Type);
-                    AssertInputArtifacts(workflowRevision, workflowRequestMessage, task);
                     AssertOutputArtifacts(workflowRevision, workflowRequestMessage, task, workflowInstance);
                 }
                 else
@@ -49,10 +48,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     {
                         if (artifact.Value == "{{ context.input.dicom }}")
                         {
-                            if (MinioClient.CheckFileExists(workflowRequestMessage.Bucket, $"{workflowRequestMessage.PayloadId.ToString()}/dcm/").Result)
-                            {
-                                task.InputArtifacts[artifact.Name].Should().Match($"{workflowRequestMessage.PayloadId}/dcm/");
-                            }
+                            task.InputArtifacts[artifact.Name].Should().Match($"{workflowRequestMessage.PayloadId}/dcm/");
                         }
                     }
                 }

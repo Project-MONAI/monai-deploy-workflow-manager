@@ -770,6 +770,53 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+            new WorkflowInstanceTestData()
+            {
+                Name = "Artifact_WFI_Mandatory_Double_Null",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = "87530a73-4f7f-4d4f-8498-8ce97e4c89c6",
+                    AeTitle = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_Null").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_Null").WorkflowRevision.WorkflowId,
+                    PayloadId = "02a865ea-064c-43f5-a3c7-35cd23fa89af",
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = "bucket_1",
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = "8f1b1fde-9c9e-4007-b424-329532920dae",
+                            TaskId = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_Null").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_Null").WorkflowRevision?.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Accepted,
+                            InputArtifacts =
+                            {
+                                { "Dicom", "02a865ea-064c-43f5-a3c7-35cd23fa89af/dcm/" }
+                            },
+                            OutputArtifacts = null,
+                            OutputDirectory = "02a865ea-064c-43f5-a3c7-35cd23fa89af/workflows/87530a73-4f7f-4d4f-8498-8ce97e4c89c6/8f1b1fde-9c9e-4007-b424-329532920dae/"
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = "60128c63-64ab-4d39-a221-74520e2c646c",
+                            TaskId = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_Null").WorkflowRevision?.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_Null").WorkflowRevision?.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Accepted,
+                            InputArtifacts =
+                            {
+                                { "Dicom", "02a865ea-064c-43f5-a3c7-35cd23fa89af/dcm/" }
+                            },
+                            OutputArtifacts = null,
+                            OutputDirectory = "02a865ea-064c-43f5-a3c7-35cd23fa89af/workflows/87530a73-4f7f-4d4f-8498-8ce97e4c89c6/8f1b1fde-9c9e-4007-b424-329532920dae/"
+                        }
+                    }
+                }
+            },
         };
     }
 }

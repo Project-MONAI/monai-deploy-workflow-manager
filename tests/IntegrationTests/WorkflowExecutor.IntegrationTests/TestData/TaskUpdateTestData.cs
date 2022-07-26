@@ -400,6 +400,22 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+            new TaskUpdateTestData()
+            {
+                Name = "Task_Update_Artifact_Mandatory_Double_Null",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("Artifact_WFI_Mandatory_Double_Null").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("Artifact_WFI_Mandatory_Double_Null").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("Artifact_WFI_Mandatory_Double_Null").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
         };
     }
 }
