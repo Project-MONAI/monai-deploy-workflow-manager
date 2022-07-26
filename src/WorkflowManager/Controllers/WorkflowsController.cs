@@ -133,11 +133,10 @@ public class WorkflowsController : ApiControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] Workflow workflow)
     {
-        var validator = new WorkflowValidator();
-        var workflowHasErrors = validator.ValidateWorkflow(workflow);
+        var workflowHasErrors = WorkflowValidator.ValidateWorkflow(workflow, out var results);
         if (workflowHasErrors)
         {
-            var errors = string.Join(", ", validator.Errors);
+            var errors = string.Join(", ", results.Errors);
             _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {errors}");
 
             return Problem($"Failed to validate {nameof(workflow)}: {errors}", $"/workflows", BadRequest);
@@ -173,12 +172,10 @@ public class WorkflowsController : ApiControllerBase
             return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", BadRequest);
         }
 
-        var validator = new WorkflowValidator();
-
-        var workflowHasErrors = validator.ValidateWorkflow(workflow);
+        var workflowHasErrors = WorkflowValidator.ValidateWorkflow(workflow, out var results);
         if (workflowHasErrors)
         {
-            var errors = string.Join(", ", validator.Errors);
+            var errors = string.Join(", ", results.Errors);
             _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {errors}");
 
             return Problem($"Failed to validate {nameof(workflow)}: {errors}", $"/workflows/{id}", BadRequest);

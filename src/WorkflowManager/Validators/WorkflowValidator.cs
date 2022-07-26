@@ -20,7 +20,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Extentions;
 using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
 
 namespace Monai.Deploy.WorkflowManager.Validators
@@ -28,29 +27,26 @@ namespace Monai.Deploy.WorkflowManager.Validators
     /// <summary>
     /// Workflow Validator used for validating workflows.
     /// </summary>
-    public class WorkflowValidator
+    public static class WorkflowValidator
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowValidator"/> class.
+        /// Gets or sets errors from workflow validation.
         /// </summary>
-        public WorkflowValidator()
+        private static List<string> Errors { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Gets or sets successful task paths. (not accounting for conditons).
+        /// </summary>
+        private static List<string> SuccessfulPaths { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Resets the validator.
+        /// </summary>
+        public static void Reset()
         {
+            Errors.Clear();
+            SuccessfulPaths.Clear();
         }
-
-        /// <summary>
-        /// Gets a value indicating whether result of ValidateWorkflow which is if workflow is valid.
-        /// </summary>
-        public bool IsWorkflowValid { get => !Errors.Any(); }
-
-        /// <summary>
-        /// Gets errors from workflow validation.
-        /// </summary>
-        public List<string> Errors { get; private set; } = new List<string>();
-
-        /// <summary>
-        /// Gets successful task paths. (not accounting for conditons).
-        /// </summary>
-        public List<string> SuccessfulPaths { get; private set; } = new List<string>();
 
         /// <summary>
         /// Validates workflow against...
@@ -64,7 +60,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// </summary>
         /// <param name="workflow">Workflow to validate.</param>
         /// <returns>if any validation errors are produced while validating workflow.</returns>
-        public bool ValidateWorkflow(Workflow workflow)
+        public static bool ValidateWorkflow(Workflow workflow, out (List<string> Errors, List<string> SuccessfulPaths) results)
         {
             workflow.IsValid(out var validationErrors);
             Errors.AddRange(validationErrors);
@@ -77,14 +73,22 @@ namespace Monai.Deploy.WorkflowManager.Validators
             ValidateTaskDestinations(workflow);
             ValidateExportDestinations(workflow);
 
-            return Errors.Any();
+            results = (Errors.ToList(), SuccessfulPaths.ToList());
+            Reset();
+            return results.Errors.Any();
         }
 
-        private void ValidateExportDestinations(Workflow workflow)
+        private static void ValidateExportDestinations(Workflow workflow)
         {
-            foreach (var task in workflow.Tasks.Where(task => task.ExportDestinations is not null))
+            foreach (var task in workflow.Tasks.Where(task => task.ExportDestinations.IsNullOrEmpty() is false))
             {
                 var taskExportDestinationNames = task.ExportDestinations.Select(td => td.Name);
+                if (taskExportDestinationNames.Any() && workflow.InformaticsGateway.ExportDestinations.IsNullOrEmpty())
+                {
+                    Errors.Add("InformaticsGateway ExportDestinations destinations can not be null");
+                    return;
+                }
+
                 var diff = taskExportDestinationNames.Except(workflow.InformaticsGateway.ExportDestinations).ToList();
                 if (!diff.IsNullOrEmpty())
                 {
@@ -100,7 +104,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// Make sure all task destinations reference existings tasks.
         /// </summary>
         /// <param name="workflow">workflow.</param>
-        private void ValidateTaskDestinations(Workflow workflow)
+        private static void ValidateTaskDestinations(Workflow workflow)
         {
             var tasksDestinations = workflow.Tasks.Where(task => task.TaskDestinations is not null)
                 .SelectMany(task => task.TaskDestinations.Select(td => td.Name));
@@ -115,7 +119,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void DetectUnreferencedTasks(TaskObject[] tasks, TaskObject firstTask)
+        private static void DetectUnreferencedTasks(TaskObject[] tasks, TaskObject firstTask)
         {
             var otherTasks = tasks.Where(t => t.Id != firstTask.Id);
             var ids = otherTasks.Select(t => t.Id);
@@ -129,7 +133,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void ValidateWorkflowSpec(Workflow workflow)
+        private static void ValidateWorkflowSpec(Workflow workflow)
         {
             if (string.IsNullOrWhiteSpace(workflow.Name))
             {
@@ -147,7 +151,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void ValidateTask(TaskObject[] tasks, TaskObject currentTask, int iterationCount, List<string>? paths = null)
+        private static void ValidateTask(TaskObject[] tasks, TaskObject currentTask, int iterationCount, List<string>? paths = null)
         {
             if (iterationCount > 100)
             {
@@ -160,7 +164,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 paths = new List<string>();
             }
 
-            if (currentTask.TaskDestinations is null)
+            if (currentTask.TaskDestinations.IsNullOrEmpty())
             {
                 paths.Add(currentTask.Id);
                 SuccessfulPaths.Add(string.Join(" => ", paths));

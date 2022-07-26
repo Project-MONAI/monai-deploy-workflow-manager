@@ -484,7 +484,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         [Fact]
         public void ValidateWorkflow_ValidatesAWorkflow_ReturnsTrueAndHasCorrectValidationResultsAsync()
         {
-            var workflow =
+            for (int i = 0; i < 15; i++)
+            {
+                var workflow =
                 new WorkflowRevision
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -629,29 +631,29 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                     }
                 };
 
-            var validator = new WorkflowValidator();
-            var workflowHasErrors = validator.ValidateWorkflow(workflow.Workflow);
+                var workflowHasErrors = WorkflowValidator.ValidateWorkflow(workflow.Workflow, out var results);
 
-            Assert.True(workflowHasErrors);
+                Assert.True(workflowHasErrors);
 
-            Assert.False(validator.IsWorkflowValid);
+                Assert.Equal(24, results.Errors.Count);
 
-            Assert.Equal(24, validator.Errors.Count);
+                var successPath = "rootTask => taskSucessdesc1 => taskSucessdesc2";
+                Assert.Contains(successPath, results.SuccessfulPaths);
 
-            var successPath = "rootTask => taskSucessdesc1 => taskSucessdesc2";
-            Assert.Contains(successPath, validator.SuccessfulPaths);
+                var expectedConvergenceError = "Detected task convergence on path: rootTask => taskdesc1 => taskdesc2 => ∞";
+                Assert.Contains(expectedConvergenceError, results.Errors);
 
-            var expectedConvergenceError = "Detected task convergence on path: rootTask => taskdesc1 => taskdesc2 => ∞";
-            Assert.Contains(expectedConvergenceError, validator.Errors);
+                var unreferencedTaskError = "Found Task(s) without any task destinations to it: taskdesc3";
+                Assert.Contains(unreferencedTaskError, results.Errors);
 
-            var unreferencedTaskError = "Found Task(s) without any task destinations to it: taskdesc3";
-            Assert.Contains(unreferencedTaskError, validator.Errors);
+                var loopingTasksError = "Detected task convergence on path: rootTask => taskLoopdesc1 => taskLoopdesc2 => taskLoopdesc3 => taskLoopdesc4 => ∞";
+                Assert.Contains(loopingTasksError, results.Errors);
 
-            var loopingTasksError = "Detected task convergence on path: rootTask => taskLoopdesc1 => taskLoopdesc2 => taskLoopdesc3 => taskLoopdesc4 => ∞";
-            Assert.Contains(loopingTasksError, validator.Errors);
+                var missingDestinationError = "Missing destination DoesNotExistDestination in task taskLoopdesc4";
+                Assert.Contains(missingDestinationError, results.Errors);
 
-            var missingDestinationError = "Missing destination DoesNotExistDestination in task taskLoopdesc4";
-            Assert.Contains(missingDestinationError, validator.Errors);
+                WorkflowValidator.Reset();
+            }
         }
     }
 }

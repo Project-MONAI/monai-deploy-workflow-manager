@@ -16,6 +16,7 @@
 
 using Ardalis.GuardClauses;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 {
@@ -170,7 +171,8 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 
             if (!args.IsNullOrEmpty()) return true;
 
-            validationErrors?.Add($"'{args}' is not a valid {nameof(args)} (source: {source}).");
+            var jsontext = JsonConvert.SerializeObject(args);
+            validationErrors?.Add($"'{jsontext}' is not a valid {nameof(args)} (source: {source}).");
 
             return false;
         }
