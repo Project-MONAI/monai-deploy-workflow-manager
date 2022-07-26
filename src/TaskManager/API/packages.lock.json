@@ -28,31 +28,31 @@
       },
       "Monai.Deploy.Storage": {
         "type": "Direct",
-        "requested": "[0.1.1, )",
-        "resolved": "0.1.1",
-        "contentHash": "v5VrUSlYPzZf7tVyeFwD30QjspPfW6XBp7AQw5MmFC0PNF5CEn47UDb3sy7869ByN+rpwC2iDIr0yq+xqVNEOw==",
+        "requested": "[0.2.0-rc0009, )",
+        "resolved": "0.2.0-rc0009",
+        "contentHash": "YOdGLuSQwR4QtktmIhpee/+gNs5cgGGBYax9xLun7kr1Og751v12aH33Fn2Vu88L3gDvYGMkB/2UjdI0k61ldQ==",
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.165",
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Logging": "6.0.0",
-          "Monai.Deploy.Storage.S3Policy": "0.1.1",
+          "Monai.Deploy.Storage.S3Policy": "0.2.0-rc0009",
           "System.IO.Abstractions": "17.0.18"
         }
       },
       "Monai.Deploy.Storage.MinIO": {
         "type": "Direct",
-        "requested": "[0.1.0, )",
-        "resolved": "0.1.0",
-        "contentHash": "IEqw1ugxsNRDAUkNRoq41fcKmw3C2uYTLzcWdPhnmFe6iRqTQj3nex8nTivp7kcOtKBjdn1UAYdIldTRnHqcpg==",
+        "requested": "[0.2.0-rc0009, )",
+        "resolved": "0.2.0-rc0009",
+        "contentHash": "muor/mSIGF72HK3nQdLHNa7k468p5BcnC0rkVe/FtBH4H82UpIgMuY8SoauF9L+HgRS2U2d0W1HPoNfqusp+MQ==",
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.165",
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Logging": "6.0.0",
           "Microsoft.Extensions.Options": "6.0.0",
           "Minio": "4.0.4",
-          "Monai.Deploy.Storage": "0.1.0",
-          "Monai.Deploy.Storage.S3Policy": "0.1.0"
+          "Monai.Deploy.Storage": "0.2.0-rc0009",
+          "Monai.Deploy.Storage.S3Policy": "0.2.0-rc0009"
         }
       },
       "Ardalis.GuardClauses": {
@@ -185,8 +185,8 @@
       },
       "Monai.Deploy.Storage.S3Policy": {
         "type": "Transitive",
-        "resolved": "0.1.1",
-        "contentHash": "viswzSf0taoDw2FWoAw8iTC/AX0cay1wViCziziySB5qOZ4VXiGorOAX+z23+itT56ZiZc1xeyDOvJWJBrZltQ==",
+        "resolved": "0.2.0-rc0009",
+        "contentHash": "IgiC87hJJLP+azRiLcJVD7Vqb6pfU36enhDgoUJT+YSFdhAFCrGAiPsYOyGc3NiH+YsEhxbUTJhJm3O3Mx4PMA==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Newtonsoft.Json": "13.0.1"

@@ -31,6 +31,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         private readonly string _messagingExchange;
         private readonly Guid _messageId;
         private readonly string _messageFileName;
+        private readonly string _messagingVhost;
 
         public ExitHookTemplate(TaskDispatchEvent taskDispatchEvent)
         {
@@ -40,6 +41,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             _messagingPassword = taskDispatchEvent.TaskPluginArguments[Keys.MessagingPassword];
             _messagingTopic = taskDispatchEvent.TaskPluginArguments[Keys.MessagingTopic];
             _messagingExchange = taskDispatchEvent.TaskPluginArguments[Keys.MessagingExchange];
+            _messagingVhost = taskDispatchEvent.TaskPluginArguments[Keys.MessagingVhost];
             _messageId = Guid.NewGuid();
             _messageFileName = $"{_messageId}.json";
         }
@@ -149,7 +151,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     Command = new List<string> { "/rabtap" },
                     Args = new List<string> {
                         "pub",
-                        $"--uri=amqp://{_messagingUsername}:{_messagingPassword}@{_messagingEndpoint}",
+                        $"--uri=amqp://{_messagingUsername}:{_messagingPassword}@{_messagingEndpoint}/{_messagingVhost}",
                         "--format=json",
                         $"{Strings.ExitHookOutputPath}{_messageFileName}",
                         "--delay=0s",

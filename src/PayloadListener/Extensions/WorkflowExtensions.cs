@@ -197,11 +197,11 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             return false;
         }
 
-        public static bool IsArgsValid(string source, object args, IList<string> validationErrors = null)
+        public static bool IsArgsValid(string source, Dictionary<string, string> args, IList<string> validationErrors = null)
         {
             Guard.Against.NullOrWhiteSpace(source, nameof(source));
 
-            if (args != null) return true;
+            if (!args.IsNullOrEmpty()) return true;
 
             validationErrors?.Add($"'{args}' is not a valid {nameof(args)} (source: {source}).");
 

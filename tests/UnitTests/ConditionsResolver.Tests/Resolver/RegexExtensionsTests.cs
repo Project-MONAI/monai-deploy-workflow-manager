@@ -41,7 +41,9 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         {
             var expectedErrorMessage = "Value cannot be null. (Parameter 'input')";
             var regexFindBrackets = new Regex(@"((?<!\[)\()");
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             var exception = Assert.Throws<ArgumentNullException>(() => regexFindBrackets.SplitOnce(null));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             var message = exception.Message;
             Assert.Equal(expectedErrorMessage, message);
         }

@@ -60,7 +60,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
             var wmConfig = host.Services.GetRequiredService<IOptions<WorkflowManagerOptions>>();
             Guard.Against.NullService(wmConfig, nameof(IOptions<WorkflowManagerOptions>));
 
-            subscriber.Subscribe(messagingKeys.TaskUpdateRequest, string.Empty, (args) =>
+            subscriber.Subscribe(messagingKeys.TaskUpdateRequest, messagingKeys.TaskUpdateRequest, (args) =>
             {
                 logger.LogInformation($"{args.Message.MessageDescription} received.");
                 var updateMessage = args.Message.ConvertToJsonMessage<TaskUpdateEvent>();
@@ -179,6 +179,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                     services.AddSingleton<IArgoProvider, ArgoProvider>();
                     services.AddSingleton<IKubernetesProvider, KubernetesProvider>();
                     services.AddTransient<IFileSystem, FileSystem>();
+
+                    services.AddHttpClient("Argo");
+                    services.AddHttpClient("Argo-Insecure").ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                    {
+                        ClientCertificateOptions = ClientCertificateOption.Manual,
+                        ServerCertificateCustomValidationCallback =
+                            (httpRequestMessage, cert, cetChain, policyErrors) =>
+                            {
+                                return true;
+                            }
+                    });
 
                     services.AddHostedService<TaskManager>(p => p.GetRequiredService<TaskManager>());
                 });
