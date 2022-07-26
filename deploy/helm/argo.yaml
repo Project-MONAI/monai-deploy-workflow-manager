@@ -1,0 +1,14 @@
+
+replicaCount: 1
+
+
+service:
+  type: NodePort
+  port: 2746
+  nodeport: 30046
+  selector: 
+    app: argo-server
+
+
+
+  

@@ -1,0 +1,26 @@
+{{- if .Values.volumeMounts -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ $.Values.volumes.name }}
+  namespace: {{ $.Values.volumes.namespace }}
+spec:
+  storageClassName: "local-storage"
+  volumeMode: Filesystem
+  capacity:
+    storage: {{$.Values.volumes.storage}}
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: {{$.Values.volumes.path}}
+  nodeAffinity: # nodeAffinity is required when using local volumes.
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: localstorage
+          operator: In
+          values:
+          - "true"
+{{- end }}
+
+

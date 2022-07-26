@@ -1,0 +1,32 @@
+# Default values for deploy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+# image:
+  # repository: minio/minio
+  # pullPolicy: IfNotPresent
+  # tag: latest
+  # command: 
+    # - "/bin/sh"
+    # - "-ce"
+    # - "/usr/bin/docker-entrypoint.sh minio server /data"
+
+enviromentVariables:
+  MINIO_ROOT_USER: minioadmin
+  MINIO_ROOT_PASSWORD: minioadmin
+  WorkflowManager__storage__settings__endpoint: "minio:9000"
+
+service:
+  type: NodePort
+  port: 9000
+  nodeport: 30090
+  port2: 9001
+  nodeport2: 30091
+  selector: 
+    app: minio
+
+
+
+  

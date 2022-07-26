@@ -23,6 +23,137 @@ you have kubernetes running locally either via Docker desktop or microk8s (or si
 ### steps
 - following the qickstart here https://argoproj.github.io/argo-workflows/quick-start/ but change to namespace to suit. ie 
 
-- - `kubectl create ns minio`
-- - `kubectl apply -n minio -f https://raw.githubusercontent.com/argoproj/argo-workflows/master/manifests/quick-start-postgres.yaml`
+  - `kubectl create ns argo`
+  - `kubectl apply -n argo -f https://raw.githubusercontent.com/argoproj/argo-workflows/master/manifests/quick-start-postgres.yaml`
+  - `kubectl config set-context --current --namespace=argo`
+
+now in a bash window (can be cmd or powershell)
+
+new bash window `kubectl -n argo port-forward deployment/minio 9000:9000 9001:9001`
+
+another bash window `kubectl -n argo port-forward deployment/argo-server 2746:2746`
+
+This allows you to access argo (localhost:2764) and minio (localhost:9001)
+
+#### Dns change
+Now we have our services running we need to make a DNS change, because minio needs to be accessed from argo (within kubernetes) its addressed somthing like this `http://minio:9000` but the code running in VisualStudio also needs to access it. To get around this, in notepad open the file `C:\Windows\System32\drivers\etc\Hosts` add the following line
+- `127.0.0.1	minio`
+
+save the file, now `http://minio:9001` will route to you local machine
+
+### setup up an input file
+- open browser `http://minio:9001/buckets/` 
+- log in with `admin` `password`
+- using the UI make a bucket called `bucket1` 
+- and a folder called `00000000-1000-0000-0000-000000000000/dcm/`
+- make an empty local file called `input_diacom` and drag this into the created folder in the browser.
+
+### add rabbit and mongo services
+from a bash terminal in the root folder of the project
+- `helm upgrade -i -n argo -f deploy/helm/mongo-local.yaml mongo deploy/helm`
+- `helm upgrade -i -n argo -f deploy/helm/rabbitmq.yaml rabbit deploy/helm`
+
+### running in VisualStudio
+Now assuming your launchSettings has the line 
+`"ASPNETCORE_ENVIRONMENT": "Local"`
+and nobody has broken the `appsettings.Local.json` file
+run WorkflowManager (should be the startup project in the solution) in VisualStudio
+navigate to `http://localhost:5000/swagger`
+
+Open the post/workflows tab and click `try it out`, paste in the following to the body
+
+```
+{
+	"name": "noddy workflow",
+	"version": "1.0.0",
+	"description": "Attempt at making a workflow",
+	"informatics_gateway": {
+		"ae_title": "MYAET",
+		"data_origins": [
+			"MY_SCANNER"
+		],
+		"export_destinations": [
+			"PROD_PACS"
+		]
+	},
+	"tasks": [
+		{
+			"id": "argo-task",
+			"description": "trigger simple argo workflow",
+			"type": "argo",
+			"args": {
+				"namespace":"argo",
+				"workflow_id": "simple-workflow",
+				"server_url": "https://localhost:2746",
+				"allow_insecure": true,
+				"messaging_endpoint": "rabbit-monai",
+                "messaging_username" : "admin",
+                "messaging_password" : "admin",
+                "messaging_topic" : "md.tasks.callback",
+                "messaging_exchange" : "monaideploy",
+				"messaging_vhost" : "monaideploy",
+			},
+			"artifacts": {
+				"input": [
+					{
+						"name": "input_dicom",
+						"value": "{{ context.input.dicom }}/input_dicom"
+					}
+				],
+				"output": [
+					{
+						"name": "report",
+						"value": "{{ context.output }}/report",
+						"Mandatory": false
+					}
+				]
+			}
+		}
+	]
+}
+```
+
+#### Things to Note,
+- `"server_url": "https://localhost:2746"`
+this is where the local running code is expecting to talk to Argo.
+- `"messaging_endpoint": "rabbit-monai"`
+this is where argo is expecting to find rabbitMq, so this is the kubernetes address !
+
+click the `Execute` button, if the code can talk to mongo you will see
+```
+{
+  "workflow_id": "9235f5e8-9ad2-44d2-8b41-2c1e4d2464c6"
+}
+```
+
+You can use Mongo Compass, with connection string `mongodb://root:rootpassword@localhost:30017` to check the data is there.
+
+### now we need an argo template to run.
+navigate to `https://localhost:2746/workflow-templates?namespace=argo` proceed passed the warnings about been insecure.
+click on `CREATE NEW WORKFLOW TEMPLATE` button top left.
+rename it to `name: simple-workflow` so it matches the name in our workflow above
+then click the `Create` button.
+switch the tab back to `workflows` in the left menu (`https://localhost:2746/workflows?limit=50`)
+
+### rabbitmqAdmin for sending rabbit messages
+https://www.rabbitmq.com/management-cli.html
+
+In the command below replace xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx with the new workflowId from above `9235f5e8-9ad2-44d2-8b41-2c1e4d2464c6`
+
+`rabbitmqadmin -u admin -p admin -P 30672 -V monaideploy publish exchange=monaideploy routing_key=md.workflow.request  properties="{\"app_id\": \"16988a78-87b5-4168-a5c3-2cfc2bab8e54\",\"type\": \"WorkflowRequestMessage\",\"message_id\": \"0277e763-316c-4104-aeda-3620e7a642c7\",\"correlation_id\":\"ab482a7c-4da7-4e76-8d36-d194dd35555e\",\"content_type\": \"application/json\"}" payload="{\"payload_id\":\"00000000-1000-0000-0000-000000000000\",\"workflows\":[\"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\"],\"file_count\":0,\"correlation_id\":\"e4b06f00-5ce3-4477-86cb-4f3bf20680c2\",\"bucket\":\"bucket1\",\"calling_aetitle\":\"MWM\",\"called_aetitle\":\"Basic_AE_3\",\"timestamp\":\"2022-07-13T11:34:34.8428704+01:00\"}"`
+
+paste the above (with the proper workflowId) into bash and press enter.
+
+Debug in VisualStudio (if its not already running) and view the progress
+in the argo tab `https://localhost:2746/workflows?limit=50`
+you should see the activity of the argo task running. once complete the code will process the callback and update messages.
+
+in MongoCompass check the results, by refreshing then selecting the created WorkflowInstance
+by drilling down into Tasks -> 0 -> ExecutionStats, you should see the reported stats.
+
+### Re-running
+
+To re-run the flow again, be sure to delete the workflowInstance object from Mongo, then just redo the `rabbitmqadmin -u admin -p admin -P 30672 -V monai..`
+
+command from above
 

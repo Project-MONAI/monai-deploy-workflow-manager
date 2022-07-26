@@ -1,0 +1,61 @@
+# Default values for deploy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: 638262335746.dkr.ecr.eu-west-1.amazonaws.com/holiday-api
+  pullPolicy: IfNotPresent
+  tag: #{IMAGE_TAG}#
+
+
+imagePullSecrets: 
+ - name: regcred
+ 
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: false
+  
+service:
+  type: ClusterIP
+  port: 5000
+
+  
+enviromentVariables:
+  ASPNETCORE_ENVIRONMENT: #{ASPENVIRONMENT}#
+  ASPNETCORE_URLS: "http://::5000"
+  MongoDbSettings__ConnectionString: "mongodb://mongo-holiday:27017"
+  MongoDbSettings__DatabaseName: #{MONGODB_NAME}#
+  Hangfire__ConnectionString: "mongodb://mongo-holiday:27017"
+  Hangfire__DatabaseName: #{HANGFIREDB_NAME}# 
+  
+probes:
+ # enabled: true
+
+ingress:
+  enabled: true
+  className: ""
+  annotations: {}
+  serviceName: #{APISERVICE_NAME}#
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+  hosts:
+    - host: #{APIHOST_NAME}#
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+autoscaling:
+  enabled: false
+
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

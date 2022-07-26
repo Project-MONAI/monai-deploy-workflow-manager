@@ -1,0 +1,14 @@
+replicaCount: 1
+
+
+
+service:
+  type: NodePort
+  port: 27017
+  nodeport: 30017
+  selector: 
+    app.kubernetes.io/instance: mongo
+    app.kubernetes.io/name: monai
+
+
+affinity: {}

@@ -1,0 +1,23 @@
+replicaCount: 1
+
+image:
+  repository: rabbitmq
+  pullPolicy: IfNotPresent
+  tag: 3.8.18-management
+
+enviromentVariables:
+  RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+  RABBITMQ_DEFAULT_USER: "admin"
+  RABBITMQ_DEFAULT_PASS: "admin"
+  RABBITMQ_DEFAULT_VHOST: "monaideploy"
+
+
+service:
+  type: NodePort
+  port: 5672
+  nodeport: 30072
+  port2: 15672
+  nodeport2: 30672
+
+
+  

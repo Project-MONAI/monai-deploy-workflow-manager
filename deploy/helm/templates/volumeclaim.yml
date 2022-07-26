@@ -1,0 +1,16 @@
+{{- if .Values.volumeMounts -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $.Values.volumes.claimName }}
+  namespace: {{ $.Values.volumes.namespace }}
+spec:
+  storageClassName: "local-storage"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{$.Values.volumes.storage}}
+{{- end }}
+
+

@@ -1,0 +1,22 @@
+replicaCount: 1
+
+image:
+  repository: 847264867502.dkr.ecr.eu-west-2.amazonaws.com/monai-deploy-informatics-gateway-dev
+  pullPolicy: IfNotPresent
+  tag: latest
+
+enviromentVariables:
+  InformaticsGateway__messaging__publisherSettings__endpoint: "rabbitmq-monai"
+  InformaticsGateway__messaging__publisherSettings__username: "admin"
+  InformaticsGateway__messaging__publisherSettings__password: "admin"
+  InformaticsGateway__messaging__subscriberSettings__endpoint: "rabbitmq-monai"
+  InformaticsGateway__messaging__subscriberSettings__username: "admin"
+  InformaticsGateway__messaging__subscriberSettings__password: "admin"
+  InformaticsGateway__storage__settings__endpoint: "minio:9000" 
+  InformaticsGateway__storage__settings__accessKey: "minioadmin"
+  InformaticsGateway__storage__settings__accessToken: "minioadmin"
+
+service:
+  type: ClusterIP
+  port: 5000
+
