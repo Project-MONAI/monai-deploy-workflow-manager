@@ -17,8 +17,8 @@
 # Developer local setup
 
 ## assumptions
-you have kubernetes running locally either via Docker desktop or microk8s (or similar)
-
+you have kubernetes running locally either via Docker desktop or microk8s (or similar) and have python 3 installed.
+you may also have to copy mc.exe to the excuatable folder (\bin\Debug\net6.0)
 
 ### steps
 - following the qickstart here https://argoproj.github.io/argo-workflows/quick-start/ but change to namespace to suit. ie 
@@ -36,7 +36,7 @@ another bash window `kubectl -n argo port-forward deployment/argo-server 2746:27
 This allows you to access argo (localhost:2764) and minio (localhost:9001)
 
 #### Dns change
-Now we have our services running we need to make a DNS change, because minio needs to be accessed from argo (within kubernetes) its addressed somthing like this `http://minio:9000` but the code running in VisualStudio also needs to access it. To get around this, in notepad open the file `C:\Windows\System32\drivers\etc\Hosts` add the following line
+Now we have our services running we need to make a DNS change, because minio needs to be accessed from argo (within kubernetes) its addressed somthing like this `http://minio:9000` but the code running in VisualStudio also needs to access it. To get around this, in notepad (in Aministrator mode) open the file `C:\Windows\System32\drivers\etc\Hosts` add the following line
 - `127.0.0.1	minio`
 
 save the file, now `http://minio:9001` will route to you local machine
@@ -49,6 +49,7 @@ save the file, now `http://minio:9001` will route to you local machine
 - make an empty local file called `input_diacom` and drag this into the created folder in the browser.
 
 ### add rabbit and mongo services
+install Helm 3 https://helm.sh/docs/intro/install/
 from a bash terminal in the root folder of the project
 - `helm upgrade -i -n argo -f deploy/helm/mongo-local.yaml mongo deploy/helm`
 - `helm upgrade -i -n argo -f deploy/helm/rabbitmq.yaml rabbit deploy/helm`
@@ -96,8 +97,8 @@ Open the post/workflows tab and click `try it out`, paste in the following to th
 			"artifacts": {
 				"input": [
 					{
-						"name": "input_dicom",
-						"value": "{{ context.input.dicom }}/input_dicom"
+						"name": "input_diacom",
+						"value": "{{ context.input.dicom }}/input_diacom"
 					}
 				],
 				"output": [
