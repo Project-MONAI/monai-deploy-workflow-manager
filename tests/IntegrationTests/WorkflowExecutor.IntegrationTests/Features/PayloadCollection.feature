@@ -1,4 +1,18 @@
-﻿Feature: PayloadCollection
+# Copyright 2022 MONAI Consortium
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+Feature: PayloadCollection
 
 Tests around the payload collection
 
@@ -6,7 +20,7 @@ Tests around the payload collection
 Scenario: Seed MinIO with patient metadata, and payload collection has details
     Given I have a clinical workflow Basic_Workflow_1
     And I have a bucket in MinIO bucket1
-    And I have a payload <metadata> in the bucket bucket1 with payload id <payloadId> 
+    And I have a payload <metadata> in the bucket bucket1 with payload id <payloadId>
     When I publish a Workflow Request Message <workflowRequestMessage>
     Then A payload collection is created with patient details <patientTestData>
     Then I can see <workflowInstance> Workflow Instance is created
@@ -19,7 +33,7 @@ Scenario: Seed MinIO with patient metadata, and payload collection has details
 Scenario: Seed MinIO with blank patient data, and payload collection has null details
     Given I have a clinical workflow Basic_Workflow_1
     And I have a bucket in MinIO bucket1
-    And I have a payload null_patient_metadata in the bucket bucket1 with payload id 64a2b260-0379-4614-9f05-ff1279cf9e83 
+    And I have a payload null_patient_metadata in the bucket bucket1 with payload id 64a2b260-0379-4614-9f05-ff1279cf9e83
     When I publish a Workflow Request Message Basic_AeTitle_Payload_Collection_Request_2
     Then A payload collection is created with patient details Null_Patient
     Then I can see 1 Workflow Instance is created
@@ -28,7 +42,7 @@ Scenario: Seed MinIO with blank patient data, and payload collection has null de
 Scenario: Seed MinIO with no patient data, and payload collection has null details
     Given I have a clinical workflow Basic_Workflow_1
     And I have a bucket in MinIO bucket1
-    And I have a payload no_patient_metadata in the bucket bucket1 with payload id b91f5559-8ab2-455a-806d-961244ea22af 
+    And I have a payload no_patient_metadata in the bucket bucket1 with payload id b91f5559-8ab2-455a-806d-961244ea22af
     When I publish a Workflow Request Message Basic_AeTitle_Payload_Collection_Request_3
     Then A payload collection is created with patient details Null_Patient
     Then I can see 1 Workflow Instance is created
