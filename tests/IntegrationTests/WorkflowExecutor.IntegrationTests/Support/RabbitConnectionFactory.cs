@@ -21,7 +21,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
     public static class RabbitConnectionFactory
     {
-        public static ConnectionFactory GetConnectionFactory()
+        private static IModel? Channel { get; set; }
+
+        public static IModel GetRabbitConnection()
         {
             var connectionFactory = new ConnectionFactory
             {
@@ -31,7 +33,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 VirtualHost = TestExecutionConfig.RabbitConfig.VirtualHost
             };
 
-            return connectionFactory;
+            Channel = connectionFactory.CreateConnection().CreateModel();
+
+            return Channel;
+        }
+
+        public static void PurgeQueue(string queueName)
+        {
+            Channel?.QueuePurge(queueName);
         }
     }
 }
