@@ -60,7 +60,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
             var wmConfig = host.Services.GetRequiredService<IOptions<WorkflowManagerOptions>>();
             Guard.Against.NullService(wmConfig, nameof(IOptions<WorkflowManagerOptions>));
 
-            subscriber.Subscribe(messagingKeys.TaskUpdateRequest, "TaskUpdate", (args) =>
+            subscriber.Subscribe(messagingKeys.TaskUpdateRequest, messagingKeys.TaskUpdateRequest, (args) =>
             {
                 logger.LogInformation($"{args.Message.MessageDescription} received.");
                 var updateMessage = args.Message.ConvertToJsonMessage<TaskUpdateEvent>();
