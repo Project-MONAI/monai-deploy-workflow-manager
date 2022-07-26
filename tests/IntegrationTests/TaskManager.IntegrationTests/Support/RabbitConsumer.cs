@@ -22,12 +22,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 {
     public class RabbitConsumer
     {
-        public RabbitConsumer(ConnectionFactory connectionFactory, string exchange, string routingKey)
+        public RabbitConsumer(IModel channel, string exchange, string routingKey)
         {
             Exchange = exchange;
             RoutingKey = routingKey;
-            var connection = connectionFactory.CreateConnection();
-            Channel = connection.CreateModel();
+            Channel = channel;
             Queue = Channel.QueueDeclare(queue: string.Empty, durable: true, exclusive: false, autoDelete: false);
             Channel.QueueBind(Queue.QueueName, Exchange, RoutingKey);
             Channel.ExchangeDeclare(Exchange, ExchangeType.Topic, durable: true);
