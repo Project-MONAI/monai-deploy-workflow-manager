@@ -7,6 +7,8 @@ using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using TechTalk.SpecFlow.Infrastructure;
+using Polly;
+using Polly.Retry;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
@@ -19,6 +21,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private Assertions Assertions { get; set; }
         private DataHelper DataHelper { get; set; }
         private readonly ISpecFlowOutputHelper _outputHelper;
+        private RetryPolicy RetryPolicy { get; set; }
+
 
         public WorkflowRequestStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
@@ -28,6 +32,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             Assertions = new Assertions(objectContainer);
             DataHelper = objectContainer.Resolve<DataHelper>();
             _outputHelper = outputHelper;
+            RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
         [Given(@"I have a clinical workflow (.*)")]
@@ -86,7 +91,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"I can see (.*) Workflow Instance is created")]
         public void ThenICanSeeAWorkflowInstanceIsCreated(int count)
         {
-            _outputHelper.WriteLine($"Retrieving {count} workflow instance/s using the payloadid={DataHelper.WorkflowRequestMessage.PayloadId}");
+            _outputHelper.WriteLine($"Retrieving {count} workflow instance/s using the payloadid={DataHelper.WorkflowRequestMessage.PayloadId.ToString()}");
             var workflowInstances = DataHelper.GetWorkflowInstances(count, DataHelper.WorkflowRequestMessage.PayloadId.ToString());
             _outputHelper.WriteLine($"Retrieved {count} workflow instance/s");
 
@@ -106,6 +111,30 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                     }
                 }
             }
+        }
+
+        [Then(@"I can see (.*) Workflow Instances are updated")]
+        [Then(@"I can see (.*) Workflow Instance is updated")]
+        public void ThenICanSeeAWorkflowInstanceIsUpdated(int count)
+        {
+            RetryPolicy.Execute(() =>
+            {
+                _outputHelper.WriteLine($"Retrieving {count} workflow instance/s using the payloadid={DataHelper.WorkflowInstances[0].PayloadId}");
+                var workflowInstances = DataHelper.GetWorkflowInstances(count, DataHelper.WorkflowInstances[0].PayloadId);
+                _outputHelper.WriteLine($"Retrieved {count} workflow instance/s");
+
+                if (workflowInstances != null)
+                {
+                    foreach (var workflowInstance in workflowInstances)
+                    {
+                        var taskUpdate = DataHelper.TaskUpdateEvent;
+                        if (taskUpdate != null)
+                        {
+                            workflowInstance.Tasks[0].Status.Should().Be(taskUpdate.Status);
+                        }
+                    }
+                }
+            });
         }
 
         [Then(@"(.*) Task Dispatch event is published")]
@@ -170,8 +199,18 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"Input artifacts are mapped")]
         public void ThenInputArtifactsAreMapped()
         {
-            _outputHelper.WriteLine($"Retrieving workflow instance using the payloadid={DataHelper.WorkflowRequestMessage.PayloadId}");
-            var workflowInstances = DataHelper.GetWorkflowInstances(1, DataHelper.WorkflowRequestMessage.PayloadId.ToString());
+            string PayloadId;
+            if (DataHelper.WorkflowRequestMessage.PayloadId.ToString() != "00000000-0000-0000-0000-000000000000")
+            {
+                PayloadId = DataHelper.WorkflowRequestMessage.PayloadId.ToString();
+            }
+            else
+            {
+                PayloadId = DataHelper.WorkflowInstances[0].PayloadId;
+            }
+
+            _outputHelper.WriteLine($"Retrieving workflow instance using the payloadid={PayloadId}");
+            var workflowInstances = DataHelper.GetWorkflowInstances(1, PayloadId);
             _outputHelper.WriteLine("Retrieved workflow instance");
 
             if (workflowInstances != null)
@@ -187,7 +226,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                             var workflowTask = workflowRevision.Workflow.Tasks.FirstOrDefault(x => x.Id.Equals(task.TaskId));
                             if (workflowTask != null)
                             {
-                                Assertions.AssertInputArtifacts(workflowRevision, DataHelper.WorkflowRequestMessage, task);
+                                Assertions.AssertInputArtifacts(workflowRevision, PayloadId, task);
                             }
                             else
                             {

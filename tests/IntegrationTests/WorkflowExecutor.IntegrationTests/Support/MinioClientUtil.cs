@@ -68,7 +68,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             });
         }
 
-        public async Task AddFileToStorage(string fileLocation, string bucketName, string objectName)
+        public async Task AddFileToStorage(string fileLocation, string bucketName, string folderPath)
         {
             await RetryPolicy.ExecuteAsync(async () =>
             {
@@ -80,7 +80,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                         var files = Directory.GetFiles($"{fileLocation}", "*.*", SearchOption.AllDirectories);
                         foreach (var file in files)
                         {
-                            var relativePath = $"{objectName}/dcm/{Path.GetRelativePath(fileLocation, file)}";
+                            var relativePath = $"{folderPath}{Path.GetRelativePath(fileLocation, file)}";
                             var fileName = Path.GetFileName(file);
                             byte[] bs = File.ReadAllBytes(file);
                             using (var filestream = new MemoryStream(bs))
@@ -111,7 +111,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                         };
                             await Client.PutObjectAsync(
                                 bucketName,
-                                objectName,
+                                folderPath,
                                 fileLocation,
                                 "application/octet-stream",
                                 metaData);

@@ -794,7 +794,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             TaskId = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_Null").WorkflowRevision.Workflow.Tasks[0].Id,
                             TaskType = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_Null").WorkflowRevision?.Workflow.Tasks[0].Type,
                             Status = TaskExecutionStatus.Accepted,
-                            InputArtifacts =
+                            InputArtifacts = new Dictionary<string, string>
                             {
                                 { "Dicom", "02a865ea-064c-43f5-a3c7-35cd23fa89af/dcm/" }
                             },
@@ -807,9 +807,137 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             TaskId = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_Null").WorkflowRevision?.Workflow.Tasks[0].Id,
                             TaskType = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_Null").WorkflowRevision?.Workflow.Tasks[0].Type,
                             Status = TaskExecutionStatus.Accepted,
-                            InputArtifacts =
+                            InputArtifacts = new Dictionary<string, string>
                             {
                                 { "Dicom", "02a865ea-064c-43f5-a3c7-35cd23fa89af/dcm/" }
+                            },
+                            OutputArtifacts = null,
+                            OutputDirectory = "02a865ea-064c-43f5-a3c7-35cd23fa89af/workflows/87530a73-4f7f-4d4f-8498-8ce97e4c89c6/8f1b1fde-9c9e-4007-b424-329532920dae/"
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "Artifact_WFI_Mandatory_Double_True",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = "87530a73-4f7f-4d4f-8498-8ce97e4c89c6",
+                    AeTitle = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_True").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_True").WorkflowRevision.WorkflowId,
+                    PayloadId = "02a865ea-064c-43f5-a3c7-35cd23fa89af",
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = "bucket_1",
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = "8f1b1fde-9c9e-4007-b424-329532920dae",
+                            TaskId = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_True").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_True").WorkflowRevision?.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Accepted,
+                            InputArtifacts = new Dictionary<string, string>
+                            {
+                                { "Dicom", "02a865ea-064c-43f5-a3c7-35cd23fa89af/dcm/" }
+                            },
+                            OutputArtifacts = null,
+                            OutputDirectory = "02a865ea-064c-43f5-a3c7-35cd23fa89af/workflows/87530a73-4f7f-4d4f-8498-8ce97e4c89c6/8f1b1fde-9c9e-4007-b424-329532920dae/"
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = "60128c63-64ab-4d39-a221-74520e2c646c",
+                            TaskId = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_True").WorkflowRevision?.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_True").WorkflowRevision?.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Accepted,
+                            InputArtifacts = new Dictionary<string, string>
+                            {
+                                { "Dicom", "02a865ea-064c-43f5-a3c7-35cd23fa89af/dcm/" }
+                            },
+                            OutputArtifacts = null,
+                            OutputDirectory = "02a865ea-064c-43f5-a3c7-35cd23fa89af/workflows/87530a73-4f7f-4d4f-8498-8ce97e4c89c6/8f1b1fde-9c9e-4007-b424-329532920dae/"
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "Artifact_WFI_Mandatory_Double_False",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = "87530a73-4f7f-4d4f-8498-8ce97e4c89c6",
+                    AeTitle = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_False").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_False").WorkflowRevision.WorkflowId,
+                    PayloadId = "02a865ea-064c-43f5-a3c7-35cd23fa89af",
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = "bucket_1",
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = "8f1b1fde-9c9e-4007-b424-329532920dae",
+                            TaskId = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_False").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_False").WorkflowRevision?.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Accepted,
+                            InputArtifacts = new Dictionary<string, string>
+                            {
+                                { "Dicom", "02a865ea-064c-43f5-a3c7-35cd23fa89af/dcm/" }
+                            },
+                            OutputArtifacts = null,
+                            OutputDirectory = "02a865ea-064c-43f5-a3c7-35cd23fa89af/workflows/87530a73-4f7f-4d4f-8498-8ce97e4c89c6/8f1b1fde-9c9e-4007-b424-329532920dae/"
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = "60128c63-64ab-4d39-a221-74520e2c646c",
+                            TaskId = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_False").WorkflowRevision?.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_False").WorkflowRevision?.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Accepted,
+                            InputArtifacts = new Dictionary<string, string>
+                            {
+                                { "Dicom", "02a865ea-064c-43f5-a3c7-35cd23fa89af/dcm/" }
+                            },
+                            OutputArtifacts = null,
+                            OutputDirectory = "02a865ea-064c-43f5-a3c7-35cd23fa89af/workflows/87530a73-4f7f-4d4f-8498-8ce97e4c89c6/8f1b1fde-9c9e-4007-b424-329532920dae/"
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "Artifact_WFI_Mandatory_Double_Null_TASK_ID",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = "87530a73-4f7f-4d4f-8498-8ce97e4c89c6",
+                    AeTitle = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_Null_TASK_ID").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_Null_TASK_ID").WorkflowRevision.WorkflowId,
+                    PayloadId = "02a865ea-064c-43f5-a3c7-35cd23fa89af",
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = "bucket_1",
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = "8f1b1fde-9c9e-4007-b424-329532920dae",
+                            TaskId = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_Null_TASK_ID").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Artifact_Workflow_Mandatory_Double_Null_TASK_ID").WorkflowRevision?.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Accepted,
+                            InputArtifacts = new Dictionary<string, string>
+                            {
+                                { "Artifact", "02a865ea-064c-43f5-a3c7-35cd23fa89af/workflows/87530a73-4f7f-4d4f-8498-8ce97e4c89c6/8f1b1fde-9c9e-4007-b424-329532920dae/07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm" }
                             },
                             OutputArtifacts = null,
                             OutputDirectory = "02a865ea-064c-43f5-a3c7-35cd23fa89af/workflows/87530a73-4f7f-4d4f-8498-8ce97e4c89c6/8f1b1fde-9c9e-4007-b424-329532920dae/"

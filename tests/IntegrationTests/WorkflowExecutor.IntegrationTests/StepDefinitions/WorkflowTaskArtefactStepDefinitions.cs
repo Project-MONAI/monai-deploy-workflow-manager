@@ -39,14 +39,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             _outputHelper.WriteLine($"{name} bucket created");
         }
 
-        [Given(@"I have a payload (.*) in the bucket (.*) with payload id (.*)")]
-        public async Task GivenIHaveAPayloadInTheBucket(string folderName, string bucketName, string payloadId)
+        [Given(@"I have a payload (.*) in the bucket (.*) with the folder path (.*)")]
+        public async Task GivenIHaveAPayloadInTheBucket(string folderName, string bucketName, string folderPath)
         {
             _outputHelper.WriteLine("Retrieving pathname");
             var pathname = Path.Combine(GetDirectory(), "DICOMs", folderName, "dcm");
             _outputHelper.WriteLine($"Retrieved pathname {pathname}");
             _outputHelper.WriteLine($"Adding {folderName} folder");
-            await MinioClient.AddFileToStorage(pathname, bucketName, DataHelper.GetPayloadId(payloadId));
+            await MinioClient.AddFileToStorage(pathname, bucketName, folderPath);
             _outputHelper.WriteLine($"Folder added");
         }
 

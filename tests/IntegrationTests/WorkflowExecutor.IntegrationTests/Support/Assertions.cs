@@ -38,7 +38,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
         }
 
-        public void AssertInputArtifacts(WorkflowRevision workflowRevision, WorkflowRequestMessage workflowRequestMessage, TaskExecution task)
+        public void AssertInputArtifacts(WorkflowRevision workflowRevision, string payloadId, TaskExecution task)
         {
             foreach (var revisionTask in workflowRevision.Workflow.Tasks)
             {
@@ -48,7 +48,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     {
                         if (artifact.Value == "{{ context.input.dicom }}")
                         {
-                            task.InputArtifacts[artifact.Name].Should().Match($"{workflowRequestMessage.PayloadId}/dcm/");
+                            task.InputArtifacts[artifact.Name].Should().Match($"{payloadId}/dcm/");
                         }
                     }
                 }

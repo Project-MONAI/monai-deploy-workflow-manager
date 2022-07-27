@@ -1612,7 +1612,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 {
                                     Input = new Artifact[]
                                     {
-                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}", Mandatory = true },
                                     },
                                 }
                             },
@@ -1661,9 +1661,51 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 {
                                     Input = new Artifact[]
                                     {
-                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}", Mandatory = false },
                                     },
                                 }
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Artifact_AE"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Artifact_Workflow_Mandatory_Double_Null_TASK_ID",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Artifact 1",
+                        Description = "Artifact 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Artifact", Value = "{{ context.executions.TASK_ID.artifacts.ARTIFACT_NAME }}" },
+                                    },
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 3",
                             },
                         },
                         InformaticsGateway = new InformaticsGateway()

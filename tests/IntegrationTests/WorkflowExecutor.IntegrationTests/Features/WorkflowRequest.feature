@@ -84,7 +84,7 @@ Scenario: Publish a valid workflow request with an exiting Workflow Instance wit
 Scenario Outline: WorkflowRequestEvent triggers workflow with context.input.dicom in different states of mandatory, instance is created
     Given I have a clinical workflow <workflow>
     And I have a bucket in MinIO bucket1
-    And I have a payload full_patient_metadata in the bucket bucket1 with payload id 3d22bf41-eacd-4e43-9161-d00735b31a2e
+    And I have a payload full_patient_metadata in the bucket bucket1 with the folder path 3d22bf41-eacd-4e43-9161-d00735b31a2e/dcm/
     When I publish a Workflow Request Message Artifact_AeTitle_Request_1
     Then I can see 1 Workflow Instance is created
     And Input artifacts are mapped
@@ -117,14 +117,25 @@ Scenario Outline: WorkflowRequestEvent triggers workflow with context.input.dico
 @TaskArtifacts
 Scenario Outline: TaskUpdateEvent triggers TaskDispatchEvent with context.input.dicom in different states of mandatory, instance is updated
     Given I have a clinical workflow <workflow>
-    And I have a Workflow Instance Artifact_WFI_Mandatory_Double_Null
+    And I have a Workflow Instance <workflowInstance>
     And I have a bucket in MinIO bucket1
-    And I have a payload full_patient_metadata in the bucket bucket1 with payload id 3d22bf41-eacd-4e43-9161-d00735b31a2e
-    When I publish a Task Update Message Task_Update_Artifact_Mandatory_Double_Null with status Succeded
-    Then I can see 1 Workflow Instance is created
+    And I have a payload full_patient_metadata in the bucket bucket1 with the folder path 3d22bf41-eacd-4e43-9161-d00735b31a2e/dcm/
+    When I publish a Task Update Message <taskUpdate> with status Succeeded
+    Then I can see 1 Workflow Instance is updated
     And Input artifacts are mapped
     Examples:
-    | workflow                                 |
-    | Artifact_Workflow_Mandatory_Double_Null  |
-    | Artifact_Workflow_Mandatory_Double_True  |
-    | Artifact_Workflow_Mandatory_Double_False |
+    | workflow                                 | workflowInstance                    | taskUpdate                                  |
+    | Artifact_Workflow_Mandatory_Double_Null  | Artifact_WFI_Mandatory_Double_Null  | Task_Update_Artifact_Mandatory_Double_Null  |
+    | Artifact_Workflow_Mandatory_Double_True  | Artifact_WFI_Mandatory_Double_True  | Task_Update_Artifact_Mandatory_Double_True  |
+    | Artifact_Workflow_Mandatory_Double_False | Artifact_WFI_Mandatory_Double_False | Task_Update_Artifact_Mandatory_Double_False |
+
+@TaskArtifacts
+Scenario: TaskUpdateEvent triggers TaskDispatchEvent with context.executions.TASK_ID.artifacts.ARTIFACT_NAME 
+    Given I have a clinical workflow Artifact_Workflow_Mandatory_Double_Null_TASK_ID
+    And I have a Workflow Instance Artifact_WFI_Mandatory_Double_Null_TASK_ID
+    And I have a bucket in MinIO bucket1
+    And I have a payload full_patient_metadata in the bucket bucket1 with the folder path 02a865ea-064c-43f5-a3c7-35cd23fa89af/workflows/87530a73-4f7f-4d4f-8498-8ce97e4c89c6/8f1b1fde-9c9e-4007-b424-329532920dae/
+    When I publish a Task Update Message Task_Update_Artifact_Mandatory_Double_Null_TASK_ID with status Succeeded
+    Then I can see 1 Workflow Instance is updated
+    And Input artifacts are mapped
+

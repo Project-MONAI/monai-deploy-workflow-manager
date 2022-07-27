@@ -416,6 +416,69 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+            new TaskUpdateTestData()
+            {
+                Name = "Task_Update_Artifact_Mandatory_Double_True",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("Artifact_WFI_Mandatory_Double_True").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("Artifact_WFI_Mandatory_Double_True").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("Artifact_WFI_Mandatory_Double_True").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "Task_Update_Artifact_Mandatory_Double_False",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("Artifact_WFI_Mandatory_Double_False").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("Artifact_WFI_Mandatory_Double_False").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("Artifact_WFI_Mandatory_Double_False").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "Task_Update_Artifact_Mandatory_Double_Null_TASK_ID",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("Artifact_WFI_Mandatory_Double_Null_TASK_ID").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("Artifact_WFI_Mandatory_Double_Null_TASK_ID").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("Artifact_WFI_Mandatory_Double_Null_TASK_ID").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    },
+                    Outputs = new List<Messaging.Common.Storage>
+                    {
+                        new Messaging.Common.Storage()
+                        {
+                            Name = "input1",
+                            Endpoint = "//test_1",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test1",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = "02a865ea-064c-43f5-a3c7-35cd23fa89af/workflows/87530a73-4f7f-4d4f-8498-8ce97e4c89c6/8f1b1fde-9c9e-4007-b424-329532920dae/07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm"
+                        }
+                    }
+                }
+            },
         };
     }
 }
