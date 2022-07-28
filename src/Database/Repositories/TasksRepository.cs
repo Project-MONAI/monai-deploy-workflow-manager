@@ -48,6 +48,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             var asyncCursor = (await workflowInstanceCollection.Indexes.ListAsync());
             var bsonDocuments = (await asyncCursor.ToListAsync());
             var indexes = bsonDocuments.Select(_ => _.GetElement("name").Value.ToString()).ToList();
+
             // If index not present create it else skip.
             if (!indexes.Any(i => i.Equals("TasksIndex")))
             {

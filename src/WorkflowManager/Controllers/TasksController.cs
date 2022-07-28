@@ -10,7 +10,6 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Filter;
-using Monai.Deploy.WorkflowManager.Models;
 using Monai.Deploy.WorkflowManager.Services;
 
 namespace Monai.Deploy.WorkflowManager.Controllers
@@ -87,11 +86,8 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <param name="executionId">executionId.</param>
         /// <returns>Task Information.</returns>
         [HttpGet]
-        public async Task<IActionResult> GetAsync([FromBody] TasksRequest request)
+        public async Task<IActionResult> GetAsync([FromBody] string workflowInstanceId, [FromBody] string taskId, [FromBody] string executionId)
         {
-            request.workflowInstanceId;
-            request.taskId;
-            request.executionId;
             var wfIdValid = string.IsNullOrWhiteSpace(workflowInstanceId) || !Guid.TryParse(workflowInstanceId, out _);
             var taskIdValid = string.IsNullOrWhiteSpace(taskId) || !Guid.TryParse(taskId, out _);
             var execIdValid = string.IsNullOrWhiteSpace(executionId) || !Guid.TryParse(executionId, out _);
