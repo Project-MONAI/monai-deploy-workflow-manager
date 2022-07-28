@@ -19,7 +19,7 @@ Integration tests for testing TaskUpdateEvents from TaskManager
 @TaskDispatch_TaskUpdate
 Scenario: TaskUpdateEvent is published with status Accepted after receiving a valid TaskDispatchEvent
 	Given I have a bucket in MinIO bucket1
-	When A Task Dispatch event is published Task_Dispatch_Clinical_Review_Full_Patient_Details
+	When A Task Dispatch event is published Task_Dispatch_Accepted
     Then A Task Update event with status Accepted is published with Task Dispatch details
 
 @TaskDispatch_TaskUpdate

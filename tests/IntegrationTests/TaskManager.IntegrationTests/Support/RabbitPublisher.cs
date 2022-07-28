@@ -21,12 +21,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 {
     public class RabbitPublisher
     {
-        public RabbitPublisher(ConnectionFactory connectionFactory, string exchange, string routingKey)
+        public RabbitPublisher(IModel channel, string exchange, string routingKey)
         {
             Exchange = exchange;
             RoutingKey = routingKey;
-            var connection = connectionFactory.CreateConnection();
-            Channel = connection.CreateModel();
+            Channel = channel;
         }
 
         private string Exchange { get; set; }

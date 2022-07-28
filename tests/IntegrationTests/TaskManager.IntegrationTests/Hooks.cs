@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using System.Diagnostics;
-using BoDi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
@@ -107,10 +105,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                 }
             });
 
-            TaskDispatchPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-            TaskCallbackPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
-            TaskUpdateConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
-            ClinicalReviewConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
+            TaskDispatchPublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            TaskCallbackPublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
+            TaskUpdateConsumer = new RabbitConsumer(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            ClinicalReviewConsumer = new RabbitConsumer(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
+        }
+
+        [AfterScenario]
+        public void PurgeRabbitMessages()
+        {
+            RabbitConnectionFactory.PurgeQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            RabbitConnectionFactory.PurgeQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            RabbitConnectionFactory.PurgeQueue(TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
+            RabbitConnectionFactory.PurgeQueue(TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
         }
 
         /// <summary>
