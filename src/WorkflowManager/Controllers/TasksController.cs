@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Filter;
+using Monai.Deploy.WorkflowManager.Models;
 using Monai.Deploy.WorkflowManager.Services;
 
 namespace Monai.Deploy.WorkflowManager.Controllers
@@ -86,8 +87,11 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <param name="executionId">executionId.</param>
         /// <returns>Task Information.</returns>
         [HttpGet]
-        public async Task<IActionResult> GetAsync([FromQuery] string workflowInstanceId, [FromQuery] string taskId, [FromQuery] string executionId)
+        public async Task<IActionResult> GetAsync([FromBody] TasksRequest request)
         {
+            request.workflowInstanceId;
+            request.taskId;
+            request.executionId;
             var wfIdValid = string.IsNullOrWhiteSpace(workflowInstanceId) || !Guid.TryParse(workflowInstanceId, out _);
             var taskIdValid = string.IsNullOrWhiteSpace(taskId) || !Guid.TryParse(taskId, out _);
             var execIdValid = string.IsNullOrWhiteSpace(executionId) || !Guid.TryParse(executionId, out _);
@@ -103,7 +107,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 var task = await _tasksService.GetTaskAsync(workflowInstanceId, taskId, executionId);
                 if (task is null)
                 {
-                    return Problem($"Failed to validate ids, workflow not found", $"/tasks/", NotFound);
+                    return Problem($"Failed to validate ids, workflow or task not found", $"/tasks/", NotFound);
                 }
 
                 return Ok(task);

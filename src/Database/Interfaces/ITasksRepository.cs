@@ -13,6 +13,6 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
 
         Task<IList<TaskExecution>> GetAllAsync(int? skip, int? limit);
 
-        Task<TaskExecution> GetTaskAsync(string workflowInstanceId, string taskId, string executionId);
+        Task<TaskExecution?> GetTaskAsync(string workflowInstanceId, string taskId, string executionId);
     }
 }

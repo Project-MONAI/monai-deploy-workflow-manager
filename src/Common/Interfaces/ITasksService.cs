@@ -7,6 +7,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
 {
     public interface ITasksService : IPaginatedApi<TaskExecution>
     {
-        Task<TaskExecution> GetTaskAsync(string workflowInstanceId, string taskId, string executionId);
+        Task<TaskExecution?> GetTaskAsync(string workflowInstanceId, string taskId, string executionId);
     }
 }

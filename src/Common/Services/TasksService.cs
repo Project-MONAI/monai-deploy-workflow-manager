@@ -34,7 +34,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
         /// <param name="taskId">Task Id.</param>
         /// <param name="executionId">Execution Id.</param>
         /// <returns></returns>
-        public async Task<TaskExecution> GetTaskAsync(string workflowInstanceId, string taskId, string executionId)
+        public async Task<TaskExecution?> GetTaskAsync(string workflowInstanceId, string taskId, string executionId)
             => await _tasksRepository.GetTaskAsync(workflowInstanceId, taskId, executionId);
     }
 }

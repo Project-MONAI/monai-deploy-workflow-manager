@@ -49,7 +49,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             var bsonDocuments = (await asyncCursor.ToListAsync());
             var indexes = bsonDocuments.Select(_ => _.GetElement("name").Value.ToString()).ToList();
             // If index not present create it else skip.
-            if (!indexes.Any(s => s.Equals("TasksIndex")))
+            if (!indexes.Any(i => i.Equals("TasksIndex")))
             {
                 // Create Index here
 
@@ -85,7 +85,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             return result.Select(r => r.Tasks).ToList();
         }
 
-        public async Task<TaskExecution> GetTaskAsync(string workflowInstanceId, string taskId, string executionId)
+        public async Task<TaskExecution?> GetTaskAsync(string workflowInstanceId, string taskId, string executionId)
         {
             var builder = Builders<WorkflowInstance>.Filter;
 
@@ -95,7 +95,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
                 .Find(filter)
                 .FirstOrDefaultAsync();
 
-            return result.Tasks.First(t => t.TaskId == taskId && t.ExecutionId == executionId);
+            return result?.Tasks.FirstOrDefault(t => t.TaskId == taskId && t.ExecutionId == executionId);
         }
     }
 }

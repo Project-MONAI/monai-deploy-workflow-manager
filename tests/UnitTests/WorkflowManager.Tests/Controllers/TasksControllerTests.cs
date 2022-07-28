@@ -41,7 +41,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Fact]
-        public async Task GetListAsync_WorkflowInstancesExist_ReturnsList()
+        public async Task GetListAsync_TasksExist_ReturnsList()
         {
             var taskExecution = new TaskExecution
             {
@@ -65,15 +65,14 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             };
 
             _tasksService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>())).ReturnsAsync(() => new List<TaskExecution> { taskExecution });
-            _tasksService.Setup(w => w.CountAsync()).ReturnsAsync(workflowsInstances.First().Tasks.Count);
             _uriService.Setup(s => s.GetPageUriString(It.IsAny<Filter.PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
             var result = await TasksController.GetListAsync(new Filter.PaginationFilter());
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
 
-            var responseValue = (PagedResponse<List<WorkflowInstance>>)objectResult.Value;
-            responseValue.Data.Should().BeEquivalentTo(workflowsInstances);
+            var responseValue = (PagedResponse<List<TaskExecution>>)objectResult.Value;
+            responseValue.Data.Should().BeEquivalentTo(workflowsInstances.First().Tasks);
             responseValue.FirstPage.Should().Be("unitTest");
             responseValue.LastPage.Should().Be("unitTest");
             responseValue.PageNumber.Should().Be(1);
@@ -84,6 +83,80 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             responseValue.PreviousPage.Should().Be(null);
             responseValue.NextPage.Should().Be(null);
             responseValue.Errors.Should().BeNullOrEmpty();
+        }
+
+        [Fact]
+        public async Task GetAsync_TasksExist_ReturnsTask()
+        {
+            var expectedTaskId = Guid.NewGuid().ToString();
+            var expectedExecutionId = Guid.NewGuid().ToString();
+            var expectedWorkflowId = Guid.NewGuid().ToString();
+
+            var taskExecution = new TaskExecution
+            {
+                ExecutionId = expectedExecutionId,
+                TaskId = expectedTaskId,
+                Status = TaskExecutionStatus.Dispatched
+            };
+
+            var workflowsInstances = new List<WorkflowInstance>
+            {
+                new WorkflowInstance
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = expectedWorkflowId,
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Status = Status.Created,
+                    BucketId = "bucket",
+                    Tasks = new List<TaskExecution>
+                    {
+                        taskExecution
+                    }
+                }
+            };
+
+            _tasksService.Setup(w => w.GetTaskAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(() => taskExecution);
+
+            var result = await TasksController.GetAsync(expectedWorkflowId, expectedTaskId, expectedExecutionId);
+
+            var objectResult = Assert.IsType<OkObjectResult>(result);
+
+            var responseValue = (TaskExecution)objectResult.Value;
+
+            responseValue.Should().BeEquivalentTo(workflowsInstances.First().Tasks.First(t => t.TaskId == expectedTaskId));
+        }
+
+        [Fact]
+        public async Task GetAsync_InvalidId_ReturnsBadRequest()
+        {
+            var invalidId = string.Empty;
+            var result = await TasksController.GetAsync(invalidId, invalidId, invalidId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            objectResult.StatusCode.Should().Be(400);
+
+            var problemDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
+            problemDetails.Detail.Should().Be("Failed to validate ids, not a valid guid");
+        }
+
+        [Fact]
+        public async Task GetAsync_TaskDoesNotExist_ReturnsBadRequest()
+        {
+            var expectedTaskId = Guid.NewGuid().ToString(); // that does not exist
+            var expectedExecutionId = Guid.NewGuid().ToString();
+            var expectedWorkflowId = Guid.NewGuid().ToString();
+
+
+            _tasksService.Setup(w => w.GetTaskAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(() => null);
+
+            var result = await TasksController.GetAsync(expectedWorkflowId, expectedTaskId, expectedExecutionId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            objectResult.StatusCode.Should().Be(404);
+
+            var problemDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
+            problemDetails.Detail.Should().Be("Failed to validate ids, workflow or task not found");
+
         }
     }
 }
