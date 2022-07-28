@@ -291,7 +291,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                     resultStr = GetValueFromDictionary(task.ResultMetadata, keyValue);
                     break;
                 case ParameterConstants.StartTime:
-                    resultStr = task.TaskStartTime?.ToString(new CultureInfo("en-GB"));
+                    resultStr = task.TaskStartTime?.ToString();
                     break;
                 default:
                     break;
