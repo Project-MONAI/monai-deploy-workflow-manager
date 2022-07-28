@@ -653,7 +653,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                     TaskPluginArguments = new Dictionary<string, string>()
                     {
                         { "workflow_name", "Workflow_1" },
-                        { "reviewed_task_details", "Reviewed_Task" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
                     }
