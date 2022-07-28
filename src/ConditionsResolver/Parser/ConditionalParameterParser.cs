@@ -19,6 +19,7 @@ using System.Text.RegularExpressions;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.ConditionsResolver.Constants;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Storage.Services;
@@ -183,7 +184,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
         /// <summary>
         /// Resolves a query between two brackets {{ query }}
         /// </summary>
-        /// <param name="value">The query Example: {{ context.executions.task['other task'].'Fred' }}</param>
+        /// <param name="value">The query Example: {{ context.executions.other_task.Result.'Fred' }}</param>
         /// <returns>
         /// Tuple:
         /// Result of the resolution
@@ -265,31 +266,31 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             var resultStr = null as string;
             switch (subValueKey.ToLower())
             {
-                case "task_id":
+                case ParameterConstants.TaskId:
                     resultStr = task.TaskId;
                     break;
-                case "status":
+                case ParameterConstants.Status:
                     resultStr = task.Status.ToString();
                     break;
-                case "execution_id":
+                case ParameterConstants.ExecutionId:
                     resultStr = task.ExecutionId;
                     break;
-                case "output_dir":
+                case ParameterConstants.OutputDirectory:
                     resultStr = task.OutputDirectory;
                     break;
-                case "task_type":
+                case ParameterConstants.TaskType:
                     resultStr = task.TaskType;
                     break;
-                case "previous_task_id":
+                case ParameterConstants.PreviousTaskId:
                     resultStr = task.PreviousTaskId;
                     break;
-                case "error_msg":
+                case ParameterConstants.ErrorMessage:
                     resultStr = task.Reason.ToString();
                     break;
-                case "result":
+                case ParameterConstants.Result:
                     resultStr = GetValueFromDictionary(task.ResultMetadata, keyValue);
                     break;
-                case "start_time":
+                case ParameterConstants.StartTime:
                     resultStr = task.TaskStartTime?.ToString(new CultureInfo("en-GB"));
                     break;
                 default:
@@ -299,20 +300,18 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             return (Result: resultStr, Context: ParameterContext.TaskExecutions);
         }
 
-        private static string? GetValueFromDictionary(Dictionary<string, object> dictionary, string key)
+        private static string? GetValueFromDictionary(Dictionary<string, object> dictionary, string? key)
         {
             if (key is null)
             {
                 return null;
             }
 
-            if (dictionary.ContainsKey(key))
+            if (dictionary.TryGetValue(key, out var value))
             {
-                var result = dictionary[key];
-
-                if (result is string resultStr)
+                if (value is string valueStr)
                 {
-                    return resultStr;
+                    return valueStr;
                 }
             }
 
@@ -339,10 +338,10 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 var resultStr = null as string;
                 switch (keyValue)
                 {
-                    case "name":
+                    case ParameterConstants.Name:
                         resultStr = workflowSpecValue.Name;
                         break;
-                    case "description":
+                    case ParameterConstants.Description:
                         resultStr = workflowSpecValue.Description;
                         break;
                     default:
@@ -375,22 +374,22 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 var resultStr = null as string;
                 switch (keyValue)
                 {
-                    case "id":
+                    case ParameterConstants.PatientId:
                         resultStr = patientValue.PatientId;
                         break;
-                    case "name":
+                    case ParameterConstants.PatientName:
                         resultStr = patientValue.PatientName;
                         break;
-                    case "sex":
+                    case ParameterConstants.PatientSex:
                         resultStr = patientValue.PatientSex;
                         break;
-                    case "dob":
+                    case ParameterConstants.PatientDob:
                         resultStr = patientValue.PatientDob?.ToString("dd/MM/yyyy");
                         break;
-                    case "age":
+                    case ParameterConstants.PatientAge:
                         resultStr = patientValue.PatientAge;
                         break;
-                    case "hospital_id":
+                    case ParameterConstants.PatientHospitalId:
                         resultStr = patientValue.PatientHospitalId;
                         break;
                     default:
