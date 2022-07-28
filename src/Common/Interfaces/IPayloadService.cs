@@ -19,7 +19,7 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Common.Interfaces
 {
-    public interface IPayloadService
+    public interface IPayloadService : IPaginatedApi<Payload>
     {
         /// <summary>
         /// Creates a payload and appends patient details.

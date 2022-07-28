@@ -30,9 +30,9 @@ using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Database;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
+using Monai.Deploy.WorkflowManager.Database.Repositories;
 using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
@@ -118,6 +118,7 @@ namespace Monai.Deploy.WorkflowManager
             services.AddTransient<IWorkflowRepository, WorkflowRepository>();
             services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
             services.AddTransient<IPayloadRepsitory, PayloadRepository>();
+            services.AddTransient<ITasksRepository, TasksRepository>();
 
             // StorageService
             services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);

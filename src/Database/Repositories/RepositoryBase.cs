@@ -20,7 +20,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 
-namespace Monai.Deploy.WorkflowManager.Database
+namespace Monai.Deploy.WorkflowManager.Database.Repositories
 {
     public abstract class RepositoryBase
     {
@@ -37,7 +37,7 @@ namespace Monai.Deploy.WorkflowManager.Database
         /// <param name="skip">Items to skip.</param>
         /// <param name="limit">Items to limit results by.</param>
         /// <returns></returns>
-        public async Task<IList<T>> GetAllAsync<T>(IMongoCollection<T> collection, Expression<Func<T, bool>>? filterFunction, SortDefinition<T> sortFunction, int? skip = null, int? limit = null)
+        public async Task<IList<T>> GetAllAsync<T>(IMongoCollection<T> collection, Expression<Func<T, bool>> filterFunction, SortDefinition<T> sortFunction, int? skip = null, int? limit = null)
         {
             return await collection
                 .Find(filterFunction ?? Builders<T>.Filter.Empty)

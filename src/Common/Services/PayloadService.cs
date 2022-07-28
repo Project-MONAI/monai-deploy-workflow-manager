@@ -25,7 +25,7 @@ using Monai.Deploy.WorkflowManager.Storage.Services;
 
 namespace Monai.Deploy.WorkflowManager.Common.Services
 {
-    public class PayloadService : IPayloadService, IPaginatedApi<Payload>
+    public class PayloadService : IPayloadService
     {
         private readonly IPayloadRepsitory _payloadRepsitory;
 
