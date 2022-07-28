@@ -46,7 +46,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _messageBrokerPublisherService = messageBrokerPublisherService ?? throw new ArgumentNullException(nameof(messageBrokerPublisherService));
-
+            _executeTaskStatus = string.Empty;
+            _getStatusStatus = string.Empty;
             ValidateEventAndInit();
             Initialize();
         }
@@ -80,41 +81,42 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin
             }
         }
 
-        public override async Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken = default)
+        public override Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken = default)
         {
             if (_executeTaskStatus.ToLower() == "succeeded")
             {
-                return new ExecutionStatus { Status = TaskExecutionStatus.Succeeded, FailureReason = FailureReason.None };
+                return Task.FromResult(new ExecutionStatus { Status = TaskExecutionStatus.Succeeded, FailureReason = FailureReason.None });
             }
             else if (_executeTaskStatus.ToLower() == "failed")
             {
-                return new ExecutionStatus { Status = TaskExecutionStatus.Failed, FailureReason = FailureReason.PluginError };
+                return Task.FromResult(new ExecutionStatus { Status = TaskExecutionStatus.Failed, FailureReason = FailureReason.PluginError });
             }
             else if (_executeTaskStatus.ToLower() == "cancelled")
             {
-                return new ExecutionStatus { Status = TaskExecutionStatus.Canceled, FailureReason = FailureReason.None };
+                return Task.FromResult(new ExecutionStatus { Status = TaskExecutionStatus.Canceled, FailureReason = FailureReason.None });
             }
 
-            return new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None };
+            return Task.FromResult(new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None });
         }
 
-        public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
+        public override Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
         {
             if (_getStatusStatus.ToLower() == "accepted")
             {
-                return new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None };
+                return Task.FromResult(new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None });
             }
             else if (_getStatusStatus.ToLower() == "failed")
             {
-                return new ExecutionStatus { Status = TaskExecutionStatus.Failed, FailureReason = FailureReason.PluginError };
+                return Task.FromResult(new ExecutionStatus { Status = TaskExecutionStatus.Failed, FailureReason = FailureReason.PluginError });
             }
             else if (_getStatusStatus.ToLower() == "cancelled")
             {
-                return new ExecutionStatus { Status = TaskExecutionStatus.Canceled, FailureReason = FailureReason.None };
+                return Task.FromResult(new ExecutionStatus { Status = TaskExecutionStatus.Canceled, FailureReason = FailureReason.None });
             }
 
-            return new ExecutionStatus { Status = TaskExecutionStatus.Succeeded, FailureReason = FailureReason.None };
+            return Task.FromResult(new ExecutionStatus { Status = TaskExecutionStatus.Succeeded, FailureReason = FailureReason.None });
         }
+
         ~TestPlugin() => Dispose(disposing: false);
 
         protected override void Dispose(bool disposing)

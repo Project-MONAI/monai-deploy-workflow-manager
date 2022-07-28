@@ -83,7 +83,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Repositories
                 var stream = await _storageService.GetObjectAsync(bucketName, path);
 
                 jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
-
             }
             catch (Exception)
             {
