@@ -28,7 +28,6 @@ using Monai.Deploy.WorkflowManager.Services;
 
 namespace Monai.Deploy.WorkflowManager.Controllers
 {
-
     /// <summary>
     /// Tasks Api endpoint controller.
     /// </summary>

@@ -24,7 +24,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 {
     public abstract class RepositoryBase
     {
-        public async Task<long> CountAsync<T>(IMongoCollection<T> collection, Expression<Func<T, bool>>? filterFunction)
+        public static async Task<long> CountAsync<T>(IMongoCollection<T> collection, Expression<Func<T, bool>>? filterFunction)
             => await collection.CountDocumentsAsync(filterFunction ?? Builders<T>.Filter.Empty);
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
         /// <param name="skip">Items to skip.</param>
         /// <param name="limit">Items to limit results by.</param>
         /// <returns></returns>
-        public async Task<IList<T>> GetAllAsync<T>(IMongoCollection<T> collection, Expression<Func<T, bool>> filterFunction, SortDefinition<T> sortFunction, int? skip = null, int? limit = null)
+        public static async Task<IList<T>> GetAllAsync<T>(IMongoCollection<T> collection, Expression<Func<T, bool>> filterFunction, SortDefinition<T> sortFunction, int? skip = null, int? limit = null)
         {
             return await collection
                 .Find(filterFunction ?? Builders<T>.Filter.Empty)
@@ -47,7 +47,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IList<T>> GetAllAsync<T>(IMongoCollection<T> collection, FilterDefinition<T> filterFunction, SortDefinition<T> sortFunction, int? skip = null, int? limit = null)
+        public static async Task<IList<T>> GetAllAsync<T>(IMongoCollection<T> collection, FilterDefinition<T> filterFunction, SortDefinition<T> sortFunction, int? skip = null, int? limit = null)
         {
             return await collection
                 .Find(filterFunction)

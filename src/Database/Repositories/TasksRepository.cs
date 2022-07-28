@@ -32,9 +32,6 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
     public class TasksRepository : RepositoryBase, ITasksRepository
     {
         private readonly IMongoCollection<WorkflowInstance> _workflowInstanceCollection;
-        private readonly IMongoCollection<BsonDocument> _collection;
-        private readonly ILogger<TasksRepository> _logger;
-        private string _tasksCollection;
 
         public TasksRepository(
             IMongoClient client,
@@ -62,7 +59,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             var indexes = bsonDocuments.Select(_ => _.GetElement("name").Value.ToString()).ToList();
 
             // If index not present create it else skip.
-            if (!indexes.Any(i => i.Equals("TasksIndex")))
+            if (!indexes.Any(i => i is not null && i.Equals("TasksIndex")))
             {
                 // Create Index here
 
@@ -75,7 +72,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
                     options
                     );
 
-                _tasksCollection = await workflowInstanceCollection.Indexes.CreateOneAsync(model);
+                await workflowInstanceCollection.Indexes.CreateOneAsync(model);
             }
         }
 

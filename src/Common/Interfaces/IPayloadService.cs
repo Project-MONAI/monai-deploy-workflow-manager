@@ -42,12 +42,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
                                          string? patientName = "");
 
         /// <summary>
-        /// Gets Count of objects
-        /// </summary>
-        /// <returns>the count of objects</returns>
-        Task<long> CountAsync();
-
-        /// <summary>
         /// Updates a payload
         /// </summary>
         /// <param name="payload"></param>
