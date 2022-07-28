@@ -24,7 +24,6 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Database.Repositories
@@ -32,6 +31,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
     public class TasksRepository : RepositoryBase, ITasksRepository
     {
         private readonly IMongoCollection<WorkflowInstance> _workflowInstanceCollection;
+        private readonly ILogger<TasksRepository> _logger;
 
         public TasksRepository(
             IMongoClient client,
@@ -46,7 +46,6 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var mongoDatabase = client.GetDatabase(bookStoreDatabaseSettings.Value.DatabaseName);
             _workflowInstanceCollection = mongoDatabase.GetCollection<WorkflowInstance>(bookStoreDatabaseSettings.Value.WorkflowInstanceCollectionName);
-            _collection = mongoDatabase.GetCollection<BsonDocument>(bookStoreDatabaseSettings.Value.WorkflowInstanceCollectionName);
 
             var task = Task.Run(() => EnsureIndex(_workflowInstanceCollection));
             task.Wait();
