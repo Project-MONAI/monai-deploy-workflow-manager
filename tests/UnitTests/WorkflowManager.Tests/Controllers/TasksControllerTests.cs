@@ -14,6 +14,7 @@ using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Controllers;
+using Monai.Deploy.WorkflowManager.Models;
 using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Wrappers;
 using Moq;
@@ -116,8 +117,14 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             };
 
             _tasksService.Setup(w => w.GetTaskAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(() => taskExecution);
+            var request = new TasksRequest()
+            {
+                ExecutionId = expectedWorkflowId,
+                TaskId = expectedTaskId,
+                WorkflowInstanceId = expectedExecutionId
+            };
 
-            var result = await TasksController.GetAsync(expectedWorkflowId, expectedTaskId, expectedExecutionId);
+            var result = await TasksController.GetAsync(request);
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
 
@@ -130,7 +137,13 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         public async Task GetAsync_InvalidId_ReturnsBadRequest()
         {
             var invalidId = string.Empty;
-            var result = await TasksController.GetAsync(invalidId, invalidId, invalidId);
+            var invalidRequest = new TasksRequest()
+            {
+                ExecutionId = invalidId,
+                TaskId = invalidId,
+                WorkflowInstanceId = invalidId
+            };
+            var result = await TasksController.GetAsync(invalidRequest);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             objectResult.StatusCode.Should().Be(400);
@@ -145,11 +158,17 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             var expectedTaskId = Guid.NewGuid().ToString(); // that does not exist
             var expectedExecutionId = Guid.NewGuid().ToString();
             var expectedWorkflowId = Guid.NewGuid().ToString();
+            var invalidRequest = new TasksRequest()
+            {
+                ExecutionId = expectedWorkflowId,
+                TaskId = expectedTaskId,
+                WorkflowInstanceId = expectedExecutionId
+            };
 
 
             _tasksService.Setup(w => w.GetTaskAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(() => null);
 
-            var result = await TasksController.GetAsync(expectedWorkflowId, expectedTaskId, expectedExecutionId);
+            var result = await TasksController.GetAsync(invalidRequest);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             objectResult.StatusCode.Should().Be(404);

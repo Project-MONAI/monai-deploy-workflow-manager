@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Filter;
+using Monai.Deploy.WorkflowManager.Models;
 using Monai.Deploy.WorkflowManager.Services;
 
 namespace Monai.Deploy.WorkflowManager.Controllers
@@ -81,16 +82,19 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <summary>
         /// Gets individual task.
         /// </summary>
-        /// <param name="workflowInstanceId">workflowInstanceId.</param>
-        /// <param name="taskId">taskId.</param>
-        /// <param name="executionId">executionId.</param>
+        /// <param name="request">TasksRequest model.</param>
         /// <returns>Task Information.</returns>
         [HttpGet]
-        public async Task<IActionResult> GetAsync([FromBody] string workflowInstanceId, [FromBody] string taskId, [FromBody] string executionId)
+        public async Task<IActionResult> GetAsync([FromBody] TasksRequest request)
         {
+            var workflowInstanceId = request.WorkflowInstanceId;
+            var taskId = request.TaskId;
+            var executionId = request.ExecutionId;
+
             var wfIdValid = string.IsNullOrWhiteSpace(workflowInstanceId) || !Guid.TryParse(workflowInstanceId, out _);
             var taskIdValid = string.IsNullOrWhiteSpace(taskId) || !Guid.TryParse(taskId, out _);
             var execIdValid = string.IsNullOrWhiteSpace(executionId) || !Guid.TryParse(executionId, out _);
+
             if (wfIdValid || taskIdValid || execIdValid)
             {
                 _logger.LogDebug($"{nameof(GetAsync)} - Failed to validate ids");
