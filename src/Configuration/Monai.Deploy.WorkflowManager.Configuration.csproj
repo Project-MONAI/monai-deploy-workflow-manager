@@ -25,10 +25,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
-    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.0-rc0009" />
-    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.0-rc0009" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.0-rc0012" />
+    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.0-rc0014" />
     <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.3-rc0010" />
     <PackageReference Include="System.IO.Abstractions" Version="17.0.24" />
   </ItemGroup>
