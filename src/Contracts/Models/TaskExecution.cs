@@ -59,8 +59,8 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "output_directory")]
         public string OutputDirectory { get; set; }
 
-        [JsonProperty(PropertyName = "metadata")]
-        public Dictionary<string, object> Metadata { get; set; }
+        [JsonProperty(PropertyName = "result")]
+        public Dictionary<string, object> ResultMetadata { get; set; }
 
         [JsonProperty(PropertyName = "input_parameters")]
         public Dictionary<string, object> InputParameters { get; set; }
