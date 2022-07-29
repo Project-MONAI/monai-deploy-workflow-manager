@@ -24,6 +24,8 @@
 
 you may also have to copy mc.exe to the excuatable folder (\bin\Debug\net6.0)
 
+Note. if you already have docker container for Minio Rabbet etc running Stop these.
+
 ### steps
 - following the qickstart here https://argoproj.github.io/argo-workflows/quick-start/ but change to namespace to suit. ie 
 
@@ -37,20 +39,20 @@ new bash window `kubectl -n argo port-forward deployment/minio 9000:9000 9001:90
 
 another bash window `kubectl -n argo port-forward deployment/argo-server 2746:2746`
 
-This allows you to access argo (localhost:2764) and minio (localhost:9001)
+This allows you to access argo (localhost:2746) and minio (localhost:9001)
 
 #### Dns change
 Now we have our services running we need to make a DNS change, because minio needs to be accessed from argo (within kubernetes) its addressed somthing like this `http://minio:9000` but the code running in VisualStudio also needs to access it. To get around this, in notepad (in Aministrator mode) open the file `C:\Windows\System32\drivers\etc\Hosts` add the following line
 - `127.0.0.1	minio`
 
-save the file, now `http://minio:9001` will route to you local machine
+save the file, now `http://minio:9000` will route to you local machine
 
 ### setup up an input file
 - open browser `http://minio:9001/buckets/` 
 - log in with `admin` `password`
 - using the UI make a bucket called `bucket1` 
 - and a folder called `00000000-1000-0000-0000-000000000000/dcm/` be careful not to put spaces before or after this name.
-- make an empty local file called `input_diacom` and drag this into the created folder in the browser.
+- make an empty local file called `input_dicom` and drag this into the created folder in the browser.
 
 ### add rabbit and mongo services
 install Helm 3 https://helm.sh/docs/intro/install/
@@ -102,7 +104,7 @@ Open the post/workflows tab and click `try it out`, paste in the following to th
 				"input": [
 					{
 						"name": "input_diacom",
-						"value": "{{ context.input.dicom }}/input_diacom"
+						"value": "{{ context.input.dicom }}/input_dicom"
 					}
 				],
 				"output": [

@@ -11,15 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-{{ if ((.Values.serviceAccount).create) -}}
-apiVersion: v1
-kind: ServiceAccount
+{{ if .Values.serviceAccount.role -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
 metadata:
-  name: {{ include "deploy.serviceAccountName" . }}
-  labels:
-    {{- include "deploy.labels" . | nindent 4 }}
-  {{- with .Values.serviceAccount.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+ name: {{.Values.serviceAccount.role.name}}-binding
+ namespace: {{.Values.serviceAccount.namespace}}
+subjects:
+- kind: ServiceAccount
+  name: {{.Values.serviceAccount.name}}
+  namespace: {{.Values.serviceAccount.namespace}}
+roleRef:
+ kind: Role
+ name: {{.Values.serviceAccount.role.name}}
+ apiGroup: rbac.authorization.k8s.io
+ 
+
+
 {{- end }}
