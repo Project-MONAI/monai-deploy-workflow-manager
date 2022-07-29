@@ -24,6 +24,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
+using Monai.Deploy.WorkflowManager.Logging.Logging;
 using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Database.Repositories
@@ -51,7 +52,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             task.Wait();
         }
 
-        private async Task EnsureIndex(IMongoCollection<WorkflowInstance> workflowInstanceCollection)
+        private static async Task EnsureIndex(IMongoCollection<WorkflowInstance> workflowInstanceCollection)
         {
             var asyncCursor = (await workflowInstanceCollection.Indexes.ListAsync());
             var bsonDocuments = (await asyncCursor.ToListAsync());
@@ -75,36 +76,82 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
         }
 
-        public async Task<long> CountAsync() => await CountAsync(_workflowInstanceCollection, null);
-
         public async Task<IList<TaskExecution>> GetAllAsync(int? skip, int? limit)
         {
-            var builder = Builders<WorkflowInstance>.Filter;
+            try
+            {
+                var builder = Builders<WorkflowInstance>.Filter;
 
-            var filter = builder.Eq("Tasks.Status", TaskExecutionStatus.Accepted);
-            filter &= builder.Ne("Tasks.Status", TaskExecutionStatus.Dispatched);
+                var filter = builder.Eq("Tasks.Status", TaskExecutionStatus.Accepted);
+                filter &= builder.Ne("Tasks.Status", TaskExecutionStatus.Dispatched);
 
-            var result = await _workflowInstanceCollection.Aggregate()
-                .Match(filter)
-                .Unwind<WorkflowInstance, WorkflowInstanceTasksUnwindResult>(wf => wf.Tasks)
-                .Skip(skip ?? 0)
-                .Limit(limit ?? 500)
-                .ToListAsync();
+                var result = await _workflowInstanceCollection.Aggregate()
+                    .Match(filter)
+                    .Unwind<WorkflowInstance, WorkflowInstanceTasksUnwindResult>(wf => wf.Tasks)
+                    .Skip(skip ?? 0)
+                    .Limit(limit ?? 500)
+                    .ToListAsync();
 
-            return result.Select(r => r.Tasks).ToList();
+                if (result is null || result.Count == 0)
+                {
+                    return new List<TaskExecution>();
+                }
+
+                return result.Select(r => r.Tasks).ToList();
+            }
+            catch (Exception e)
+            {
+                _logger.DbCallFailed(nameof(GetAllAsync), e);
+
+                return new List<TaskExecution>();
+            }
         }
 
         public async Task<TaskExecution?> GetTaskAsync(string workflowInstanceId, string taskId, string executionId)
         {
-            var builder = Builders<WorkflowInstance>.Filter;
+            try
+            {
+                var builder = Builders<WorkflowInstance>.Filter;
 
-            var filter = builder.Eq(wf => wf.WorkflowId, workflowInstanceId);
+                var filter = builder.Eq(wf => wf.WorkflowId, workflowInstanceId);
 
-            var result = await _workflowInstanceCollection
-                .Find(filter)
-                .FirstOrDefaultAsync();
+                var result = await _workflowInstanceCollection
+                    .Find(filter)
+                    .FirstOrDefaultAsync();
 
-            return result?.Tasks.FirstOrDefault(t => t.TaskId == taskId && t.ExecutionId == executionId);
+                return result?.Tasks.FirstOrDefault(t => t.TaskId == taskId && t.ExecutionId == executionId);
+            }
+            catch (Exception e)
+            {
+                _logger.DbCallFailed(nameof(GetAllAsync), e);
+
+                return default;
+            }
+        }
+
+        public async Task<long> CountAsync()
+        {
+            try
+            {
+                var builder = Builders<WorkflowInstance>.Filter;
+
+                var filter = builder.Eq("Tasks.Status", TaskExecutionStatus.Accepted);
+                filter &= builder.Ne("Tasks.Status", TaskExecutionStatus.Dispatched);
+
+                var result = await _workflowInstanceCollection.Aggregate()
+                    .Match(filter).ToListAsync();
+                if (result is null || result.Count == 0)
+                {
+                    return 0;
+                }
+                return result.Select(r => r.Tasks).Count();
+            }
+            catch (Exception e)
+            {
+                _logger.DbCallFailed(nameof(GetAllAsync), e);
+
+                return default;
+            }
         }
     }
 }

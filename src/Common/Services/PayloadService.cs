@@ -95,6 +95,5 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
 
         public async Task<bool> UpdateWorkflowInstanceIdsAsync(string payloadId, IEnumerable<string> workflowInstances)
             => await _payloadRepsitory.UpdateAssociatedWorkflowInstancesAsync(payloadId, workflowInstances);
-
     }
 }

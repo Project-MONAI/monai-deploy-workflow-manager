@@ -22,10 +22,27 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
 {
     public interface ITasksRepository
     {
-        Task<long> CountAsync();
-
+        /// <summary>
+        /// Gets all running tasks.
+        /// </summary>
+        /// <param name="skip">skip.</param>
+        /// <param name="limit">limit.</param>
+        /// <returns></returns>
         Task<IList<TaskExecution>> GetAllAsync(int? skip, int? limit);
 
+        /// <summary>
+        /// Gets count of Tasks.
+        /// </summary>
+        /// <returns></returns>
+        Task<long> CountAsync();
+
+        /// <summary>
+        /// Gets Task Execution given workflowInstanceId, taskId and executionId.
+        /// </summary>
+        /// <param name="workflowInstanceId">workflowInstanceId.</param>
+        /// <param name="taskId">taskId.</param>
+        /// <param name="executionId">executionId<./param>
+        /// <returns></returns>
         Task<TaskExecution?> GetTaskAsync(string workflowInstanceId, string taskId, string executionId);
     }
 }

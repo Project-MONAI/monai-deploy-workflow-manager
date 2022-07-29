@@ -80,7 +80,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                     (validFilter.PageNumber - 1) * validFilter.PageSize,
                     validFilter.PageSize);
 
-                var dataTotal = pagedData.Count();
+                var dataTotal = await _tasksService.CountAsync();
                 var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
 
                 return Ok(pagedReponse);

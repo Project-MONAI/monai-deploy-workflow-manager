@@ -29,7 +29,13 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             _tasksRepository = workflowInstanceRepository ?? throw new ArgumentNullException(nameof(workflowInstanceRepository));
         }
 
-        public async Task<long> CountAsync() => await _tasksRepository.CountAsync();
+        /// <summary>
+        /// Not Required For Tasks Service is 
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<long> CountAsync()
+            => await _tasksRepository.CountAsync();
 
         /// <summary>
         /// Gets all running  tasks
