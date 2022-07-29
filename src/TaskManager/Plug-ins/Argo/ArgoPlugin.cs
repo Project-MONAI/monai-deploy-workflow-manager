@@ -218,7 +218,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             TimeSpan? duration = null;
             if (workflow.Status?.StartedAt is not null && workflow.Status?.FinishedAt is not null)
             {
-                duration = workflow.Status?.StartedAt - workflow.Status?.FinishedAt;
+                duration = workflow.Status?.FinishedAt - workflow.Status?.StartedAt;
             }
             var stats = new Dictionary<string, string>
             {
