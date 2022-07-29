@@ -157,9 +157,59 @@ you should see the activity of the argo task running. once complete the code wil
 in MongoCompass check the results, by refreshing then selecting the created WorkflowInstance
 by drilling down into Tasks -> 0 -> ExecutionStats, you should see the reported stats.
 
+## General hints and tips
+
 ### Re-running
 
 To re-run the flow again, be sure to delete the workflowInstance object from Mongo, then just redo the `rabbitmqadmin -u admin -p admin -P 30672 -V monai..`
 
 command from above
+
+### Argo
+
+you can use the API to work with Argo, here are some useful commands
+exec into a container within the same namespace and install curl
+
+- `kubectl -n monai exec -it mwm-monai-5964656c98-m7k9j -- bash`
+- `apt update;apt install curl -y`
+
+get workflow from a namespace
+- `curl -k https://argo-server.argo:2746/api/v1/workflows/argo`
+
+post a new template
+- `curl -k -v -X POST https://argo-server.argo:2746/api/v1/workflow-templates/argo --header 'content-type: application/json' -d '{"createOptions":{"dryRun":["st.........'`
+
+find and delete old workflows
+- `curl -k https://argo-server.argo:2746/api/v1/workflows/argo | grep {\"name\":\"md-simple`
+- `curl -k -X DELETE https://argo-server.argo:2746/api/v1/workflows/argo/md-simple-workflow-2tz62`
+
+
+### Mongo
+exaples for mongo (using mongo shell)
+exec into the mongo container
+- `kubectl -n monai exec -it mongo-monai-6c4dc7d5f9-b8mdd -- bash`
+
+then
+- `mongo "mongodb://root:rootpassword@localhost:27017"`
+- `use WorkloadManager`
+- `db.Workflows.find()`
+- `db.WorkflowInstances.find()`
+- `db.WorkflowInstances.drop()`
+
+
+### Minio
+examples for Minio (using mc.exe) https://docs.min.io/docs/minio-client-complete-guide.html
+
+exec into the WorkflowManager pod
+- `k -n monai exec -it mwm-monai-5964656c98-m7k9j -- bash`
+
+make a bucket
+- `mc mb mwm/bucket1`
+
+then
+- `mc alias set mwm http://minio.monai:9000 admin password`
+- `mc cp input_dicom mwm/bucket1/00000000-1000-0000-0000-000000000000/dcm/input_dicom` copy a file
+- `mc ls --recursive mwm/bucket1` list all files in bucket
+
+
 
