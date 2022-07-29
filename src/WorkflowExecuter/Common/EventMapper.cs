@@ -78,7 +78,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 Inputs = inputs,
                 Outputs = outputs,
                 TaskPluginType = task.TaskType,
-                Metadata = task.Metadata,
+                Metadata = { },
                 PayloadId = workflowInstance.PayloadId,
                 IntermediateStorage = new Messaging.Common.Storage
                 {

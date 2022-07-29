@@ -38,6 +38,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events
         public string TaskId { get; set; }
 
         /// <summary>
+        /// Gets or sets the ID of the reviewed task ID.
+        /// </summary>
+        [Required]
+        [JsonProperty(PropertyName = "reviewed_task_id")]
+        public string ReviewedTaskId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the ID of the reviewed execution ID.
+        /// </summary>
+        [Required]
+        [JsonProperty(PropertyName = "reviewed_execution_id")]
+        public string ReviewedExecutionId { get; set; }
+
+        /// <summary>
         /// Gets or sets the correlation ID.
         /// </summary>
         [JsonProperty(PropertyName = "correlation_id")]

@@ -42,6 +42,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         private string _patientHospitalId;
         private string _queueName;
         private string _workflowName;
+        private string _reviewedTaskId;
+        private string _reviewedExecutionId;
 
         public AideClinicalReviewPlugin(
             IServiceScopeFactory serviceScopeFactory,
@@ -102,6 +104,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             {
                 _workflowName = Event.TaskPluginArguments[Keys.WorkflowName];
             }
+
+            if (Event.TaskPluginArguments.ContainsKey(Keys.ReviewedExecutionId))
+            {
+                _reviewedExecutionId = Event.TaskPluginArguments[Keys.ReviewedExecutionId];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(Keys.ReviewedTaskId))
+            {
+                _reviewedTaskId = Event.TaskPluginArguments[Keys.ReviewedTaskId];
+            }
         }
 
         private void ValidateEventAndInit()
@@ -144,6 +156,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
                 CorrelationId = Event.CorrelationId,
                 ExecutionId = Event.ExecutionId,
                 TaskId = Event.TaskId,
+                ReviewedTaskId = _reviewedTaskId,
+                ReviewedExecutionId = _reviewedExecutionId,
                 WorkflowName = _workflowName,
                 Files = Event.Inputs,
                 PatientMetadata = new PatientMetadata
