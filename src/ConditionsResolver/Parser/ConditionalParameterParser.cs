@@ -291,7 +291,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                     resultStr = GetValueFromDictionary(task.ResultMetadata, keyValue);
                     break;
                 case ParameterConstants.StartTime:
-                    resultStr = task.TaskStartTime?.ToString();
+                    resultStr = task.TaskStartTime?.ToString("dd/MM/yyyy HH:mm:ss");
                     break;
                 default:
                     break;
