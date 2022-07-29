@@ -21,8 +21,7 @@
 - python 3 installed.
 - Helm 3 https://helm.sh/docs/intro/install/
 - rabbitmqadmin https://www.rabbitmq.com/management-cli.html
-
-you may also have to copy mc.exe to the excuatable folder (\bin\Debug\net6.0)
+- mc.exe https://github.com/minio/mc install and add its location to the storage_settings_executableLocation setting (appsettings.local.json) including the name itself ! ie `mc.exe` if its in the folder of the running executable (\bin\Debug\net6.0).
 
 Note. if you already have docker container for Minio Rabbet etc running Stop these.
 
