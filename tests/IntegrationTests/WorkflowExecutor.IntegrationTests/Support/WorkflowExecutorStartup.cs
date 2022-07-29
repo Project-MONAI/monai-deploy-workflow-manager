@@ -48,7 +48,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             .ConfigureAppConfiguration((builderContext, config) =>
             {
                 var env = builderContext.HostingEnvironment;
-                config.AddJsonFile($"appsettings.Test.json", optional: true, reloadOnChange: true);
+                config.AddJsonFile("appsettings.Test.json", optional: false, reloadOnChange: false);
             })
             .ConfigureLogging((builderContext, configureLogging) =>
             {
@@ -116,7 +116,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                         var newUri = new Uri(uri);
                         return new UriService(newUri);
                     });
-
                 })
             .ConfigureWebHostDefaults(webBuilder =>
             {

@@ -70,6 +70,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             TestExecutionConfig.RabbitConfig.TaskUpdateQueue = "md.tasks.update";
             TestExecutionConfig.RabbitConfig.ClinicalReviewQueue = "aide.clinical_review.request";
 
+            TestExecutionConfig.MongoConfig.ConnectionString = config.GetValue<string>("WorkloadManagerDatabase:ConnectionString");
+            TestExecutionConfig.MongoConfig.Database = config.GetValue<string>("WorkloadManagerDatabase:DatabaseName");
+            TestExecutionConfig.MongoConfig.TaskDispatchEventCollection = config.GetValue<string>("WorkloadManagerDatabase:TaskDispatchEventCollectionName");
+
             TestExecutionConfig.MinioConfig.Endpoint = config.GetValue<string>("WorkflowManager:storage:settings:endpoint");
             TestExecutionConfig.MinioConfig.AccessKey = config.GetValue<string>("WorkflowManager:storage:settings:accessKey");
             TestExecutionConfig.MinioConfig.AccessToken = config.GetValue<string>("WorkflowManager:storage:settings:accessToken");

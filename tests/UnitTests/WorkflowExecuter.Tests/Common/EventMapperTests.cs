@@ -44,7 +44,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 {
                     { "key", "value" }
                 },
-                Metadata = new Dictionary<string, object> { },
+                ResultMetadata = new Dictionary<string, object> { },
                 OutputDirectory = "minio/workflowid/taskid"
             };
 
@@ -102,7 +102,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                         Name = "testoutput"
                     }
                 },
-                Metadata = task.Metadata,
+                Metadata = { },
                 TaskPluginArguments = new Dictionary<string, string>
                 {
                     { "key", "value" }
@@ -140,7 +140,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 {
                     { "key", "value" }
                 },
-                Metadata = new Dictionary<string, object> { },
+                ResultMetadata = new Dictionary<string, object> { },
                 OutputDirectory = "minio/workflowid/taskid"
             };
 

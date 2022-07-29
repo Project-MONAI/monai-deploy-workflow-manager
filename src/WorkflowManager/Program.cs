@@ -36,6 +36,7 @@ using Monai.Deploy.WorkflowManager.Database.Repositories;
 using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
+using Monai.Deploy.WorkflowManager.TaskManager.Database;
 using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager
@@ -114,11 +115,13 @@ namespace Monai.Deploy.WorkflowManager
 
             // Mongo DB
             services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
+            services.Configure<TaskManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
             services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
             services.AddTransient<IWorkflowRepository, WorkflowRepository>();
             services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
             services.AddTransient<IPayloadRepsitory, PayloadRepository>();
             services.AddTransient<ITasksRepository, TasksRepository>();
+            services.AddTransient<ITaskDispatchEventRepository, TaskDispatchEventRepository>();
 
             // StorageService
             services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
