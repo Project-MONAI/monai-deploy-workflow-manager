@@ -54,7 +54,9 @@ namespace Monai.Deploy.WorkflowManager.Services
                 var dicomStore = s.GetService<IDicomService>();
                 var workflowInstanceService = s.GetService<IWorkflowInstanceService>();
 
+#pragma warning disable CS8604 // Possible null reference argument.
                 return new ConditionalParameterParser(logger, dicomStore, workflowInstanceService, payloadService, workflowService);
+#pragma warning restore CS8604 // Possible null reference argument.
             });
 
             services.AddSingleton<PayloadListenerService>();

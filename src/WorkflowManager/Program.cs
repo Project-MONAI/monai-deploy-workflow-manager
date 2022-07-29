@@ -107,7 +107,9 @@ namespace Monai.Deploy.WorkflowManager
 
             services.AddSingleton<DataRetentionService>();
 
-            services.AddHostedService<DataRetentionService>(p => p.GetService<DataRetentionService>());
+#pragma warning disable CS8603 // Possible null reference return.
+            services.AddHostedService(p => p.GetService<DataRetentionService>());
+#pragma warning restore CS8603 // Possible null reference return.
 
             // Services
             services.AddTransient<IFileSystem, FileSystem>();
@@ -139,8 +141,8 @@ namespace Monai.Deploy.WorkflowManager
             services.AddSingleton<IUriService>(p =>
             {
                 var accessor = p.GetRequiredService<IHttpContextAccessor>();
-                var request = accessor.HttpContext.Request;
-                var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+                var request = accessor?.HttpContext?.Request;
+                var uri = string.Concat(request?.Scheme, "://", request?.Host.ToUriComponent());
                 var newUri = new Uri(uri);
                 return new UriService(newUri);
             });

@@ -363,7 +363,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return new List<string>(task.InputArtifacts.Values).ToArray();
         }
 
-        private async Task<bool> DispatchDicomExport(WorkflowInstance workflowInstance, TaskExecution task, string[] exportDestinations, string[] artifactValues, string correlationId)
+        private async Task<bool> DispatchDicomExport(WorkflowInstance workflowInstance, TaskExecution task, string[]? exportDestinations, string[] artifactValues, string correlationId)
         {
             if (exportDestinations is null || !exportDestinations.Any())
             {
@@ -398,7 +398,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
         private async Task<bool> DispatchTaskDestinations(WorkflowInstance workflowInstance, WorkflowRevision workflow, string correlationId, IList<TaskExecution> taskExecutions)
         {
-            workflowInstance.Tasks?.AddRange(taskExecutions);
+            workflowInstance.Tasks.AddRange(taskExecutions);
 
             if (!await _workflowInstanceRepository.UpdateTasksAsync(workflowInstance.Id, workflowInstance.Tasks))
             {
@@ -611,7 +611,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}",
                 ResultMetadata = { },
                 InputParameters = newInputParameters,
-                PreviousTaskId = previousTaskId
+                PreviousTaskId = previousTaskId is not null ? previousTaskId : string.Empty
             };
         }
 

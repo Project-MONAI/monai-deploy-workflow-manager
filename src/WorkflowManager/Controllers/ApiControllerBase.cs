@@ -38,7 +38,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiControllerBase"/> class.
         /// </summary>
-        /// <param name="options"></param>
+        /// <param name="options">Workflow manager options.</param>
         public ApiControllerBase(IOptions<WorkflowManagerOptions> options)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));

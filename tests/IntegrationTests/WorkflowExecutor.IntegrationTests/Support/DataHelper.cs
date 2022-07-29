@@ -20,14 +20,14 @@ using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
 using Polly;
 using Polly.Retry;
-
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
     public class DataHelper
     {
         public WorkflowRequestMessage WorkflowRequestMessage = new WorkflowRequestMessage();
         public List<WorkflowInstance> WorkflowInstances = new List<WorkflowInstance>();
-        public PatientDetails PatientDetails { get; set; }
+        public PatientDetails PatientDetails { get; set; } = new PatientDetails();
         public TaskUpdateEvent TaskUpdateEvent = new TaskUpdateEvent();
         public List<TaskDispatchEvent> TaskDispatchEvents = new List<TaskDispatchEvent>();
         public List<WorkflowRevision> WorkflowRevisions = new List<WorkflowRevision>();
@@ -381,3 +381,4 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         }
     }
 }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.

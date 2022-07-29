@@ -26,7 +26,7 @@ using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Repositories
 {
-    public sealed class ArgoMetadataRepository : MetadataRepositoryBase, IAsyncDisposable
+    public sealed class ArgoMetadataRepository : MetadataRepositoryBase, IDisposable
     {
         private readonly IStorageService _storageService;
         private readonly IServiceScope _scope;
@@ -71,7 +71,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Repositories
                 return new Dictionary<string, object>();
             }
 
-            return JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonStr);
+            return JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonStr) ?? new Dictionary<string, object>();
         }
 
         private async Task<string> RetrieveJsonFromFile(string bucketName, string path)
@@ -102,12 +102,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Repositories
             }
 
             base.Dispose(disposing);
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            Dispose(disposing: false);
-            GC.SuppressFinalize(this);
         }
     }
 }

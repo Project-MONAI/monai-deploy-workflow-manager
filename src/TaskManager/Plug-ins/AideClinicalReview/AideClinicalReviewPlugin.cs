@@ -27,7 +27,7 @@ using Monai.Deploy.WorkflowManager.TaskManager.API;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 {
-    public class AideClinicalReviewPlugin : TaskPluginBase, IAsyncDisposable
+    public class AideClinicalReviewPlugin : TaskPluginBase, IDisposable
     {
         private const string TaskManagerApplicationId = "4c9072a1-35f5-4d85-847d-dafca22244a8";
         private readonly IServiceScope _scope;
@@ -196,14 +196,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             }
 
             base.Dispose(disposing);
-        }
-
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public async ValueTask DisposeAsync()
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
-        {
-            Dispose(disposing: false);
-            GC.SuppressFinalize(this);
         }
     }
 }

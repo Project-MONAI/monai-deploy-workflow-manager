@@ -21,12 +21,12 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
     public class InformaticsGateway
     {
         [JsonProperty(PropertyName = "ae_title")]
-        public string AeTitle { get; set; }
+        public string AeTitle { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "data_origins")]
-        public string[] DataOrigins { get; set; }
+        public string[] DataOrigins { get; set; } = System.Array.Empty<string>();
 
         [JsonProperty(PropertyName = "export_destinations")]
-        public string[] ExportDestinations { get; set; }
+        public string[] ExportDestinations { get; set; } = System.Array.Empty<string>();
     }
 }

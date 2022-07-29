@@ -81,7 +81,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// </summary>
         /// <param name="workflowInstanceId">A Workflow Instance Id to retrieve a task from.</param>
         /// <param name="taskId">A Task Id to retrieve.</param>
-        Task<TaskExecution> GetTaskByIdAsync(string workflowInstanceId, string taskId);
+        Task<TaskExecution?> GetTaskByIdAsync(string workflowInstanceId, string taskId);
 
         /// <summary>
         /// Updates the Task list for a given workflow instance.
