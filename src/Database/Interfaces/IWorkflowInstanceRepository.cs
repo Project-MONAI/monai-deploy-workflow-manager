@@ -40,7 +40,10 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <param name="workflowInstanceId">A Workflow Instance Id to retrieve.</param>
         Task<WorkflowInstance> GetByWorkflowInstanceIdAsync(string workflowInstanceId);
 
-
+        /// <summary>
+        /// Gets count of Workflow Instances.
+        /// </summary>
+        /// <returns></returns>
         Task<long> CountAsync();
 
         /// <summary>
