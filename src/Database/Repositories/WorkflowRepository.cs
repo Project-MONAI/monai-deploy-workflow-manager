@@ -26,7 +26,7 @@ using System;
 using Ardalis.GuardClauses;
 using System.Linq;
 
-namespace Monai.Deploy.WorkflowManager.Database
+namespace Monai.Deploy.WorkflowManager.Database.Repositories
 {
     public class WorkflowRepository : RepositoryBase, IWorkflowRepository
     {
@@ -175,10 +175,10 @@ namespace Monai.Deploy.WorkflowManager.Database
             return deletedTimeStamp;
         }
 
-        public Task<long> CountAsync() => base.CountAsync(_workflowCollection, null);
+        public Task<long> CountAsync() => CountAsync(_workflowCollection, null);
 
         public async Task<IList<WorkflowRevision>> GetAllAsync(int? skip = null, int? limit = null)
-            => await base.GetAllAsync(_workflowCollection,
+            => await GetAllAsync(_workflowCollection,
                                       x => x.Deleted == null,
                                       Builders<WorkflowRevision>.Sort.Descending(x => x.Id),
                                       skip,

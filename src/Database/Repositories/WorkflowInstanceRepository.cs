@@ -28,7 +28,7 @@ using Monai.Deploy.WorkflowManager.Database.Options;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
 using MongoDB.Driver;
 
-namespace Monai.Deploy.WorkflowManager.Database
+namespace Monai.Deploy.WorkflowManager.Database.Repositories
 {
     public class WorkflowInstanceRepository : RepositoryBase, IWorkflowInstanceRepository
     {
@@ -234,7 +234,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             return workflow;
         }
 
-        public Task<long> CountAsync() => base.CountAsync(_workflowInstanceCollection, null);
+        public Task<long> CountAsync() => CountAsync(_workflowInstanceCollection, null);
 
         public async Task<IList<WorkflowInstance>> GetAllAsync(int? skip = null, int? limit = null, Status? status = null)
         {
@@ -245,7 +245,7 @@ namespace Monai.Deploy.WorkflowManager.Database
                 filter &= builder.Eq(w => w.Status, status);
             }
 
-            return await base.GetAllAsync(_workflowInstanceCollection,
+            return await GetAllAsync(_workflowInstanceCollection,
                                           filter,
                                           Builders<WorkflowInstance>.Sort.Descending(x => x.StartTime),
                                           skip,
@@ -253,7 +253,7 @@ namespace Monai.Deploy.WorkflowManager.Database
         }
 
         public Task<IList<WorkflowInstance>> GetAllAsync(int? skip, int? limit)
-            => base.GetAllAsync(_workflowInstanceCollection,
+            => GetAllAsync(_workflowInstanceCollection,
                                 null,
                                 Builders<WorkflowInstance>.Sort.Descending(x => x.StartTime),
                                 skip,
