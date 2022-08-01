@@ -1,3 +1,7 @@
+// Copyright 2021-2022 MONAI Consortium
+//
+// Licensed under the Apache License, Version 2.0 (the "License");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an "AS IS" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License."
+
 /*
  * Copyright 2022 MONAI Consortium
  *
@@ -29,8 +33,17 @@ using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
 
 namespace Monai.Deploy.WorkflowManager.Services
 {
+    /// <summary>
+    ///  Sets up workflow executor service collection.
+    /// </summary>
     public static class WorkflowExecutorExtensions
     {
+        /// <summary>
+        /// Adds workflow executor and dependencies to service collection.
+        /// </summary>
+        /// <param name="services">Service collection to add workflow executor to.</param>
+        /// <param name="hostContext">Hostcontext object.</param>
+        /// <returns>Updated IServiceCollection.</returns>
         public static IServiceCollection AddWorkflowExecutor(this IServiceCollection services, HostBuilderContext hostContext)
         {
             Guard.Against.Null(hostContext, nameof(hostContext));

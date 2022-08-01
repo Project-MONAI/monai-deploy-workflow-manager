@@ -69,7 +69,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <param name="status">Workflow instance status filter.</param>
         /// <returns>A list of workflow instances.</returns>
         [HttpGet]
-        public async Task<IActionResult> GetListAsync([FromQuery] PaginationFilter filter, [FromQuery] string? status = null)
+        public async Task<IActionResult> GetListAsync([FromQuery] PaginationFilter filter, [FromQuery] string status = null)
         {
             try
             {

@@ -77,7 +77,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     Console.WriteLine($"[Bucket]  Exception: {e}");
                     if (e.Message != "MinIO API responded with message=Your previous request to create the named bucket succeeded and you already own it.")
                     {
-                        throw e;
+                        throw;
                     }
                 }
             });
@@ -97,7 +97,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                         {
                             var relativePath = $"{folderPath}{Path.GetRelativePath(localPath, file)}";
                             var fileName = Path.GetFileName(file);
-                            byte[] bs = File.ReadAllBytes(file);
+                            var bs = File.ReadAllBytes(file);
                             using (var filestream = new MemoryStream(bs))
                             {
                                 var fileInfo = new FileInfo(file);
@@ -116,7 +116,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     }
                     else
                     {
-                        byte[] bs = File.ReadAllBytes(localPath);
+                        var bs = File.ReadAllBytes(fileLocation);
                         using (MemoryStream filestream = new MemoryStream(bs))
                         {
                             FileInfo fileInfo = new FileInfo(localPath);
@@ -175,8 +175,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         public async Task RemoveObjects(string bucketName, string objectName)
         {
-            bool found = await Client.BucketExistsAsync(bucketName);
-            if (found)
+            if (await Client.BucketExistsAsync(bucketName))
             {
                 await Client.RemoveObjectAsync(bucketName, objectName);
             }

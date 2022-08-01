@@ -23,8 +23,17 @@ using Monai.Deploy.WorkflowManager.TaskManager.Services;
 
 namespace Monai.Deploy.WorkflowManager.Services
 {
+    /// <summary>
+    ///  Sets up task manager service collection.
+    /// </summary>
     public static class TaskManagerExtensions
     {
+        /// <summary>
+        /// Adds task manager and dependencies to service collection.
+        /// </summary>
+        /// <param name="services">Service collection to add task manager to.</param>
+        /// <param name="hostContext">Hostcontext object.</param>
+        /// <returns>Updated IServiceCollection.</returns>
         public static IServiceCollection AddTaskManager(this IServiceCollection services, HostBuilderContext hostContext)
         {
             Guard.Against.Null(hostContext, nameof(hostContext));

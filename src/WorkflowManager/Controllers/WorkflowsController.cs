@@ -40,7 +40,6 @@ namespace Monai.Deploy.WorkflowManager.Controllers
     {
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IWorkflowService _workflowService;
-
         private readonly ILogger<WorkflowsController> _logger;
         private readonly IUriService _uriService;
 
@@ -48,10 +47,10 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// Initializes a new instance of the <see cref="WorkflowsController"/> class.
         /// </summary>
         /// <param name="workflowService">IWorkflowService.</param>
-        /// <param name="logger">ILogger.<WorkflowsController></param>
+        /// <param name="logger">ILogger.WorkflowsController.</param>
         /// <param name="uriService">Uri Service.</param>
         /// <param name="options">Workflow Manager options.</param>
-        /// <exception cref="ArgumentNullException">ArgumentNullException</exception>
+        /// <exception cref="ArgumentNullException">ArgumentNullException.</exception>
         public WorkflowsController(
             IWorkflowService workflowService,
             ILogger<WorkflowsController> logger,
