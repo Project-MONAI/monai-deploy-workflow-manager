@@ -103,7 +103,8 @@ namespace TaskManager.AideClinicalReview.Tests
             message.TaskPluginArguments[Keys.PatientId] = "patientid";
             message.TaskPluginArguments[Keys.PatientDob] = "patientdob";
             message.TaskPluginArguments[Keys.PatientSex] = "patientsex";
-            message.TaskPluginArguments[Keys.ReviewedTaskDetails] = "taskdetails";
+            message.TaskPluginArguments[Keys.ReviewedTaskId] = "reviewedtaskid";
+            message.TaskPluginArguments[Keys.ReviewedExecutionId] = "reviewedexecutionid";
             return message;
         }
 

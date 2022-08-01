@@ -29,10 +29,21 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
+using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.WorkflowManager.Common;
+using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Services;
+using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Database;
+using Monai.Deploy.WorkflowManager.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Database.Options;
+using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
+using Monai.Deploy.WorkflowManager.TaskManager.Database;
+using Monai.Deploy.WorkflowManager.TaskManager.Services;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
 {
@@ -60,13 +71,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
             var wmConfig = host.Services.GetRequiredService<IOptions<WorkflowManagerOptions>>();
             Guard.Against.NullService(wmConfig, nameof(IOptions<WorkflowManagerOptions>));
 
-            subscriber.Subscribe(messagingKeys.TaskUpdateRequest, messagingKeys.TaskUpdateRequest, (args) =>
+            subscriber.Subscribe(messagingKeys.TaskUpdateRequest, messagingKeys.TaskUpdateRequest, (e) =>
             {
-                logger.LogInformation($"{args.Message.MessageDescription} received.");
-                var updateMessage = args.Message.ConvertToJsonMessage<TaskUpdateEvent>();
+                logger.LogInformation($"{e.Message.MessageDescription} received.");
+                var updateMessage = e.Message.ConvertToJsonMessage<TaskUpdateEvent>();
 
                 logger.LogInformation($"Task updated with new status: {updateMessage.Body.Status}");
-                subscriber.Acknowledge(args.Message);
+                subscriber.Acknowledge(e.Message);
             }, 1);
 
             while (taskManager.Status != Contracts.Rest.ServiceStatus.Running)
@@ -75,14 +86,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                 await Task.Delay(100).ConfigureAwait(false);
             }
             Console.CancelKeyPress += (sender, eventArgs) =>
-                    {
-                        eventArgs.Cancel = true;
-                        exitEvent.Set();
-                    };
+            {
+                eventArgs.Cancel = true;
+                exitEvent.Set();
+            };
 
             // await Task.Run(() =>
             // {
-            //     var message = GenerateDispatchEvent(argoBaseUri, wmConfig.Value);
+            //     var message = GenerateDispatchEvent(args[0], wmConfig.Value);
             //     logger.LogInformation($"Queuing new job with correlation ID={message.CorrelationId}.");
             //     publisher.Publish(messagingKeys.TaskDispatchRequest, message);
             // }).ConfigureAwait(false);
@@ -127,6 +138,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                 SecuredConnection = Convert.ToBoolean(wmConfig.Storage.Settings["securedConnection"], CultureInfo.InvariantCulture),
                 RelativeRootPath = "/e08b7d7d-f30c-4f31-87d5-8ce5049aa956/ehr"
             });
+            message.Body.IntermediateStorage = new Messaging.Common.Storage
+            {
+                Name = "tempStorage",
+                Endpoint = wmConfig.Storage.Settings["endpoint"],
+                Bucket = wmConfig.Storage.Settings["bucket"],
+                SecuredConnection = Convert.ToBoolean(wmConfig.Storage.Settings["securedConnection"], CultureInfo.InvariantCulture),
+                RelativeRootPath = "/rabbit"
+            };
             message.Body.Outputs.Add(new Messaging.Common.Storage
             {
                 Name = "tempStorage",
@@ -135,6 +154,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                 SecuredConnection = Convert.ToBoolean(wmConfig.Storage.Settings["securedConnection"], CultureInfo.InvariantCulture),
                 RelativeRootPath = "/rabbit"
             });
+            message.Body.PayloadId = "e08b7d7d-f30c-4f31-87d5-8ce5049aa956";
             return message.ToMessage();
         }
 
@@ -175,11 +195,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                     services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
                     services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
 
+                    // Mongo DB (Workflow Manager)
+                    services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
+                    services.Configure<TaskManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
+                    services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
+                    services.AddTransient<ITaskDispatchEventRepository, TaskDispatchEventRepository>();
+                    services.AddTransient<IWorkflowRepository, WorkflowRepository>();
+                    services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
+                    services.AddTransient<IPayloadRepsitory, PayloadRepository>();
+                    services.AddTransient<IWorkflowService, WorkflowService>();
+                    services.AddTransient<IWorkflowInstanceService, WorkflowInstanceService>();
+                    services.AddTransient<IPayloadService, PayloadService>();
+                    services.AddTransient<IDicomService, DicomService>();
 
                     services.AddSingleton<TaskManager>();
                     services.AddSingleton<IArgoProvider, ArgoProvider>();
                     services.AddSingleton<IKubernetesProvider, KubernetesProvider>();
                     services.AddTransient<IFileSystem, FileSystem>();
+                    services.AddTransient<ITaskDispatchEventService, TaskDispatchEventService>();
 
                     services.AddHttpClient("Argo");
                     services.AddHttpClient("Argo-Insecure").ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
@@ -193,6 +226,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                     });
 
                     services.AddHostedService<TaskManager>(p => p.GetRequiredService<TaskManager>());
+
+                    services.AddSingleton<IConditionalParameterParser, ConditionalParameterParser>(s =>
+                    {
+                        var logger = s.GetRequiredService<ILogger<ConditionalParameterParser>>();
+                        var payloadService = s.GetRequiredService<IPayloadService>();
+                        var workflowService = s.GetRequiredService<IWorkflowService>();
+                        var dicomStore = s.GetRequiredService<IDicomService>();
+                        var workflowInstanceService = s.GetRequiredService<IWorkflowInstanceService>();
+
+                        return new ConditionalParameterParser(logger, dicomStore, workflowInstanceService, payloadService, workflowService);
+                    });
                 });
     }
 }

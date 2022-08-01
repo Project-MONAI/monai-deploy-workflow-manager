@@ -239,7 +239,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (message.Metadata.Any())
             {
-                currentTask.Metadata = message.Metadata;
+                currentTask.ResultMetadata = message.Metadata;
             }
 
             await HandleOutputArtifacts(workflowInstance, message.Outputs, currentTask);
@@ -591,9 +591,10 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 TaskStartTime = DateTime.UtcNow,
                 TaskId = task.Id,
                 Status = TaskExecutionStatus.Created,
-                InputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(task?.Artifacts?.Input ?? new Artifact[] { }, payloadId, workflowInstanceId, bucketName),
+                Reason = FailureReason.None,
+                InputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(task?.Artifacts?.Input ?? Array.Empty<Artifact>(), payloadId, workflowInstanceId, bucketName),
                 OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}",
-                Metadata = { },
+                ResultMetadata = { },
                 InputParameters = newInputParameters,
                 PreviousTaskId = previousTaskId
             };

@@ -17,6 +17,7 @@
 using FluentAssertions;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events;
+using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 {
@@ -52,6 +53,34 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                 file.RelativeRootPath.Should().Be(taskDispatchFile?.RelativeRootPath);
             }
             Output.WriteLine("Details of ClinicalReviewRequestEvent matches TaskDispatchEvent");
+        }
+
+        public void AssertTaskDispatchEventStoredInMongo(List<TaskDispatchEventInfo> storedTaskDispatchEvent, TaskDispatchEvent taskDispatchEvent)
+        {
+            Output.WriteLine("Asserting details of TaskDispatchEvent stored in Mongo");
+            storedTaskDispatchEvent.Should().NotBeNullOrEmpty();
+            storedTaskDispatchEvent.Count.Should().Be(1);
+
+            // Remove AccessKey, AccessToken & SessionToken as they are modified by Task Manager
+            storedTaskDispatchEvent.ForEach(e =>
+            {
+                e.Event.Inputs.ForEach(i => i.Credentials = null);
+                e.Event.Outputs.ForEach(i => i.Credentials = null);
+                e.Event.IntermediateStorage.Credentials = null;
+            });
+            taskDispatchEvent.Inputs.ForEach(i => i.Credentials = null);
+            taskDispatchEvent.Outputs.ForEach(i => i.Credentials = null);
+            taskDispatchEvent.IntermediateStorage.Credentials = null;
+
+            storedTaskDispatchEvent[0].Event.Should().BeEquivalentTo(taskDispatchEvent);
+            Output.WriteLine("Details of TaskDispatchEvent stored matches original TaskDispatchEvent");
+        }
+
+        internal void AssertTaskDispatchEventDeletedInMongo(List<TaskDispatchEventInfo> storedTaskDispatchEvent)
+        {
+            Output.WriteLine("Asserting details of TaskDispatchEvent deleted in Mongo");
+            storedTaskDispatchEvent.Should().BeNullOrEmpty();
+            Output.WriteLine("Details of TaskDispatchEvent deleted matches original TaskDispatchEvent");
         }
 
         public void AssertTaskUpdateEventFromTaskCallback(TaskUpdateEvent taskUpdateEvent, TaskCallbackEvent taskCallbackEvent, TaskExecutionStatus status)

@@ -22,44 +22,11 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 {
     public static class WorkflowExtensions
     {
-        public static Workflow? ToWorkflow(this string workflowString)
-        {
-            Guard.Against.Null(workflowString, nameof(workflowString));
-
-            var workflow = JsonConvert.DeserializeObject<Workflow>(workflowString);
-
-            Guard.Against.Null(workflow, nameof(workflow));
-
-            return workflow;
-        }
-
-        public static bool ToWorkflowAndValidate(this string workflowString, out IList<string> validationErrors)
-        {
-            Guard.Against.Null(workflowString, nameof(workflowString));
-
-            validationErrors = new List<string>();
-
-            var valid = true;
-
-            var workflow = workflowString.ToWorkflow();
-
-            Guard.Against.Null(workflow, nameof(workflow));
-
-            var workflowValid = workflow.IsValid(out var workflowValidationErrors);
-
-            valid &= workflowValid;
-
-            if (!workflowValid)
-            {
-                foreach (var item in workflowValidationErrors)
-                {
-                    validationErrors?.Add(item);
-                }
-            }
-
-            return valid;
-        }
-
+        private const int WorkflowNameLimit = 15;
+        private const int WorkflowDescriptionLimit = 200;
+        private const int TaskIdLengthLimit = 50;
+        private const int TaskDescriptionLengthLimit = 2000;
+        private const int TaskTypeLengthLimit = 2000;
         #region Workflow
 
         public static bool IsValid(this Workflow workflow, out IList<string> validationErrors)
@@ -71,15 +38,15 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             var valid = true;
 
             valid &= IsNameValid(workflow.GetType().Name, workflow.Name, validationErrors);
-            valid &= IsDescriptionValid(workflow.GetType().Name, workflow.Description, validationErrors);
-            valid &= IsInformaticsGatewayValid(workflow.GetType().Name, workflow.InformaticsGateway, validationErrors);
+            valid &= IsDescriptionValid(workflow.Name, workflow.Description, validationErrors);
+            valid &= IsInformaticsGatewayValid(workflow.Name, workflow.InformaticsGateway, validationErrors);
 
             Guard.Against.Null(workflow.Tasks, nameof(workflow.Tasks));
             valid &= workflow.Tasks.Length > 0;
 
             foreach (var task in workflow.Tasks)
             {
-                valid &= IsTaskObjectValid(workflow.GetType().Name, task, validationErrors);
+                valid &= IsTaskObjectValid(workflow.Name, task, validationErrors);
             }
 
             return valid;
@@ -89,7 +56,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
         {
             Guard.Against.NullOrWhiteSpace(source, nameof(source));
 
-            if (!string.IsNullOrWhiteSpace(name) && name.Length <= 15) return true;
+            if (!string.IsNullOrWhiteSpace(name) && name.Length <= WorkflowNameLimit) return true;
 
             validationErrors?.Add($"'{name}' is not a valid Workflow Name (source: {source}).");
 
@@ -100,7 +67,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
         {
             Guard.Against.NullOrWhiteSpace(source, nameof(source));
 
-            if (!string.IsNullOrWhiteSpace(description) && description.Length <= 200) return true;
+            if (!string.IsNullOrWhiteSpace(description) && description.Length <= WorkflowDescriptionLimit) return true;
 
             validationErrors?.Add($"'{description}' is not a valid Workflow Description (source: {source}).");
 
@@ -157,9 +124,10 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 
             var valid = true;
 
-            valid &= IsTaskDescriptionValid(taskObject.GetType().Name, taskObject.Description, validationErrors);
-            valid &= IsTaskTypeValid(taskObject.GetType().Name, taskObject.Type, validationErrors);
-            valid &= IsArgsValid(taskObject.GetType().Name, taskObject.Args, validationErrors);
+            valid &= IsTaskIdValid(taskObject.Id, taskObject.Id, validationErrors);
+            valid &= IsTaskDescriptionValid(taskObject.Id, taskObject.Description, validationErrors);
+            valid &= IsTaskTypeValid(taskObject.Id, taskObject.Type, validationErrors);
+            valid &= IsArgsValid(taskObject.Id, taskObject.Args, validationErrors);
 
             return valid;
         }
@@ -168,7 +136,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
         {
             Guard.Against.NullOrWhiteSpace(source, nameof(source));
 
-            if (!string.IsNullOrWhiteSpace(taskId) && taskId.Length <= 15) return true;
+            if (!string.IsNullOrWhiteSpace(taskId) && taskId.Length <= TaskIdLengthLimit) return true;
 
             validationErrors?.Add($"'{taskId}' is not a valid {nameof(taskId)} (source: {source}).");
 
@@ -179,7 +147,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
         {
             Guard.Against.NullOrWhiteSpace(source, nameof(source));
 
-            if (!string.IsNullOrWhiteSpace(taskDescription) && taskDescription.Length <= 2000) return true;
+            if (!string.IsNullOrWhiteSpace(taskDescription) && taskDescription.Length <= TaskDescriptionLengthLimit) return true;
 
             validationErrors?.Add($"'{taskDescription}' is not a valid {nameof(taskDescription)} (source: {source}).");
 
@@ -190,7 +158,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
         {
             Guard.Against.NullOrWhiteSpace(source, nameof(source));
 
-            if (!string.IsNullOrWhiteSpace(taskType) && taskType.Length <= 2000) return true;
+            if (!string.IsNullOrWhiteSpace(taskType) && taskType.Length <= TaskTypeLengthLimit) return true;
 
             validationErrors?.Add($"'{taskType}' is not a valid {nameof(taskType)} (source: {source}).");
 
@@ -203,7 +171,8 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 
             if (!args.IsNullOrEmpty()) return true;
 
-            validationErrors?.Add($"'{args}' is not a valid {nameof(args)} (source: {source}).");
+            var jsontext = JsonConvert.SerializeObject(args);
+            validationErrors?.Add($"'{jsontext}' is not a valid {nameof(args)} (source: {source}).");
 
             return false;
         }

@@ -71,7 +71,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                     TaskPluginArguments = new Dictionary<string, string>()
                     {
                         { "workflow_name", "Workflow_1" },
-                        { "reviewed_task_details", "Reviewed_Task" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
                     }
@@ -119,12 +120,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                     TaskPluginArguments = new Dictionary<string, string>()
                     {
                         { "workflow_name", "Workflow_1" },
-                        { "reviewed_task_details", "Reviewed_Task" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "patient_name", "John Doe" },
                         { "patient_sex", "Male" },
                         { "patient_dob", "01/01/1990" },
-                        { "queue_name", "aide.clinical_review.request" },
+                        { "queue_name", "aide.clinical_review.request" }
                     }
                 }
             },
@@ -170,7 +172,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                     TaskPluginArguments = new Dictionary<string, string>()
                     {
                         { "workflow_name", "Workflow_1" },
-                        { "reviewed_task_details", "Reviewed_Task" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
                     }
@@ -218,7 +221,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                     TaskPluginArguments = new Dictionary<string, string>()
                     {
                         { "workflow_name", "Workflow_1" },
-                        { "reviewed_task_details", "Reviewed_Task" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
                         { "queue_name", "aide.clinical_review.request" },
                     }
                 }
@@ -277,7 +281,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                     TaskPluginArguments = new Dictionary<string, string>()
                     {
                         { "workflow_name", "Workflow_1" },
-                        { "reviewed_task_details", "Reviewed_Task" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
                     }
@@ -313,7 +318,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                     TaskPluginArguments = new Dictionary<string, string>()
                     {
                         { "workflow_name", "Workflow_1" },
-                        { "reviewed_task_details", "Reviewed_Task" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
                     }
@@ -360,7 +366,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                     TaskPluginArguments = new Dictionary<string, string>()
                     {
                         { "workflow_name", "Workflow_1" },
-                        { "reviewed_task_details", "Reviewed_Task" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
                     }
@@ -407,7 +414,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                     TaskPluginArguments = new Dictionary<string, string>()
                     {
                         { "workflow_name", "Workflow_1" },
-                        { "reviewed_task_details", "Reviewed_Task" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
                     }
@@ -454,7 +462,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                     TaskPluginArguments = new Dictionary<string, string>()
                     {
                         { "workflow_name", "Workflow_1" },
-                        { "reviewed_task_details", "Reviewed_Task" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
                     }
@@ -501,7 +510,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                     TaskPluginArguments = new Dictionary<string, string>()
                     {
                         { "workflow_name", "Workflow_1" },
-                        { "reviewed_task_details", "Reviewed_Task" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
                     }
@@ -548,7 +558,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                     },
                     TaskPluginArguments = new Dictionary<string, string>()
                     {
-                        { "reviewed_task_details", "Reviewed_Task" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
                         { "queue_name", "aide.clinical_review.request" },
                     }
                 }
@@ -595,7 +606,57 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                     TaskPluginArguments = new Dictionary<string, string>()
                     {
                         { "workflow_name", "Workflow_1" },
-                        { "reviewed_task_details", "Reviewed_Task" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
+                    }
+                }
+            },
+            new TaskDispatchTestData
+            {
+                Name = "Task_Dispatch_Accepted",
+                TaskDispatchEvent = new TaskDispatchEvent()
+                {
+                    PayloadId = Guid.NewGuid().ToString(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    ExecutionId = Guid.NewGuid().ToString(),
+                    WorkflowInstanceId = Guid.NewGuid().ToString(),
+                    TaskId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Dispatched,
+                    TaskPluginType = "aide_clinical_review",
+                    Inputs = new List<Messaging.Common.Storage>()
+                    {
+                        new Messaging.Common.Storage
+                        {
+                            Name = "input",
+                            Endpoint = "//test",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test",
+                                AccessToken = "test",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = "//dcm"
+                        }
+                    },
+                    IntermediateStorage = new Messaging.Common.Storage
+                    {
+                        Name = "input",
+                        Endpoint = "//test",
+                        Credentials = new Messaging.Common.Credentials()
+                        {
+                            AccessKey = "test1",
+                            AccessToken = "test",
+                        },
+                        Bucket = "bucket1",
+                        RelativeRootPath = "//dcm"
+                    },
+                    TaskPluginArguments = new Dictionary<string, string>()
+                    {
+                        { "workflow_name", "Workflow_1" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
+                        { "patient_id", "100001" },
+                        { "queue_name", "aide.clinical_review.request" },
                     }
                 }
             },

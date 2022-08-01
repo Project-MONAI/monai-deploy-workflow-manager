@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.TaskManager.API;
+using System.Runtime.Serialization;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
-    internal class TaskRunnerInstance
+    [Serializable]
+    internal class TaskManagerException : Exception
     {
-        public ITaskPlugin Runner { get; }
-        public TaskDispatchEvent Event { get; }
-        public DateTime Started { get; }
-
-        public TaskRunnerInstance(ITaskPlugin runner, TaskDispatchEvent taskDispatchEvent)
+        public TaskManagerException()
         {
-            Runner = runner;
-            Event = taskDispatchEvent;
-            Started = DateTime.UtcNow;
         }
 
-        public bool HasTimedOut(TimeSpan taskTimeout) => DateTime.UtcNow.Subtract(Started) >= taskTimeout;
+        public TaskManagerException(string? message) : base(message)
+        {
+        }
+
+        public TaskManagerException(string? message, Exception? innerException) : base(message, innerException)
+        {
+        }
+
+        protected TaskManagerException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
     }
 }

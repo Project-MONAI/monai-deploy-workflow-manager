@@ -110,5 +110,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Logging
 
         [LoggerMessage(EventId = 116, Level = LogLevel.Error, Message = "Metadata retrieval failed.")]
         public static partial void MetadataRetrievalFailed(this ILogger logger, Exception ex);
+
+        [LoggerMessage(EventId = 117, Level = LogLevel.Warning, Message = "Metadata feature unavailable for {plugin}.")]
+        public static partial void MetadataPluginUndefined(this ILogger logger, string plugin);
+
+        [LoggerMessage(EventId = 118, Level = LogLevel.Error, Message = "Error removing storage user account {username}.")]
+        public static partial void ErrorRemovingStorageUserAccount(this ILogger logger, string username, Exception exception);
+
+        [LoggerMessage(EventId = 119, Level = LogLevel.Error, Message = "Error removing dispatch event {executionId} from the database.")]
+        public static partial void ErrorRemovingDispatchEventFromDatabase(this ILogger logger, string executionId, Exception exception);
     }
 }

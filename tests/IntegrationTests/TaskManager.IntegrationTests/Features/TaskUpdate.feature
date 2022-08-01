@@ -19,13 +19,13 @@ Integration tests for testing TaskUpdateEvents from TaskManager
 @TaskDispatch_TaskUpdate
 Scenario: TaskUpdateEvent is published with status Accepted after receiving a valid TaskDispatchEvent
 	Given I have a bucket in MinIO bucket1
-	When A Task Dispatch event is published Task_Dispatch_Clinical_Review_Full_Patient_Details
+	When A Task Dispatch event is published Task_Dispatch_Accepted
     Then A Task Update event with status Accepted is published with Task Dispatch details
 
 @TaskDispatch_TaskUpdate
 Scenario Outline: TaskUpdateEvent is published with status Failed after receiving an invalid TaskDispatchEvent
-	Given I have a bucket in MinIO bucket1
-	When A Task Dispatch event is published <TaskDispatchEvent>
+    Given I have a bucket in MinIO bucket1
+    When A Task Dispatch event is published <TaskDispatchEvent>
     Then A Task Update event with status Failed is published with Task Dispatch details
     Examples:
     | TaskDispatchEvent                                  |
@@ -39,8 +39,10 @@ Scenario Outline: TaskUpdateEvent is published with status Failed after receivin
 
 @TaskCallback_TaskUpdate
 Scenario: TaskUpdateEvent is published with status Successful after receiving a valid TaskCallbackEvent
-	Given I have a bucket in MinIO bucket1
-	When A Task Dispatch event is published Task_Dispatch_Basic
+    Given I have a bucket in MinIO bucket1
+    When A Task Dispatch event is published Task_Dispatch_Basic
     Then A Task Update event with status Accepted is published with Task Dispatch details
-	And A Task Callback event is published Task_Callback_Basic
+    And The Task Dispatch event is saved in mongo
+    And A Task Callback event is published Task_Callback_Basic
     And A Task Update event with status Succeeded is published with Task Callback details
+    And The Task Dispatch event is deleted in mongo

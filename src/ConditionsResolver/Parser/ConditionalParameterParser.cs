@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.ConditionsResolver.Constants;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Storage.Services;
@@ -36,7 +38,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 
     public class ConditionalParameterParser : IConditionalParameterParser
     {
-        private const string ExecutionsTask = "context.executions.task";
+        private const string ExecutionsTask = "context.executions";
         private const string ContextDicomSeries = "context.dicom.series";
         private const string PatientDetails = "context.input.patient_details";
         private const string ContextWorkflow = "context.workflow";
@@ -182,7 +184,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
         /// <summary>
         /// Resolves a query between two brackets {{ query }}
         /// </summary>
-        /// <param name="value">The query Example: {{ context.executions.task['other task'].'Fred' }}</param>
+        /// <param name="value">The query Example: {{ context.executions.other_task.Result.'Fred' }}</param>
         /// <returns>
         /// Tuple:
         /// Result of the resolution
@@ -243,29 +245,77 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
         private (string? Result, ParameterContext Context) ResolveExecutionTasks(string value)
         {
             var subValue = value.Trim().Substring(ExecutionsTask.Length, value.Length - ExecutionsTask.Length);
-            var subValues = subValue.Split('[', ']');
+            var subValues = subValue.Split('.');
             var id = subValues[1].Trim('\'');
 
-            var task = WorkflowInstance?.Tasks.First(t => t.TaskId == id);
+            var task = WorkflowInstance?.Tasks.FirstOrDefault(t => t.TaskId == id);
 
-            if (task is null || task is not null && !task.Metadata.Any())
+            if (task is null)
             {
                 return (Result: null, Context: ParameterContext.TaskExecutions);
             }
 
-            var metadataKey = subValues[2].Split('\'')[1];
+            var subValueKey = subValues[2];
+            string? keyValue = null;
 
-            if (task is not null && task.Metadata.ContainsKey(metadataKey))
+            if (subValues.Length > 3)
             {
-                var result = task.Metadata[metadataKey];
+                keyValue = subValues[3]?.Split('\'')[1];
+            }
 
-                if (result is string resultStr)
+            var resultStr = null as string;
+            switch (subValueKey.ToLower())
+            {
+                case ParameterConstants.TaskId:
+                    resultStr = task.TaskId;
+                    break;
+                case ParameterConstants.Status:
+                    resultStr = task.Status.ToString();
+                    break;
+                case ParameterConstants.ExecutionId:
+                    resultStr = task.ExecutionId;
+                    break;
+                case ParameterConstants.OutputDirectory:
+                    resultStr = task.OutputDirectory;
+                    break;
+                case ParameterConstants.TaskType:
+                    resultStr = task.TaskType;
+                    break;
+                case ParameterConstants.PreviousTaskId:
+                    resultStr = task.PreviousTaskId;
+                    break;
+                case ParameterConstants.ErrorMessage:
+                    resultStr = task.Reason.ToString();
+                    break;
+                case ParameterConstants.Result:
+                    resultStr = GetValueFromDictionary(task.ResultMetadata, keyValue);
+                    break;
+                case ParameterConstants.StartTime:
+                    resultStr = task.TaskStartTime?.ToString("dd/MM/yyyy HH:mm:ss");
+                    break;
+                default:
+                    break;
+            }
+
+            return (Result: resultStr, Context: ParameterContext.TaskExecutions);
+        }
+
+        private static string? GetValueFromDictionary(Dictionary<string, object> dictionary, string? key)
+        {
+            if (key is null)
+            {
+                return null;
+            }
+
+            if (dictionary.TryGetValue(key, out var value))
+            {
+                if (value is string valueStr)
                 {
-                    return (Result: resultStr, Context: ParameterContext.TaskExecutions);
+                    return valueStr;
                 }
             }
 
-            return (Result: null, Context: ParameterContext.TaskExecutions);
+            return null;
         }
 
         private (string? Result, ParameterContext Context) ResolveContextWorkflow(string value)
@@ -288,10 +338,10 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 var resultStr = null as string;
                 switch (keyValue)
                 {
-                    case "name":
+                    case ParameterConstants.Name:
                         resultStr = workflowSpecValue.Name;
                         break;
-                    case "description":
+                    case ParameterConstants.Description:
                         resultStr = workflowSpecValue.Description;
                         break;
                     default:
@@ -324,22 +374,22 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 var resultStr = null as string;
                 switch (keyValue)
                 {
-                    case "id":
+                    case ParameterConstants.PatientId:
                         resultStr = patientValue.PatientId;
                         break;
-                    case "name":
+                    case ParameterConstants.PatientName:
                         resultStr = patientValue.PatientName;
                         break;
-                    case "sex":
+                    case ParameterConstants.PatientSex:
                         resultStr = patientValue.PatientSex;
                         break;
-                    case "dob":
+                    case ParameterConstants.PatientDob:
                         resultStr = patientValue.PatientDob?.ToString("dd/MM/yyyy");
                         break;
-                    case "age":
+                    case ParameterConstants.PatientAge:
                         resultStr = patientValue.PatientAge;
                         break;
-                    case "hospital_id":
+                    case ParameterConstants.PatientHospitalId:
                         resultStr = patientValue.PatientHospitalId;
                         break;
                     default:

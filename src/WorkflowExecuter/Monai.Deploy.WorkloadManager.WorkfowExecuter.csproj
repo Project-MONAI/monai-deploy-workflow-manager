@@ -29,11 +29,9 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" Version="4.0.1" />
-    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.3-rc0010" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.3-rc0010" />
-    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.167" />
     <PackageReference Include="Monai.Deploy.Storage" Version="0.2.0-rc0014" />
-    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.0-rc0014" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.3-rc0010" />
+    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.176" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 

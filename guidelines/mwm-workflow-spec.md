@@ -21,20 +21,35 @@
 
 The MONAI Workflow Manager is responsible for executing pre-registered clinical workflows. This document describes how to create a workflow file and what the language allows.
 
-- [Workflow](#workflow-object)
-- [Examples](#examples)
-- [Informatics Gateway](#informatics-gateway)
-- [Tasks](#tasks)
-- [Task Types](#task-types)
-  - [Argo](#argo)
-  - [MAP](#monai-application-packages)
-  - [HTTP](#http-calls)
-- [Task Templates](#task-templates)
-- [Evaluators](#evaluators)
-- [Task Destinations](#task-destinations)
-- [Export Destinations](#export-destinations)
-- [Pre Evaluators](#pre-evaluators)
-- [Retention Policies](#retention-policies)
+- [Clinical Workflow Specification Language](#clinical-workflow-specification-language)
+- [Note: this document is not currently up-to-date. It will be updated before the first release of the workflow manager.](#note-this-document-is-not-currently-up-to-date-it-will-be-updated-before-the-first-release-of-the-workflow-manager)
+  - [Overview](#overview)
+    - [Workflow Object](#workflow-object)
+  - [Examples](#examples)
+    - [Informatics Gateway](#informatics-gateway)
+    - [Tasks](#tasks)
+    - [Task Types](#task-types)
+    - [Example of Plugin Names](#example-of-plugin-names)
+- [Task Object](#task-object)
+  - [Common Feilds](#common-feilds)
+    - [Data Attributes for specific task types](#data-attributes-for-specific-task-types)
+      - [Router](#router)
+      - [Export](#export)
+      - [Plugin](#plugin)
+    - [Artifacts](#artifacts)
+      - [Artifact Map](#artifact-map)
+      - [Artifact](#artifact)
+      - [Task Types](#task-types-1)
+        - [Argo](#argo)
+          - [Resource Request Object](#resource-request-object)
+    - [Evaluators](#evaluators)
+      - [Context](#context)
+        - [Execution Context](#execution-context)
+        - [DICOM Tags](#dicom-tags)
+    - [Destinations](#destinations)
+      - [Task Destinations](#task-destinations)
+      - [Export Destinations](#export-destinations)
+    - [Retention Policies](#retention-policies)
 
 
 
@@ -43,9 +58,9 @@ This is the top-level object in a workflow spec. It contains the following prope
 
 | Property | Type |
 |------|------|
-|name|str|
+|name|str (15)|
 |version|str|
-|description|Optional[str]|
+|description|Optional[str] (200)|
 |informatics_gateway|[InformaticsGateway](#informatics-gateway)|
 |tasks|list[[Task](#tasks)]|
 |task_templates|Optional[list[[TaskTemplate](#task-templates)]]|
@@ -107,9 +122,9 @@ All task objects can have these attributes:-
 
 | Property | Type | Description |
 |------|------|------|
-|id|str|The id for this task. This should be unique within the current workflow.|
-|description|str|A human readable task description|
-|type|str|The task type - this determines the plugin that will be used to execute the task. See [task types](#task-types) for supported tasks.|
+|id|str (50)|The id for this task. This should be unique within the current workflow.|
+|description|str (2000)|A human readable task description|
+|type|str (2000)|The task type - this determines the plugin that will be used to execute the task. See [task types](#task-types) for supported tasks.|
 |timeout_minutes|number|How long the task is allowed to run before it's canceled|
 |timeout_retries|number|How many retries are allowed|
 |task_destinations|Optional[list[[TaskDestination](#task-destinations)]]|An optional list of possible tasks that could be executed following this task. They will be executed if their conditions are true.|
@@ -161,7 +176,7 @@ Each Artifact contains at least two elements:
 |------|------|------|-----|
 |name|str|Always|The name of this artifact.|
 |value|Artifact identifier|Required for inputs, optional for outputs.|The context variable for this artifact (see example). If defined for output, that value will be used instead of a Task-generated one.|
-| mandatory| bool | No (default false) | Determines whether this artifact is mandatory. If a mandatory artifact doesn't exist the task is marked as a failure and workflow execution stops. |
+| mandatory| bool | No (default true) | Determines whether this artifact is mandatory. If a mandatory artifact doesn't exist the task is marked as a failure and workflow execution stops. |
 
 
 As you can see in the example below, input artifacts require a _value_. This is a reference to a previously generated artifact, or to `context.input` - a value for an artifact representing the original input that triggered the workflow.
@@ -256,7 +271,6 @@ The Execution object contains the following properties:
 |------|------|------|
 |execution_id|str|The unique ID identifying task execution.|
 |task_id|str|The ID of this task in the workflow.|
-|input_dir|str|Path to the input directory of this task.|
 |output_dir|str|Path to the output directory of this task.|
 |task|dict|The details of the executed task. Similar to the Task definition in the workflow spec.|
 |start_time|timestamp|The UTC timestamp of when this task execution began.
