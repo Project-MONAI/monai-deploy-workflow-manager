@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-{{ if .Values.serviceAccount.role -}}
+{{ if (.Values.serviceAccount)  -}}
+{{ if  (.Values.serviceAccount.role) -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -25,7 +26,5 @@ roleRef:
  kind: Role
  name: {{.Values.serviceAccount.role.name}}
  apiGroup: rbac.authorization.k8s.io
- 
-
-
+{{- end }}
 {{- end }}
