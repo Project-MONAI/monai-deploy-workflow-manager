@@ -283,7 +283,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             try
             {
-                await _taskDispatchEventService.RemoveAsync(executionId).ConfigureAwait(false); ;
+                await _taskDispatchEventService.RemoveAsync(executionId).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

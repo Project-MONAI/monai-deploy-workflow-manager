@@ -21,7 +21,7 @@ using Monai.Deploy.WorkflowManager.TaskManager.API;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin.Repositories
 {
-    public sealed class TestPluginRepository : MetadataRepositoryBase, IDisposable
+    public sealed class TestPluginRepository : MetadataRepositoryBase
     {
         private readonly IServiceScope _scope;
 

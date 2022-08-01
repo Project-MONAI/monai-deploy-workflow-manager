@@ -179,7 +179,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             updatedWorkflowInstance.Tasks[0].Status.Should().Be(taskExecutionStatus);
         }
 
-        public void AssertPagination<T>(int count, string queries, T? Response)
+        public static void AssertPagination<T>(int count, string queries, T? Response)
         {
             var data = Response?.GetType()?.GetProperty("Data")?.GetValue(Response, null) as ICollection;
             var totalPages = Response?.GetType()?.GetProperty("TotalPages")?.GetValue(Response, null);

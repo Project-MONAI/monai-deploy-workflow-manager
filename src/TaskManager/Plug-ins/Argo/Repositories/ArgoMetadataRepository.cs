@@ -26,7 +26,7 @@ using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Repositories
 {
-    public sealed class ArgoMetadataRepository : MetadataRepositoryBase, IDisposable
+    public sealed class ArgoMetadataRepository : MetadataRepositoryBase
     {
         private readonly IStorageService _storageService;
         private readonly IServiceScope _scope;
