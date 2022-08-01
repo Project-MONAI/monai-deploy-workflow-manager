@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
-// SPDX-License-Identifier: Apache License 2.0
-
 using System.Collections.Generic;
 using System.Linq;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -59,6 +56,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// - Unreferenced tasks other than root task.
         /// </summary>
         /// <param name="workflow">Workflow to validate.</param>
+        /// <param name="results">Workflow validation results.</param>
         /// <returns>if any validation errors are produced while validating workflow.</returns>
         public static bool ValidateWorkflow(Workflow workflow, out (List<string> Errors, List<string> SuccessfulPaths) results)
         {
@@ -151,7 +149,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private static void ValidateTask(TaskObject[] tasks, TaskObject currentTask, int iterationCount, List<string>? paths = null)
+        private static void ValidateTask(TaskObject[] tasks, TaskObject currentTask, int iterationCount, List<string> paths = null)
         {
             if (iterationCount > 100)
             {

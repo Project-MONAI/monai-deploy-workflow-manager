@@ -520,7 +520,9 @@ public class ArgoPluginTest
 
         var objNodeInfo = result?.Stats;
         Assert.NotNull(objNodeInfo);
+#pragma warning disable CS8604 // Possible null reference argument.
         var nodeInfo = ValiateCanConvertToDictionary(objNodeInfo);
+#pragma warning restore CS8604 // Possible null reference argument.
 
         Assert.Equal(7, nodeInfo.Values.Count);
         Assert.Equal("{\"id\":\"firstId\"}", nodeInfo["nodes.first"]);
@@ -532,8 +534,9 @@ public class ArgoPluginTest
     public static Dictionary<string, string> ValiateCanConvertToDictionary(object obj)
     {
         var json = JsonConvert.SerializeObject(obj, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-        var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-        return dictionary;
+#pragma warning disable CS8603 // Possible null reference return.
+        return JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+#pragma warning restore CS8603 // Possible null reference return.
     }
 
 

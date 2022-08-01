@@ -1,18 +1,16 @@
-/*
- * Copyright 2021-2022 MONAI Consortium
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2022 MONAI Consortium
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the  at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
 
 namespace Monai.Deploy.WorkflowManager.Filter
 {
@@ -35,7 +33,7 @@ namespace Monai.Deploy.WorkflowManager.Filter
         /// </summary>
         /// <param name="pageNumber">Page size with limit set in the config.</param>
         /// <param name="pageSize">Page size 1 or above.</param>
-        /// <param name="maxPageSize">Max page size</param>
+        /// <param name="maxPageSize">Max page size.</param>
         public PaginationFilter(int pageNumber, int pageSize, int maxPageSize = 10)
         {
             PageNumber = pageNumber < 1 ? 1 : pageNumber;
