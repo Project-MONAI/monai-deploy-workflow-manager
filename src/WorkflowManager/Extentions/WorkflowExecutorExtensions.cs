@@ -38,6 +38,7 @@ namespace Monai.Deploy.WorkflowManager.Services
             services.AddTransient<IWorkflowService, WorkflowService>();
             services.AddTransient<IWorkflowInstanceService, WorkflowInstanceService>();
             services.AddTransient<IPayloadService, PayloadService>();
+            services.AddTransient<ITasksService, TasksService>();
             services.AddTransient<IDicomService, DicomService>();
 
             services.AddSingleton<IEventPayloadReceiverService, EventPayloadReceiverService>();
