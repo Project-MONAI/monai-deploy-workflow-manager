@@ -42,7 +42,7 @@ header:
     VSSoluation:
       extensions:
         - ".sln"
-      comment_style_id: AngleBracket
+      comment_style_id: DoubleSlash
     GherkinFeature:
       extensions:
         - ".feature"
