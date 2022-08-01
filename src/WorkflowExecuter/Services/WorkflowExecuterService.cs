@@ -106,10 +106,9 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             var workflowInstances = new List<WorkflowInstance>();
 
             var tasks = workflows.Select(workflow => CreateWorkflowInstanceAsync(message, workflow));
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).ConfigureAwait(false);
             workflowInstances.AddRange(tasks.Select(t => t.Result));
 
-            Debug.Assert(workflowInstances.Count > 0);
             var existingInstances = await _workflowInstanceRepository.GetByWorkflowsIdsAsync(workflowInstances.Select(w => w.WorkflowId).ToList());
 
             workflowInstances.RemoveAll(i => existingInstances.Any(e => e.WorkflowId == i.WorkflowId
