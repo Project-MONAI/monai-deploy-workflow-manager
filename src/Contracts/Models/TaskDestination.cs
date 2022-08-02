@@ -21,9 +21,11 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
     public class TaskDestination
     {
         [JsonProperty(PropertyName = "name")]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public string Name { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         [JsonProperty(PropertyName = "conditions")]
-        public string Conditions { get; set; }
+        public string Conditions { get; set; } = "";
     }
 }
