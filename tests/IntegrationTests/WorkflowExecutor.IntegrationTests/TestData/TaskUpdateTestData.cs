@@ -74,6 +74,65 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new TaskUpdateTestData()
             {
+                Name = "Task_Status_Update_Meta_String",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Unknown,
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                        { "metadata_1", "test_1" },
+                        { "metadata_2", "test_2" },
+                        { "metadata_3", "test_3" },
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "Task_Status_Update_Meta_Bool",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Unknown,
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                        { "metadata_1", true },
+                        { "metadata_2", false },
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "Task_Status_Update_Meta_Int",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Unknown,
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                        { "metadata_1", 1 },
+                        { "metadata_2", 2 },
+                        { "metadata_3", 3 },
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
                 Name = "Task_Status_Update_TaskId_Not_Found",
                 TaskUpdateEvent = new TaskUpdateEvent()
                 {
