@@ -144,7 +144,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 OutputDirectory = "minio/workflowid/taskid"
             };
 
-            var exportDestinations = new string[] { "test" };
+            var exportDestinations = new ExportDestination[] { new ExportDestination { Name = "test" } };
 
             var dicomImages = new List<string> { "dicom" };
 
@@ -157,7 +157,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 ExportTaskId = task.TaskId,
                 CorrelationId = correlationId,
                 Files = dicomImages,
-                Destinations = exportDestinations
+                Destinations = new string[] { exportDestinations[0].Name }
             };
 
             var exportRequest = EventMapper.ToExportRequestEvent(dicomImages, exportDestinations, task.TaskId, workflowInstanceId, correlationId);

@@ -22,11 +22,5 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
     {
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
-
-        [JsonProperty(PropertyName = "conditions")]
-        public Evaluator[] Conditions { get; set; }
-
-        [JsonProperty(PropertyName = "artifacts")]
-        public Artifact[] Artifacts { get; set; }
     }
 }

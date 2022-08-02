@@ -39,7 +39,7 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         public TaskDestination[] TaskDestinations { get; set; } = System.Array.Empty<TaskDestination>();
 
         [JsonProperty(PropertyName = "export_destinations")]
-        public TaskDestination[] ExportDestinations { get; set; } = System.Array.Empty<TaskDestination>();
+        public ExportDestination[] ExportDestinations { get; set; } = System.Array.Empty<ExportDestination>();
 
         [JsonProperty(PropertyName = "artifacts")]
         public ArtifactMap Artifacts { get; set; } = new ArtifactMap();

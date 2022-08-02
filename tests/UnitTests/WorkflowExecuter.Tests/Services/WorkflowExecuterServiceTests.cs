@@ -358,7 +358,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                                 {
                                     Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } }
                                 },
-                                TaskDestinations = Array.Empty<TaskDestination>()
+                                TaskDestinations = Array.Empty<TaskDestination>(),
+                                ExportDestinations = new ExportDestination[]
+                                {
+                                    new ExportDestination
+                                    {
+                                        Name = "PROD_PACS"
+                                    }
+                                }
                             }
                         }
                     }
@@ -922,7 +929,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                             {
                                 Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } }
                             },
-                            TaskDestinations = Array.Empty<TaskDestination>()
+                            TaskDestinations = Array.Empty<TaskDestination>(),
+                            ExportDestinations = new ExportDestination[]
+                            {
+                                new ExportDestination
+                                {
+                                    Name = "PROD_PACS"
+                                }
+                            }
                         }
                     }
                 }
