@@ -239,6 +239,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             if (message.Metadata.Any())
             {
                 currentTask.ResultMetadata = message.Metadata;
+                await _workflowInstanceRepository.UpdateTaskAsync(workflowInstance.Id, currentTask.TaskId, currentTask);
             }
 
             await HandleOutputArtifacts(workflowInstance, message.Outputs, currentTask);
