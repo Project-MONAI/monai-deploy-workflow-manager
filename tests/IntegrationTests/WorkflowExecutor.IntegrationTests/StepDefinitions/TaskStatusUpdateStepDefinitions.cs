@@ -160,7 +160,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 }
                 else
                 {
-                    taskUpdated?.ResultMetadata.Should().AllBeEquivalentTo(DataHelper.TaskUpdateEvent.Metadata);
+                    taskUpdated?.ResultMetadata.Should().BeEquivalentTo(DataHelper.TaskUpdateEvent.Metadata);
                 }
             });
         }
