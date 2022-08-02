@@ -29,6 +29,20 @@ Scenario Outline: Publish a valid Task Update event which updates the Task statu
     | Failed           |
     | Canceled         |
 
+#@TaskUpdate #Bug https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/279
+#Scenario Outline: Publish a successful Task Update event which updates the Task status and copies the metadata
+#    Given I have a clinical workflow Task_Status_Update_Workflow
+#    And I have a Workflow Instance WFI_Task_Status_Update
+#    When I publish a Task Update Message <updateMessage> with status Succeeded
+#    Then I can see the status of the Task is updated
+#    And I can see the Metadata is copied to the workflow instance
+#    Examples:
+#    | updateMessage                  |
+#    | Task_Status_Update             |
+#    | Task_Status_Update_Meta_String |
+#    | Task_Status_Update_Meta_Bool   |
+#    | Task_Status_Update_Meta_Int    |
+
 @TaskUpdate
 Scenario: Publish a valid Task Update event that where WorkflowInstance does not contain TaskId
     Given I have a clinical workflow Task_Status_Update_Workflow

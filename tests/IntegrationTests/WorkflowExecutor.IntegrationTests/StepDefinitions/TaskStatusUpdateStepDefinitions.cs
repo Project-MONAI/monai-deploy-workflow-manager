@@ -142,5 +142,27 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
             var orignalWorkflowInstance = DataHelper.WorkflowInstances.FirstOrDefault(x => x.Id.Equals(DataHelper.TaskUpdateEvent.WorkflowInstanceId));
         }
+
+        [Then(@"I can see the Metadata is copied to the workflow instance")]
+        public void ThenTheMetadataIsCopied()
+        {
+            RetryPolicy.Execute(() =>
+            {
+                _outputHelper.WriteLine($"Retrieving workflow instance by id={DataHelper.TaskUpdateEvent.WorkflowInstanceId}");
+                var workflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
+                _outputHelper.WriteLine("Retrieved workflow instance");
+
+                var taskUpdated = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(DataHelper.TaskUpdateEvent.TaskId));
+
+                if (DataHelper.TaskUpdateEvent.Metadata.Count == 0)
+                {
+                    taskUpdated.ResultMetadata.Should().BeNull();
+                }
+                else
+                {
+                    taskUpdated.ResultMetadata.Should().AllBeEquivalentTo(DataHelper.TaskUpdateEvent.Metadata);
+                }
+            });
+        }
     }
 }
