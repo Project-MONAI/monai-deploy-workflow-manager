@@ -215,10 +215,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             Guard.Against.Null(workflow);
 
+            TimeSpan? duration = null;
+            if (workflow.Status?.StartedAt is not null && workflow.Status?.FinishedAt is not null)
+            {
+                duration = workflow.Status?.FinishedAt - workflow.Status?.StartedAt;
+            }
             var stats = new Dictionary<string, string>
             {
                 { "workflowId", Event.WorkflowInstanceId },
-                { "duration", workflow.Status?.EstimatedDuration.ToString() ?? string.Empty },
+                { "duration", duration.HasValue ? duration.Value.TotalMilliseconds.ToString() : string.Empty },
                 { "startedAt", workflow.Status?.StartedAt.ToString() ?? string.Empty  },
                 { "finishedAt", workflow.Status?.FinishedAt.ToString() ?? string.Empty  }
             };
@@ -501,13 +506,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             {
                 if (template.Dag is not null)
                 {
-                    await ConfigureInputArtifactStore(template.Name, templates, template.Dag.Tasks.Where(p => p.Arguments is not null).SelectMany(p => p.Arguments.Artifacts), true, cancellationToken).ConfigureAwait(false);
+                    await ConfigureInputArtifactStore(template.Name, templates, template.Dag.Tasks.Where(p => p.Arguments is not null && p.Arguments.Artifacts is not null).SelectMany(p => p.Arguments.Artifacts), true, cancellationToken).ConfigureAwait(false);
                 }
                 else if (template.Steps is not null)
                 {
                     foreach (var step in template.Steps)
                     {
-                        await ConfigureInputArtifactStore(template.Name, templates, step.Where(p => p.Arguments is not null).SelectMany(p => p.Arguments.Artifacts), true, cancellationToken).ConfigureAwait(false);
+                        await ConfigureInputArtifactStore(template.Name, templates, step.Where(p => p.Arguments is not null && p.Arguments.Artifacts is not null).SelectMany(p => p.Arguments.Artifacts), true, cancellationToken).ConfigureAwait(false);
                     }
                 }
                 else if (template.Inputs is not null)
