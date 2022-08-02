@@ -141,8 +141,29 @@ The task also requires these extra attributes:-
 
 | Property | Type | Description |
 |------|------|------|
-|export_destinations|Optional[list[[ExportDestination](#export-destinations)]]|An optional lists of possible export destinations to which the output of this task can be sent.|
-|artifacts|[ArtifactMap](#artifacts)| Only Input artifacts of this task.
+|export_destinations|Optional[list[[ExportDestination](#export-destinations)]]|An optional lists of possible export destinations to which the output of this task can be sent. This must be an export destinations already defined within the [Informatics Gateway](#informatics-gateway) section of  the workflow configuration.||
+|artifacts|[ArtifactMap](#artifacts)| Only Input artifacts of this task that should be sent to this export destination..
+
+Example (output sent to another task if the patient is female, otherwise to PACS):
+```json
+{
+    ...task...
+    "export_destinations": [
+        {
+            "name": "PROD_PACS"
+        }
+    ],
+    "task_destinations": [
+        {
+            "name": "my-task-id",
+            "conditions": ["{{context.input.dicom.series.all('0010','0040')}} == 'F'"]
+        }
+    ],
+    ...
+}
+```
+
+Export destinations define an external location to which the output of the task can be sent. This will take the form of an event published to a pub/sub service notifying of an available export to a specific destination reference. Most commonly, the export location will be a PACs system and the notification will be picked up by the Monai Informatics Gateway.
 
 #### Plugin
 These are tasks are Named the same as the installed Pluging. 
@@ -332,34 +353,6 @@ Example (run my-task-id when the patient is female):
             "name": "my-task-id",
             "conditions": ["{{context.input.dicom.series.all('0010','0040')}} == 'F'"]
         },
-    ],
-    ...
-}
-```
-
-
-#### Export Destinations
-Export destinations define an external location to which the output of the task can be sent. This will take the form of an event published to a pub/sub service notifying of an available export to a specific destination reference. Most commonly, the export location will be a PACs system and the notification will be picked up by the Monai Informatics Gateway.
-
-| Property | Type | Description |
-|------|------|------|
-|name|str|The name of the destination. This can either be an export destinations already defined within the [Informatics Gateway](#informatics-gateway) section of  the workflow configuration.|
-|artifacts|list[Artifact]|An array of [Artifacts](#artifacts) that should be sent to this export destination.|
-
-Example (output sent to another task if the patient is female, otherwise to PACS):
-```json
-{
-    ...task...
-    "export_destinations": [
-        {
-            "name": "PROD_PACS"
-        }
-    ],
-    "task_destinations": [
-        {
-            "name": "my-task-id",
-            "conditions": ["{{context.input.dicom.series.all('0010','0040')}} == 'F'"]
-        }
     ],
     ...
 }

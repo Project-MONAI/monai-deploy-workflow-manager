@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -35,11 +36,12 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         [JsonProperty(PropertyName = "ref")]
         public string Ref { get; set; } = string.Empty;
+
         [JsonProperty(PropertyName = "task_destinations")]
-        public TaskDestination[] TaskDestinations { get; set; } = System.Array.Empty<TaskDestination>();
+        public TaskDestination[] TaskDestinations { get; set; } = Array.Empty<TaskDestination>();
 
         [JsonProperty(PropertyName = "export_destinations")]
-        public TaskDestination[] ExportDestinations { get; set; } = System.Array.Empty<TaskDestination>();
+        public ExportDestination[] ExportDestinations { get; set; } = Array.Empty<ExportDestination>();
 
         [JsonProperty(PropertyName = "artifacts")]
         public ArtifactMap Artifacts { get; set; } = new ArtifactMap();

@@ -522,10 +522,10 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                                         Name = "taskLoopdesc1"
                                     }
                                 },
-                                ExportDestinations = new TaskDestination[]
+                                ExportDestinations = new ExportDestination[]
                                 {
-                                    new TaskDestination { Name = "oneDestination" },
-                                    new TaskDestination { Name = "twoDestination" },
+                                    new ExportDestination { Name = "oneDestination" },
+                                    new ExportDestination { Name = "twoDestination" },
                                 }
                             },
                             #region LoopingTasks
@@ -539,11 +539,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                                         Name = "taskLoopdesc2"
                                     }
                                 },
-                                ExportDestinations = new TaskDestination[]
+                                ExportDestinations = new ExportDestination[]
                                 {
-                                    new TaskDestination { Name = "threeDestination" },
-                                    new TaskDestination { Name = "twoDestination" },
-                                    new TaskDestination { Name = "DoesNotExistDestination" },
+                                    new ExportDestination { Name = "threeDestination" },
+                                    new ExportDestination { Name = "twoDestination" },
+                                    new ExportDestination { Name = "DoesNotExistDestination" },
                                 }
                             },
                             new TaskObject {

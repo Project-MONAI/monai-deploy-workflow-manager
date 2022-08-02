@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2021-2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-using Newtonsoft.Json;
-
-namespace Monai.Deploy.WorkflowManager.Contracts.Models
+namespace Monai.Deploy.WorkflowManager.Common.Extensions
 {
-    public class ExportDestination
+    public static class ArrayExtensions
     {
-        [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public static bool IsNullOrEmpty<T>(this T[] array)
+        {
+            return array == null || array.Length == 0;
+        }
     }
 }
