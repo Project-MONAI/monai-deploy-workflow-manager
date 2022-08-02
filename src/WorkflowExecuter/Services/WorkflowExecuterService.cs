@@ -160,7 +160,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (string.Equals(task.TaskType, TaskTypeConstants.ExportTask, StringComparison.InvariantCultureIgnoreCase))
             {
-                await HandleDicomExport(workflow, workflowInstance, task, correlationId);
+                await HandleDicomExportAsync(workflow, workflowInstance, task, correlationId);
 
                 return;
             }
@@ -316,7 +316,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return true;
         }
 
-        private async Task HandleDicomExport(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId)
+        private async Task HandleDicomExportAsync(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId)
         {
             var exportDestinations = workflow.Workflow?.Tasks?.FirstOrDefault(t => t.Id == task.TaskId)?.ExportDestinations;
 
@@ -338,8 +338,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         {
             var validExportDestinations = workflow.Workflow?.InformaticsGateway?.ExportDestinations;
 
-            if (validExportDestinations is null || !validExportDestinations.Any()
-                || exportDestinations is null || !exportDestinations.Any())
+            if (exportDestinations.IsNullOrEmpty()
+                || validExportDestinations.IsNullOrEmpty())
             {
                 return Array.Empty<string>();
             }
@@ -417,7 +417,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
                 if (string.Equals(taskExec.TaskType, TaskTypeConstants.ExportTask, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    await HandleDicomExport(workflow, workflowInstance, taskExec, correlationId);
+                    await HandleDicomExportAsync(workflow, workflowInstance, taskExec, correlationId);
 
                     continue;
                 }
