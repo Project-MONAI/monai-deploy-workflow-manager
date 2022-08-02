@@ -215,10 +215,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             Guard.Against.Null(workflow);
 
+            TimeSpan? duration = null;
+            if (workflow.Status?.StartedAt is not null && workflow.Status?.FinishedAt is not null)
+            {
+                duration = workflow.Status?.FinishedAt - workflow.Status?.StartedAt;
+            }
             var stats = new Dictionary<string, string>
             {
                 { "workflowId", Event.WorkflowInstanceId },
-                { "duration", workflow.Status?.EstimatedDuration.ToString() ?? string.Empty },
+                { "duration", duration.HasValue ? duration.Value.TotalMilliseconds.ToString() : string.Empty },
                 { "startedAt", workflow.Status?.StartedAt.ToString() ?? string.Empty  },
                 { "finishedAt", workflow.Status?.FinishedAt.ToString() ?? string.Empty  }
             };
