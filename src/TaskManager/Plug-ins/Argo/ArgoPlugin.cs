@@ -501,13 +501,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             {
                 if (template.Dag is not null)
                 {
-                    await ConfigureInputArtifactStore(template.Name, templates, template.Dag.Tasks.Where(p => p.Arguments is not null).SelectMany(p => p.Arguments.Artifacts), true, cancellationToken).ConfigureAwait(false);
+                    await ConfigureInputArtifactStore(template.Name, templates, template.Dag.Tasks.Where(p => p.Arguments is not null && p.Arguments.Artifacts is not null).SelectMany(p => p.Arguments.Artifacts), true, cancellationToken).ConfigureAwait(false);
                 }
                 else if (template.Steps is not null)
                 {
                     foreach (var step in template.Steps)
                     {
-                        await ConfigureInputArtifactStore(template.Name, templates, step.Where(p => p.Arguments is not null).SelectMany(p => p.Arguments.Artifacts), true, cancellationToken).ConfigureAwait(false);
+                        await ConfigureInputArtifactStore(template.Name, templates, step.Where(p => p.Arguments is not null && p.Arguments.Artifacts is not null).SelectMany(p => p.Arguments.Artifacts), true, cancellationToken).ConfigureAwait(false);
                     }
                 }
                 else if (template.Inputs is not null)
