@@ -29,7 +29,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             DataHelper = objectContainer.Resolve<DataHelper>();
             ApiHelper = objectContainer.Resolve<ApiHelper>();
-            Assertions = new Assertions();
+            Assertions = new Assertions(objectContainer);
         }
 
         private ApiHelper ApiHelper { get; }

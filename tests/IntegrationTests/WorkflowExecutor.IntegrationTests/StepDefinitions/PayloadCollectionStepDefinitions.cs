@@ -33,7 +33,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         public PayloadCollectionStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             _outputHelper = outputHelper;
-            Assertions = new Assertions();
+            Assertions = new Assertions(objectContainer);
             DataHelper = objectContainer.Resolve<DataHelper>();
         }
 

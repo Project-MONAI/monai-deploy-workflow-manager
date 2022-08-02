@@ -39,14 +39,16 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         private RabbitConsumer TaskDispatchConsumer { get; set; }
         private MongoClientUtil MongoClient { get; set; }
         public string PayloadId { get; private set; }
+        public string BucketId { get; internal set; }
+        public List<WorkflowInstance> SeededWorkflowInstances { get; internal set; }
 
         public DataHelper(RabbitConsumer taskDispatchConsumer, MongoClientUtil mongoClient)
         {
             TaskDispatchConsumer = taskDispatchConsumer;
             MongoClient = mongoClient;
-            RetryWorkflowInstances = Policy<List<WorkflowInstance>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
-            RetryTaskDispatches = Policy<List<TaskDispatchEvent>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
-            RetryPayloadCollections = Policy<List<Payload>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+            RetryWorkflowInstances = Policy<List<WorkflowInstance>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+            RetryTaskDispatches = Policy<List<TaskDispatchEvent>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+            RetryPayloadCollections = Policy<List<Payload>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
         public WorkflowRevision GetWorkflowRevisionTestData(string name)

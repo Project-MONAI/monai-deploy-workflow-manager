@@ -18,6 +18,7 @@ using BoDi;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;
@@ -32,6 +33,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private RetryPolicy RetryPolicy { get; set; }
         private DataHelper DataHelper { get; set; }
         private readonly ISpecFlowOutputHelper _outputHelper;
+        public MinioDataSeeding MinioDataSeeding { get; }
 
         public TaskStatusUpdateStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
@@ -40,13 +42,39 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             DataHelper = objectContainer.Resolve<DataHelper>();
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             _outputHelper = outputHelper;
+            MinioDataSeeding = new MinioDataSeeding(objectContainer.Resolve<MinioClientUtil>(), DataHelper, _outputHelper);
         }
 
         [When(@"I publish a Task Update Message (.*) with status (.*)")]
-        public void WhenIPublishATaskUpdateMessageTaskUpdateMessage(string name, string updateStatus)
+        public void WhenIPublishATaskUpdateMessageWithStatus(string name, string updateStatus)
         {
             var message = new JsonMessage<TaskUpdateEvent>(
                 DataHelper.GetTaskUpdateTestData(name, updateStatus),
+                "16988a78-87b5-4168-a5c3-2cfc2bab8e54",
+                Guid.NewGuid().ToString(),
+                string.Empty);
+
+            TaskUpdatePublisher.PublishMessage(message.ToMessage());
+        }
+
+        [When(@"I publish a Task Update Message (.*) with artifacts (.*) in minio")]
+        public async Task WhenIPublishATaskUpdateMessageWithObjects(string name, string folderName)
+        {
+            var taskUpdateMessage = DataHelper.GetTaskUpdateTestData(name, "succeeded");
+
+            foreach (var workflowInstance in DataHelper.WorkflowInstances)
+            {
+                var task = workflowInstance.Tasks.FirstOrDefault(x => x.Status == TaskExecutionStatus.Accepted);
+
+                if (task != null)
+                {
+                    _outputHelper.WriteLine("Seeding minio with task output artifacts");
+                    await MinioDataSeeding.SeedTaskOutputArtifacts(workflowInstance.PayloadId, workflowInstance.Id, task.ExecutionId, folderName);
+                }
+            }
+
+            var message = new JsonMessage<TaskUpdateEvent>(
+                DataHelper.GetTaskUpdateTestData(name, "succeeded"),
                 "16988a78-87b5-4168-a5c3-2cfc2bab8e54",
                 Guid.NewGuid().ToString(),
                 string.Empty);

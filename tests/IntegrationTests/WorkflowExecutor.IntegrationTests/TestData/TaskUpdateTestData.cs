@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +27,15 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
 
     public static class TaskUpdatesTestData
     {
+        public static string GetRelativePathForOutputArtifacts(string name)
+        {
+            var workflowInstance = Helper.GetWorkflowInstanceByName(name)?.WorkflowInstance;
+
+            var executionId = workflowInstance?.Tasks.FirstOrDefault(x => x.Status.Equals(TaskExecutionStatus.Accepted))?.ExecutionId;
+
+            return $"{workflowInstance?.PayloadId}/workflows/{workflowInstance?.Id}/{executionId}";
+        }
+
         public static List<TaskUpdateTestData> TestData = new List<TaskUpdateTestData>()
         {
             new TaskUpdateTestData()
@@ -411,6 +420,69 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Reason = FailureReason.None,
                     Message = "Task Message",
                     TaskId = Helper.GetWorkflowInstanceByName("WFI_Task_Destination_Invalid_Condition").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "TwoTask_Context.Dicom.Input_ArtifactMandatory=Null",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Dicom.Input_ArtifactMandatory=Null").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Dicom.Input_ArtifactMandatory=Null").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Dicom.Input_ArtifactMandatory=Null").WorkflowInstance.Tasks[0].TaskId,
+                    Outputs = new List<Messaging.Common.Storage>
+                    {
+                        new Messaging.Common.Storage()
+                        {
+                            Name = "output.dcm",
+                            Endpoint = "//output.dcm",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = GetRelativePathForOutputArtifacts("TwoTask_Context.Dicom.Input_ArtifactMandatory=Null")
+                        }
+                    },
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "TwoTask_Context.Dicom.Input_ArtifactMandatory=True",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Dicom.Input_ArtifactMandatory=True").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Dicom.Input_ArtifactMandatory=True").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Dicom.Input_ArtifactMandatory=True").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "TwoTask_Context.Dicom.Input_ArtifactMandatory=False",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Dicom.Input_ArtifactMandatory=False").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Dicom.Input_ArtifactMandatory=False").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Dicom.Input_ArtifactMandatory=False").WorkflowInstance.Tasks[0].TaskId,
                     Metadata = new Dictionary<string, object>()
                     {
                     }

@@ -54,10 +54,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Support\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\src\WorkflowManager\Monai.Deploy.WorkflowManager.csproj" />
   </ItemGroup>
 
@@ -81,6 +77,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="DICOMs\null_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\output_metadata\dcm\output.dcm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="DICOMs\partial_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">

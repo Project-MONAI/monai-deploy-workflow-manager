@@ -84,19 +84,19 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             });
         }
 
-        public async Task AddFileToStorage(string fileLocation, string bucketName, string objectName)
+        public async Task AddFileToStorage(string localPath, string folderPath)
         {
             await RetryPolicy.ExecuteAsync(async () =>
             {
                 try
                 {
-                    FileAttributes fileAttributes = File.GetAttributes(fileLocation);
+                    FileAttributes fileAttributes = File.GetAttributes(localPath);
                     if (fileAttributes.HasFlag(FileAttributes.Directory))
                     {
-                        var files = Directory.GetFiles($"{fileLocation}", "*.*", SearchOption.AllDirectories);
+                        var files = Directory.GetFiles($"{localPath}", "*.*", SearchOption.AllDirectories);
                         foreach (var file in files)
                         {
-                            var relativePath = $"{objectName}/dcm/{Path.GetRelativePath(fileLocation, file)}";
+                            var relativePath = $"{folderPath}{Path.GetRelativePath(localPath, file)}";
                             var fileName = Path.GetFileName(file);
                             byte[] bs = File.ReadAllBytes(file);
                             using (var filestream = new MemoryStream(bs))
@@ -107,7 +107,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                                             { "Test-Metadata", "Test  Test" }
                                 };
                                 await Client.PutObjectAsync(
-                                    bucketName,
+                                    TestExecutionConfig.MinioConfig.Bucket,
                                     relativePath,
                                     file,
                                     "application/octet-stream",
@@ -117,18 +117,18 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     }
                     else
                     {
-                        byte[] bs = File.ReadAllBytes(fileLocation);
+                        byte[] bs = File.ReadAllBytes(localPath);
                         using (MemoryStream filestream = new MemoryStream(bs))
                         {
-                            FileInfo fileInfo = new FileInfo(fileLocation);
+                            FileInfo fileInfo = new FileInfo(localPath);
                             var metaData = new Dictionary<string, string>
                         {
                                     { "Test-Metadata", "Test  Test" }
                         };
                             await Client.PutObjectAsync(
-                                bucketName,
-                                objectName,
-                                fileLocation,
+                                TestExecutionConfig.MinioConfig.Bucket,
+                                folderPath,
+                                localPath,
                                 "application/octet-stream",
                                 metaData);
                         }
@@ -144,6 +144,22 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public async Task GetFile(string bucketName, string objectName, string fileName)
         {
             await Client.GetObjectAsync(bucketName, objectName, fileName);
+        }
+
+        public async Task<bool> CheckFileExists(string bucketName, string objectName)
+        {
+            var args = new StatObjectArgs()
+                            .WithBucket(bucketName)
+                            .WithObject(objectName);
+            try
+            {
+                await Client.StatObjectAsync(args);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
         }
 
         public async Task DeleteBucket(string bucketName)

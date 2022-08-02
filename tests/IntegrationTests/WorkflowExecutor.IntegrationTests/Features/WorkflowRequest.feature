@@ -1,4 +1,4 @@
-# Copyright 2022 MONAI Consortium
+﻿# Copyright 2022 MONAI Consortium
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,8 +19,7 @@ Publishing a workflow request is consumed by the Workflow Manager.
 @WorkflowRequest
 Scenario Outline: Publish a valid workflow request which creates a single workflow instance
     Given I have a clinical workflow <workflow>
-    And I have a bucket in MinIO bucket1
-    When I publish a Workflow Request Message <workflowRequestMessage>
+    When I publish a Workflow Request Message <workflowRequestMessage> with no artifacts
     Then I can see 1 Workflow Instance is created
     And 1 Task Dispatch event is published
     Examples:
@@ -32,8 +31,7 @@ Scenario Outline: Publish a valid workflow request which creates a single workfl
 Scenario Outline: Publish a valid workflow request which creates multiple workflow instances
     Given I have a clinical workflow <workflow_1>
     And I have a clinical workflow <workflow_2>
-    And I have a bucket in MinIO bucket1
-    When I publish a Workflow Request Message <workflowRequestMessage>
+    When I publish a Workflow Request Message <workflowRequestMessage> with no artifacts
     Then I can see 2 Workflow Instances are created
     And 2 Task Dispatch events are published
     Examples:
@@ -45,16 +43,14 @@ Scenario Outline: Publish a valid workflow request which creates multiple workfl
 Scenario: Publish a valid workflow request with mismatched AE title and workflow ID
     Given I have a clinical workflow Basic_Workflow_1
     And I have a clinical workflow Basic_Workflow_3
-    And I have a bucket in MinIO bucket1
-    When I publish a Workflow Request Message Mismatch_Id_AeTitle_WF_Request
+    When I publish a Workflow Request Message Mismatch_Id_AeTitle_WF_Request with no artifacts
     Then I can see 1 Workflow Instance is created
 
 @WorkflowRequest
 Scenario: Publish a valid workflow request triggering a workflow with multiple revisions
     Given I have a clinical workflow Basic_Workflow_Multiple_Revisions_1
     And I have a clinical workflow Basic_Workflow_Multiple_Revisions_2
-    And I have a bucket in MinIO bucket1
-    When I publish a Workflow Request Message <workflowRequestMessage>
+    When I publish a Workflow Request Message <workflowRequestMessage> with no artifacts
     Then I can see 1 Workflow Instances are created
     Examples:
     | workflowRequestMessage               |
@@ -64,8 +60,7 @@ Scenario: Publish a valid workflow request triggering a workflow with multiple r
 @WorkflowRequest
 Scenario: Publish an invalid workflow request which does not create a workflow instance
     Given I have a clinical workflow Basic_Workflow_3
-    And I have a bucket in MinIO bucket1
-    When I publish a Workflow Request Message <workflowRequestMessage>
+    When I publish a Workflow Request Message <workflowRequestMessage> with no artifacts
     Then I can see 0 Workflow Instances are created
     Examples:
     | workflowRequestMessage                    |
@@ -79,17 +74,15 @@ Scenario: Publish an invalid workflow request which does not create a workflow i
 @WorkflowRequest
 Scenario: Publish a valid workflow request with an exiting Workflow Instance with a Task which is not dispatched
     Given I have a clinical workflow Multi_Request_Workflow_Created
-    And I have a bucket in MinIO bucket1
-    And I have a Workflow Instance Existing_WFI_Created
-    When I publish a Workflow Request Message Multi_WF_Created
+    And I have a Workflow Instance Existing_WFI_Created with no artifacts
+    When I publish a Workflow Request Message Multi_WF_Created with no artifacts
     Then I can see an additional Workflow Instance is not created
     And 1 Task Dispatch event is published
 
 @WorkflowRequest
 Scenario: Publish a valid workflow request with an exiting Workflow Instance with a Task which is dispatched
     Given I have a clinical workflow Multi_Request_Workflow_Dispatched
-    And I have a bucket in MinIO bucket1
-    And I have a Workflow Instance Existing_WFI_Dispatched
-    When I publish a Workflow Request Message Multi_WF_Dispatched
+    And I have a Workflow Instance Existing_WFI_Dispatched with no artifacts
+    When I publish a Workflow Request Message Multi_WF_Dispatched with no artifacts
     Then I can see an additional Workflow Instance is not created
     And A Task Dispatch event is not published

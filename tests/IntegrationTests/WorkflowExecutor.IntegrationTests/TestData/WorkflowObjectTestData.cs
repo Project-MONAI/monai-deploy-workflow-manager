@@ -44,12 +44,13 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             Id = Guid.NewGuid().ToString(),
                             Type = "Basic_task",
                             Description = "Basic Workflow update Task update",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
                                 Output = new Artifact[] {}
                             },
-                            Args = new Dictionary<string, string> { { "test", "test" } }
+                            TaskDestinations = new TaskDestination[] {}
                         }
                     },
                     InformaticsGateway = new InformaticsGateway()
