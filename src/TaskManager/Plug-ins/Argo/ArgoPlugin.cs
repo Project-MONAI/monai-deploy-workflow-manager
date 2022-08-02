@@ -507,7 +507,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 {
                     foreach (var step in template.Steps)
                     {
-                        await ConfigureInputArtifactStore(template.Name, templates, step.Where(p => p.Arguments is not null).SelectMany(p => p.Arguments.Artifacts), true, cancellationToken).ConfigureAwait(false);
+                        await ConfigureInputArtifactStore(template.Name, templates, step.Where(p => p.Arguments is not null && p.Arguments.Artifacts is not null).SelectMany(p => p.Arguments.Artifacts), true, cancellationToken).ConfigureAwait(false);
                     }
                 }
                 else if (template.Inputs is not null)

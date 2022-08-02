@@ -14,20 +14,24 @@
 replicaCount: 1
 
 image:
-  repository: 847264867502.dkr.ecr.eu-west-2.amazonaws.com/monai-deploy-informatics-gateway-dev
+  repository: registry.gitlab.com/answerdigital/londonai/aide/workflow-manager-images/infomatics-gateway
   pullPolicy: IfNotPresent
-  tag: latest
+  tag: 2022-08-01
+  
+imagePullSecrets:
+ - name: gitlab-image-pull
 
 enviromentVariables:
   InformaticsGateway__messaging__publisherSettings__endpoint: "rabbitmq-monai"
-  InformaticsGateway__messaging__publisherSettings__username: "admin"
-  InformaticsGateway__messaging__publisherSettings__password: "admin"
+  InformaticsGateway__messaging__publisherSettings__username: "monaideploy"
+  InformaticsGateway__messaging__publisherSettings__password: "monaideploy"
   InformaticsGateway__messaging__subscriberSettings__endpoint: "rabbitmq-monai"
-  InformaticsGateway__messaging__subscriberSettings__username: "admin"
-  InformaticsGateway__messaging__subscriberSettings__password: "admin"
-  InformaticsGateway__storage__settings__endpoint: "minio:9000" 
-  InformaticsGateway__storage__settings__accessKey: "minioadmin"
-  InformaticsGateway__storage__settings__accessToken: "minioadmin"
+  InformaticsGateway__messaging__subscriberSettings__username: "monaideploy"
+  InformaticsGateway__messaging__subscriberSettings__password: "monaideploy"
+  InformaticsGateway__storage__settings__endpoint: "minio.monai:9000"
+  InformaticsGateway__storage__settings__accessKey: "rootminio"
+  InformaticsGateway__storage__settings__accessToken: "rootminio"
+
 
 service:
   type: ClusterIP

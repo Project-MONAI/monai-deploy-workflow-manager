@@ -24,6 +24,6 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         public string Name { get; set; }
 
         [JsonProperty(PropertyName = "conditions")]
-        public string Conditions { get; set; }
+        public string Conditions { get; set; } = "";
     }
 }
