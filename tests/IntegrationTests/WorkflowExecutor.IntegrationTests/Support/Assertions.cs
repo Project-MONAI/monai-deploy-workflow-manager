@@ -16,14 +16,23 @@
 
 using System.Collections;
 using FluentAssertions;
+using BoDi;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
+using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
     public class Assertions
     {
+        private static MinioClientUtil? MinioClient { get; set; }
+
+        public Assertions(ObjectContainer objectContainer)
+        {
+            MinioClient = objectContainer.Resolve<MinioClientUtil>();
+        }
+
         public void AssertWorkflowInstanceMatchesExpectedWorkflow(WorkflowInstance workflowInstance, WorkflowRevision workflowRevision, WorkflowRequestMessage workflowRequestMessage)
         {
             workflowInstance.PayloadId.Should().Match(workflowRequestMessage.PayloadId.ToString());
@@ -37,6 +46,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 {
                     task.TaskId.Should().Match(workflowTask.Id);
                     task.TaskType.Should().Match(workflowTask.Type);
+                    AssertOutputDirectory(task, workflowInstance.PayloadId, workflowInstance.Id);
                 }
                 else
                 {
@@ -45,9 +55,66 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
         }
 
+        public void AssertInputArtifacts(TaskObject workflowRevisionTask, string payloadId, TaskExecution workflowInstanceTask)
+        {
+            foreach (var workflowArtifact in workflowRevisionTask.Artifacts.Input)
+            {
+                if (workflowArtifact.Value == "{{ context.input.dicom }}")
+                {
+                    workflowInstanceTask.InputArtifacts[workflowArtifact.Name].Should().Match($"{payloadId}/dcm/");
+                }
+            }
+        }
+
+        public void AssertInputArtifactsForTaskDispatch(TaskObject workflowRevisionTask, string payloadId, List<Messaging.Common.Storage> taskDispatchInput)
+        {
+            foreach (var workflowArtifact in workflowRevisionTask.Artifacts.Input)
+            {
+                if (workflowArtifact.Value == "{{ context.input.dicom }}")
+                {
+                    var taskDispatchArtifact = taskDispatchInput.FirstOrDefault(x => x.Name.Equals(workflowArtifact.Name));
+                    taskDispatchArtifact.RelativeRootPath.Should().Match($"{payloadId}/dcm/");
+                    taskDispatchArtifact.Bucket.Should().Match(TestExecutionConfig.MinioConfig.Bucket);
+                }
+            }
+        }
+
+        public void AssertOutputDirectory(TaskExecution task, string payloadId, string workflowInstanceId)
+        {
+            task.OutputDirectory.Should().Match($"{payloadId}/workflows/{workflowInstanceId}/{task.ExecutionId}");
+        }
+
+        public void AssertOutputArtifactsForTaskUpdate(Dictionary<string, string> workflowInstanceTaskOutput, List<Messaging.Common.Storage> taskUpdateOutput)
+        {
+            foreach (var artifact in taskUpdateOutput)
+            {
+                var workflowInstanceTaskArtifact = workflowInstanceTaskOutput.First(x => x.Key.Equals(artifact.Name));
+
+                if (workflowInstanceTaskArtifact.Key != null)
+                {
+                    workflowInstanceTaskArtifact.Key.Should().Be(artifact.Name);
+                    workflowInstanceTaskArtifact.Value.Should().Be(artifact.RelativeRootPath);
+                }
+                else
+                {
+                    throw new Exception($"Output Artifact name={artifact.Name} was not found in Task!");
+                }
+            }
+        }
+
+        public void AssertOutputArtifactsForTaskDispatch(List<Messaging.Common.Storage> taskDispatchOuput, string payloadId, string workflowInstanceId, string executionId)
+        {
+            foreach (var output in taskDispatchOuput)
+            {
+                output.RelativeRootPath.Should().Match($"{payloadId}/workflows/{workflowInstanceId}/{executionId}");
+            }
+        }
+
         public void AssertTaskDispatchEvent(TaskDispatchEvent taskDispatchEvent, WorkflowInstance workflowInstance, WorkflowRevision workflowRevision, WorkflowRequestMessage workflowRequestMessage = null, TaskUpdateEvent taskUpdateEvent = null)
         {
-            var taskDetails = workflowInstance.Tasks.FirstOrDefault(c => c.TaskId.Equals(taskDispatchEvent.TaskId));
+            var workflowInstanceTask = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(taskDispatchEvent.TaskId, StringComparison.OrdinalIgnoreCase));
+
+            var workflowRevisionTask = workflowRevision.Workflow.Tasks.FirstOrDefault(x => x.Id.Equals(taskDispatchEvent.TaskId, StringComparison.OrdinalIgnoreCase));
 
             if (workflowRequestMessage != null)
             {
@@ -59,10 +126,21 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
 
             taskDispatchEvent.WorkflowInstanceId.Should().Match(workflowInstance.Id);
+            taskDispatchEvent.TaskId.Should().Match(workflowInstanceTask.TaskId);
+            taskDispatchEvent.PayloadId.Should().Match(workflowInstance.PayloadId);
+            taskDispatchEvent.ExecutionId.Should().Match(workflowInstanceTask.ExecutionId);
 
-            taskDispatchEvent.TaskId.Should().Match(taskDetails.TaskId);
+            if (taskDispatchEvent.Inputs.Count > 0)
+            {
+                AssertInputArtifactsForTaskDispatch(workflowRevisionTask, workflowInstance.PayloadId, taskDispatchEvent.Inputs);
+            }
 
-            taskDetails.Status.Should().Be(TaskExecutionStatus.Dispatched);
+            if (taskDispatchEvent.Outputs.Count > 0)
+            {
+                AssertOutputArtifactsForTaskDispatch(taskDispatchEvent.Outputs, workflowInstance.PayloadId, workflowInstance.Id, workflowInstanceTask.ExecutionId);
+            }
+
+            workflowInstanceTask.Status.Should().Be(TaskExecutionStatus.Dispatched);
         }
 
         public void AssertPayload(Payload payload, Payload? actualPayload)

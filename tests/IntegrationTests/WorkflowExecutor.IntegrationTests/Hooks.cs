@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Diagnostics;
 using BoDi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -139,8 +138,9 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             ObjectContainer.RegisterInstanceAs(apiHelper);
         }
 
-        [BeforeTestRun(Order = 1)]
+        [BeforeTestRun(Order = 2)]
         [AfterTestRun(Order = 0)]
+        [AfterScenario]
         public static void ClearTestData()
         {
             MongoClient?.DeleteAllWorkflowRevisionDocuments();
@@ -148,52 +148,10 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             MongoClient?.DeleteAllPayloadDocuments();
         }
 
-        [AfterScenario]
-        public void DeleteTestData()
+        [BeforeTestRun(Order = 3)]
+        public async static Task CreateBucket()
         {
-            var dataHelper = ObjectContainer.Resolve<DataHelper>();
-
-            if (dataHelper.WorkflowRevisions.Count > 0)
-            {
-                foreach (var workflowRevision in dataHelper.WorkflowRevisions)
-                {
-                    MongoClient?.DeleteWorkflowRevisionDocumentByWorkflowId(workflowRevision.WorkflowId);
-                }
-            }
-
-            if (dataHelper.WorkflowInstances.Count > 0)
-            {
-                foreach (var workflowInstance in dataHelper.WorkflowInstances)
-                {
-                    MongoClient?.DeleteWorkflowInstance(workflowInstance.Id);
-                }
-            }
-
-            if (dataHelper.Payload.Count > 0)
-            {
-                foreach (var payload in dataHelper.Payload)
-                {
-                    MongoClient?.DeletePayloadDocumentByPayloadId(payload.PayloadId);
-                }
-            }
-
-            if (dataHelper.WorkflowRequestMessage != null)
-            {
-                MongoClient?.DeletePayloadDocumentByPayloadId(dataHelper.WorkflowRequestMessage.PayloadId.ToString());
-
-                foreach (var workflowRevision in dataHelper.WorkflowRevisions)
-                {
-                    MongoClient?.DeleteWorkflowRevisionDocumentByWorkflowId(workflowRevision.WorkflowId);
-                }
-            }
-        }
-
-        [AfterScenario]
-        public void PurgeRabbitMessages()
-        {
-            RabbitConnectionFactory.PurgeQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-            RabbitConnectionFactory.PurgeQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
-            RabbitConnectionFactory.PurgeQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+            await MinioClient.CreateBucket(TestExecutionConfig.MinioConfig.Bucket);
         }
 
         /// <summary>

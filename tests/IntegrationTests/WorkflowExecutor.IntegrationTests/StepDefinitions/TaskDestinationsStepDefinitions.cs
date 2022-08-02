@@ -37,7 +37,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
             DataHelper = objectContainer.Resolve<DataHelper>();
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
-            Assertions = new Assertions();
+            Assertions = new Assertions(objectContainer);
             _outputHelper = outputHelper;
         }
 
@@ -59,8 +59,21 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             RetryPolicy.Execute(() =>
             {
-                _outputHelper.WriteLine($"Retrieving workflow instance by id={DataHelper.TaskUpdateEvent.WorkflowInstanceId}");
-                var workflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
+                Contracts.Models.WorkflowInstance workflowInstance;
+                if (DataHelper.TaskUpdateEvent.WorkflowInstanceId != "")
+                {
+                    _outputHelper.WriteLine($"Retrieving workflow instance by id={DataHelper.TaskUpdateEvent.WorkflowInstanceId}");
+                    workflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
+                }
+                else if (DataHelper.WorkflowRequestMessage.PayloadId != null)
+                {
+                    _outputHelper.WriteLine($"Retrieving workflow instance by PayloadId={DataHelper.WorkflowRequestMessage.PayloadId.ToString()}");
+                    workflowInstance = MongoClient.GetWorkflowInstance(DataHelper.WorkflowRequestMessage.PayloadId.ToString());
+                }
+                else
+                {
+                    throw new Exception("Workflow Instance cannot be found using Id or PayloadId");
+                }
                 _outputHelper.WriteLine("Retrieved workflow instance");
                 Assertions.WorkflowInstanceStatus(status, workflowInstance);
             });

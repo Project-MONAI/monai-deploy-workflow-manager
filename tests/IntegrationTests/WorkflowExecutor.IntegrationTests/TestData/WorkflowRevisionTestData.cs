@@ -48,7 +48,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "Basic_task",
-                                Description = "Basic Workflow 1 Task 1"
+                                Description = "Basic Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -77,7 +78,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "Basic_task",
-                                Description = "Basic Workflow 2 Task 1"
+                                Description = "Basic Workflow 2 Task 1",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -106,7 +108,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "Basic_task",
-                                Description = "Basic Workflow 3 Task 1"
+                                Description = "Basic Workflow 3 Task 1",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -135,7 +138,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "Basic_task",
-                                Description = "Same AeTitle 1 Task 1"
+                                Description = "Same AeTitle 1 Task 1",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -164,7 +168,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "Basic_task",
-                                Description = "Same AeTitle 2 Task 1"
+                                Description = "Same AeTitle 2 Task 1",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -193,7 +198,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "Basic_Workflow_Multiple_Revisions_1",
-                                Description = "Basic_Workflow_Multiple_Revisions_1"
+                                Description = "Basic_Workflow_Multiple_Revisions_1",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -222,7 +228,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "Basic_Workflow_Multiple_Revisions_2",
-                                Description = "Basic_Workflow_Multiple_Revisions_2"
+                                Description = "Basic_Workflow_Multiple_Revisions_2",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -251,13 +258,15 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "task_1",
-                                Description = "Multi task workflow Task 1"
+                                Description = "Multi task workflow Task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                             new TaskObject
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "task_2",
-                                Description = "Multi task workflow Task 2"
+                                Description = "Multi task workflow Task 2",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -286,7 +295,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "Task_Update",
-                                Description = "Task Update Task 1"
+                                Description = "Task Update Task 1",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -315,7 +325,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = "2dbd1af7-b699-4467-8e99-05a0c22422b4",
                                 Type = "Multi_task",
-                                Description = "Multiple request task 1"
+                                Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -344,7 +355,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = "7d7c8b83-6628-413c-9912-a89314e5e2d5",
                                 Type = "Multi_task",
-                                Description = "Multiple request task 1"
+                                Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -374,6 +386,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "00d275ce-81d8-4d54-a923-d34cf1955cc4",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination()
@@ -387,6 +400,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "510ba0cf-8632-4112-994d-36617318a74f",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 2",
+                                Artifacts = new ArtifactMap(),
                             },
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -416,6 +430,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "b971c259-c3d5-4ddf-93b2-56c83fb7b474",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination()
@@ -433,12 +448,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "6da9b529-f7b5-40c2-a604-b7421599b364",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 2",
+                                Artifacts = new ArtifactMap(),
                             },
                             new TaskObject
                             {
                                 Id = "eefdd563-c589-433a-969f-2cddfe93af24",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 3",
+                                Artifacts = new ArtifactMap(),
                             },
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -468,6 +485,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "f4c96785-4cd4-42c9-9e43-4c50b654e397",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination()
@@ -481,6 +499,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "6f26fb39-5991-4b6e-9885-67e32a575559",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 2",
+                                Artifacts = new ArtifactMap(),
                             },
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -510,6 +529,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination()
@@ -523,6 +543,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "36dcdd1a-7e57-405e-a6c3-b0e99be1f3d2",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -552,7 +573,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "Basic_task",
                                 Description = "Basic Workflow 1 Task 1",
-                                Args = new Dictionary<string, string> { { "test", "test" } }
+                                Args = new Dictionary<string, string> { { "test", "test" } },
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -583,7 +605,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "Basic_task",
-                                Description = "Basic Workflow 1 Task 1"
+                                Description = "Basic Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -612,7 +635,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "Basic_task",
-                                Description = "Basic Workflow 1 Task 1"
+                                Description = "Basic Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -643,6 +667,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Type = "Basic_task",
                                 Description = "Basic Workflow 1 Task 1",
                                 Args = new Dictionary<string, string> { { "test", "test" } },
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination()
@@ -657,6 +682,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "cake",
                                 Type = "Basic_task",
                                 Description = "Basic Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap(),
                                 Args = new Dictionary<string, string> { { "test", "test" } }
 
                             }
@@ -690,6 +716,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination()
@@ -704,6 +731,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "b9964b10-acb4-4050-a610-374fdbe2100d",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -733,6 +761,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination()
@@ -747,6 +776,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "b9964b10-acb4-4050-a610-374fdbe2100d",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -776,6 +806,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination()
@@ -800,18 +831,21 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "b9964b10-acb4-4050-a610-374fdbe2100d",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                             new TaskObject
                             {
                                 Id = "e12849f3-247d-47eb-95c8-5aa16f551f62",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                             new TaskObject
                             {
                                 Id = "d2e5219d-9ccb-4584-b078-5216ee4b9b8b",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -841,6 +875,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination()
@@ -855,6 +890,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "b9964b10-acb4-4050-a610-374fdbe2100d",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -884,6 +920,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination()
@@ -908,18 +945,21 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "b9964b10-acb4-4050-a610-374fdbe2100d",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                             new TaskObject
                             {
                                 Id = "e12849f3-247d-47eb-95c8-5aa16f551f62",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                             new TaskObject
                             {
                                 Id = "d2e5219d-9ccb-4584-b078-5216ee4b9b8b",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -949,6 +989,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination()
@@ -973,11 +1014,13 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "b9964b10-acb4-4050-a610-374fdbe2100d",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                             new TaskObject
                             {
                                 Id = "e12849f3-247d-47eb-95c8-5aa16f551f62",
                                 Type = "Multi_task",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -1009,6 +1052,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination()
@@ -1028,12 +1072,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "b9964b10-acb4-4050-a610-374fdbe2100d",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                             new TaskObject
                             {
                                 Id = "e12849f3-247d-47eb-95c8-5aa16f551f62",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -1063,6 +1109,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination()
@@ -1077,6 +1124,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "b9964b10-acb4-4050-a610-374fdbe2100d",
                                 Type = "Multi_task",
                                 Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -1106,6 +1154,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "router",
                                 Description = "Router Task",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination { Name = "taskdest1" },
@@ -1116,13 +1165,15 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = "taskdest1",
                                 Type = "argo",
-                                Description = "Argo plugin Task 1"
+                                Description = "Argo plugin Task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                             new TaskObject
                             {
                                 Id = "taskdest2",
                                 Type = "argo",
-                                Description = "Argo plugin Task 2"
+                                Description = "Argo plugin Task 2",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -1152,6 +1203,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "router",
                                 Description = "Router Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination { Name = "taskdest1" }
@@ -1161,7 +1213,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = "taskdest1",
                                 Type = "Basic_task",
-                                Description = "Basic Workflow 1 Task 1"
+                                Description = "Basic Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -1191,6 +1244,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "router",
                                 Description = "Router Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination { Name = "taskdest1", Conditions = "'true'=='true'" },
@@ -1201,13 +1255,15 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = "taskdest1",
                                 Type = "argo",
-                                Description = "Argo plugin Task 1"
+                                Description = "Argo plugin Task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                             new TaskObject
                             {
                                 Id = "taskdest2",
                                 Type = "argo",
-                                Description = "Argo plugin Task 2"
+                                Description = "Argo plugin Task 2",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -1237,6 +1293,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "router",
                                 Description = "Router Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination { Name = "taskdest1", Conditions = "'false'=='true'" },
@@ -1247,13 +1304,15 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = "taskdest1",
                                 Type = "argo",
-                                Description = "Argo plugin Task 1"
+                                Description = "Argo plugin Task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                             new TaskObject
                             {
                                 Id = "taskdest2",
                                 Type = "argo",
-                                Description = "Argo plugin Task 2"
+                                Description = "Argo plugin Task 2",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -1283,6 +1342,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "router",
                                 Description = "Router Workflow router task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination { Name = "taskdest1" },
@@ -1293,13 +1353,15 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = "taskdest1",
                                 Type = "argo",
-                                Description = "Argo plugin Task 1"
+                                Description = "Argo plugin Task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                             new TaskObject
                             {
                                 Id = "router2",
                                 Type = "router",
                                 Description = "Router Workflow router task 2",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination { Name = "taskdest2" },
@@ -1310,13 +1372,15 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = "taskdest2",
                                 Type = "argo",
-                                Description = "Argo plugin Task 2"
+                                Description = "Argo plugin Task 2",
+                                Artifacts = new ArtifactMap(),
                             },
                             new TaskObject
                             {
                                 Id = "taskdest3",
                                 Type = "argo",
-                                Description = "Argo plugin Task 3"
+                                Description = "Argo plugin Task 3",
+                                Artifacts = new ArtifactMap(),
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -1346,6 +1410,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "router",
                                 Description = "Router Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
                                     new TaskDestination { Name = "taskdest2"},
@@ -1355,12 +1420,333 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             {
                                 Id = "taskdest1",
                                 Type = "argo",
-                                Description = "Argo plugin Task 1"
+                                Description = "Argo plugin Task 1",
+                                Artifacts = new ArtifactMap(),
                             },
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
                             AeTitle = "Router_1"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "OneTask_Context.Dicom.Input_ArtifactMandatory=Null",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Artifact 1",
+                        Description = "Artifact 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Input", Value = "{{ context.input.dicom }}" },
+                                    },
+                                }
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Artifact_AE"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "OneTask_Context.Dicom.Input_ArtifactMandatory=True",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Artifact 1",
+                        Description = "Artifact 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}", Mandatory = true },
+                                    },
+                                }
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Artifact_AE"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "OneTask_Context.Dicom.Input_ArtifactMandatory=False",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Artifact 1",
+                        Description = "Artifact 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}", Mandatory = false },
+                                    },
+                                }
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Artifact_AE"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "TwoTask_Context.Dicom.Input_ArtifactMandatory=Null",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Artifact 1",
+                        Description = "Artifact 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "artifact_task_1",
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                    },
+                                },
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination{ Name = "artifact_task_2" }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "artifact_task_2",
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 2",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                    },
+                                },
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Artifact_AE"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "TwoTask_Context.Dicom.Input_ArtifactMandatory=True",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Artifact 1",
+                        Description = "Artifact 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "artifact_task_1",
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                    },
+                                },
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination{ Name = "artifact_task_2" }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "artifact_task_2",
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 2",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                    },
+                                },
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Artifact_AE"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "TwoTask_Context.Dicom.Input_ArtifactMandatory=False",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Artifact 1",
+                        Description = "Artifact 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "artifact_task_1",
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                    },
+                                },
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination{ Name = "artifact_task_2" }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "artifact_task_2",
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 2",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                    },
+                                },
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Artifact_AE"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Artifact_Workflow_Context.Input.Dicom_Non_Mandatory",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Artifact 1",
+                        Description = "Artifact 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "artifact_task_1",
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                    },
+                                },
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination{ Name = "artifact_task_2" }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "artifact_task_2",
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 2",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}", Mandatory = false },
+                                    },
+                                },
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Artifact_AE"
                         }
                     }
                 }

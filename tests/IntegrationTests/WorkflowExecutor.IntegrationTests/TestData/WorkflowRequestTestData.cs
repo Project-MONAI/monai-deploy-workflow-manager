@@ -302,7 +302,21 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     CalledAeTitle = "Router_1",
                     CallingAeTitle = "MWM",
                 }
-            }
+            },
+            new WorkflowRequestTestData
+            {
+                Name = "Artifact_AeTitle_Request_1",
+                WorkflowRequestMessage = new WorkflowRequestMessage
+                {
+                    Bucket = "bucket1",
+                    PayloadId = new Guid("3d22bf41-eacd-4e43-9161-d00735b31a2e"),
+                    Workflows = new List<string>() { },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.Now,
+                    CalledAeTitle = "Artifact_AE",
+                    CallingAeTitle = "MWM",
+                }
+            },
         };
     }
 }

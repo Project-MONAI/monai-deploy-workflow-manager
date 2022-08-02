@@ -68,9 +68,27 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             });
         }
 
+        public void DeleteWorkflowRevisions(string workflowId)
+        {
+            RetryMongo.Execute(() =>
+            {
+                WorkflowRevisionCollection.DeleteMany(x => x.WorkflowId.Equals(workflowId));
+            });
+        }
+
         public void DeleteAllWorkflowRevisionDocuments()
         {
-            WorkflowRevisionCollection.DeleteMany("{ }");
+            RetryMongo.Execute(() =>
+            {
+                WorkflowRevisionCollection.DeleteMany("{ }");
+
+                var workflows = WorkflowRevisionCollection.Find("{ }").ToList();
+
+                if (workflows.Count > 0)
+                {
+                    throw new Exception("All workflows are not deleted!");
+                }
+            });
         }
 
         public List<WorkflowRevision> GetWorkflowRevisionsByWorkflowId(string workflowId)
@@ -105,7 +123,17 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         public void DeleteAllWorkflowInstances()
         {
-            WorkflowInstanceCollection.DeleteMany("{ }");
+            RetryMongo.Execute(() =>
+            {
+                WorkflowInstanceCollection.DeleteMany("{ }");
+
+                var workflowInstances = WorkflowInstanceCollection.Find("{ }").ToList();
+
+                if (workflowInstances.Count > 0)
+                {
+                    throw new Exception("All workflows instances are not deleted!");
+                }
+            });
         }
 
         public void DeleteWorkflowInstance(string id)
@@ -160,7 +188,17 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         public void DeleteAllPayloadDocuments()
         {
-            PayloadCollection.DeleteMany("{ }");
+            RetryMongo.Execute(() =>
+            {
+                PayloadCollection.DeleteMany("{ }");
+
+                var payloads = PayloadCollection.Find("{ }").ToList();
+
+                if (payloads.Count > 0)
+                {
+                    throw new Exception("All payloads are not deleted!");
+                }
+            });
         }
         #endregion
 
