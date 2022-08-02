@@ -19,12 +19,13 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>Monai.Deploy.WorkflowManager.Contracts</RootNamespace>
-    <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\.sonarlint\project-monai_monai-deploy-workflow-managercsharp.ruleset</CodeAnalysisRuleSet>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <AdditionalFiles Include="..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+    <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>

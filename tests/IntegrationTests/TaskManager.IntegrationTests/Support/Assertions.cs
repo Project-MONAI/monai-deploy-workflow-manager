@@ -94,8 +94,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 
             foreach (var dict in taskCallbackEvent.Metadata)
             {
-                object updateMetadataValue;
-                taskUpdateEvent.Metadata.TryGetValue(dict.Key, out updateMetadataValue);
+                taskUpdateEvent.Metadata.TryGetValue(dict.Key, out var updateMetadataValue);
                 updateMetadataValue.Should().Be(dict.Value);
             }
 

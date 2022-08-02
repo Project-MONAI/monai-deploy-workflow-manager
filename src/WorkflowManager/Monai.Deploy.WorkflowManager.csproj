@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   ~ Copyright 2022 MONAI Consortium
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,9 +23,6 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="stylecop.json" />
-  </ItemGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

@@ -34,6 +34,7 @@
 
   <ItemGroup>
     <AdditionalFiles Include="..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+    <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
   
   <PropertyGroup>
