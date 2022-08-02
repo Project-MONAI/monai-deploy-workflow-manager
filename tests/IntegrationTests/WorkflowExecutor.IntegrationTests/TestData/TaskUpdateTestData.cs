@@ -108,7 +108,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     {
                         { "metadata_1", true },
                         { "metadata_2", false },
-                        { "metadata_3", null },
                     }
                 }
             },

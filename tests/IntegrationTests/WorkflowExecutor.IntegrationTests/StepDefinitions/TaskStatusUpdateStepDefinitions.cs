@@ -94,7 +94,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
                 var taskUpdated = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(DataHelper.TaskUpdateEvent.TaskId));
 
-                taskUpdated.Status.Should().Be(DataHelper.TaskUpdateEvent.Status);
+                taskUpdated?.Status.Should().Be(DataHelper.TaskUpdateEvent.Status);
 
                 if (DataHelper.TaskDispatchEvents.Count > 0)
                 {
@@ -102,7 +102,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                     {
                         var taskDispatched = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(e.TaskId));
 
-                        taskDispatched.Status.Should().Be(TaskExecutionStatus.Dispatched);
+                        taskDispatched?.Status.Should().Be(TaskExecutionStatus.Dispatched);
                     }
                 }
             });
@@ -156,11 +156,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
                 if (DataHelper.TaskUpdateEvent.Metadata.Count == 0)
                 {
-                    taskUpdated.ResultMetadata.Should().BeNull();
+                    taskUpdated?.ResultMetadata.Should().BeNull();
                 }
                 else
                 {
-                    taskUpdated.ResultMetadata.Should().AllBeEquivalentTo(DataHelper.TaskUpdateEvent.Metadata);
+                    taskUpdated?.ResultMetadata.Should().AllBeEquivalentTo(DataHelper.TaskUpdateEvent.Metadata);
                 }
             });
         }
