@@ -877,7 +877,96 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
-
+            new WorkflowInstanceTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=True",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=True").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=True").WorkflowRevision.WorkflowId,
+                    PayloadId = Guid.NewGuid().ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = TestExecutionConfig.MinioConfig.Bucket,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=True").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=True").WorkflowRevision?.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Accepted,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False").WorkflowRevision.WorkflowId,
+                    PayloadId = Guid.NewGuid().ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = TestExecutionConfig.MinioConfig.Bucket,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False").WorkflowRevision?.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Accepted,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=Null",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=Null").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=Null").WorkflowRevision.WorkflowId,
+                    PayloadId = Guid.NewGuid().ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = TestExecutionConfig.MinioConfig.Bucket,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=Null").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=Null").WorkflowRevision?.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Accepted,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                    }
+                }
+            },
         };
     }
 }

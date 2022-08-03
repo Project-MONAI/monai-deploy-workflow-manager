@@ -547,6 +547,115 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+            new TaskUpdateTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=True",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=True").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=True").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=True").WorkflowInstance.Tasks[0].TaskId,
+                    Outputs = new List<Messaging.Common.Storage>
+                    {
+                        new Messaging.Common.Storage()
+                        {
+                            Name = "output",
+                            Endpoint = "//output.dcm",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = GetRelativePathForOutputArtifacts("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=True")
+                        }
+                    },
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False").WorkflowInstance.Tasks[0].TaskId,
+                    Outputs = new List<Messaging.Common.Storage>
+                    {
+                        new Messaging.Common.Storage()
+                        {
+                            Name = "output",
+                            Endpoint = "//output.dcm",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = GetRelativePathForOutputArtifacts("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False")
+                        }
+                    },
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False_No_Outputs",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=Null",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=Null").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=Null").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=Null").WorkflowInstance.Tasks[0].TaskId,
+                    Outputs = new List<Messaging.Common.Storage>
+                    {
+                        new Messaging.Common.Storage()
+                        {
+                            Name = "output",
+                            Endpoint = "//output.dcm",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = GetRelativePathForOutputArtifacts("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=Null")
+                        }
+                    },
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
         };
     }
 }
