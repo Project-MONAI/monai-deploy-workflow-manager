@@ -116,7 +116,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     }
                     else
                     {
-                        var bs = File.ReadAllBytes(fileLocation);
+                        var bs = File.ReadAllBytes(localPath);
                         using (MemoryStream filestream = new MemoryStream(bs))
                         {
                             FileInfo fileInfo = new FileInfo(localPath);

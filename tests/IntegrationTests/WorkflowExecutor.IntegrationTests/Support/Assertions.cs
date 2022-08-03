@@ -15,7 +15,6 @@
  */
 
 using System.Collections;
-using FluentAssertions;
 using BoDi;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -181,14 +180,15 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         public static void AssertPagination<T>(int count, string queries, T? Response)
         {
-            var data = Response?.GetType()?.GetProperty("Data")?.GetValue(Response, null) as ICollection;
-            var totalPages = Response?.GetType()?.GetProperty("TotalPages")?.GetValue(Response, null);
-            var pageSize = Response?.GetType()?.GetProperty("PageSize")?.GetValue(Response, null);
-            var totalRecords = Response?.GetType()?.GetProperty("TotalRecords")?.GetValue(Response, null);
-            var pageNumber = Response?.GetType()?.GetProperty("PageNumber")?.GetValue(Response, null);
+            var responseType = Response?.GetType();
+            var data = responseType?.GetProperty("Data")?.GetValue(Response, null) as ICollection;
+            var totalPages = responseType?.GetProperty("TotalPages")?.GetValue(Response, null);
+            var pageSize = responseType?.GetProperty("PageSize")?.GetValue(Response, null);
+            var totalRecords = responseType?.GetProperty("TotalRecords")?.GetValue(Response, null);
+            var pageNumber = responseType?.GetProperty("PageNumber")?.GetValue(Response, null);
             int pageNumberQuery = 1;
             int pageSizeQuery = 10;
-            List<string> splitQuery = queries.Split("&").ToList();
+            var splitQuery = queries.Split("&").ToList();
             if (queries != "")
             {
                 foreach (var query in splitQuery)

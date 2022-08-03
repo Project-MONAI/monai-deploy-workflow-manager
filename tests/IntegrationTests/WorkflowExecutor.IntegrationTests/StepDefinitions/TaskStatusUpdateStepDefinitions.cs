@@ -157,7 +157,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
                 if (DataHelper.TaskUpdateEvent.Metadata.Count == 0)
                 {
-                    taskUpdated?.ResultMetadata.Should().BeNull();
+                    taskUpdated?.ResultMetadata.Should().BeEmpty();
                 }
                 else
                 {

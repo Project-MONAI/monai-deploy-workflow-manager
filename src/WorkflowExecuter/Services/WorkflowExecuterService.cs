@@ -611,7 +611,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}",
                 ResultMetadata = { },
                 InputParameters = newInputParameters,
-                PreviousTaskId = previousTaskId is not null ? previousTaskId : string.Empty
+                PreviousTaskId = previousTaskId ?? string.Empty
             };
         }
 
