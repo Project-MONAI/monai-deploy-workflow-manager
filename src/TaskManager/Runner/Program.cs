@@ -33,7 +33,6 @@ using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.WorkflowManager.Common;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Services;
-using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
@@ -226,17 +225,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
                     });
 
                     services.AddHostedService<TaskManager>(p => p.GetRequiredService<TaskManager>());
-
-                    services.AddSingleton<IConditionalParameterParser, ConditionalParameterParser>(s =>
-                    {
-                        var logger = s.GetRequiredService<ILogger<ConditionalParameterParser>>();
-                        var payloadService = s.GetRequiredService<IPayloadService>();
-                        var workflowService = s.GetRequiredService<IWorkflowService>();
-                        var dicomStore = s.GetRequiredService<IDicomService>();
-                        var workflowInstanceService = s.GetRequiredService<IWorkflowInstanceService>();
-
-                        return new ConditionalParameterParser(logger, dicomStore, workflowInstanceService, payloadService, workflowService);
-                    });
                 });
     }
 }
