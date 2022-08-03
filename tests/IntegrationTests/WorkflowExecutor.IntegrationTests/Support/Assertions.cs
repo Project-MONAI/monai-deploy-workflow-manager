@@ -72,8 +72,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 if (workflowArtifact.Value == "{{ context.input.dicom }}")
                 {
                     var taskDispatchArtifact = taskDispatchInput.FirstOrDefault(x => x.Name.Equals(workflowArtifact.Name));
-                    taskDispatchArtifact.RelativeRootPath.Should().Match($"{payloadId}/dcm/");
-                    taskDispatchArtifact.Bucket.Should().Match(TestExecutionConfig.MinioConfig.Bucket);
+                    taskDispatchArtifact?.RelativeRootPath.Should().Match($"{payloadId}/dcm/");
+                    taskDispatchArtifact?.Bucket.Should().Match(TestExecutionConfig.MinioConfig.Bucket);
                 }
             }
         }
@@ -113,7 +113,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             var workflowInstanceTask = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(taskDispatchEvent.TaskId, StringComparison.OrdinalIgnoreCase));
 
-            var workflowRevisionTask = workflowRevision.Workflow.Tasks.FirstOrDefault(x => x.Id.Equals(taskDispatchEvent.TaskId, StringComparison.OrdinalIgnoreCase));
+            var workflowRevisionTask = workflowRevision?.Workflow?.Tasks.FirstOrDefault(x => x.Id.Equals(taskDispatchEvent.TaskId, StringComparison.OrdinalIgnoreCase));
 
             if (workflowRequestMessage != null)
             {
@@ -125,9 +125,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
 
             taskDispatchEvent.WorkflowInstanceId.Should().Match(workflowInstance.Id);
-            taskDispatchEvent.TaskId.Should().Match(workflowInstanceTask.TaskId);
+            taskDispatchEvent.TaskId.Should().Match(workflowInstanceTask?.TaskId);
             taskDispatchEvent.PayloadId.Should().Match(workflowInstance.PayloadId);
-            taskDispatchEvent.ExecutionId.Should().Match(workflowInstanceTask.ExecutionId);
+            taskDispatchEvent.ExecutionId.Should().Match(workflowInstanceTask?.ExecutionId);
 
             if (taskDispatchEvent.Inputs.Count > 0)
             {
@@ -136,10 +136,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
             if (taskDispatchEvent.Outputs.Count > 0)
             {
-                AssertOutputArtifactsForTaskDispatch(taskDispatchEvent.Outputs, workflowInstance.PayloadId, workflowInstance.Id, workflowInstanceTask.ExecutionId);
+                AssertOutputArtifactsForTaskDispatch(taskDispatchEvent.Outputs, workflowInstance.PayloadId, workflowInstance.Id, workflowInstanceTask?.ExecutionId);
             }
 
-            workflowInstanceTask.Status.Should().Be(TaskExecutionStatus.Dispatched);
+            workflowInstanceTask?.Status.Should().Be(TaskExecutionStatus.Dispatched);
         }
 
         public void AssertPayload(Payload payload, Payload? actualPayload)

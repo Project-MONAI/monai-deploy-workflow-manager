@@ -59,7 +59,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         public void ValidateWorkflowRequest_WorkflowRequestMessageWithCallingAETitleIsNull_ReturnsValidatonFalse()
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
-            message.CalledAeTitle = null as string;
+            message.CalledAeTitle = null;
             var result = _eventPayloadValidator.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
