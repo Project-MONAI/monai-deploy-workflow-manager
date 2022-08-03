@@ -85,7 +85,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             if (Event.TaskPluginArguments.ContainsKey(Keys.AllowInsecureseUrl))
             {
-                _allowInsecure = string.Compare("true", Event.TaskPluginArguments[Keys.AllowInsecureseUrl], true) == 0 ? true : false;
+                _allowInsecure = string.Compare("true", Event.TaskPluginArguments[Keys.AllowInsecureseUrl], true) == 0;
             }
 
             _baseUrl = Event.TaskPluginArguments[Keys.BaseUrl];
