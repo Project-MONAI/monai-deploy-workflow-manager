@@ -15,7 +15,6 @@
  */
 
 using System.Collections;
-using FluentAssertions;
 using BoDi;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -37,11 +36,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             workflowInstance.PayloadId.Should().Match(workflowRequestMessage.PayloadId.ToString());
             workflowInstance.WorkflowId.Should().Match(workflowRevision.WorkflowId);
-            workflowInstance.AeTitle.Should().Match(workflowRevision.Workflow.InformaticsGateway.AeTitle);
+            workflowInstance.AeTitle.Should().Match(workflowRevision?.Workflow?.InformaticsGateway?.AeTitle);
 
             foreach (var task in workflowInstance.Tasks)
             {
-                var workflowTask = workflowRevision.Workflow.Tasks.FirstOrDefault(x => x.Id.Equals(task.TaskId));
+                var workflowTask = workflowRevision?.Workflow?.Tasks.FirstOrDefault(x => x.Id.Equals(task.TaskId));
                 if (workflowTask != null)
                 {
                     task.TaskId.Should().Match(workflowTask.Id);
@@ -73,8 +72,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 if (workflowArtifact.Value == "{{ context.input.dicom }}")
                 {
                     var taskDispatchArtifact = taskDispatchInput.FirstOrDefault(x => x.Name.Equals(workflowArtifact.Name));
-                    taskDispatchArtifact.RelativeRootPath.Should().Match($"{payloadId}/dcm/");
-                    taskDispatchArtifact.Bucket.Should().Match(TestExecutionConfig.MinioConfig.Bucket);
+                    taskDispatchArtifact?.RelativeRootPath.Should().Match($"{payloadId}/dcm/");
+                    taskDispatchArtifact?.Bucket.Should().Match(TestExecutionConfig.MinioConfig.Bucket);
                 }
             }
         }
@@ -110,11 +109,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
         }
 
-        public void AssertTaskDispatchEvent(TaskDispatchEvent taskDispatchEvent, WorkflowInstance workflowInstance, WorkflowRevision workflowRevision, WorkflowRequestMessage workflowRequestMessage = null, TaskUpdateEvent taskUpdateEvent = null)
+        public void AssertTaskDispatchEvent(TaskDispatchEvent taskDispatchEvent, WorkflowInstance workflowInstance, WorkflowRevision workflowRevision, WorkflowRequestMessage? workflowRequestMessage = null, TaskUpdateEvent? taskUpdateEvent = null)
         {
             var workflowInstanceTask = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(taskDispatchEvent.TaskId, StringComparison.OrdinalIgnoreCase));
 
-            var workflowRevisionTask = workflowRevision.Workflow.Tasks.FirstOrDefault(x => x.Id.Equals(taskDispatchEvent.TaskId, StringComparison.OrdinalIgnoreCase));
+            var workflowRevisionTask = workflowRevision?.Workflow?.Tasks.FirstOrDefault(x => x.Id.Equals(taskDispatchEvent.TaskId, StringComparison.OrdinalIgnoreCase));
 
             if (workflowRequestMessage != null)
             {
@@ -122,13 +121,13 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
             else
             {
-                taskDispatchEvent.CorrelationId.Should().Match(taskUpdateEvent.CorrelationId);
+                taskDispatchEvent.CorrelationId.Should().Match(taskUpdateEvent?.CorrelationId);
             }
 
             taskDispatchEvent.WorkflowInstanceId.Should().Match(workflowInstance.Id);
-            taskDispatchEvent.TaskId.Should().Match(workflowInstanceTask.TaskId);
+            taskDispatchEvent.TaskId.Should().Match(workflowInstanceTask?.TaskId);
             taskDispatchEvent.PayloadId.Should().Match(workflowInstance.PayloadId);
-            taskDispatchEvent.ExecutionId.Should().Match(workflowInstanceTask.ExecutionId);
+            taskDispatchEvent.ExecutionId.Should().Match(workflowInstanceTask?.ExecutionId);
 
             if (taskDispatchEvent.Inputs.Count > 0)
             {
@@ -137,25 +136,27 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
             if (taskDispatchEvent.Outputs.Count > 0)
             {
-                AssertOutputArtifactsForTaskDispatch(taskDispatchEvent.Outputs, workflowInstance.PayloadId, workflowInstance.Id, workflowInstanceTask.ExecutionId);
+                AssertOutputArtifactsForTaskDispatch(taskDispatchEvent.Outputs, workflowInstance.PayloadId, workflowInstance.Id, workflowInstanceTask?.ExecutionId);
             }
 
-            workflowInstanceTask.Status.Should().Be(TaskExecutionStatus.Dispatched);
+            workflowInstanceTask?.Status.Should().Be(TaskExecutionStatus.Dispatched);
         }
 
         public void AssertPayload(Payload payload, Payload? actualPayload)
         {
-            actualPayload.Should().BeEquivalentTo(payload, options => options.Excluding(x => x.Timestamp));
-            actualPayload.Timestamp.ToString(format: "yyyy-MM-dd hh:mm:ss").Should().Be(payload.Timestamp.ToString(format: "yyyy-MM-dd hh:mm:ss"));
+            actualPayload.Should().NotBeNull();
+            actualPayload?.Should().BeEquivalentTo(payload, options => options.Excluding(x => x.Timestamp));
+            actualPayload?.Timestamp.ToString(format: "yyyy-MM-dd hh:mm:ss").Should().Be(payload.Timestamp.ToString(format: "yyyy-MM-dd hh:mm:ss"));
         }
 
         public void AssertPayloadList(List<Payload> payload, List<Payload>? actualPayloads)
         {
-            actualPayloads.Count.Should().Be(payload.Count);
+            actualPayloads.Should().NotBeNull();
+            actualPayloads?.Count.Should().Be(payload.Count);
 
             foreach (var p in payload)
             {
-                var actualPayload = actualPayloads.FirstOrDefault(x => x.PayloadId.Equals(p.PayloadId));
+                var actualPayload = actualPayloads?.FirstOrDefault(x => x.PayloadId.Equals(p.PayloadId));
 
                 AssertPayload(p, actualPayload);
             }
@@ -177,16 +178,17 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             updatedWorkflowInstance.Tasks[0].Status.Should().Be(taskExecutionStatus);
         }
 
-        public void AssertPagination<T>(int count, string queries, T Response)
+        public static void AssertPagination<T>(int count, string queries, T? Response)
         {
-            var data = Response.GetType().GetProperty("Data").GetValue(Response, null) as ICollection;
-            var totalPages = Response.GetType().GetProperty("TotalPages").GetValue(Response, null);
-            var pageSize = Response.GetType().GetProperty("PageSize").GetValue(Response, null);
-            var totalRecords = Response.GetType().GetProperty("TotalRecords").GetValue(Response, null);
-            var pageNumber = Response.GetType().GetProperty("PageNumber").GetValue(Response, null);
+            var responseType = Response?.GetType();
+            var data = responseType?.GetProperty("Data")?.GetValue(Response, null) as ICollection;
+            var totalPages = responseType?.GetProperty("TotalPages")?.GetValue(Response, null);
+            var pageSize = responseType?.GetProperty("PageSize")?.GetValue(Response, null);
+            var totalRecords = responseType?.GetProperty("TotalRecords")?.GetValue(Response, null);
+            var pageNumber = responseType?.GetProperty("PageNumber")?.GetValue(Response, null);
             int pageNumberQuery = 1;
             int pageSizeQuery = 10;
-            List<string> splitQuery = queries.Split("&").ToList();
+            var splitQuery = queries.Split("&").ToList();
             if (queries != "")
             {
                 foreach (var query in splitQuery)
@@ -217,10 +219,12 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             foreach (var taskDispatchEvent in taskDispatchEvents)
             {
                 var workflowInstanceTaskDetails = workflowInstance.Tasks.FirstOrDefault(c => c.TaskId.Equals(taskDispatchEvent.TaskId));
-                var workflowTaskDetails = workflowRevision.Workflow.Tasks.FirstOrDefault(c => c.Id.Equals(taskDispatchEvent.TaskId));
-                workflowInstanceTaskDetails.ExecutionId.Should().Be(taskDispatchEvent.ExecutionId);
-                workflowInstanceTaskDetails.Status.Should().Be(TaskExecutionStatus.Dispatched);
-                workflowInstanceTaskDetails.TaskType.Should().Be(workflowTaskDetails.Type);
+                var workflowTaskDetails = workflowRevision?.Workflow?.Tasks.FirstOrDefault(c => c.Id.Equals(taskDispatchEvent.TaskId));
+                workflowInstanceTaskDetails.Should().NotBeNull();
+                workflowTaskDetails.Should().NotBeNull();
+                workflowInstanceTaskDetails?.ExecutionId.Should().Be(taskDispatchEvent.ExecutionId);
+                workflowInstanceTaskDetails?.Status.Should().Be(TaskExecutionStatus.Dispatched);
+                workflowInstanceTaskDetails?.TaskType.Should().Be(workflowTaskDetails?.Type);
             }
         }
 
@@ -266,7 +270,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             foreach (var actualWorkflowInstance in actualWorkflowInstances)
             {
                 var expectedWorkflowInstance = expectedWorkflowInstances.FirstOrDefault(x => x.Id.Equals(actualWorkflowInstance.Id));
-                actualWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss").Should().Be(expectedWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss"));
+                actualWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss").Should().Be(expectedWorkflowInstance?.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss"));
             }
             actualWorkflowInstances.OrderBy(x => x.Id).Should().BeEquivalentTo(expectedWorkflowInstances.OrderBy(x => x.Id),
                 options => options.Excluding(x => x.StartTime));
@@ -274,32 +278,34 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         public void AssertWorkflowInstance(List<WorkflowInstance> expectedWorkflowInstances, WorkflowInstance? actualWorkflowInstance)
         {
-            var expectedWorkflowInstance = expectedWorkflowInstances.FirstOrDefault(x => x.Id.Equals(actualWorkflowInstance.Id));
-            actualWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss").Should().Be(expectedWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss"));
+            var expectedWorkflowInstance = expectedWorkflowInstances.FirstOrDefault(x => x.Id.Equals(actualWorkflowInstance?.Id));
+            actualWorkflowInstance?.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss").Should().Be(expectedWorkflowInstance?.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss"));
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             actualWorkflowInstance.Should().BeEquivalentTo(expectedWorkflowInstance, options => options.Excluding(x => x.StartTime));
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
 
-        private static void AssertDataCount(ICollection Data, int pageNumberQuery, int pageSizeQuery, int count)
+        private static void AssertDataCount(ICollection? Data, int pageNumberQuery, int pageSizeQuery, int count)
         {
             if ((pageNumberQuery * pageSizeQuery) > count)
             {
-                Data.Count.Should().Be(Math.Max(count - ((pageNumberQuery - 1) * pageSizeQuery), 0));
+                Data?.Count.Should().Be(Math.Max(count - ((pageNumberQuery - 1) * pageSizeQuery), 0));
             }
             else if ((pageNumberQuery * pageSizeQuery) < count)
             {
-                Data.Count.Should().Be(pageSizeQuery);
+                Data?.Count.Should().Be(pageSizeQuery);
             }
             else if (pageNumberQuery > 1)
             {
-                Data.Count.Should().Be(Math.Max(count - (pageSizeQuery * (pageNumberQuery - 1)), 0));
+                Data?.Count.Should().Be(Math.Max(count - (pageSizeQuery * (pageNumberQuery - 1)), 0));
             }
             else
             {
-                Data.Count.Should().Be(count);
+                Data?.Count.Should().Be(count);
             }
         }
 
-        private static void AssertTotalPages(object TotalPages, int count, int pageSizeQuery)
+        private static void AssertTotalPages(object? TotalPages, int count, int pageSizeQuery)
         {
             int remainder;
             int quotient = Math.DivRem(count, pageSizeQuery, out remainder);

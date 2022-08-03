@@ -21,7 +21,7 @@ using Monai.Deploy.WorkflowManager.TaskManager.API;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin.Repositories
 {
-    public sealed class TestPluginRepository : MetadataRepositoryBase, IAsyncDisposable
+    public sealed class TestPluginRepository : MetadataRepositoryBase
     {
         private readonly IServiceScope _scope;
 
@@ -50,7 +50,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin.Repositories
 
         public override async Task<Dictionary<string, object>> RetrieveMetadata(CancellationToken cancellationToken = default)
         {
-            return await Task.FromResult(new Dictionary<string, object>());
+            return await Task.Run(() => new Dictionary<string, object>()).ConfigureAwait(false);
         }
 
         ~TestPluginRepository() => Dispose(disposing: false);
@@ -63,12 +63,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin.Repositories
             }
 
             base.Dispose(disposing);
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            Dispose(disposing: false);
-            GC.SuppressFinalize(this);
         }
     }
 }

@@ -182,7 +182,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
         }
 
-        public async Task<TaskExecution> GetTaskByIdAsync(string workflowInstanceId, string taskId)
+        public async Task<TaskExecution?> GetTaskByIdAsync(string workflowInstanceId, string taskId)
         {
             Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
             Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));

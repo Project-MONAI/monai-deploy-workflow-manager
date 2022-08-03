@@ -102,7 +102,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
         public async Task<WorkflowRevision> GetByAeTitleAsync(string aeTitle)
         {
             Guard.Against.NullOrWhiteSpace(aeTitle, nameof(aeTitle));
-
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var workflow = await _workflowCollection
                 .Find(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle && x.Deleted == null)
                 .Sort(Builders<WorkflowRevision>.Sort.Descending("Revision"))
@@ -117,10 +117,12 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
             var workflows = new List<WorkflowRevision>();
 
+
             workflows = await _workflowCollection
                 .Find(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle)
                 .Sort(Builders<WorkflowRevision>.Sort.Descending("Revision"))
                 .ToListAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             workflows = workflows.GroupBy(w => w.WorkflowId).Select(g => g.First()).ToList();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ namespace Monai.Deploy.WorkflowManager.Filter
         /// </summary>
         /// <param name="pageNumber">Page size with limit set in the config.</param>
         /// <param name="pageSize">Page size 1 or above.</param>
-        /// <param name="maxPageSize">Max page size</param>
+        /// <param name="maxPageSize">Max page size.</param>
         public PaginationFilter(int pageNumber, int pageSize, int maxPageSize = 10)
         {
             PageNumber = pageNumber < 1 ? 1 : pageNumber;

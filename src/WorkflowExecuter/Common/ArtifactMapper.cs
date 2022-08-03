@@ -108,6 +108,11 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
                 var task = await _workflowInstanceRepository.GetTaskByIdAsync(workflowInstanceId, variableTaskId);
 
+                if (task is null)
+                {
+                    return default;
+                }
+
                 if (string.Equals(variableLocation, "output_dir", StringComparison.InvariantCultureIgnoreCase))
                 {
                     return await VerifyExists(new KeyValuePair<string, string>(artifact.Name, task.OutputDirectory), bucketId, shouldExistYet);

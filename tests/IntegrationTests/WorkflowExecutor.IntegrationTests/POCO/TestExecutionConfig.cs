@@ -20,64 +20,64 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.POCO
     {
         public static class RabbitConfig
         {
-            public static string Host { get; set; }
+            public static string Host { get; set; } = string.Empty;
 
             public static int Port { get; set; }
 
-            public static string User { get; set; }
+            public static string User { get; set; } = string.Empty;
 
-            public static string Password { get; set; }
+            public static string Password { get; set; } = string.Empty;
 
-            public static string Exchange { get; set; }
+            public static string Exchange { get; set; } = string.Empty;
 
-            public static string VirtualHost { get; set; }
+            public static string VirtualHost { get; set; } = string.Empty;
 
-            public static string WorkflowRequestQueue { get; set; }
+            public static string WorkflowRequestQueue { get; set; } = string.Empty;
 
-            public static string TaskDispatchQueue { get; set; }
+            public static string TaskDispatchQueue { get; set; } = string.Empty;
 
-            public static string TaskCallbackQueue { get; set; }
+            public static string TaskCallbackQueue { get; set; } = string.Empty;
 
-            public static string WorkflowCompleteQueue { get; set; }
+            public static string WorkflowCompleteQueue { get; set; } = string.Empty;
 
-            public static string TaskUpdateQueue { get; set; }
+            public static string TaskUpdateQueue { get; set; } = string.Empty;
         }
 
         public static class MongoConfig
         {
-            public static string ConnectionString { get; set; }
+            public static string ConnectionString { get; set; } = string.Empty;
 
             public static int Port { get; set; }
 
-            public static string User { get; set; }
+            public static string User { get; set; } = string.Empty;
 
-            public static string Password { get; set; }
+            public static string Password { get; set; } = string.Empty;
 
-            public static string Database { get; set; }
+            public static string Database { get; set; } = string.Empty;
 
-            public static string WorkflowCollection { get; set; }
+            public static string WorkflowCollection { get; set; } = string.Empty;
 
-            public static string WorkflowInstanceCollection { get; set; }
+            public static string WorkflowInstanceCollection { get; set; } = string.Empty;
 
-            public static string PayloadCollection { get; set; }
+            public static string PayloadCollection { get; set; } = string.Empty;
         }
 
         public static class MinioConfig
         {
-            public static string Endpoint { get; set; }
+            public static string Endpoint { get; set; } = string.Empty;
 
-            public static string AccessKey { get; set; }
+            public static string AccessKey { get; set; } = string.Empty;
 
-            public static string AccessToken { get; set; }
+            public static string AccessToken { get; set; } = string.Empty;
 
-            public static string Bucket { get; set; }
+            public static string Bucket { get; set; } = string.Empty;
 
-            public static string Region { get; set; }
+            public static string Region { get; set; } = string.Empty;
         }
 
         public static class ApiConfig
         {
-            public static string BaseUrl { get; set; }
+            public static string BaseUrl { get; set; } = string.Empty;
         }
     }
 }
