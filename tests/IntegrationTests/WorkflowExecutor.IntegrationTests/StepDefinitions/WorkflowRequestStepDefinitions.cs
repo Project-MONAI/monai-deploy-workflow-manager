@@ -70,38 +70,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             }
         }
 
-        [Given(@"I have a Workflow Instance (.*) with no artifacts")]
-        public void GivenIHaveAWorkflowInstance(string name)
-        {
-            _outputHelper.WriteLine($"Retrieving workflow instance with name={name}");
-            MongoClient.CreateWorkflowInstanceDocument(DataHelper.GetWorkflowInstanceTestData(name));
-            _outputHelper.WriteLine("Retrieved workflow instance");
-        }
-
-        [Given(@"I have a Workflow Instance (.*) with artifacts (.*) in minio")]
-        public async Task GivenIHaveAWorkflowInstanceWithArtifacts(string name, string folderName)
-        {
-            var workflowInstance = DataHelper.GetWorkflowInstanceTestData(name);
-            _outputHelper.WriteLine("Seeding minio with workflow input artifacts");
-            await MinioDataSeeding.SeedWorkflowInputArtifacts(workflowInstance.PayloadId, folderName);
-
-            _outputHelper.WriteLine($"Retrieving workflow instance with name={name}");
-            MongoClient.CreateWorkflowInstanceDocument(workflowInstance);
-            _outputHelper.WriteLine("Retrieved workflow instance");
-        }
-
-        [Given(@"I have (.*) Workflow Instances")]
-        public void GivenIHaveWorkflowInstances(int count)
-        {
-            _outputHelper.WriteLine($"Retrieving {count} workflow instances");
-            foreach (int index in Enumerable.Range(0, count))
-            {
-                _outputHelper.WriteLine($"Retrieving workflow instances with index={index}");
-                MongoClient.CreateWorkflowInstanceDocument(DataHelper.GetWorkflowInstanceTestDataByIndex(index));
-                _outputHelper.WriteLine("Retrieved workflow instance");
-            }
-        }
-
         [When(@"I publish a Workflow Request Message (.*) with artifacts (.*) in minio")]
         public async Task WhenIPublishAWorkflowRequestMessageWithObjects(string name, string folderName)
         {
@@ -134,63 +102,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             _outputHelper.WriteLine($"Event published");
         }
 
-        [Then(@"I can see (.*) Workflow Instances are created")]
-        [Then(@"I can see (.*) Workflow Instance is created")]
-        public void ThenICanSeeAWorkflowInstanceIsCreated(int count)
-        {
-            _outputHelper.WriteLine($"Retrieving {count} workflow instance/s using the payloadid={DataHelper.WorkflowRequestMessage.PayloadId.ToString()}");
-            var workflowInstances = DataHelper.GetWorkflowInstances(count, DataHelper.WorkflowRequestMessage.PayloadId.ToString());
-            _outputHelper.WriteLine($"Retrieved {count} workflow instance/s");
-
-            if (workflowInstances != null)
-            {
-                foreach (var workflowInstance in workflowInstances)
-                {
-                    var workflowRevision = DataHelper.WorkflowRevisions.OrderByDescending(x => x.Revision).FirstOrDefault(x => x.WorkflowId.Equals(workflowInstance.WorkflowId));
-
-                    if (workflowRevision != null)
-                    {
-                        Assertions.AssertWorkflowInstanceMatchesExpectedWorkflow(workflowInstance, workflowRevision, DataHelper.WorkflowRequestMessage);
-
-                    }
-                    else
-                    {
-                        throw new Exception($"Workflow not found for workflowId {workflowInstance.WorkflowId}");
-                    }
-                }
-            }
-        }
-
-        [Then(@"I can see (.*) Workflow Instances are updated")]
-        [Then(@"I can see (.*) Workflow Instance is updated")]
-        public void ThenICanSeeAWorkflowInstanceIsUpdated(int count)
-        {
-            RetryPolicy.Execute(() =>
-            {
-                _outputHelper.WriteLine($"Retrieving {count} workflow instance/s using the payloadid={DataHelper.WorkflowInstances[0].PayloadId}");
-                DataHelper.SeededWorkflowInstances = DataHelper.WorkflowInstances;
-                var workflowInstances = DataHelper.GetWorkflowInstances(count, DataHelper.WorkflowInstances[0].PayloadId);
-                _outputHelper.WriteLine($"Retrieved {count} workflow instance/s");
-
-                if (workflowInstances != null)
-                {
-                    foreach (var workflowInstance in workflowInstances)
-                    {
-                        var taskUpdate = DataHelper.TaskUpdateEvent;
-                        if (taskUpdate != null)
-                        {
-                            var workflowInstanceTask = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(taskUpdate.TaskId));
-                            if (workflowInstanceTask != null)
-                            {
-                                workflowInstanceTask.Status.Should().Be(taskUpdate.Status);
-                                Assertions.AssertOutputArtifactsForTaskUpdate(workflowInstanceTask.OutputArtifacts, DataHelper.TaskUpdateEvent.Outputs);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
         [Then(@"(.*) Task Dispatch event is published")]
         [Then(@"(.*) Task Dispatch events are published")]
         public void TaskDispatchEventIsPublished(int count)
@@ -209,7 +120,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
                     if (string.IsNullOrEmpty(DataHelper.TaskUpdateEvent.ExecutionId))
                     {
-                        Assertions.AssertTaskDispatchEvent(taskDispatchEvent, workflowInstance, workflowRevision, DataHelper.WorkflowRequestMessage);
+                        Assertions.AssertTaskDispatchEvent(taskDispatchEvent, workflowInstance, workflowRevision, DataHelper.WorkflowRequestMessage, null);
                     }
                     else
                     {
@@ -217,17 +128,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                     }
                 }
             });
-
-        }
-
-        [Then(@"I can see an additional Workflow Instance is not created")]
-        public void ThenICanSeeAnAdditionalWorkflowInstanceIsNotCreated()
-        {
-            _outputHelper.WriteLine($"Retrieving workflow instance with payloadid={DataHelper.WorkflowRequestMessage.PayloadId}");
-            var workflowInstances = MongoClient.GetWorkflowInstancesByPayloadId(DataHelper.WorkflowRequestMessage.PayloadId.ToString());
-            _outputHelper.WriteLine("Retrieved workflow instance");
-
-            workflowInstances.Count.Should().Be(1);
         }
 
         [Then(@"A Task Dispatch event is not published")]

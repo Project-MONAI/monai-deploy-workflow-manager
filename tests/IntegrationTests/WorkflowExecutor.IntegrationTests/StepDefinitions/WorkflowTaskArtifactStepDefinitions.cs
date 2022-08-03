@@ -73,7 +73,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                     {
                         var workflowTask = workflowRevision.Workflow.Tasks.First(x => x.Id.Equals(task.TaskId));
 
-                        Assertions.AssertInputArtifacts(workflowTask, PayloadId, task);
+                        Assertions.AssertInputArtifactsForWorkflowInstance(workflowTask, PayloadId, task);
                     }
                 }
             }

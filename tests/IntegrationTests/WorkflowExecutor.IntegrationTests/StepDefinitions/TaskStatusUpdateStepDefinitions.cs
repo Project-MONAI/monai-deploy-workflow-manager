@@ -58,7 +58,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         }
 
         [When(@"I publish a Task Update Message (.*) with artifacts (.*) in minio")]
-        public async Task WhenIPublishATaskUpdateMessageWithObjects(string name, string folderName)
+        public async Task WhenIPublishATaskUpdateMessageWithArtifacts(string name, string folderName)
         {
             var taskUpdateMessage = DataHelper.GetTaskUpdateTestData(name, "succeeded");
 
@@ -74,7 +74,21 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             }
 
             var message = new JsonMessage<TaskUpdateEvent>(
-                DataHelper.GetTaskUpdateTestData(name, "succeeded"),
+                taskUpdateMessage,
+                "16988a78-87b5-4168-a5c3-2cfc2bab8e54",
+                Guid.NewGuid().ToString(),
+                string.Empty);
+
+            TaskUpdatePublisher.PublishMessage(message.ToMessage());
+        }
+
+        [When(@"I publish a Task Update Message (.*) with no artifacts")]
+        public void WhenIPublishATaskUpdateMessageWithNoArtifacts(string name)
+        {
+            var taskUpdateMessage = DataHelper.GetTaskUpdateTestData(name, "succeeded");
+
+            var message = new JsonMessage<TaskUpdateEvent>(
+                taskUpdateMessage,
                 "16988a78-87b5-4168-a5c3-2cfc2bab8e54",
                 Guid.NewGuid().ToString(),
                 string.Empty);

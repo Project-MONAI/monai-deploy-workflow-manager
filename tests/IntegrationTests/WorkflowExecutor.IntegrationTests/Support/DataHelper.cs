@@ -207,6 +207,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
         }
 
+        internal List<WorkflowRevision> GetWorkflowRevision(string workflowId)
+        {
+            return MongoClient.GetWorkflowRevisionsByWorkflowId(workflowId);
+        }
+
         public TaskUpdateEvent GetTaskUpdateTestData(string name, string updateStatus)
         {
             var taskUpdateTestData = TaskUpdatesTestData.TestData.FirstOrDefault(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
@@ -250,6 +255,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             });
 
             return res;
+        }
+
+        public WorkflowInstance GetAllWorkflowInstance(string workflowInstanceId)
+        {
+            return MongoClient.GetWorkflowInstanceById(workflowInstanceId);
         }
 
         public List<Payload> GetPayloadCollections(string payloadId)
@@ -381,4 +391,3 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         }
     }
 }
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
