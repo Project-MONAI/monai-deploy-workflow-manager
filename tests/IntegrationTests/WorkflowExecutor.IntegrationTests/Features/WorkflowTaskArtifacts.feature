@@ -121,3 +121,17 @@ Scenario: Task with context.executions.task_id.artifacts.artifact_name is trigge
     Examples:
     | testData                                                                  | taskUpdateMessage                                                                    |
     | TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False | TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False_No_Outputs |
+
+@TaskArtifacts_TaskUpdate
+Scenario: Task with context.executions.task_id.output_dir is triggered when mandatory files exist resulting in a Sucessful Task Dispatch
+    Given I have a clinical workflow <testData>
+    And I have a Workflow Instance <testData> with artifacts full_patient_metadata in minio
+    When I publish a Task Update Message <testData> with artifacts output_metadata in minio
+    Then I can see Workflow Instance is updated with Task Update Information
+    And 1 Task Dispatch event is published
+    And I can see Workflow Instance is updated with Task Dispatch Information
+    Examples:
+    | testData                                                      |
+    | TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=True  |
+    | TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False |
+    | TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=Null  |
