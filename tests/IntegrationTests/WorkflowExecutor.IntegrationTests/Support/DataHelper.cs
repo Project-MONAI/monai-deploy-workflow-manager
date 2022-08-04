@@ -30,24 +30,29 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public PatientDetails PatientDetails { get; set; } = new PatientDetails();
         public TaskUpdateEvent TaskUpdateEvent = new TaskUpdateEvent();
         public List<TaskDispatchEvent> TaskDispatchEvents = new List<TaskDispatchEvent>();
+        public List<ExportRequestEvent> ExportRequestEvents = new List<ExportRequestEvent>();
         public List<WorkflowRevision> WorkflowRevisions = new List<WorkflowRevision>();
         public List<Workflow> Workflows = new List<Workflow>();
         public List<Payload> Payload = new List<Payload>();
         private RetryPolicy<List<WorkflowInstance>> RetryWorkflowInstances { get; set; }
         private RetryPolicy<List<TaskDispatchEvent>> RetryTaskDispatches { get; set; }
+        private RetryPolicy<List<ExportRequestEvent>> RetryExportRequests { get; set; }
         private RetryPolicy<List<Payload>> RetryPayloadCollections { get; set; }
         private RabbitConsumer TaskDispatchConsumer { get; set; }
+        private RabbitConsumer ExportRequestConsumer { get; set; }
         private MongoClientUtil MongoClient { get; set; }
         public string PayloadId { get; private set; }
         public string BucketId { get; internal set; }
         public List<WorkflowInstance> SeededWorkflowInstances { get; internal set; }
 
-        public DataHelper(RabbitConsumer taskDispatchConsumer, MongoClientUtil mongoClient)
+        public DataHelper(RabbitConsumer taskDispatchConsumer, RabbitConsumer exportRequestConsumer, MongoClientUtil mongoClient)
         {
+            ExportRequestConsumer = exportRequestConsumer;
             TaskDispatchConsumer = taskDispatchConsumer;
             MongoClient = mongoClient;
             RetryWorkflowInstances = Policy<List<WorkflowInstance>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             RetryTaskDispatches = Policy<List<TaskDispatchEvent>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+            RetryExportRequests = Policy<List<ExportRequestEvent>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             RetryPayloadCollections = Policy<List<Payload>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
@@ -311,11 +316,41 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             return res;
         }
 
+        public List<ExportRequestEvent> GetExportRequestEvents(int count, List<WorkflowInstance> workflowInstances)
+        {
+            var res = RetryExportRequests.Execute(() =>
+            {
+                var message = ExportRequestConsumer.GetMessage<ExportRequestEvent>();
+
+                if (message != null)
+                {
+                    foreach (var workflowInstance in workflowInstances)
+                    {
+                        if (message.WorkflowInstanceId == workflowInstance.Id)
+                        {
+                            ExportRequestEvents.Add(message);
+                        }
+                    }
+                }
+
+                if (ExportRequestEvents.Count == count)
+                {
+                    return ExportRequestEvents;
+                }
+                else
+                {
+                    throw new Exception($"{count} export request events could not be found");
+                }
+            });
+
+            return res;
+        }
+
         public List<TaskDispatchEvent> GetTaskDispatchEventByTaskId(List<string> taskIds)
         {
             var res = RetryTaskDispatches.Execute(() =>
             {
-                var message = TaskDispatchConsumer.GetMessage<TaskDispatchEvent>();
+                var message = ExportRequestConsumer.GetMessage<TaskDispatchEvent>();
 
                 if (message != null)
                 {

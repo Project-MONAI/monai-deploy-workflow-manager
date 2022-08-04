@@ -73,7 +73,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             TestExecutionConfig.RabbitConfig.TaskCallbackQueue = "md.tasks.callback";
             TestExecutionConfig.RabbitConfig.TaskUpdateQueue = "md.tasks.update";
             TestExecutionConfig.RabbitConfig.ExportCompleteQueue = config.GetValue<string>("WorkflowManager:messaging:topics:exportComplete");
-            TestExecutionConfig.RabbitConfig.ExportRequestQueue = config.GetValue<string>("WorkflowManager:messaging:topics:exportRequestPrefix");
+            TestExecutionConfig.RabbitConfig.ExportRequestQueue = $"{config.GetValue<string>("WorkflowManager:messaging:topics:exportRequestPrefix")}.{config.GetValue<string>("WorkflowManager:messaging:dicomAgents:dicomWebAgentName")}";
 
             TestExecutionConfig.MongoConfig.ConnectionString = config.GetValue<string>("WorkloadManagerDatabase:ConnectionString");
             TestExecutionConfig.MongoConfig.Database = config.GetValue<string>("WorkloadManagerDatabase:DatabaseName");
@@ -139,7 +139,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             ObjectContainer.RegisterInstanceAs(ExportRequestConsumer, "ExportRequestConsumer");
             ObjectContainer.RegisterInstanceAs(MongoClient);
             ObjectContainer.RegisterInstanceAs(MinioClient);
-            var dataHelper = new DataHelper(TaskDispatchConsumer, MongoClient);
+            var dataHelper = new DataHelper(TaskDispatchConsumer, ExportRequestConsumer, MongoClient);
             ObjectContainer.RegisterInstanceAs(dataHelper);
             var apiHelper = new ApiHelper(HttpClient);
             ObjectContainer.RegisterInstanceAs(apiHelper);

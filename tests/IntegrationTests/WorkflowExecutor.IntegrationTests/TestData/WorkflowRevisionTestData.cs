@@ -1788,9 +1788,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Id = "export_task_1",
                                 Type = "Export",
                                 Description = "Export Workflow 1 Task 2",
-                                ExportDestinations = new TaskDestination[]
+                                ExportDestinations = new ExportDestination[]
                                 {
-                                    new TaskDestination { Name = "PROD_PACS" }
+                                    new ExportDestination { Name = "PROD_PACS" }
                                 },
                                 Artifacts = new ArtifactMap()
                                 {
@@ -1803,7 +1803,11 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Artifact_AE"
+                            AeTitle = "Artifact_AE",
+                            ExportDestinations = new string[]
+                            {
+                                "PROD_PACS"
+                            }
                         }
                     }
                 }

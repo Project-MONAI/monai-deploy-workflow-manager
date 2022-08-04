@@ -34,6 +34,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private DataHelper DataHelper { get; set; }
         private readonly ISpecFlowOutputHelper _outputHelper;
         public MinioDataSeeding MinioDataSeeding { get; }
+        private Assertions Assertions { get; set; }
 
         public TaskStatusUpdateStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
@@ -43,6 +44,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             _outputHelper = outputHelper;
             MinioDataSeeding = new MinioDataSeeding(objectContainer.Resolve<MinioClientUtil>(), DataHelper, _outputHelper);
+            Assertions = new Assertions(objectContainer);
         }
 
         [When(@"I publish a Task Update Message (.*) with status (.*)")]
@@ -179,5 +181,33 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 }
             });
         }
+
+        [Then(@"(.*) Export Request message is published")]
+        public void ThenExportRequestMessageIsPublished(int count)
+        {
+            _outputHelper.WriteLine($"Retrieving {count} export request event/s");
+            var exportRequestEvents = DataHelper.GetExportRequestEvents(count, DataHelper.WorkflowInstances);
+            _outputHelper.WriteLine($"Retrieved {count} export request event/s");
+
+            RetryPolicy.Execute(() =>
+            {
+                foreach (var exportRequestEvent in exportRequestEvents)
+                {
+                    var workflowInstance = MongoClient.GetWorkflowInstanceById(exportRequestEvent.WorkflowInstanceId);
+
+                    var workflowRevision = DataHelper.WorkflowRevisions.OrderByDescending(x => x.Revision).FirstOrDefault(x => x.WorkflowId.Equals(workflowInstance.WorkflowId));
+
+                    if (string.IsNullOrEmpty(DataHelper.TaskUpdateEvent.ExecutionId))
+                    {
+                        Assertions.AssertExportRequestEvent(exportRequestEvent, workflowInstance, workflowRevision, DataHelper.WorkflowRequestMessage, null);
+                    }
+                    else
+                    {
+                        Assertions.AssertExportRequestEvent(exportRequestEvent, workflowInstance, workflowRevision, null, DataHelper.TaskUpdateEvent);
+                    }
+                }
+            });
+        }
+
     }
 }
