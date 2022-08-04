@@ -134,7 +134,6 @@ namespace Monai.Deploy.WorkflowManager
 
             services.AddHostedService(p => p.GetService<DataRetentionService>());
 
-            services.AddTaskManager(hostContext);
             services.AddWorkflowExecutor(hostContext);
 
             services.AddHttpContextAccessor();
