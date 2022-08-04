@@ -153,15 +153,27 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             taskDispatchEvent.PayloadId.Should().Match(workflowInstance.PayloadId);
             taskDispatchEvent.ExecutionId.Should().Match(workflowInstanceTask?.ExecutionId);
 
+            var previousTaskExecution = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals
+                (workflowInstance?.Tasks?.FirstOrDefault(x => !string.IsNullOrEmpty(x.PreviousTaskId))?.PreviousTaskId));
+
             if (taskDispatchEvent.Inputs.Count > 0)
             {
+
                 if (taskUpdateEvent != null)
                 {
-                    AssertInputArtifactsForTaskDispatch(workflowRevisionTask, workflowInstance.PayloadId, taskDispatchEvent.Inputs, taskUpdateEvent);
+                    AssertInputArtifactsForTaskDispatch(workflowRevisionTask,
+                        workflowInstance.PayloadId,
+                        taskDispatchEvent.Inputs,
+                        taskUpdateEvent,
+                        previousTaskExecution?.OutputDirectory);
                 }
                 else
                 {
-                    AssertInputArtifactsForTaskDispatch(workflowRevisionTask, workflowInstance.PayloadId, taskDispatchEvent.Inputs);
+                    AssertInputArtifactsForTaskDispatch(workflowRevisionTask,
+                        workflowInstance.PayloadId,
+                        taskDispatchEvent.Inputs,
+                        null,
+                        previousTaskExecution?.OutputDirectory);
                 }
             }
 
@@ -190,7 +202,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             workflowInstanceTask?.Status.Should().Be(TaskExecutionStatus.Dispatched);
             workflowInstanceTask?.TaskType.Should().Be(workflowRevisionTask?.Type);
             AssertOutputDirectory(workflowInstanceTask, taskDispatchEvent.PayloadId, workflowInstance.Id);
-            AssertInputArtifactsForWorkflowInstance(workflowRevisionTask, taskDispatchEvent.PayloadId, workflowInstanceTask, previousTaskExecution);
+            if (workflowInstanceTask.InputArtifacts.Any())
+            {
+                AssertInputArtifactsForWorkflowInstance(workflowRevisionTask, taskDispatchEvent.PayloadId, workflowInstanceTask, previousTaskExecution);
+            }
         }
 
         public void AssertPayload(Payload payload, Payload? actualPayload)

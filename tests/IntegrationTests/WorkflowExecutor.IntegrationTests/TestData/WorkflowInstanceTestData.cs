@@ -31,6 +31,41 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
 
     public static class WorkflowInstancesTestData
     {
+        public static WorkflowInstance CreateWorkflowInstance(string workflowName)
+        {
+            var id = Guid.NewGuid().ToString();
+            var payloadId = Guid.NewGuid().ToString();
+            var executionId = Guid.NewGuid().ToString();
+            return new WorkflowInstance()
+            {
+                Id = id,
+                AeTitle = Helper.GetWorkflowByName(workflowName).WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                WorkflowId = Helper.GetWorkflowByName(workflowName).WorkflowRevision.WorkflowId,
+                PayloadId = payloadId,
+                StartTime = DateTime.Now,
+                Status = Status.Created,
+                BucketId = TestExecutionConfig.MinioConfig.Bucket,
+                InputMetaData = new Dictionary<string, string>()
+                {
+                    { "", "" }
+                },
+                Tasks = new List<TaskExecution>
+                {
+                    new TaskExecution()
+                    {
+                        ExecutionId = executionId,
+                        TaskId = Helper.GetWorkflowByName(workflowName).WorkflowRevision.Workflow.Tasks[0].Id,
+                        TaskType = Helper.GetWorkflowByName(workflowName).WorkflowRevision?.Workflow.Tasks[0].Type,
+                        Status = TaskExecutionStatus.Accepted,
+                        InputArtifacts = null,
+                        OutputArtifacts = null,
+                        OutputDirectory = $"{payloadId}/workflows/{id}/{executionId}"
+                    }
+                }
+            };
+        }
+
+
         public static List<WorkflowInstanceTestData> TestData = new List<WorkflowInstanceTestData>()
         {
             new WorkflowInstanceTestData()
@@ -966,6 +1001,21 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                     }
                 }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=True",
+                WorkflowInstance = CreateWorkflowInstance("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=True")
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False",
+                WorkflowInstance = CreateWorkflowInstance("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False")
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=Null",
+                WorkflowInstance = CreateWorkflowInstance("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=Null")
             },
         };
     }

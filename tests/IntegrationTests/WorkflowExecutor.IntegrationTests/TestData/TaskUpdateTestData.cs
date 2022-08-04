@@ -36,6 +36,37 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             return $"{workflowInstance?.PayloadId}/workflows/{workflowInstance?.Id}/{executionId}";
         }
 
+        public static TaskUpdateEvent CreateTaskUpdateEvent(string workflowInstanceName)
+        {
+            return new TaskUpdateEvent()
+            {
+                WorkflowInstanceId = Helper.GetWorkflowInstanceByName(workflowInstanceName).WorkflowInstance.Id,
+                ExecutionId = Helper.GetWorkflowInstanceByName(workflowInstanceName).WorkflowInstance.Tasks[0].ExecutionId,
+                CorrelationId = Guid.NewGuid().ToString(),
+                Reason = FailureReason.None,
+                Message = "Task Message",
+                TaskId = Helper.GetWorkflowInstanceByName(workflowInstanceName).WorkflowInstance.Tasks[0].TaskId,
+                Outputs = new List<Messaging.Common.Storage>
+                    {
+                        new Messaging.Common.Storage()
+                        {
+                            Name = "output",
+                            Endpoint = "//output.dcm",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = GetRelativePathForOutputArtifacts(workflowInstanceName)
+                        }
+                    },
+                Metadata = new Dictionary<string, object>()
+                {
+                }
+            };
+        }
+
         public static List<TaskUpdateTestData> TestData = new List<TaskUpdateTestData>()
         {
             new TaskUpdateTestData()
@@ -651,6 +682,37 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             RelativeRootPath = GetRelativePathForOutputArtifacts("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=Null")
                         }
                     },
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=True",
+                TaskUpdateEvent = CreateTaskUpdateEvent("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=True")
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False",
+                TaskUpdateEvent = CreateTaskUpdateEvent("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False")
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=Null",
+                TaskUpdateEvent = CreateTaskUpdateEvent("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=Null")
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False_No_Outputs",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False").WorkflowInstance.Tasks[0].TaskId,
                     Metadata = new Dictionary<string, object>()
                     {
                     }
