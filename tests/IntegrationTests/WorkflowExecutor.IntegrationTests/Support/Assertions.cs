@@ -154,7 +154,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             taskDispatchEvent.ExecutionId.Should().Match(workflowInstanceTask?.ExecutionId);
 
             var previousTaskExecution = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals
-                (workflowInstance.Tasks.FirstOrDefault(x => !string.IsNullOrEmpty(x.PreviousTaskId)).PreviousTaskId));
+                (workflowInstance?.Tasks?.FirstOrDefault(x => !string.IsNullOrEmpty(x.PreviousTaskId))?.PreviousTaskId));
 
             if (taskDispatchEvent.Inputs.Count > 0)
             {
@@ -165,7 +165,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                         workflowInstance.PayloadId,
                         taskDispatchEvent.Inputs,
                         taskUpdateEvent,
-                        previousTaskExecution.OutputDirectory);
+                        previousTaskExecution?.OutputDirectory);
                 }
                 else
                 {
@@ -173,7 +173,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                         workflowInstance.PayloadId,
                         taskDispatchEvent.Inputs,
                         null,
-                        previousTaskExecution.OutputDirectory);
+                        previousTaskExecution?.OutputDirectory);
                 }
             }
 
