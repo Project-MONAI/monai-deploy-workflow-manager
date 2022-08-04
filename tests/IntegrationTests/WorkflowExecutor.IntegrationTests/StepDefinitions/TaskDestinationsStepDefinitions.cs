@@ -59,6 +59,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             RetryPolicy.Execute(() =>
             {
+                Thread.Sleep(100000);
                 Contracts.Models.WorkflowInstance workflowInstance;
                 if (DataHelper.TaskUpdateEvent.WorkflowInstanceId != "")
                 {

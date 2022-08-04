@@ -38,7 +38,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.POCO
 
             public static string TaskCallbackQueue { get; set; } = string.Empty;
 
-            public static string WorkflowCompleteQueue { get; set; } = string.Empty;
+            public static string ExportCompleteQueue { get; set; }
+            public static string ExportRequestQueue { get; set; }
 
             public static string TaskUpdateQueue { get; set; } = string.Empty;
         }
