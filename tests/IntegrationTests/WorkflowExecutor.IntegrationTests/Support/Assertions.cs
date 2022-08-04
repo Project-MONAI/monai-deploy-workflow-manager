@@ -202,7 +202,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             workflowInstanceTask?.Status.Should().Be(TaskExecutionStatus.Dispatched);
             workflowInstanceTask?.TaskType.Should().Be(workflowRevisionTask?.Type);
             AssertOutputDirectory(workflowInstanceTask, taskDispatchEvent.PayloadId, workflowInstance.Id);
-            AssertInputArtifactsForWorkflowInstance(workflowRevisionTask, taskDispatchEvent.PayloadId, workflowInstanceTask, previousTaskExecution);
+            if (workflowInstanceTask.InputArtifacts.Count() > 0)
+            {
+                AssertInputArtifactsForWorkflowInstance(workflowRevisionTask, taskDispatchEvent.PayloadId, workflowInstanceTask, previousTaskExecution);
+            }
         }
 
         public void AssertPayload(Payload payload, Payload? actualPayload)

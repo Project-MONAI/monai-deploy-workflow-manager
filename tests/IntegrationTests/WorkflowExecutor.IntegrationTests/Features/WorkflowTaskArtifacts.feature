@@ -135,3 +135,26 @@ Scenario: Task with context.executions.task_id.output_dir is triggered when mand
     | TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=True  |
     | TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False |
     | TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=Null  |
+
+@TaskArtifacts_TaskUpdate
+Scenario: Task with context.executions.task_id.output_dir is not triggered when mandatory files are missing
+    Given I have a clinical workflow <testData>
+    And I have a Workflow Instance <testData> with artifacts full_patient_metadata in minio
+    When I publish a Task Update Message <testData> with no artifacts
+    Then A Task Dispatch event is not published
+    Examples:
+    | testData                                                      |
+    | TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=True  |
+    | TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=Null  |
+
+@TaskArtifacts_TaskUpdate
+Scenario: Task with context.executions.task_id.output_dir is triggered when non mandatory files are missing
+    Given I have a clinical workflow <testData>
+    And I have a Workflow Instance <testData> with artifacts full_patient_metadata in minio
+    When I publish a Task Update Message <taskUpdateMessage> with no artifacts
+    Then I can see Workflow Instance is updated with Task Update Information
+    And 1 Task Dispatch event is published
+    And I can see Workflow Instance is updated with Task Dispatch Information
+    Examples:
+    | testData                                                      | taskUpdateMessage                                                        |
+    | TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False | TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False_No_Outputs |

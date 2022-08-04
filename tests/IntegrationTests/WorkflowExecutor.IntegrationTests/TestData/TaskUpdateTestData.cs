@@ -702,6 +702,22 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 Name = "TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=Null",
                 TaskUpdateEvent = CreateTaskUpdateEvent("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=Null")
             },
+            new TaskUpdateTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False_No_Outputs",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
         };
     }
 }
