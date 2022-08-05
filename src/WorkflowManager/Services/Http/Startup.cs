@@ -69,7 +69,6 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 #pragma warning restore CA1822 // Mark members as static
         {
-
             if (env.IsProduction() is false)
             {
                 app.UseDeveloperExceptionPage();

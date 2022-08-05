@@ -21,10 +21,10 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
     public class Artifact
     {
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "value")]
-        public string Value { get; set; }
+        public string Value { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "mandatory")]
         public bool Mandatory { get; set; } = true;

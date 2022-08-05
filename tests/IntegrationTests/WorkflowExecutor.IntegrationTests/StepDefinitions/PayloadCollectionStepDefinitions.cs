@@ -30,7 +30,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private DataHelper DataHelper { get; set; }
         private readonly ISpecFlowOutputHelper _outputHelper;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public PayloadCollectionStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             _outputHelper = outputHelper;
             Assertions = new Assertions(objectContainer);

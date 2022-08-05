@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
 namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
 {
     public static class Helper
@@ -67,3 +67,4 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
         }
     }
 }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.

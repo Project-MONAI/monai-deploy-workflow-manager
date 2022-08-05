@@ -92,9 +92,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     PatientDetails = new PatientDetails()
                     {
                         PatientDob = null,
-                        PatientId = null,
-                        PatientName = null,
-                        PatientSex = null
+                        PatientId = String.Empty,
+                        PatientName = String.Empty,
+                        PatientSex = String.Empty
                     }
                 }
             },

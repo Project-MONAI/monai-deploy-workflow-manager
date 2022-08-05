@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiControllerBase"/> class.
         /// </summary>
-        /// <param name="options"></param>
+        /// <param name="options">Workflow manager options.</param>
         public ApiControllerBase(IOptions<WorkflowManagerOptions> options)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));

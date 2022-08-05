@@ -71,17 +71,22 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
 
             var actualPayloads = JsonConvert.DeserializeObject<PagedResponse<List<Payload>>>(result);
-            Assertions.AssertPayloadList(DataHelper.Payload, actualPayloads.Data);
+            actualPayloads.Should().NotBeNull();
+            Assertions.AssertPayloadList(DataHelper.Payload, actualPayloads?.Data);
         }
 
         [Then(@"Pagination is working correctly for the (.*) payload")]
         [Then(@"Pagination is working correctly for the (.*) payloads")]
         public void ThenPaginationIsWorkingCorrectlyForTheWorkflow(int count)
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var request = ApiHelper.Request.RequestUri.Query;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var deserializedResult = JsonConvert.DeserializeObject<PagedResponse<List<Payload>>>(result);
-            Assertions.AssertPagination<PagedResponse<List<Payload>>>(count, request, deserializedResult);
+            deserializedResult.Should().NotBeNull();
+            Assertions.AssertPagination(count, request, deserializedResult);
+
         }
 
         [Then(@"I can see expected Payload is returned")]
@@ -98,7 +103,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var payloads = JsonConvert.DeserializeObject<PagedResponse<List<Payload>>>(result);
 
-            payloads.Data.Should().BeNullOrEmpty();
+            payloads.Should().NotBeNull();
+            payloads?.Data.Should().BeNullOrEmpty();
 
         }
     }

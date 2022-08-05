@@ -21,9 +21,9 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
     public class DicomValue
     {
         [JsonProperty(PropertyName = "vr")]
-        public string Vr { get; set; }
+        public string Vr { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "Value")]
-        public object[] Value { get; set; }
+        public object[] Value { get; set; } = System.Array.Empty<object>();
     }
 }

@@ -17,6 +17,8 @@
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8601 // Possible null reference assignment.
 
 namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
 {
@@ -29,6 +31,41 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
 
     public static class WorkflowInstancesTestData
     {
+        public static WorkflowInstance CreateWorkflowInstance(string workflowName)
+        {
+            var id = Guid.NewGuid().ToString();
+            var payloadId = Guid.NewGuid().ToString();
+            var executionId = Guid.NewGuid().ToString();
+            return new WorkflowInstance()
+            {
+                Id = id,
+                AeTitle = Helper.GetWorkflowByName(workflowName).WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                WorkflowId = Helper.GetWorkflowByName(workflowName).WorkflowRevision.WorkflowId,
+                PayloadId = payloadId,
+                StartTime = DateTime.Now,
+                Status = Status.Created,
+                BucketId = TestExecutionConfig.MinioConfig.Bucket,
+                InputMetaData = new Dictionary<string, string>()
+                {
+                    { "", "" }
+                },
+                Tasks = new List<TaskExecution>
+                {
+                    new TaskExecution()
+                    {
+                        ExecutionId = executionId,
+                        TaskId = Helper.GetWorkflowByName(workflowName).WorkflowRevision.Workflow.Tasks[0].Id,
+                        TaskType = Helper.GetWorkflowByName(workflowName).WorkflowRevision?.Workflow.Tasks[0].Type,
+                        Status = TaskExecutionStatus.Accepted,
+                        InputArtifacts = null,
+                        OutputArtifacts = null,
+                        OutputDirectory = $"{payloadId}/workflows/{id}/{executionId}"
+                    }
+                }
+            };
+        }
+
+
         public static List<WorkflowInstanceTestData> TestData = new List<WorkflowInstanceTestData>()
         {
             new WorkflowInstanceTestData()
@@ -38,7 +75,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 {
                     Id = Guid.NewGuid().ToString(),
                     AeTitle = "Multi_Req",
-                    WorkflowId = Helper.GetWorkflowByName("Workflow_Revision_for_bucket_minio").WorkflowRevision.WorkflowId,
+                    WorkflowId = Helper.GetWorkflowByName("Workflow_Revision_for_bucket_minio")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = "5450c3a9-2b19-45b0-8b17-fb10f89d1b2d",
                     BucketId = "bucket1",
                     StartTime = DateTime.UtcNow,
@@ -67,7 +104,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 {
                     Id = Guid.NewGuid().ToString(),
                     AeTitle = "Multi_Req",
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Created").WorkflowRevision.WorkflowId,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Created")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Helper.GetWorkflowRequestByName("Multi_WF_Created").WorkflowRequestMessage.PayloadId.ToString(),
                     BucketId = "bucket1",
                     StartTime = DateTime.UtcNow,
@@ -96,7 +133,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 {
                     Id = Guid.NewGuid().ToString(),
                     AeTitle = "Multi_Req",
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Dispatched").WorkflowRevision.WorkflowId,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Dispatched")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Helper.GetWorkflowRequestByName("Multi_WF_Dispatched").WorkflowRequestMessage.PayloadId.ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
@@ -123,8 +160,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Task_Status_Update_Workflow").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Task_Status_Update_Workflow").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Task_Status_Update_Workflow")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Task_Status_Update_Workflow")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     BucketId = "monai",
@@ -138,8 +175,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Task_Status_Update_Workflow").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Task_Status_Update_Workflow").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Task_Status_Update_Workflow")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Task_Status_Update_Workflow")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
                             OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         }
@@ -236,8 +273,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
@@ -251,8 +288,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
                             OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         }
@@ -265,8 +302,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_2").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_2").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_2")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_2")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
@@ -280,8 +317,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_2").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_2").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_2")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_2")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
                             OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         }
@@ -294,8 +331,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_3").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_3").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_3")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_3")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
@@ -309,8 +346,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_3").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_3").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_3")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id ?? "",
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_3")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type ?? "",
                             OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         }
@@ -323,8 +360,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
@@ -338,16 +375,16 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
                             OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         },
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.Tasks[1].Id ?? "",
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.Tasks[1].Type ?? "",
                             OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         }
@@ -360,8 +397,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
@@ -375,16 +412,16 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
                             OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         },
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.Tasks[1].Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.Tasks[1].Type,
                             OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Accepted
                         }
@@ -397,8 +434,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
@@ -412,16 +449,16 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
                             OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         },
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.Tasks[1].Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1")?.WorkflowRevision?.Workflow?.Tasks[1].Type,
                             OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Succeeded
                         }
@@ -434,8 +471,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Multi_Independent_Task_Workflow").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Independent_Task_Workflow").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Multi_Independent_Task_Workflow")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Independent_Task_Workflow")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
@@ -449,8 +486,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Independent_Task_Workflow").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Independent_Task_Workflow").WorkflowRevision.Workflow.Tasks[0].Type,
+
+                            TaskId = Helper.GetWorkflowByName("Multi_Independent_Task_Workflow")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Independent_Task_Workflow")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
                             OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         }
@@ -463,8 +501,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
@@ -478,8 +516,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
                             OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
                             Status = TaskExecutionStatus.Dispatched
                         }
@@ -493,7 +531,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 {
                     Id = "bff4cfd0-3af3-4e2b-9f3c-de2a6f2b9569",
                     AeTitle = "Multi_Req",
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Created").WorkflowRevision.WorkflowId,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Created")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Helper.GetWorkflowRequestByName("Multi_WF_Created").WorkflowRequestMessage.PayloadId.ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
@@ -521,7 +559,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 {
                     Id = "97749d29-8f75-4169-8cf4-1093a1f38c07",
                     AeTitle = "Multi_Req",
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Dispatched").WorkflowRevision.WorkflowId,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Dispatched")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Helper.GetWorkflowRequestByName("Multi_WF_Dispatched").WorkflowRequestMessage.PayloadId.ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
@@ -548,8 +586,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.Now,
                     Status = Status.Created,
@@ -563,16 +601,16 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault().Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault().Type,
                             Status = TaskExecutionStatus.Dispatched,
                            // OutputArtifacts = "" // Need to add artifacts
                         },
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault().Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault().Type,
                             Status = TaskExecutionStatus.Accepted
                            // InputArtifacts = "" // Need to add artifacts
                         }
@@ -585,8 +623,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_True").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_True").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_True")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_True")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.Now,
                     Status = Status.Created,
@@ -600,8 +638,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_True").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_True").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_True")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_True")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
@@ -613,8 +651,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_False").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_False").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_False")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_False")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.Now,
                     Status = Status.Created,
@@ -628,8 +666,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_False").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_False").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_False")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Single_Condition_False")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
@@ -641,8 +679,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_True").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_True").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_True")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_True")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.Now,
                     Status = Status.Created,
@@ -656,8 +694,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_True").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_True").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_True")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_True")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
@@ -669,8 +707,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_False").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_False").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_False")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_False")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.Now,
                     Status = Status.Created,
@@ -684,8 +722,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_False").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_False").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_False")?.WorkflowRevision?.Workflow?.Tasks?.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Multiple_Destination_Single_Condition_False")?.WorkflowRevision?.Workflow?.Tasks?.FirstOrDefault()?.Type,
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
@@ -697,8 +735,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.Now,
                     Status = Status.Created,
@@ -712,16 +750,16 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
                             Status = TaskExecutionStatus.Dispatched,
                            // OutputArtifacts = "" // Need to add artifacts
                         },
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
                             Status = TaskExecutionStatus.Accepted
                            // InputArtifacts = "" // Need to add artifacts
                         }
@@ -734,8 +772,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Multiple_Condition_True_And_False").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Multiple_Condition_True_And_False").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Multiple_Condition_True_And_False")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Multiple_Condition_True_And_False")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.Now,
                     Status = Status.Created,
@@ -749,8 +787,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Multiple_Condition_True_And_False").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Multiple_Condition_True_And_False").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Multiple_Condition_True_And_False")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Destination_Multiple_Condition_True_And_False")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
@@ -762,8 +800,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 WorkflowInstance = new WorkflowInstance()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Task_Destination_Invalid_Condition").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Task_Destination_Invalid_Condition").WorkflowRevision.WorkflowId,
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Task_Destination_Invalid_Condition")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Task_Destination_Invalid_Condition")?.WorkflowRevision?.WorkflowId ?? "",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.Now,
                     Status = Status.Created,
@@ -777,8 +815,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
-                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Task_Destination_Invalid_Condition").WorkflowRevision.Workflow.Tasks[0].Id,
-                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Task_Destination_Invalid_Condition").WorkflowRevision.Workflow.Tasks[0].Type,
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Task_Destination_Invalid_Condition")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Task_Destination_Invalid_Condition")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
@@ -874,7 +912,113 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
-
+            new WorkflowInstanceTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=True",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=True").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=True").WorkflowRevision.WorkflowId,
+                    PayloadId = Guid.NewGuid().ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = TestExecutionConfig.MinioConfig.Bucket,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=True").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=True").WorkflowRevision?.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Accepted,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False").WorkflowRevision.WorkflowId,
+                    PayloadId = Guid.NewGuid().ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = TestExecutionConfig.MinioConfig.Bucket,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=False").WorkflowRevision?.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Accepted,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=Null",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=Null").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=Null").WorkflowRevision.WorkflowId,
+                    PayloadId = Guid.NewGuid().ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = TestExecutionConfig.MinioConfig.Bucket,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=Null").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("TwoTask_Context.Executions.Task_id.Artifact.Artifact_Name_Mandatory=Null").WorkflowRevision?.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Accepted,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=True",
+                WorkflowInstance = CreateWorkflowInstance("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=True")
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False",
+                WorkflowInstance = CreateWorkflowInstance("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False")
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=Null",
+                WorkflowInstance = CreateWorkflowInstance("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=Null")
+            },
         };
     }
 }
+#pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.

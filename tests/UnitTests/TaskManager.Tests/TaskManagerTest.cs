@@ -289,7 +289,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     It.IsAny<PolicyRequest[]>()
                 )).ReturnsAsync(new Amazon.SecurityToken.Model.Credentials()
                 {
-                    AccessKeyId = "a",
+                    AccessKeyId = "validaccesskeyid",
                     SecretAccessKey = "b",
                 });
 
@@ -327,7 +327,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     It.IsAny<PolicyRequest[]>()
                 )).ReturnsAsync(new Amazon.SecurityToken.Model.Credentials()
                 {
-                    AccessKeyId = "a",
+                    AccessKeyId = "validaccesskeyid",
                     SecretAccessKey = "b",
                 });
 
@@ -372,10 +372,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             message.Body.TaskPluginType = PluginStrings.Argo;
             var resetEvent = new CountdownEvent(2);
 
+#pragma warning disable CS8603 // Possible null reference return.
             _storageAdminService.Setup(a => a.CreateUserAsync(
                     It.IsAny<string>(),
                     It.IsAny<PolicyRequest[]>()
                 )).ReturnsAsync(() => null);
+#pragma warning restore CS8603 // Possible null reference return.
 
             _messageBrokerSubscriberService.Setup(
                 p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskDispatchRequest, StringComparison.OrdinalIgnoreCase)),
@@ -426,7 +428,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     It.IsAny<PolicyRequest[]>()
                 )).ReturnsAsync(new Amazon.SecurityToken.Model.Credentials()
                 {
-                    AccessKeyId = "a",
+                    AccessKeyId = "validaccesskeyid",
                     SecretAccessKey = "b",
                 });
 
@@ -565,7 +567,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     It.IsAny<PolicyRequest[]>()
                 )).ReturnsAsync(new Amazon.SecurityToken.Model.Credentials()
                 {
-                    AccessKeyId = "a",
+                    AccessKeyId = "validaccesskeyid",
                     SecretAccessKey = "b",
                 });
 
@@ -694,7 +696,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     It.IsAny<PolicyRequest[]>()
                 )).ReturnsAsync(new Amazon.SecurityToken.Model.Credentials()
                 {
-                    AccessKeyId = "a",
+                    AccessKeyId = "validaccesskeyid",
                     SecretAccessKey = "b",
                 });
 
@@ -852,7 +854,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     It.IsAny<PolicyRequest[]>()
                 )).ReturnsAsync(new Amazon.SecurityToken.Model.Credentials()
                 {
-                    AccessKeyId = "a",
+                    AccessKeyId = "validaccesskeyid",
                     SecretAccessKey = "b",
                 });
 

@@ -21,18 +21,18 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
     public class Workflow
     {
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "version")]
-        public string Version { get; set; }
+        public string Version { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "informatics_gateway")]
-        public InformaticsGateway InformaticsGateway { get; set; }
+        public InformaticsGateway? InformaticsGateway { get; set; }
 
         [JsonProperty(PropertyName = "tasks")]
-        public TaskObject[] Tasks { get; set; }
+        public TaskObject[] Tasks { get; set; } = System.Array.Empty<TaskObject>();
     }
 }

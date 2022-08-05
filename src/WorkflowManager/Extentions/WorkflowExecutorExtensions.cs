@@ -29,8 +29,17 @@ using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
 
 namespace Monai.Deploy.WorkflowManager.Services
 {
+    /// <summary>
+    ///  Sets up workflow executor service collection.
+    /// </summary>
     public static class WorkflowExecutorExtensions
     {
+        /// <summary>
+        /// Adds workflow executor and dependencies to service collection.
+        /// </summary>
+        /// <param name="services">Service collection to add workflow executor to.</param>
+        /// <param name="hostContext">Hostcontext object.</param>
+        /// <returns>Updated IServiceCollection.</returns>
         public static IServiceCollection AddWorkflowExecutor(this IServiceCollection services, HostBuilderContext hostContext)
         {
             Guard.Against.Null(hostContext, nameof(hostContext));
@@ -54,7 +63,9 @@ namespace Monai.Deploy.WorkflowManager.Services
                 var dicomStore = s.GetService<IDicomService>();
                 var workflowInstanceService = s.GetService<IWorkflowInstanceService>();
 
+#pragma warning disable CS8604 // Possible null reference argument.
                 return new ConditionalParameterParser(logger, dicomStore, workflowInstanceService, payloadService, workflowService);
+#pragma warning restore CS8604 // Possible null reference argument.
             });
 
             services.AddSingleton<PayloadListenerService>();
