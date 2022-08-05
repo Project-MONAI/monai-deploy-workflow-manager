@@ -60,8 +60,17 @@ spec:
           env:
               {{- range $name, $value := .Values.enviromentVariables }}
             - name: {{ $name }}
-              value: {{ $value }}
-        {{- end }}
+              value: {{ $value | quote }}
+              {{- end }}
+        
+              {{- range .Values.enviromentVariablesFromSecrets.secrets }}
+            - name: {{ .name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .secretName}}
+                  key: {{ .secretKey}}
+              {{- end }} 
+        
           {{- end }}
           ports:
             - name: http
