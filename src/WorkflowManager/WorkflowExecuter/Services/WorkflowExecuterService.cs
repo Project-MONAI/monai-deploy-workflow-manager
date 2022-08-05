@@ -319,8 +319,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
         private async Task HandleDicomExportAsync(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId)
         {
-            var exportDestinations = workflow.Workflow?.Tasks?.FirstOrDefault(t => t.Id == task.TaskId)?.ExportDestinations;
-
             var exportList = workflow.Workflow?.Tasks?.FirstOrDefault(t => t.Id == task.TaskId)?.ExportDestinations.Select(e => e.Name).ToArray();
 
             var artifactValues = GetDicomExports(workflow, workflowInstance, task, exportList);
