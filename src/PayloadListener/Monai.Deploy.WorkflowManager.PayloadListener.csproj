@@ -30,7 +30,6 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
     <PackageReference Include="Ardalis.GuardClauses" Version="4.0.1" />
     <PackageReference Include="Monai.Deploy.Storage" Version="0.2.0-rc0014" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.3-rc0010" />
   </ItemGroup>
 
   <ItemGroup>

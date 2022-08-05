@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Diagnostics;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -195,6 +194,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             if (currentTask is null)
             {
                 _logger.TaskNotFoundInWorkfowInstance(message.TaskId, message.WorkflowInstanceId);
+
+                return false;
+            }
+
+            if (message.Reason == FailureReason.TimedOut && currentTask.Status == TaskExecutionStatus.Failed)
+            {
+                _logger.TaskTimedOut(message.TaskId, message.WorkflowInstanceId, currentTask.Timeout);
 
                 return false;
             }

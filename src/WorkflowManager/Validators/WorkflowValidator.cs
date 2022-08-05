@@ -19,6 +19,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
 

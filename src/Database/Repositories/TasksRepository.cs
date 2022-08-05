@@ -76,7 +76,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
         }
 
-        public async Task<IList<TaskExecution>> GetAllAsync(int? skip, int? limit)
+        public async Task<IList<WorkflowInstanceTasksUnwindResult>> GetAllAsync(int? skip, int? limit)
         {
             try
             {
@@ -85,25 +85,18 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
                 var filter = builder.Eq("Tasks.Status", TaskExecutionStatus.Accepted);
                 filter &= builder.Ne("Tasks.Status", TaskExecutionStatus.Dispatched);
 
-                var result = await _workflowInstanceCollection.Aggregate()
+                return await _workflowInstanceCollection.Aggregate()
                     .Match(filter)
                     .Unwind<WorkflowInstance, WorkflowInstanceTasksUnwindResult>(wf => wf.Tasks)
                     .Skip(skip ?? 0)
                     .Limit(limit ?? 500)
                     .ToListAsync();
-
-                if (result is null || result.Count == 0)
-                {
-                    return new List<TaskExecution>();
-                }
-
-                return result.Select(r => r.Tasks).ToList();
             }
             catch (Exception e)
             {
                 _logger.DbCallFailed(nameof(GetAllAsync), e);
 
-                return new List<TaskExecution>();
+                return new List<WorkflowInstanceTasksUnwindResult>();
             }
         }
 

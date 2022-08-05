@@ -71,6 +71,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
         {
             return Task.FromResult(_testRunnerCallback.GenerateGetStatusResult());
         }
+
+        public override Task HandleTimeout(string identity) => throw new NotImplementedException();
     }
 
     internal sealed class TestMetadataRepository : MetadataRepositoryBase

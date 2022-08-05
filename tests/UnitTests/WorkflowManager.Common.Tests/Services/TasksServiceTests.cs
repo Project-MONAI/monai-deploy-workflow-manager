@@ -45,12 +45,16 @@ namespace Monai.Deploy.WorkflowManager.Test.Services
             var expectedExecutionId = Guid.NewGuid().ToString();
             var expectedWorkflowId = Guid.NewGuid().ToString();
 
-            var taskExecution = new List<TaskExecution> {
-                new TaskExecution
+            var taskExecution = new List<WorkflowInstanceTasksUnwindResult> {
+                new WorkflowInstanceTasksUnwindResult
                 {
-                    ExecutionId = expectedExecutionId,
-                    TaskId = expectedTaskId,
-                    Status = TaskExecutionStatus.Dispatched
+                    Tasks =
+                        new TaskExecution
+                        {
+                            ExecutionId = expectedExecutionId,
+                            TaskId = expectedTaskId,
+                            Status = TaskExecutionStatus.Dispatched
+                        }
                 }
             };
 
@@ -62,7 +66,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Services
             result.Should().NotBeNull();
             result.Count.Should().Be(1);
 
-            var objectResult = Assert.IsType<TaskExecution>(result[0]);
+            var objectResult = Assert.IsType<TaskExecution>(result[0].Tasks);
 
             objectResult.Should().NotBeNull();
             objectResult.ExecutionId.Should().Be(expectedExecutionId);

@@ -18,7 +18,7 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Common.Interfaces
 {
-    public interface ITasksService : IPaginatedApi<TaskExecution>
+    public interface ITasksService : IPaginatedApi<WorkflowInstanceTasksUnwindResult>
     {
         Task<TaskExecution?> GetTaskAsync(string workflowInstanceId, string taskId, string executionId);
     }

@@ -22,9 +22,9 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.3-rc0010, )",
-        "resolved": "0.1.3-rc0010",
-        "contentHash": "xbmEq4bQVaffLed/TVi8ircJEK45Yxz+NPLjABfYva5aGD9Jp14lQr56l1RP4YWtEihn0AkFlbpPU3nnvHd9Og==",
+        "requested": "[0.1.2-191-background-c0019, )",
+        "resolved": "0.1.2-191-background-c0019",
+        "contentHash": "jdq/9mp11Q5Y4c3Y9hiHwafGcYXGqMkn+pdexvl8kZtoYHrHjU/o7qq9z/2xtzJ7ogyC10VScXViSRtTb6SOiQ==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -287,7 +287,7 @@
         "dependencies": {
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.3-rc0010",
+          "Monai.Deploy.Messaging": "0.1.2-191-background-c0019",
           "Monai.Deploy.Storage": "0.2.0-rc0014",
           "Newtonsoft.Json": "13.0.1",
           "System.IO.Abstractions": "17.0.24"
@@ -298,7 +298,7 @@
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.176",
           "Microsoft.Extensions.Configuration": "6.0.1",
-          "Monai.Deploy.Messaging": "0.1.3-rc0010",
+          "Monai.Deploy.Messaging": "0.1.2-191-background-c0019",
           "MongoDB.Bson": "2.17.0",
           "Newtonsoft.Json": "13.0.1"
         }
@@ -309,7 +309,6 @@
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.3-rc0010",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
           "MongoDB.Bson": "2.17.0",
@@ -330,6 +329,14 @@
           "Monai.Deploy.Storage": "0.2.0-rc0014",
           "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
           "Monai.Deploy.WorkflowManager.Logging": "1.0.0"
+        }
+      },
+      "monai.deploy.workflowmanager.taskmanager.api": {
+        "type": "Project",
+        "dependencies": {
+          "Monai.Deploy.Messaging": "0.1.2-191-background-c0019",
+          "Monai.Deploy.Storage": "0.2.0-rc0014",
+          "MongoDB.Bson": "2.17.0"
         }
       }
     }

@@ -16,16 +16,85 @@
 
 using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 {
+    public class GenerateTaskUpdateEventParams
+    {
+        public string CorrelationId { get; set; }
+
+        public string ExecutionId { get; set; }
+
+        public string WorkflowInstanceId { get; set; }
+
+        public string TaskId { get; set; }
+
+        public FailureReason FailureReason { get; set; }
+
+        public TaskExecutionStatus TaskExecutionStatus { get; set; }
+
+        public Dictionary<string, string> Stats { get; set; }
+
+        public string Errors { get; set; }
+
+    }
+
     public static class EventMapper
     {
-        public static TaskDispatchEvent ToTaskDispatchEvent(TaskExecution task, WorkflowInstance workflowInstance, Dictionary<string, string> outputArtifacts, string correlationId, StorageServiceConfiguration configuration)
+        public static JsonMessage<T> ToJsonMessage<T>(T message, string applicationId, string correlationId) where T : EventBase
         {
+            return new JsonMessage<T>(message, applicationId, correlationId);
+        }
 
+        public static TaskUpdateEvent GenerateTaskUpdateEvent(GenerateTaskUpdateEventParams eventParams)
+        {
+            Guard.Against.Null(eventParams, nameof(eventParams));
+
+            return new TaskUpdateEvent
+            {
+                CorrelationId = eventParams.CorrelationId,
+                ExecutionId = eventParams.ExecutionId,
+                Reason = eventParams.FailureReason,
+                Status = eventParams.TaskExecutionStatus,
+                ExecutionStats = eventParams.Stats,
+                WorkflowInstanceId = eventParams.WorkflowInstanceId,
+                TaskId = eventParams.TaskId,
+                Message = eventParams.Errors,
+                Outputs = new List<Messaging.Common.Storage>(),
+            };
+        }
+
+        public static TaskCancellationEvent GenerateTaskCancellationEvent(
+            string identity,
+            string executionId,
+            string workflowInstanceId,
+            string taskId,
+            FailureReason failureReason,
+            string message)
+        {
+            Guard.Against.Null(identity, nameof(identity));
+            Guard.Against.Null(workflowInstanceId, nameof(workflowInstanceId));
+
+            return new TaskCancellationEvent
+            {
+                ExecutionId = executionId,
+                Reason = failureReason,
+                WorkflowInstanceId = workflowInstanceId,
+                TaskId = taskId,
+                Identity = identity,
+                Message = message
+            };
+        }
+
+        public static TaskDispatchEvent ToTaskDispatchEvent(TaskExecution task,
+            WorkflowInstance workflowInstance,
+            Dictionary<string, string> outputArtifacts,
+            string correlationId,
+            StorageServiceConfiguration configuration)
+        {
             Guard.Against.Null(task, nameof(task));
             Guard.Against.Null(workflowInstance, nameof(workflowInstance));
             Guard.Against.NullOrWhiteSpace(workflowInstance.BucketId, nameof(workflowInstance.BucketId));

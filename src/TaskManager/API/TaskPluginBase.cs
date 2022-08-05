@@ -53,5 +53,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+
+        public abstract Task HandleTimeout(string identity);
     }
 }

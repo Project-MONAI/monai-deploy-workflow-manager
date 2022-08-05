@@ -205,5 +205,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             Dispose(disposing: false);
             GC.SuppressFinalize(this);
         }
+
+        public override Task HandleTimeout(string identity) { return Task.CompletedTask; } // not implemented
     }
 }

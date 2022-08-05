@@ -15,13 +15,16 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Filter;
 using Monai.Deploy.WorkflowManager.Models;
 using Monai.Deploy.WorkflowManager.Services;
@@ -76,9 +79,11 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 var pageSize = filter.PageSize ?? _options.Value.EndpointSettings.DefaultPageSize;
                 var validFilter = new PaginationFilter(filter.PageNumber, pageSize, _options.Value.EndpointSettings.MaxPageSize);
 
-                var pagedData = await _tasksService.GetAllAsync(
+                var result = await _tasksService.GetAllAsync(
                     (validFilter.PageNumber - 1) * validFilter.PageSize,
                     validFilter.PageSize);
+
+                var pagedData = result.IsNullOrEmpty() ? new List<TaskExecution>() : result.Select(r => r.Tasks).ToList();
 
                 var dataTotal = await _tasksService.CountAsync();
                 var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);

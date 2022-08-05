@@ -15,6 +15,7 @@
  */
 
 using Ardalis.GuardClauses;
+using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Newtonsoft.Json;
 

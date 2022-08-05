@@ -774,5 +774,26 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             await RemoveKubenetesSecrets().ConfigureAwait(false);
         }
+
+        public override async Task HandleTimeout(string identity)
+        {
+            var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
+
+            var workflow = await client.WorkflowService_GetWorkflowAsync(_namespace, identity, null, null).ConfigureAwait(false);
+
+            var workflowToCancel = workflow.Metadata.Name; // TODO: figure out name of workflow to cancel
+
+            await client.WorkflowService_StopWorkflowAsync(_namespace, identity, new WorkflowStopRequest
+            {
+                Namespace = _namespace,
+                Name = workflowToCancel,
+            });
+
+            await client.WorkflowService_TerminateWorkflowAsync(_namespace, identity, new WorkflowTerminateRequest
+            {
+                Name = workflowToCancel,
+                Namespace = _namespace
+            });
+        }
     }
 }
