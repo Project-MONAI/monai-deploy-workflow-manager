@@ -28,8 +28,23 @@ enviromentVariables:
   InformaticsGateway__storage__settings__endpoint: "minio.monai:9000" 
   InformaticsGateway__storage__settings__accessKey: "rootminio"
   InformaticsGateway__storage__settings__accessToken: "rootminio"
+  InformaticsGateway__dicom__scp__rejectUnknownSources: false
+  
 
 service:
   type: ClusterIP
   port: 5000
+  port2: 104
+  
+  
+volumes:
+  name: gateway-storage
+  claimName: gateway-storage-claim
+  namespace: monai
+  storage: 1Gi
+  path: /efs_data/monai/gateway  # path on the host
+  
+volumeMounts:
+  mountPath: "/database"
+  name: gateway-storage
 

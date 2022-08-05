@@ -60,7 +60,7 @@ spec:
           env:
               {{- range $name, $value := .Values.enviromentVariables }}
             - name: {{ $name }}
-              value: {{ $value }}
+              value: {{ $value | quote }}
         {{- end }}
           {{- end }}
           ports:

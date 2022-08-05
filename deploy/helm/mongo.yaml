@@ -33,7 +33,7 @@ volumes:
   claimName: mongo-storage-claim
   namespace: monai
   storage: 5Gi
-  path: /var/local/mongodata  # path on the host
+  path: /efs_data/monai/mongodata  # path on the host
   
 volumeMounts:
   mountPath: "/data/db"
