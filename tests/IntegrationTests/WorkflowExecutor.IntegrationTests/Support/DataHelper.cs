@@ -17,6 +17,7 @@
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
+using Monai.Deploy.WorkflowManager.Models;
 using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
 using Polly;
 using Polly.Retry;
@@ -55,6 +56,18 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             RetryTaskDispatches = Policy<List<TaskDispatchEvent>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             RetryExportRequests = Policy<List<ExportRequestEvent>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             RetryPayloadCollections = Policy<List<Payload>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+        }
+
+        public TasksRequest GetTaskRequestTestData(string name)
+        {
+            var taskRequest = TaskRequestsTestData.TestData.FirstOrDefault(c => c.Name.Equals(name));
+
+            if (taskRequest?.TaskRequest == null)
+            {
+                throw new Exception($"Task Request {name} does not have any applicable test data, please check and try again!");
+            }
+
+            return taskRequest.TaskRequest;
         }
 
         public WorkflowRevision GetWorkflowRevisionTestData(string name)

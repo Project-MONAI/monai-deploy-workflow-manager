@@ -113,7 +113,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             {
                 var builder = Builders<WorkflowInstance>.Filter;
 
-                var filter = builder.Eq(wf => wf.WorkflowId, workflowInstanceId);
+                var filter = builder.Eq(wf => wf.Id, workflowInstanceId);
 
                 var result = await _workflowInstanceCollection
                     .Find(filter)
