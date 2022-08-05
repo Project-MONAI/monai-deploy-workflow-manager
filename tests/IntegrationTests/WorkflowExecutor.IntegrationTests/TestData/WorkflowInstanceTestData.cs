@@ -1034,6 +1034,75 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowInstanceTestData()
             {
+                Name = "Workflow_Instance_for_export_multi_dest_1",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("Workflow_Revision_for_export_multi_dest_1").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Workflow_Revision_for_export_multi_dest_1").WorkflowRevision.WorkflowId,
+                    PayloadId = Guid.NewGuid().ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = TestExecutionConfig.MinioConfig.Bucket,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("Workflow_Revision_for_export_multi_dest_1").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Workflow_Revision_for_export_multi_dest_1").WorkflowRevision?.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Accepted,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "Workflow_Instance_for_export_multi_dest_2",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("Workflow_Revision_for_export_multi_dest_2").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Workflow_Revision_for_export_multi_dest_2").WorkflowRevision.WorkflowId,
+                    PayloadId = Guid.NewGuid().ToString(),
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = TestExecutionConfig.MinioConfig.Bucket,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("Workflow_Revision_for_export_multi_dest_2").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Workflow_Revision_for_export_multi_dest_2").WorkflowRevision?.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Succeeded,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("Workflow_Revision_for_export_multi_dest_2").WorkflowRevision.Workflow.Tasks[1].Id,
+                            TaskType = Helper.GetWorkflowByName("Workflow_Revision_for_export_multi_dest_2").WorkflowRevision?.Workflow.Tasks[1].Type,
+                            Status = TaskExecutionStatus.Exported,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
                 Name = "TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=True",
                 WorkflowInstance = CreateWorkflowInstance("TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=True")
             },

@@ -749,6 +749,37 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+            new TaskUpdateTestData()
+            {
+                Name = "Task_status_update_for_export_multi_dest_1",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("Workflow_Instance_for_export_multi_dest_1").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("Workflow_Instance_for_export_multi_dest_1").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("Workflow_Instance_for_export_multi_dest_1").WorkflowInstance.Tasks[0].TaskId,
+                    Outputs = new List<Messaging.Common.Storage>
+                    {
+                        new Messaging.Common.Storage()
+                        {
+                            Name = "output",
+                            Endpoint = "//output.dcm",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = GetRelativePathForOutputArtifacts("Workflow_Instance_for_export_multi_dest_1")
+                        }
+                    },
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
         };
     }
 }

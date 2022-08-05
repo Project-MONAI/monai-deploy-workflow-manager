@@ -86,40 +86,33 @@ Scenario: Export task with mutliple destinations is in progress, export message 
     Given I have a clinical workflow Workflow_Revision_for_export_multi_dest_1
     And I have a Workflow Instance Workflow_Instance_for_export_multi_dest_1 with no artifacts
     When I publish a Task Update Message Task_status_update_for_export_multi_dest_1 with artifacts output_metadata in minio
-    Then 1 Export Request message is published
+    Then 2 Export Request messages are published
 
 @TaskExport
 Scenario: Export task with single destination and no artifact is in progress, export message is not sent
     Given I have a clinical workflow Workflow_Revision_for_export_single_dest_1
     And I have a Workflow Instance Workflow_Instance_for_export_single_dest_1 with no artifacts
     When I publish a Task Update Message Task_status_update_for_export_single_dest_1 with status Succeeded 
-    Then An Export Request message is not published
+    Then 0 Export Request messages are published
 
 @TaskExport
 Scenario: Export request complete message is sent as Succeeded, next task dispatched
-    Given I have a clinical workflow Workflow_Revision_for_export_single_dest_1
-    And I have a Workflow Instance Workflow_Instance_for_export_single_dest_1 with no artifacts
-    And I have a payload saved in mongo [string]
-    When I publish a Task Update Message Task_status_update_for_export_single_dest_1 with status Succeeded
-    And I publish an Export Request message Export_request_for_export_single_dest_1 with status Succeeded
-    Then The export request in the worfkflow instance Workflow_Instance_for_export_single_dest_1 is updated to Succeeded
+    Given I have a clinical workflow Workflow_Revision_for_export_multi_dest_2
+    And I have a Workflow Instance Workflow_Instance_for_export_multi_dest_2 with artifacts output_metadata in minio
+    When I publish a Export Complete Message Export_Complete_Message_for_export_multi_dest_2_Succeeded
+    Then I can see the status of the Task export_task_1 is Succeeded
+    And I can see the status of the Task task_3 is Dispatched
 
 @TaskExport
 Scenario: Export request complete message is sent as Failed, workflow is Failed
-    Given I have a clinical workflow Workflow_Revision_for_export_single_dest_1
-    And I have a Workflow Instance Workflow_Instance_for_export_single_dest_1 with no artifacts
-    And I have a payload saved in mongo [string]
-    When I publish a Task Update Message Task_status_update_for_export_single_dest_1 with status Succeeded
-    And I publish an Export Request message Export_request_for_export_single_dest_1 with status Failed
-    Then The export request in the worfkflow instance Workflow_Instance_for_export_single_dest_1 is updated to Failed
-    And Workflow Instance status is Failed
+    Given I have a clinical workflow Workflow_Revision_for_export_multi_dest_2
+    And I have a Workflow Instance Workflow_Instance_for_export_multi_dest_2 with artifacts output_metadata in minio
+    When I publish a Export Complete Message Export_Complete_Message_for_export_multi_dest_2_Failed
+    Then I can see the status of the Task export_task_1 is Failed
 
 @TaskExport
 Scenario: Export request complete message is sent as Partial Failed, workflow is Failed
-    Given I have a clinical workflow Workflow_Revision_for_export_single_dest_1
-    And I have a Workflow Instance Workflow_Instance_for_export_single_dest_1 with no artifacts
-    And I have a payload saved in mongo [string]
-    When I publish a Task Update Message Task_status_update_for_export_single_dest_1 with status Succeeded
-    And I publish an Export Request message Export_request_for_export_single_dest_1 with status Partial Failed
-    Then The export request in the worfkflow instance Workflow_Instance_for_export_single_dest_1 is updated to Failed
-    And Workflow Instance status is Failed
+    Given I have a clinical workflow Workflow_Revision_for_export_multi_dest_2
+    And I have a Workflow Instance Workflow_Instance_for_export_multi_dest_2 with artifacts output_metadata in minio
+    When I publish a Export Complete Message Export_Complete_Message_for_export_multi_dest_2_PartialFailed
+    Then I can see the status of the Task export_task_1 is Failed

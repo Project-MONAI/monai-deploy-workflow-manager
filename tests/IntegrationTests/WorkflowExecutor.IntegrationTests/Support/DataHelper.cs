@@ -29,6 +29,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public List<WorkflowInstance> WorkflowInstances = new List<WorkflowInstance>();
         public PatientDetails PatientDetails { get; set; } = new PatientDetails();
         public TaskUpdateEvent TaskUpdateEvent = new TaskUpdateEvent();
+        public ExportCompleteEvent ExportCompleteEvent = new ExportCompleteEvent();
         public List<TaskDispatchEvent> TaskDispatchEvents = new List<TaskDispatchEvent>();
         public List<ExportRequestEvent> ExportRequestEvents = new List<ExportRequestEvent>();
         public List<WorkflowRevision> WorkflowRevisions = new List<WorkflowRevision>();
@@ -243,6 +244,20 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             throw new Exception($"Task update message not found for {name}");
         }
 
+        public ExportCompleteEvent GetExportCompleteTestData(string name)
+        {
+            var exportCompleteTestData = ExportCompletesTestData.TestData.FirstOrDefault(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+            if (exportCompleteTestData != null && exportCompleteTestData.ExportCompleteEvent != null)
+            {
+                ExportCompleteEvent = exportCompleteTestData.ExportCompleteEvent;
+
+                return exportCompleteTestData.ExportCompleteEvent;
+            }
+
+            throw new Exception($"Export Complete message not found for {name}");
+        }
+
         public List<WorkflowInstance> GetWorkflowInstances(int count, string payloadId)
         {
             var res = RetryWorkflowInstances.Execute(() =>
@@ -344,6 +359,27 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             });
 
             return res;
+        }
+
+        public List<ExportRequestEvent> GetAllExportRequestEvents(List<WorkflowInstance> workflowInstances)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                var message = ExportRequestConsumer.GetMessage<ExportRequestEvent>();
+
+                if (message != null)
+                {
+                    foreach (var workflowInstance in workflowInstances)
+                    {
+                        if (message.WorkflowInstanceId == workflowInstance.Id)
+                        {
+                            ExportRequestEvents.Add(message);
+                        }
+                    }
+                }
+                Thread.Sleep(500);
+            }
+            return ExportRequestEvents;
         }
 
         public List<TaskDispatchEvent> GetTaskDispatchEventByTaskId(List<string> taskIds)
