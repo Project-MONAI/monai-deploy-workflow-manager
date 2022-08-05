@@ -57,7 +57,7 @@ save the file, now `http://minio:9000` will route to you local machine
 install Helm 3 https://helm.sh/docs/intro/install/
 from a bash terminal in the root folder of the project
 - `helm upgrade -i -n argo -f deploy/helm/mongo-local.yaml mongo deploy/helm`
-- `helm upgrade -i -n argo -f deploy/helm/rabbitmq.yaml rabbit deploy/helm`
+- `helm upgrade -i -n argo -f deploy/helm/rabbitmq-local.yaml rabbit deploy/helm`
 
 ### running in VisualStudio
 Now assuming your launchSettings has the line 
@@ -214,7 +214,7 @@ then
 
 ## Informatics Gateway
 Although it has its own repo and is separate from the Workflow Manager, I have included a Helm file for it in here, its called Gateway and to deploy it use.
-`helm -n monai upgrade -i -f deploy/helm/Gateway.yaml mig helm` Obviously change the namespace, name and path to suit.
+`helm -n monai upgrade -i -f deploy/helm/Gateway-local.yaml mig helm` Obviously change the namespace, name and path to suit.
 
 Once deployed
 - exec into the running container ie `kubectl -n monai exec -it mig-monai-797f584bf9-9tw8j -- bash`
