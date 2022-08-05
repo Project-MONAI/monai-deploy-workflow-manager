@@ -26,8 +26,8 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Contracts.Responses;
 using Monai.Deploy.WorkflowManager.Filter;
-using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
 using Monai.Deploy.WorkflowManager.Services;
+using Monai.Deploy.WorkflowManager.Validators;
 
 namespace Monai.Deploy.WorkflowManager.Controllers
 {
@@ -133,8 +133,9 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] Workflow workflow)
         {
-            if (!workflow.IsValid(out var validationErrors))
+            if (WorkflowValidator.ValidateWorkflow(workflow, out var results))
             {
+                var validationErrors = string.Join(", ", results.Errors);
                 _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
 
                 return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", BadRequest);
@@ -171,8 +172,9 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", BadRequest);
             }
 
-            if (!workflow.IsValid(out var validationErrors))
+            if (WorkflowValidator.ValidateWorkflow(workflow, out var results))
             {
+                var validationErrors = string.Join(", ", results.Errors);
                 _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
 
                 return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/{id}", BadRequest);

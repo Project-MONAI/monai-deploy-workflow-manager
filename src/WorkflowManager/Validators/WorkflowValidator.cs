@@ -16,6 +16,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
 
@@ -146,6 +147,16 @@ namespace Monai.Deploy.WorkflowManager.Validators
             if (workflow.Tasks is null || workflow.Tasks.Length == 0)
             {
                 Errors.Add("Missing Workflow Tasks.");
+            }
+
+            var taskIds = workflow.Tasks.Select(t => t.Id);
+            var pattern = new Regex(@"^[a-zA-Z0-9-_]+$");
+            foreach (var taskId in taskIds)
+            {
+                if (pattern.IsMatch(taskId) is false)
+                {
+                    Errors.Add($"TaskId: {taskId} Contains Invalid Characters.");
+                }
             }
         }
 
