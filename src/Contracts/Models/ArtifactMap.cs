@@ -21,9 +21,9 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
     public class ArtifactMap
     {
         [JsonProperty(PropertyName = "input")]
-        public Artifact[] Input { get; set; }
+        public Artifact[] Input { get; set; } = System.Array.Empty<Artifact>();
 
         [JsonProperty(PropertyName = "output")]
-        public Artifact[] Output { get; set; }
+        public Artifact[] Output { get; set; } = System.Array.Empty<Artifact>();
     }
 }

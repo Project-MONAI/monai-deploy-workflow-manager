@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,7 +107,9 @@ namespace Monai.Deploy.WorkflowManager
 
             services.AddSingleton<DataRetentionService>();
 
-            services.AddHostedService<DataRetentionService>(p => p.GetService<DataRetentionService>());
+#pragma warning disable CS8603 // Possible null reference return.
+            services.AddHostedService(p => p.GetService<DataRetentionService>());
+#pragma warning restore CS8603 // Possible null reference return.
 
             // Services
             services.AddTransient<IFileSystem, FileSystem>();
@@ -139,8 +141,8 @@ namespace Monai.Deploy.WorkflowManager
             services.AddSingleton<IUriService>(p =>
             {
                 var accessor = p.GetRequiredService<IHttpContextAccessor>();
-                var request = accessor.HttpContext.Request;
-                var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+                var request = accessor?.HttpContext?.Request;
+                var uri = string.Concat(request?.Scheme, "://", request?.Host.ToUriComponent());
                 var newUri = new Uri(uri);
                 return new UriService(newUri);
             });

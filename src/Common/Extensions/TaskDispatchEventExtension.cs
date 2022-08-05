@@ -23,7 +23,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Extensions
     {
         public static string? GetTaskPluginArgumentsParameter(this TaskDispatchEvent taskDispatchEvent, string key)
         {
-            if (!taskDispatchEvent.TaskPluginArguments.TryGetValue(key, out string? value))
+            if (!taskDispatchEvent.TaskPluginArguments.TryGetValue(key, out var value))
             {
                 return null;
             }
@@ -33,10 +33,10 @@ namespace Monai.Deploy.WorkflowManager.Common.Extensions
 
         public static T? GetTaskPluginArgumentsParameter<T>(this TaskDispatchEvent taskDispatchEvent, string key)
         {
-            taskDispatchEvent.TaskPluginArguments.TryGetValue(key, out string? value);
+            taskDispatchEvent.TaskPluginArguments.TryGetValue(key, out var value);
             if (string.IsNullOrWhiteSpace(value))
             {
-                return default(T);
+                return default;
             }
             return JsonConvert.DeserializeObject<T>(value);
         }

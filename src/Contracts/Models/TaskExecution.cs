@@ -24,25 +24,25 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
     public class TaskExecution
     {
         [JsonProperty(PropertyName = "execution_id")]
-        public string ExecutionId { get; set; }
+        public string ExecutionId { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "task_type")]
-        public string TaskType { get; set; }
+        public string TaskType { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "task_start_time")]
         public DateTime TaskStartTime { get; set; } = DateTime.UtcNow;
 
         [JsonProperty(PropertyName = "execution_stats")]
-        public Dictionary<string, string> ExecutionStats { get; set; }
+        public Dictionary<string, string> ExecutionStats { get; set; } = new Dictionary<string, string>();
 
         [JsonProperty(PropertyName = "task_plugin_arguments")]
-        public Dictionary<string, string> TaskPluginArguments { get; set; }
+        public Dictionary<string, string> TaskPluginArguments { get; set; } = new Dictionary<string, string>();
 
         [JsonProperty(PropertyName = "task_id")]
-        public string TaskId { get; set; }
+        public string TaskId { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "previous_task_id")]
-        public string PreviousTaskId { get; set; }
+        public string PreviousTaskId { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "status")]
         public TaskExecutionStatus Status { get; set; }
@@ -51,19 +51,19 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         public FailureReason Reason { get; set; }
 
         [JsonProperty(PropertyName = "input_artifacts")]
-        public Dictionary<string, string> InputArtifacts { get; set; }
+        public Dictionary<string, string> InputArtifacts { get; set; } = new Dictionary<string, string>();
 
         [JsonProperty(PropertyName = "output_artifacts")]
-        public Dictionary<string, string> OutputArtifacts { get; set; }
+        public Dictionary<string, string> OutputArtifacts { get; set; } = new Dictionary<string, string>();
 
         [JsonProperty(PropertyName = "output_directory")]
-        public string OutputDirectory { get; set; }
+        public string OutputDirectory { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "result")]
-        public Dictionary<string, object> ResultMetadata { get; set; }
+        public Dictionary<string, object> ResultMetadata { get; set; } = new Dictionary<string, object>();
 
         [JsonProperty(PropertyName = "input_parameters")]
-        public Dictionary<string, object> InputParameters { get; set; }
+        public Dictionary<string, object> InputParameters { get; set; } = new Dictionary<string, object>();
 
         [JsonProperty(PropertyName = "next_timeout")]
         public DateTime Timeout { get => TaskStartTime.AddMinutes(TimeoutInterval); }

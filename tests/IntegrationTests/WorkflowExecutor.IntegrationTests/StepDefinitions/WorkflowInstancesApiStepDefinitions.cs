@@ -59,7 +59,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             var request = ApiHelper.Request.RequestUri.Query;
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var deserializedResult = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowInstance>>>(result);
-            Assertions.AssertPagination<PagedResponse<List<WorkflowInstance>>>(count, request, deserializedResult);
+            Assertions.AssertPagination(count, request, deserializedResult);
         }
     }
 }

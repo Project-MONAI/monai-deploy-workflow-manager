@@ -24,7 +24,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Models
         public Guid PayloadId { get; set; }
 
         [JsonProperty(PropertyName = "workflows")]
-        public IEnumerable<string> Workflows { get; set; }
+        public IEnumerable<string> Workflows { get; set; } = new List<string>();
 
         [JsonProperty(PropertyName = "file_count")]
         public int FileCount { get; set; }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ namespace Monai.Deploy.WorkflowManager.Services
         {
             var endpointUri = new Uri(string.Concat(_baseUri, route));
             var modifiedUri = QueryHelpers.AddQueryString(endpointUri.ToString(), "pageNumber", filter.PageNumber.ToString());
-            modifiedUri = QueryHelpers.AddQueryString(modifiedUri, "pageSize", filter.PageSize.ToString());
+            modifiedUri = QueryHelpers.AddQueryString(modifiedUri, "pageSize", filter?.PageSize?.ToString() ?? string.Empty);
             var uri = new Uri(modifiedUri);
             return uri.IsAbsoluteUri ? uri.PathAndQuery : uri.OriginalString;
         }

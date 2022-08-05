@@ -23,16 +23,16 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
     public class WorkflowInstance
     {
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "ae_title")]
-        public string AeTitle { get; set; }
+        public string? AeTitle { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "workflow_id")]
-        public string WorkflowId { get; set; }
+        public string WorkflowId { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "payload_id")]
-        public string PayloadId { get; set; }
+        public string PayloadId { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "start_time")]
         public DateTime StartTime { get; set; }
@@ -41,12 +41,12 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         public Status Status { get; set; }
 
         [JsonProperty(PropertyName = "bucket_id")]
-        public string BucketId { get; set; }
+        public string BucketId { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "input_metadata")]
-        public Dictionary<string, string> InputMetaData { get; set; }
+        public Dictionary<string, string> InputMetaData { get; set; } = new Dictionary<string, string>();
 
         [JsonProperty(PropertyName = "tasks")]
-        public List<TaskExecution> Tasks { get; set; }
+        public List<TaskExecution> Tasks { get; set; } = new List<TaskExecution>();
     }
 }

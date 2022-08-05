@@ -320,7 +320,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             try
             {
-                await _taskDispatchEventService.RemoveAsync(executionId).ConfigureAwait(false); ;
+                await _taskDispatchEventService.RemoveAsync(executionId).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -407,7 +407,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
         }
 
-        private async Task<Dictionary<string, object>?> RetrievePluginMetadata(JsonMessage<TaskCallbackEvent> message, TaskDispatchEvent dispatchEvent, string metadataAssembly)
+        private async Task<Dictionary<string, object>?> RetrievePluginMetadata(JsonMessage<TaskCallbackEvent> message, TaskDispatchEvent dispatchEvent, string? metadataAssembly)
         {
             if (string.IsNullOrWhiteSpace(metadataAssembly))
             {

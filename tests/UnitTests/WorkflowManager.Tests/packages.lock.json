@@ -1714,7 +1714,6 @@
           "Monai.Deploy.Messaging": "0.1.2-191-background-c0019",
           "Monai.Deploy.Storage": "0.2.0-rc0014",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
-          "Monai.Deploy.WorkflowManager.ConditionsResolver": "1.0.0",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
           "Newtonsoft.Json": "13.0.1"
         }

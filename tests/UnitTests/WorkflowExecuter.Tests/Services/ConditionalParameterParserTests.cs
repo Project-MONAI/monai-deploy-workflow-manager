@@ -58,11 +58,13 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             "{{ context.executions.other_task.result.'Derick' }} == 'lordge'", true)]
         public void ConditionalParameterParser_WhenGivenCorrectResultMetadataString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
         {
-            _dicom.Setup(w => w.GetAnyValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(() => expectedDicomReturn);
-            _dicom.Setup(w => w.GetAllValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(() => expectedDicomReturn);
-
+            if (expectedDicomReturn is not null)
+            {
+                _dicom.Setup(w => w.GetAnyValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                                .ReturnsAsync(() => expectedDicomReturn);
+                _dicom.Setup(w => w.GetAllValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(() => expectedDicomReturn);
+            }
 
             var testData = CreateTestData();
             var workflow = testData.First();
@@ -81,11 +83,13 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         [InlineData("'invalid' > 'false'", false)]
         public void ConditionalParameterParser_WhenGivenCorrectDicomString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
         {
-            _dicom.Setup(w => w.GetAnyValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(() => expectedDicomReturn);
-            _dicom.Setup(w => w.GetAllValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(() => expectedDicomReturn);
-
+            if (expectedDicomReturn is not null)
+            {
+                _dicom.Setup(w => w.GetAnyValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                                .ReturnsAsync(() => expectedDicomReturn);
+                _dicom.Setup(w => w.GetAllValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(() => expectedDicomReturn);
+            }
 
             var testData = CreateTestData();
             var workflow = testData.First();
@@ -104,7 +108,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.status }} == 'Succeeded' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.start_time }} == '25/12/2022 00:00:00' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_id }} == '3c4484bd-e1a4-4347-902e-31a6503edd5f'", true)]
-        public void ConditionalParameterParser_WhenGivenCorrectExecutionString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
+        public void ConditionalParameterParser_WhenGivenCorrectExecutionString_ShouldEvaluate(string input, bool expectedResult)
         {
             var testData = CreateTestData();
             var workflow = testData.First();

@@ -108,6 +108,11 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
                 var task = await _workflowInstanceRepository.GetTaskByIdAsync(workflowInstanceId, variableTaskId);
 
+                if (task is null)
+                {
+                    return default;
+                }
+
                 if (string.Equals(variableLocation, "output_dir", StringComparison.InvariantCultureIgnoreCase))
                 {
                     return await VerifyExists(new KeyValuePair<string, string>(artifact.Name, task.OutputDirectory), bucketId, shouldExistYet);
@@ -116,9 +121,14 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 if (string.Equals(variableLocation, "artifacts", StringComparison.InvariantCultureIgnoreCase))
                 {
                     var artifactName = variableWords[4];
-                    var outputArtifact = task.OutputArtifacts.FirstOrDefault(a => a.Key == artifactName);
+                    var outputArtifact = task.OutputArtifacts?.FirstOrDefault(a => a.Key == artifactName);
 
-                    return await VerifyExists(outputArtifact, bucketId, shouldExistYet);
+                    if (outputArtifact is null)
+                    {
+                        return default;
+                    }
+
+                    return await VerifyExists((KeyValuePair<string, string>)outputArtifact, bucketId, shouldExistYet);
                 }
             }
 

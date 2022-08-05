@@ -31,7 +31,6 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.SharedTest;
 using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
@@ -53,7 +52,6 @@ public class ArgoPluginTest
     private readonly Mock<IArgoProvider> _argoProvider;
     private readonly Mock<IArgoClient> _argoClient;
     private readonly Mock<IKubernetes> _kubernetesClient;
-    private readonly IConditionalParameterParser _conditionalParameterParser;
     private readonly IOptions<MessageBrokerServiceConfiguration> _options;
 
     public ArgoPluginTest()
@@ -70,14 +68,6 @@ public class ArgoPluginTest
         var workflowInstanceService = new Mock<IWorkflowInstanceService>();
         var workflowService = new Mock<IWorkflowService>();
         var payloadService = new Mock<IPayloadService>();
-        var parserLogger = new Mock<ILogger<ConditionalParameterParser>>();
-
-        _conditionalParameterParser = new ConditionalParameterParser(
-            parserLogger.Object,
-            dicomService.Object,
-            workflowInstanceService.Object,
-            payloadService.Object,
-            workflowService.Object);
 
         _options = Options.Create(new MessageBrokerServiceConfiguration());
         _options.Value.PublisherSettings.Add("username", "username");
@@ -95,9 +85,6 @@ public class ArgoPluginTest
         serviceProvider
             .Setup(x => x.GetService(typeof(IArgoProvider)))
             .Returns(_argoProvider.Object);
-        serviceProvider
-            .Setup(x => x.GetService(typeof(IConditionalParameterParser)))
-            .Returns(_conditionalParameterParser);
 
         _serviceScope.Setup(x => x.ServiceProvider).Returns(serviceProvider.Object);
 
@@ -520,7 +507,9 @@ public class ArgoPluginTest
 
         var objNodeInfo = result?.Stats;
         Assert.NotNull(objNodeInfo);
+#pragma warning disable CS8604 // Possible null reference argument.
         var nodeInfo = ValiateCanConvertToDictionary(objNodeInfo);
+#pragma warning restore CS8604 // Possible null reference argument.
 
         Assert.Equal(7, nodeInfo.Values.Count);
         Assert.Equal("{\"id\":\"firstId\"}", nodeInfo["nodes.first"]);
@@ -532,8 +521,9 @@ public class ArgoPluginTest
     public static Dictionary<string, string> ValiateCanConvertToDictionary(object obj)
     {
         var json = JsonConvert.SerializeObject(obj, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-        var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-        return dictionary;
+#pragma warning disable CS8603 // Possible null reference return.
+        return JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+#pragma warning restore CS8603 // Possible null reference return.
     }
 
 

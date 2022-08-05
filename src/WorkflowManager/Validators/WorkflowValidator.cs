@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
-// SPDX-License-Identifier: Apache License 2.0
-
 using System.Collections.Generic;
 using System.Linq;
 using Monai.Deploy.WorkflowManager.Common.Extensions;
+using System.Text.RegularExpressions;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
 
@@ -60,6 +58,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// - Unreferenced tasks other than root task.
         /// </summary>
         /// <param name="workflow">Workflow to validate.</param>
+        /// <param name="results">Workflow validation results.</param>
         /// <returns>if any validation errors are produced while validating workflow.</returns>
         public static bool ValidateWorkflow(Workflow workflow, out (List<string> Errors, List<string> SuccessfulPaths) results)
         {
@@ -150,9 +149,19 @@ namespace Monai.Deploy.WorkflowManager.Validators
             {
                 Errors.Add("Missing Workflow Tasks.");
             }
+
+            var taskIds = workflow.Tasks.Select(t => t.Id);
+            var pattern = new Regex(@"^[a-zA-Z0-9-_]+$");
+            foreach (var taskId in taskIds)
+            {
+                if (pattern.IsMatch(taskId) is false)
+                {
+                    Errors.Add($"TaskId: {taskId} Contains Invalid Characters.");
+                }
+            }
         }
 
-        private static void ValidateTask(TaskObject[] tasks, TaskObject currentTask, int iterationCount, List<string>? paths = null)
+        private static void ValidateTask(TaskObject[] tasks, TaskObject currentTask, int iterationCount, List<string> paths = null)
         {
             if (iterationCount > 100)
             {

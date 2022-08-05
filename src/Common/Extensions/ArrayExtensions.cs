@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2021-2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.Configuration;
-
-namespace Monai.Deploy.WorkflowManager.Contracts.Models
+namespace Monai.Deploy.WorkflowManager.Common.Extensions
 {
-    public class TaskPluginArguments
+    public static class ArrayExtensions
     {
-        [ConfigurationKeyName("workflow_id")]
-        public string WorkflowId { get; set; }
-
-        [ConfigurationKeyName("server_url")]
-        public string ServerUrl { get; set; }
+        public static bool IsNullOrEmpty<T>(this T[] array)
+        {
+            return array == null || array.Length == 0;
+        }
     }
 }

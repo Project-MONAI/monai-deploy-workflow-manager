@@ -358,7 +358,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                                 {
                                     Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } }
                                 },
-                                TaskDestinations = Array.Empty<TaskDestination>()
+                                TaskDestinations = Array.Empty<TaskDestination>(),
+                                ExportDestinations = new ExportDestination[]
+                                {
+                                    new ExportDestination
+                                    {
+                                        Name = "PROD_PACS"
+                                    }
+                                }
                             }
                         }
                     }
@@ -377,6 +384,79 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             _messageBrokerPublisherService.Verify(w => w.Publish($"{_configuration.Value.Messaging.Topics.ExportRequestPrefix}.{_configuration.Value.Messaging.DicomAgents.DicomWebAgentName}", It.IsAny<Message>()), Times.Exactly(1));
 
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task ProcessPayload_WithInvalidExportTask_DoesNotDispatchExport()
+        {
+            var workflowId1 = Guid.NewGuid().ToString();
+            var workflowId2 = Guid.NewGuid().ToString();
+            var workflowRequest = new WorkflowRequestEvent
+            {
+                Bucket = "testbucket",
+                CalledAeTitle = "aetitle",
+                CallingAeTitle = "aetitle",
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow,
+                Workflows = new List<string>
+                {
+                    workflowId1.ToString()
+                }
+            };
+
+            var workflows = new List<WorkflowRevision>
+            {
+                new WorkflowRevision
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = workflowId1,
+                    Revision = 1,
+                    Workflow = new Workflow
+                    {
+                        Name = "Workflowname1",
+                        Description = "Workflowdesc1",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
+                        {
+                            AeTitle = "aetitle",
+                            ExportDestinations = new string[] { "PROD_PACS" }
+                        },
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "export",
+                                Description = "taskdesc",
+                                Artifacts = new ArtifactMap
+                                {
+                                    Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } }
+                                },
+                                TaskDestinations = Array.Empty<TaskDestination>(),
+                                ExportDestinations = new ExportDestination[]
+                                {
+                                    new ExportDestination
+                                    {
+                                        Name = "PROD_PINS"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            _workflowRepository.Setup(w => w.GetByWorkflowsIdsAsync(new List<string> { workflowId1.ToString() })).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowId1.ToString())).ReturnsAsync(workflows[0]);
+            _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(It.IsAny<string>(), It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            _artifactMapper.Setup(a => a.ConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(new Dictionary<string, string>() { { "dicomexport", "/dcm" } });
+
+            var result = await WorkflowExecuterService.ProcessPayload(workflowRequest, new Payload() { Id = Guid.NewGuid().ToString() });
+
+            _messageBrokerPublisherService.Verify(w => w.Publish($"{_configuration.Value.Messaging.Topics.ExportRequestPrefix}.{_configuration.Value.Messaging.DicomAgents.DicomWebAgentName}", It.IsAny<Message>()), Times.Exactly(0));
             Assert.True(result);
         }
 
@@ -922,7 +1002,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                             {
                                 Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } }
                             },
-                            TaskDestinations = Array.Empty<TaskDestination>()
+                            TaskDestinations = Array.Empty<TaskDestination>(),
+                            ExportDestinations = new ExportDestination[]
+                            {
+                                new ExportDestination
+                                {
+                                    Name = "PROD_PACS"
+                                }
+                            }
                         }
                     }
                 }
