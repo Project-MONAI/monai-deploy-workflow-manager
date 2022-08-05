@@ -1,3 +1,4 @@
+
 # Copyright 2022 MONAI Consortium
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,24 +15,28 @@
 
 replicaCount: 1
 
-image:
-  repository: rabbitmq
-  pullPolicy: IfNotPresent
-  tag: 3.8.18-management
+# image:
+  # repository: minio/minio
+  # pullPolicy: IfNotPresent
+  # tag: latest
+  # command: 
+    # - "/bin/sh"
+    # - "-ce"
+    # - "/usr/bin/docker-entrypoint.sh minio server /data"
 
 enviromentVariables:
-  RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
-  RABBITMQ_DEFAULT_USER: "monaideploy"
-  RABBITMQ_DEFAULT_PASS: "monaideploy"
-  RABBITMQ_DEFAULT_VHOST: "monaideploy"
-
+  MINIO_ROOT_USER: admin
+  MINIO_ROOT_PASSWORD: password
 
 service:
   type: NodePort
-  port: 5672
-  nodeport: 30072
-  port2: 15672
-  nodeport2: 30672
+  port: 9000
+  nodeport: 30090
+  port2: 9001
+  nodeport2: 30091
+  selector: 
+    app: minio
+
 
 
   

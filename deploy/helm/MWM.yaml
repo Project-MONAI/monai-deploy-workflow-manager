@@ -29,12 +29,23 @@ enviromentVariables:
   WorkflowManager__storage__settings__executableLocation: "mc"
   WorkflowManager__messaging__publisherSettings__endpoint: "rabbitmq.monai"
   WorkflowManager__messaging__subscriberSettings__endpoint: "rabbitmq.monai"
-  WorkflowManager__messaging__publisherSettings__username: "monaideploy"
-  WorkflowManager__messaging__subscriberSettings__username: "monaideploy"
-  WorkflowManager__messaging__subscriberSettings__password: "monaideploy"
-  WorkflowManager__messaging__publisherSettings__password: "monaideploy"
   WorkloadManagerDatabase__ConnectionString: "mongodb://root:rootpassword@mongo-monai.monai:27017"
 
+enviromentVariablesFromSecrets:
+  secrets:
+    - name: WorkflowManager__messaging__subscriberSettings__username
+      secretName: rabbit-secret-master
+      secretKey: username
+    - name: WorkflowManager__messaging__subscriberSettings__password
+      secretName: rabbit-secret-master
+      secretKey: password
+    - name: WorkflowManager__messaging__publisherSettings__username
+      secretName: rabbit-secret-master
+      secretKey: username
+    - name: WorkflowManager__messaging__publisherSettings__password
+      secretName: rabbit-secret-master
+      secretKey: password
+      
 service:
   type: ClusterIP
   port: 5000
