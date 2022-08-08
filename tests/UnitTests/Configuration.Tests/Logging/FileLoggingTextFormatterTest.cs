@@ -18,7 +18,7 @@ using System;
 using System.Globalization;
 using System.Text;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.WorkflowManager.Logging;
+using Monai.Deploy.WorkflowManager.Configuration.Logging;
 using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Test.Logging
