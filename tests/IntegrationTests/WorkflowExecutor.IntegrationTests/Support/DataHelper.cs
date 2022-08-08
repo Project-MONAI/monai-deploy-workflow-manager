@@ -386,7 +386,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             var res = RetryTaskDispatches.Execute(() =>
             {
-                var message = ExportRequestConsumer.GetMessage<TaskDispatchEvent>();
+                var message = TaskDispatchConsumer.GetMessage<TaskDispatchEvent>();
 
                 if (message != null)
                 {
