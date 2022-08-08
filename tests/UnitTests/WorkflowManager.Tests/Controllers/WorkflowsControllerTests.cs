@@ -484,7 +484,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         [Fact]
         public void ValidateWorkflow_ValidatesAWorkflow_ReturnsTrueAndHasCorrectValidationResultsAsync()
         {
-            for (int i = 0; i < 15; i++)
+            for (var i = 0; i < 15; i++)
             {
                 var workflow =
                 new WorkflowRevision
@@ -626,6 +626,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                                 Id = "taskdesc3",
                                 Type = "type",
                                 Description = "taskdesc",
+                            },
+                            new TaskObject {
+                                Id = "task_de.sc3?",
+                                Type = "type",
+                                Description = "invalidid",
                             }
                         }
                     }
@@ -635,7 +640,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
                 Assert.True(workflowHasErrors);
 
-                Assert.Equal(24, results.Errors.Count);
+                Assert.Equal(26, results.Errors.Count);
 
                 var successPath = "rootTask => taskSucessdesc1 => taskSucessdesc2";
                 Assert.Contains(successPath, results.SuccessfulPaths);
@@ -643,7 +648,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 var expectedConvergenceError = "Detected task convergence on path: rootTask => taskdesc1 => taskdesc2 => ∞";
                 Assert.Contains(expectedConvergenceError, results.Errors);
 
-                var unreferencedTaskError = "Found Task(s) without any task destinations to it: taskdesc3";
+                var unreferencedTaskError = "Found Task(s) without any task destinations to it: taskdesc3,task_de.sc3?";
                 Assert.Contains(unreferencedTaskError, results.Errors);
 
                 var loopingTasksError = "Detected task convergence on path: rootTask => taskLoopdesc1 => taskLoopdesc2 => taskLoopdesc3 => taskLoopdesc4 => ∞";
@@ -651,6 +656,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
                 var missingDestinationError = "Missing destination DoesNotExistDestination in task taskLoopdesc4";
                 Assert.Contains(missingDestinationError, results.Errors);
+
+                var invalidTaskId = "TaskId: task_de.sc3? Contains Invalid Characters.";
+                Assert.Contains(invalidTaskId, results.Errors);
 
                 WorkflowValidator.Reset();
             }

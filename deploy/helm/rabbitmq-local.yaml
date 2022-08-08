@@ -15,29 +15,23 @@
 replicaCount: 1
 
 image:
-  repository: mongo
+  repository: rabbitmq
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "5.0"
+  tag: 3.8.18-management
 
 enviromentVariables:
-  MONGO_INITDB_ROOT_USERNAME: root
-  MONGO_INITDB_ROOT_PASSWORD: rootpassword
+  RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+  RABBITMQ_DEFAULT_USER: "admin"
+  RABBITMQ_DEFAULT_PASS: "admin"
+  RABBITMQ_DEFAULT_VHOST: "monaideploy"
+
 
 service:
-  type: ClusterIP
-  port: 27017
+  type: NodePort
+  port: 5672
+  nodeport: 30072
+  port2: 15672
+  nodeport2: 30672
 
-volumes:
-  name: mongo-storage
-  claimName: mongo-storage-claim
-  namespace: monai
-  storage: 5Gi
-  path: /efs_data/monai/mongodata  # path on the host
+
   
-volumeMounts:
-  mountPath: "/data/db"
-  name: mongo-storage
-
-
-affinity: {}

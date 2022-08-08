@@ -20,14 +20,14 @@ image:
 
 enviromentVariables:
   InformaticsGateway__messaging__publisherSettings__endpoint: "rabbitmq-monai"
-  InformaticsGateway__messaging__publisherSettings__username: "monaideploy"
-  InformaticsGateway__messaging__publisherSettings__password: "monaideploy"
+  InformaticsGateway__messaging__publisherSettings__username: "admin"
+  InformaticsGateway__messaging__publisherSettings__password: "admin"
   InformaticsGateway__messaging__subscriberSettings__endpoint: "rabbitmq-monai"
-  InformaticsGateway__messaging__subscriberSettings__username: "monaideploy"
-  InformaticsGateway__messaging__subscriberSettings__password: "monaideploy"
+  InformaticsGateway__messaging__subscriberSettings__username: "admin"
+  InformaticsGateway__messaging__subscriberSettings__password: "admin"
   InformaticsGateway__storage__settings__endpoint: "minio.monai:9000" 
-  InformaticsGateway__storage__settings__accessKey: "rootminio"
-  InformaticsGateway__storage__settings__accessToken: "rootminio"
+  InformaticsGateway__storage__settings__accessKey: "admin"
+  InformaticsGateway__storage__settings__accessToken: "password"
   InformaticsGateway__dicom__scp__rejectUnknownSources: false
   
 
@@ -37,14 +37,4 @@ service:
   port2: 104
   
   
-volumes:
-  name: gateway-storage
-  claimName: gateway-storage-claim
-  namespace: monai
-  storage: 1Gi
-  path: /efs_data/monai/gateway  # path on the host
-  
-volumeMounts:
-  mountPath: "/database"
-  name: gateway-storage
 

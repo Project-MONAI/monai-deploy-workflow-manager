@@ -1,3 +1,4 @@
+
 # Copyright 2022 MONAI Consortium
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,30 +15,28 @@
 
 replicaCount: 1
 
-image:
-  repository: mongo
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "5.0"
+# image:
+  # repository: minio/minio
+  # pullPolicy: IfNotPresent
+  # tag: latest
+  # command: 
+    # - "/bin/sh"
+    # - "-ce"
+    # - "/usr/bin/docker-entrypoint.sh minio server /data"
 
 enviromentVariables:
-  MONGO_INITDB_ROOT_USERNAME: root
-  MONGO_INITDB_ROOT_PASSWORD: rootpassword
+  MINIO_ROOT_USER: admin
+  MINIO_ROOT_PASSWORD: password
 
 service:
-  type: ClusterIP
-  port: 27017
+  type: NodePort
+  port: 9000
+  nodeport: 30090
+  port2: 9001
+  nodeport2: 30091
+  selector: 
+    app: minio
 
-volumes:
-  name: mongo-storage
-  claimName: mongo-storage-claim
-  namespace: monai
-  storage: 5Gi
-  path: /efs_data/monai/mongodata  # path on the host
+
+
   
-volumeMounts:
-  mountPath: "/data/db"
-  name: mongo-storage
-
-
-affinity: {}

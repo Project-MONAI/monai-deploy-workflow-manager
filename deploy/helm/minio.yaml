@@ -27,7 +27,6 @@ replicaCount: 1
 enviromentVariables:
   MINIO_ROOT_USER: minioadmin
   MINIO_ROOT_PASSWORD: minioadmin
-  WorkflowManager__storage__settings__endpoint: "minio:9000"
 
 service:
   type: NodePort

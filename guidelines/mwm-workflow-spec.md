@@ -122,7 +122,7 @@ All task objects can have these attributes:-
 
 | Property | Type | Description |
 |------|------|------|
-|id|str (50)|The id for this task. This should be unique within the current workflow.|
+|id|str (50)|The id for this task. This should be unique within the current workflow. Supported chars: Alphanumeric _ - |
 |description|str (2000)|A human readable task description|
 |type|str (2000)|The task type - this determines the plugin that will be used to execute the task. See [task types](#task-types) for supported tasks.|
 |timeout_minutes|number|How long the task is allowed to run before it's canceled|

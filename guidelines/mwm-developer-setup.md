@@ -57,7 +57,7 @@ save the file, now `http://minio:9000` will route to you local machine
 install Helm 3 https://helm.sh/docs/intro/install/
 from a bash terminal in the root folder of the project
 - `helm upgrade -i -n argo -f deploy/helm/mongo-local.yaml mongo deploy/helm`
-- `helm upgrade -i -n argo -f deploy/helm/rabbitmq.yaml rabbit deploy/helm`
+- `helm upgrade -i -n argo -f deploy/helm/rabbitmq-local.yaml rabbit deploy/helm`
 
 ### running in VisualStudio
 Now assuming your launchSettings has the line 
@@ -74,7 +74,7 @@ Open the post/workflows tab and click `try it out`, paste in the following to th
 	"version": "1.0.0",
 	"description": "Attempt at making a workflow",
 	"informatics_gateway": {
-		"ae_title": "MYAET",
+		"ae_title": "MonaiSCU",
 		"data_origins": [
 			"MY_SCANNER"
 		],
@@ -212,4 +212,17 @@ then
 - `mc ls --recursive mwm/bucket1` list all files in bucket
 
 
+## Informatics Gateway
+Although it has its own repo and is separate from the Workflow Manager, I have included a Helm file for it in here, its called Gateway and to deploy it use.
+`helm -n monai upgrade -i -f deploy/helm/Gateway-local.yaml mig helm` Obviously change the namespace, name and path to suit.
+
+Once deployed
+- exec into the running container ie `kubectl -n monai exec -it mig-monai-797f584bf9-9tw8j -- bash`
+- install curl `apt update;apy install curl -y` 
+- add the default AETitle `curl -H 'Content-Type: application/json-patch+json' -d '{"aeTitle": "MonaiSCU","name": "Monai WFM"}' mig-monai:5000/config/ae`
+- `exit`
+
+The Informatics Gateway is now set up to recieve and pass on data from the PACS or Orthanc servers
+
+if using orthanc something like this `"DicomModalities": {"monai" : [ "MonaiSCU", "mig-monai.monai", 104 ]}` would need to be in its config file.
 
