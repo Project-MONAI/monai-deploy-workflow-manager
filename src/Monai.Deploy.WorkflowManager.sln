@@ -1,21 +1,4 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-
-<!--
-  ~ Copyright 2022 MONAI Consortium
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~ http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
--->
-
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -44,8 +27,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.TaskManager.Tests", "..\tests\UnitTests\TaskManager.Tests\Monai.Deploy.WorkflowManager.TaskManager.Tests.csproj", "{89D3D817-CCFE-4933-9089-D1283F2EA1B5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.ConditionsResolver.Tests", "..\tests\UnitTests\ConditionsResolver.Tests\Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.csproj", "{918E4DE3-A7BF-4B7F-9B5A-5C36FEFA3C30}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Common.Tests", "..\tests\UnitTests\WorkflowManager.Common.Tests\Monai.Deploy.WorkflowManager.Common.Tests.csproj", "{A44F975E-70CA-49D6-8513-78F2D5210EAF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Storage.Tests", "..\tests\UnitTests\Storage.Tests\Monai.Deploy.WorkflowManager.Storage.Tests.csproj", "{722C0D57-49F8-4178-88F0-06E369B797A3}"
 EndProject
@@ -86,6 +67,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{37A19144-CEA5-47A2-9FFD-22C522E8B895}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Configuration", "Shared\Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj", "{DD11E3E8-1D6F-47F9-98A7-5D2CC7A53C43}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Common.Tests", "..\tests\UnitTests\Common.Tests\Monai.Deploy.WorkflowManager.Common.Tests.csproj", "{99A847CA-7444-49BD-8814-C7CB68A0392F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -137,10 +120,6 @@ Global
 		{918E4DE3-A7BF-4B7F-9B5A-5C36FEFA3C30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{918E4DE3-A7BF-4B7F-9B5A-5C36FEFA3C30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{918E4DE3-A7BF-4B7F-9B5A-5C36FEFA3C30}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A44F975E-70CA-49D6-8513-78F2D5210EAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A44F975E-70CA-49D6-8513-78F2D5210EAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A44F975E-70CA-49D6-8513-78F2D5210EAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A44F975E-70CA-49D6-8513-78F2D5210EAF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{722C0D57-49F8-4178-88F0-06E369B797A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{722C0D57-49F8-4178-88F0-06E369B797A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{722C0D57-49F8-4178-88F0-06E369B797A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -209,6 +188,10 @@ Global
 		{DD11E3E8-1D6F-47F9-98A7-5D2CC7A53C43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD11E3E8-1D6F-47F9-98A7-5D2CC7A53C43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD11E3E8-1D6F-47F9-98A7-5D2CC7A53C43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99A847CA-7444-49BD-8814-C7CB68A0392F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99A847CA-7444-49BD-8814-C7CB68A0392F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99A847CA-7444-49BD-8814-C7CB68A0392F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99A847CA-7444-49BD-8814-C7CB68A0392F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -225,7 +208,6 @@ Global
 		{2DA40575-4748-4198-BE57-F4AF070DE8E3} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{89D3D817-CCFE-4933-9089-D1283F2EA1B5} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{918E4DE3-A7BF-4B7F-9B5A-5C36FEFA3C30} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
-		{A44F975E-70CA-49D6-8513-78F2D5210EAF} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{722C0D57-49F8-4178-88F0-06E369B797A3} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{013395D4-2091-4AB8-96CB-867C0F982096} = {541C5347-5D7D-44B7-95D3-B6FB3D9EB955}
 		{57D00445-0798-4D86-97D4-1586E1B020BC} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
@@ -244,6 +226,7 @@ Global
 		{CE5DD469-64DE-466E-94DB-F57B9FAFD038} = {AC5B198A-C3F2-4AD2-B532-E71B4630BDD5}
 		{ED1808DD-C873-44DE-8D7F-399104D1FF8E} = {AC5B198A-C3F2-4AD2-B532-E71B4630BDD5}
 		{DD11E3E8-1D6F-47F9-98A7-5D2CC7A53C43} = {37A19144-CEA5-47A2-9FFD-22C522E8B895}
+		{99A847CA-7444-49BD-8814-C7CB68A0392F} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC0D56C8-D8CB-45CE-B528-F3DCF86D63ED}
