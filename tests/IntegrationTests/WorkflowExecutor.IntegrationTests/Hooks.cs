@@ -44,6 +44,8 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         private static RabbitPublisher? WorkflowPublisher { get; set; }
         private static RabbitConsumer? TaskDispatchConsumer { get; set; }
         private static RabbitPublisher? TaskUpdatePublisher { get; set; }
+        private static RabbitConsumer? ExportRequestConsumer { get; set; }
+        private static RabbitPublisher? ExportCompletePublisher { get; set; }
         private static MongoClientUtil? MongoClient { get; set; }
         private static MinioClientUtil? MinioClient { get; set; }
         private IObjectContainer ObjectContainer { get; set; }
@@ -70,7 +72,8 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             TestExecutionConfig.RabbitConfig.TaskDispatchQueue = "md.tasks.dispatch";
             TestExecutionConfig.RabbitConfig.TaskCallbackQueue = "md.tasks.callback";
             TestExecutionConfig.RabbitConfig.TaskUpdateQueue = "md.tasks.update";
-            TestExecutionConfig.RabbitConfig.WorkflowCompleteQueue = config.GetValue<string>("WorkflowManager:messaging:topics:exportComplete");
+            TestExecutionConfig.RabbitConfig.ExportCompleteQueue = config.GetValue<string>("WorkflowManager:messaging:topics:exportComplete");
+            TestExecutionConfig.RabbitConfig.ExportRequestQueue = $"{config.GetValue<string>("WorkflowManager:messaging:topics:exportRequestPrefix")}.{config.GetValue<string>("WorkflowManager:messaging:dicomAgents:dicomWebAgentName")}";
 
             TestExecutionConfig.MongoConfig.ConnectionString = config.GetValue<string>("WorkloadManagerDatabase:ConnectionString");
             TestExecutionConfig.MongoConfig.Database = config.GetValue<string>("WorkloadManagerDatabase:DatabaseName");
@@ -119,6 +122,8 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             WorkflowPublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
             TaskDispatchConsumer = new RabbitConsumer(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
             TaskUpdatePublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            ExportCompletePublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ExportCompleteQueue);
+            ExportRequestConsumer = new RabbitConsumer(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ExportRequestQueue);
         }
 
         /// <summary>
@@ -130,9 +135,11 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             ObjectContainer.RegisterInstanceAs(WorkflowPublisher, "WorkflowPublisher");
             ObjectContainer.RegisterInstanceAs(TaskDispatchConsumer, "TaskDispatchConsumer");
             ObjectContainer.RegisterInstanceAs(TaskUpdatePublisher, "TaskUpdatePublisher");
+            ObjectContainer.RegisterInstanceAs(ExportCompletePublisher, "ExportCompletePublisher");
+            ObjectContainer.RegisterInstanceAs(ExportRequestConsumer, "ExportRequestConsumer");
             ObjectContainer.RegisterInstanceAs(MongoClient);
             ObjectContainer.RegisterInstanceAs(MinioClient);
-            var dataHelper = new DataHelper(TaskDispatchConsumer, MongoClient);
+            var dataHelper = new DataHelper(TaskDispatchConsumer, ExportRequestConsumer, MongoClient);
             ObjectContainer.RegisterInstanceAs(dataHelper);
             var apiHelper = new ApiHelper(HttpClient);
             ObjectContainer.RegisterInstanceAs(apiHelper);
