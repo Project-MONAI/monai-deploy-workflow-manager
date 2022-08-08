@@ -44,10 +44,15 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         public TaskManagerConfiguration TaskManager { get; set; }
 
         /// <summary>
-        /// Represents the <c>taskManager</c> section of the configuration file.
+        /// Represents the <c>endpointSettings</c> section of the configuration file.
         /// </summary>
         [ConfigurationKeyName("endpointSettings")]
         public EndpointSettings EndpointSettings { get; set; }
+
+        /// <summary>
+        /// Represents the <c>backgroundServiceSettings</c> section of the configuration file.
+        /// </summary>
+        public BackgroundServiceSettings BackgroundServiceSettings { get; set; }
 
 
         public WorkflowManagerOptions()
@@ -56,6 +61,7 @@ namespace Monai.Deploy.WorkflowManager.Configuration
             TaskManager = new TaskManagerConfiguration();
             Storage = new StorageConfiguration();
             EndpointSettings = new EndpointSettings();
+            BackgroundServiceSettings = new BackgroundServiceSettings();
         }
     }
 }

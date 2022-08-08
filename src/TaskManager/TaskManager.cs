@@ -497,7 +497,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             Guard.Against.Null(message, nameof(message));
             Guard.Against.Null(executionStatus, nameof(executionStatus));
 
-            return new JsonMessage<TaskUpdateEvent>(new TaskUpdateEvent
+            var body = new TaskUpdateEvent
             {
                 CorrelationId = message.CorrelationId,
                 ExecutionId = executionId,
@@ -508,7 +508,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 TaskId = taskId,
                 Message = executionStatus.Errors,
                 Outputs = outputs ?? new List<Messaging.Common.Storage>(),
-            }, TaskManagerApplicationId, message.CorrelationId);
+            };
+            return new JsonMessage<TaskUpdateEvent>(body, TaskManagerApplicationId, message.CorrelationId);
         }
 
         //TODO: gh-100 implement retry logic

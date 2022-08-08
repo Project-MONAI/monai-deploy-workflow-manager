@@ -221,10 +221,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return false;
             }
 
-            if (message.ExecutionStats is not null
-                || message.Reason != FailureReason.None)
+            if (message.Reason != FailureReason.None)
             {
-                currentTask.ExecutionStats = message.ExecutionStats ?? new Dictionary<string, string>();
+                if (message.ExecutionStats?.IsNullOrEmpty() is false)
+                {
+                    currentTask.ExecutionStats.Append(message.ExecutionStats);
+                }
                 currentTask.Reason = message.Reason;
                 await _workflowInstanceRepository.UpdateTaskAsync(workflowInstance.Id, currentTask.TaskId, currentTask);
             }

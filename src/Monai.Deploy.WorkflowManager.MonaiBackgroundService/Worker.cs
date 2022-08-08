@@ -27,11 +27,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
 {
     public class Worker : BackgroundService
     {
-        /// <summary>
-        /// Delay service runs in milliseconds.
-        /// </summary>
-        private const int ServiceRunDelay = 10_000; // TODO: Put in app settings
-
+        private const string IdentityKey = "IdentityKey";
         private readonly ILogger<Worker> _logger;
         private readonly ITasksService _tasksService;
         private readonly IMessageBrokerPublisherService _publisherService;
@@ -62,7 +58,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
                 _logger.LogInformation("Worker running at: {time}", time);
                 await DoWork(stoppingToken);
                 _logger.LogInformation("Worker completed in: {time} milliseconds", (int)(DateTimeOffset.Now - time).TotalMilliseconds);
-                await Task.Delay(ServiceRunDelay, stoppingToken);
+                await Task.Delay(_options.Value.BackgroundServiceSettings.BackgroundServiceDelay, stoppingToken);
             }
             _logger.ServiceStopping(ServiceName);
             IsRunning = false;
@@ -81,9 +77,9 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
 
                 // Timeout current task
                 // Send Task Update
-                var identity = Guid.NewGuid().ToString(); // TODO figure out identity?
+                task.ExecutionStats.TryGetValue(IdentityKey, out var identity);
                 var workflowInstanceId = workflow.WorkflowId;
-                var correlationId = Guid.NewGuid().ToString(); // TODO is this right or correlationId?
+                var correlationId = Guid.NewGuid().ToString();
 
                 await PublishTimeoutUpdateEvent(task, correlationId, workflowInstanceId).ConfigureAwait(false); // -> task manager
 

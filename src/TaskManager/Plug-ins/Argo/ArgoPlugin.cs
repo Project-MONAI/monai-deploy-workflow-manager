@@ -135,7 +135,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 _logger.CreatingArgoWorkflow(workflow.Metadata.GenerateName);
                 var result = await client.WorkflowService_CreateWorkflowAsync(_namespace, new WorkflowCreateRequest { Namespace = _namespace, Workflow = workflow }, cancellationToken).ConfigureAwait(false);
                 _logger.ArgoWorkflowCreated(result.Metadata.Name);
-                return new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None };
+                return new ExecutionStatus
+                {
+                    Status = TaskExecutionStatus.Accepted,
+                    FailureReason = FailureReason.None,
+                    Stats = new Dictionary<string, string> { { Strings.IdentityKey, result.Metadata.Name } }
+                };
             }
             catch (Exception ex)
             {
@@ -775,19 +780,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
 
-            var workflow = await client.WorkflowService_GetWorkflowAsync(_namespace, identity, null, null).ConfigureAwait(false);
-
-            var workflowToCancel = workflow.Metadata.Name; // TODO: figure out name of workflow to cancel
-
             await client.WorkflowService_StopWorkflowAsync(_namespace, identity, new WorkflowStopRequest
             {
                 Namespace = _namespace,
-                Name = workflowToCancel,
+                Name = identity,
             });
 
             await client.WorkflowService_TerminateWorkflowAsync(_namespace, identity, new WorkflowTerminateRequest
             {
-                Name = workflowToCancel,
+                Name = identity,
                 Namespace = _namespace
             });
         }

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using Ardalis.GuardClauses;
+
 namespace Monai.Deploy.WorkflowManager.Common.Extensions
 {
     /// <summary>
@@ -29,6 +31,27 @@ namespace Monai.Deploy.WorkflowManager.Common.Extensions
         public static bool IsNullOrEmpty<T>(this ICollection<T> array)
         {
             return array is null || array.Count == 0;
+        }
+
+        /// <summary>
+        /// Appends dictionaries together.
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="otherArray"></param>
+        public static void Append<TKey, TValue>(this Dictionary<TKey, TValue> array, Dictionary<TKey, TValue> otherArray) where TKey : notnull
+        {
+            Guard.Against.Null(array);
+            if (otherArray.IsNullOrEmpty())
+            {
+                return;
+            }
+            foreach (var item in otherArray)
+            {
+                array.Add(item.Key, item.Value);
+            }
+            return;
         }
     }
 }
