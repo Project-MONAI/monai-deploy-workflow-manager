@@ -23,7 +23,7 @@ WORKDIR /app
 COPY . ./
 
 RUN echo "Building MONAI Workflow Manager $Version ($FileVersion)..."
-RUN dotnet publish -c Release -o out --nologo /p:Version=$Version /p:FileVersion=$FileVersion src/WorkflowManager/Monai.Deploy.WorkflowManager.csproj
+RUN dotnet publish -c Release -o out --nologo /p:Version=$Version /p:FileVersion=$FileVersion src/WorkflowManager/WorkflowManager/Monai.Deploy.WorkflowManager.csproj
 
 RUN echo "Fetching mc executable for minio..."
 RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc
