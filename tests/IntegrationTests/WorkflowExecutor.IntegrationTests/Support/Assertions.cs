@@ -185,6 +185,27 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             workflowInstanceTask?.Status.Should().Be(TaskExecutionStatus.Dispatched);
         }
 
+        public void AssertExportRequestEvent(ExportRequestEvent exportRequestEvent, WorkflowInstance workflowInstance, WorkflowRevision workflowRevision, WorkflowRequestMessage? workflowRequestMessage = null, TaskUpdateEvent? taskUpdateEvent = null)
+        {
+            var workflowInstanceTask = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(exportRequestEvent.ExportTaskId, StringComparison.OrdinalIgnoreCase));
+
+            var workflowRevisionTask = workflowRevision?.Workflow?.Tasks.FirstOrDefault(x => x.Id.Equals(exportRequestEvent.ExportTaskId, StringComparison.OrdinalIgnoreCase));
+
+            if (workflowRequestMessage != null)
+            {
+                exportRequestEvent.CorrelationId.Should().Match(workflowRequestMessage.CorrelationId);
+            }
+            else
+            {
+                exportRequestEvent.CorrelationId.Should().Match(taskUpdateEvent?.CorrelationId);
+            }
+
+            workflowRevisionTask.ExportDestinations.Select(x => x.Name).ToArray().Should().BeEquivalentTo(exportRequestEvent.Destinations);
+            exportRequestEvent.Files.Count().Should().Be(workflowRevisionTask.Artifacts.Input.Count());
+            exportRequestEvent.WorkflowInstanceId.Should().Match(workflowInstance.Id);
+            exportRequestEvent.ExportTaskId.Should().Match(workflowInstanceTask?.TaskId);
+        }
+
         internal void AssertWorkflowInstanceAfterTaskUpdate(WorkflowInstance workflowInstance, TaskUpdateEvent taskUpdateEvent)
         {
             var workflowInstanceTask = workflowInstance.Tasks.Find(x => x.TaskId == taskUpdateEvent.TaskId);

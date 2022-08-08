@@ -29,25 +29,31 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public List<WorkflowInstance> WorkflowInstances = new List<WorkflowInstance>();
         public PatientDetails PatientDetails { get; set; } = new PatientDetails();
         public TaskUpdateEvent TaskUpdateEvent = new TaskUpdateEvent();
+        public ExportCompleteEvent ExportCompleteEvent = new ExportCompleteEvent();
         public List<TaskDispatchEvent> TaskDispatchEvents = new List<TaskDispatchEvent>();
+        public List<ExportRequestEvent> ExportRequestEvents = new List<ExportRequestEvent>();
         public List<WorkflowRevision> WorkflowRevisions = new List<WorkflowRevision>();
         public List<Workflow> Workflows = new List<Workflow>();
         public List<Payload> Payload = new List<Payload>();
         private RetryPolicy<List<WorkflowInstance>> RetryWorkflowInstances { get; set; }
         private RetryPolicy<List<TaskDispatchEvent>> RetryTaskDispatches { get; set; }
+        private RetryPolicy<List<ExportRequestEvent>> RetryExportRequests { get; set; }
         private RetryPolicy<List<Payload>> RetryPayloadCollections { get; set; }
         private RabbitConsumer TaskDispatchConsumer { get; set; }
+        private RabbitConsumer ExportRequestConsumer { get; set; }
         private MongoClientUtil MongoClient { get; set; }
         public string PayloadId { get; private set; }
         public string BucketId { get; internal set; }
         public List<WorkflowInstance> SeededWorkflowInstances { get; internal set; }
 
-        public DataHelper(RabbitConsumer taskDispatchConsumer, MongoClientUtil mongoClient)
+        public DataHelper(RabbitConsumer taskDispatchConsumer, RabbitConsumer exportRequestConsumer, MongoClientUtil mongoClient)
         {
+            ExportRequestConsumer = exportRequestConsumer;
             TaskDispatchConsumer = taskDispatchConsumer;
             MongoClient = mongoClient;
             RetryWorkflowInstances = Policy<List<WorkflowInstance>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             RetryTaskDispatches = Policy<List<TaskDispatchEvent>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+            RetryExportRequests = Policy<List<ExportRequestEvent>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             RetryPayloadCollections = Policy<List<Payload>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
@@ -238,6 +244,20 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             throw new Exception($"Task update message not found for {name}");
         }
 
+        public ExportCompleteEvent GetExportCompleteTestData(string name)
+        {
+            var exportCompleteTestData = ExportCompletesTestData.TestData.FirstOrDefault(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+            if (exportCompleteTestData != null && exportCompleteTestData.ExportCompleteEvent != null)
+            {
+                ExportCompleteEvent = exportCompleteTestData.ExportCompleteEvent;
+
+                return exportCompleteTestData.ExportCompleteEvent;
+            }
+
+            throw new Exception($"Export Complete message not found for {name}");
+        }
+
         public List<WorkflowInstance> GetWorkflowInstances(int count, string payloadId)
         {
             var res = RetryWorkflowInstances.Execute(() =>
@@ -309,6 +329,57 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             });
 
             return res;
+        }
+
+        public List<ExportRequestEvent> GetExportRequestEvents(int count, List<WorkflowInstance> workflowInstances)
+        {
+            var res = RetryExportRequests.Execute(() =>
+            {
+                var message = ExportRequestConsumer.GetMessage<ExportRequestEvent>();
+
+                if (message != null)
+                {
+                    foreach (var workflowInstance in workflowInstances)
+                    {
+                        if (message.WorkflowInstanceId == workflowInstance.Id)
+                        {
+                            ExportRequestEvents.Add(message);
+                        }
+                    }
+                }
+
+                if (ExportRequestEvents.Count == count)
+                {
+                    return ExportRequestEvents;
+                }
+                else
+                {
+                    throw new Exception($"{count} export request events could not be found");
+                }
+            });
+
+            return res;
+        }
+
+        public List<ExportRequestEvent> GetAllExportRequestEvents(List<WorkflowInstance> workflowInstances)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                var message = ExportRequestConsumer.GetMessage<ExportRequestEvent>();
+
+                if (message != null)
+                {
+                    foreach (var workflowInstance in workflowInstances)
+                    {
+                        if (message.WorkflowInstanceId == workflowInstance.Id)
+                        {
+                            ExportRequestEvents.Add(message);
+                        }
+                    }
+                }
+                Thread.Sleep(500);
+            }
+            return ExportRequestEvents;
         }
 
         public List<TaskDispatchEvent> GetTaskDispatchEventByTaskId(List<string> taskIds)

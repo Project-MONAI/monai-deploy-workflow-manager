@@ -113,4 +113,4 @@ Scenario: Task destination based on Dicom data conditional is successful, and ta
     Given I have a clinical workflow Workflow_Revision_for_bucket_minio
     And I have a Workflow Instance Workflow_instance_for_bucket_minio with artifacts patient_1_lordge in minio
     When I publish a Task Update Message Task_status_update_for_bucket_minio with artifacts patient_1_lordge in minio
-    Then I can see the status of the Task is Succeeded
+    Then I can see the status of the Task pizza is Succeeded
