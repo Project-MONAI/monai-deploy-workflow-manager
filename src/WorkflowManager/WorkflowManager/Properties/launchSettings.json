@@ -1,0 +1,18 @@
+{
+  "profiles": {
+    "Monai.Deploy.WorkflowManager": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Local",
+        "WorkflowManager__messaging__subscriberSettings__endpoint": "localhost"
+      }
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "distributionName": ""
+    }
+  }
+}

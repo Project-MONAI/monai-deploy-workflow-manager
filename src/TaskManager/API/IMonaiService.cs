@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.Configuration;
-
-namespace Monai.Deploy.WorkflowManager.TaskManager.Database.Options
+namespace Monai.Deploy.WorkflowManager.TaskManager.API
 {
-    public class TaskManagerDatabaseSettings
+    public interface IMonaiService
     {
-        [ConfigurationKeyName("ConnectionString")]
-        public string ConnectionString { get; set; } = null!;
-
-        [ConfigurationKeyName("DatabaseName")]
-        public string DatabaseName { get; set; } = null!;
-
-        [ConfigurationKeyName("TaskDispatchEventCollectionName")]
-        public string TaskDispatchEventCollectionName { get; set; } = null!;
+        ServiceStatus Status { get; set; }
+        string ServiceName { get; }
     }
 }

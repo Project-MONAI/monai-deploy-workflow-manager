@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\PayloadListener\Monai.Deploy.WorkflowManager.PayloadListener.csproj" />
+    <ProjectReference Include="..\..\..\src\WorkflowManager\PayloadListener\Monai.Deploy.WorkflowManager.PayloadListener.csproj" />
   </ItemGroup>
 
 </Project>
