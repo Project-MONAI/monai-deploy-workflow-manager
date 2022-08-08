@@ -60,9 +60,9 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.2-191-background-c0019, )",
-        "resolved": "0.1.2-191-background-c0019",
-        "contentHash": "jdq/9mp11Q5Y4c3Y9hiHwafGcYXGqMkn+pdexvl8kZtoYHrHjU/o7qq9z/2xtzJ7ogyC10VScXViSRtTb6SOiQ==",
+        "requested": "[0.1.2-191-background-c0022, )",
+        "resolved": "0.1.2-191-background-c0022",
+        "contentHash": "E95mmUyp+7QHHH0EarnRBxsN4J6fgtly+ruI24AvAiSZkouVWGRXnjMzaWnMgk9CyDZCmrkmPQ5eNC5NmZS/8w==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -498,7 +498,7 @@
         "dependencies": {
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.2-191-background-c0019",
+          "Monai.Deploy.Messaging": "0.1.2-191-background-c0022",
           "Monai.Deploy.Storage": "0.2.0-rc0014",
           "Newtonsoft.Json": "13.0.1",
           "System.IO.Abstractions": "17.0.24"
@@ -509,7 +509,7 @@
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.176",
           "Microsoft.Extensions.Configuration": "6.0.1",
-          "Monai.Deploy.Messaging": "0.1.2-191-background-c0019",
+          "Monai.Deploy.Messaging": "0.1.2-191-background-c0022",
           "MongoDB.Bson": "2.17.0",
           "Newtonsoft.Json": "13.0.1"
         }
@@ -545,7 +545,7 @@
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.2-191-background-c0019",
+          "Monai.Deploy.Messaging": "0.1.2-191-background-c0022",
           "Monai.Deploy.Storage": "0.2.0-rc0014",
           "MongoDB.Bson": "2.17.0"
         }

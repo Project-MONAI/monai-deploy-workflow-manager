@@ -30,7 +30,7 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.176" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.2-191-background-c0019" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.2-191-background-c0022" />
     <PackageReference Include="MongoDB.Bson" Version="2.17.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />

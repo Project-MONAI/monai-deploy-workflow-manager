@@ -1619,7 +1619,7 @@
         "dependencies": {
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.2-191-background-c0019",
+          "Monai.Deploy.Messaging": "0.1.2-191-background-c0022",
           "Monai.Deploy.Storage": "0.2.0-rc0014",
           "Newtonsoft.Json": "13.0.1",
           "System.IO.Abstractions": "17.0.24"
@@ -1630,7 +1630,7 @@
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.176",
           "Microsoft.Extensions.Configuration": "6.0.1",
-          "Monai.Deploy.Messaging": "0.1.2-191-background-c0019",
+          "Monai.Deploy.Messaging": "0.1.2-191-background-c0022",
           "MongoDB.Bson": "2.17.0",
           "Newtonsoft.Json": "13.0.1"
         }
@@ -1683,7 +1683,7 @@
           "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.2-191-background-c0019",
+          "Monai.Deploy.Messaging": "0.1.2-191-background-c0022",
           "Monai.Deploy.Storage": "0.2.0-rc0014",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
@@ -1701,7 +1701,7 @@
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.2-191-background-c0019",
+          "Monai.Deploy.Messaging": "0.1.2-191-background-c0022",
           "Monai.Deploy.Storage": "0.2.0-rc0014",
           "MongoDB.Bson": "2.17.0"
         }
@@ -1711,7 +1711,7 @@
         "dependencies": {
           "IdentityModel.OidcClient": "5.0.0",
           "KubernetesClient": "7.2.19",
-          "Monai.Deploy.Messaging": "0.1.2-191-background-c0019",
+          "Monai.Deploy.Messaging": "0.1.2-191-background-c0022",
           "Monai.Deploy.Storage": "0.2.0-rc0014",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
@@ -1733,7 +1733,7 @@
       "monai.deploy.workflowmanager.taskmanager.testplugin": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.2-191-background-c0019",
+          "Monai.Deploy.Messaging": "0.1.2-191-background-c0022",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0"
         }
       },
@@ -1742,7 +1742,7 @@
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.1.176",
           "Ardalis.GuardClauses": "4.0.1",
-          "Monai.Deploy.Messaging": "0.1.2-191-background-c0019",
+          "Monai.Deploy.Messaging": "0.1.2-191-background-c0022",
           "Monai.Deploy.Storage": "0.2.0-rc0014",
           "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.ConditionsResolver": "1.0.0",

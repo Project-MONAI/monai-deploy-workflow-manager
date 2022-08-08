@@ -36,6 +36,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
         private readonly ITasksService _tasksService;
         private readonly IMessageBrokerPublisherService _publisherService;
         private readonly IOptions<WorkflowManagerOptions> _options;
+        public bool IsRunning { get; set; } = false;
 
         public Worker(
             ILogger<Worker> logger,
@@ -55,6 +56,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
         {
             while (!stoppingToken.IsCancellationRequested)
             {
+                IsRunning = true;
                 var time = DateTimeOffset.Now;
                 _logger.ServiceStarted(ServiceName);
                 _logger.LogInformation("Worker running at: {time}", time);
@@ -63,9 +65,10 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
                 await Task.Delay(ServiceRunDelay, stoppingToken);
             }
             _logger.ServiceStopping(ServiceName);
+            IsRunning = false;
         }
 
-        private async Task DoWork(CancellationToken stoppingToken)
+        public async Task DoWork(CancellationToken stoppingToken)
         {
             // New Message Type cancel pluggin listener
 
@@ -84,7 +87,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
 
                 await PublishTimeoutUpdateEvent(task, correlationId, workflowInstanceId).ConfigureAwait(false); // -> task manager
 
-                await PublishCancellationEvent(task, identity, workflowInstanceId).ConfigureAwait(false); // -> workflow executor
+                await PublishCancellationEvent(task, correlationId, identity, workflowInstanceId).ConfigureAwait(false); // -> workflow executor
             }
             // submit new rabit message run handleTimeout.cancel any running argo workflows and submit argo request to run it again.
 
@@ -94,7 +97,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
             // (implent genericly plugin forceCanceTask, retryTaskCode)
         }
 
-        private async Task PublishCancellationEvent(TaskExecution task, string identity, string workflowInstanceId)
+        private async Task PublishCancellationEvent(TaskExecution task, string correlationId, string identity, string workflowInstanceId)
         {
             //issue cancelation event -> workflow executor?
             var cancellationEvent = EventMapper.GenerateTaskCancellationEvent(
@@ -103,11 +106,11 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
                 workflowInstanceId,
                 task.TaskId,
                 FailureReason.TimedOut,
-                $"Task ({task.TaskId}) timed out @ {DateTime.UtcNow}");
+                $"Task ({task.TaskId.Substring(0, 15)}) timed out @ {DateTime.UtcNow}");
 
             cancellationEvent.Validate();
 
-            var message = EventMapper.ToJsonMessage(cancellationEvent, ServiceName, string.Empty);
+            var message = EventMapper.ToJsonMessage(cancellationEvent, ServiceName, correlationId);
 
             await _publisherService!.Publish(_options.Value.Messaging.Topics.TaskCancellationRequest, message.ToMessage()).ConfigureAwait(false);
         }

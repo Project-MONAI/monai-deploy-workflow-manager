@@ -43,7 +43,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Services
         {
             var expectedTaskId = Guid.NewGuid().ToString();
             var expectedExecutionId = Guid.NewGuid().ToString();
-            var expectedWorkflowId = Guid.NewGuid().ToString();
 
             var taskExecution = new List<WorkflowInstanceTasksUnwindResult> {
                 new WorkflowInstanceTasksUnwindResult
