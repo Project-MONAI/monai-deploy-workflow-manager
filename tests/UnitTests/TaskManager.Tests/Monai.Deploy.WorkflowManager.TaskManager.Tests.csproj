@@ -41,7 +41,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\TaskManager\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />
-    <ProjectReference Include="..\..\..\src\TaskManager\Monai.Deploy.WorkflowManager.TaskManager.csproj" />
+    <ProjectReference Include="..\..\..\src\TaskManager\TaskManager\Monai.Deploy.WorkflowManager.TaskManager.csproj" />
   </ItemGroup>
 
 </Project>

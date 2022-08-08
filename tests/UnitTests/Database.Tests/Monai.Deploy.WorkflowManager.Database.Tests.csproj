@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Database\Monai.Deploy.WorkflowManager.Database.csproj" />
+    <ProjectReference Include="..\..\..\src\WorkflowManager\Database\Monai.Deploy.WorkflowManager.Database.csproj" />
   </ItemGroup>
 
 </Project>
