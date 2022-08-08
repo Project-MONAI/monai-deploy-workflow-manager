@@ -32,6 +32,66 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     ExecutionId = "a1cd5b89-85e8-4d32-b9aa-bdbc0f4bbba5",
                     TaskId = "953c0236-5292-4186-80ee-ef7d4073220b",
                 }
+            },
+            new TaskRequestTestData
+            {
+                Name = "Invalid_WorkflowID_Task_Details_1",
+                TaskRequest = new TasksRequest()
+                {
+                    WorkflowInstanceId = "NotAGUID",
+                    ExecutionId = "a1cd5b89-85e8-4d32-b9aa-bdbc0f4bbba5",
+                    TaskId = "953c0236-5292-4186-80ee-ef7d4073220b",
+                }
+            },
+            new TaskRequestTestData
+            {
+                Name = "Invalid_ExecutionID_Task_Details_2",
+                TaskRequest = new TasksRequest()
+                {
+                    WorkflowInstanceId = "44a63094-9e36-4ba4-9fea-8e9b76aa875b",
+                    ExecutionId = "NotAGUID",
+                    TaskId = "953c0236-5292-4186-80ee-ef7d4073220b",
+                }
+            },
+            new TaskRequestTestData
+            {
+                Name = "Invalid_TaskID_Task_Details_3",
+                TaskRequest = new TasksRequest()
+                {
+                    WorkflowInstanceId = "44a63094-9e36-4ba4-9fea-8e9b76aa875b",
+                    ExecutionId = "a1cd5b89-85e8-4d32-b9aa-bdbc0f4bbba5",
+                    TaskId = "NotAGUID",
+                }
+            },
+            new TaskRequestTestData
+            {
+                Name = "Non_Existent_WorkflowID_Task_Details_1",
+                TaskRequest = new TasksRequest()
+                {
+                    WorkflowInstanceId = "0c533e6d-8c86-422b-8564-00f68aff6e20",
+                    ExecutionId = "a1cd5b89-85e8-4d32-b9aa-bdbc0f4bbba5",
+                    TaskId = "953c0236-5292-4186-80ee-ef7d4073220b",
+                }
+            },
+            new TaskRequestTestData
+            {
+                Name = "Non_Existent_ExecutionID_Task_Details_2",
+                TaskRequest = new TasksRequest()
+                {
+                    WorkflowInstanceId = "44a63094-9e36-4ba4-9fea-8e9b76aa875b",
+                    ExecutionId = "60544cb8-d475-4271-8ead-8ef698c0da99",
+                    TaskId = "953c0236-5292-4186-80ee-ef7d4073220b",
+                }
+            },
+            new TaskRequestTestData
+            {
+                Name = "Non_Existent_TaskID_Task_Details_3",
+                TaskRequest = new TasksRequest()
+                {
+                    WorkflowInstanceId = "44a63094-9e36-4ba4-9fea-8e9b76aa875b",
+                    ExecutionId = "a1cd5b89-85e8-4d32-b9aa-bdbc0f4bbba5",
+                    TaskId = "c16640cd-af88-495c-8c7e-fcbfbd740179",
+                }
             }
         };
     }
