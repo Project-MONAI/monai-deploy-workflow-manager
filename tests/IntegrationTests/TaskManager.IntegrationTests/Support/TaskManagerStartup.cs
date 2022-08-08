@@ -49,7 +49,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             .ConfigureLogging((builderContext, configureLogging) =>
             {
                 configureLogging.AddConfiguration(builderContext.Configuration.GetSection("Logging"));
-                //configureLogging.AddFile(o => o.RootPath = AppContext.BaseDirectory);
+                configureLogging.AddFile(o => o.RootPath = AppContext.BaseDirectory);
             })
                 .ConfigureServices((hostContext, services) =>
                 {
