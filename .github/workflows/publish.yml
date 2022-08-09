@@ -62,6 +62,7 @@ jobs:
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: ${{ steps.scan-workflow-manager.outputs.sarif }}
+        category: workflow-manager
 
     - name: Scan Task Manager image with Anchore
       id: scan-task-manager
@@ -76,3 +77,4 @@ jobs:
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: ${{ steps.scan-task-manager.outputs.sarif }}
+        category: task-manager
