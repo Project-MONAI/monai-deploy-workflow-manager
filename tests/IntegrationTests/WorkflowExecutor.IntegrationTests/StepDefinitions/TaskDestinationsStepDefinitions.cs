@@ -67,7 +67,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 }
                 else if (DataHelper.WorkflowRequestMessage.PayloadId != null)
                 {
-                    _outputHelper.WriteLine($"Retrieving workflow instance by PayloadId={DataHelper.WorkflowRequestMessage.PayloadId.ToString()}");
+                    _outputHelper.WriteLine($"Retrieving workflow instance by PayloadId={DataHelper.WorkflowRequestMessage.PayloadId}");
                     workflowInstance = MongoClient.GetWorkflowInstance(DataHelper.WorkflowRequestMessage.PayloadId.ToString());
                 }
                 else

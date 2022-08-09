@@ -83,7 +83,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 IntermediateStorage = new Messaging.Common.Storage
                 {
                     Bucket = workflowInstance.BucketId,
-                    RelativeRootPath = $"{task.OutputDirectory}/tmp",
+                    RelativeRootPath = task.OutputDirectory,
                     Endpoint = configuration.Settings["endpoint"],
                     Name = task.TaskId,
                     SecuredConnection = bool.Parse(configuration.Settings["securedConnection"])

@@ -17,25 +17,21 @@
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin
 {
-    public class TestPlugin : TaskPluginBase, IAsyncDisposable
+    public class TestPlugin : TaskPluginBase
     {
-        private const string TaskManagerApplicationId = "4c9072a1-35f5-4d85-847d-dafca22244a8";
         private readonly IServiceScope _scope;
         private readonly ILogger<TestPlugin> _logger;
-        private readonly IMessageBrokerPublisherService? _messageBrokerPublisherService;
 
         private string _executeTaskStatus = String.Empty;
         private string _getStatusStatus = String.Empty;
 
         public TestPlugin(
             IServiceScopeFactory serviceScopeFactory,
-            IMessageBrokerPublisherService messageBrokerPublisherService,
             ILogger<TestPlugin> logger,
             TaskDispatchEvent taskDispatchEvent)
             : base(taskDispatchEvent)
@@ -45,7 +41,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin
             _scope = serviceScopeFactory.CreateScope();
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _messageBrokerPublisherService = messageBrokerPublisherService ?? throw new ArgumentNullException(nameof(messageBrokerPublisherService));
             _executeTaskStatus = string.Empty;
             _getStatusStatus = string.Empty;
             ValidateEventAndInit();
@@ -127,12 +122,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin
             }
 
             base.Dispose(disposing);
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            Dispose(disposing: false);
-            GC.SuppressFinalize(this);
         }
     }
 }

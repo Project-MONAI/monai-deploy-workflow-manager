@@ -112,7 +112,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                     Bucket = workflowInstance.BucketId,
                     Endpoint = configuration.Settings["endpoint"],
                     Name = task.TaskId,
-                    RelativeRootPath = "minio/workflowid/taskid/tmp",
+                    RelativeRootPath = "minio/workflowid/taskid",
                     SecuredConnection = bool.Parse(configuration.Settings["securedConnection"])
                 }
             };
