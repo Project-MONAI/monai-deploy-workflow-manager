@@ -39,12 +39,17 @@ jobs:
         docker tag monai/workflow-manager:$VERSION monai/workflow-manager:${{ github.sha }}
         docker tag monai/task-manager:$VERSION monai/task-manager:${{ github.sha }}
 
-    - name: Scan image with Azure Container Scan
+    - name: Scan Workflow Manager image with Azure Container Scan
       uses: Azure/container-scan@v0
       with:
         image-name: monai/workflow-manager:${{ github.sha }}
 
-    - name: Scan image with Anchore
+    - name: Scan Task Manager image with Azure Container Scan
+      uses: Azure/container-scan@v0
+      with:
+        image-name: monai/task-manager:${{ github.sha }}
+
+    - name: Scan Workflow Manager image with Anchore
       id: scan
       uses: anchore/scan-action@v2
       with:
@@ -53,7 +58,21 @@ jobs:
         severity-cutoff: high
         acs-report-enable: true
 
-    - name: upload Anchore scan SARIF report
+    - name: upload Workflow Manager Anchore scan SARIF report
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: ${{ steps.scan.outputs.sarif }}
+
+    - name: Scan Task Manager image with Anchore
+      id: scan
+      uses: anchore/scan-action@v2
+      with:
+        image: monai/task-manager:${{ github.sha }}
+        fail-build: true
+        severity-cutoff: high
+        acs-report-enable: true
+
+    - name: upload Task Manager Anchore scan SARIF report
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: ${{ steps.scan.outputs.sarif }}
