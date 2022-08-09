@@ -57,11 +57,12 @@ jobs:
       working-directory: ./src
 
     - name: Perform License Scanning
+      id: license_scanning
       run: license_finder -r
       
     - name: Check License Header
       uses: apache/skywalking-eyes@main
 
-    - name: Check this step to see how to resolve failure
-      if: ${{ failure() }}
+    - name: Check this step to see how to resolve failure with license scanning
+      if: ${{ failure() && steps.license_scanning.consclusion == 'failure' }}
       run: echo "You have added a new package that needs to be manually checked to ensure it fits our license allowances. Please read the 'License Scanning' section of the 'CONTRIBUTING.MD' file to see what the next steps are."
