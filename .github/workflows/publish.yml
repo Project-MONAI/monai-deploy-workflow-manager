@@ -50,7 +50,7 @@ jobs:
         image-name: monai/task-manager:${{ github.sha }}
 
     - name: Scan Workflow Manager image with Anchore
-      id: scan
+      id: scan-workflow-manager
       uses: anchore/scan-action@v2
       with:
         image: monai/workflow-manager:${{ github.sha }}
@@ -61,10 +61,10 @@ jobs:
     - name: upload Workflow Manager Anchore scan SARIF report
       uses: github/codeql-action/upload-sarif@v1
       with:
-        sarif_file: ${{ steps.scan.outputs.sarif }}
+        sarif_file: ${{ steps.scan-workflow-manager.outputs.sarif }}
 
     - name: Scan Task Manager image with Anchore
-      id: scan
+      id: scan-task-manager
       uses: anchore/scan-action@v2
       with:
         image: monai/task-manager:${{ github.sha }}
@@ -75,4 +75,4 @@ jobs:
     - name: upload Task Manager Anchore scan SARIF report
       uses: github/codeql-action/upload-sarif@v1
       with:
-        sarif_file: ${{ steps.scan.outputs.sarif }}
+        sarif_file: ${{ steps.scan-task-manager.outputs.sarif }}
