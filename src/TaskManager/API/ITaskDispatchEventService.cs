@@ -32,12 +32,5 @@ namespace Monai.Deploy.TaskManager.API
         /// </summary>
         /// <param name="taskExecutionId">Task execution ID associated with the event</param>
         Task<TaskDispatchEventInfo?> GetByTaskExecutionIdAsync(string taskExecutionId);
-
-        /// <summary>
-        /// Deletes a task dispatch event from the database.
-        /// </summary>
-        /// <param name="taskDispatchEvent">The task dispatch event to be removed.</param>
-        /// <returns></returns>
-        Task<bool> RemoveAsync(string taskExecutionId);
     }
 }

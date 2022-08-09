@@ -249,7 +249,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 await SendUpdateEvent(updateMessage).ConfigureAwait(false);
 
                 Interlocked.Decrement(ref _activeJobs);
-                await RemoveEventFromDatabase(message.Body.ExecutionId).ConfigureAwait(false);
                 await RemoveUserAccounts(taskExecution).ConfigureAwait(false);
             }
             finally
@@ -272,20 +271,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 {
                     _logger.ErrorRemovingStorageUserAccount(user, ex);
                 }
-            }
-        }
-
-        private async Task RemoveEventFromDatabase(string executionId)
-        {
-            Guard.Against.NullOrWhiteSpace(executionId, nameof(executionId));
-
-            try
-            {
-                await _taskDispatchEventService.RemoveAsync(executionId).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorRemovingDispatchEventFromDatabase(executionId, ex);
             }
         }
 
