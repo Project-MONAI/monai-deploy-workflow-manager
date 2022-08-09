@@ -32,6 +32,22 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             MinioClient = objectContainer.Resolve<MinioClientUtil>();
         }
 
+        public void AssertTaskPayload(List<WorkflowInstance> workflowInstances, TaskExecution? response)
+        {
+            foreach (var workflowInstance in workflowInstances)
+            {
+                var taskExecution = workflowInstance.Tasks.First(x => x.TaskId.Equals(response?.TaskId));
+
+                if (taskExecution != null)
+                {
+                    taskExecution.Should().BeEquivalentTo(response, options => options.Excluding(x => x.TaskStartTime));
+                    return;
+                }
+            }
+
+            throw new Exception($"TaskId={response.TaskId} was not found in any workflow instances");
+        }
+
         public void AssertWorkflowInstanceMatchesExpectedWorkflow(WorkflowInstance workflowInstance, WorkflowRevision workflowRevision, WorkflowRequestMessage workflowRequestMessage)
         {
             workflowInstance.PayloadId.Should().Match(workflowRequestMessage.PayloadId.ToString());
