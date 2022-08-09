@@ -45,4 +45,3 @@ Scenario: TaskUpdateEvent is published with status Successful after receiving a 
     And The Task Dispatch event is saved in mongo
     And A Task Callback event is published Task_Callback_Basic
     And A Task Update event with status Succeeded is published with Task Callback details
-    And The Task Dispatch event is deleted in mongo
