@@ -41,7 +41,7 @@ Scenario Outline: Get details of a Task with non-existent id payload
     | Non_Existent_ExecutionID_Task_Details_2 |
     | Non_Existent_TaskID_Task_Details_3      |
 
-@Task_Api
+@Task_Api @ignore #/tasks/running endpoint needs some dev work to ensure the filter works correctly. Ticket https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/308
 Scenario: Get details of all Tasks
     Given I have an endpoint /tasks/running?pageNumber=1&pageSize=10
     And I have a Workflow Instance WorkflowInstance_TaskApi_1 with no artifacts
