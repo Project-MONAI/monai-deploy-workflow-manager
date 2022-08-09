@@ -17,8 +17,8 @@
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Database.Options;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
+using Monai.Deploy.WorkflowManager.TaskManager.Database.Options;
 using Monai.Deploy.WorkflowManager.TaskManager.Logging;
 using MongoDB.Driver;
 

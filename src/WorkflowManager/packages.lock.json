@@ -1457,15 +1457,18 @@
       "monai.deploy.workflowmanager.taskmanager": {
         "type": "Project",
         "dependencies": {
+          "Karambolo.Extensions.Logging.File": "3.3.1",
           "Microsoft.Extensions.Hosting": "6.0.1",
-          "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
-          "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
+          "Microsoft.Extensions.Logging": "6.0.0",
+          "Microsoft.Extensions.Logging.Console": "6.0.0",
           "Microsoft.Extensions.Options": "6.0.0",
           "Monai.Deploy.Messaging": "0.1.3-rc0010",
+          "Monai.Deploy.Messaging.RabbitMQ": "0.1.3-rc0010",
           "Monai.Deploy.Storage": "0.2.0-rc0014",
-          "Monai.Deploy.WorkflowManager.Common": "1.0.0",
-          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
+          "Monai.Deploy.Storage.MinIO": "0.2.0-rc0014",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
+          "Monai.Deploy.WorkflowManager.TaskManager.Argo": "1.0.0",
+          "Monai.Deploy.WorkflowManager.TaskManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.TaskManager.Database": "1.0.0"
         }
       },
@@ -1473,7 +1476,6 @@
         "type": "Project",
         "dependencies": {
           "Monai.Deploy.Messaging": "0.1.3-rc0010",
-          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0"
         }
       },
@@ -1492,10 +1494,12 @@
           "KubernetesClient": "7.2.19",
           "Monai.Deploy.Messaging": "0.1.3-rc0010",
           "Monai.Deploy.Storage": "0.2.0-rc0014",
-          "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
           "Newtonsoft.Json": "13.0.1"
         }
+      },
+      "monai.deploy.workflowmanager.taskmanager.common": {
+        "type": "Project"
       },
       "monai.deploy.workflowmanager.taskmanager.database": {
         "type": "Project",
@@ -1504,7 +1508,6 @@
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Microsoft.Extensions.Options": "6.0.0",
           "Monai.Deploy.Messaging": "0.1.3-rc0010",
-          "Monai.Deploy.WorkflowManager.Database": "1.0.0",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
           "MongoDB.Bson": "2.17.0",
           "MongoDB.Driver": "2.17.0"
