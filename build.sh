@@ -24,8 +24,3 @@ echo "Building Workflow Manager Docker Image. VERSION=$VERSION, FILEVERSION=$FIL
 pushd $SCRIPT_DIR
 docker build --tag monai/workflow-manager:$VERSION --build-arg Version=$VERSION --build-arg FileVersion=$FILEVERSION . 
 popd
-
-pushd $SCRIPT_DIR/src/CLI
-echo "Building Workflow Manager CLI: linux-x64"
-dotnet publish -r linux-x64 -c Release --self-contained -o $SCRIPT_DIR/cli/linux-x64
-popd

@@ -29,13 +29,9 @@ using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.Database.Repositories;
-using Monai.Deploy.WorkflowManager.Services;
-using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
-using Monai.Deploy.WorkflowManager.Services.Http;
+using Monai.Deploy.WorkflowManager.TaskManager.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.Database;
+using Monai.Deploy.WorkflowManager.TaskManager.Database.Options;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests;
 using MongoDB.Driver;
 
@@ -76,21 +72,13 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
                     services.AddSingleton<ConfigurationValidator>();
 
-                    services.AddSingleton<DataRetentionService>();
-
-                    services.AddHostedService<DataRetentionService>(p => p.GetService<DataRetentionService>());
-
                     // Services
                     services.AddTransient<IFileSystem, FileSystem>();
                     services.AddHttpClient();
 
                     // Mongo DB
-                    services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
                     services.Configure<TaskManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
                     services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
-                    services.AddTransient<IWorkflowRepository, WorkflowRepository>();
-                    services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
-                    services.AddTransient<IPayloadRepsitory, PayloadRepository>();
                     services.AddTransient<ITaskDispatchEventRepository, TaskDispatchEventRepository>();
 
                     // StorageService
@@ -100,15 +88,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
                     services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
 
-                    services.AddHostedService(p => p.GetService<DataRetentionService>());
-
                     services.AddTaskManager(hostContext);
-                })
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.CaptureStartupErrors(true);
-                webBuilder.UseStartup<Startup>();
-            });
+                });
 
         public static IHost StartTaskManager()
         {

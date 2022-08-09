@@ -42,12 +42,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Logging\" />
     <Folder Include="Services\Http\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\WorkflowManager\Monai.Deploy.WorkflowManager.csproj" />
+    <ProjectReference Include="..\..\..\src\WorkflowManager\WorkflowManager\Monai.Deploy.WorkflowManager.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\ConditionsResolver\Monai.Deploy.WorkflowManager.ConditionsResolver.csproj" />
+    <ProjectReference Include="..\..\..\src\WorkflowManager\ConditionsResolver\Monai.Deploy.WorkflowManager.ConditionsResolver.csproj" />
   </ItemGroup>
 
 </Project>

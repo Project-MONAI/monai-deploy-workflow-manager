@@ -35,7 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Database\Monai.Deploy.WorkflowManager.Database.csproj" />
     <ProjectReference Include="..\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />
   </ItemGroup>
 
