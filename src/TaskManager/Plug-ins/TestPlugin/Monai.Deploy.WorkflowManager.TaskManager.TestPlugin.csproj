@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.2-191-background-c0022" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.3-rc0011" />
   </ItemGroup>
 
   <ItemGroup>
