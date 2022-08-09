@@ -37,6 +37,7 @@ jobs:
         export VERSION=`cat VERSION`
         ./build.sh
         docker tag monai/workflow-manager:$VERSION monai/workflow-manager:${{ github.sha }}
+        docker tag monai/task-manager:$VERSION monai/task-manager:${{ github.sha }}
 
     - name: Scan image with Azure Container Scan
       uses: Azure/container-scan@v0

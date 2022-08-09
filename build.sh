@@ -24,3 +24,8 @@ echo "Building Workflow Manager Docker Image. VERSION=$VERSION, FILEVERSION=$FIL
 pushd $SCRIPT_DIR
 docker build --tag monai/workflow-manager:$VERSION -f ./WorkflowManager.Dockerfile --build-arg Version=$VERSION --build-arg FileVersion=$FILEVERSION . 
 popd
+
+echo "Building Task Manager Docker Image. VERSION=$VERSION, FILEVERSION=$FILEVERSION"
+pushd $SCRIPT_DIR
+docker build --tag monai/task-manager:$VERSION -f ./TaskManager.Dockerfile --build-arg Version=$VERSION --build-arg FileVersion=$FILEVERSION . 
+popd
