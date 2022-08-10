@@ -70,7 +70,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService.Tests
                             TaskId = expectedTaskId,
                             Status = TaskExecutionStatus.Dispatched,
                             TimeoutInterval = -2,
-                            TaskStartTime = DateTime.Now,
+                            TaskStartTime = DateTime.UtcNow,
                             ExecutionStats = new Dictionary<string, string>()
                             {
                                 { IdentityKey, Guid.NewGuid().ToString() }
