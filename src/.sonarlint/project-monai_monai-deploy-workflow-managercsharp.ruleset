@@ -1,9 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="SonarQube - monai-deploy-workflow-manager Sonar way" Description="This rule set was automatically generated from SonarQube https://sonarcloud.io/profiles/show?key=AX96ONQSnTk2GEVJ9ILJ" ToolsVersion="17.0">
-  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp" RuleNamespace="Microsoft.CodeAnalysis.CSharp">
-    <Rule Id="CS8618" Action="None" />
-    <Rule Id="CS8625" Action="None" />
-  </Rules>
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="SonarQube - monai-deploy-workflow-manager Sonar way" Description="This rule set was automatically generated from SonarQube https://sonarcloud.io/profiles/show?key=AX96ONQSnTk2GEVJ9ILJ" ToolsVersion="14.0">
   <Rules AnalyzerId="SonarAnalyzer.CSharp" RuleNamespace="SonarAnalyzer.CSharp">
     <Rule Id="S100" Action="None" />
     <Rule Id="S1006" Action="Warning" />
@@ -366,15 +362,15 @@
     <Rule Id="S5659" Action="Warning" />
     <Rule Id="S5773" Action="Warning" />
     <Rule Id="S6354" Action="None" />
+    <Rule Id="S6419" Action="Warning" />
+    <Rule Id="S6420" Action="Warning" />
+    <Rule Id="S6421" Action="None" />
+    <Rule Id="S6422" Action="Warning" />
+    <Rule Id="S6423" Action="None" />
+    <Rule Id="S6424" Action="Warning" />
     <Rule Id="S818" Action="Info" />
     <Rule Id="S881" Action="None" />
     <Rule Id="S907" Action="Warning" />
     <Rule Id="S927" Action="Warning" />
-  </Rules>
-  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
-    <Rule Id="SA1101" Action="None" />
-    <Rule Id="SA1200" Action="None" />
-    <Rule Id="SA1309" Action="None" />
-    <Rule Id="SA1310" Action="None" />
   </Rules>
 </RuleSet>

@@ -58,6 +58,13 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             Support.HttpRequestMessageExtensions.AddJsonBody(ApiHelper.Request, DataHelper.GetWorkflowObjectTestData(name));
         }
 
+        [When(@"I have a Task Request body (.*)")]
+        [Given(@"I have a Task Request body (.*)")]
+        public void GivenIHaveTaskRequestBody(string name)
+        {
+            Support.HttpRequestMessageExtensions.AddJsonBody(ApiHelper.Request, DataHelper.GetTaskRequestTestData(name));
+        }
+
         [Then(@"I will recieve the error message (.*)")]
         public void ThenIWillRecieveTheCorrectErrorMessage(string message)
         {

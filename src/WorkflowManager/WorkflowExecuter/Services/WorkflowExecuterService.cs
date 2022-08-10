@@ -328,8 +328,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
         private async Task HandleDicomExportAsync(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId)
         {
-            var exportDestinations = workflow.Workflow?.Tasks?.FirstOrDefault(t => t.Id == task.TaskId)?.ExportDestinations;
-
             var exportList = workflow.Workflow?.Tasks?.FirstOrDefault(t => t.Id == task.TaskId)?.ExportDestinations.Select(e => e.Name).ToArray();
 
             var artifactValues = GetDicomExports(workflow, workflowInstance, task, exportList);
@@ -344,15 +342,17 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             await DispatchDicomExport(workflowInstance, task, exportList, artifactValues, correlationId);
         }
 
-        private string[] GetDicomExports(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string[] exportDestinations)
+        private string[] GetDicomExports(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string[]? exportDestinations)
         {
             var validExportDestinations = workflow.Workflow?.InformaticsGateway?.ExportDestinations;
 
+#pragma warning disable CS8604 // Possible null reference argument.
             if (exportDestinations.IsNullOrEmpty()
                 || validExportDestinations.IsNullOrEmpty())
             {
                 return Array.Empty<string>();
             }
+#pragma warning restore CS8604 // Possible null reference argument.
 
             foreach (var exportDestination in exportDestinations)
             {

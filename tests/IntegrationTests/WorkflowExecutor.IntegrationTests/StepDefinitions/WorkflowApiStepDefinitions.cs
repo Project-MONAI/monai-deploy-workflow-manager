@@ -84,7 +84,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var workflowRevisions = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowRevision>>>(result);
 
-            workflowRevisions.Data.Should().BeNullOrEmpty();
+            workflowRevisions?.Data.Should().BeNullOrEmpty();
         }
     }
 }

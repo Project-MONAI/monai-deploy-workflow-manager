@@ -49,7 +49,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                         try
                         {
                             var listOfKeys = new List<string>();
-                            var count = 0;
                             var listArgs = new ListObjectsArgs()
                                 .WithBucket(bucketName)
                                 .WithPrefix("")
@@ -61,7 +60,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                                 await Client.RemoveObjectAsync(bucketName, obj.Key);
                             }
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
 
                         }

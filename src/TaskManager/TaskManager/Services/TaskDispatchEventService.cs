@@ -54,18 +54,5 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services
             Guard.Against.NullOrWhiteSpace(taskExecutionId, nameof(taskExecutionId));
             return await _taskDispatchEventRepository.GetByTaskExecutionIdAsync(taskExecutionId).ConfigureAwait(false);
         }
-
-        public async Task<bool> RemoveAsync(string taskExecutionId)
-        {
-            try
-            {
-                Guard.Against.NullOrWhiteSpace(taskExecutionId, nameof(taskExecutionId));
-                return await _taskDispatchEventRepository.RemoveAsync(taskExecutionId).ConfigureAwait(false);
-            }
-            finally
-            {
-                _logger.TaskDispatchEventDeleted(taskExecutionId);
-            }
-        }
     }
 }
