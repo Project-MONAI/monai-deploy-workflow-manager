@@ -83,7 +83,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService.Tests
             _repo.Setup(r => r.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>())).ReturnsAsync(() => taskExecution);
             var tokenSource = new CancellationTokenSource();
 
-            await _service.DoWork(tokenSource.Token);
+            await _service.DoWork();
 
             // Verify DoWork publishes TaskCancellationRequest
             _pubService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.TaskCancellationRequest), It.IsAny<Message>()), Times.Once());

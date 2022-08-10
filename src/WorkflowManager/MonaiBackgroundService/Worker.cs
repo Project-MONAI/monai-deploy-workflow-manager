@@ -56,7 +56,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
                 var time = DateTimeOffset.Now;
                 _logger.ServiceStarted(ServiceName);
                 _logger.LogInformation("Worker running at: {time}", time);
-                await DoWork(stoppingToken);
+                await DoWork();
                 _logger.LogInformation("Worker completed in: {time} milliseconds", (int)(DateTimeOffset.Now - time).TotalMilliseconds);
                 await Task.Delay(_options.Value.BackgroundServiceSettings.BackgroundServiceDelay, stoppingToken);
             }
@@ -64,38 +64,25 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
             IsRunning = false;
         }
 
-        public async Task DoWork(CancellationToken stoppingToken)
+        public async Task DoWork()
         {
-            // New Message Type cancel pluggin listener
-
-            // Get Running Tasks
             var runningTasks = await _tasksService.GetAllAsync();
             foreach (var workflow in runningTasks.Where(t => t.Tasks.Timeout > DateTime.UtcNow))
             {
                 var task = workflow.Tasks;
-                // task update event -> timed out (update other events to ignore timedout tasks)
 
-                // Timeout current task
-                // Send Task Update
                 task.ExecutionStats.TryGetValue(IdentityKey, out var identity);
                 var workflowInstanceId = workflow.WorkflowId;
                 var correlationId = Guid.NewGuid().ToString();
 
                 await PublishTimeoutUpdateEvent(task, correlationId, workflowInstanceId).ConfigureAwait(false); // -> task manager
 
-                await PublishCancellationEvent(task, correlationId, identity, workflowInstanceId).ConfigureAwait(false); // -> workflow executor
+                await PublishCancellationEvent(task, correlationId, identity ?? String.Empty, workflowInstanceId).ConfigureAwait(false); // -> workflow executor
             }
-            // submit new rabit message run handleTimeout.cancel any running argo workflows and submit argo request to run it again.
-
-            // if task has not completed after all retries counts fail task
-            // When we fails(max retries) TaskUpdate workflow manager workflow
-            // -> poke argo to cancel it. (Argo terminate vs stop - choose terminate)
-            // (implent genericly plugin forceCanceTask, retryTaskCode)
         }
 
         private async Task PublishCancellationEvent(TaskExecution task, string correlationId, string identity, string workflowInstanceId)
         {
-            //issue cancelation event -> workflow executor?
             var cancellationEvent = EventMapper.GenerateTaskCancellationEvent(
                 identity,
                 task.ExecutionId,
