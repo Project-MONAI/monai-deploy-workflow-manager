@@ -40,7 +40,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
                 if (taskExecution != null)
                 {
-                    taskExecution.Should().BeEquivalentTo(response, options => options.Excluding(x => x.TaskStartTime));
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                    taskExecution.Should().BeEquivalentTo(
+                        response,
+                        options => options.Excluding(x => x.TaskStartTime).Excluding(x => x.Timeout));
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                     return;
                 }
             }
