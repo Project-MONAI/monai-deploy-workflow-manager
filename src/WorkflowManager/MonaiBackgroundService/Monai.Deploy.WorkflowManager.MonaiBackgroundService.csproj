@@ -20,7 +20,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-Monai.Deploy.WorkflowManager.MonaiBackgroundService-98C3F1EA-D41C-470E-93E2-6B87403CA849</UserSecretsId>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
