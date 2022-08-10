@@ -62,13 +62,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
             Assertions.AssertTaskDispatchEventStoredInMongo(storedTaskDispatchEvent, DataHelper.TaskDispatchEvent);
         }
 
-        [Then(@"The Task Dispatch event is deleted in mongo")]
-        public void TheTaskDispatchEventIsDeletedInMongo()
-        {
-            var storedTaskDispatchEvent = MongoClient.GetTaskDispatchEventInfoByExecutionId(DataHelper.TaskDispatchEvent.ExecutionId);
-            Assertions.AssertTaskDispatchEventDeletedInMongo(storedTaskDispatchEvent);
-        }
-
         [Then(@"A Task Update event with status (.*) is published with Task Callback details")]
         public void ATaskUpdateEventIsPublishedWithTaskCallbackDetails(string status)
         {
