@@ -17,7 +17,9 @@
 using BoDi;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Wrappers;
 using Newtonsoft.Json;
+using NUnit.Framework;
 
 namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDefinitions
 {
@@ -40,6 +42,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
         {
             var response = JsonConvert.DeserializeObject<TaskExecution>(ApiHelper.Response.Content.ReadAsStringAsync().Result);
             Assertions.AssertTaskPayload(DataHelper.WorkflowInstances, response);
+        }
+
+        [Then(@"I can see (.*) tasks are returned")]
+        public void ThenICanSeeTasksAreReturned(int number)
+        {
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            var response = JsonConvert.DeserializeObject<PagedResponse<IList<TaskExecution>>>(result);
+            Assert.AreEqual(number, response?.Data.Count);
         }
     }
 }

@@ -79,14 +79,11 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 var pageSize = filter.PageSize ?? _options.Value.EndpointSettings.DefaultPageSize;
                 var validFilter = new PaginationFilter(filter.PageNumber, pageSize, _options.Value.EndpointSettings.MaxPageSize);
 
-                var result = await _tasksService.GetAllAsync(
+                var pagedData = await _tasksService.GetAllAsync(
                     (validFilter.PageNumber - 1) * validFilter.PageSize,
                     validFilter.PageSize);
 
-                var pagedData = result.IsNullOrEmpty() ? new List<TaskExecution>() : result.Select(r => r.Tasks).ToList();
-
-                var dataTotal = await _tasksService.CountAsync();
-                var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
+                var pagedReponse = CreatePagedReponse(pagedData.Item1.ToList(), validFilter, pagedData.Item2, _uriService, route);
 
                 return Ok(pagedReponse);
             }

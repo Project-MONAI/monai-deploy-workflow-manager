@@ -23,18 +23,12 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
     public interface ITasksRepository
     {
         /// <summary>
-        /// Gets all running tasks.
+        /// Gets all running tasks and total number of running tasks.
         /// </summary>
         /// <param name="skip">skip.</param>
         /// <param name="limit">limit.</param>
         /// <returns></returns>
-        Task<IList<WorkflowInstanceTasksUnwindResult>> GetAllAsync(int? skip, int? limit);
-
-        /// <summary>
-        /// Gets count of Tasks.
-        /// </summary>
-        /// <returns></returns>
-        Task<long> CountAsync();
+        Task<(IList<TaskExecution>, long)> GetAllAsync(int? skip, int? limit);
 
         /// <summary>
         /// Gets Task Execution given workflowInstanceId, taskId and executionId.
