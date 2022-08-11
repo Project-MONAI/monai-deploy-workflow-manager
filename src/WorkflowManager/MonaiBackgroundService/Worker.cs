@@ -67,7 +67,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
         public async Task DoWork()
         {
             var runningTasks = await _tasksService.GetAllAsync();
-            foreach (var workflow in runningTasks.Where(t => t.Tasks.Timeout < DateTime.UtcNow))
+            foreach (var workflow in runningTasks.Where(t => t.Tasks.TimeoutInterval != 0 && t.Tasks.Timeout < DateTime.UtcNow))
             {
                 var task = workflow.Tasks;
 

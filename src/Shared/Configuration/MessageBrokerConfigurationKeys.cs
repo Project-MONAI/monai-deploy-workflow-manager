@@ -66,7 +66,7 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         /// Gets or sets the topic for publishing task update events.
         /// Defaults to `md.tasks.update`.
         /// </summary>
-        [ConfigurationKeyName("taskUpdate")]
+        [ConfigurationKeyName("taskCancellation")]
         public string TaskCancellationRequest { get; set; } = "md.tasks.cancellation";
     }
 }
