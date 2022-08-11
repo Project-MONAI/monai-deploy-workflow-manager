@@ -83,7 +83,7 @@ Scenario Outline: Invalid pagination returns 400
 Scenario: Update workflow with valid details
     Given I have a clinical workflow Basic_Workflow_1_static
     And  I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
-    And I have a body Basic_Workflow_Update_1
+    And I have a body Basic_Workflow_1
     When I send a PUT request
     Then I will get a 201 response
     And the Workflow Id c86a437d-d026-4bdf-b1df-c7a6372b89e3 is returned in the response body
@@ -98,25 +98,63 @@ Scenario Outline: Update workflow with invalid details
     Then I will get a 400 response
     And I will recieve the error message <message>
     Examples:
-    | endpoint                                        | put_body                                | message                                                 |
-    | /workflows/1                                    | Basic_Workflow_Update_1                 | Failed to validate id, not a valid guid                 |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_Name_Length     | is not a valid Workflow Name                            |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_Desc_Length     | is not a valid Workflow Description                     |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_AETitle_Length  | is not a valid AE Title                                 |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_DataOrg         | is not a valid Informatics Gateway - dataOrigins        |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_ExportDest      | is not a valid Informatics Gateway - exportDestinations |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_TaskDesc_Length | is not a valid taskDescription                          |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_TaskType_Length | is not a valid taskType                                 |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Update_TaskArgs        | is not a valid args                                     |
+    | endpoint                                        | put_body                           | message                                                 |
+    | /workflows/1                                    | Basic_Workflow_1                   | Failed to validate id, not a valid guid                 |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Name_Length       | is not a valid Workflow Name                            |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Desc_Length       | is not a valid Workflow Description                     |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_AETitle_Length    | is not a valid AE Title                                 |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_DataOrg           | is not a valid Informatics Gateway - dataOrigins        |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_ExportDest        | is not a valid Informatics Gateway - exportDestinations |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskDesc_Length   | is not a valid taskDescription                          |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskType_Length   | is not a valid taskType                                 |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskID_Length     | is not a valid taskId                                   |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskID_Content    | Contains Invalid Characters.                            |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Unreferenced_Task | Found Task(s) without any task destinations to it       |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Loopback_Task     | Detected task convergence on path                       |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_0_Tasks           | test                                                    |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Version_Null      | Missing Workflow Version                                |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Version_Blank     | Missing Workflow Version                                |
+
 
 @UpdateWorkflows
 Scenario: Update workflow where workflow ID does not exist
     Given I have a clinical workflow Basic_Workflow_1
     And  I have an endpoint /workflows/52b87b54-a728-4796-9a79-d30867da2a6e
-    And I have a body Basic_Workflow_Update_1
+    And I have a body Basic_Workflow_1
     When I send a PUT request
     Then I will get a 404 response
     And I will recieve the error message Failed to find workflow with Id: 52b87b54-a728-4796-9a79-d30867da2a6e
+
+@AddWorkflows
+Scenario: Add workflow with valid details
+    Given  I have an endpoint /workflows
+    And I have a body Basic_Workflow_1
+    When I send a POST request
+    Then I will get a 201 response
+
+@AddWorkflows
+Scenario Outline: Add workflow with invalid details
+    Given  I have an endpoint /workflows
+    And I have a body <post_body>
+    When I send a POST request
+    Then I will get a 400 response
+    And I will recieve the error message <message>
+    Examples:
+    | post_body                          | message                                                 |
+    | Invalid_Workflow_Name_Length       | is not a valid Workflow Name                            |
+    | Invalid_Workflow_Desc_Length       | is not a valid Workflow Description                     |
+    | Invalid_Workflow_AETitle_Length    | is not a valid AE Title                                 |
+    | Invalid_Workflow_DataOrg           | is not a valid Informatics Gateway - dataOrigins        |
+    | Invalid_Workflow_ExportDest        | is not a valid Informatics Gateway - exportDestinations |
+    | Invalid_Workflow_TaskDesc_Length   | is not a valid taskDescription                          |
+    | Invalid_Workflow_TaskType_Length   | is not a valid taskType                                 |
+    | Invalid_Workflow_TaskID_Length     | is not a valid taskId                                   |
+    | Invalid_Workflow_TaskID_Content    | Contains Invalid Characters.                            |
+    | Invalid_Workflow_Unreferenced_Task | Found Task(s) without any task destinations to it       |
+    | Invalid_Workflow_Loopback_Task     | Detected task convergence on path                       |
+    | Invalid_Workflow_0_Tasks           | test                                                    |
+    | Invalid_Workflow_Version_Null      | Missing Workflow Version                                |
+    | Invalid_Workflow_Version_Blank     | Missing Workflow Version                                |
 
 @DeleteWorkflows
 Scenario: Delete a workflow with one revision
@@ -165,7 +203,7 @@ Scenario: Delete a workflow and recieve 404 when trying to UPDATE by ID
     Given I have a clinical workflow Basic_Workflow_1_static
     And  I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
     And I send a DELETE request
-    And I have a body Basic_Workflow_Update_1
+    And I have a body Basic_Workflow_1
     When I send a PUT request
     Then I will get a 404 response
     And I will recieve the error message Failed to find workflow with Id: c86a437d-d026-4bdf-b1df-c7a6372b89e3

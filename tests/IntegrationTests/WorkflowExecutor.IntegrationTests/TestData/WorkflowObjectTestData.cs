@@ -31,7 +31,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
         {
             new WorkflowObjectTestData()
             {
-                Name = "Basic_Workflow_Update_1",
+                Name = "Basic_Workflow_1",
                 Workflow = new Workflow()
                 {
                     Name = "Basic update",
@@ -41,7 +41,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     {
                         new TaskObject
                         {
-                            Id = Guid.NewGuid().ToString(),
+                            Id = "basic_id_with-legal-chars",
                             Type = "Basic_task",
                             Description = "Basic Workflow update Task update",
                             Args = new Dictionary<string, string> { { "test", "test" } },
@@ -63,7 +63,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowObjectTestData()
             {
-                Name = "Invalid_Workflow_Update_Name_Length",
+                Name = "Invalid_Workflow_Name_Length",
                 Workflow = new Workflow()
                 {
                     Name = "Over 15 characters",
@@ -94,7 +94,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowObjectTestData()
             {
-                Name = "Invalid_Workflow_Update_Desc_Length",
+                Name = "Invalid_Workflow_Desc_Length",
                 Workflow = new Workflow()
                 {
                     Name = "Basic workflow",
@@ -125,7 +125,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowObjectTestData()
             {
-                Name = "Invalid_Workflow_Update_Desc_Length",
+                Name = "Invalid_Workflow_Desc_Length",
                 Workflow = new Workflow()
                 {
                     Name = "Inv_Desc",
@@ -156,7 +156,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowObjectTestData()
             {
-                Name = "Invalid_Workflow_Update_AETitle_Length",
+                Name = "Invalid_Workflow_AETitle_Length",
                 Workflow = new Workflow()
                 {
                     Name = "Inv_AE",
@@ -187,7 +187,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowObjectTestData()
             {
-                Name = "Invalid_Workflow_Update_DataOrg",
+                Name = "Invalid_Workflow_DataOrg",
                 Workflow = new Workflow()
                 {
                     Name = "Inv_DataOrg",
@@ -218,7 +218,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowObjectTestData()
             {
-                Name = "Invalid_Workflow_Update_ExportDest",
+                Name = "Invalid_Workflow_ExportDest",
                 Workflow = new Workflow()
                 {
                     Name = "Inv_ExpDest",
@@ -249,7 +249,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowObjectTestData()
             {
-                Name = "Invalid_Workflow_Update_TaskDesc_Length",
+                Name = "Invalid_Workflow_TaskDesc_Length",
                 Workflow = new Workflow()
                 {
                     Name = "Inv_TaskDesc",
@@ -280,7 +280,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowObjectTestData()
             {
-                Name = "Invalid_Workflow_Update_TaskType_Length",
+                Name = "Invalid_Workflow_TaskType_Length",
                 Workflow = new Workflow()
                 {
                     Name = "Inv_TaskType",
@@ -311,7 +311,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowObjectTestData()
             {
-                Name = "Invalid_Workflow_Update_TaskArgs",
+                Name = "Invalid_Workflow_TaskArgs",
                 Workflow = new Workflow()
                 {
                     Name = "Inv_TaskArgs",
@@ -336,6 +336,308 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         AeTitle = "Basic_AE",
                         DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_TaskID_Length",
+                Workflow = new Workflow()
+                {
+                    Name = "Inv_TaskID",
+                    Description = "Inv_TaskID",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "Over 50 chars Lorem ipsum dolor sit amet consectetur adipiscing elit ligula",
+                            Type = "Basic_task",
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new Artifact[] {}
+                            },
+                            Description = "Basic Workflow 1 Task 1",
+                            Args = new Dictionary<string, string> { { "test", "test" } }
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Basic_AE",
+                        DataOrigins = new string[]{"test"},
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_TaskID_Content",
+                Workflow = new Workflow()
+                {
+                    Name = "Inv_TaskID",
+                    Description = "Inv_TaskID",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "Invalid chars ./'#;][",
+                            Type = "Basic_task",
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new Artifact[] {}
+                            },
+                            Description = "Basic Workflow 1 Task 1",
+                            Args = new Dictionary<string, string> { { "test", "test" } }
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Basic_AE",
+                        DataOrigins = new string[]{"test"},
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_Unreferenced_Task",
+                Workflow = new Workflow()
+                {
+                    Name = "Artifact 1",
+                    Description = "Artifact 1",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "artifact_task_1",
+                            Type = "Artifact_task",
+                            Description = "Artifact Workflow 1 Task 1",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                },
+                            },
+                        },
+                        new TaskObject
+                        {
+                            Id = "artifact_task_2",
+                            Type = "Artifact_task",
+                            Description = "Artifact Workflow 1 Task 2",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact
+                                    {
+                                        Name = "output",
+                                        Value = "{{ context.executions.artifact_task_1.output_dir }}",
+                                        Mandatory = true
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Artifact_AE",
+                        ExportDestinations = new string[]{"test"},
+                        DataOrigins = new string[]{"test"},
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_Loopback_Task",
+                Workflow = new Workflow()
+                {
+                    Name = "Artifact 1",
+                    Description = "Artifact 1",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "artifact_task_1",
+                            Type = "Artifact_task",
+                            Description = "Artifact Workflow 1 Task 1",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                },
+                            },
+                            TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination{ Name = "artifact_task_2" }
+                                }
+                        },
+                        new TaskObject
+                        {
+                            Id = "artifact_task_2",
+                            Type = "Artifact_task",
+                            Description = "Artifact Workflow 1 Task 2",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact
+                                    {
+                                        Name = "output",
+                                        Value = "{{ context.executions.artifact_task_1.output_dir }}",
+                                        Mandatory = true
+                                    },
+                                },
+                            },
+                            TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination{ Name = "artifact_task_1" }
+                                }
+                        },
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Artifact_AE",
+                        ExportDestinations = new string[]{"test"},
+                        DataOrigins = new string[]{"test"},
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_0_Tasks",
+                Workflow = new Workflow()
+                {
+                    Name = "Artifact 1",
+                    Description = "Artifact 1",
+                    Version = "1",
+                    Tasks = new TaskObject[] {},
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Artifact_AE",
+                        ExportDestinations = new string[]{"test"},
+                        DataOrigins = new string[]{"test"},
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_Version_Null",
+                Workflow = new Workflow()
+                {
+                    Name = "Artifact 1",
+                    Description = "Artifact 1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "artifact_task_1",
+                            Type = "Artifact_task",
+                            Description = "Artifact Workflow 1 Task 1",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                },
+                            },
+                            TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination{ Name = "artifact_task_2" }
+                                }
+                        },
+                        new TaskObject
+                        {
+                            Id = "artifact_task_2",
+                            Type = "Artifact_task",
+                            Description = "Artifact Workflow 1 Task 2",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact
+                                    {
+                                        Name = "output",
+                                        Value = "{{ context.executions.artifact_task_1.output_dir }}",
+                                        Mandatory = true
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Artifact_AE",
+                        ExportDestinations = new string[]{"test"},
+                        DataOrigins = new string[]{"test"},
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_Version_Blank",
+                Workflow = new Workflow()
+                {
+                    Name = "Artifact 1",
+                    Description = "Artifact 1",
+                    Version = "",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "artifact_task_1",
+                            Type = "Artifact_task",
+                            Description = "Artifact Workflow 1 Task 1",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                },
+                            },
+                            TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination{ Name = "artifact_task_2" }
+                                }
+                        },
+                        new TaskObject
+                        {
+                            Id = "artifact_task_2",
+                            Type = "Artifact_task",
+                            Description = "Artifact Workflow 1 Task 2",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact
+                                    {
+                                        Name = "output",
+                                        Value = "{{ context.executions.artifact_task_1.output_dir }}",
+                                        Mandatory = true
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Artifact_AE",
+                        ExportDestinations = new string[]{"test"},
+                        DataOrigins = new string[]{"test"},
                     }
                 }
             },
