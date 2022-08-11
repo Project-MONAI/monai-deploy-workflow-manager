@@ -71,3 +71,12 @@ Scenario: Get details of all Tasks From Multiple Workflows
     When I send a GET request
     Then I will get a 200 response
     And I can see 6 tasks are returned
+
+@Task_Api
+Scenario: Get details of all Tasks From Multiple Workflows returns no tasks
+    Given I have an endpoint /tasks/running?pageNumber=1&pageSize=10
+    And I have a Workflow Instance WorkflowInstance_TaskApi_1 with no artifacts
+    And I have a Workflow Instance WorkflowInstance_TaskApi_2 with no artifacts
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see 0 tasks are returned
