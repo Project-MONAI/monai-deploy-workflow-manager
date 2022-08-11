@@ -111,7 +111,7 @@ Scenario Outline: Update workflow with invalid details
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskID_Content    | Contains Invalid Characters.                            |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Unreferenced_Task | Found Task(s) without any task destinations to it       |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Loopback_Task     | Detected task convergence on path                       |
-   #| Invalid_Workflow_0_Tasks           | Appropriate error message                               | bug raised https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/317
+   #| /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_0_Tasks           | Appropriate error message                               | bug raised https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/317
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Version_Null      | Missing Workflow Version                                |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Version_Blank     | Missing Workflow Version                                |
 
