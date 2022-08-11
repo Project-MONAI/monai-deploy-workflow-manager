@@ -104,15 +104,12 @@ Scenario: Export request complete message is sent as Succeeded, next task dispat
     And I can see the status of the Task task_3 is Dispatched
 
 @TaskExport
-Scenario: Export request complete message is sent as Failed, workflow is Failed
+Scenario: Export request complete message is sent as Partial Failed or Failed, workflow is Failed
     Given I have a clinical workflow Workflow_Revision_for_export_multi_dest_2
     And I have a Workflow Instance Workflow_Instance_for_export_multi_dest_2 with artifacts output_metadata in minio
-    When I publish a Export Complete Message Export_Complete_Message_for_export_multi_dest_2_Failed
+    When I publish a Export Complete Message <exportCompleteMessage>
     Then I can see the status of the Task export_task_1 is Failed
-
-@TaskExport
-Scenario: Export request complete message is sent as Partial Failed, workflow is Failed
-    Given I have a clinical workflow Workflow_Revision_for_export_multi_dest_2
-    And I have a Workflow Instance Workflow_Instance_for_export_multi_dest_2 with artifacts output_metadata in minio
-    When I publish a Export Complete Message Export_Complete_Message_for_export_multi_dest_2_PartialFailed
-    Then I can see the status of the Task export_task_1 is Failed
+    Examples:
+    | exportCompleteMessage                                         |
+    | Export_Complete_Message_for_export_multi_dest_2_PartialFailed |
+    | Export_Complete_Message_for_export_multi_dest_2_Failed        |
