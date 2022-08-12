@@ -65,7 +65,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             workflow.IsValid(out var validationErrors);
             Errors.AddRange(validationErrors);
             var tasks = workflow.Tasks;
-            var firstTask = tasks.First();
+            var firstTask = tasks.FirstOrDefault();
 
             ValidateWorkflowSpec(workflow);
             DetectUnreferencedTasks(tasks, firstTask);
@@ -80,6 +80,11 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
         private static void ValidateExportDestinations(Workflow workflow)
         {
+            if (workflow.Tasks.Any() is false)
+            {
+                return;
+            }
+
             foreach (var task in workflow.Tasks.Where(task => task.ExportDestinations.IsNullOrEmpty() is false))
             {
                 var taskExportDestinationNames = task.ExportDestinations.Select(td => td.Name);
@@ -106,6 +111,11 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// <param name="workflow">workflow.</param>
         private static void ValidateTaskDestinations(Workflow workflow)
         {
+            if (workflow.Tasks.Any() is false)
+            {
+                return;
+            }
+
             var tasksDestinations = workflow.Tasks.Where(task => task.TaskDestinations is not null)
                 .SelectMany(task => task.TaskDestinations.Select(td => td.Name));
             foreach (var taskDestination in tasksDestinations)
@@ -121,6 +131,11 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
         private static void DetectUnreferencedTasks(TaskObject[] tasks, TaskObject firstTask)
         {
+            if (tasks.Any() is false || firstTask is null)
+            {
+                return;
+            }
+
             var otherTasks = tasks.Where(t => t.Id != firstTask.Id);
             var ids = otherTasks.Select(t => t.Id);
             var destinations = tasks.Where(t => t.TaskDestinations is not null)
@@ -145,7 +160,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 Errors.Add("Missing Workflow Version.");
             }
 
-            if (workflow.Tasks is null || workflow.Tasks.Length == 0)
+            if (workflow.Tasks is null || workflow.Tasks.Any() is false)
             {
                 Errors.Add("Missing Workflow Tasks.");
             }
@@ -163,6 +178,11 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
         private static void ValidateTask(TaskObject[] tasks, TaskObject currentTask, int iterationCount, List<string> paths = null)
         {
+            if (tasks.Any() is false || currentTask is null)
+            {
+                return;
+            }
+
             if (iterationCount > 100)
             {
                 Errors.Add($"Detected infinite task loop on path: {string.Join(" => ", paths.Take(5))} => ∞");
