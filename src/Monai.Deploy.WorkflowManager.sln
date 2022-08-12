@@ -16,6 +16,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
   ~ limitations under the License.
 -->
 
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -86,6 +87,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Configuration", "Shared\Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj", "{DD11E3E8-1D6F-47F9-98A7-5D2CC7A53C43}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Common.Tests", "..\tests\UnitTests\Common.Tests\Monai.Deploy.WorkflowManager.Common.Tests.csproj", "{99A847CA-7444-49BD-8814-C7CB68A0392F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.MonaiBackgroundService", "WorkflowManager\MonaiBackgroundService\Monai.Deploy.WorkflowManager.MonaiBackgroundService.csproj", "{93F4FE97-120C-44DC-9B21-69FB7EAB5846}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.MonaiBackgroundService.Tests", "..\tests\UnitTests\MonaiBackgroundService.Tests\Monai.Deploy.WorkflowManager.MonaiBackgroundService.Tests.csproj", "{EFECF826-B036-4689-B223-D791CD2C0F10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -209,6 +214,14 @@ Global
 		{99A847CA-7444-49BD-8814-C7CB68A0392F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99A847CA-7444-49BD-8814-C7CB68A0392F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99A847CA-7444-49BD-8814-C7CB68A0392F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93F4FE97-120C-44DC-9B21-69FB7EAB5846}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93F4FE97-120C-44DC-9B21-69FB7EAB5846}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93F4FE97-120C-44DC-9B21-69FB7EAB5846}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93F4FE97-120C-44DC-9B21-69FB7EAB5846}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFECF826-B036-4689-B223-D791CD2C0F10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFECF826-B036-4689-B223-D791CD2C0F10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFECF826-B036-4689-B223-D791CD2C0F10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFECF826-B036-4689-B223-D791CD2C0F10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -244,6 +257,8 @@ Global
 		{ED1808DD-C873-44DE-8D7F-399104D1FF8E} = {AC5B198A-C3F2-4AD2-B532-E71B4630BDD5}
 		{DD11E3E8-1D6F-47F9-98A7-5D2CC7A53C43} = {37A19144-CEA5-47A2-9FFD-22C522E8B895}
 		{99A847CA-7444-49BD-8814-C7CB68A0392F} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
+		{93F4FE97-120C-44DC-9B21-69FB7EAB5846} = {AC5B198A-C3F2-4AD2-B532-E71B4630BDD5}
+		{EFECF826-B036-4689-B223-D791CD2C0F10} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC0D56C8-D8CB-45CE-B528-F3DCF86D63ED}

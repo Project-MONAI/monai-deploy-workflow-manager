@@ -134,7 +134,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 _logger.CreatingArgoWorkflow(workflow.Metadata.GenerateName);
                 var result = await client.WorkflowService_CreateWorkflowAsync(_namespace, new WorkflowCreateRequest { Namespace = _namespace, Workflow = workflow }, cancellationToken).ConfigureAwait(false);
                 _logger.ArgoWorkflowCreated(result.Metadata.Name);
-                return new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None };
+                return new ExecutionStatus
+                {
+                    Status = TaskExecutionStatus.Accepted,
+                    FailureReason = FailureReason.None,
+                    Stats = new Dictionary<string, string> { { Strings.IdentityKey, result.Metadata.Name } }
+                };
             }
             catch (Exception ex)
             {
@@ -768,6 +773,23 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         private async ValueTask DisposeAsyncCore()
         {
             await RemoveKubenetesSecrets().ConfigureAwait(false);
+        }
+
+        public override async Task HandleTimeout(string identity)
+        {
+            var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
+
+            await client.WorkflowService_StopWorkflowAsync(_namespace, identity, new WorkflowStopRequest
+            {
+                Namespace = _namespace,
+                Name = identity,
+            });
+
+            await client.WorkflowService_TerminateWorkflowAsync(_namespace, identity, new WorkflowTerminateRequest
+            {
+                Name = identity,
+                Namespace = _namespace
+            });
         }
     }
 }

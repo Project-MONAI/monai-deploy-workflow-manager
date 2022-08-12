@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Globalization;
 using System.Text.RegularExpressions;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
@@ -291,7 +290,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                     resultStr = GetValueFromDictionary(task.ResultMetadata, keyValue);
                     break;
                 case ParameterConstants.StartTime:
-                    resultStr = task.TaskStartTime?.ToString("dd/MM/yyyy HH:mm:ss");
+                    resultStr = task.TaskStartTime.ToString("dd/MM/yyyy HH:mm:ss");
                     break;
                 default:
                     break;

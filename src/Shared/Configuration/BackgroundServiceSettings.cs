@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Microsoft.Extensions.Configuration;
 
-namespace Monai.Deploy.WorkflowManager.Common.Interfaces
+namespace Monai.Deploy.WorkflowManager.Configuration
 {
-    public interface ITasksService : IPaginatedApi<WorkflowInstanceTasksUnwindResult>
+    public class BackgroundServiceSettings
     {
-        Task<TaskExecution?> GetTaskAsync(string workflowInstanceId, string taskId, string executionId);
+        [ConfigurationKeyName("backgroundServiceDelay")]
+        public int BackgroundServiceDelay { get; set; } = 10_000;
     }
 }

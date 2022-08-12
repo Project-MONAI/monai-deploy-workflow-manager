@@ -32,5 +32,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns><see cref="Task{ExecutionStatus}"/></returns>
         Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Handle a task timeout when a task never leaves a running state.
+        /// </summary>
+        /// <returns></returns>
+        Task HandleTimeout(string identity);
     }
 }

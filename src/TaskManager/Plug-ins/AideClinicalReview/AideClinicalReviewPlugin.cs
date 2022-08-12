@@ -197,5 +197,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 
             base.Dispose(disposing);
         }
+
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        public async ValueTask DisposeAsync()
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        {
+            Dispose(disposing: false);
+            GC.SuppressFinalize(this);
+        }
+
+        public override Task HandleTimeout(string identity) { return Task.CompletedTask; } // not implemented
     }
 }

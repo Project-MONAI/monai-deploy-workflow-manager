@@ -30,7 +30,7 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         public string TaskType { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "task_start_time")]
-        public DateTime? TaskStartTime { get; set; }
+        public DateTime TaskStartTime { get; set; }
 
         [JsonProperty(PropertyName = "execution_stats")]
         public Dictionary<string, string> ExecutionStats { get; set; } = new Dictionary<string, string>();
@@ -64,5 +64,11 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         [JsonProperty(PropertyName = "input_parameters")]
         public Dictionary<string, object> InputParameters { get; set; } = new Dictionary<string, object>();
+
+        [JsonProperty(PropertyName = "next_timeout")]
+        public DateTime Timeout { get => TaskStartTime.AddMinutes(TimeoutInterval); }
+
+        [JsonProperty(PropertyName = "timeout_interval")]
+        public int TimeoutInterval { get; set; } = 0;
     }
 }
