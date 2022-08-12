@@ -67,17 +67,15 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
         public async Task DoWork()
         {
             var runningTasks = await _tasksService.GetAllAsync();
-            foreach (var workflow in runningTasks.Where(t => t.Tasks.TimeoutInterval != 0 && t.Tasks.Timeout < DateTime.UtcNow))
+            foreach (var task in runningTasks.Item1.Where(t => t.TimeoutInterval != 0 && t.Timeout < DateTime.UtcNow))
             {
-                var task = workflow.Tasks;
-
                 task.ExecutionStats.TryGetValue(IdentityKey, out var identity);
-                var workflowInstanceId = workflow.WorkflowId;
+
                 var correlationId = Guid.NewGuid().ToString();
 
-                await PublishTimeoutUpdateEvent(task, correlationId, workflowInstanceId).ConfigureAwait(false); // -> task manager
+                await PublishTimeoutUpdateEvent(task, correlationId, task.WorkflowInstanceId).ConfigureAwait(false); // -> task manager
 
-                await PublishCancellationEvent(task, correlationId, identity ?? String.Empty, workflowInstanceId).ConfigureAwait(false); // -> workflow executor
+                await PublishCancellationEvent(task, correlationId, identity ?? String.Empty, task.WorkflowInstanceId).ConfigureAwait(false); // -> workflow executor
             }
         }
 

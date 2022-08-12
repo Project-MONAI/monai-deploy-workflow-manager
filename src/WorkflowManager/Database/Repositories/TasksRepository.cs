@@ -76,7 +76,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
         }
 
-        public async Task<IList<WorkflowInstanceTasksUnwindResult>> GetAllAsync(int? skip, int? limit)
+        public async Task<(IList<TaskExecution>, long)> GetAllAsync(int? skip, int? limit)
         {
             try
             {
@@ -103,7 +103,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             {
                 _logger.DbCallFailed(nameof(GetAllAsync), e);
 
-                return new List<WorkflowInstanceTasksUnwindResult>();
+                return (new List<TaskExecution>(), 0);
             }
         }
 

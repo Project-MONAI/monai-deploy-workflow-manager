@@ -614,6 +614,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 TaskPluginArguments = newTaskArgs,
                 TaskStartTime = DateTime.UtcNow,
                 TaskId = task.Id,
+                WorkflowInstanceId = workflowInstanceId,
                 Status = TaskExecutionStatus.Created,
                 Reason = FailureReason.None,
                 InputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(task?.Artifacts?.Input ?? Array.Empty<Artifact>(), payloadId, workflowInstanceId, bucketName),
