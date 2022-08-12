@@ -16,7 +16,7 @@
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
-    internal static class Strings
+    public static class Strings
     {
         public const string ArgoApiVersion = "argoproj.io/v1alpha1";
         public const string DefaultNamespace = "default";
@@ -59,6 +59,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         public const string ContentTypeJson = "application/json";
         public const string ApplicationId = "Argo";
+
+        public const string IdentityKey = "IdentityKey";
 
         public static readonly IList<string> ArgoFailurePhases = new List<string> { ArgoPhaseFailed, ArgoPhaseError };
     }

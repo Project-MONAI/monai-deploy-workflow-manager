@@ -33,6 +33,7 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
 using Monai.Deploy.WorkflowManager.Database.Repositories;
+using Monai.Deploy.WorkflowManager.MonaiBackgroundService;
 using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
@@ -142,6 +143,8 @@ namespace Monai.Deploy.WorkflowManager
                 var newUri = new Uri(uri);
                 return new UriService(newUri);
             });
+
+            services.AddHostedService<Worker>();
         }
 
         private static void Main(string[] args)

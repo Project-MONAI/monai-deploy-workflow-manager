@@ -123,5 +123,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin
 
             base.Dispose(disposing);
         }
+
+        public override Task HandleTimeout(string identity) => throw new NotImplementedException();
     }
 }

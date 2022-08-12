@@ -109,7 +109,8 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                     return;
                 }
 
-                if (!await WorkflowExecuterService.ProcessTaskUpdate(payload))
+                var processTaskUpdateResult = await WorkflowExecuterService.ProcessTaskUpdate(payload);
+                if (!processTaskUpdateResult && payload.Reason != FailureReason.TimedOut)
                 {
                     Logger.EventRejectedRequeue(message.Message.MessageId);
 
