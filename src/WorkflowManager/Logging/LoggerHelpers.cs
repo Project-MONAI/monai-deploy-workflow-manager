@@ -37,5 +37,34 @@ namespace Monai.Deploy.WorkflowManager.Logging
                 PatientDetails = patientDetails
             };
         }
+
+        public static object ToLogControllerStartObject(string httpType, string path, string queryString, object body, string version, string environment)
+        {
+            return new
+            {
+                StartTime = DateTime.UtcNow,
+                HttpType = httpType,
+                path = path,
+                queryString = queryString,
+                body = body,
+                version = version,
+                environment = environment,
+            };
+        }
+
+        public static object ToLogControllerEndObject(string httpType, string path, string queryString, string statusCode, string version, string environment)
+        {
+            return new
+            {
+                EndTime = DateTime.UtcNow,
+                HttpType = httpType,
+                path = path,
+                queryString = queryString,
+                statusCode = statusCode,
+                body = body,
+                version = version,
+                environment = environment,
+            };
+        }
     }
 }
