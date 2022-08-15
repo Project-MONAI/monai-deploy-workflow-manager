@@ -18,8 +18,10 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Common.Interfaces
 {
-    public interface ITasksService : IPaginatedApi<WorkflowInstanceTasksUnwindResult>
+    public interface ITasksService
     {
+        Task<(IList<TaskExecution>, long)> GetAllAsync(int? skip = null, int? limit = null);
+
         Task<TaskExecution?> GetTaskAsync(string workflowInstanceId, string taskId, string executionId);
     }
 }

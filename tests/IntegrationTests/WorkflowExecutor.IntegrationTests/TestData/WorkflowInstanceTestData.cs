@@ -1312,6 +1312,230 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+            new WorkflowInstanceTestData()
+            {
+                Name = "WorkflowInstance_TaskApi_2",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = "44a63094-9e36-4ba4-9fea-8e9b76aa875b2",
+                    AeTitle = "Ae_test",
+                    WorkflowId = "a971f5f8-68fa-4cd0-ad34-f20b66675d214",
+                    PayloadId = "e908ff53-d808-4c9b-82b6-698b8c60e8111",
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = TestExecutionConfig.MinioConfig.Bucket,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = "8ff3ea90-0113-4071-9b92-5068f956daeff",
+                            TaskId = "7b8ea05b-8abe-4848-928d-d55f5eef1bc3",
+                            TaskType = "router",
+                            Status = TaskExecutionStatus.Accepted,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = "a1cd5b89-85e8-4d32-b9aa-bdbc0ff4bbba5",
+                            TaskId = "953c0236-5292-4186-80ee-ef7d4073220b",
+                            TaskType = "export",
+                            Status = TaskExecutionStatus.Succeeded,
+                            InputArtifacts = new Dictionary<string, string>()
+                            {
+                                {"key_1", "value_1" }
+                            },
+                            OutputArtifacts = new Dictionary<string, string>()
+                            {
+                                {"key_1", "value_1" }
+                            },
+                            OutputDirectory = "payload_id/dcm",
+                            Reason = FailureReason.None,
+                            PreviousTaskId = "PreviousTask",
+                            ExecutionStats = new Dictionary<string, string>()
+                            {
+                                {"key_1", "value_1" }
+                            },
+                            ResultMetadata = new Dictionary<string, object>()
+                            {
+                                {"key_1", "value_1" },
+                                {"key_2", 1 }
+                            },
+                            InputParameters = new Dictionary<string, object>()
+                            {
+                                {"key_1", "value_1" },
+                                {"key_2", 1 }
+                            },
+                            TaskPluginArguments = new Dictionary<string, string>()
+                            {
+                                {"key_1", "value_1" }
+                            },
+                            TaskStartTime = DateTime.UtcNow
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = "d1e0a3b7-3026-42cf7-ba04-71c1f50d98f6",
+                            TaskId = "b3b537ae-79e8-4d13-9154-982ee4743595",
+                            TaskType = "argo",
+                            Status = TaskExecutionStatus.Created,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = "666faff9-c702-481a9-ae37-5d92e1f6b324",
+                            TaskId = "aad3762a-5c49-499b-a368-e5f9b98408e4",
+                            TaskType = "export",
+                            Status = TaskExecutionStatus.Exported,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = "3b30b992-a87b-48865-9176-824b751f076e",
+                            TaskId = "1ecdcc90-a999-48fa-a507-99d4ea7c9cb0",
+                            TaskType = "argo",
+                            Status = TaskExecutionStatus.Canceled,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = "d9b54e70-d016-476d-b9c3-86ff8b17ef786",
+                            TaskId = "a08920eb-0895-4272-ad81-54f2046d8438",
+                            TaskType = "argo",
+                            Status = TaskExecutionStatus.Succeeded,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = "0c01f526-e574-40df-b21b-99cd16f5c305",
+                            TaskId = "93d8e1c5-39b1-43f0-9bac-372c438b91c0",
+                            TaskType = "argo",
+                            Status = TaskExecutionStatus.Failed,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "WorkflowInstance_TaskApi_3",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = "44a63094-9e36-4ba4-9fea-8e9b76aa875b2",
+                    AeTitle = "Ae_test",
+                    WorkflowId = "a971f5f8-68fa-4cd0-ad34-f20b66675d214",
+                    PayloadId = "e908ff53-d808-4c9b-82b6-698b8c60e8111",
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = TestExecutionConfig.MinioConfig.Bucket,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = "8ff3ea90-0113-4071-9b92-5068f956daeff",
+                            TaskId = "7b8ea05b-8abe-4848-928d-d55f5eef1bc3",
+                            TaskType = "router",
+                            Status = TaskExecutionStatus.Succeeded,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = "a1cd5b89-85e8-4d32-b9aa-bdbc0ff4bbba5",
+                            TaskId = "953c0236-5292-4186-80ee-ef7d4073220b",
+                            TaskType = "export",
+                            Status = TaskExecutionStatus.Succeeded,
+                            InputArtifacts = new Dictionary<string, string>()
+                            {
+                                {"key_1", "value_1" }
+                            },
+                            OutputArtifacts = new Dictionary<string, string>()
+                            {
+                                {"key_1", "value_1" }
+                            },
+                            OutputDirectory = "payload_id/dcm",
+                            Reason = FailureReason.None,
+                            PreviousTaskId = "PreviousTask",
+                            ExecutionStats = new Dictionary<string, string>()
+                            {
+                                {"key_1", "value_1" }
+                            },
+                            ResultMetadata = new Dictionary<string, object>()
+                            {
+                                {"key_1", "value_1" },
+                                {"key_2", 1 }
+                            },
+                            InputParameters = new Dictionary<string, object>()
+                            {
+                                {"key_1", "value_1" },
+                                {"key_2", 1 }
+                            },
+                            TaskPluginArguments = new Dictionary<string, string>()
+                            {
+                                {"key_1", "value_1" }
+                            },
+                            TaskStartTime = DateTime.UtcNow
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = "d1e0a3b7-3026-42cf7-ba04-71c1f50d98f6",
+                            TaskId = "b3b537ae-79e8-4d13-9154-982ee4743595",
+                            TaskType = "argo",
+                            Status = TaskExecutionStatus.Succeeded,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = "666faff9-c702-481a9-ae37-5d92e1f6b324",
+                            TaskId = "aad3762a-5c49-499b-a368-e5f9b98408e4",
+                            TaskType = "export",
+                            Status = TaskExecutionStatus.Succeeded,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = "3b30b992-a87b-48865-9176-824b751f076e",
+                            TaskId = "1ecdcc90-a999-48fa-a507-99d4ea7c9cb0",
+                            TaskType = "argo",
+                            Status = TaskExecutionStatus.Canceled,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = "d9b54e70-d016-476d-b9c3-86ff8b17ef786",
+                            TaskId = "a08920eb-0895-4272-ad81-54f2046d8438",
+                            TaskType = "argo",
+                            Status = TaskExecutionStatus.Failed,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = "0c01f526-e574-40df-b21b-99cd16f5c305",
+                            TaskId = "93d8e1c5-39b1-43f0-9bac-372c438b91c0",
+                            TaskType = "argo",
+                            Status = TaskExecutionStatus.Failed,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                        },
+                    }
+                }
+            }
         };
     }
 }

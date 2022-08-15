@@ -26,6 +26,9 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "execution_id")]
         public string ExecutionId { get; set; } = string.Empty;
 
+        [JsonProperty(PropertyName = "workflow_instance_id")]
+        public string WorkflowInstanceId { get; set; } = string.Empty;
+
         [JsonProperty(PropertyName = "task_type")]
         public string TaskType { get; set; } = string.Empty;
 
