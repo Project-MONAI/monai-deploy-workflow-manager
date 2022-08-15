@@ -15,8 +15,10 @@
  */
 
 using System;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -34,8 +36,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
     /// <summary>
     /// Workflows Controller.
     /// </summary>
-    [ApiController]
-    [Route("workflows")]
+    [ApiController, Route("workflows"), Authorize(Roles = "user")]
     public class WorkflowsController : ApiControllerBase
     {
         private readonly IOptions<WorkflowManagerOptions> _options;

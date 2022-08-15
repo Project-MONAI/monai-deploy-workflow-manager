@@ -159,6 +159,22 @@
           "System.Threading.Channels": "4.7.1"
         }
       },
+      "Microsoft.AspNetCore.Authentication.JwtBearer": {
+        "type": "Transitive",
+        "resolved": "6.0.8",
+        "contentHash": "ktmldryRkyAMRQpluCZaltRvlcOrlE9SQDmnMOh+XTbck6Vi296UjvwdJb4ULU6PgvZh5j00KAp7uhjpcWQopA==",
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.10.0"
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.OpenIdConnect": {
+        "type": "Transitive",
+        "resolved": "6.0.8",
+        "contentHash": "i4w+mo2Vzy33EpxeFuRNcNojRknQaURVg8CQkHyLDJj2KMXcBLBiEtaeGqzwE9e6BNCb05lL8WfMAeJLERhCWg==",
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.10.0"
+        }
+      },
       "Microsoft.AspNetCore.JsonPatch": {
         "type": "Transitive",
         "resolved": "6.0.7",
@@ -526,6 +542,47 @@
         "contentHash": "9+PnzmQFfEFNR9J2aDTfJGGupShHjOuGw4VUv+JB044biSHrnmCIMD+mJHmb2H7YryrfBEXDurxQ47gJZdCKNQ==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
+        }
+      },
+      "Microsoft.IdentityModel.JsonWebTokens": {
+        "type": "Transitive",
+        "resolved": "6.10.0",
+        "contentHash": "0qjS31rN1MQTc46tAYbzmMTSRfdV5ndZxSjYxIGqKSidd4wpNJfNII/pdhU5Fx8olarQoKL9lqqYw4yNOIwT0Q==",
+        "dependencies": {
+          "Microsoft.IdentityModel.Tokens": "6.10.0"
+        }
+      },
+      "Microsoft.IdentityModel.Logging": {
+        "type": "Transitive",
+        "resolved": "6.10.0",
+        "contentHash": "zbcwV6esnNzhZZ/VP87dji6VrUBLB5rxnZBkDMqNYpyG+nrBnBsbm4PUYLCBMUflHCM9EMLDG0rLnqqT+l0ldA=="
+      },
+      "Microsoft.IdentityModel.Protocols": {
+        "type": "Transitive",
+        "resolved": "6.10.0",
+        "contentHash": "DFyXD0xylP+DknCT3hzJ7q/Q5qRNu0hO/gCU90O0ATdR0twZmlcuY9RNYaaDofXKVbzcShYNCFCGle2G/o8mkg==",
+        "dependencies": {
+          "Microsoft.IdentityModel.Logging": "6.10.0",
+          "Microsoft.IdentityModel.Tokens": "6.10.0"
+        }
+      },
+      "Microsoft.IdentityModel.Protocols.OpenIdConnect": {
+        "type": "Transitive",
+        "resolved": "6.10.0",
+        "contentHash": "LVvMXAWPbPeEWTylDrxunlHH2wFyE4Mv0L4gZrJHC4HTESbWHquKZb/y/S8jgiQEDycOP0PDQvbG4RR/tr2TVQ==",
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols": "6.10.0",
+          "System.IdentityModel.Tokens.Jwt": "6.10.0"
+        }
+      },
+      "Microsoft.IdentityModel.Tokens": {
+        "type": "Transitive",
+        "resolved": "6.10.0",
+        "contentHash": "qbf1NslutDB4oLrriYTJpy7oB1pbh2ej2lEHd2IPDQH9C74ysOdhU5wAC7KoXblldbo7YsNR2QYFOqQM/b0Rsg==",
+        "dependencies": {
+          "Microsoft.CSharp": "4.5.0",
+          "Microsoft.IdentityModel.Logging": "6.10.0",
+          "System.Security.Cryptography.Cng": "4.5.0"
         }
       },
       "Microsoft.NETCore.Platforms": {
@@ -967,6 +1024,15 @@
           "System.Runtime.InteropServices": "4.3.0"
         }
       },
+      "System.IdentityModel.Tokens.Jwt": {
+        "type": "Transitive",
+        "resolved": "6.10.0",
+        "contentHash": "C+Q5ORsFycRkRuvy/Xd0Pv5xVpmWSAvQYZAGs7VQogmkqlLhvfZXTgBIlHqC3cxkstSoLJAYx6xZB7foQ2y5eg==",
+        "dependencies": {
+          "Microsoft.IdentityModel.JsonWebTokens": "6.10.0",
+          "Microsoft.IdentityModel.Tokens": "6.10.0"
+        }
+      },
       "System.IO": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -1216,21 +1282,8 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.3.0",
-        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0",
-          "System.IO": "4.3.0",
-          "System.Resources.ResourceManager": "4.3.0",
-          "System.Runtime": "4.3.0",
-          "System.Runtime.Extensions": "4.3.0",
-          "System.Runtime.Handles": "4.3.0",
-          "System.Runtime.InteropServices": "4.3.0",
-          "System.Security.Cryptography.Algorithms": "4.3.0",
-          "System.Security.Cryptography.Encoding": "4.3.0",
-          "System.Security.Cryptography.Primitives": "4.3.0",
-          "System.Text.Encoding": "4.3.0"
-        }
+        "resolved": "4.5.0",
+        "contentHash": "WG3r7EyjUe9CMPFSs6bty5doUqT+q9pbI80hlNzo2SkPkZ4VTuZkGWjpp77JB8+uaL4DFPRdBsAY+DX3dBK92A=="
       },
       "System.Security.Cryptography.Csp": {
         "type": "Transitive",
@@ -1458,6 +1511,7 @@
         "dependencies": {
           "Ardalis.GuardClauses": "[4.0.1, )",
           "Karambolo.Extensions.Logging.File": "[3.3.1, )",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "[6.0.8, )",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "[6.0.7, )",
           "Microsoft.AspNetCore.Mvc.Versioning": "[5.0.0, )",
           "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": "[5.0.0, )",
@@ -1469,6 +1523,7 @@
           "Microsoft.Extensions.Options": "[6.0.0, )",
           "Monai.Deploy.Messaging.RabbitMQ": "[0.1.3-rc0011, )",
           "Monai.Deploy.Storage.MinIO": "[0.2.0-rc0014, )",
+          "Monai.Deploy.WorkflowManager.Authentication": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
@@ -1478,6 +1533,16 @@
           "Monai.Deploy.WorkflowManager.PayloadListener": "[1.0.0, )",
           "Newtonsoft.Json": "[13.0.1, )",
           "Swashbuckle.AspNetCore": "[6.4.0, )"
+        }
+      },
+      "monai.deploy.workflowmanager.authentication": {
+        "type": "Project",
+        "dependencies": {
+          "Ardalis.GuardClauses": "[4.0.1, )",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "[6.0.8, )",
+          "Microsoft.AspNetCore.Authentication.OpenIdConnect": "[6.0.8, )",
+          "Microsoft.Extensions.Configuration.Abstractions": "[6.0.0, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[6.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.common": {
@@ -1509,6 +1574,7 @@
           "Microsoft.Extensions.Options": "[6.0.0, )",
           "Monai.Deploy.Messaging": "[0.1.3-rc0011, )",
           "Monai.Deploy.Storage": "[0.2.0-rc0014, )",
+          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
           "Newtonsoft.Json": "[13.0.1, )",
           "System.IO.Abstractions": "[17.0.24, )"
         }
