@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -137,10 +138,18 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
         {
             var request = context.HttpContext.Request;
             var response = context.HttpContext.Response;
+
+            var objResult = new ObjectResult("");
+
+            if (context.Result is ObjectResult)
+            {
+                objResult = (ObjectResult)context.Result;
+            }
+
             var objectLog = new ObjectLog
             {
                 Message = "ControllerActionEnd",
-                Object = LoggerHelpers.ToLogControllerEndObject(request.Method, request.Path, request.QueryString.Value.ToString(), response.StatusCode.ToString(), "", "")
+                Object = LoggerHelpers.ToLogControllerEndObject(request.Method, request.Path, request.QueryString.Value.ToString(), response.StatusCode.ToString(), objResult?.Value ?? "", "", "")
             };
 
             var jsonString = JsonConvert.SerializeObject(objectLog);

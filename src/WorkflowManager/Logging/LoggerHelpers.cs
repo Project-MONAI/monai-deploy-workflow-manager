@@ -48,11 +48,11 @@ namespace Monai.Deploy.WorkflowManager.Logging
                 queryString = queryString,
                 body = body,
                 version = version,
-                environment = environment,
+                environment = environment
             };
         }
 
-        public static object ToLogControllerEndObject(string httpType, string path, string queryString, string statusCode, string version, string environment)
+        public static object ToLogControllerEndObject(string httpType, string path, string queryString, string statusCode, object result, string version, string environment)
         {
             return new
             {
@@ -61,8 +61,9 @@ namespace Monai.Deploy.WorkflowManager.Logging
                 path = path,
                 queryString = queryString,
                 statusCode = statusCode,
+                result = result,
                 version = version,
-                environment = environment,
+                environment = environment
             };
         }
     }
