@@ -61,7 +61,6 @@ Scenario Outline: Publish an invalid Task Update event which does not update the
     | Task_Status_Update_Missing_TaskId        |
     | Task_Status_Update_Missing_ExecutionId   |
     | Task_Status_Update_Missing_CorrelationId |
-    | Task_Status_Update_Missing_Status        |
 
 @TaskUpdate
 Scenario Outline: Publish an valid Task Update event with a status that is invalid for current status
