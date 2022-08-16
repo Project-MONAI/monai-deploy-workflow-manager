@@ -1316,3 +1316,33 @@
     :why: Dotnet - https://www.nuget.org/packages/Microsoft.AspNet.WebApi.Client/5.2.9/License
     :versions: []
     :when: 2022-06-08 11:18:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.Http
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.Authentication
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.Authorization
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.Hosting
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  -  Microsoft.AspNetCore.Routing
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
