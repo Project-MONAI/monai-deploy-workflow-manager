@@ -10,7 +10,7 @@ namespace Monai.Deploy.WorkflowManager.Logging.Attributes
 
         /// <summary>  
         /// Initializes a new instance of the <see cref="LogActionFilterAttribute" /> class.  
-        /// </summary>  
+        /// </summary>
         /// <param name="logger">The logger.</param> 
         public LogActionFilterAttribute(ILogger<LogActionFilterAttribute> logger)
         {
@@ -19,7 +19,7 @@ namespace Monai.Deploy.WorkflowManager.Logging.Attributes
 
         /// <summary>  
         /// Called when [action executing].  
-        /// </summary>  
+        /// </summary>
         /// <param name="context">The current executing context.</param>  
         public override void OnActionExecuting(ActionExecutingContext context)
         {
@@ -29,11 +29,11 @@ namespace Monai.Deploy.WorkflowManager.Logging.Attributes
 
         /// <summary>  
         /// Called when [result executed].  
-        /// </summary>  
+        /// </summary>
         /// <param name="context">The current executing context.</param>  
         public override void OnResultExecuted(ResultExecutedContext context)
         {
-            _logger.LogControllerStartTime(context);
+            _logger.LogControllerEndTime(context);
             base.OnResultExecuted(context);
         }
     }

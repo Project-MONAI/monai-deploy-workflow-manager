@@ -61,7 +61,6 @@ namespace Monai.Deploy.WorkflowManager.Logging
                 path = path,
                 queryString = queryString,
                 statusCode = statusCode,
-                body = body,
                 version = version,
                 environment = environment,
             };
