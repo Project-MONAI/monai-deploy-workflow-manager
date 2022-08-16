@@ -20,6 +20,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Monai.Deploy.WorkflowManager.Authentication;
 using Newtonsoft.Json.Converters;
 
 namespace Monai.Deploy.WorkflowManager.Services.Http
@@ -63,6 +64,11 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MONAI Workflow Manager", Version = "v1" });
                 c.DescribeAllParametersInCamelCase();
             });
+
+            services.AddMonaiAuthentication(
+                Configuration,
+                Configuration.GetSection("WorkflowManager:endpointSettings")["endpointAuthenticationKey"]);
+
         }
 
 #pragma warning disable CA1822 // Mark members as static
@@ -77,6 +83,10 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

@@ -1320,7 +1320,8 @@
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[6.0.8, )",
           "Microsoft.AspNetCore.Authentication.OpenIdConnect": "[6.0.8, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[6.0.0, )",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "[6.0.0, )"
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[6.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.common": {

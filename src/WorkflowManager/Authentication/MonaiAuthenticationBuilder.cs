@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Monai.Deploy.WorkflowManager.Common.Extensions;
 
 namespace Monai.Deploy.WorkflowManager.Authentication
 {
@@ -149,23 +150,35 @@ namespace Monai.Deploy.WorkflowManager.Authentication
                         context.User.HasClaim(c =>
                             (c.Value == "user") || (c.Value == "admin")))); // Create policy with only one claim
 
-                foreach (var item in requiredAdminRoles)
+                if (requiredAdminRoles.IsNullOrEmpty() is false)
                 {
-                    options.AddPolicy("admin", policy => policy.RequireClaim(ClaimTypes.Role, item));
+                    foreach (var item in requiredAdminRoles)
+                    {
+                        options.AddPolicy("admin", policy => policy.RequireClaim(ClaimTypes.Role, item));
+                    }
                 }
-                foreach (var item in requiredAdmins)
+                if (requiredAdmins.IsNullOrEmpty() is false)
                 {
-                    options.AddPolicy("admin", policy => policy.RequireClaim(ClaimTypes.Email, item));
-                    options.AddPolicy("admin", policy => policy.RequireUserName(item));
+                    foreach (var item in requiredAdmins)
+                    {
+                        options.AddPolicy("admin", policy => policy.RequireClaim(ClaimTypes.Email, item));
+                        options.AddPolicy("admin", policy => policy.RequireUserName(item));
+                    }
                 }
-                foreach (var item in requiredUserRoles)
+                if (requiredUserRoles.IsNullOrEmpty() is false)
                 {
-                    options.AddPolicy("user", policy => policy.RequireClaim(ClaimTypes.Role, item));
+                    foreach (var item in requiredUserRoles)
+                    {
+                        options.AddPolicy("user", policy => policy.RequireClaim(ClaimTypes.Role, item));
+                    }
                 }
-                foreach (var item in requiredUsers)
+                if (requiredUsers.IsNullOrEmpty() is false)
                 {
-                    options.AddPolicy("user", policy => policy.RequireClaim(ClaimTypes.Email, item));
-                    options.AddPolicy("user", policy => policy.RequireUserName(item));
+                    foreach (var item in requiredUsers)
+                    {
+                        options.AddPolicy("user", policy => policy.RequireClaim(ClaimTypes.Email, item));
+                        options.AddPolicy("user", policy => policy.RequireUserName(item));
+                    }
                 }
                 options.AddPolicy("noaccess", policy => policy.RequireClaim(ClaimTypes.Role, "noaccess"));
             });

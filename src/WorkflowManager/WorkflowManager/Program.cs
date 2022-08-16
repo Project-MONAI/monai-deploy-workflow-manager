@@ -146,10 +146,6 @@ namespace Monai.Deploy.WorkflowManager
             });
 
             services.AddHostedService<Worker>();
-            services.AddMonaiAuthentication(
-                hostContext.Configuration,
-                hostContext.Configuration.GetSection("WorkflowManager:endpointSettings")["endpointAuthenticationKey"]);
-
         }
 
         private static void Main(string[] args)

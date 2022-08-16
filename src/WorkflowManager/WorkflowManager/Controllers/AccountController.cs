@@ -16,6 +16,8 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 
 namespace Monai.Deploy.WorkflowManager.Controllers
 {
+    [ApiController]
+    [Route("account")]
     public class AccountController : ApiControllerBase
     {
         /// <summary>

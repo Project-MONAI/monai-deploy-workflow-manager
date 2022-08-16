@@ -14,4 +14,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Monai.Deploy.WorkflowManager.Common.csproj" />
+  </ItemGroup>
+
 </Project>
