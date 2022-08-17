@@ -20,7 +20,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Monai.Deploy.WorkflowManager.Authentication;
+using Monai.Deploy.WorkflowManager.Authentication.Extensions;
 using Newtonsoft.Json.Converters;
 
 namespace Monai.Deploy.WorkflowManager.Services.Http
@@ -34,10 +34,9 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
 
         public IConfiguration Configuration { get; }
 
-#pragma warning disable CA1822 // Mark members as static
         public void ConfigureServices(IServiceCollection services)
-#pragma warning restore CA1822 // Mark members as static
         {
+            services.AddSingleton(Configuration);
             services.AddHttpContextAccessor();
             services.AddApiVersioning(
                 options =>
@@ -65,15 +64,11 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
                 c.DescribeAllParametersInCamelCase();
             });
 
-            services.AddMonaiAuthentication(
-                Configuration,
-                Configuration.GetSection("WorkflowManager:endpointSettings")["endpointAuthenticationKey"]);
+            services.AddMonaiAuthentication(Configuration);
 
         }
 
-#pragma warning disable CA1822 // Mark members as static
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-#pragma warning restore CA1822 // Mark members as static
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsProduction() is false)
             {
@@ -85,8 +80,8 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
             app.UseRouting();
 
             app.UseAuthentication();
-
             app.UseAuthorization();
+            app.UseEndpointAuthorizationMiddleware();
 
             app.UseEndpoints(endpoints =>
             {
