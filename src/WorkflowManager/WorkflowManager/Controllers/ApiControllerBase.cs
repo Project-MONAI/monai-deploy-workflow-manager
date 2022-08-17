@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using Ardalis.GuardClauses;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Configuration;
@@ -32,13 +31,12 @@ namespace Monai.Deploy.WorkflowManager.Controllers
     /// Base Api Controller.
     /// </summary>
     [ApiController]
-    [Authorize]
     public class ApiControllerBase : ControllerBase
     {
         private readonly IOptions<WorkflowManagerOptions> _options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ApiControllerBase"/> class.
+        /// Initializes a new instance of the <see cref="AuthenticatedApiControllerBase"/> class.
         /// </summary>
         /// <param name="options">Workflow manager options.</param>
         public ApiControllerBase(IOptions<WorkflowManagerOptions> options)

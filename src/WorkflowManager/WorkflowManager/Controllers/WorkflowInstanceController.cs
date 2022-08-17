@@ -35,7 +35,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
     /// </summary>
     [ApiController]
     [Route("workflowinstances")]
-    public class WorkflowInstanceController : ApiControllerBase
+    public class WorkflowInstanceController : AuthenticatedApiControllerBase
     {
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IWorkflowInstanceService _workflowInstanceService;

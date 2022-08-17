@@ -36,7 +36,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
     /// </summary>
     [ApiController]
     [Route("tasks")]
-    public class TasksController : ApiControllerBase
+    public class TasksController : AuthenticatedApiControllerBase
     {
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly ITasksService _tasksService;

@@ -33,7 +33,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
     /// </summary>
     [ApiController]
     [Route("payloads")]
-    public class PayloadsController : ApiControllerBase
+    public class PayloadsController : AuthenticatedApiControllerBase
     {
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IPayloadService _payloadService;
