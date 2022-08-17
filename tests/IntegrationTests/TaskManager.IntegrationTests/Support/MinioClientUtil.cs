@@ -15,6 +15,7 @@
  */
 
 using Minio;
+using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
 using Polly;
 using Polly.Retry;
 using System.Reactive.Linq;

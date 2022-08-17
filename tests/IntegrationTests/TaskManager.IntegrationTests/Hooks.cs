@@ -16,7 +16,7 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
 using Polly;
 using Polly.Retry;

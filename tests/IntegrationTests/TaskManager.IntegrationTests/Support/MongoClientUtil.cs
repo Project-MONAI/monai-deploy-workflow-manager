@@ -15,6 +15,7 @@
  */
 
 using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
+using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
 using MongoDB.Driver;
 using Polly;
 using Polly.Retry;

@@ -19,7 +19,7 @@ using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events;
 using Polly;
 using Polly.Retry;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
+namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 {
     public class DataHelper
     {

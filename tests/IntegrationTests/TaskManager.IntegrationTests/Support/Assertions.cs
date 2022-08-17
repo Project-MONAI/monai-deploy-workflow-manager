@@ -19,7 +19,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
+namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 {
     public class Assertions
     {
