@@ -560,7 +560,7 @@ public class ArgoPluginTest
         }
         else
         {
-            Assert.Equal(TaskExecutionStatus.Unknown, result.Status);
+            Assert.Equal(TaskExecutionStatus.Failed, result.Status);
             Assert.Equal(FailureReason.Unknown, result.FailureReason);
             Assert.Equal($"Argo status = '{phase}'. Messages = 'error'.", result.Errors);
         }
