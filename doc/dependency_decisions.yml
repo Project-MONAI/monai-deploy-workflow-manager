@@ -1336,7 +1336,6 @@
     :when: 2022-08-16 14:46:00.000000000 +01:00
 - - :approve
   - Microsoft.AspNetCore.Authorization.Policy
->>>>>>> Stashed changes
   - :who: Jack Schofield (JackSchofield23)
     :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
     :versions: []
