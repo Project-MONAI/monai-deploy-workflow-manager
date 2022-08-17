@@ -58,17 +58,29 @@ Scenario: Publish a valid Task Update event as failed which does not trigger a n
 
 @TaskDestinationConditions
 Scenario: Task destination with condition true, WFI is updated with Task and task dispatch message is published
-    Given I have a clinical workflow Multi_Task_Workflow_Destination_Single_Condition_True
-    And I have a Workflow Instance WFI_Task_Destination_Condition_True with no artifacts
-    When I publish a Task Update Message Task_Update_Task_Destination_Condition_True with status Succeeded
+    Given I have a clinical workflow <workflow>
+    And I have a Workflow Instance <workflowInstance> with no artifacts
+    And I have a payload saved in mongo <payload>
+    When I publish a Task Update Message <taskUpdateMessage> with status Succeeded
     Then 1 Task Dispatch event is published
+    Examples:
+    | workflow                                                            | workflowInstance                                  | taskUpdateMessage                                         | payload              |
+    | Multi_Task_Workflow_Destination_Single_Condition_True               | WFI_Task_Destination_Condition_True               | Task_Update_Task_Destination_Condition_True               | Payload_Full_Patient |
+    | Multi_Task_Workflow_Destination_Single_Metadata_Condition_True      | WFI_Task_Destination_Metadata_Condition_True      | Task_Update_Task_Destination_Metadata_Condition_True      | Payload_Full_Patient |
+    #| Multi_Task_Workflow_Destination_Single_Metadata_Null_Condition_True | WFI_Task_Destination_Metadata_Null_Condition_True | Task_Update_Task_Destination_Metadata_Null_Condition_True | Payload_Null         |  # This test requires extra work, currently empty payload do not return null so it returns an empty string and may as well be like the above test https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/320
 
 @TaskDestinationConditions
 Scenario: Task destination with condition false, WFI is not updated with Task and task dispatch message is not published
-    Given I have a clinical workflow Multi_Task_Workflow_Destination_Single_Condition_False
-    And I have a Workflow Instance WFI_Task_Destination_Condition_False with no artifacts
-    When I publish a Task Update Message Task_Update_Task_Destination_Condition_False with status Succeeded
+    Given I have a clinical workflow <workflow>
+    And I have a Workflow Instance <workflowInstance> with no artifacts
+    And I have a payload saved in mongo <payload>
+    When I publish a Task Update Message <taskUpdateMessage> with status Succeeded
     Then A Task Dispatch event is not published
+    Examples:
+    | workflow                                                        | workflowInstance                              | taskUpdateMessage                                     | payload              |
+    | Multi_Task_Workflow_Destination_Single_Condition_False          | WFI_Task_Destination_Condition_False          | Task_Update_Task_Destination_Condition_False          | Payload_Full_Patient |
+    | Multi_Task_Workflow_Destination_Single_Metadata_Condition_False | WFI_Task_Destination_Metadata_Condition_False | Task_Update_Task_Destination_Metadata_Condition_False | Payload_Full_Patient |
+    #| Multi_Task_Workflow_Destination_Single_Metadata_Condition_False | WFI_Task_Destination_Metadata_Condition_False | Task_Update_Task_Destination_Metadata_Condition_False | Payload_Null         | # This test requires extra work, currently empty payload do not return null so it returns an empty string and may as well be like the above test https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/320
 
 @TaskDestinationConditions
 Scenario: Multiple task destinations with condition true, multiple task dispatch messages sent

@@ -59,28 +59,24 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService.Tests
             var expectedExecutionId = Guid.NewGuid().ToString();
             var workflowInstanceId = Guid.NewGuid().ToString();
 
-            var taskExecution = new List<WorkflowInstanceTasksUnwindResult> {
-                new WorkflowInstanceTasksUnwindResult
+            var taskExecution = new List<TaskExecution> {
+                new TaskExecution
                 {
-                    WorkflowId = workflowInstanceId,
-                    Tasks =
-                        new TaskExecution
-                        {
-                            ExecutionId = expectedExecutionId,
-                            TaskId = expectedTaskId,
-                            Status = TaskExecutionStatus.Dispatched,
-                            TimeoutInterval = -2,
-                            TaskStartTime = DateTime.UtcNow,
-                            ExecutionStats = new Dictionary<string, string>()
-                            {
-                                { IdentityKey, Guid.NewGuid().ToString() }
-                            }
-                        }
+                    ExecutionId = expectedExecutionId,
+                    TaskId = expectedTaskId,
+                    WorkflowInstanceId = workflowInstanceId,
+                    Status = TaskExecutionStatus.Dispatched,
+                    TimeoutInterval = -2,
+                    TaskStartTime = DateTime.UtcNow,
+                    ExecutionStats = new Dictionary<string, string>()
+                    {
+                        { IdentityKey, Guid.NewGuid().ToString() }
+                    }
                 }
             };
 
             _pubService.Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>())).Returns(Task.CompletedTask);
-            _repo.Setup(r => r.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>())).ReturnsAsync(() => taskExecution);
+            _repo.Setup(r => r.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>())).ReturnsAsync(() => (taskExecution, 1));
             var tokenSource = new CancellationTokenSource();
 
             await _service.DoWork();

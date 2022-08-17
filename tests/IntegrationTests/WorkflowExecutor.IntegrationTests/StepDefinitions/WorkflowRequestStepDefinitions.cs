@@ -133,7 +133,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"A Task Dispatch event is not published")]
         public void ThenATaskDispatchEventIsNotPublished()
         {
-            for (var i = 0; i < 3; i++)
+            for (var i = 0; i < 5; i++)
             {
                 var taskDispatchEvent = TaskDispatchConsumer.GetMessage<TaskDispatchEvent>();
 
@@ -143,7 +143,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
                     if (workflowInstance != null)
                     {
-                        if (taskDispatchEvent.ExecutionId == workflowInstance.Tasks[0].ExecutionId)
+                        if (workflowInstance.Tasks.FirstOrDefault(x => x.ExecutionId.Equals(taskDispatchEvent.ExecutionId)) != null)
                         {
                             throw new Exception($"Task Dispatch Event has been published when workflowInstance status was {workflowInstance.Tasks[0].Status}");
                         }

@@ -237,17 +237,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
             if (taskUpdateTestData != null && taskUpdateTestData.TaskUpdateEvent != null)
             {
-                if (!taskUpdateTestData.Name.Contains("Missing_Status"))
+                taskUpdateTestData.TaskUpdateEvent.Status = updateStatus.ToLower() switch
                 {
-                    taskUpdateTestData.TaskUpdateEvent.Status = updateStatus.ToLower() switch
-                    {
-                        "accepted" => TaskExecutionStatus.Accepted,
-                        "succeeded" => TaskExecutionStatus.Succeeded,
-                        "failed" => TaskExecutionStatus.Failed,
-                        "canceled" => TaskExecutionStatus.Canceled,
-                        _ => throw new Exception($"updateStatus {updateStatus} is not recognised. Please check and try again."),
-                    };
-                }
+                    "accepted" => TaskExecutionStatus.Accepted,
+                    "succeeded" => TaskExecutionStatus.Succeeded,
+                    "failed" => TaskExecutionStatus.Failed,
+                    "canceled" => TaskExecutionStatus.Canceled,
+                    _ => throw new Exception($"updateStatus {updateStatus} is not recognised. Please check and try again."),
+                };
 
                 TaskUpdateEvent = taskUpdateTestData.TaskUpdateEvent;
 

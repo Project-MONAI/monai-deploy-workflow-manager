@@ -55,10 +55,27 @@ Scenario Outline: Get details of a Task with non-existent id payload
     | Non_Existent_ExecutionID_Task_Details_2 |
     | Non_Existent_TaskID_Task_Details_3      |
 
-@Task_Api @ignore #/tasks/running endpoint needs some dev work to ensure the filter works correctly. Ticket https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/308
+@Task_Api
 Scenario: Get details of all Tasks
     Given I have an endpoint /tasks/running?pageNumber=1&pageSize=10
     And I have a Workflow Instance WorkflowInstance_TaskApi_1 with no artifacts
     When I send a GET request
     Then I will get a 200 response
-    And I can see task payload is returned
+    And I can see 3 tasks are returned
+
+@Task_Api
+Scenario: Get details of all Tasks From Multiple Workflows
+    Given I have an endpoint /tasks/running?pageNumber=1&pageSize=10
+    And I have a Workflow Instance WorkflowInstance_TaskApi_1 with no artifacts
+    And I have a Workflow Instance WorkflowInstance_TaskApi_2 with no artifacts
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see 6 tasks are returned
+
+@Task_Api
+Scenario: Get details of all Tasks From Multiple Workflows returns no tasks
+    Given I have an endpoint /tasks/running?pageNumber=1&pageSize=10
+    And I have a Workflow Instance WorkflowInstance_TaskApi_3 with no artifacts
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see 0 tasks are returned

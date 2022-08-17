@@ -743,6 +743,108 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowRevisionTestData()
             {
+                Name = "Multi_Task_Workflow_Destination_Single_Metadata_Condition_True",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Multi Task workflow 3",
+                        Description = "Multi Task workflow 3",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Input", Value = "{{ context.input.dicom }}" },
+                                    },
+                                },
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination()
+                                    {
+                                        Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
+                                        Conditions = "{{ context.input.patient_details.name }} == 'Steve Jobs'"
+                                    },
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "b9964b10-acb4-4050-a610-374fdbe2100d",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Multi_Task_3"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Multi_Task_Workflow_Destination_Single_Metadata_Null_Condition_True",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Multi Task workflow 3",
+                        Description = "Multi Task workflow 3",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Input", Value = "{{ context.input.dicom }}" },
+                                    },
+                                },
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination()
+                                    {
+                                        Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
+                                        Conditions = "{{ context.input.patient_details.name }} == null"
+                                    },
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "b9964b10-acb4-4050-a610-374fdbe2100d",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Multi_Task_3"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
                 Name = "Multi_Task_Workflow_Destination_Single_Condition_False",
                 WorkflowRevision = new WorkflowRevision()
                 {
@@ -768,6 +870,57 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                     {
                                         Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
                                         Conditions = "'false'=='true'"
+                                    },
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "b9964b10-acb4-4050-a610-374fdbe2100d",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Multi_Task_3"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Multi_Task_Workflow_Destination_Single_Metadata_Condition_False",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Multi Task workflow 3",
+                        Description = "Multi Task workflow 3",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "36d29b9d-d496-4568-a305-f0775c0f2084",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Input", Value = "{{ context.input.dicom }}" },
+                                    },
+                                },
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination()
+                                    {
+                                        Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
+                                        Conditions = "{{ context.input.patient_details.name }} == 'Incorrect Name'"
                                     },
                                 }
                             },

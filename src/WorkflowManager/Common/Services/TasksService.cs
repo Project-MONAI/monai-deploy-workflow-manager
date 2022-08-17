@@ -30,20 +30,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
         }
 
         /// <summary>
-        /// Not Required For Tasks Service is 
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<long> CountAsync()
-            => await _tasksRepository.CountAsync();
-
-        /// <summary>
-        /// Gets all running  tasks
+        /// Gets all running tasks and a total running task count.
         /// </summary>
         /// <param name="skip"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        public async Task<IList<WorkflowInstanceTasksUnwindResult>> GetAllAsync(int? skip = null, int? limit = null)
+        public async Task<(IList<TaskExecution>, long)> GetAllAsync(int? skip = null, int? limit = null)
             => await _tasksRepository.GetAllAsync(skip, limit);
 
         /// <summary>

@@ -281,7 +281,30 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         PatientSex = "male"
                     }
                 }
-            }
+            },
+            new PayloadTestData()
+            {
+                Name = "Payload_Null",
+                Payload = new Payload()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    Bucket = "bucket_1",
+                    CalledAeTitle = "MIG",
+                    CallingAeTitle = "Basic_AE",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = "c5c3636b-81dd-44a9-8c4b-71adec7d47b2",
+                    Workflows = new List<string> { Guid.NewGuid().ToString() },
+                    FileCount = 50,
+                    PatientDetails = new PatientDetails()
+                    {
+                        PatientDob = null,
+                        PatientId = null,
+                        PatientName = null,
+                        PatientSex = null
+                    }
+                }
+            },
         };
     }
 }
