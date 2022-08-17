@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
+
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefinitions
 {
     [Binding]

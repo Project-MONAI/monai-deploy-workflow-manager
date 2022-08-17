@@ -32,10 +32,10 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.Database;
 using Monai.Deploy.WorkflowManager.TaskManager.Database.Options;
-using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests;
 using MongoDB.Driver;
+using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
+namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 {
     public static class TaskManagerStartup
     {
