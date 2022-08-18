@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Logging.Models;
@@ -114,7 +116,45 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
 
             var jsonString = JsonConvert.SerializeObject(objectLog);
 
-            logger.LogInformation(27, message: jsonString);
+            logger.LogInformation(28, message: jsonString);
+        }
+
+        public static void LogControllerStartTime(this ILogger logger, ActionExecutingContext context)
+        {
+            var request = context.HttpContext.Request;
+            var body = context.ActionArguments.FirstOrDefault();
+            var objectLog = new ObjectLog
+            {
+                Message = "ControllerActionStart",
+                Object = LoggerHelpers.ToLogControllerStartObject(request.Method, request.Path, request.QueryString.Value.ToString(), body.Value ?? "", "", "")
+            };
+
+            var jsonString = JsonConvert.SerializeObject(objectLog);
+
+            logger.LogInformation(29, message: jsonString);
+        }
+
+        public static void LogControllerEndTime(this ILogger logger, ResultExecutedContext context)
+        {
+            var request = context.HttpContext.Request;
+            var response = context.HttpContext.Response;
+
+            var objResult = new ObjectResult("");
+
+            if (context.Result is ObjectResult)
+            {
+                objResult = (ObjectResult)context.Result;
+            }
+
+            var objectLog = new ObjectLog
+            {
+                Message = "ControllerActionEnd",
+                Object = LoggerHelpers.ToLogControllerEndObject(request.Method, request.Path, request.QueryString.Value.ToString(), response.StatusCode.ToString(), objResult?.Value ?? "", "", "")
+            };
+
+            var jsonString = JsonConvert.SerializeObject(objectLog);
+
+            logger.LogInformation(29, message: jsonString);
         }
     }
 }

@@ -1316,3 +1316,117 @@
     :why: Dotnet - https://www.nuget.org/packages/Microsoft.AspNet.WebApi.Client/5.2.9/License
     :versions: []
     :when: 2022-06-08 11:18:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.Http
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.Http.Abstractions
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.Http.Extensions
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.Http.Features
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.Authentication.Abstractions
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.Authentication.Core
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.Authorization
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.Authorization.Policy
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.Mvc.Abstractions
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.Mvc.Core
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.ResponseCaching.Abstractions
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.Hosting.Abstractions
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  - Microsoft.AspNetCore.Hosting.Server.Abstractions
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  -  Microsoft.AspNetCore.Routing
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  -  Microsoft.AspNetCore.Routing.Abstractions
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  -  Microsoft.Net.Http.Headers
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  -  Microsoft.DotNet.PlatformAbstractions
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  -  Microsoft.Extensions.ObjectPool
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  -  Microsoft.AspNetCore.WebUtilities
+  - :who: Jack Schofield (JackSchofield23)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-08-16 14:46:00.000000000 +01:00
