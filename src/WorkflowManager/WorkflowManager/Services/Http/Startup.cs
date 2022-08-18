@@ -20,6 +20,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Monai.Deploy.WorkflowManager.Logging.Attributes;
 using Newtonsoft.Json.Converters;
 
 namespace Monai.Deploy.WorkflowManager.Services.Http
@@ -57,7 +58,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
                     options.SubstituteApiVersionInUrl = true;
                 });
 
-            services.AddControllers().AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()));
+            services.AddControllers(options => options.Filters.Add(typeof(LogActionFilterAttribute))).AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MONAI Workflow Manager", Version = "v1" });
