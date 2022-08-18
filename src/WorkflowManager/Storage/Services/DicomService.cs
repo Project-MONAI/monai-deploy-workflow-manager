@@ -63,7 +63,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             return patientDetails;
         }
 
-        public async Task<string> GetFirstValueAsync(IList<VirtualFileInfo> items, string payloadId, string bucketId, string keyId)
+        public async Task<string?> GetFirstValueAsync(IList<VirtualFileInfo> items, string payloadId, string bucketId, string keyId)
         {
             Guard.Against.NullOrWhiteSpace(bucketId);
             Guard.Against.NullOrWhiteSpace(payloadId);
@@ -73,7 +73,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             {
                 if (items is null || items.Count == 0)
                 {
-                    return string.Empty;
+                    return null;
                 }
 
                 foreach (var item in items)
@@ -109,7 +109,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
                 _logger.FailedToGetDicomTag(payloadId, keyId, bucketId, e);
             }
 
-            return string.Empty;
+            return null;
         }
 
         public async Task<IEnumerable<string>> GetDicomPathsForTaskAsync(string outputDirectory, string bucketName)
