@@ -59,7 +59,7 @@ jobs:
         acs-report-enable: true
 
     - name: upload Workflow Manager Anchore scan SARIF report
-      uses: github/codeql-action/upload-sarif@v1
+      uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: ${{ steps.scan-workflow-manager.outputs.sarif }}
         category: workflow-manager
@@ -74,7 +74,7 @@ jobs:
         acs-report-enable: true
 
     - name: upload Task Manager Anchore scan SARIF report
-      uses: github/codeql-action/upload-sarif@v1
+      uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: ${{ steps.scan-task-manager.outputs.sarif }}
         category: task-manager
