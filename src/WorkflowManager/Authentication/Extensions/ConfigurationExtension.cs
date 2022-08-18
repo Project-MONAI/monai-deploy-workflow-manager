@@ -21,6 +21,20 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
 {
     public static class ConfigurationExtension
     {
+        public static bool BypassAuth(this IConfiguration configuration)
+        {
+            Guard.Against.Null(configuration, nameof(configuration));
+
+            var authenticationSettings = configuration.GetSection("WorkflowManagerAuthentication");
+            Guard.Against.Null(authenticationSettings, nameof(authenticationSettings), "Missing WorkflowManagerAuthentication section in config.");
+
+            if (authenticationSettings["OpenId"] is null)
+            {
+                return true;
+            }
+
+            return false;
+        }
         /// <summary>
         /// Gets configuration values from the IConfiguration provider.
         /// under "WorkflowManagerAuthentication" key you are able to
@@ -44,8 +58,6 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
             Guard.Against.Null(authenticationSettings, nameof(authenticationSettings), "Missing WorkflowManagerAuthentication section in config.");
 
             var authenticationSettingsSection = authenticationSettings.GetSection("OpenId");
-            Guard.Against.Null(authenticationSettings, nameof(authenticationSettings), "OpenId section not found.");
-
             serverRealm = authenticationSettingsSection["ServerRealm"];
             Guard.Against.NullOrWhiteSpace(serverRealm, nameof(serverRealm), "SeverRealm is a required authenticationSettings attribute.");
             serverRealmKey = authenticationSettingsSection["ServerRealmKey"];

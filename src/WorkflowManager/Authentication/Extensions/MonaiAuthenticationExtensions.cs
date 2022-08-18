@@ -21,9 +21,34 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Monai.Deploy.WorkflowManager.Common.Extensions;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Options;
+using System.Security.Claims;
+using System.Text.Encodings.Web;
+using Microsoft.Extensions.Logging;
 
 namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
 {
+    public class LocalAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+    {
+        public LocalAuthenticationHandler(
+            IOptionsMonitor<AuthenticationSchemeOptions> options,
+            ILoggerFactory logger,
+            UrlEncoder encoder,
+            ISystemClock clock)
+            : base(options, logger, encoder, clock)
+        {
+        }
+
+        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+        {
+            // Create an empty claims identity and pass it off as a valid user.  This is only valid in a local build environment to bypass the
+            // web-based authentication service.
+            var principal = new ClaimsPrincipal(new ClaimsIdentity(Array.Empty<Claim>(), this.Scheme.Name));
+            return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(principal, this.Scheme.Name)));
+        }
+    }
+
 
     public static class MonaiAuthenticationExtensions
     {
@@ -36,6 +61,13 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
         {
+            if (configuration.BypassAuth())
+            {
+                services.AddAuthentication(options => options.DefaultAuthenticateScheme = "testing")
+                    .AddScheme<AuthenticationSchemeOptions, LocalAuthenticationHandler>("testing", null);
+                return services;
+            }
+
             configuration.GetAndValidateConfig(
                 out var serverRealm, out var serverRealmKey, out var requiredUserClaims, out var requiredAdminClaims);
 

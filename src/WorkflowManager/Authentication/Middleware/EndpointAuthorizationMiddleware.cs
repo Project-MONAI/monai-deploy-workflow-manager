@@ -38,6 +38,11 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Middleware
 
         public async Task InvokeAsync(HttpContext httpcontext)
         {
+            if (_configuration.BypassAuth())
+            {
+                await _next(httpcontext);
+                return;
+            }
             if (httpcontext.User is not null
                 && httpcontext.User.Identity is not null
                 && httpcontext.User.Identity.IsAuthenticated)
@@ -59,6 +64,10 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Middleware
                     }
                 }
                 await _next(httpcontext);
+            }
+            else
+            {
+                httpcontext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             }
         }
     }

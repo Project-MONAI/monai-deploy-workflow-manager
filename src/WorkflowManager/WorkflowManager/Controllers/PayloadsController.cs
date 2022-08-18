@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -32,7 +31,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
     /// Payloads Controller.
     /// </summary>
     [ApiController]
-    [Route("payloads")]
+    [Route("payload")]
     public class PayloadsController : AuthenticatedApiControllerBase
     {
         private readonly IOptions<WorkflowManagerOptions> _options;
