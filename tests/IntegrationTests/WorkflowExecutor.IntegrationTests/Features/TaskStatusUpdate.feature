@@ -30,6 +30,17 @@ Scenario Outline: Publish a valid Task Update event which updates the Task statu
     | Canceled         |
 
 @TaskUpdate
+Scenario Outline: Publish a valid Task Update event with a failed status and failure reason
+    Given I have a clinical workflow Task_Status_Update_Workflow
+    And I have a Workflow Instance WFI_Task_Status_Update with no artifacts
+    When I publish a Task Update Message <taskUpdateEvent> with status Failed
+    Then I can see the status of the Task is updated
+    Examples:
+    | taskUpdateEvent                         |
+    | Task_Status_Update_Invalid_Message      |
+    | Task_Status_Update_Runner_Not_Supported |
+
+@TaskUpdate
 Scenario Outline: Publish a successful Task Update event which updates the Task status and copies the metadata
     Given I have a clinical workflow Task_Status_Update_Workflow
     And I have a Workflow Instance WFI_Task_Status_Update with no artifacts

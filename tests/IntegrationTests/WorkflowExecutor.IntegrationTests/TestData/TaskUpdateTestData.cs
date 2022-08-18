@@ -105,6 +105,40 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new TaskUpdateTestData()
             {
+                Name = "Task_Status_Update_Invalid_Message",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Unknown,
+                    Reason = FailureReason.InvalidMessage,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "Task_Status_Update_Runner_Not_Supported",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Unknown,
+                    Reason = FailureReason.RunnerNotSupported,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
                 Name = "Task_Status_Update_Meta_String",
                 TaskUpdateEvent = new TaskUpdateEvent()
                 {
