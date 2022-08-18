@@ -28,14 +28,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
             return newStatus switch
             {
-                TaskExecutionStatus.Unknown => newStatus.UnknownValidStatuses(),
                 TaskExecutionStatus.Created => newStatus.CreatedValidStatuses(oldStatus),
                 TaskExecutionStatus.Dispatched => newStatus.DispatchedValidStatuses(oldStatus),
                 TaskExecutionStatus.Accepted => newStatus.AcceptedValidStatuses(oldStatus),
                 TaskExecutionStatus.Succeeded => newStatus.SucceededValidStatuses(oldStatus),
                 TaskExecutionStatus.Failed => newStatus.FailedValidStatuses(oldStatus),
                 TaskExecutionStatus.Canceled => newStatus.CanceledValidStatuses(oldStatus),
-                TaskExecutionStatus.Exported => newStatus.ExportedValidStatuses(oldStatus),
                 _ => false,
             };
         }
@@ -46,16 +44,14 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 oldStatus != TaskExecutionStatus.Created &&
                 oldStatus != TaskExecutionStatus.Failed &&
                 oldStatus != TaskExecutionStatus.Canceled &&
-                oldStatus != TaskExecutionStatus.Succeeded &&
-                oldStatus != TaskExecutionStatus.Unknown;
+                oldStatus != TaskExecutionStatus.Succeeded;
 
         private static bool DispatchedValidStatuses(this TaskExecutionStatus newStatus, TaskExecutionStatus oldStatus) =>
             newStatus == TaskExecutionStatus.Dispatched &&
                 oldStatus != TaskExecutionStatus.Dispatched &&
                 oldStatus != TaskExecutionStatus.Canceled &&
                 oldStatus != TaskExecutionStatus.Failed &&
-                oldStatus != TaskExecutionStatus.Succeeded &&
-                oldStatus != TaskExecutionStatus.Unknown;
+                oldStatus != TaskExecutionStatus.Succeeded;
 
         private static bool CreatedValidStatuses(this TaskExecutionStatus newStatus, TaskExecutionStatus oldStatus) =>
             newStatus == TaskExecutionStatus.Created &&
@@ -64,11 +60,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 oldStatus != TaskExecutionStatus.Failed &&
                 oldStatus != TaskExecutionStatus.Canceled &&
                 oldStatus != TaskExecutionStatus.Succeeded &&
-                oldStatus != TaskExecutionStatus.Accepted &&
-                oldStatus != TaskExecutionStatus.Unknown;
-
-        private static bool UnknownValidStatuses(this TaskExecutionStatus newStatus) =>
-            false;
+                oldStatus != TaskExecutionStatus.Accepted;
 
         private static bool SucceededValidStatuses(this TaskExecutionStatus newStatus, TaskExecutionStatus oldStatus) =>
             newStatus == TaskExecutionStatus.Succeeded &&
@@ -84,12 +76,5 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             newStatus == TaskExecutionStatus.Canceled &&
                 oldStatus != TaskExecutionStatus.Succeeded &&
                 oldStatus != TaskExecutionStatus.Failed;
-
-        private static bool ExportedValidStatuses(this TaskExecutionStatus newStatus, TaskExecutionStatus oldStatus) =>
-            newStatus == TaskExecutionStatus.Exported &&
-                oldStatus != TaskExecutionStatus.Succeeded &&
-                oldStatus != TaskExecutionStatus.Failed &&
-                oldStatus != TaskExecutionStatus.Created &&
-                oldStatus != TaskExecutionStatus.Canceled;
     }
 }
