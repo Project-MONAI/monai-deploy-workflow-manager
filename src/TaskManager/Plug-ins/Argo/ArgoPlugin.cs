@@ -193,7 +193,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 {
                     return new ExecutionStatus
                     {
-                        Status = TaskExecutionStatus.Unknown,
+                        Status = TaskExecutionStatus.Failed,
                         FailureReason = FailureReason.Unknown,
                         Errors = $"Argo status = '{workflow.Status.Phase}'. Messages = '{workflow.Status.Message}'.",
                         Stats = stats
