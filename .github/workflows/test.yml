@@ -31,7 +31,7 @@ jobs:
         fetch-depth: 0
 
     - name: Install Dotnet
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -102,7 +102,7 @@ jobs:
         fetch-depth: 0
 
     - name: Install Dotnet
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -171,7 +171,7 @@ jobs:
         fetch-depth: 0
 
     - name: Install Dotnet
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -212,7 +212,7 @@ jobs:
         fetch-depth: 0
 
     - name: Install Dotnet
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
