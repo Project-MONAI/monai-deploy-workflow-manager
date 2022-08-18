@@ -57,12 +57,15 @@ jobs:
         fail-build: true
         severity-cutoff: high
         acs-report-enable: true
+      if: always()
+
 
     - name: upload Workflow Manager Anchore scan SARIF report
       uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: ${{ steps.scan-workflow-manager.outputs.sarif }}
         category: workflow-manager
+      if: always()
 
     - name: Scan Task Manager image with Anchore
       id: scan-task-manager
@@ -72,9 +75,13 @@ jobs:
         fail-build: true
         severity-cutoff: high
         acs-report-enable: true
+      if: always()
+
 
     - name: upload Task Manager Anchore scan SARIF report
       uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: ${{ steps.scan-task-manager.outputs.sarif }}
         category: task-manager
+      if: always()
+
