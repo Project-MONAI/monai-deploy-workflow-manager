@@ -23,7 +23,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
         /// <summary>
         /// Gets or sets the status of the execution.
         /// </summary>
-        public TaskExecutionStatus Status { get; set; }
+        public TaskExecutionStatus Status { get; set; } = TaskExecutionStatus.Created;
 
         /// <summary>
         /// Gets or sets the reason of a failure.
