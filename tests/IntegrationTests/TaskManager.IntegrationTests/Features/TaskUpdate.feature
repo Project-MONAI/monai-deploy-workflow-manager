@@ -40,8 +40,18 @@ Scenario Outline: TaskUpdateEvent is published with status Failed after receivin
 @TaskCallback_TaskUpdate
 Scenario: TaskUpdateEvent is published with status Successful after receiving a valid TaskCallbackEvent
     Given I have a bucket in MinIO bucket1
-    When A Task Dispatch event is published Task_Dispatch_Basic
+    When A Task Dispatch event is published Task_Dispatch_Basic_Clinical_Review
     Then A Task Update event with status Accepted is published with Task Dispatch details
     And The Task Dispatch event is saved in mongo
     And A Task Callback event is published Task_Callback_Basic
     And A Task Update event with status Succeeded is published with Task Callback details
+
+@TaskDispatch_Persistance @ignore # Currently failing due to https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/328
+Scenario: TaskDispatchEvent with different permutations is published and matching TaskDispatchEvent is saved in Mongo
+    When A Task Dispatch event is published <taskDispatchMessage>
+    Then The Task Dispatch event is saved in mongo
+    Examples:
+    | taskDispatchMessage                 |
+    | Task_Dispatch_Basic_Clinical_Review |
+    | Task_Dispatch_Basic_Argo            |
+    | Task_Dispatch_Invalid               |

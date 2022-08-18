@@ -50,6 +50,21 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             return res;
         }
 
+        public void DeleteAllTaskDispatch()
+        {
+            RetryMongo.Execute(() =>
+            {
+                TaskDispatchEventInfoCollection.DeleteMany("{ }");
+
+                var taskDispatch = TaskDispatchEventInfoCollection.Find("{ }").ToList();
+
+                if (taskDispatch.Count > 0)
+                {
+                    throw new Exception("All task Dispatch Events were not deleted!");
+                }
+            });
+        }
+
         #endregion TaskDispatchEventInfo
 
         public void DropDatabase(string dbName)

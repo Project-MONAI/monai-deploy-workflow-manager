@@ -73,6 +73,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
             _outputHelper.WriteLine($"Successfully published TaskCallbackEvent with name={name}");
         }
 
+        [Given(@"A Task Dispatch event is published (.*)")]
         [When(@"A Task Dispatch event is published (.*)")]
         public void ATaskDispatchEventIsPublished(string name)
         {

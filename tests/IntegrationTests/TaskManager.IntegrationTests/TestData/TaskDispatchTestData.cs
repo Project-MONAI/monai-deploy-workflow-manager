@@ -31,7 +31,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         {
             new TaskDispatchTestData
             {
-                Name = "Task_Dispatch_Basic",
+                Name = "Task_Dispatch_Basic_Clinical_Review",
                 TaskDispatchEvent = new TaskDispatchEvent()
                 {
                     PayloadId = Guid.NewGuid().ToString(),
@@ -76,6 +76,69 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
                     }
+                }
+            },
+            new TaskDispatchTestData
+            {
+                Name = "Task_Dispatch_Basic_Argo",
+                TaskDispatchEvent = new TaskDispatchEvent()
+                {
+                    PayloadId = Guid.NewGuid().ToString(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    ExecutionId = Guid.NewGuid().ToString(),
+                    WorkflowInstanceId = Guid.NewGuid().ToString(),
+                    TaskId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Dispatched,
+                    TaskPluginType = "argo",
+                    Inputs = new List<Messaging.Common.Storage>()
+                    {
+                        new Messaging.Common.Storage
+                        {
+                            Name = "input1",
+                            Endpoint = "//test_1",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test1",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = "//dcm_1"
+                        },
+                    },
+                    IntermediateStorage = new Messaging.Common.Storage
+                    {
+                        Name = "input",
+                        Endpoint = "//test",
+                        Credentials = new Messaging.Common.Credentials()
+                        {
+                            AccessKey = "test",
+                            AccessToken = "test",
+                        },
+                        Bucket = "bucket1",
+                        RelativeRootPath = "//dcm"
+                    },
+                    TaskPluginArguments = new Dictionary<string, string>()
+                    {
+                        { "Namespace", "Namespace_1" },
+                        { "ArgoApiToken", "123456789" },
+                        { "AllowInsecureUrl", "false" },
+                        { "BaseUrl", "https://test.com" },
+                        { "queue_name", "aide.clinical_review.request" },
+                    }
+                }
+            },
+            new TaskDispatchTestData
+            {
+                Name = "Task_Dispatch_Invalid",
+                TaskDispatchEvent = new TaskDispatchEvent()
+                {
+                    PayloadId = Guid.NewGuid().ToString(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    ExecutionId = Guid.NewGuid().ToString(),
+                    WorkflowInstanceId = Guid.NewGuid().ToString(),
+                    TaskId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Dispatched,
+                    TaskPluginType = "argo",
                 }
             },
             new TaskDispatchTestData
