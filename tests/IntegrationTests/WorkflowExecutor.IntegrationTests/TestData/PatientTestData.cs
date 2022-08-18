@@ -49,11 +49,11 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 Patient = new PatientDetails()
                 {
                     PatientId = "2",
-                    PatientName = "",
+                    PatientName = null,
                     PatientSex = "female",
                     PatientDob = null,
-                    PatientAge = "",
-                    PatientHospitalId = ""
+                    PatientAge = null,
+                    PatientHospitalId = null
                 }
             },
             new PatientTestData()
@@ -61,12 +61,12 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 Name = "Null_Patient",
                 Patient = new PatientDetails()
                 {
-                    PatientId = "",
-                    PatientName = "",
-                    PatientSex = "",
+                    PatientId = null,
+                    PatientName = null,
+                    PatientSex = null,
                     PatientDob = null,
-                    PatientAge = "",
-                    PatientHospitalId = ""
+                    PatientAge = null,
+                    PatientHospitalId = null
                 }
             },
         };
