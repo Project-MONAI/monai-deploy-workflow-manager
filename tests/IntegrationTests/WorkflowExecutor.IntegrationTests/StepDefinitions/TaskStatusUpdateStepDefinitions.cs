@@ -126,6 +126,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
                 taskUpdated.Should().NotBeNull();
                 taskUpdated?.Status.Should().Be(DataHelper.TaskUpdateEvent.Status);
+                taskUpdated?.Reason.Should().Be(DataHelper.TaskUpdateEvent.Reason);
 
                 if (DataHelper.TaskDispatchEvents.Count > 0)
                 {
