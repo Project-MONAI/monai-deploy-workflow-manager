@@ -40,7 +40,7 @@ Scenario Outline: TaskUpdateEvent is published with status Failed after receivin
 @TaskCallback_TaskUpdate
 Scenario: TaskUpdateEvent is published with status Successful after receiving a valid TaskCallbackEvent
     Given I have a bucket in MinIO bucket1
-    When A Task Dispatch event is published Task_Dispatch_Basic_1
+    When A Task Dispatch event is published Task_Dispatch_Basic_Clinical_Review
     Then A Task Update event with status Accepted is published with Task Dispatch details
     And The Task Dispatch event is saved in mongo
     And A Task Callback event is published Task_Callback_Basic
