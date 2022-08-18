@@ -65,7 +65,6 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
             });
 
             services.AddMonaiAuthentication(Configuration);
-
         }
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)

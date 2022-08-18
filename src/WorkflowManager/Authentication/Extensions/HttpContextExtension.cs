@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
 
 namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
@@ -28,6 +29,8 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
         /// <returns></returns>
         public static List<string> GetValidEndpoints(this HttpContext httpcontext, Dictionary<string, string>[] requiredClaims)
         {
+            Guard.Against.Null(requiredClaims);
+
             foreach (var claim in requiredClaims)
             {
                 var claims = claim.Single(c => c.Key != "endpoints");
@@ -48,6 +51,13 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
             return new List<string>();
         }
 
+        /// <summary>
+        /// Wrapper for GetValidEndpoints but able to process admins and users passed in together.
+        /// </summary>
+        /// <param name="httpcontext"></param>
+        /// <param name="requiredAdminClaims"></param>
+        /// <param name="requiredUsersClaims"></param>
+        /// <returns></returns>
         public static List<string> GetValidEndpoints(this HttpContext httpcontext, Dictionary<string, string>[] requiredAdminClaims, Dictionary<string, string>[] requiredUsersClaims)
         {
             var validEndpoints = httpcontext.GetValidEndpoints(requiredUsersClaims);

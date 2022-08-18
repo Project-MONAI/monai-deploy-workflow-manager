@@ -36,7 +36,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         private readonly IOptions<WorkflowManagerOptions> _options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthenticatedApiControllerBase"/> class.
+        /// Initializes a new instance of the <see cref="ApiControllerBase"/> class.
         /// </summary>
         /// <param name="options">Workflow manager options.</param>
         public ApiControllerBase(IOptions<WorkflowManagerOptions> options)

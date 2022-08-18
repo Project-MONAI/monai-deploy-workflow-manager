@@ -35,6 +35,7 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
 
             return false;
         }
+
         /// <summary>
         /// Gets configuration values from the IConfiguration provider.
         /// under "WorkflowManagerAuthentication" key you are able to
