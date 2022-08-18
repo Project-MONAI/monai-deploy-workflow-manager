@@ -43,6 +43,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         private static RabbitConsumer? TaskUpdateConsumer { get; set; }
         public static RabbitConsumer? ClinicalReviewConsumer { get; private set; }
         private static MinioClientUtil? MinioClient { get; set; }
+        private static MongoClientUtil? MongoClient { get; set; }
         public static AsyncRetryPolicy RetryPolicy { get; private set; }
         private IObjectContainer ObjectContainer { get; set; }
         private static IHost? Host { get; set; }
@@ -81,9 +82,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             TestExecutionConfig.MinioConfig.Region = config.GetValue<string>("WorkflowManager:storage:settings:region");
 
             Host = TaskManagerStartup.StartTaskManager();
+            MongoClient = new MongoClientUtil();
             HttpClient = new HttpClient();
             MinioClient = new MinioClientUtil();
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+        }
+
+        [BeforeTestRun(Order = 2)]
+        [AfterTestRun(Order = 0)]
+        [AfterScenario]
+        public static void ClearTestData()
+        {
+            MongoClient?.DeleteAllTaskDispatch();
         }
 
         // <summary>

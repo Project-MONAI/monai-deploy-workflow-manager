@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Xml.Linq;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
 
@@ -35,6 +36,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         public DataHelper DataHelper { get; }
         public Assertions Assertions { get; }
 
+        [When(@"A Task Update event with status (.*) is published with Task Dispatch details")]
         [Then(@"A Task Update event with status (.*) is published with Task Dispatch details")]
         public void ATaskUpdateEventIsPublishedWithTaskDispatchDetails(string status)
         {
