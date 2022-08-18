@@ -60,6 +60,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
             }
         }
 
+        public async Task<TaskDispatchEventInfo?> UpdateUserAccountsAsync(TaskDispatchEventInfo taskDispatchEventInfo)
+        {
+            Guard.Against.Null(taskDispatchEventInfo, nameof(taskDispatchEventInfo));
+
+            try
+            {
+                await _taskDispatchEventCollection.FindOneAndUpdateAsync(i => i.Id == taskDispatchEventInfo.Id, Builders<TaskDispatchEventInfo>.Update.Set(p => p.UserAccounts, taskDispatchEventInfo.UserAccounts)).ConfigureAwait(false);
+                return await GetByTaskExecutionIdAsync(taskDispatchEventInfo.Event.ExecutionId).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                _logger.DatabaseException(nameof(UpdateUserAccountsAsync), e);
+                return default;
+            }
+        }
+
         public async Task<TaskDispatchEventInfo?> GetByTaskExecutionIdAsync(string taskExecutionId)
         {
             Guard.Against.NullOrWhiteSpace(taskExecutionId, nameof(taskExecutionId));
