@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityModel.OidcClient" Version="5.0.0" />
+    <PackageReference Include="IdentityModel.OidcClient" Version="5.0.2" />
     <PackageReference Include="KubernetesClient" Version="7.2.19" />
     <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="6.0.7">
       <PrivateAssets>all</PrivateAssets>
