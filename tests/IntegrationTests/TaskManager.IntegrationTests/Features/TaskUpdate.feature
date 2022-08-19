@@ -46,7 +46,7 @@ Scenario: TaskUpdateEvent is published with status Successful after receiving a 
     And A Task Callback event is published Task_Callback_Basic
     And A Task Update event with status Succeeded is published with Task Callback details
 
-@TaskDispatch_Persistance @ignore # Currently failing due to https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/328
+@TaskDispatch_Persistance
 Scenario: TaskDispatchEvent with different permutations is published and matching TaskDispatchEvent is saved in Mongo
     When A Task Dispatch event is published <taskDispatchMessage>
     Then The Task Dispatch event is saved in mongo
