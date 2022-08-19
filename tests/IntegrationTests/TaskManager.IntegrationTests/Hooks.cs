@@ -81,14 +81,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             TestExecutionConfig.MinioConfig.Bucket = config.GetValue<string>("WorkflowManager:storage:settings:bucket");
             TestExecutionConfig.MinioConfig.Region = config.GetValue<string>("WorkflowManager:storage:settings:region");
 
-            RabbitConnectionFactory.DeleteQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-            RabbitConnectionFactory.DeleteQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
-            RabbitConnectionFactory.DeleteQueue(TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
-            RabbitConnectionFactory.DeleteQueue(TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
-            RabbitConnectionFactory.DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter");
-            RabbitConnectionFactory.DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
-            RabbitConnectionFactory.DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter");
-            RabbitConnectionFactory.DeleteQueue($"{TestExecutionConfig.RabbitConfig.ClinicalReviewQueue}-dead-letter");
+            RabbitConnectionFactory.DeleteAllQueues();
 
             Host = TaskManagerStartup.StartTaskManager();
             MongoClient = new MongoClientUtil();
@@ -102,6 +95,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         [AfterScenario]
         public static void ClearTestData()
         {
+            RabbitConnectionFactory.PurgeAllQueues();
+
             MongoClient?.DeleteAllTaskDispatch();
         }
 
