@@ -16,6 +16,10 @@ name: CodeQL
 
 on:
   pull_request:
+  push:
+    branches:
+      - 'develop'
+      - 'main'
   workflow_dispatch:
 
 env:
@@ -24,6 +28,10 @@ env:
 jobs:
   analyze:
     runs-on: ubuntu-latest
+
+    permissions:
+      security-events: write
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3

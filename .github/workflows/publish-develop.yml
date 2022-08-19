@@ -16,6 +16,11 @@ name: Publish and scan
 
 on:
   pull_request:
+    branches:
+        - 'develop'
+  push:
+    branches:
+      - 'develop'
   workflow_dispatch:
 
 env:
@@ -51,30 +56,34 @@ jobs:
 
     - name: Scan Workflow Manager image with Anchore
       id: scan-workflow-manager
-      uses: anchore/scan-action@v2
+      uses: anchore/scan-action@v3
       with:
         image: monai/workflow-manager:${{ github.sha }}
-        fail-build: true
-        severity-cutoff: high
+        fail-build: false
         acs-report-enable: true
+      if: always()
+
 
     - name: upload Workflow Manager Anchore scan SARIF report
       uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: ${{ steps.scan-workflow-manager.outputs.sarif }}
         category: workflow-manager
+      if: always()
 
     - name: Scan Task Manager image with Anchore
       id: scan-task-manager
-      uses: anchore/scan-action@v2
+      uses: anchore/scan-action@v3
       with:
         image: monai/task-manager:${{ github.sha }}
-        fail-build: true
-        severity-cutoff: high
+        fail-build: false
         acs-report-enable: true
+      if: always()
+
 
     - name: upload Task Manager Anchore scan SARIF report
       uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: ${{ steps.scan-task-manager.outputs.sarif }}
         category: task-manager
+      if: always()
