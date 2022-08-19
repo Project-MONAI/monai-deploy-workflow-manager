@@ -33,11 +33,11 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
 
             foreach (var claim in requiredClaims)
             {
-                var claims = claim.Single(c => c.Key != "endpoints");
+                var claims = claim.Single(c => c.Key != AuthKeys.Endpoints);
 
                 if (httpcontext.User.HasClaim(claims.Key, claims.Value))
                 {
-                    if (claim.TryGetValue("endpoints", out var claimEndpoints))
+                    if (claim.TryGetValue(AuthKeys.Endpoints, out var claimEndpoints))
                     {
                         return claimEndpoints.Split(",").Select(s => s.Trim()).ToList();
                     }
