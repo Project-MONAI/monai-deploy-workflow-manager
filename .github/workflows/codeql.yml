@@ -16,6 +16,10 @@ name: CodeQL
 
 on:
   pull_request:
+  push:
+    branches:
+      - 'develop'
+      - 'main'
   workflow_dispatch:
 
 env:
