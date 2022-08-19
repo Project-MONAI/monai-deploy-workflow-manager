@@ -16,6 +16,8 @@ name: Publish and scan
 
 on:
   pull_request:
+    branches:
+        - 'main'
   workflow_dispatch:
 
 env:
@@ -84,4 +86,3 @@ jobs:
         sarif_file: ${{ steps.scan-task-manager.outputs.sarif }}
         category: task-manager
       if: always()
-
