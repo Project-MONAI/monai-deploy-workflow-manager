@@ -77,9 +77,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             PurgeQueue(TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
             PurgeQueue(TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
             PurgeQueue($"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter");
-            PurgeQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
             PurgeQueue($"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter");
-            PurgeQueue($"{TestExecutionConfig.RabbitConfig.ClinicalReviewQueue}-dead-letter");
         }
     }
 }

@@ -78,16 +78,12 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             PurgeQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
             PurgeQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-            PurgeQueue(TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
             PurgeQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
             PurgeQueue(TestExecutionConfig.RabbitConfig.ExportCompleteQueue);
             PurgeQueue(TestExecutionConfig.RabbitConfig.ExportRequestQueue);
             PurgeQueue($"{TestExecutionConfig.RabbitConfig.WorkflowRequestQueue}-dead-letter");
-            PurgeQueue($"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter");
-            PurgeQueue($"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter");
             PurgeQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
             PurgeQueue($"{TestExecutionConfig.RabbitConfig.ExportCompleteQueue}-dead-letter");
-            PurgeQueue($"{TestExecutionConfig.RabbitConfig.ExportRequestQueue}-dead-letter");
         }
     }
 }
