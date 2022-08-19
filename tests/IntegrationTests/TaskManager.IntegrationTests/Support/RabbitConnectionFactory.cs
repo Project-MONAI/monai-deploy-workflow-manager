@@ -38,9 +38,46 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             return Channel;
         }
 
+        public static void DeleteQueue(string queueName)
+        {
+            if (Channel is null)
+            {
+                GetRabbitConnection();
+            }
+
+            Channel?.QueueDelete(queueName);
+        }
+
         public static void PurgeQueue(string queueName)
         {
+            if (Channel is null)
+            {
+                GetRabbitConnection();
+            }
+
             Channel?.QueuePurge(queueName);
+        }
+
+        public static void DeleteAllQueues()
+        {
+            DeleteQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            DeleteQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            DeleteQueue(TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
+            DeleteQueue(TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter");
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter");
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.ClinicalReviewQueue}-dead-letter");
+        }
+
+        public static void PurgeAllQueues()
+        {
+            PurgeQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            PurgeQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            PurgeQueue(TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
+            PurgeQueue(TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
+            PurgeQueue($"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter");
+            PurgeQueue($"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter");
         }
     }
 }

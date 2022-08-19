@@ -89,6 +89,8 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
 
             TestExecutionConfig.ApiConfig.BaseUrl = "http://localhost:5000";
 
+            RabbitConnectionFactory.DeleteAllQueues();
+
             MongoClient = new MongoClientUtil();
             MinioClient = new MinioClientUtil();
             Host = WorkflowExecutorStartup.StartWorkflowExecutor();
@@ -150,6 +152,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         [AfterScenario]
         public static void ClearTestData()
         {
+            RabbitConnectionFactory.PurgeAllQueues();
             MongoClient?.DeleteAllWorkflowRevisionDocuments();
             MongoClient?.DeleteAllWorkflowInstances();
             MongoClient?.DeleteAllPayloadDocuments();

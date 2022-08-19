@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Xml.Linq;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
 
