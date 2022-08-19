@@ -18,6 +18,12 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
 {
     public static class AuthKeys
     {
+        public const string BypassSchemeName = "testing";
+
+        public const string AdminPolicyName = "Admin";
+        public const string UserPolicyName = "User";
+
+        // Configuration Keys
         public const string ServerRealm = "ServerRealm";
         public const string ServerRealmKey = "ServerRealmKey";
         public const string Claims = "Claims";
@@ -25,10 +31,6 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
         public const string WorkflowManagerAuthentication = "WorkflowManagerAuthentication";
         public const string RequiredUserClaims = "RequiredUserClaims";
         public const string RequiredAdminClaims = "RequiredAdminClaims";
-        public const string Testing = "testing";
         public const string Endpoints = "endpoints";
-        public const string AdminPolicyName = "Admin";
-        public const string UserPolicyName = "User";
-
     }
 }
