@@ -28,6 +28,10 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
 {
     public static class MonaiAuthenticationExtensions
     {
+        private const string AuthKeysEndpoints = "endpoints";
+        private const string AdminPolicyName = "Admin";
+        private const string UserPolicyName = "User";
+
         /// <summary>
         /// Adds MONAI OpenID Configuration to services.
         /// </summary>
@@ -39,8 +43,8 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
         {
             if (configuration.BypassAuth())
             {
-                services.AddAuthentication(options => options.DefaultAuthenticateScheme = "testing")
-                    .AddScheme<AuthenticationSchemeOptions, BypassAuthenticationHandler>("testing", null);
+                services.AddAuthentication(options => options.DefaultAuthenticateScheme = AuthKeys.Testing)
+                    .AddScheme<AuthenticationSchemeOptions, BypassAuthenticationHandler>(AuthKeys.Testing, null);
                 return services;
             }
 
@@ -52,7 +56,7 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, "OpenId", options =>
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, AuthKeys.OpenId, options =>
             {
                 options.Authority = serverRealm;
                 options.Audience = serverRealm;
@@ -74,12 +78,12 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
             {
                 if (requiredAdminClaims.IsNullOrEmpty() is false)
                 {
-                    AddPolicy(options, requiredAdminClaims, "Admin");
+                    AddPolicy(options, requiredAdminClaims, AdminPolicyName);
                 }
 
                 if (requiredUserClaims.IsNullOrEmpty() is false)
                 {
-                    AddPolicy(options, requiredUserClaims, "User");
+                    AddPolicy(options, requiredUserClaims, UserPolicyName);
                 }
             });
 
@@ -96,7 +100,7 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
         {
             foreach (var dict in requiredClaims)
             {
-                var item = dict.Single(c => c.Key != "endpoints");
+                var item = dict.Single(c => c.Key != AuthKeysEndpoints);
                 options.AddPolicy(policyName, policy => policy
                     .RequireAuthenticatedUser()
                     .RequireClaim(item.Key, item.Value));

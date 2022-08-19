@@ -25,10 +25,10 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
         {
             Guard.Against.Null(configuration, nameof(configuration));
 
-            var authenticationSettings = configuration.GetSection("WorkflowManagerAuthentication");
+            var authenticationSettings = configuration.GetSection(AuthKeys.WorkflowManagerAuthentication);
             Guard.Against.Null(authenticationSettings, nameof(authenticationSettings), "Missing WorkflowManagerAuthentication section in config.");
 
-            if (authenticationSettings["OpenId"] is null)
+            if (authenticationSettings[AuthKeys.OpenId] is null)
             {
                 return true;
             }
@@ -55,18 +55,18 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
         {
             Guard.Against.Null(configuration, nameof(configuration));
 
-            var authenticationSettings = configuration.GetSection("WorkflowManagerAuthentication");
+            var authenticationSettings = configuration.GetSection(AuthKeys.WorkflowManagerAuthentication);
             Guard.Against.Null(authenticationSettings, nameof(authenticationSettings), "Missing WorkflowManagerAuthentication section in config.");
 
-            var authenticationSettingsSection = authenticationSettings.GetSection("OpenId");
-            serverRealm = authenticationSettingsSection["ServerRealm"];
+            var authenticationSettingsSection = authenticationSettings.GetSection(AuthKeys.OpenId);
+            serverRealm = authenticationSettingsSection[AuthKeys.ServerRealm];
             Guard.Against.NullOrWhiteSpace(serverRealm, nameof(serverRealm), "SeverRealm is a required authenticationSettings attribute.");
-            serverRealmKey = authenticationSettingsSection["ServerRealmKey"];
+            serverRealmKey = authenticationSettingsSection[AuthKeys.ServerRealmKey];
             Guard.Against.NullOrWhiteSpace(serverRealm, nameof(serverRealmKey), "SeverRealmKey is a required authenticationSettings attribute.");
 
-            var requiredClaims = authenticationSettingsSection.GetSection("Claims");
-            requiredUserRoles = requiredClaims.GetSection("RequiredUserClaims").Get<Dictionary<string, string>[]>();
-            requiredAdminRoles = requiredClaims.GetSection("RequiredAdminClaims").Get<Dictionary<string, string>[]>();
+            var requiredClaims = authenticationSettingsSection.GetSection(AuthKeys.Claims);
+            requiredUserRoles = requiredClaims.GetSection(AuthKeys.RequiredUserClaims).Get<Dictionary<string, string>[]>();
+            requiredAdminRoles = requiredClaims.GetSection(AuthKeys.RequiredAdminClaims).Get<Dictionary<string, string>[]>();
         }
     }
 }
