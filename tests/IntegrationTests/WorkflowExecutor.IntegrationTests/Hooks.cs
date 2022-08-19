@@ -89,6 +89,20 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
 
             TestExecutionConfig.ApiConfig.BaseUrl = "http://localhost:5000";
 
+            RabbitConnectionFactory.DeleteQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+            RabbitConnectionFactory.DeleteQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            RabbitConnectionFactory.DeleteQueue(TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
+            RabbitConnectionFactory.DeleteQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            RabbitConnectionFactory.DeleteQueue(TestExecutionConfig.RabbitConfig.ExportCompleteQueue);
+            RabbitConnectionFactory.DeleteQueue(TestExecutionConfig.RabbitConfig.ExportRequestQueue);
+            RabbitConnectionFactory.DeleteQueue($"{TestExecutionConfig.RabbitConfig.WorkflowRequestQueue}-dead-letter");
+            RabbitConnectionFactory.DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter");
+            RabbitConnectionFactory.DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter");
+            RabbitConnectionFactory.DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
+            RabbitConnectionFactory.DeleteQueue($"{TestExecutionConfig.RabbitConfig.ExportCompleteQueue}-dead-letter");
+            RabbitConnectionFactory.DeleteQueue($"{TestExecutionConfig.RabbitConfig.ExportRequestQueue}-dead-letter");
+
+
             MongoClient = new MongoClientUtil();
             MinioClient = new MinioClientUtil();
             Host = WorkflowExecutorStartup.StartWorkflowExecutor();

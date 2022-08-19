@@ -38,9 +38,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             return Channel;
         }
 
-        public static void PurgeQueue(string queueName)
+        public static void DeleteQueue(string queueName)
         {
-            Channel?.QueuePurge(queueName);
+            if (Channel is null)
+            {
+                GetRabbitConnection();
+            }
+
+            Channel?.QueueDelete(queueName);
         }
     }
 }
