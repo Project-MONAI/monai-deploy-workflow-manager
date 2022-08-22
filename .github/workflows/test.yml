@@ -265,7 +265,7 @@ jobs:
         name: code-coverage-reports
 
     - name: Run CodeCov analysis
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: "**/coverage.opencover.xml"
