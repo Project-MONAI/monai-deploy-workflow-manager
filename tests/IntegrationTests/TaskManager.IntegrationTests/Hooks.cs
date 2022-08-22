@@ -81,6 +81,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             TestExecutionConfig.MinioConfig.Bucket = config.GetValue<string>("WorkflowManager:storage:settings:bucket");
             TestExecutionConfig.MinioConfig.Region = config.GetValue<string>("WorkflowManager:storage:settings:region");
 
+            RabbitConnectionFactory.DeleteAllQueues();
+
             Host = TaskManagerStartup.StartTaskManager();
             MongoClient = new MongoClientUtil();
             HttpClient = new HttpClient();
@@ -93,6 +95,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         [AfterScenario]
         public static void ClearTestData()
         {
+            RabbitConnectionFactory.PurgeAllQueues();
+
             MongoClient?.DeleteAllTaskDispatch();
         }
 
@@ -123,15 +127,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             TaskCallbackPublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
             TaskUpdateConsumer = new RabbitConsumer(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
             ClinicalReviewConsumer = new RabbitConsumer(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
-        }
-
-        [AfterScenario]
-        public void PurgeRabbitMessages()
-        {
-            RabbitConnectionFactory.PurgeQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-            RabbitConnectionFactory.PurgeQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
-            RabbitConnectionFactory.PurgeQueue(TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
-            RabbitConnectionFactory.PurgeQueue(TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
         }
 
         /// <summary>

@@ -38,9 +38,52 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             return Channel;
         }
 
+        public static void DeleteQueue(string queueName)
+        {
+            if (Channel is null)
+            {
+                GetRabbitConnection();
+            }
+
+            Channel?.QueueDelete(queueName);
+        }
+
         public static void PurgeQueue(string queueName)
         {
+            if (Channel is null)
+            {
+                GetRabbitConnection();
+            }
+
             Channel?.QueuePurge(queueName);
+        }
+
+        public static void DeleteAllQueues()
+        {
+            DeleteQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+            DeleteQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            DeleteQueue(TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
+            DeleteQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            DeleteQueue(TestExecutionConfig.RabbitConfig.ExportCompleteQueue);
+            DeleteQueue(TestExecutionConfig.RabbitConfig.ExportRequestQueue);
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.WorkflowRequestQueue}-dead-letter");
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter");
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter");
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.ExportCompleteQueue}-dead-letter");
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.ExportRequestQueue}-dead-letter");
+        }
+
+        public static void PurgeAllQueues()
+        {
+            PurgeQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+            PurgeQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            PurgeQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            PurgeQueue(TestExecutionConfig.RabbitConfig.ExportCompleteQueue);
+            PurgeQueue(TestExecutionConfig.RabbitConfig.ExportRequestQueue);
+            PurgeQueue($"{TestExecutionConfig.RabbitConfig.WorkflowRequestQueue}-dead-letter");
+            PurgeQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
+            PurgeQueue($"{TestExecutionConfig.RabbitConfig.ExportCompleteQueue}-dead-letter");
         }
     }
 }
