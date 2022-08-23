@@ -791,22 +791,5 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 Namespace = _namespace
             });
         }
-
-        public async Task HandleTimeout1(string identity)
-        {
-            var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
-
-            await client.WorkflowService_StopWorkflowAsync(_namespace, identity, new WorkflowStopRequest
-            {
-                Namespace = _namespace,
-                Name = identity,
-            });
-
-            await client.WorkflowService_TerminateWorkflowAsync(_namespace, identity, new WorkflowTerminateRequest
-            {
-                Name = identity,
-                Namespace = _namespace
-            });
-        }
     }
 }
