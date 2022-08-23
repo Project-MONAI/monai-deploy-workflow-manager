@@ -36,8 +36,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests
 
         public MongoClientUtil(string connectionString, string database, string workflowCollection = null, string workflowInstanceCollection = null, string payloadCollection = null, string taskDispatchEventInfo = null)
         {
-            connectionString ??= "mongodb://root:rootpassword@localhost:27017";
-            database ??= "WorkloadManager";
             workflowCollection ??= "Workflows";
             workflowInstanceCollection ??= "WorkflowInstances";
             payloadCollection ??= "Payloads";
