@@ -10,7 +10,7 @@
     "WSL": {
       "commandName": "WSL2",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Local"
       },
       "distributionName": ""
     }

@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Monai.Deploy.WorkflowManager.HealthChecks;
 using Monai.Deploy.WorkflowManager.Logging.Attributes;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 namespace Monai.Deploy.WorkflowManager.Services.Http
@@ -38,6 +47,10 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
         public void ConfigureServices(IServiceCollection services)
 #pragma warning restore CA1822 // Mark members as static
         {
+            services.AddHealthChecks().AddAsyncCheck(nameof(MongoHealth), MongoHealth.Check, new[] { "Database" })
+                .AddAsyncCheck(nameof(ReddisHealth), ReddisHealth.Check, new[] { "Queue" })
+                .AddAsyncCheck(nameof(ArgoHealth), ArgoHealth.Check, new[] { "WorkflowEngine" });
+            ;
             services.AddHttpContextAccessor();
             services.AddApiVersioning(
                 options =>
@@ -77,6 +90,11 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "aspnet6 v1"));
             }
 
+            app.UseHealthChecks("/health", new HealthCheckOptions
+            {
+                ResponseWriter = WriteHealthCheckResponse,
+            });
+
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
@@ -84,5 +102,87 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
                 endpoints.MapControllers();
             });
         }
+
+        private static async Task WriteHealthCheckResponse(HttpContext context, HealthReport report)
+        {
+            context.Response.ContentType = "application/json";
+
+            var isAuthenticated = context.User.Identity.IsAuthenticated;
+            var response = new HealthCheckResponse
+            {
+                Status = report.Status.ToString(),
+                Checks = report.Entries.Select(entity =>
+                {
+                    return ServicesHealthCheckReport(entity, isAuthenticated);
+                }),
+                Duration = report.TotalDuration
+            };
+
+            await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+        }
+
+        private static HealthCheck ServicesHealthCheckReport(KeyValuePair<string, HealthReportEntry> entity, bool isAuthenticated)
+        {
+            const string seperator = " ,";
+
+            var description = entity.Value.Description;
+
+            if (isAuthenticated)
+            {
+                description = string.Concat(entity.Value.Description, seperator,
+                                            entity.Value.Exception.Message, seperator,
+                                            entity.Value.Exception.StackTrace);
+            }
+
+            return new HealthCheck
+            {
+                Component = entity.Key,
+                Status = entity.Value.Status.ToString(),
+                Description = description,
+                Tags = entity.Value.Tags,
+            };
+        }
+
+        //private static Task WriteHealthCheckResponse(HttpContext context, HealthReport healthReport)
+        //{
+        //    context.Response.ContentType = "application/json; charset=utf-8";
+
+        //    var options = new JsonWriterOptions { Indented = true };
+
+        //    using var memoryStream = new MemoryStream();
+        //    using (var jsonWriter = new Utf8JsonWriter(memoryStream, options))
+        //    {
+        //        jsonWriter.WriteStartObject();
+        //        jsonWriter.WriteString("status", healthReport.Status.ToString());
+        //        jsonWriter.WriteStartObject("results");
+
+        //        foreach (var healthReportEntry in healthReport.Entries)
+        //        {
+        //            jsonWriter.WriteStartObject(healthReportEntry.Key);
+        //            jsonWriter.WriteString("status",
+        //                healthReportEntry.Value.Status.ToString());
+        //            jsonWriter.WriteString("description",
+        //                healthReportEntry.Value.Description);
+        //            jsonWriter.WriteStartObject("data");
+
+        //            foreach (var item in healthReportEntry.Value.Data)
+        //            {
+        //                jsonWriter.WritePropertyName(item.Key);
+
+        //                JsonSerializer.Serialize(jsonWriter, item.Value,
+        //                    item.Value?.GetType() ?? typeof(object));
+        //            }
+
+        //            jsonWriter.WriteEndObject();
+        //            jsonWriter.WriteEndObject();
+        //        }
+
+        //        jsonWriter.WriteEndObject();
+        //        jsonWriter.WriteEndObject();
+        //    }
+
+        //    return context.Response.WriteAsync(
+        //        Encoding.UTF8.GetString(memoryStream.ToArray()));
+        //}
     }
 }
