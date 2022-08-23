@@ -50,6 +50,10 @@ dotnet_style_qualification_for_field                                        = fa
 dotnet_style_qualification_for_property                                     = false:error
 dotnet_style_qualification_for_method                                       = false:error
 dotnet_style_qualification_for_event                                        = false:error
+dotnet_style_operator_placement_when_wrapping = beginning_of_line
+tab_width = 4
+end_of_line = crlf
+dotnet_diagnostic.CA2007.severity = silent
 
 # C# files
 [*.cs]
@@ -85,35 +89,35 @@ dotnet_naming_style.pascal_case_style.capitalization = pascal_case
 # name mostly everything using PascalCase be default
 dotnet_naming_rule.mostly_everything_should_be_pascal_case.severity = error
 dotnet_naming_rule.mostly_everything_should_be_pascal_case.symbols  = mostly_everything
-dotnet_naming_rule.mostly_everything_should_be_pascal_case.style    = pascal_case_style
+dotnet_naming_rule.mostly_everything_should_be_pascal_case.style = pascal_case_style
 dotnet_naming_symbols.mostly_everything.applicable_kinds            = namespace,class,struct,interface,enum,property,method,field,event,delegate,type_parameter,local_function
 
 # interfaces should begin with an uppercase I
-dotnet_naming_rule.interfaces_begin_with_i.severity         = error
+dotnet_naming_rule.interfaces_begin_with_i.severity = error
 dotnet_naming_rule.interfaces_begin_with_i.symbols          = interfaces
-dotnet_naming_rule.interfaces_begin_with_i.style            = i_prefix_pascal_case
+dotnet_naming_rule.interfaces_begin_with_i.style = i_prefix_pascal_case
 dotnet_naming_symbols.interfaces.applicable_kinds           = interface
 dotnet_naming_style.i_prefix_pascal_case.required_prefix    = I
 dotnet_naming_style.i_prefix_pascal_case.capitalization     = pascal_case
 
 # name all constant fields using PascalCase
-dotnet_naming_rule.constant_fields_should_be_pascal_case.severity   = error
+dotnet_naming_rule.constant_fields_should_be_pascal_case.severity = error
 dotnet_naming_rule.constant_fields_should_be_pascal_case.symbols    = constant_fields
-dotnet_naming_rule.constant_fields_should_be_pascal_case.style      = pascal_case_style
+dotnet_naming_rule.constant_fields_should_be_pascal_case.style = pascal_case_style
 dotnet_naming_symbols.constant_fields.applicable_kinds              = field
 dotnet_naming_symbols.constant_fields.required_modifiers            = const
 
 # static readonly fields should be PascalCase
-dotnet_naming_rule.static_readonly_fields_pascal_case.severity  = error
+dotnet_naming_rule.static_readonly_fields_pascal_case.severity = error
 dotnet_naming_rule.static_readonly_fields_pascal_case.symbols   = static_readonly_fields
-dotnet_naming_rule.static_readonly_fields_pascal_case.style     = pascal_case_style
+dotnet_naming_rule.static_readonly_fields_pascal_case.style = pascal_case_style
 dotnet_naming_symbols.static_readonly_fields.applicable_kinds   = field
 dotnet_naming_symbols.static_readonly_fields.required_modifiers = readonly,static
 
 # static fields should have s_ prefix
-dotnet_naming_rule.static_fields_should_have_prefix.severity    = error
+dotnet_naming_rule.static_fields_should_have_prefix.severity = error
 dotnet_naming_rule.static_fields_should_have_prefix.symbols     = static_fields
-dotnet_naming_rule.static_fields_should_have_prefix.style       = static_prefix_style
+dotnet_naming_rule.static_fields_should_have_prefix.style = static_prefix_style
 dotnet_naming_symbols.static_fields.applicable_kinds            = field
 dotnet_naming_symbols.static_fields.required_modifiers          = static
 dotnet_naming_symbols.static_fields.applicable_accessibilities  = private, internal, private_protected
@@ -121,9 +125,9 @@ dotnet_naming_style.static_prefix_style.required_prefix         = s_
 dotnet_naming_style.static_prefix_style.capitalization          = camel_case
 
 # internal and private fields should be _camelCase
-dotnet_naming_rule.camel_case_for_private_internal_fields.severity          = error
+dotnet_naming_rule.camel_case_for_private_internal_fields.severity = error
 dotnet_naming_rule.camel_case_for_private_internal_fields.symbols           = private_internal_fields
-dotnet_naming_rule.camel_case_for_private_internal_fields.style             = camel_case_underscore_style
+dotnet_naming_rule.camel_case_for_private_internal_fields.style = camel_case_underscore_style
 dotnet_naming_symbols.private_internal_fields.applicable_kinds              = field
 dotnet_naming_symbols.private_internal_fields.applicable_accessibilities    = private, internal
 dotnet_naming_style.camel_case_underscore_style.required_prefix             = _
@@ -241,7 +245,7 @@ dotnet_diagnostic.CA1054.severity = error       # URI parameters should not be s
 dotnet_diagnostic.CA1305.severity = suggestion  # Specify IFormatProvider
 dotnet_diagnostic.CA1716.severity = warning     # Identifiers should not match keywords
 dotnet_diagnostic.CA1848.severity = none        # Do not encourage LoggerMessage delegates in every instance
-dotnet_diagnostic.CA2007.severity = suggestion  # Do not directly await a Task
+dotnet_diagnostic.CA2007.severity = none  # Do not directly await a Task
 
 # Code Style Rules
 dotnet_diagnostic.IDE0003.severity = error      # Remove this or Me qualification
@@ -258,6 +262,8 @@ csharp_style_allow_embedded_statements_on_same_line_experimental = true:silent
 csharp_style_allow_blank_lines_between_consecutive_braces_experimental = true:silent
 csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = true:silent
 csharp_style_prefer_extended_property_pattern = true:suggestion
+csharp_style_prefer_method_group_conversion = true:silent
+csharp_style_prefer_top_level_statements = true:silent
 
 
 
