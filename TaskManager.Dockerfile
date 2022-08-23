@@ -1,4 +1,4 @@
-# Copyright 2021 MONAI Consortium
+# Copyright 2021-2022 MONAI Consortium
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -43,18 +43,16 @@ RUN apt-get clean \
    && rm -rf /var/lib/apt/lists
 
 WORKDIR /opt/monai/wm
+
 COPY --from=build /app/out .
-#COPY docs/compliance/open-source-licenses.md .
-
+COPY LICENSE ./
 COPY --from=build /tools /opt/dotnetcore-tools
-
 COPY --from=build /app/mc /usr/local/bin/mc
-# RUN mv mc /usr/local/bin/mc
 
-EXPOSE 104
+
 EXPOSE 5000
 
 RUN ls -lR /opt/monai/wm
 ENV PATH="/opt/dotnetcore-tools:${PATH}"
 
-ENTRYPOINT ["/opt/monai/wm/Monai.Deploy.WorkflowManager"]
+ENTRYPOINT ["/opt/monai/wm/Monai.Deploy.WorkflowManager.TaskManager"]

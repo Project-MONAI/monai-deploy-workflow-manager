@@ -36,7 +36,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
         /// <summary>
         /// Key for the name of the main 'WorkflowTemplate' stored on the targeted Argo server.
         /// </summary>
-        public static readonly string WorkflowTemplateName = "workflow_id";
+        public static readonly string WorkflowTemplateName = "workflow_template_name";
 
         /// <summary>
         /// Key for the setting 'ActiveDeadlineSeconds' of a Argo workflow.
@@ -105,6 +105,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
                 MessagingPassword,
                 MessagingTopic,
                 MessagingExchange,
+                MessagingVhost,
             };
     }
 }

@@ -51,7 +51,6 @@ COPY --from=build /tools /opt/dotnetcore-tools
 COPY --from=build /app/mc /usr/local/bin/mc
 # RUN mv mc /usr/local/bin/mc
 
-EXPOSE 104
 EXPOSE 5000
 
 RUN ls -lR /opt/monai/wm

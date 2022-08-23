@@ -16,7 +16,7 @@
 .docs/
 .demos/
 .run/
-
+nuget.config
 
 ### Csharp ###
 ## Ignore Visual Studio temporary files, build results, and
