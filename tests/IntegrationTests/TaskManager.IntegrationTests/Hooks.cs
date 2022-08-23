@@ -16,6 +16,7 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Monai.Deploy.WorkflowManager.IntegrationTests;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
 using Polly;
@@ -41,13 +42,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         private static RabbitPublisher? TaskDispatchPublisher { get; set; }
         private static RabbitPublisher? TaskCallbackPublisher { get; set; }
         private static RabbitConsumer? TaskUpdateConsumer { get; set; }
-        public static RabbitConsumer? ClinicalReviewConsumer { get; private set; }
+        private static RabbitConsumer? ClinicalReviewConsumer { get; set; }
         private static MinioClientUtil? MinioClient { get; set; }
         private static MongoClientUtil? MongoClient { get; set; }
         public static AsyncRetryPolicy RetryPolicy { get; private set; }
         private IObjectContainer ObjectContainer { get; set; }
         private static IHost? Host { get; set; }
-        private static HttpClient? HttpClient { get; set; }
 
         /// <summary>
         /// Runs before all tests to create static implementions of Rabbit and Mongo clients as well as starting the WorkflowManager using WebApplicationFactory.
@@ -83,10 +83,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 
             RabbitConnectionFactory.DeleteAllQueues();
 
+            MongoClient = new MongoClientUtil(
+                connectionString: TestExecutionConfig.MongoConfig.ConnectionString,
+                database: TestExecutionConfig.MongoConfig.Database,
+                taskDispatchEventInfo: TestExecutionConfig.MongoConfig.TaskDispatchEventCollection);
+
+            MinioClient = new MinioClientUtil(
+                TestExecutionConfig.MinioConfig.Endpoint,
+                TestExecutionConfig.MinioConfig.AccessKey,
+                TestExecutionConfig.MinioConfig.AccessToken,
+                TestExecutionConfig.MinioConfig.Bucket);
+
             Host = TaskManagerStartup.StartTaskManager();
-            MongoClient = new MongoClientUtil();
-            HttpClient = new HttpClient();
-            MinioClient = new MinioClientUtil();
+
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
@@ -110,7 +119,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         {
             await RetryPolicy.ExecuteAsync(async () =>
             {
-                var response = await TaskManagerStartup.GetQueueStatus(HttpClient, TestExecutionConfig.RabbitConfig.VirtualHost, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+                var response = await TaskManagerStartup.GetQueueStatus(new HttpClient(), TestExecutionConfig.RabbitConfig.VirtualHost, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
                 var content = response.Content.ReadAsStringAsync().Result;
 
                 if (content.Contains("error"))
@@ -123,10 +132,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                 }
             });
 
-            TaskDispatchPublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-            TaskCallbackPublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
-            TaskUpdateConsumer = new RabbitConsumer(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
-            ClinicalReviewConsumer = new RabbitConsumer(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
+            var rabbitConnection = RabbitConnectionFactory.GetRabbitConnection();
+
+            TaskDispatchPublisher = new RabbitPublisher(rabbitConnection, TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            TaskCallbackPublisher = new RabbitPublisher(rabbitConnection, TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
+            TaskUpdateConsumer = new RabbitConsumer(rabbitConnection, TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            ClinicalReviewConsumer = new RabbitConsumer(rabbitConnection, TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
         }
 
         /// <summary>
@@ -140,6 +151,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             ObjectContainer.RegisterInstanceAs(TaskUpdateConsumer, "TaskUpdateConsumer");
             ObjectContainer.RegisterInstanceAs(ClinicalReviewConsumer, "ClinicalReviewConsumer");
             ObjectContainer.RegisterInstanceAs(MinioClient);
+            ObjectContainer.RegisterInstanceAs(MongoClient);
             var dataHelper = new DataHelper(ObjectContainer);
             ObjectContainer.RegisterInstanceAs(dataHelper);
         }

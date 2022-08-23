@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-using System.Text;
-using Newtonsoft.Json;
+using Monai.Deploy.Messaging.Messages;
 using RabbitMQ.Client;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
+namespace Monai.Deploy.WorkflowManager.IntegrationTests
 {
-    public class RabbitConsumer
+    public class RabbitPublisher
     {
-        public RabbitConsumer(IModel channel, string exchange, string routingKey)
+        public RabbitPublisher(IModel channel, string exchange, string routingKey)
         {
             Exchange = exchange;
             RoutingKey = routingKey;
             Channel = channel;
-            Queue = Channel.QueueDeclare(queue: routingKey, durable: true, exclusive: false, autoDelete: false);
-            Channel.QueueBind(Queue.QueueName, Exchange, RoutingKey);
             Channel.ExchangeDeclare(Exchange, ExchangeType.Topic, durable: true);
         }
-
-        private QueueDeclareOk Queue { get; set; }
 
         private string Exchange { get; set; }
 
@@ -40,20 +35,27 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 
         private IModel Channel { get; set; }
 
-        public T GetMessage<T>()
+        public void PublishMessage(Message message)
         {
-            var basicGetResult = Channel.BasicGet(Queue.QueueName, true);
-
-            if (basicGetResult != null)
+            var propertiesDictionary = new Dictionary<string, object>
             {
-                var byteArray = basicGetResult.Body.ToArray();
+                { "CreationDateTime", message.CreationDateTime.ToString("o") }
+            };
 
-                var str = Encoding.Default.GetString(byteArray);
+            var properties = Channel.CreateBasicProperties();
+            properties.Persistent = true;
+            properties.ContentType = message.ContentType;
+            properties.MessageId = message.MessageId;
+            properties.AppId = message.ApplicationId;
+            properties.CorrelationId = message.CorrelationId;
+            properties.DeliveryMode = 2;
+            properties.Headers = propertiesDictionary;
+            properties.Type = message.MessageDescription;
 
-                return JsonConvert.DeserializeObject<T>(str);
-            }
-
-            return default;
+            Channel.BasicPublish(exchange: Exchange,
+                routingKey: RoutingKey,
+                basicProperties: properties,
+                body: message.Body);
         }
 
         public void CloseConnection()

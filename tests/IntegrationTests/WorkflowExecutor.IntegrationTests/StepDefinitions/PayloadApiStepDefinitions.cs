@@ -16,6 +16,7 @@
 
 using BoDi;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.IntegrationTests;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.Wrappers;
 using Newtonsoft.Json;

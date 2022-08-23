@@ -15,8 +15,8 @@
  */
 
 using System.Reflection;
+using Monai.Deploy.WorkflowManager.IntegrationTests;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support
@@ -25,14 +25,11 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support
     {
         private MinioClientUtil MinioClient { get; set; }
 
-        private DataHelper DataHelper { get; set; }
-
         private ISpecFlowOutputHelper OutputHelper { get; set; }
 
-        public MinioDataSeeding(MinioClientUtil minioClient, DataHelper dataHelper, ISpecFlowOutputHelper outputHelper)
+        public MinioDataSeeding(MinioClientUtil minioClient, ISpecFlowOutputHelper outputHelper)
         {
             MinioClient = minioClient;
-            DataHelper = dataHelper;
             OutputHelper = outputHelper;
         }
 

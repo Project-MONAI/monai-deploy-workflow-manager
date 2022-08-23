@@ -15,12 +15,12 @@
  */
 
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using MongoDB.Driver;
 using Polly;
 using Polly.Retry;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
+namespace Monai.Deploy.WorkflowManager.IntegrationTests
 {
     public class MongoClientUtil
     {
@@ -29,18 +29,29 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         private IMongoCollection<WorkflowRevision> WorkflowRevisionCollection { get; set; }
         private IMongoCollection<WorkflowInstance> WorkflowInstanceCollection { get; set; }
         private IMongoCollection<Payload> PayloadCollection { get; set; }
+        private IMongoCollection<TaskDispatchEventInfo> TaskDispatchEventInfoCollection { get; set; }
         private RetryPolicy RetryMongo { get; set; }
         private RetryPolicy<List<Payload>> RetryPayload { get; set; }
+        private RetryPolicy<List<TaskDispatchEventInfo>> RetryTaskDispatchEventInfo { get; set; }
 
-        public MongoClientUtil()
+        public MongoClientUtil(string connectionString, string database, string workflowCollection = null, string workflowInstanceCollection = null, string payloadCollection = null, string taskDispatchEventInfo = null)
         {
-            Client = new MongoClient(TestExecutionConfig.MongoConfig.ConnectionString);
-            Database = Client.GetDatabase($"{TestExecutionConfig.MongoConfig.Database}");
-            WorkflowRevisionCollection = Database.GetCollection<WorkflowRevision>($"{TestExecutionConfig.MongoConfig.WorkflowCollection}");
-            WorkflowInstanceCollection = Database.GetCollection<WorkflowInstance>($"{TestExecutionConfig.MongoConfig.WorkflowInstanceCollection}");
-            PayloadCollection = Database.GetCollection<Payload>($"{TestExecutionConfig.MongoConfig.PayloadCollection}");
+            connectionString ??= "mongodb://root:rootpassword@localhost:27017";
+            database ??= "WorkloadManager";
+            workflowCollection ??= "Workflows";
+            workflowInstanceCollection ??= "WorkflowInstances";
+            payloadCollection ??= "Payloads";
+            taskDispatchEventInfo ??= "TaskDispatchEvents";
+
+            Client = new MongoClient(connectionString);
+            Database = Client.GetDatabase($"{database}");
+            WorkflowRevisionCollection = Database.GetCollection<WorkflowRevision>($"{workflowCollection}");
+            WorkflowInstanceCollection = Database.GetCollection<WorkflowInstance>($"{workflowInstanceCollection}");
+            PayloadCollection = Database.GetCollection<Payload>($"{payloadCollection}");
+            TaskDispatchEventInfoCollection = Database.GetCollection<TaskDispatchEventInfo>($"{taskDispatchEventInfo}");
             RetryMongo = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
             RetryPayload = Policy<List<Payload>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
+            RetryTaskDispatchEventInfo = Policy<List<TaskDispatchEventInfo>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
         }
 
         #region WorkflowRevision
@@ -201,6 +212,34 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             });
         }
         #endregion
+
+        #region TaskDispatchEventInfo
+
+        public List<TaskDispatchEventInfo> GetTaskDispatchEventInfoByExecutionId(string executionId)
+        {
+            var res = RetryTaskDispatchEventInfo.Execute(() =>
+            {
+                return TaskDispatchEventInfoCollection.Find(x => x.Event.ExecutionId == executionId).ToList();
+            });
+            return res;
+        }
+
+        public void DeleteAllTaskDispatch()
+        {
+            RetryMongo.Execute(() =>
+            {
+                TaskDispatchEventInfoCollection.DeleteMany("{ }");
+
+                var taskDispatch = TaskDispatchEventInfoCollection.Find("{ }").ToList();
+
+                if (taskDispatch.Count > 0)
+                {
+                    throw new Exception("All task Dispatch Events were not deleted!");
+                }
+            });
+        }
+
+        #endregion TaskDispatchEventInfo
 
         public void DropDatabase(string dbName)
         {

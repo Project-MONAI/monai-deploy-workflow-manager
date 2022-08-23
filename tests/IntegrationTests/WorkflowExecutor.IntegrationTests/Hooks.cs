@@ -17,6 +17,7 @@
 using BoDi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Monai.Deploy.WorkflowManager.IntegrationTests;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Polly;
@@ -39,8 +40,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             ObjectContainer = objectContainer;
         }
 
-        private static HttpClient? HttpClient { get; set; }
-        public static AsyncRetryPolicy? RetryPolicy { get; private set; }
+        private static AsyncRetryPolicy? RetryPolicy { get; set; }
         private static RabbitPublisher? WorkflowPublisher { get; set; }
         private static RabbitConsumer? TaskDispatchConsumer { get; set; }
         private static RabbitPublisher? TaskUpdatePublisher { get; set; }
@@ -91,10 +91,21 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
 
             RabbitConnectionFactory.DeleteAllQueues();
 
-            MongoClient = new MongoClientUtil();
-            MinioClient = new MinioClientUtil();
+            MongoClient = new MongoClientUtil(
+                connectionString: TestExecutionConfig.MongoConfig.ConnectionString,
+                database: TestExecutionConfig.MongoConfig.Database,
+                workflowCollection: TestExecutionConfig.MongoConfig.WorkflowCollection,
+                workflowInstanceCollection: TestExecutionConfig.MongoConfig.WorkflowInstanceCollection,
+                payloadCollection: TestExecutionConfig.MongoConfig.PayloadCollection);
+
+            MinioClient = new MinioClientUtil(
+                TestExecutionConfig.MinioConfig.Endpoint,
+                TestExecutionConfig.MinioConfig.AccessKey,
+                TestExecutionConfig.MinioConfig.AccessToken,
+                TestExecutionConfig.MinioConfig.Bucket);
+
             Host = WorkflowExecutorStartup.StartWorkflowExecutor();
-            HttpClient = new HttpClient();
+
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
@@ -108,7 +119,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         {
             await RetryPolicy.ExecuteAsync(async () =>
             {
-                var response = await WorkflowExecutorStartup.GetQueueStatus(HttpClient, TestExecutionConfig.RabbitConfig.VirtualHost, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+                var response = await WorkflowExecutorStartup.GetQueueStatus(new HttpClient(), TestExecutionConfig.RabbitConfig.VirtualHost, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
                 var content = response.Content.ReadAsStringAsync().Result;
 
                 if (content.Contains("error"))
@@ -121,11 +132,13 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
                 }
             });
 
-            WorkflowPublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
-            TaskDispatchConsumer = new RabbitConsumer(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-            TaskUpdatePublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
-            ExportCompletePublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ExportCompleteQueue);
-            ExportRequestConsumer = new RabbitConsumer(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ExportRequestQueue);
+            var rabbitConnection = RabbitConnectionFactory.GetRabbitConnection();
+
+            WorkflowPublisher = new RabbitPublisher(rabbitConnection, TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+            TaskDispatchConsumer = new RabbitConsumer(rabbitConnection, TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            TaskUpdatePublisher = new RabbitPublisher(rabbitConnection, TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            ExportCompletePublisher = new RabbitPublisher(rabbitConnection, TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ExportCompleteQueue);
+            ExportRequestConsumer = new RabbitConsumer(rabbitConnection, TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ExportRequestQueue);
         }
 
         /// <summary>
@@ -143,7 +156,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             ObjectContainer.RegisterInstanceAs(MinioClient);
             var dataHelper = new DataHelper(TaskDispatchConsumer, ExportRequestConsumer, MongoClient);
             ObjectContainer.RegisterInstanceAs(dataHelper);
-            var apiHelper = new ApiHelper(HttpClient);
+            var apiHelper = new ApiHelper(new HttpClient());
             ObjectContainer.RegisterInstanceAs(apiHelper);
         }
 
