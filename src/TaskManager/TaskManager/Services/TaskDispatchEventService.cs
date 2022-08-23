@@ -49,6 +49,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services
             }
         }
 
+        public async Task<TaskDispatchEventInfo?> UpdateUserAccountsAsync(TaskDispatchEventInfo taskDispatchEvent)
+        {
+            Guard.Against.Null(taskDispatchEvent, nameof(taskDispatchEvent));
+
+            try
+            {
+                return await _taskDispatchEventRepository.CreateAsync(taskDispatchEvent).ConfigureAwait(false);
+            }
+            finally
+            {
+                _logger.TaskDispatchEventSaved(taskDispatchEvent.Event.ExecutionId);
+            }
+        }
+
         public async Task<TaskDispatchEventInfo?> GetByTaskExecutionIdAsync(string taskExecutionId)
         {
             Guard.Against.NullOrWhiteSpace(taskExecutionId, nameof(taskExecutionId));
