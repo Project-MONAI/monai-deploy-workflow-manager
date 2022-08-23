@@ -49,9 +49,6 @@ COPY LICENSE ./
 COPY --from=build /tools /opt/dotnetcore-tools
 COPY --from=build /app/mc /usr/local/bin/mc
 
-
-EXPOSE 5000
-
 RUN ls -lR /opt/monai/wm
 ENV PATH="/opt/dotnetcore-tools:${PATH}"
 
