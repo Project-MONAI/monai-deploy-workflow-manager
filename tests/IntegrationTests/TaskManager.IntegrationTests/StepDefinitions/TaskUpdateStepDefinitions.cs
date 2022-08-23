@@ -17,6 +17,8 @@
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.IntegrationTests;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
+using Polly;
+using Polly.Retry;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefinitions
 {
@@ -28,11 +30,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
             _outputHelper = outputHelper ?? throw new ArgumentNullException(nameof(outputHelper));
             DataHelper = objectContainer.Resolve<DataHelper>() ?? throw new ArgumentNullException(nameof(DataHelper));
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
+            RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             Assertions = new Assertions(_outputHelper);
         }
 
         private readonly ISpecFlowOutputHelper _outputHelper;
         private MongoClientUtil MongoClient { get; }
+        private RetryPolicy RetryPolicy { get; set; }
         public DataHelper DataHelper { get; }
         public Assertions Assertions { get; }
 
@@ -60,8 +64,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         [Then(@"The Task Dispatch event is saved in mongo")]
         public void TheTaskDispatchEventIsSavedInMongo()
         {
-            var storedTaskDispatchEvent = MongoClient.GetTaskDispatchEventInfoByExecutionId(DataHelper.TaskDispatchEvent.ExecutionId);
-            Assertions.AssertTaskDispatchEventStoredInMongo(storedTaskDispatchEvent, DataHelper.TaskDispatchEvent);
+            RetryPolicy.Execute(() =>
+            {
+                _outputHelper.WriteLine($"Retrieving task dispatch by id={DataHelper.TaskDispatchEvent.ExecutionId}");
+                var storedTaskDispatchEvent = MongoClient.GetTaskDispatchEventInfoByExecutionId(DataHelper.TaskDispatchEvent.ExecutionId);
+                _outputHelper.WriteLine("Retrieved task dispatch");
+                Assertions.AssertTaskDispatchEventStoredInMongo(storedTaskDispatchEvent, DataHelper.TaskDispatchEvent);
+            });
         }
 
         [Then(@"A Task Update event with status (.*) is published with Task Callback details")]
