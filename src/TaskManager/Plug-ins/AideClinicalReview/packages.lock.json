@@ -131,8 +131,8 @@
       },
       "MongoDB.Bson": {
         "type": "Transitive",
-        "resolved": "2.17.0",
-        "contentHash": "wGUX8GMQ0DYG68u1ENAUtJTx6cmQTt6/BfMjqB+Q+aWu2ZkBZ09mA1QbBU5mcbVqulF5U72bGzxChtjYxaS9Dg==",
+        "resolved": "2.17.1",
+        "contentHash": "IBr5w6ygeUCTobiS4J2UlYeIsnjSJvOOf31g60EkRa3NIeyrYs7Y51HeOvJ8r6NPcKv1hLj8xwoop6hDTetAdA==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "5.0.0"
         }
@@ -187,9 +187,9 @@
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.3-rc0012",
-          "Monai.Deploy.Storage": "0.2.0-rc0014",
-          "MongoDB.Bson": "2.17.0"
+          "Monai.Deploy.Messaging": "[0.1.3-rc0012, )",
+          "Monai.Deploy.Storage": "[0.2.0-rc0014, )",
+          "MongoDB.Bson": "[2.17.1, )"
         }
       }
     }
