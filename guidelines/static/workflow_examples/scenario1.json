@@ -58,7 +58,7 @@
         "description": "Run Image Type Detector",
         "ref": "argo",
         "args": {
-          "workflow_id": "image_type_detector"
+          "workflow_template_name": "image_type_detector"
         },
         "output": [
           {
