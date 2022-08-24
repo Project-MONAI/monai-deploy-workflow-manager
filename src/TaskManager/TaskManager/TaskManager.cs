@@ -317,8 +317,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             Guard.Against.Null(message, nameof(message));
 
             var pluginAssembly = string.Empty;
+            var eventInfo = new API.Models.TaskDispatchEventInfo(message.Body);
             try
             {
+                await _taskDispatchEventService.CreateAsync(eventInfo).ConfigureAwait(false);
                 message.Body.Validate();
                 pluginAssembly = _options.Value.TaskManager.PluginAssemblyMappings[message.Body.TaskPluginType];
             }
@@ -337,7 +339,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 return;
             }
 
-            var eventInfo = new API.Models.TaskDispatchEventInfo(message.Body);
             try
             {
                 if (string.Equals(message.Body.TaskPluginType,
@@ -354,6 +355,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                         PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray())
                     ).ConfigureAwait(true);
                 }
+
+                await _taskDispatchEventService.UpdateUserAccountsAsync(eventInfo).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -378,7 +381,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             try
             {
                 var executionStatus = await taskRunner.ExecuteTask(_cancellationTokenSource.Token).ConfigureAwait(false);
-                await _taskDispatchEventService.CreateAsync(eventInfo).ConfigureAwait(false);
                 var updateMessage = GenerateUpdateEventMessage(message, message.Body.ExecutionId, message.Body.WorkflowInstanceId, message.Body.TaskId, executionStatus);
                 await SendUpdateEvent(updateMessage).ConfigureAwait(false);
                 AcknowledgeMessage(message);

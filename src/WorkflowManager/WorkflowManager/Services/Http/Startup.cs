@@ -47,6 +47,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
         public void ConfigureServices(IServiceCollection services)
 #pragma warning restore CA1822 // Mark members as static
         {
+            var monew MongoHealth();
             services.AddHealthChecks().AddAsyncCheck(nameof(MongoHealth), MongoHealth.Check, new[] { "Database" })
                 .AddAsyncCheck(nameof(ReddisHealth), ReddisHealth.Check, new[] { "Queue" })
                 .AddAsyncCheck(nameof(ArgoHealth), ArgoHealth.Check, new[] { "WorkflowEngine" });

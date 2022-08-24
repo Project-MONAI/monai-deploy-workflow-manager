@@ -285,7 +285,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             workflow.Spec.Templates = new List<Template2>();
             // Add the main workflow template
-            await AddMainWorkflowTemplate(workflow, cancellationToken).ConfigureAwait(false);
+            await AddMainWorkflowTemplate(workflow, cancellationToken);
 
             // Add the exit template for the exit hook
             await AddExitHookTemplate(workflow, cancellationToken).ConfigureAwait(false);

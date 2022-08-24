@@ -64,13 +64,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             // Remove AccessKey, AccessToken & SessionToken as they are modified by Task Manager
             storedTaskDispatchEvent.ForEach(e =>
             {
-                e.Event.Inputs.ForEach(i => i.Credentials = null);
-                e.Event.Outputs.ForEach(i => i.Credentials = null);
-                e.Event.IntermediateStorage.Credentials = null;
+                e.Event.Inputs?.ForEach(i => i.Credentials = null);
+                e.Event.Outputs?.ForEach(i => i.Credentials = null);
+                if (e.Event.IntermediateStorage is not null)
+                {
+                    e.Event.IntermediateStorage.Credentials = null;
+                }
             });
             taskDispatchEvent.Inputs.ForEach(i => i.Credentials = null);
             taskDispatchEvent.Outputs.ForEach(i => i.Credentials = null);
-            taskDispatchEvent.IntermediateStorage.Credentials = null;
+            if (taskDispatchEvent.IntermediateStorage is not null)
+            {
+                taskDispatchEvent.IntermediateStorage.Credentials = null;
+            }
 
             storedTaskDispatchEvent[0].Event.Should().BeEquivalentTo(taskDispatchEvent);
             Output.WriteLine("Details of TaskDispatchEvent stored matches original TaskDispatchEvent");

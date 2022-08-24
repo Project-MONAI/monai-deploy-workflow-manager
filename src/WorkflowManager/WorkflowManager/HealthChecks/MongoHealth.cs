@@ -15,22 +15,38 @@
  */
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
+using Monai.Deploy.WorkflowManager.Database.Options;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.HealthChecks
 {
     /// <summary>
     /// MongoDb Health Checks.
     /// </summary>
-    public class MongoHealth
+    public class MongoHealth : IHealthCheck
     {
+        private readonly IMongoClient _client;
+        private readonly IOptions<WorkloadManagerDatabaseSettings> _databaseSettings;
+
         /// <summary>
-        /// Check method.
+        /// Initializes a new instance of the <see cref="MongoHealth"/> class.
         /// </summary>
-        /// <returns></returns>
-        public static async Task<HealthCheckResult> Check()
+        /// <param name="client"></param>
+        public MongoHealth(IMongoClient client, IOptions<WorkloadManagerDatabaseSettings> databaseSettings)
         {
+            _client = client;
+            _databaseSettings = databaseSettings;
+        }
+
+        public async Task<HealthCheckResult> CheckHealthAsync(
+            HealthCheckContext context,
+            CancellationToken cancellationToken = default)
+        {
+            _client.GetDatabase(_databaseSettings.Value.DatabaseName);
             return new HealthCheckResult(HealthStatus.Unhealthy, "desc", new Exception("boom"));
         }
     }

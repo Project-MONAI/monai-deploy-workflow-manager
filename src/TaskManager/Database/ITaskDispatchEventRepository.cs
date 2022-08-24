@@ -28,6 +28,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
         Task<TaskDispatchEventInfo?> CreateAsync(TaskDispatchEventInfo taskDispatchEventInfo);
 
         /// <summary>
+        /// Updates user accounts of a task dispatch event in the database.
+        /// </summary>
+        /// <param name="taskDispatchEvent">A TaskDispatchEvent to update.</param>
+        /// <returns>Returns the created TaskDispatchEventInfo.</returns>
+        Task<TaskDispatchEventInfo?> UpdateUserAccountsAsync(TaskDispatchEventInfo taskDispatchEventInfo);
+
+        /// <summary>
         /// Retrieves a task dispatch event by the task execution ID.
         /// </summary>
         /// <param name="taskExecutionId">Task execution ID associated with the event</param>
