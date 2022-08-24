@@ -388,8 +388,8 @@
       },
       "System.IO.Abstractions": {
         "type": "Transitive",
-        "resolved": "17.0.24",
-        "contentHash": "hA7bacntMiZv1Yf9xtjwl/GP3GT1mG84QxhAk7ijAUD0pJhJaVVwXScE13vMpXnNtlaRDW6SeyZdWg2j2qrh4w=="
+        "resolved": "17.1.1",
+        "contentHash": "LWOM12Bd0kp/gaH4g1o/O2/6JDcHF/fuctF1IqDZt0aAqU2BwGiMihi9Cdcm5jJz8La1wFWbRPuRui8WeX6m8w=="
       },
       "System.Memory": {
         "type": "Transitive",
@@ -532,7 +532,7 @@
           "Monai.Deploy.Messaging": "[0.1.3-rc0012, )",
           "Monai.Deploy.Storage": "[0.2.0-rc0014, )",
           "Newtonsoft.Json": "[13.0.1, )",
-          "System.IO.Abstractions": "[17.0.24, )"
+          "System.IO.Abstractions": "[17.1.1, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.api": {

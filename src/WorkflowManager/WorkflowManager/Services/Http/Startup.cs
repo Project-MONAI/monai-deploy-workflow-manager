@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+using Amazon.Runtime.Internal.Util;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Monai.Deploy.WorkflowManager.Authentication.Extensions;
 using Monai.Deploy.WorkflowManager.Logging.Attributes;
@@ -26,8 +28,15 @@ using Newtonsoft.Json.Converters;
 
 namespace Monai.Deploy.WorkflowManager.Services.Http
 {
+    /// <summary>
+    /// Http Api Endpoint Startup Class.
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Startup"/> class.
+        /// </summary>
+        /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -35,6 +44,10 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
 
         public IConfiguration Configuration { get; }
 
+        /// <summary>
+        /// Configure Services.
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(Configuration);
@@ -68,6 +81,11 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
             services.AddMonaiAuthentication(Configuration);
         }
 
+        /// <summary>
+        /// Configure App.
+        /// </summary>
+        /// <param name="app">Application Builder</param>
+        /// <param name="env">Web Host Enviroment</param>
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsProduction() is false)
