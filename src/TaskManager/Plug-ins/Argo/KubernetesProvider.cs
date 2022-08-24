@@ -31,9 +31,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         public IKubernetes CreateClient()
         {
-            _logger.CreatingKubernetesClient();
 
             var configuration = KubernetesClientConfiguration.BuildDefaultConfig();
+            _logger.CreatingKubernetesClient(configuration.Host, configuration.Namespace);
+            
             return new Kubernetes(configuration);
         }
     }

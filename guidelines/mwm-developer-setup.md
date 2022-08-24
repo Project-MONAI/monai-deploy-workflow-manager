@@ -89,7 +89,7 @@ Open the post/workflows tab and click `try it out`, paste in the following to th
 			"type": "argo",
 			"args": {
 				"namespace":"argo",
-				"workflow_id": "simple-workflow",
+				"workflow_template_name": "simple-workflow",
 				"server_url": "https://localhost:2746",
 				"allow_insecure": true,
 				"messaging_endpoint": "rabbit-monai",
