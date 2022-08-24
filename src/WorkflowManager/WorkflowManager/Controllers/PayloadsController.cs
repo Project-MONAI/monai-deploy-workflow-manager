@@ -89,15 +89,15 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
-                return Problem($"Unexpected error occured: {e.Message}", $"/payload", InternalServerError);
+                return Problem($"Unexpected error occurred: {e.Message}", $"/payload", InternalServerError);
             }
         }
 
         /// <summary>
-        /// Get a workflow by the ID.
+        /// Get a payload by the ID.
         /// </summary>
-        /// <param name="id">The Workflow Id.</param>
-        /// <returns>The specified workflow for a given Id.</returns>
+        /// <param name="id">The payload Id.</param>
+        /// <returns>The specified payload for a given Id.</returns>
         [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> GetAsync([FromRoute] string id)
@@ -117,14 +117,14 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 {
                     _logger.LogDebug($"{nameof(GetAsync)} - Failed to find payload with payload id: {id}");
 
-                    return NotFound($"Faild to find payload with payload id: {id}");
+                    return NotFound($"Failed to find payload with payload id: {id}");
                 }
 
                 return Ok(payload);
             }
             catch (Exception e)
             {
-                return Problem($"Unexpected error occured: {e.Message}", $"/payload/{nameof(id)}", InternalServerError);
+                return Problem($"Unexpected error occurred: {e.Message}", $"/payload/{nameof(id)}", InternalServerError);
             }
         }
     }
