@@ -16,20 +16,23 @@
 
 using Microsoft.Extensions.Configuration;
 using Ardalis.GuardClauses;
+using Microsoft.Extensions.Logging;
 
 namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
 {
     public static class ConfigurationExtension
     {
-        public static bool BypassAuth(this IConfiguration configuration)
+        public static bool BypassAuth(this IConfiguration configuration, ILogger logger)
         {
             Guard.Against.Null(configuration, nameof(configuration));
+            Guard.Against.Null(logger, nameof(logger));
 
             var authenticationSettings = configuration.GetSection(AuthKeys.WorkflowManagerAuthentication);
             Guard.Against.Null(authenticationSettings, nameof(authenticationSettings), "Missing WorkflowManagerAuthentication section in config.");
 
             if (authenticationSettings[AuthKeys.OpenId] is null)
             {
+                logger.LogInformation("Bypass Authentication");
                 return true;
             }
 

@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Routing;
 using System.Net;
 using Microsoft.AspNetCore.Http;
 using Monai.Deploy.WorkflowManager.Authentication.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace Monai.Deploy.WorkflowManager.Authentication.Middleware
 {
@@ -29,16 +30,18 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<EndpointAuthorizationMiddleware> _logger;
 
-        public EndpointAuthorizationMiddleware(RequestDelegate next, IConfiguration configuration)
+        public EndpointAuthorizationMiddleware(RequestDelegate next, IConfiguration configuration, ILogger<EndpointAuthorizationMiddleware> logger)
         {
             _next = next;
             _configuration = configuration;
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext httpcontext)
         {
-            if (_configuration.BypassAuth())
+            if (_configuration.BypassAuth(_logger))
             {
                 await _next(httpcontext);
                 return;

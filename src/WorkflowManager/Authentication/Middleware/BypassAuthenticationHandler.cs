@@ -36,6 +36,7 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Middleware
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             var principal = new ClaimsPrincipal(new ClaimsIdentity(Array.Empty<Claim>(), Scheme.Name));
+            Logger.LogInformation("Bypassing request");
             return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(principal, Scheme.Name)));
         }
     }

@@ -23,6 +23,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Monai.Deploy.WorkflowManager.Authentication.Middleware;
+using Microsoft.Extensions.Logging;
 
 namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
 {
@@ -35,9 +36,10 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
         /// <param name="configuration">The <see cref="IConfiguration"/>.</param>
         public static IServiceCollection AddMonaiAuthentication(
             this IServiceCollection services,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ILogger logger)
         {
-            if (configuration.BypassAuth())
+            if (configuration.BypassAuth(logger))
             {
                 services.AddAuthentication(options => options.DefaultAuthenticateScheme = AuthKeys.BypassSchemeName)
                     .AddScheme<AuthenticationSchemeOptions, BypassAuthenticationHandler>(AuthKeys.BypassSchemeName, null);

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using Amazon.Runtime.Internal.Util;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -36,18 +35,20 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
         /// <summary>
         /// Initializes a new instance of the <see cref="Startup"/> class.
         /// </summary>
-        /// <param name="configuration"></param>
+        /// <param name="configuration">Configurations.</param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+#pragma warning disable SA1600 // Elements should be documented
         public IConfiguration Configuration { get; }
+#pragma warning restore SA1600 // Elements should be documented
 
         /// <summary>
         /// Configure Services.
         /// </summary>
-        /// <param name="services"></param>
+        /// <param name="services">Services Collection.</param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(Configuration);
@@ -78,15 +79,20 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
                 c.DescribeAllParametersInCamelCase();
             });
 
-            services.AddMonaiAuthentication(Configuration);
+            var serviceProvider = services.BuildServiceProvider();
+            var logger = serviceProvider.GetService<ILogger<Startup>>();
+
+            services.AddMonaiAuthentication(Configuration, logger);
         }
 
         /// <summary>
-        /// Configure App.
+        /// Configure.
         /// </summary>
-        /// <param name="app">Application Builder</param>
-        /// <param name="env">Web Host Enviroment</param>
+        /// <param name="app">Application Builder.</param>
+        /// <param name="env">Web Host Environment.</param>
+#pragma warning disable SA1204 // Static elements should appear before instance elements
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+#pragma warning restore SA1204 // Static elements should appear before instance elements
         {
             if (env.IsProduction() is false)
             {
