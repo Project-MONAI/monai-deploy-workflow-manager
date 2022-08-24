@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+@IntergrationTests
 Feature: WorkflowTaskArtifact
 
 Integration test for Task input and output artifacts

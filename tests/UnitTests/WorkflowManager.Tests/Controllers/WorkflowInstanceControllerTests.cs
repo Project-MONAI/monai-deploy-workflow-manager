@@ -35,10 +35,10 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 {
     public class PayloadControllerTests
     {
-        private PayloadController PayloadController { get; set; }
+        private PayloadsController PayloadController { get; set; }
 
         private readonly Mock<IPayloadService> _payloadService;
-        private readonly Mock<ILogger<PayloadController>> _logger;
+        private readonly Mock<ILogger<PayloadsController>> _logger;
         private readonly Mock<IUriService> _uriService;
         private readonly IOptions<WorkflowManagerOptions> _options;
 
@@ -46,10 +46,10 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         {
             _options = Options.Create(new WorkflowManagerOptions());
             _payloadService = new Mock<IPayloadService>();
-            _logger = new Mock<ILogger<PayloadController>>();
+            _logger = new Mock<ILogger<PayloadsController>>();
             _uriService = new Mock<IUriService>();
 
-            PayloadController = new PayloadController(_payloadService.Object, _logger.Object, _uriService.Object, _options);
+            PayloadController = new PayloadsController(_payloadService.Object, _logger.Object, _uriService.Object, _options);
         }
 
         [Fact]

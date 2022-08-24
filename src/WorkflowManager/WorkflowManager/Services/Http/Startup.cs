@@ -19,25 +19,39 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Monai.Deploy.WorkflowManager.Authentication.Extensions;
 using Monai.Deploy.WorkflowManager.Logging.Attributes;
 using Newtonsoft.Json.Converters;
 
 namespace Monai.Deploy.WorkflowManager.Services.Http
 {
+    /// <summary>
+    /// Http Api Endpoint Startup Class.
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Startup"/> class.
+        /// </summary>
+        /// <param name="configuration">Configurations.</param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+#pragma warning disable SA1600 // Elements should be documented
         public IConfiguration Configuration { get; }
+#pragma warning restore SA1600 // Elements should be documented
 
-#pragma warning disable CA1822 // Mark members as static
+        /// <summary>
+        /// Configure Services.
+        /// </summary>
+        /// <param name="services">Services Collection.</param>
         public void ConfigureServices(IServiceCollection services)
-#pragma warning restore CA1822 // Mark members as static
         {
+            services.AddSingleton(Configuration);
             services.AddHttpContextAccessor();
             services.AddApiVersioning(
                 options =>
@@ -64,11 +78,21 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MONAI Workflow Manager", Version = "v1" });
                 c.DescribeAllParametersInCamelCase();
             });
+
+            var serviceProvider = services.BuildServiceProvider();
+            var logger = serviceProvider.GetService<ILogger<Startup>>();
+
+            services.AddMonaiAuthentication(Configuration, logger);
         }
 
-#pragma warning disable CA1822 // Mark members as static
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-#pragma warning restore CA1822 // Mark members as static
+        /// <summary>
+        /// Configure.
+        /// </summary>
+        /// <param name="app">Application Builder.</param>
+        /// <param name="env">Web Host Environment.</param>
+#pragma warning disable SA1204 // Static elements should appear before instance elements
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+#pragma warning restore SA1204 // Static elements should appear before instance elements
         {
             if (env.IsProduction() is false)
             {
@@ -78,6 +102,10 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseEndpointAuthorizationMiddleware();
 
             app.UseEndpoints(endpoints =>
             {
