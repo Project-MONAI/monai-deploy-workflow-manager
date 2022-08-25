@@ -127,6 +127,10 @@ jobs:
     - name: Build Solution
       run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkflowManager.sln
       working-directory: ./src
+    
+    - name: ls test
+      run: ls
+      working-directory: ./tests/IntegrationTests/WorkflowExecutor.IntegrationTests/bin
 
     - name: Run WorkflowExecutor Integration Tests
       run: find ~+ -type f -name "*.WorkflowExecutor.IntegrationTests.csproj" | xargs -L1 dotnet test
@@ -142,10 +146,6 @@ jobs:
       with:
         name: WorkflowExecutorIntegrationTestReport
         path: ./tests/IntegrationTests/WorkflowExecutor.IntegrationTests/bin/Release/net6.0/LivingDoc.html
-
-    - name: Generate LivingDoc HTML
-      run: ls
-      working-directory: ./tests/IntegrationTests/WorkflowExecutor.IntegrationTests/bin
 
   task-manager-integration-tests:
     runs-on: ubuntu-latest
