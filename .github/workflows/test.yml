@@ -127,10 +127,6 @@ jobs:
     - name: Build Solution
       run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkflowManager.sln
       working-directory: ./src
-    
-    - name: find test
-      run: find -name TestExecution.json
-      working-directory: ./
 
     - name: Run WorkflowExecutor Integration Tests
       run: find ~+ -type f -name "*.WorkflowExecutor.IntegrationTests.csproj" | xargs -L1 dotnet test
@@ -211,6 +207,10 @@ jobs:
     - name: Run TaskManager Integration Tests
       run: find ~+ -type f -name "*.TaskManager.IntegrationTests.csproj" | xargs -L1 dotnet test
       working-directory: ./tests
+
+    - name: find test
+      run: find -name TestExecution.json
+      working-directory: ./
 
     - name: Generate LivingDoc HTML
       run: livingdoc test-assembly Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.dll -t TestExecution.json
