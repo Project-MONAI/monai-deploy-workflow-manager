@@ -128,9 +128,9 @@ jobs:
       run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkflowManager.sln
       working-directory: ./src
     
-    - name: ls test
-      run: ls
-      working-directory: ./tests/IntegrationTests/WorkflowExecutor.IntegrationTests/bin
+    - name: find test
+      run: find -name TestExecution.json
+      working-directory: ./
 
     - name: Run WorkflowExecutor Integration Tests
       run: find ~+ -type f -name "*.WorkflowExecutor.IntegrationTests.csproj" | xargs -L1 dotnet test
