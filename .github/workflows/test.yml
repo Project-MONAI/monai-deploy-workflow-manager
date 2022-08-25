@@ -109,6 +109,9 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
+    - name: Install LivingDoc CLI
+      run: dotnet tool install --global SpecFlow.Plus.LivingDoc.CLI
+
     - name: Enable NuGet cache
       uses: actions/cache@v2.1.7
       with:
@@ -129,12 +132,17 @@ jobs:
       run: find ~+ -type f -name "*.WorkflowExecutor.IntegrationTests.csproj" | xargs -L1 dotnet test
       working-directory: ./tests
 
+    - name: Generate LivingDoc HTML
+      if: always()
+      run: livingdoc test-assembly Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.dll -t TestExecution.json
+      working-directory: ./tests/IntegrationTests/WorkflowExecutor.IntegrationTests/bin/Debug/net6.0
+
     - name: Publish report
       if: always()
       uses: actions/upload-artifact@v3
       with:
-        name: WorkflowExecutorIntegrationTestResults
-        path: tests/IntegrationTests/WorkflowExecutor.IntegrationTests/bin/Debug/net6.0/TestExecution.json
+        name: WorkflowExecutorIntegrationTestReport
+        path: ./tests/IntegrationTests/WorkflowExecutor.IntegrationTests/bin/Debug/net6.0/LivingDoc.html
 
   task-manager-integration-tests:
     runs-on: ubuntu-latest
@@ -178,6 +186,9 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
+    - name: Install LivingDoc CLI
+      run: dotnet tool install --global SpecFlow.Plus.LivingDoc.CLI
+
     - name: Enable NuGet cache
       uses: actions/cache@v2.1.7
       with:
@@ -194,16 +205,21 @@ jobs:
       run: dotnet build -c Release --nologo --no-restore Monai.Deploy.WorkflowManager.sln
       working-directory: ./src
 
-    - name: Run WorkflowExecutor Integration Tests
+    - name: Run TaskManager Integration Tests
       run: find ~+ -type f -name "*.TaskManager.IntegrationTests.csproj" | xargs -L1 dotnet test
       working-directory: ./tests
+
+    - name: Generate LivingDoc HTML
+      if: always()
+      run: livingdoc test-assembly Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.dll -t TestExecution.json
+      working-directory: ./tests/IntegrationTests/TaskManager.IntegrationTests/bin/Debug/net6.0
 
     - name: Publish report
       if: always()
       uses: actions/upload-artifact@v3
       with:
-        name: TaskExecutorIntegrationTestResults
-        path: tests/IntegrationTests/TaskManager.IntegrationTests/bin/Debug/net6.0/TestExecution.json
+        name: TaskManagerIntegrationTestReport
+        path: ./tests/IntegrationTests/TaskManager.IntegrationTests/bin/Debug/net6.0/LivingDoc.html
 
   sonarscanner:
     runs-on: ubuntu-latest
@@ -235,7 +251,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: dotnet sonarscanner begin /k:"Project-MONAI_monai-deploy-workflow-manager" /o:"project-monai" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="../**/coverage.opencover.xml"
+      run: dotnet sonarscanner begin /k:"Project-MONAI_monai-deploy-workflow-manager" /o:"project-monai" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="../**/coverage.opencover.xml" /d:sonar.coverage.exclusions="./tests"
       working-directory: ./src
 
     - name: Restore Solution
