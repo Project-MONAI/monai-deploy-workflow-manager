@@ -88,6 +88,24 @@
           "JetBrains.Annotations": "2021.3.0"
         }
       },
+      "AspNetCore.HealthChecks.MongoDb": {
+        "type": "Transitive",
+        "resolved": "6.0.2",
+        "contentHash": "0R3NVbsjMhS5fd2hGijzQNKJ0zQBv/qMC7nkpmnbtgribCj7vfNdAhSqv4lwbibffRWPW5A/7VNJMX4aPej0WQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.2",
+          "MongoDB.Driver": "2.14.1"
+        }
+      },
+      "AspNetCore.HealthChecks.Rabbitmq": {
+        "type": "Transitive",
+        "resolved": "6.0.2",
+        "contentHash": "Ch5/dOHpGfl8uGBdFEsbHU+xVsJtMdraBQ2d+MdKMxGjcn2tAubo7hRR8Vdwr5biLyCOY5qZR1zuVCteKQ5WIQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.2",
+          "RabbitMQ.Client": "6.2.2"
+        }
+      },
       "AutoFixture": {
         "type": "Transitive",
         "resolved": "4.17.0",
@@ -525,6 +543,22 @@
           "System.Text.Encodings.Web": "6.0.0",
           "System.Text.Json": "6.0.0"
         }
+      },
+      "Microsoft.Extensions.Diagnostics.HealthChecks": {
+        "type": "Transitive",
+        "resolved": "6.0.2",
+        "contentHash": "ffgCDbl65v/Flx0v4EaWgn+V1cqKflPZVXjf4BZimOUY/yy+H0jNeoPtVl9BXZtQCP/A+q6D9asXkxTPhP8+GQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "6.0.2",
+          "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Options": "6.0.0"
+        }
+      },
+      "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": {
+        "type": "Transitive",
+        "resolved": "6.0.2",
+        "contentHash": "d2XN/F1NnceJHxgPqziGPQ9rzSw4uK2n3UqCXZLMqP6o+xzcUyh8LgjsP5YQy6MXT5gXemp00irx42tzWPO2Eg=="
       },
       "Microsoft.Extensions.FileProviders.Abstractions": {
         "type": "Transitive",
@@ -1635,6 +1669,8 @@
         "type": "Project",
         "dependencies": {
           "Ardalis.GuardClauses": "[4.0.1, )",
+          "AspNetCore.HealthChecks.MongoDB": "[6.0.2, )",
+          "AspNetCore.HealthChecks.RabbitMQ": "[6.0.2, )",
           "Karambolo.Extensions.Logging.File": "[3.3.1, )",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "[6.0.7, )",
           "Microsoft.AspNetCore.Mvc.Versioning": "[5.0.0, )",

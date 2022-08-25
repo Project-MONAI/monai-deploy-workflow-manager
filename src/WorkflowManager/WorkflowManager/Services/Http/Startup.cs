@@ -14,44 +14,76 @@
  * limitations under the License.
  */
 
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Monai.Deploy.Messaging.Configuration;
+using Monai.Deploy.WorkflowManager.Database.Options;
 using Monai.Deploy.WorkflowManager.HealthChecks;
 using Monai.Deploy.WorkflowManager.Logging.Attributes;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using RabbitMQ.Client;
 
+#pragma warning disable CA1822 // Mark members as static
 namespace Monai.Deploy.WorkflowManager.Services.Http
 {
+    /// <summary>
+    /// Startup Class.
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Startup"/> class.
+        /// </summary>
+        /// <param name="configuration"><see cref="IConfiguration"/>.</param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+        /// <summary>
+        /// Gets configuration settings.
+        /// </summary>
         public IConfiguration Configuration { get; }
 
-#pragma warning disable CA1822 // Mark members as static
+        /// <summary>
+        /// Configure Services.
+        /// </summary>
+        /// <param name="services">Services.</param>
         public void ConfigureServices(IServiceCollection services)
-#pragma warning restore CA1822 // Mark members as static
         {
-            var monew MongoHealth();
-            services.AddHealthChecks().AddAsyncCheck(nameof(MongoHealth), MongoHealth.Check, new[] { "Database" })
-                .AddAsyncCheck(nameof(ReddisHealth), ReddisHealth.Check, new[] { "Queue" })
-                .AddAsyncCheck(nameof(ArgoHealth), ArgoHealth.Check, new[] { "WorkflowEngine" });
-            ;
+            services.Configure<WorkloadManagerDatabaseSettings>(Configuration.GetSection("WorkloadManagerDatabase"));
+            services.AddOptions<MessageBrokerServiceConfiguration>().Bind(Configuration.GetSection("WorkflowManager:messaging"));
+
+            GetRequiredServicesForHealthChecks(services, out var dbSettings, out var subscriberQueueFactory, out var publisherQueueFactory);
+
+            const HealthStatus failiureStatus = HealthStatus.Unhealthy;
+            services.AddHealthChecks()
+                .AddMongoDb(
+                    dbSettings.Value.ConnectionString,
+                    HealthCheckSettings.DatabaseHealthCheckName,
+                    failiureStatus,
+                    HealthCheckSettings.DatabaseTags,
+                    HealthCheckSettings.DatabaseHealthCheckTimeout)
+                .AddRabbitMQ(
+                    _ => subscriberQueueFactory,
+                    HealthCheckSettings.SubscriberQueueHealthCheckName,
+                    failiureStatus,
+                    HealthCheckSettings.SubscriberQueueTags,
+                    HealthCheckSettings.SubscriberQueueHealthCheckTimeout)
+                .AddRabbitMQ(
+                    _ => publisherQueueFactory,
+                    HealthCheckSettings.PublisherQueueHealthCheckName,
+                    failiureStatus,
+                    HealthCheckSettings.PublisherQueueTags,
+                    HealthCheckSettings.PublisherQueueHealthCheckTimeout);
+
             services.AddHttpContextAccessor();
             services.AddApiVersioning(
                 options =>
@@ -80,9 +112,12 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
             });
         }
 
-#pragma warning disable CA1822 // Mark members as static
+        /// <summary>
+        /// Configure.
+        /// </summary>
+        /// <param name="app">IApplication Builder.</param>
+        /// <param name="env">IWebhostEnviroment.</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-#pragma warning restore CA1822 // Mark members as static
         {
             if (env.IsProduction() is false)
             {
@@ -91,10 +126,16 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "aspnet6 v1"));
             }
 
-            app.UseHealthChecks("/health", new HealthCheckOptions
+            var options = new HealthCheckOptions
             {
-                ResponseWriter = WriteHealthCheckResponse,
-            });
+                ResponseWriter = HealthCheckResponseWriter.WriteResponse,
+            };
+
+            app.UseHealthChecks("/health", options)
+                .UseHealthChecks("/health/live", options)
+                .UseHealthChecks($"/health/{HealthCheckSettings.DatabaseHealthCheckName}", options)
+                .UseHealthChecks($"/health/{HealthCheckSettings.SubscriberQueueHealthCheckName}", options)
+                .UseHealthChecks($"/health/{HealthCheckSettings.PublisherQueueHealthCheckName}", options);
 
             app.UseRouting();
 
@@ -104,86 +145,15 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
             });
         }
 
-        private static async Task WriteHealthCheckResponse(HttpContext context, HealthReport report)
+        private static void GetRequiredServicesForHealthChecks(IServiceCollection services, out IOptions<WorkloadManagerDatabaseSettings> dbSettings, out IConnectionFactory subscriberQueueFactory, out IConnectionFactory publisherQueueFactory)
         {
-            context.Response.ContentType = "application/json";
+            var sp = services.BuildServiceProvider();
+            dbSettings = sp.GetService<IOptions<WorkloadManagerDatabaseSettings>>();
+            var messageBrokerConfig = sp.GetService<IOptions<MessageBrokerServiceConfiguration>>();
 
-            var isAuthenticated = context.User.Identity.IsAuthenticated;
-            var response = new HealthCheckResponse
-            {
-                Status = report.Status.ToString(),
-                Checks = report.Entries.Select(entity =>
-                {
-                    return ServicesHealthCheckReport(entity, isAuthenticated);
-                }),
-                Duration = report.TotalDuration
-            };
-
-            await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+            subscriberQueueFactory = RabbitHealthCheckFactory.Create(messageBrokerConfig.Value.SubscriberSettings);
+            publisherQueueFactory = RabbitHealthCheckFactory.Create(messageBrokerConfig.Value.PublisherSettings);
         }
-
-        private static HealthCheck ServicesHealthCheckReport(KeyValuePair<string, HealthReportEntry> entity, bool isAuthenticated)
-        {
-            const string seperator = " ,";
-
-            var description = entity.Value.Description;
-
-            if (isAuthenticated)
-            {
-                description = string.Concat(entity.Value.Description, seperator,
-                                            entity.Value.Exception.Message, seperator,
-                                            entity.Value.Exception.StackTrace);
-            }
-
-            return new HealthCheck
-            {
-                Component = entity.Key,
-                Status = entity.Value.Status.ToString(),
-                Description = description,
-                Tags = entity.Value.Tags,
-            };
-        }
-
-        //private static Task WriteHealthCheckResponse(HttpContext context, HealthReport healthReport)
-        //{
-        //    context.Response.ContentType = "application/json; charset=utf-8";
-
-        //    var options = new JsonWriterOptions { Indented = true };
-
-        //    using var memoryStream = new MemoryStream();
-        //    using (var jsonWriter = new Utf8JsonWriter(memoryStream, options))
-        //    {
-        //        jsonWriter.WriteStartObject();
-        //        jsonWriter.WriteString("status", healthReport.Status.ToString());
-        //        jsonWriter.WriteStartObject("results");
-
-        //        foreach (var healthReportEntry in healthReport.Entries)
-        //        {
-        //            jsonWriter.WriteStartObject(healthReportEntry.Key);
-        //            jsonWriter.WriteString("status",
-        //                healthReportEntry.Value.Status.ToString());
-        //            jsonWriter.WriteString("description",
-        //                healthReportEntry.Value.Description);
-        //            jsonWriter.WriteStartObject("data");
-
-        //            foreach (var item in healthReportEntry.Value.Data)
-        //            {
-        //                jsonWriter.WritePropertyName(item.Key);
-
-        //                JsonSerializer.Serialize(jsonWriter, item.Value,
-        //                    item.Value?.GetType() ?? typeof(object));
-        //            }
-
-        //            jsonWriter.WriteEndObject();
-        //            jsonWriter.WriteEndObject();
-        //        }
-
-        //        jsonWriter.WriteEndObject();
-        //        jsonWriter.WriteEndObject();
-        //    }
-
-        //    return context.Response.WriteAsync(
-        //        Encoding.UTF8.GetString(memoryStream.ToArray()));
-        //}
     }
 }
+#pragma warning restore CA1822 // Mark members as static
