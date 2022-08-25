@@ -16,6 +16,7 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Monai.Deploy.WorkflowManager.IntegrationTests;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
 using Polly;
@@ -83,10 +84,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 
             RabbitConnectionFactory.DeleteAllQueues();
 
+            MongoClient = new MongoClientUtil(
+                connectionString: TestExecutionConfig.MongoConfig.ConnectionString,
+                database: TestExecutionConfig.MongoConfig.Database,
+                taskDispatchEventInfo: TestExecutionConfig.MongoConfig.TaskDispatchEventCollection);
+
+            MinioClient = new MinioClientUtil(
+                TestExecutionConfig.MinioConfig.Endpoint,
+                TestExecutionConfig.MinioConfig.AccessKey,
+                TestExecutionConfig.MinioConfig.AccessToken,
+                TestExecutionConfig.MinioConfig.Bucket);
+
             Host = TaskManagerStartup.StartTaskManager();
-            MongoClient = new MongoClientUtil();
-            HttpClient = new HttpClient();
-            MinioClient = new MinioClientUtil();
+
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
@@ -110,7 +120,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         {
             await RetryPolicy.ExecuteAsync(async () =>
             {
-                var response = await TaskManagerStartup.GetQueueStatus(HttpClient, TestExecutionConfig.RabbitConfig.VirtualHost, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+                var response = await TaskManagerStartup.GetQueueStatus(new HttpClient(), TestExecutionConfig.RabbitConfig.VirtualHost, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
                 var content = response.Content.ReadAsStringAsync().Result;
 
                 if (content.Contains("error"))

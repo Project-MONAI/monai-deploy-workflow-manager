@@ -16,6 +16,7 @@
 
 using BoDi;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.IntegrationTests;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.Wrappers;
 using Newtonsoft.Json;
@@ -26,6 +27,11 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
     [Binding]
     public class PayloadApiStepDefinitions
     {
+        private Assertions Assertions { get; }
+        private ApiHelper ApiHelper { get; }
+        private DataHelper DataHelper { get; }
+        private MongoClientUtil MongoClient { get; }
+
         public PayloadApiStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             ApiHelper = objectContainer.Resolve<ApiHelper>();
@@ -34,14 +40,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             _outputHelper = outputHelper;
             Assertions = new Assertions(objectContainer);
         }
-
-        private Assertions Assertions { get; }
-
-        private ApiHelper ApiHelper { get; }
-
-        private DataHelper DataHelper { get; }
-
-        private MongoClientUtil MongoClient { get; }
 
         private readonly ISpecFlowOutputHelper _outputHelper;
 

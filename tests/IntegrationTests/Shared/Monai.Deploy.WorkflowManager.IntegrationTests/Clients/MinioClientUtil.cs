@@ -15,26 +15,29 @@
  */
 
 using Minio;
-using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
 using Polly;
 using Polly.Retry;
 using System.Reactive.Linq;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
+
+namespace Monai.Deploy.WorkflowManager.IntegrationTests
 {
     public class MinioClientUtil
     {
         private AsyncRetryPolicy RetryPolicy { get; set; }
         private MinioClient Client { get; set; }
+        private string Bucket { get; set; }
 
-        public MinioClientUtil()
+        public MinioClientUtil(string endpoint, string accessKey, string accessToken, string bucket)
         {
             Client = new MinioClient()
-                .WithEndpoint(TestExecutionConfig.MinioConfig.Endpoint)
+                .WithEndpoint(endpoint)
                 .WithCredentials(
-                    TestExecutionConfig.MinioConfig.AccessKey,
-                    TestExecutionConfig.MinioConfig.AccessToken
+                    accessKey,
+                    accessToken
                 ).Build();
+
+            Bucket = bucket;
 
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
@@ -76,27 +79,27 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                     Console.WriteLine($"[Bucket]  Exception: {e}");
                     if (e.Message != "MinIO API responded with message=Your previous request to create the named bucket succeeded and you already own it.")
                     {
-                        throw e;
+                        throw;
                     }
                 }
             });
         }
 
-        public async Task AddFileToStorage(string fileLocation, string bucketName, string objectName)
+        public async Task AddFileToStorage(string localPath, string folderPath)
         {
             await RetryPolicy.ExecuteAsync(async () =>
             {
                 try
                 {
-                    FileAttributes fileAttributes = File.GetAttributes(fileLocation);
+                    FileAttributes fileAttributes = File.GetAttributes(localPath);
                     if (fileAttributes.HasFlag(FileAttributes.Directory))
                     {
-                        var files = Directory.GetFiles($"{fileLocation}", "*.*", SearchOption.AllDirectories);
+                        var files = Directory.GetFiles($"{localPath}", "*.*", SearchOption.AllDirectories);
                         foreach (var file in files)
                         {
-                            var relativePath = $"{objectName}/dcm/{Path.GetRelativePath(fileLocation, file)}";
+                            var relativePath = $"{folderPath}{Path.GetRelativePath(localPath, file)}";
                             var fileName = Path.GetFileName(file);
-                            byte[] bs = File.ReadAllBytes(file);
+                            var bs = File.ReadAllBytes(file);
                             using (var filestream = new MemoryStream(bs))
                             {
                                 var fileInfo = new FileInfo(file);
@@ -105,7 +108,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                                             { "Test-Metadata", "Test  Test" }
                                 };
                                 await Client.PutObjectAsync(
-                                    bucketName,
+                                    Bucket,
                                     relativePath,
                                     file,
                                     "application/octet-stream",
@@ -115,18 +118,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                     }
                     else
                     {
-                        byte[] bs = File.ReadAllBytes(fileLocation);
+                        var bs = File.ReadAllBytes(localPath);
                         using (MemoryStream filestream = new MemoryStream(bs))
                         {
-                            FileInfo fileInfo = new FileInfo(fileLocation);
+                            FileInfo fileInfo = new FileInfo(localPath);
                             var metaData = new Dictionary<string, string>
                         {
                                     { "Test-Metadata", "Test  Test" }
                         };
                             await Client.PutObjectAsync(
-                                bucketName,
-                                objectName,
-                                fileLocation,
+                                Bucket,
+                                folderPath,
+                                localPath,
                                 "application/octet-stream",
                                 metaData);
                         }
@@ -144,6 +147,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             await Client.GetObjectAsync(bucketName, objectName, fileName);
         }
 
+        public async Task<bool> CheckFileExists(string bucketName, string objectName)
+        {
+            var args = new StatObjectArgs()
+                            .WithBucket(bucketName)
+                            .WithObject(objectName);
+            try
+            {
+                await Client.StatObjectAsync(args);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public async Task DeleteBucket(string bucketName)
         {
             bool found = await Client.BucketExistsAsync(bucketName);
@@ -158,8 +177,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 
         public async Task RemoveObjects(string bucketName, string objectName)
         {
-            bool found = await Client.BucketExistsAsync(bucketName);
-            if (found)
+            if (await Client.BucketExistsAsync(bucketName))
             {
                 await Client.RemoveObjectAsync(bucketName, objectName);
             }

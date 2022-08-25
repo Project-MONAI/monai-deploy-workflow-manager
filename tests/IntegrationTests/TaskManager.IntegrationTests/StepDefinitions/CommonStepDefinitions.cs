@@ -16,6 +16,7 @@
 
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
+using Monai.Deploy.WorkflowManager.IntegrationTests;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefinitions

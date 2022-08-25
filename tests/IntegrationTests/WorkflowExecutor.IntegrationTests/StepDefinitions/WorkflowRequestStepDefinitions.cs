@@ -46,7 +46,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             Assertions = new Assertions(objectContainer);
             DataHelper = objectContainer.Resolve<DataHelper>();
             _outputHelper = outputHelper;
-            MinioDataSeeding = new MinioDataSeeding(objectContainer.Resolve<MinioClientUtil>(), DataHelper, _outputHelper);
+            MinioDataSeeding = new MinioDataSeeding(objectContainer.Resolve<MinioClientUtil>(), _outputHelper);
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 

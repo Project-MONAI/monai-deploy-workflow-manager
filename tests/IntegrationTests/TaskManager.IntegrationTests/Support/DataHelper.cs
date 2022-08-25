@@ -15,6 +15,7 @@
  */
 
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.IntegrationTests;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events;
 using Polly;
 using Polly.Retry;

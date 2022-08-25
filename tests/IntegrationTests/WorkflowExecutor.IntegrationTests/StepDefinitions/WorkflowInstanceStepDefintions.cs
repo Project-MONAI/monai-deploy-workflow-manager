@@ -15,6 +15,7 @@
  */
 
 using BoDi;
+using Monai.Deploy.WorkflowManager.IntegrationTests;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support;
 using Polly;
@@ -26,8 +27,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
     [Binding]
     internal class WorkflowInstanceStepDefintions
     {
-        private RabbitPublisher WorkflowPublisher { get; set; }
-        private RabbitConsumer TaskDispatchConsumer { get; set; }
         private MongoClientUtil MongoClient { get; set; }
         private Assertions Assertions { get; set; }
         private DataHelper DataHelper { get; set; }
@@ -37,13 +36,11 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
 
         public WorkflowInstanceStepDefintions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
-            WorkflowPublisher = objectContainer.Resolve<RabbitPublisher>("WorkflowPublisher");
-            TaskDispatchConsumer = objectContainer.Resolve<RabbitConsumer>("TaskDispatchConsumer");
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
             Assertions = new Assertions(objectContainer);
             DataHelper = objectContainer.Resolve<DataHelper>();
             _outputHelper = outputHelper;
-            MinioDataSeeding = new MinioDataSeeding(objectContainer.Resolve<MinioClientUtil>(), DataHelper, _outputHelper);
+            MinioDataSeeding = new MinioDataSeeding(objectContainer.Resolve<MinioClientUtil>(), _outputHelper);
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 

@@ -17,6 +17,7 @@
 using BoDi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Monai.Deploy.WorkflowManager.IntegrationTests;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Polly;
@@ -91,10 +92,20 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
 
             RabbitConnectionFactory.DeleteAllQueues();
 
-            MongoClient = new MongoClientUtil();
-            MinioClient = new MinioClientUtil();
+            MongoClient = new MongoClientUtil(
+                connectionString: TestExecutionConfig.MongoConfig.ConnectionString,
+                database: TestExecutionConfig.MongoConfig.Database,
+                workflowCollection: TestExecutionConfig.MongoConfig.WorkflowCollection,
+                workflowInstanceCollection: TestExecutionConfig.MongoConfig.WorkflowInstanceCollection,
+                payloadCollection: TestExecutionConfig.MongoConfig.PayloadCollection);
+
+            MinioClient = new MinioClientUtil(
+                TestExecutionConfig.MinioConfig.Endpoint,
+                TestExecutionConfig.MinioConfig.AccessKey,
+                TestExecutionConfig.MinioConfig.AccessToken,
+                TestExecutionConfig.MinioConfig.Bucket);
+
             Host = WorkflowExecutorStartup.StartWorkflowExecutor();
-            HttpClient = new HttpClient();
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
@@ -108,7 +119,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         {
             await RetryPolicy.ExecuteAsync(async () =>
             {
-                var response = await WorkflowExecutorStartup.GetQueueStatus(HttpClient, TestExecutionConfig.RabbitConfig.VirtualHost, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+                var response = await WorkflowExecutorStartup.GetQueueStatus(new HttpClient(), TestExecutionConfig.RabbitConfig.VirtualHost, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
                 var content = response.Content.ReadAsStringAsync().Result;
 
                 if (content.Contains("error"))

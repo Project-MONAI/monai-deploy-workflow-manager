@@ -15,6 +15,7 @@
  */
 
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.IntegrationTests;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
 using Polly;
 using Polly.Retry;
@@ -24,6 +25,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
     [Binding]
     public class TaskUpdateStepDefinitions
     {
+        private readonly ISpecFlowOutputHelper _outputHelper;
+        private MongoClientUtil MongoClient { get; }
+        private RetryPolicy RetryPolicy { get; set; }
+        public DataHelper DataHelper { get; }
+        public Assertions Assertions { get; }
+
         public TaskUpdateStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             _outputHelper = outputHelper ?? throw new ArgumentNullException(nameof(outputHelper));
@@ -32,12 +39,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             Assertions = new Assertions(_outputHelper);
         }
-
-        private readonly ISpecFlowOutputHelper _outputHelper;
-        private MongoClientUtil MongoClient { get; }
-        private RetryPolicy RetryPolicy { get; set; }
-        public DataHelper DataHelper { get; }
-        public Assertions Assertions { get; }
 
         [When(@"A Task Update event with status (.*) is published with Task Dispatch details")]
         [Then(@"A Task Update event with status (.*) is published with Task Dispatch details")]

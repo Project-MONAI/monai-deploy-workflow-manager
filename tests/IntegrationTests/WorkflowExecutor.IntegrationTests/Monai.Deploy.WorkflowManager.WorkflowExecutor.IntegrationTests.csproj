@@ -55,6 +55,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\WorkflowManager\WorkflowManager\Monai.Deploy.WorkflowManager.csproj" />
+    <ProjectReference Include="..\Shared\Monai.Deploy.WorkflowManager.IntegrationTests\Monai.Deploy.WorkflowManager.IntegrationTests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
