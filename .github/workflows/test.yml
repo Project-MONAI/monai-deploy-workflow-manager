@@ -134,14 +134,14 @@ jobs:
 
     - name: Generate LivingDoc HTML
       run: livingdoc test-assembly Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.dll -t TestExecution.json
-      working-directory: ./tests/IntegrationTests/WorkflowExecutor.IntegrationTests/bin/Debug/net6.0
+      working-directory: ./tests/IntegrationTests/WorkflowExecutor.IntegrationTests/bin/Release/net6.0
 
     - name: Publish report
       if: always()
       uses: actions/upload-artifact@v3
       with:
         name: WorkflowExecutorIntegrationTestReport
-        path: ./tests/IntegrationTests/WorkflowExecutor.IntegrationTests/bin/Debug/net6.0/LivingDoc.html
+        path: ./tests/IntegrationTests/WorkflowExecutor.IntegrationTests/bin/Release/net6.0/LivingDoc.html
 
   task-manager-integration-tests:
     runs-on: ubuntu-latest
@@ -210,14 +210,14 @@ jobs:
 
     - name: Generate LivingDoc HTML
       run: livingdoc test-assembly Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.dll -t TestExecution.json
-      working-directory: ./tests/IntegrationTests/TaskManager.IntegrationTests/bin/Debug/net6.0
+      working-directory: ./tests/IntegrationTests/TaskManager.IntegrationTests/bin/Release/net6.0
 
     - name: Publish report
       if: always()
       uses: actions/upload-artifact@v3
       with:
         name: TaskManagerIntegrationTestReport
-        path: ./tests/IntegrationTests/TaskManager.IntegrationTests/bin/Debug/net6.0/LivingDoc.html
+        path: ./tests/IntegrationTests/TaskManager.IntegrationTests/bin/Release/net6.0/LivingDoc.html
 
   sonarscanner:
     runs-on: ubuntu-latest
