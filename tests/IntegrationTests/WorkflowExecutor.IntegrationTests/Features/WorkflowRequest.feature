@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+@IntergrationTests
 Feature: WorkflowRequest
 
 Publishing a workflow request is consumed by the Workflow Manager.

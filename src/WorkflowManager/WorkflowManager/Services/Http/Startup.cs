@@ -26,6 +26,8 @@ using Microsoft.OpenApi.Models;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.WorkflowManager.Database.Options;
 using Monai.Deploy.WorkflowManager.HealthChecks;
+using Microsoft.Extensions.Logging;
+using Monai.Deploy.WorkflowManager.Authentication.Extensions;
 using Monai.Deploy.WorkflowManager.Logging.Attributes;
 using Newtonsoft.Json.Converters;
 using RabbitMQ.Client;
@@ -34,7 +36,7 @@ using RabbitMQ.Client;
 namespace Monai.Deploy.WorkflowManager.Services.Http
 {
     /// <summary>
-    /// Startup Class.
+    /// Http Api Endpoint Startup Class.
     /// </summary>
     public class Startup
     {
@@ -55,7 +57,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
         /// <summary>
         /// Configure Services.
         /// </summary>
-        /// <param name="services">Services.</param>
+        /// <param name="services">Services Collection.</param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<WorkloadManagerDatabaseSettings>(Configuration.GetSection("WorkloadManagerDatabase"));
@@ -84,6 +86,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
                     HealthCheckSettings.PublisherQueueTags,
                     HealthCheckSettings.PublisherQueueHealthCheckTimeout);
 
+            services.AddSingleton(Configuration);
             services.AddHttpContextAccessor();
             services.AddApiVersioning(
                 options =>
@@ -110,6 +113,11 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MONAI Workflow Manager", Version = "v1" });
                 c.DescribeAllParametersInCamelCase();
             });
+
+            var serviceProvider = services.BuildServiceProvider();
+            var logger = serviceProvider.GetService<ILogger<Startup>>();
+
+            services.AddMonaiAuthentication(Configuration, logger);
         }
 
         /// <summary>
@@ -138,6 +146,10 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
                 .UseHealthChecks($"/health/{HealthCheckSettings.PublisherQueueHealthCheckName}", options);
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseEndpointAuthorizationMiddleware();
 
             app.UseEndpoints(endpoints =>
             {
