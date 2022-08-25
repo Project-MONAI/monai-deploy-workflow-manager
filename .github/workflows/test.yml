@@ -133,6 +133,7 @@ jobs:
       working-directory: ./tests
 
     - name: Generate LivingDoc HTML
+      if: always()
       run: livingdoc test-assembly Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.dll -t TestExecution.json
       working-directory: ./tests/IntegrationTests/WorkflowExecutor.IntegrationTests/bin/Debug/net6.0
 
@@ -208,8 +209,8 @@ jobs:
       run: find ~+ -type f -name "*.TaskManager.IntegrationTests.csproj" | xargs -L1 dotnet test
       working-directory: ./tests
 
-
     - name: Generate LivingDoc HTML
+      if: always()
       run: livingdoc test-assembly Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.dll -t TestExecution.json
       working-directory: ./tests/IntegrationTests/TaskManager.IntegrationTests/bin/Debug/net6.0
 
