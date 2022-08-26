@@ -11,26 +11,6 @@
           "JetBrains.Annotations": "2021.3.0"
         }
       },
-      "AspNetCore.HealthChecks.MongoDb": {
-        "type": "Direct",
-        "requested": "[6.0.2, )",
-        "resolved": "6.0.2",
-        "contentHash": "0R3NVbsjMhS5fd2hGijzQNKJ0zQBv/qMC7nkpmnbtgribCj7vfNdAhSqv4lwbibffRWPW5A/7VNJMX4aPej0WQ==",
-        "dependencies": {
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.2",
-          "MongoDB.Driver": "2.14.1"
-        }
-      },
-      "AspNetCore.HealthChecks.Rabbitmq": {
-        "type": "Direct",
-        "requested": "[6.0.2, )",
-        "resolved": "6.0.2",
-        "contentHash": "Ch5/dOHpGfl8uGBdFEsbHU+xVsJtMdraBQ2d+MdKMxGjcn2tAubo7hRR8Vdwr5biLyCOY5qZR1zuVCteKQ5WIQ==",
-        "dependencies": {
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.2",
-          "RabbitMQ.Client": "6.2.2"
-        }
-      },
       "Karambolo.Extensions.Logging.File": {
         "type": "Direct",
         "requested": "[3.3.1, )",
@@ -202,6 +182,24 @@
           "Swashbuckle.AspNetCore.Swagger": "6.4.0",
           "Swashbuckle.AspNetCore.SwaggerGen": "6.4.0",
           "Swashbuckle.AspNetCore.SwaggerUI": "6.4.0"
+        }
+      },
+      "AspNetCore.HealthChecks.MongoDb": {
+        "type": "Transitive",
+        "resolved": "6.0.2",
+        "contentHash": "0R3NVbsjMhS5fd2hGijzQNKJ0zQBv/qMC7nkpmnbtgribCj7vfNdAhSqv4lwbibffRWPW5A/7VNJMX4aPej0WQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.2",
+          "MongoDB.Driver": "2.14.1"
+        }
+      },
+      "AspNetCore.HealthChecks.Rabbitmq": {
+        "type": "Transitive",
+        "resolved": "6.0.2",
+        "contentHash": "Ch5/dOHpGfl8uGBdFEsbHU+xVsJtMdraBQ2d+MdKMxGjcn2tAubo7hRR8Vdwr5biLyCOY5qZR1zuVCteKQ5WIQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.2",
+          "RabbitMQ.Client": "6.2.2"
         }
       },
       "AWSSDK.Core": {
@@ -1746,8 +1744,13 @@
       "monai.deploy.workflowmanager.healthchecks": {
         "type": "Project",
         "dependencies": {
+          "AspNetCore.HealthChecks.MongoDb": "[6.0.2, )",
+          "AspNetCore.HealthChecks.Rabbitmq": "[6.0.2, )",
           "Microsoft.AspNetCore.Http.Abstractions": "[2.2.0, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[6.0.0, )",
           "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.2, )",
+          "Microsoft.Extensions.Options": "[6.0.0, )",
+          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
           "Newtonsoft.Json": "[13.0.1, )",
           "RabbitMQ.Client": "[6.4.0, )"
         }
