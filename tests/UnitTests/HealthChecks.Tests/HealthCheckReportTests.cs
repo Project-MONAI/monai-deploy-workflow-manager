@@ -60,8 +60,8 @@ namespace Monai.Deploy.WorkflowManager.HealthChecks.Tests
 
             var kvpList = new[]
             {
-            KeyValuePair.Create(component, new HealthReportEntry(HealthStatus.Healthy, description, TimeSpan.FromSeconds(seconds), null, null, tags))
-        };
+                KeyValuePair.Create(component, new HealthReportEntry(HealthStatus.Healthy, description, TimeSpan.FromSeconds(seconds), null, null, tags))
+            };
 
             var dict = new ReadOnlyDictionary<string, HealthReportEntry>(
                     new Dictionary<string, HealthReportEntry>(kvpList));

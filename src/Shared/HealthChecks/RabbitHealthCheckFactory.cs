@@ -45,7 +45,7 @@ namespace Monai.Deploy.WorkflowManager.HealthChecks
                 port = "port",
             };
 
-            var portNumber = settings[keys.port];
+            settings.TryGetValue(keys.port, out var portNumber);
 
             settings.TryGetValue(keys.useSSL, out var useSsl);
             if (!bool.TryParse(useSsl, out var sslEnabled))
