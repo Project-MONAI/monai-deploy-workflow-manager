@@ -88,6 +88,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             HttpClient = new HttpClient();
             MinioClient = new MinioClientUtil();
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+
+            TestExecutionConfig.ApiConfig.TaskManagerBaseUrl = "http://localhost:5001";
         }
 
         [BeforeTestRun(Order = 2)]

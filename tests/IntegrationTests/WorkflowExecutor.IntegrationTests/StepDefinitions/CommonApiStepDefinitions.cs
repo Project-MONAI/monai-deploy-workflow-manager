@@ -16,11 +16,40 @@
 
 using System.Net;
 using BoDi;
+using Monai.Deploy.WorkflowManager.HealthChecks;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
+    [Binding]
+    public class HealthCheckStepDefinitions
+    {
+        public HealthCheckStepDefinitions(ObjectContainer objectContainer)
+        {
+            ApiHelper = objectContainer.Resolve<ApiHelper>();
+        }
+
+        public ApiHelper ApiHelper { get; }
+
+        [Then(@"I will get a health check response status message (.*) ")]
+        public void ThenIWillGetAHealthCheckResponseMessage(string expectedMessage)
+        {
+            var contentMessage = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            var result = JsonConvert.DeserializeObject<HealthCheckResponse>(contentMessage);
+
+            result.Should().NotBeNull();
+            result?.Status.Should().Be(expectedMessage);
+        }
+
+        [Then(@"I will get a status message (.*)")]
+        public void ThenIWillGetAMessage(string expectedMessage)
+        {
+            ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Be(expectedMessage);
+        }
+    }
+
     [Binding]
     public class CommonStepDefinitions
     {
@@ -49,6 +78,16 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         public void ThenIWillGetAResponse(string expectedCode)
         {
             ApiHelper.Response.StatusCode.Should().Be((HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), expectedCode));
+        }
+
+        [Then(@"I will get a health check response status message (.*)")]
+        public void ThenIWillGetAHealthCheckResponseMessage(string expectedMessage)
+        {
+            var contentMessage = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            var result = JsonConvert.DeserializeObject<HealthCheckResponse>(contentMessage);
+
+            result.Should().NotBeNull();
+            result?.Status.Should().Be(expectedMessage);
         }
 
         [When(@"I have a body (.*)")]

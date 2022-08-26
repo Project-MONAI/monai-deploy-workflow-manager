@@ -89,6 +89,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
 
             TestExecutionConfig.ApiConfig.BaseUrl = "http://localhost:5000";
 
+
             RabbitConnectionFactory.DeleteAllQueues();
 
             MongoClient = new MongoClientUtil();

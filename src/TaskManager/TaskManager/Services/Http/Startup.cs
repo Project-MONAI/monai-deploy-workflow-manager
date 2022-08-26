@@ -70,8 +70,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services.Http
                 ResponseWriter = HealthCheckResponseWriter.WriteResponse,
             };
 
-            app.UseHealthChecks("/taskmanager/health", options)
-                .UseHealthChecks("/taskmanager/health/live", options);
+            app.UseMonaiHealthCheck(options, "taskmanager");
         }
     }
 }

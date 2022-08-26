@@ -222,6 +222,17 @@
           "Microsoft.AspNetCore.Authorization": "2.2.0"
         }
       },
+      "Microsoft.AspNetCore.Diagnostics.HealthChecks": {
+        "type": "Transitive",
+        "resolved": "2.2.0",
+        "contentHash": "RNmdLy9yncTprony49cuwhyTKoROpVflGM+pKlHA1671F00QUsjoY1Oi6xoa9XsUrfRDRYlxbt2CHYCMLzMh7Q==",
+        "dependencies": {
+          "Microsoft.AspNetCore.Http.Abstractions": "2.2.0",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "2.2.0",
+          "Microsoft.Extensions.Options": "2.2.0",
+          "Microsoft.Net.Http.Headers": "2.2.0"
+        }
+      },
       "Microsoft.AspNetCore.Hosting.Abstractions": {
         "type": "Transitive",
         "resolved": "2.2.0",
@@ -1808,6 +1819,7 @@
         "dependencies": {
           "AspNetCore.HealthChecks.MongoDb": "[6.0.2, )",
           "AspNetCore.HealthChecks.Rabbitmq": "[6.0.2, )",
+          "Microsoft.AspNetCore.Diagnostics.HealthChecks": "[2.2.0, )",
           "Microsoft.AspNetCore.Http.Abstractions": "[2.2.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[6.0.0, )",
           "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.2, )",

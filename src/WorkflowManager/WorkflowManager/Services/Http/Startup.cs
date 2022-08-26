@@ -120,11 +120,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
                 ResponseWriter = HealthCheckResponseWriter.WriteResponse,
             };
 
-            app.UseHealthChecks("/health", options)
-                .UseHealthChecks("/health/live", options)
-                .UseHealthChecks($"/health/{HealthCheckSettings.DatabaseHealthCheckName}", options)
-                .UseHealthChecks($"/health/{HealthCheckSettings.SubscriberQueueHealthCheckName}", options)
-                .UseHealthChecks($"/health/{HealthCheckSettings.PublisherQueueHealthCheckName}", options);
+            app.UseMonaiHealthCheck(options);
 
             app.UseRouting();
 

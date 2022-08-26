@@ -79,6 +79,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.POCO
         public static class ApiConfig
         {
             public static string BaseUrl { get; set; } = string.Empty;
+
+            public static string TaskManagerBaseUrl { get; set; } = string.Empty;
         }
     }
 }
