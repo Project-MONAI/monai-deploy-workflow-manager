@@ -15,10 +15,10 @@
  */
 
 using System.IO.Abstractions;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Storage;
@@ -27,7 +27,9 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.Database;
 using Monai.Deploy.WorkflowManager.TaskManager.Database.Options;
 using Monai.Deploy.WorkflowManager.TaskManager.Extensions;
+using Monai.Deploy.WorkflowManager.TaskManager.Services.Http;
 using MongoDB.Driver;
+using Microsoft.Extensions.Logging;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
@@ -62,6 +64,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 {
                     configureLogging.AddConfiguration(builderContext.Configuration.GetSection("Logging"));
                     configureLogging.AddFile(o => o.RootPath = AppContext.BaseDirectory);
+                })
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.CaptureStartupErrors(true);
+                    webBuilder.UseStartup<Startup>().UseUrls("http://localhost:5001/");
                 })
                 .ConfigureServices((hostContext, services) =>
                 {

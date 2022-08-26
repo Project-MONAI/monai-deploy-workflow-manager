@@ -15,6 +15,7 @@
 -->
 
 <Project Sdk="Microsoft.NET.Sdk">
+  
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
@@ -61,6 +62,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj" />
+    <ProjectReference Include="..\..\Shared\HealthChecks\Monai.Deploy.WorkflowManager.HealthChecks.csproj" />
     <ProjectReference Include="..\Authentication\Monai.Deploy.WorkflowManager.Authentication.csproj" />
     <ProjectReference Include="..\Common\Monai.Deploy.WorkflowManager.Common.csproj" />
     <ProjectReference Include="..\Contracts\Monai.Deploy.WorkflowManager.Contracts.csproj" />
