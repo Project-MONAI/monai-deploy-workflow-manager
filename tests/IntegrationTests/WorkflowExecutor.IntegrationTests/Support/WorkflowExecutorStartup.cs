@@ -31,7 +31,6 @@ using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Database.Options;
 using Monai.Deploy.WorkflowManager.Database.Repositories;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.Services;

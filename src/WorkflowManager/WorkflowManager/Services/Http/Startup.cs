@@ -21,16 +21,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Monai.Deploy.Messaging.Configuration;
-using Monai.Deploy.WorkflowManager.Database.Options;
-using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Authentication.Extensions;
+using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.HealthChecks;
 using Monai.Deploy.WorkflowManager.Logging.Attributes;
 using Newtonsoft.Json.Converters;
 using RabbitMQ.Client;
-using Monai.Deploy.WorkflowManager.HealthChecks;
 
 #pragma warning disable CA1822 // Mark members as static
 namespace Monai.Deploy.WorkflowManager.Services.Http
