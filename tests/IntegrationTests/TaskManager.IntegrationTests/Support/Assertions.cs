@@ -118,7 +118,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             Output.WriteLine("Details of TaskUpdateEvent matches TaskDispatchEvent");
         }
 
-        private string GetTaskPluginArguments(TaskDispatchEvent taskDispatchEvent, string key)
+        private string? GetTaskPluginArguments(TaskDispatchEvent taskDispatchEvent, string key)
         {
             string? dictValue;
 

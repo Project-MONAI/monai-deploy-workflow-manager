@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Ardalis.GuardClauses;
 using BoDi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -107,6 +108,9 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         [BeforeTestRun(Order = 1)]
         public static async Task CheckWorkflowConsumerStarted()
         {
+            Guard.Against.Null(RetryPolicy);
+            Guard.Against.Null(HttpClient);
+
             await RetryPolicy.ExecuteAsync(async () =>
             {
                 var response = await WorkflowExecutorStartup.GetQueueStatus(HttpClient, TestExecutionConfig.RabbitConfig.VirtualHost, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
@@ -167,6 +171,8 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         [BeforeTestRun(Order = 3)]
         public async static Task CreateBucket()
         {
+            Guard.Against.Null(MinioClient);
+
             await MinioClient.CreateBucket(TestExecutionConfig.MinioConfig.Bucket);
         }
 

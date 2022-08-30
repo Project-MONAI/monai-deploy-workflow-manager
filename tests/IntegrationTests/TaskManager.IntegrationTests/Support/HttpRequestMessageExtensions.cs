@@ -25,12 +25,12 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             var request = new HttpRequestMessage(input.Method, input.RequestUri)
             {
-                Content = input.Content
+                Content = input.Content,
             };
 
             foreach (var prop in input.Options)
             {
-                request.Options.Append(prop);
+                request.Options.TryAdd(prop.Key, prop.Value);
             }
 
             foreach (var header in input.Headers)

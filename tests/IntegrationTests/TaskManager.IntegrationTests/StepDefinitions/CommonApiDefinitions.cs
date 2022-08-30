@@ -47,19 +47,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         [Then(@"I will get a (.*) response")]
         public void ThenIWillGetAResponse(string expectedCode)
         {
-            ApiHelper.Response.StatusCode.Should().Be((HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), expectedCode));
+            ApiHelper.Response?.StatusCode.Should().Be((HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), expectedCode));
         }
 
         [Then(@"I will get a status message (.*)")]
         public void ThenIWillGetAMessage(string expectedMessage)
         {
-            ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Be(expectedMessage);
+            ApiHelper.Response?.Content.ReadAsStringAsync().Result.Should().Be(expectedMessage);
         }
 
         [Then(@"I will get a health check response status message (.*)")]
         public void ThenIWillGetAHealthCheckResponseMessage(string expectedMessage)
         {
-            var contentMessage = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            var contentMessage = ApiHelper.Response?.Content.ReadAsStringAsync().Result;
             var result = JsonConvert.DeserializeObject<HealthCheckResponse>(contentMessage);
 
             result.Should().NotBeNull();

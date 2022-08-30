@@ -19,7 +19,7 @@ namespace Monai.Deploy.WorkflowManager.HealthChecks.Tests
     public class HealthCheckTests
     {
         [Fact]
-        public async Task HealthCheckResponse_GivenData_ShouldHaveExpectedData()
+        public void HealthCheckResponse_GivenData_ShouldHaveExpectedData()
         {
             var status = "Healthy";
             var component = "component";
@@ -51,7 +51,7 @@ namespace Monai.Deploy.WorkflowManager.HealthChecks.Tests
         }
 
         [Fact]
-        public async Task HealthCheck_GivenData_ShouldHaveExpectedData()
+        public void HealthCheck_GivenData_ShouldHaveExpectedData()
         {
             var status = "Healthy";
             var component = "component";

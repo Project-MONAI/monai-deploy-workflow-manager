@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Ardalis.GuardClauses;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
@@ -44,7 +45,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         public static RabbitConsumer? ClinicalReviewConsumer { get; private set; }
         private static MinioClientUtil? MinioClient { get; set; }
         private static MongoClientUtil? MongoClient { get; set; }
-        public static AsyncRetryPolicy RetryPolicy { get; private set; }
+        public static AsyncRetryPolicy? RetryPolicy { get; private set; }
         private IObjectContainer ObjectContainer { get; set; }
         private static IHost? Host { get; set; }
         private static HttpClient? HttpClient { get; set; }
@@ -110,6 +111,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         [BeforeTestRun(Order = 1)]
         public static async Task CheckTaskManagerConsumersStarted()
         {
+            Guard.Against.Null(RetryPolicy);
+            Guard.Against.Null(HttpClient);
             await RetryPolicy.ExecuteAsync(async () =>
             {
                 var response = await TaskManagerStartup.GetQueueStatus(HttpClient, TestExecutionConfig.RabbitConfig.VirtualHost, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);

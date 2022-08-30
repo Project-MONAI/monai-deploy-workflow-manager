@@ -15,6 +15,7 @@
  */
 
 
+using Ardalis.GuardClauses;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
@@ -22,19 +23,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
     [Binding]
     public class ApiHelper
     {
-        public ApiHelper(HttpClient httpClient)
+        public ApiHelper(HttpClient? httpClient)
         {
-            Client = httpClient;
+            Client = httpClient ?? throw new ArgumentException($"{nameof(httpClient)} can not be null");
         }
 
-        public HttpResponseMessage Response { get; private set; }
+        public HttpResponseMessage? Response { get; private set; }
 
-        public HttpRequestMessage Request { get; set; }
+        public HttpRequestMessage? Request { get; set; }
 
         public HttpClient Client { get; }
 
         public void SetRequestVerb(string httpMethod)
         {
+            Guard.Against.Null(Request);
             Request.Method = httpMethod.ToUpper() switch
             {
                 "GET" => HttpMethod.Get,
@@ -48,7 +50,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 
         public async Task<HttpResponseMessage> GetResponseAsync()
         {
+            Guard.Against.Null(Request);
+
             var request = Request.Clone();
+
 
             return Response = await Client.SendAsync(request);
         }
