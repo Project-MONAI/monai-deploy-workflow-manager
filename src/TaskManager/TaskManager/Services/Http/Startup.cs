@@ -27,7 +27,7 @@ using Monai.Deploy.WorkflowManager.HealthChecks;
 #pragma warning disable CA1822 // Mark members as static
 namespace Monai.Deploy.WorkflowManager.TaskManager.Services.Http
 {
-    internal class Startup
+    public class Startup
     {
         /// <summary>
         /// Gets configuration settings.

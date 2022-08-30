@@ -29,11 +29,12 @@ using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.TaskManager.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.Database;
 using Monai.Deploy.WorkflowManager.TaskManager.Database.Options;
-using MongoDB.Driver;
+using Monai.Deploy.WorkflowManager.TaskManager.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.TaskManager.Services.Http;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 {
@@ -51,45 +52,35 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                 configureLogging.AddConfiguration(builderContext.Configuration.GetSection("Logging"));
                 configureLogging.AddFile(o => o.RootPath = AppContext.BaseDirectory);
             })
-                .ConfigureServices((hostContext, services) =>
-                {
-                    services.AddOptions<WorkflowManagerOptions>()
-                        .Bind(hostContext.Configuration.GetSection("WorkflowManager"))
-                        .PostConfigure(options =>
-                        {
-                        });
-                    services.AddOptions<MessageBrokerServiceConfiguration>()
-                        .Bind(hostContext.Configuration.GetSection("WorkflowManager:messaging"))
-                        .PostConfigure(options =>
-                        {
-                        });
-                    services.AddOptions<StorageServiceConfiguration>()
-                        .Bind(hostContext.Configuration.GetSection("WorkflowManager:storage"))
-                        .PostConfigure(options =>
-                        {
-                        });
-                    services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkflowManagerOptions>, ConfigurationValidator>());
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.CaptureStartupErrors(true);
+                webBuilder.UseStartup<Startup>();
+            })
+            .ConfigureServices((hostContext, services) =>
+            {
+                ConfigureServices(hostContext, services);
+            });
 
-                    services.AddSingleton<ConfigurationValidator>();
+        private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
+        {
+            services.AddOptions<WorkflowManagerOptions>().Bind(hostContext.Configuration.GetSection("WorkflowManager"));
+            services.AddOptions<StorageServiceConfiguration>().Bind(hostContext.Configuration.GetSection("WorkflowManager:storage"));
+            services.AddOptions<MessageBrokerServiceConfiguration>().Bind(hostContext.Configuration.GetSection("WorkflowManager:messaging"));
+            services.AddHttpClient();
 
-                    // Services
-                    services.AddTransient<IFileSystem, FileSystem>();
-                    services.AddHttpClient();
+            services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
+            services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
+            services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
 
-                    // Mongo DB
-                    services.Configure<TaskManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
-                    services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
-                    services.AddTransient<ITaskDispatchEventRepository, TaskDispatchEventRepository>();
+            // Mongo DB (Workflow Manager)
+            services.Configure<TaskManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
+            services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
+            services.AddTransient<ITaskDispatchEventRepository, TaskDispatchEventRepository>();
+            services.AddTransient<IFileSystem, FileSystem>();
 
-                    // StorageService
-                    services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
-
-                    // MessageBroker
-                    services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
-                    services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
-
-                    services.AddTaskManager(hostContext);
-                });
+            services.AddTaskManager(hostContext);
+        }
 
         public static IHost StartTaskManager()
         {

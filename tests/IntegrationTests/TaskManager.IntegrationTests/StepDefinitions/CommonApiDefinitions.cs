@@ -17,8 +17,8 @@
 using System.Net;
 using FluentAssertions;
 using Monai.Deploy.WorkflowManager.HealthChecks;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefinitions

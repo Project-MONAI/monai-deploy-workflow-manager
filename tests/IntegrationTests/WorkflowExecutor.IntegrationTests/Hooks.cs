@@ -142,9 +142,14 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             ObjectContainer.RegisterInstanceAs(ExportRequestConsumer, "ExportRequestConsumer");
             ObjectContainer.RegisterInstanceAs(MongoClient);
             ObjectContainer.RegisterInstanceAs(MinioClient);
-            var dataHelper = new DataHelper(TaskDispatchConsumer, ExportRequestConsumer, MongoClient);
+
+            var dataHelper = new DataHelper(
+                TaskDispatchConsumer ?? throw new ArgumentException("No TaskDispatchConsumer"),
+                ExportRequestConsumer ?? throw new ArgumentException("No ExportRequestConsumer"),
+                MongoClient ?? throw new ArgumentException("No MongoClient"));
             ObjectContainer.RegisterInstanceAs(dataHelper);
-            var apiHelper = new ApiHelper(HttpClient);
+
+            var apiHelper = new ApiHelper(HttpClient ?? throw new ArgumentException("No HttpClient"));
             ObjectContainer.RegisterInstanceAs(apiHelper);
         }
 

@@ -88,7 +88,8 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
                     options.SubstituteApiVersionInUrl = true;
                 });
 
-            services.AddControllers(options => options.Filters.Add(typeof(LogActionFilterAttribute))).AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()));
+            services.AddControllers(options => options.Filters.Add(typeof(LogActionFilterAttribute)))
+                    .AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MONAI Workflow Manager", Version = "v1" });

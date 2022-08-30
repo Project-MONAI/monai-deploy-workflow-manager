@@ -15,7 +15,9 @@
  */
 
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
+using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+
+namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 {
     [Binding]
     public class ApiHelper
