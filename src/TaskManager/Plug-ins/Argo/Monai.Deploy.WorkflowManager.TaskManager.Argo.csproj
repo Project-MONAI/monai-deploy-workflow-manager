@@ -34,7 +34,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.3-rc0012" />
-    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.1" />
+    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
