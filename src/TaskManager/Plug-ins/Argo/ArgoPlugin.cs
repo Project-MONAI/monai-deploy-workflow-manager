@@ -319,6 +319,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             {
                 foreach (var item in argoParameters)
                 {
+                    if (workflow.Spec.Arguments is null)
+                    {
+                        workflow.Spec.Arguments = new Arguments();
+                    }
+
+                    if (workflow.Spec.Arguments.Parameters is null)
+                    {
+                        workflow.Spec.Arguments.Parameters = new List<Parameter>();
+                    }
+
                     workflow.Spec.Arguments.Parameters.Add(new Parameter() { Name = item.Key, Value = item.Value });
                 }
             }
