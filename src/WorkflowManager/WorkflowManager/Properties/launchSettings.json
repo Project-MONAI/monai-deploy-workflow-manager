@@ -4,7 +4,9 @@
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Local",
-        "WorkflowManager__messaging__subscriberSettings__endpoint": "localhost"
+        "WorkflowManager__messaging__subscriberSettings__endpoint": "localhost",
+        "Serilog__WriteTo__0__Args__indexFormat": "index-monai{0:yyyy.MM}",
+        "Serilog__WriteTo__0__Args__nodeUris": "http://localhost:9200"
       }
     },
     "WSL": {

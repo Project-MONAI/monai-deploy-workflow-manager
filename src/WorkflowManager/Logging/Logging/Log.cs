@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Logging.Models;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Logging.Logging
@@ -108,36 +107,31 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
 
         public static void TaskComplete(this ILogger logger, TaskExecution task, WorkflowInstance workflowInstance, PatientDetails patientDetails, string correlationId, string taskStatus)
         {
-            var objectLog = new ObjectLog
-            {
-                Message = "Task Complete",
-                Object = LoggerHelpers.ToTaskCompleteObject(task, workflowInstance, patientDetails, correlationId, taskStatus)
-            };
-
-            var jsonString = JsonConvert.SerializeObject(objectLog);
-
-            logger.LogInformation(28, message: jsonString);
+            logger.LogInformation("TaskComplete Task {task}, workflowInstance {workflowInstance}, patientDetails {patientDetails}, correlationId {correlationId}, taskStatus {taskStatus}",
+              JsonConvert.SerializeObject(task), JsonConvert.SerializeObject(workflowInstance), JsonConvert.SerializeObject(patientDetails), correlationId, taskStatus);
         }
 
         public static void LogControllerStartTime(this ILogger logger, ActionExecutingContext context)
         {
             var request = context.HttpContext.Request;
-            var body = context.ActionArguments.FirstOrDefault();
-            var objectLog = new ObjectLog
-            {
-                Message = "ControllerActionStart",
-                Object = LoggerHelpers.ToLogControllerStartObject(request.Method, request.Path, request.QueryString.Value.ToString(), body.Value ?? "", "", "")
-            };
+            var correlationId = request.Headers["correlationId"].FirstOrDefault() ?? Guid.NewGuid().ToString();
+            var body = JsonConvert.SerializeObject(context.ActionArguments.FirstOrDefault());
+            var startTime = DateTime.UtcNow;
+            context.HttpContext.Items["startTime"] = startTime;
+            context.HttpContext.Items["correlationId"] = correlationId;
 
-            var jsonString = JsonConvert.SerializeObject(objectLog);
-
-            logger.LogInformation(29, message: jsonString);
+            logger.LogInformation("ControllerActionStart data StartTime {starttime}, HttpType {httptype}, Path {path}, QueryString {querystring}, Body {body}, CorrelationId {correlationId}",
+               startTime, request.Method, request.Path, request.QueryString.Value.ToString(), body, correlationId);
         }
 
         public static void LogControllerEndTime(this ILogger logger, ResultExecutedContext context)
         {
             var request = context.HttpContext.Request;
             var response = context.HttpContext.Response;
+            var correlationId = context.HttpContext.Items["correlationId"] ?? "NotFound";
+
+            var startTime = context.HttpContext.Items["startTime"] as DateTime? ?? DateTime.UtcNow;
+            var endtime = DateTime.UtcNow;
 
             var objResult = new ObjectResult("");
 
@@ -146,15 +140,9 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
                 objResult = (ObjectResult)context.Result;
             }
 
-            var objectLog = new ObjectLog
-            {
-                Message = "ControllerActionEnd",
-                Object = LoggerHelpers.ToLogControllerEndObject(request.Method, request.Path, request.QueryString.Value.ToString(), response.StatusCode.ToString(), objResult?.Value ?? "", "", "")
-            };
-
-            var jsonString = JsonConvert.SerializeObject(objectLog);
-
-            logger.LogInformation(29, message: jsonString);
+            logger.LogInformation("ControllerActionEnd data StartTime {starttime}, EndTime {endtime}, Duration {duration}, HttpType {httptype}, Path {path}, QueryString {querystring}, StatusCode {statuscode}, Result {result}, CorrelationId {correlationId}",
+                startTime, endtime, (endtime - startTime).TotalMilliseconds, request.Method, request.Path,
+                request.QueryString.Value.ToString(), response.StatusCode, JsonConvert.SerializeObject(objResult), correlationId);
         }
     }
 }
