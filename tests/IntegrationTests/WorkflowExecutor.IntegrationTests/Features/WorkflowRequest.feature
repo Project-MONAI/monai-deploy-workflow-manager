@@ -27,6 +27,7 @@ Scenario Outline: Publish a valid workflow request which creates a single workfl
     | workflow              | workflowRequestMessage     |
     | Basic_Workflow_1      | Basic_AeTitle_WF_Request   |
     | Basic_Workflow_1      | Basic_Id_WF_Request        |
+    | Basic_Workflow_3      | Basic_AeTitle_WF_Request   |
 
 @WorkflowRequest
 Scenario Outline: Publish a valid workflow request which creates multiple workflow instances
@@ -36,9 +37,10 @@ Scenario Outline: Publish a valid workflow request which creates multiple workfl
     Then I can see 2 Workflow Instances are created
     And 2 Task Dispatch events are published
     Examples:
-    | workflow_1       | workflow_2         | workflowRequestMessage    |
-    | Same_AeTitle_1   | Same_AeTitle_2     | Same_AeTitle              |
-    | Basic_Workflow_1 | Basic_Workflow_2   | Basic_Multi_Id_WF_Request |
+    | workflow_1       | workflow_2       | workflowRequestMessage    |
+    | Same_AeTitle_1   | Same_AeTitle_2   | Same_AeTitle              |
+    | Basic_Workflow_1 | Basic_Workflow_2 | Basic_Multi_Id_WF_Request |
+    | Basic_Workflow_1 | Basic_Workflow_3 | Basic_AeTitle_WF_Request  |
 
 @WorkflowRequest
 Scenario: Publish a valid workflow request with mismatched AE title and workflow ID
@@ -71,9 +73,10 @@ Scenario: Publish an invalid workflow request which does not create a workflow i
     | Missing_CorrelationID_Invalid_WF_Request  |
     | Missing_CallingAETitle_Invalid_WF_Request |
     | Missing_CalledAETitle_Invalid_WF_Request  |
+    | No_Matching_AE_Title                      |
 
 @WorkflowRequest
-Scenario: Publish a valid workflow request with an exiting Workflow Instance with a Task which is not dispatched
+Scenario: Publish a valid workflow request with an existing Workflow Instance with a Task which is not dispatched
     Given I have a clinical workflow Multi_Request_Workflow_Created
     And I have a Workflow Instance Existing_WFI_Created with no artifacts
     When I publish a Workflow Request Message Multi_WF_Created with no artifacts
@@ -81,7 +84,7 @@ Scenario: Publish a valid workflow request with an exiting Workflow Instance wit
     And 1 Task Dispatch event is published
 
 @WorkflowRequest
-Scenario: Publish a valid workflow request with an exiting Workflow Instance with a Task which is dispatched
+Scenario: Publish a valid workflow request with an existing Workflow Instance with a Task which is dispatched
     Given I have a clinical workflow Multi_Request_Workflow_Dispatched
     And I have a Workflow Instance Existing_WFI_Dispatched with no artifacts
     When I publish a Workflow Request Message Multi_WF_Dispatched with no artifacts
