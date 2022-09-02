@@ -216,8 +216,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.Now,
-                    CalledAeTitle = "Multi_Dispatch",
-                    CallingAeTitle = "MWM",
+                    CalledAeTitle = "MWM",
+                    CallingAeTitle = "Multi_Dispatch",
                 }
             },
             new WorkflowRequestTestData
@@ -244,8 +244,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.Now,
-                    CalledAeTitle = "Basic_AE",
-                    CallingAeTitle = "MWM",
+                    CalledAeTitle = "MWM",
+                    CallingAeTitle = "Basic_AE",
                 }
             },
             new WorkflowRequestTestData
