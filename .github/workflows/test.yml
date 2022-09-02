@@ -233,7 +233,7 @@ jobs:
 
   sonarscanner:
     runs-on: ubuntu-latest
-    needs: unit-test-and-codecov
+    needs: unit-tests-and-codecov
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
