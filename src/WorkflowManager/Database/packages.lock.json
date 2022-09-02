@@ -49,15 +49,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.12.26",
-        "contentHash": "Axc3mHH1B+KChD4soiFnolvVxD8dVKeEsVFQ0jOxn+VBhHEizUd3oNq0id/AFYkJL6hdC3NGmbs0Y4OGtT5eEg=="
+        "resolved": "3.7.12.27",
+        "contentHash": "pCX0yHPFuREXOqGaEQoCSlPZwsiijT1rBBiyk1pdD19Db8gVFglO7wMbxl37OhRNcLZprmtWJFvaDfuzeV10Wg=="
       },
       "AWSSDK.SecurityToken": {
         "type": "Transitive",
-        "resolved": "3.7.1.190",
-        "contentHash": "6njZoO/BBDWIAeN5DrIjZdQXOt6SSpE+x1A8JRWC9moyz3sqwU3l4uePZSpDyrQuLre+dkj1088Z62u9HX6FpQ==",
+        "resolved": "3.7.1.191",
+        "contentHash": "tTIqJ/QKaPzTu5ZPdRFa2sW9p5F441RLV7nDdTAVVuu6oLyemna0bTtE+luGLaw17oE4GZHpa5n5p0oJmpzcxA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.12.26, 4.0.0)"
+          "AWSSDK.Core": "[3.7.12.27, 4.0.0)"
         }
       },
       "DnsClient": {
@@ -912,7 +912,7 @@
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.SecurityToken": "[3.7.1.187, )",
+          "AWSSDK.SecurityToken": "[3.7.1.191, )",
           "Microsoft.Extensions.Configuration": "[6.0.1, )",
           "Monai.Deploy.Messaging": "[0.1.4, )",
           "MongoDB.Bson": "[2.17.1, )",

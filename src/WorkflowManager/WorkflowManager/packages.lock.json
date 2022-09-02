@@ -25,11 +25,11 @@
       },
       "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
         "type": "Direct",
-        "requested": "[6.0.7, )",
-        "resolved": "6.0.7",
-        "contentHash": "zkt7EFRR5fZQUc6taa8sO8aG+EF7XQ6Z7+fPW3gXCh6l7+vyDpZ9PbTODYMsXaS1tOjP1b+jJgf7hY/kaciO4Q==",
+        "requested": "[6.0.8, )",
+        "resolved": "6.0.8",
+        "contentHash": "2imWU1FEnirRogFvtu+wV11xJuC0u7aNprpNQygQLTZvnSlaLPTJhUUrqskFVn6PRDv3kCE4peaBJKwseNv71w==",
         "dependencies": {
-          "Microsoft.AspNetCore.JsonPatch": "6.0.7",
+          "Microsoft.AspNetCore.JsonPatch": "6.0.8",
           "Newtonsoft.Json": "13.0.1",
           "Newtonsoft.Json.Bson": "1.0.2"
         }
@@ -204,15 +204,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.12.26",
-        "contentHash": "Axc3mHH1B+KChD4soiFnolvVxD8dVKeEsVFQ0jOxn+VBhHEizUd3oNq0id/AFYkJL6hdC3NGmbs0Y4OGtT5eEg=="
+        "resolved": "3.7.12.27",
+        "contentHash": "pCX0yHPFuREXOqGaEQoCSlPZwsiijT1rBBiyk1pdD19Db8gVFglO7wMbxl37OhRNcLZprmtWJFvaDfuzeV10Wg=="
       },
       "AWSSDK.SecurityToken": {
         "type": "Transitive",
-        "resolved": "3.7.1.190",
-        "contentHash": "6njZoO/BBDWIAeN5DrIjZdQXOt6SSpE+x1A8JRWC9moyz3sqwU3l4uePZSpDyrQuLre+dkj1088Z62u9HX6FpQ==",
+        "resolved": "3.7.1.191",
+        "contentHash": "tTIqJ/QKaPzTu5ZPdRFa2sW9p5F441RLV7nDdTAVVuu6oLyemna0bTtE+luGLaw17oE4GZHpa5n5p0oJmpzcxA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.12.26, 4.0.0)"
+          "AWSSDK.Core": "[3.7.12.27, 4.0.0)"
         }
       },
       "Crc32.NET": {
@@ -354,8 +354,8 @@
       },
       "Microsoft.AspNetCore.JsonPatch": {
         "type": "Transitive",
-        "resolved": "6.0.7",
-        "contentHash": "ybv3udO2SaGW74NKIxj06ozTtcEJf2yOCNj4OGY/ZvB+LG/mZGBVKrwZYaZBXaWR9dakrf4+M3LiMAhasTEamg==",
+        "resolved": "6.0.8",
+        "contentHash": "OihHbIG+WAxk0U3jwPxCgh2tQqpeODYis3D0SnwIshpkKoZFhifCwfDNcsTBoppx4Y6ic0dcxkGiHO5NZWtXiw==",
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
           "Newtonsoft.Json": "13.0.1"
@@ -1734,7 +1734,7 @@
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.SecurityToken": "[3.7.1.187, )",
+          "AWSSDK.SecurityToken": "[3.7.1.191, )",
           "Microsoft.Extensions.Configuration": "[6.0.1, )",
           "Monai.Deploy.Messaging": "[0.1.4, )",
           "MongoDB.Bson": "[2.17.1, )",
@@ -1810,7 +1810,7 @@
       "monai.deploy.workloadmanager.workfowexecuter": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.SecurityToken": "[3.7.1.190, )",
+          "AWSSDK.SecurityToken": "[3.7.1.191, )",
           "Ardalis.GuardClauses": "[4.0.1, )",
           "Monai.Deploy.Messaging": "[0.1.4, )",
           "Monai.Deploy.Storage": "[0.2.5, )",

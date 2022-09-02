@@ -28,9 +28,9 @@
       },
       "Microsoft.Extensions.ApiDescription.Client": {
         "type": "Direct",
-        "requested": "[6.0.7, )",
-        "resolved": "6.0.7",
-        "contentHash": "69nhXioKWbAyULueGojN8IogiEz4+rh59Yuw8lJqVNL/nUcYj5KSJb7l305mg7rUiDIPqhZRxHbe8swfieH1qw=="
+        "requested": "[6.0.8, )",
+        "resolved": "6.0.8",
+        "contentHash": "fN3zEuHjSql9w2Md29dYkmPbAijxr+LqxoOoJ9B8G2j+fHgAK/N0g89miIUwepwbk8izTi5m8cVyWTKQgkd+ww=="
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",

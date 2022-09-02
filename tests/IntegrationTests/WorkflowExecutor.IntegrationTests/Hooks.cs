@@ -74,7 +74,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             TestExecutionConfig.RabbitConfig.TaskCallbackQueue = "md.tasks.callback";
             TestExecutionConfig.RabbitConfig.TaskUpdateQueue = "md.tasks.update";
             TestExecutionConfig.RabbitConfig.ExportCompleteQueue = config.GetValue<string>("WorkflowManager:messaging:topics:exportComplete");
-            TestExecutionConfig.RabbitConfig.ExportRequestQueue = $"{config.GetValue<string>("WorkflowManager:messaging:topics:exportRequestPrefix")}.{config.GetValue<string>("WorkflowManager:messaging:dicomAgents:dicomWebAgentName")}";
+            TestExecutionConfig.RabbitConfig.ExportRequestQueue = $"{config.GetValue<string>("WorkflowManager:messaging:topics:exportRequestPrefix")}.{config.GetValue<string>("WorkflowManager:messaging:dicomAgents:scuAgentName")}";
 
             TestExecutionConfig.MongoConfig.ConnectionString = config.GetValue<string>("WorkloadManagerDatabase:ConnectionString");
             TestExecutionConfig.MongoConfig.Database = config.GetValue<string>("WorkloadManagerDatabase:DatabaseName");

@@ -382,7 +382,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             var result = await WorkflowExecuterService.ProcessPayload(workflowRequest, new Payload() { Id = Guid.NewGuid().ToString() });
 
-            _messageBrokerPublisherService.Verify(w => w.Publish($"{_configuration.Value.Messaging.Topics.ExportRequestPrefix}.{_configuration.Value.Messaging.DicomAgents.DicomWebAgentName}", It.IsAny<Message>()), Times.Exactly(1));
+            _messageBrokerPublisherService.Verify(w => w.Publish($"{_configuration.Value.Messaging.Topics.ExportRequestPrefix}.{_configuration.Value.Messaging.DicomAgents.ScuAgentName}", It.IsAny<Message>()), Times.Exactly(1));
 
             Assert.True(result);
         }
@@ -1041,7 +1041,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
 
-            _messageBrokerPublisherService.Verify(w => w.Publish($"{_configuration.Value.Messaging.Topics.ExportRequestPrefix}.{_configuration.Value.Messaging.DicomAgents.DicomWebAgentName}", It.IsAny<Message>()), Times.Exactly(1));
+            _messageBrokerPublisherService.Verify(w => w.Publish($"{_configuration.Value.Messaging.Topics.ExportRequestPrefix}.{_configuration.Value.Messaging.DicomAgents.ScuAgentName}", It.IsAny<Message>()), Times.Exactly(1));
 
             response.Should().BeTrue();
         }
