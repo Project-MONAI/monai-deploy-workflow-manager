@@ -32,7 +32,7 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" Version="4.0.1" />
-    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.1" />
+    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.5" />
   </ItemGroup>
 
   <ItemGroup>

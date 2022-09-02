@@ -527,7 +527,18 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
         private async Task<bool> DispatchTask(WorkflowInstance workflowInstance, WorkflowRevision workflow, TaskExecution taskExec, string correlationId)
         {
-            var outputArtifacts = workflow?.Workflow?.Tasks?.FirstOrDefault(t => t.Id == taskExec.TaskId)?.Artifacts?.Output;
+            var task = workflow?.Workflow?.Tasks?.FirstOrDefault(t => t.Id == taskExec.TaskId);
+
+            var outputArtifacts = task?.Artifacts?.Output;
+
+            foreach (var artifact in outputArtifacts)
+            {
+                if (string.IsNullOrWhiteSpace(artifact.Value))
+                {
+                    artifact.Value = $"{{ context.executions.{task.Id}.output_dir }}/{artifact.Name}";
+                }
+            }
+
             var pathOutputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(outputArtifacts ?? Array.Empty<Artifact>(), workflowInstance.PayloadId, workflowInstance.Id, workflowInstance.BucketId, false);
 
             var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(taskExec, workflowInstance, pathOutputArtifacts, correlationId, _storageConfiguration);

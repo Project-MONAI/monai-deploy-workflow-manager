@@ -416,7 +416,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             Guard.Against.Null(workflow, nameof(workflow));
 
             var temporaryStore = Event.IntermediateStorage.Clone() as Messaging.Common.Storage;
-            temporaryStore!.RelativeRootPath = $"{temporaryStore.RelativeRootPath}/{{{{ workflow.name }}}}/messaging";
+            temporaryStore!.RelativeRootPath = $"{temporaryStore.RelativeRootPath}/messaging";
 
             var exitTemplateSteps = new Template2()
             {
@@ -635,7 +635,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             }
 
             var storageInfo = Event.IntermediateStorage.Clone() as Messaging.Common.Storage;
-            storageInfo!.RelativeRootPath = $"{storageInfo.RelativeRootPath}/{{{{ workflow.name }}}}/{artifactName}";
+            storageInfo!.RelativeRootPath = $"{storageInfo.RelativeRootPath}/{artifactName}";
 
             _intermediaryArtifactStores.Add(artifactName, storageInfo);
 
