@@ -28,7 +28,7 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
             Guard.Against.Null(logger, nameof(logger));
 
             var authenticationSettings = configuration.GetSection(AuthKeys.WorkflowManagerAuthentication);
-            Guard.Against.Null(authenticationSettings, nameof(authenticationSettings), "Missing WorkflowManagerAuthentication section in config.");
+            Guard.Against.Null(authenticationSettings.Value, nameof(authenticationSettings), "Missing WorkflowManagerAuthentication section in config.");
 
             if (authenticationSettings[AuthKeys.OpenId] is null)
             {

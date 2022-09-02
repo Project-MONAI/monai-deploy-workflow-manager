@@ -106,13 +106,22 @@ namespace Monai.Deploy.WorkflowManager.HealthChecks
         /// <returns>Health Check.</returns>
         public static HealthCheck ServicesHealthCheckReport(KeyValuePair<string, HealthReportEntry> entity, bool isAuthenticated)
         {
-            const string seperator = ", ";
-
             var description = entity.Value.Description;
 
-            if (entity.Value.Exception is not null && isAuthenticated)
+            if (isAuthenticated)
             {
-                description = string.Concat(entity.Value.Description, seperator, entity.Value.Exception.Message);
+                if (entity.Value.Exception is not null)
+                {
+                    description = $"{description}, Exception: {entity.Value.Exception.Message}";
+                }
+                if (entity.Value.Data is not null)
+                {
+                    description = $"{description}, Data:";
+                    foreach (var item in entity.Value.Data.Values.Where(v => v is string vs && !string.IsNullOrEmpty(vs)))
+                    {
+                        description = $"{description}, {item}";
+                    }
+                }
             }
 
             return new HealthCheck

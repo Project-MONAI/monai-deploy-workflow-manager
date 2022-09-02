@@ -33,8 +33,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.3-rc0012" />
-    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.1" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.4" />
+    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.5" />
     <PackageReference Include="MongoDB.Bson" Version="2.17.1" />
   </ItemGroup>
 

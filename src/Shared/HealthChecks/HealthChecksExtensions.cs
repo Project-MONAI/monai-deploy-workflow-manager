@@ -19,7 +19,8 @@ namespace Monai.Deploy.WorkflowManager.HealthChecks
                     .UseHealthChecks("/health/live", options)
                     .UseHealthChecks($"/health/{HealthCheckSettings.DatabaseHealthCheckName}", options)
                     .UseHealthChecks($"/health/{HealthCheckSettings.SubscriberQueueHealthCheckName}", options)
-                    .UseHealthChecks($"/health/{HealthCheckSettings.PublisherQueueHealthCheckName}", options);
+                    .UseHealthChecks($"/health/{HealthCheckSettings.PublisherQueueHealthCheckName}", options)
+                    .UseHealthChecks($"/health/{HealthCheckSettings.StorageHealthCheckName}", options);
                 return;
             }
 

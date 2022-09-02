@@ -29,7 +29,7 @@ namespace Monai.Deploy.WorkflowManager.Tests
 {
     internal class DummyStorageRegistrar : ServiceRegistrationBase
     {
-        public DummyStorageRegistrar(string fullyQualifiedAssemblyName) : base(fullyQualifiedAssemblyName)
+        public DummyStorageRegistrar(string fullyQualifiedAssemblyName) : base()
         {
         }
 

@@ -99,6 +99,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
             var serviceProvider = services.BuildServiceProvider();
             var logger = serviceProvider.GetService<ILogger<Startup>>();
 
+            var test = Configuration.GetSection(AuthKeys.WorkflowManagerAuthentication);
             services.AddMonaiAuthentication(Configuration, logger);
         }
 

@@ -37,6 +37,11 @@ namespace Monai.Deploy.WorkflowManager.HealthChecks
         public static readonly string PublisherQueueHealthCheckName = "Publisher-Queue";
 
         /// <summary>
+        /// Storage name in health checks endpoints
+        /// </summary>
+        public static readonly string StorageHealthCheckName = "Minio";
+
+        /// <summary>
         /// Database timeout health checks endpoints.
         /// </summary>
         public static readonly TimeSpan DatabaseHealthCheckTimeout = TimeSpan.FromSeconds(2);
@@ -52,6 +57,11 @@ namespace Monai.Deploy.WorkflowManager.HealthChecks
         public static readonly TimeSpan PublisherQueueHealthCheckTimeout = TimeSpan.FromSeconds(2);
 
         /// <summary>
+        /// Storage timeout for health checks endpoints.
+        /// </summary>
+        public static readonly TimeSpan StorageHealthCheckTimeout = TimeSpan.FromSeconds(2);
+
+        /// <summary>
         /// Gets database Tags that show on health check endpoints.
         /// </summary>
         public static IEnumerable<string> DatabaseTags { get; } = new[] { "services", "database", "mongodb" };
@@ -65,5 +75,10 @@ namespace Monai.Deploy.WorkflowManager.HealthChecks
         /// Gets PublisherQueue Tags that show on health check endpoints.
         /// </summary>
         public static IEnumerable<string> PublisherQueueTags { get; } = new[] { "services", "queue", "publisher", "rabbitmq" };
+
+        /// <summary>
+        /// Gets Storage Tags that show on health check endpoints.
+        /// </summary>
+        public static IEnumerable<string> StorageTags { get; } = new[] { "services", "storage", "minio" };
     }
 }

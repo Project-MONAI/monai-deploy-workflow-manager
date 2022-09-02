@@ -30,6 +30,7 @@ using Monai.Deploy.WorkflowManager.TaskManager.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.Services.Http;
 using MongoDB.Driver;
 using Microsoft.Extensions.Logging;
+using Monai.Deploy.WorkflowManager.HealthChecks;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
@@ -82,9 +83,27 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             services.AddOptions<MessageBrokerServiceConfiguration>().Bind(hostContext.Configuration.GetSection("WorkflowManager:messaging"));
             services.AddHttpClient();
 
-            services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
-            services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
-            services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
+            services.AddMonaiDeployStorageService(
+                hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value,
+                HealthCheckOptions.AdminServiceHealthCheck | HealthCheckOptions.ServiceHealthCheck,
+                null,
+                HealthCheckSettings.StorageTags,
+                HealthCheckSettings.StorageHealthCheckTimeout);
+
+            services.AddMonaiDeployMessageBrokerPublisherService(
+                hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value,
+                true,
+                null,
+                HealthCheckSettings.PublisherQueueTags,
+                HealthCheckSettings.PublisherQueueHealthCheckTimeout);
+
+            services.AddMonaiDeployMessageBrokerSubscriberService(
+                hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value,
+                true,
+                null,
+                HealthCheckSettings.PublisherQueueTags,
+                HealthCheckSettings.PublisherQueueHealthCheckTimeout);
+
 
             // Mongo DB (Workflow Manager)
             services.Configure<TaskManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));

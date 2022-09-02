@@ -25,7 +25,7 @@ namespace Monai.Deploy.WorkflowManager.Tests
 {
     internal class DummyMessagePublisherRegistrar : PublisherServiceRegistrationBase
     {
-        public DummyMessagePublisherRegistrar(string fullyQualifiedAssemblyName) : base(fullyQualifiedAssemblyName)
+        public DummyMessagePublisherRegistrar(string fullyQualifiedAssemblyName) : base()
         {
         }
 
@@ -33,7 +33,7 @@ namespace Monai.Deploy.WorkflowManager.Tests
     }
     internal class DummyMessageSubscriberRegistrar : SubscriberServiceRegistrationBase
     {
-        public DummyMessageSubscriberRegistrar(string fullyQualifiedAssemblyName) : base(fullyQualifiedAssemblyName)
+        public DummyMessageSubscriberRegistrar(string fullyQualifiedAssemblyName) : base()
         {
         }
 

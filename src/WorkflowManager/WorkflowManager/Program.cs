@@ -17,6 +17,7 @@
 using System;
 using System.IO;
 using System.IO.Abstractions;
+using System.Threading;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -70,6 +71,7 @@ namespace Monai.Deploy.WorkflowManager
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    Thread.Sleep(10000);
                     webBuilder.CaptureStartupErrors(true);
                     webBuilder.UseStartup<Startup>();
                 })
