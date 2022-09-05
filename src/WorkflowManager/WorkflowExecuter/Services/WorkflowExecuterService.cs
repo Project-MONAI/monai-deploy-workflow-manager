@@ -529,12 +529,22 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         {
             var task = workflow?.Workflow?.Tasks?.FirstOrDefault(t => t.Id == taskExec.TaskId);
 
-            var outputArtifacts = task?.Artifacts?.Output;
-
-            foreach (var artifact in outputArtifacts)
+            if (task is null)
             {
-                if (string.IsNullOrWhiteSpace(artifact.Value))
+                return false;
+            }
+
+            var outputArtifacts = task.Artifacts?.Output;
+
+            if (outputArtifacts is not null && outputArtifacts.Any())
+            {
+                foreach (var artifact in outputArtifacts)
                 {
+                    if (!string.IsNullOrWhiteSpace(artifact.Value))
+                    {
+                        continue;
+                    }
+
                     artifact.Value = $"{{ context.executions.{task.Id}.output_dir }}/{artifact.Name}";
                 }
             }
