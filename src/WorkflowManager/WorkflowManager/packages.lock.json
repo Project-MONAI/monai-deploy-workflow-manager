@@ -138,11 +138,11 @@
       },
       "Monai.Deploy.Messaging.RabbitMQ": {
         "type": "Direct",
-        "requested": "[0.1.3-rc0011, )",
-        "resolved": "0.1.3-rc0011",
-        "contentHash": "kT5aW7aHv8XVgVo8AoIIG14DHOkvRj9wI68wKkpLg0zfo9J46G6wCrPg2lxa0KlY0JyXGLUhg/KW+Appa1vV2w==",
+        "requested": "[0.1.3-rc0012, )",
+        "resolved": "0.1.3-rc0012",
+        "contentHash": "IIzty1xAAn3pTSK9VPI5o22nZDGyPyKWNiGstC4bkzIHdxghPEX/ErR7IVkClxCc9kK8X+4sReGFksdGKShQnw==",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.3-rc0011"
+          "Monai.Deploy.Messaging": "0.1.3-rc0012"
         }
       },
       "Monai.Deploy.Storage.MinIO": {
