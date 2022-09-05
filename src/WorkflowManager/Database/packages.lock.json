@@ -807,27 +807,19 @@
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-<<<<<<< HEAD
           "AWSSDK.SecurityToken": "[3.7.1.191, )",
           "Microsoft.Extensions.Configuration": "[6.0.1, )",
           "Monai.Deploy.Messaging": "[0.1.3-rc0012, )",
           "MongoDB.Bson": "[2.17.1, )",
           "Newtonsoft.Json": "[13.0.1, )"
-=======
-          "AWSSDK.SecurityToken": "3.7.1.191",
-          "Microsoft.Extensions.Configuration": "6.0.1",
-          "Monai.Deploy.Messaging": "0.1.3-rc0012",
-          "MongoDB.Bson": "2.17.1",
-          "Newtonsoft.Json": "13.0.1"
->>>>>>> 723aa6b2 (fix misc issues)
         }
       },
       "monai.deploy.workflowmanager.logging": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.AspNetCore.Mvc.Core": "2.2.5",
-          "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
-          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0"
+          "Microsoft.AspNetCore.Mvc.Core": "[2.2.5, )",
+          "Microsoft.Extensions.Logging.Abstractions": "[6.0.1, )",
+          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )"
         }
       }
     }
