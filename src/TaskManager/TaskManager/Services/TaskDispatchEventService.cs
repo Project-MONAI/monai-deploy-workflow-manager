@@ -55,7 +55,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services
 
             try
             {
-                return await _taskDispatchEventRepository.CreateAsync(taskDispatchEvent).ConfigureAwait(false);
+                return await _taskDispatchEventRepository.UpdateUserAccountsAsync(taskDispatchEvent).ConfigureAwait(false);
             }
             finally
             {

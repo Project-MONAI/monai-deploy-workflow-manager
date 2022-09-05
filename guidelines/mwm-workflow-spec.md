@@ -223,6 +223,26 @@ Example:
 ]
 ```
 
+Artifacts also support path suffixes after the variables like so, these can be used to further dictate an artifact path:
+
+Example:
+```json
+"input": [
+    {
+      "name": "input_dicom",
+      "value": "{{ context.input.dicom }}/study1",
+      "mandatory": true
+    }
+],
+"output": [
+    {
+      "name": "fracture_report",
+      "mandatory": true
+    }
+]
+```
+
+
 > ##### Creating artifacts:
 > How artifacts are created is beyond the scope of this document. The specifics differ depending on which Task Plugin is being used.
 >

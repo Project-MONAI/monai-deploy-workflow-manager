@@ -373,12 +373,12 @@ public class ArgoPluginTest
         template = workflow.Spec.Templates.FirstOrDefault(p => p.Name.Equals("segmentation", StringComparison.Ordinal));
         Assert.NotNull(template!);
         Assert.Null(template!.Inputs.Artifacts.First().S3);
-        Assert.Equal($"{message.IntermediateStorage.RelativeRootPath}/{{{{ workflow.name }}}}/{template.Outputs.Artifacts.First().Name}", template.Outputs.Artifacts.First().S3.Key);
+        Assert.Equal($"{message.IntermediateStorage.RelativeRootPath}/{template.Outputs.Artifacts.First().Name}", template.Outputs.Artifacts.First().S3.Key);
 
         template = workflow.Spec.Templates.FirstOrDefault(p => p.Name.Equals("inference", StringComparison.Ordinal));
         Assert.NotNull(template!);
         Assert.Null(template!.Inputs.Artifacts.First().S3);
-        Assert.Equal($"{message.IntermediateStorage.RelativeRootPath}/{{{{ workflow.name }}}}/{template.Outputs.Artifacts.First().Name}", template.Outputs.Artifacts.First().S3.Key);
+        Assert.Equal($"{message.IntermediateStorage.RelativeRootPath}/{template.Outputs.Artifacts.First().Name}", template.Outputs.Artifacts.First().S3.Key);
 
         template = workflow.Spec.Templates.FirstOrDefault(p => p.Name.Equals("generate-report", StringComparison.Ordinal));
         Assert.NotNull(template!);

@@ -58,7 +58,9 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                     throw new FileNotFoundException($"Mandatory artifact failed to be parsed: {artifact.Name}, {artifact.Value}");
                 }
 
-                var mappedArtifact = await ConvertVariableStringToPath(artifact, variableString, workflowInstanceId, payloadId, bucketId, shouldExistYet);
+                var suffix = GetArtifactSuffix(artifact.Value);
+
+                var mappedArtifact = await ConvertVariableStringToPath(artifact, variableString, workflowInstanceId, payloadId, bucketId, shouldExistYet, suffix);
 
                 if (mappedArtifact.Equals(default(KeyValuePair<string, string>)) is false)
                 {
@@ -74,6 +76,18 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             }
 
             return artifactPathDictionary;
+        }
+
+        private static string? GetArtifactSuffix(string valueString)
+        {
+            var variableStrings = valueString.Split("}");
+
+            if (variableStrings.Length < 2)
+            {
+                return null;
+            }
+
+            return variableStrings[1];
         }
 
         private static bool TrimArtifactVariable(string valueString, out string variableString)
@@ -92,11 +106,11 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             return true;
         }
 
-        private async Task<KeyValuePair<string, string>> ConvertVariableStringToPath(Artifact artifact, string variableString, string workflowInstanceId, string payloadId, string bucketId, bool shouldExistYet)
+        private async Task<KeyValuePair<string, string>> ConvertVariableStringToPath(Artifact artifact, string variableString, string workflowInstanceId, string payloadId, string bucketId, bool shouldExistYet, string suffix = "")
         {
             if (variableString.StartsWith("context.input.dicom", StringComparison.InvariantCultureIgnoreCase))
             {
-                return await VerifyExists(new KeyValuePair<string, string>(artifact.Name, $"{payloadId}/dcm/"), bucketId, shouldExistYet);
+                return await VerifyExists(new KeyValuePair<string, string>(artifact.Name, $"{payloadId}/dcm{suffix}"), bucketId, shouldExistYet);
             }
 
             if (variableString.StartsWith("context.executions", StringComparison.InvariantCultureIgnoreCase))
@@ -115,7 +129,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
                 if (string.Equals(variableLocation, "output_dir", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    return await VerifyExists(new KeyValuePair<string, string>(artifact.Name, task.OutputDirectory), bucketId, shouldExistYet);
+                    return await VerifyExists(new KeyValuePair<string, string>(artifact.Name, $"{task.OutputDirectory}{suffix}"), bucketId, shouldExistYet);
                 }
 
                 if (string.Equals(variableLocation, "artifacts", StringComparison.InvariantCultureIgnoreCase))

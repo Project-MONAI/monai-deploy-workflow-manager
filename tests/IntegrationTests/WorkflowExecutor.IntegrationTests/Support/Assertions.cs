@@ -84,7 +84,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             {
                 if (workflowArtifact.Value == "{{ context.input.dicom }}")
                 {
-                    workflowInstanceTask.InputArtifacts[workflowArtifact.Name].Should().Match($"{payloadId}/dcm/");
+                    workflowInstanceTask.InputArtifacts[workflowArtifact.Name].Should().Match($"{payloadId}/dcm");
                 }
                 else if (workflowArtifact.Value.Contains("artifacts"))
                 {
@@ -108,7 +108,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
                 if (workflowArtifact.Value == "{{ context.input.dicom }}")
                 {
-                    taskDispatchArtifact.RelativeRootPath.Should().Match($"{payloadId}/dcm/");
+                    taskDispatchArtifact.RelativeRootPath.Should().Match($"{payloadId}/dcm");
                 }
                 else if (workflowArtifact.Value.Contains("artifacts"))
                 {
