@@ -339,6 +339,24 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return;
             }
 
+            var files = new List<VirtualFileInfo>();
+            foreach (var artifact in artifactValues)
+            {
+                if (artifact is not null)
+                {
+                    var objects = await _storageService.ListObjectsAsync(
+                        workflowInstance.BucketId,
+                        artifact,
+                        true);
+                    if (objects.IsNullOrEmpty() is false)
+                    {
+                        files.AddRange(objects.ToList());
+                    }
+                }
+            }
+
+            artifactValues = files.Select(f => f.FilePath).ToArray();
+
             await DispatchDicomExport(workflowInstance, task, exportList, artifactValues, correlationId);
         }
 
@@ -346,13 +364,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         {
             var validExportDestinations = workflow.Workflow?.InformaticsGateway?.ExportDestinations;
 
-#pragma warning disable CS8604 // Possible null reference argument.
-            if (exportDestinations.IsNullOrEmpty()
+            if (exportDestinations is null
+                || exportDestinations.IsNullOrEmpty()
+                || validExportDestinations is null
                 || validExportDestinations.IsNullOrEmpty())
             {
                 return Array.Empty<string>();
             }
-#pragma warning restore CS8604 // Possible null reference argument.
 
             foreach (var exportDestination in exportDestinations)
             {
