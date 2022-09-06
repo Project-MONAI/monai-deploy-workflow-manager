@@ -1,0 +1,87 @@
+# Copyright 2022 MONAI Consortium
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Deploy Nightly 
+on:
+  schedule:
+    - cron: '0 7 * * *' # run at 7 AM UTC/12 AM PT
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  nightly:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        feature: [WorkflowManager, TaskManager]
+      fail-fast: false
+    env: 
+      IMAGE_NAME: ${{ github.repository_owner }}/${{ matrix.feature }}
+    steps:
+      - name: Get Date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2.0.0
+        if: ${{ (matrix.os == 'ubuntu-latest') }}
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4.0.1
+        if: ${{ (matrix.os == 'ubuntu-latest') }}
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=develop-latest
+            type=raw,value=develop-nightly-${{ steps.date.outputs.date }}
+
+      - name: Build and Push Docker image for ${{ matrix.feature }}
+        uses: docker/build-push-action@v3.1.1
+        if: ${{ (matrix.os == 'ubuntu-latest') }}
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          file: ${{ matrix.feature }}.Dockerfile
+
+      - name: Scan Image with Azure Container Scan
+        env:
+          TRIVY_TIMEOUT_SEC: 360s
+        uses: Azure/container-scan@v0.1
+        if: ${{ (matrix.os == 'ubuntu-latest') }}
+        with:
+          image-name: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+
+      - name: Anchore container scan
+        id: anchore-scan
+        uses: anchore/scan-action@v3.2.5
+        if: ${{ (matrix.os == 'ubuntu-latest') }}
+        with:
+          image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          fail-build: true
+          severity-cutoff: critical
+
+      - name: Upload Anchore scan SARIF report
+        uses: github/codeql-action/upload-sarif@v2
+        if: ${{ (matrix.os == 'ubuntu-latest') }}
+        with:
+          sarif_file: ${{ steps.anchore-scan.outputs.sarif }}
+          token: ${{ secrets.GITHUB_TOKEN }}
