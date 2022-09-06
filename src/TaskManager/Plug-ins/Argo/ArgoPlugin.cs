@@ -491,9 +491,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private void CopyImagePullSecrets(WorkflowTemplate workflowTemplate, Workflow workflow)
         {
-            Guard.Against.Null(workflowTemplate.Spec.ImagePullSecrets);
-
-            if (workflowTemplate.Spec.ImagePullSecrets.Any())
+            if (workflowTemplate.Spec.ImagePullSecrets?.Any() is true)
             {
                 workflow.Spec.ImagePullSecrets = new List<LocalObjectReference>();
                 foreach (var secret in workflowTemplate.Spec.ImagePullSecrets)
