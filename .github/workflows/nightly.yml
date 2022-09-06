@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Deploy Develop Nightly 
+name: Nightly Builds (develop)
 on:
   pull_request:
     branches:
@@ -64,6 +64,7 @@ jobs:
         uses: docker/build-push-action@v3.1.1
         with:
           context: .
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ matrix.feature }}.Dockerfile
