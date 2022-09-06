@@ -14,11 +14,15 @@
 
 name: Deploy Nightly 
 on:
+  pull_request:
+    branches:
+        - 'develop'
+  push:
+    branches:
+      - 'develop'
   schedule:
     - cron: '0 7 * * *' # run at 7 AM UTC/12 AM PT
-
-env:
-  REGISTRY: ghcr.io
+  workflow_dispatch:
 
 jobs:
   nightly:
@@ -29,6 +33,7 @@ jobs:
       fail-fast: false
     env: 
       IMAGE_NAME: ${{ github.repository_owner }}/${{ matrix.feature }}
+      REGISTRY: ghcr.io
     steps:
       - name: Get Date
         id: date
