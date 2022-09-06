@@ -486,6 +486,21 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             await CopyTemplateSteps(template.Steps, workflowTemplate, name, workflow, cancellationToken).ConfigureAwait(false);
             await CopyTemplateDags(template.Dag, workflowTemplate, name, workflow, cancellationToken).ConfigureAwait(false);
+            CopyImagePullSecrets(workflowTemplate, workflow);
+        }
+
+        private void CopyImagePullSecrets(WorkflowTemplate workflowTemplate, Workflow workflow)
+        {
+            Guard.Against.Null(workflowTemplate.Spec.ImagePullSecrets);
+
+            if (workflowTemplate.Spec.ImagePullSecrets.Any())
+            {
+                workflow.Spec.ImagePullSecrets = new List<LocalObjectReference>();
+                foreach (var secret in workflowTemplate.Spec.ImagePullSecrets)
+                {
+                    workflow.Spec.ImagePullSecrets.Add(secret);
+                }
+            }
         }
 
         /// <summary>
