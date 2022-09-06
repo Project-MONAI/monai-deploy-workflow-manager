@@ -63,7 +63,7 @@ spec:
               value: {{ $value | quote }}
               {{- end }}
         
-              {{- range .Values.enviromentVariablesFromSecrets.secrets }}
+              {{- range (.Values.enviromentVariablesFromSecrets).secrets }}
             - name: {{ .name }}
               valueFrom:
                 secretKeyRef:

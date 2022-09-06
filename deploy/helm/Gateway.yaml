@@ -16,7 +16,10 @@ replicaCount: 1
 image:
   repository: registry.gitlab.com/answerdigital/londonai/aide/workflow-manager-images/infomatics-gateway
   pullPolicy: IfNotPresent
-  tag: 2022-08-01
+  tag: 2022-08-30-01
+  
+imagePullSecrets:
+ - name: gitlab-image-pull
 
 enviromentVariables:
   InformaticsGateway__messaging__publisherSettings__endpoint: "rabbitmq-monai"
@@ -29,6 +32,8 @@ enviromentVariables:
   InformaticsGateway__storage__settings__accessKey: "rootminio"
   InformaticsGateway__storage__settings__accessToken: "rootminio"
   InformaticsGateway__dicom__scp__rejectUnknownSources: false
+  Kestrel__EndPoints__Http__Url: "http://::5000"
+  InformaticsGateway__storage__watermarkPercent: 95
   
 
 service:

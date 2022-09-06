@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -584,6 +585,46 @@ public class ArgoPluginTest
         Assert.Equal("error", result.Errors);
 
         _argoClient.Verify(p => p.WorkflowService_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
+    }
+
+    [Fact(DisplayName = "ImagePullSecrets - get copied accross")]
+    public async Task ArgoPlugin_Copies_ImagePullSecrets()
+    {
+        var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
+
+        Assert.NotNull(argoTemplate);
+        var secret = new LocalObjectReference() { Name = "ImagePullSecret" };
+        argoTemplate.Spec.ImagePullSecrets = new List<LocalObjectReference>() { secret };
+
+        var message = GenerateTaskDispatchEventWithValidArguments();
+        message.TaskPluginArguments["resources"] = "{\"memory_reservation\": \"string\",\"cpu_reservation\": \"string\",\"gpu_limit\": 1,\"memory_limit\": \"string\",\"cpu_limit\": \"string\"}";
+        message.TaskPluginArguments["priorityClass"] = "Helo";
+        Workflow? submittedArgoTemplate = null;
+
+        _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(argoTemplate);
+        _argoClient.Setup(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
+            .Callback((string ns, WorkflowCreateRequest body, CancellationToken cancellationToken) =>
+            {
+                submittedArgoTemplate = body.Workflow;
+            })
+            .ReturnsAsync((string ns, WorkflowCreateRequest body, CancellationToken cancellationToken) =>
+            {
+                return new Workflow { Metadata = new ObjectMeta { Name = "workflow" } };
+            });
+
+        SetupKubbernetesSecrets()
+            .ReturnsAsync((V1Secret body, string ns, string dr, string fm, string fv, bool? pretty, IReadOnlyDictionary<string, IReadOnlyList<string>> headers, CancellationToken ct) =>
+            {
+                return new HttpOperationResponse<V1Secret> { Body = body, Response = new HttpResponseMessage { } };
+            });
+        SetupKubernetesDeleteSecret();
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, message);
+        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+        Assert.Equal(secret, submittedArgoTemplate?.Spec.ImagePullSecrets.First());
     }
 
     private static TaskDispatchEvent GenerateTaskDispatchEventWithValidArguments()

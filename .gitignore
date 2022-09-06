@@ -577,3 +577,5 @@ GitExtensions.settings.backup
 *.AssemblyHooks.vb
 /src/WorkflowManager/mc.exe
 *.lutconfig
+/src/TaskManager/TaskManager/Properties/launchSettings.json
+/src/WorkflowManager/WorkflowManager/Properties/launchSettings.json
