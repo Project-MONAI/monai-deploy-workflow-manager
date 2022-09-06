@@ -67,9 +67,10 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// </summary>
         /// <param name="filter">Filters.</param>
         /// <param name="status">Workflow instance status filter.</param>
+        /// <param name="payloadId">PayloadId.</param>
         /// <returns>A list of workflow instances.</returns>
         [HttpGet]
-        public async Task<IActionResult> GetListAsync([FromQuery] PaginationFilter filter, [FromQuery] string status = null)
+        public async Task<IActionResult> GetListAsync([FromQuery] PaginationFilter filter, [FromQuery] string status = null, [FromQuery] string? payloadId = null)
         {
             try
             {
@@ -81,7 +82,8 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 var pagedData = await _workflowInstanceService.GetAllAsync(
                     (validFilter.PageNumber - 1) * validFilter.PageSize,
                     validFilter.PageSize,
-                    parsedStatus);
+                    parsedStatus,
+                    payloadId);
 
                 var dataTotal = await _workflowInstanceService.CountAsync();
                 var pagedReponse = CreatePagedReponse<WorkflowInstance>(pagedData.ToList(), validFilter, dataTotal, _uriService, route);

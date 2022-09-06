@@ -56,10 +56,31 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"Pagination is working correctly for the (.*) workflow instances")]
         public void ThenPaginationIsWorkingCorrectlyForTheWorkflowInstance(int count)
         {
-            var request = ApiHelper.Request.RequestUri.Query;
+            var request = ApiHelper.Request.RequestUri?.Query;
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var deserializedResult = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowInstance>>>(result);
             Assertions.AssertPagination(count, request, deserializedResult);
+        }
+
+        [Then(@"All results have correct (.*) and (.*)")]
+        public void AllResultsHaveExpectedStatusOrPayloadId(int? expected_status, string? expected_payloadId)
+        {
+            //var request = ApiHelper.Request.RequestUri?.Query;
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            var deserializedResult = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowInstance>>>(result);
+
+            Action<WorkflowInstance> func = wi => { };
+            if (string.IsNullOrWhiteSpace(expected_payloadId) is false)
+            {
+                func += wi => wi.PayloadId.Should().Be(expected_payloadId);
+            }
+            if (expected_status is not null)
+            {
+                func += wi => wi.Status.Should().Be((Status)expected_status);
+            }
+
+            deserializedResult.Should().NotBeNull();
+            deserializedResult?.Data.ForEach(func);
         }
     }
 }

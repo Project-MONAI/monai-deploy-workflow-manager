@@ -32,6 +32,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// <param name="limit"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        public Task<IList<WorkflowInstance>> GetAllAsync(int? skip = null, int? limit = null, Status? status = null);
+        public Task<IList<WorkflowInstance>> GetAllAsync(int? skip = null, int? limit = null, Status? status = null, string? paylaodId = null);
     }
 }
