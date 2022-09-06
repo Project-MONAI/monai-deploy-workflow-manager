@@ -42,19 +42,19 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support
 
             if (string.IsNullOrEmpty(folderName))
             {
-                OutputHelper.WriteLine($"folderName not specified. Seeding Minio with objects from **/DICOMs/full_patient_metadata/dcm/");
+                OutputHelper.WriteLine($"folderName not specified. Seeding Minio with objects from **/DICOMs/full_patient_metadata/dcm");
 
                 localPath = Path.Combine(GetDirectory(), "DICOMs", "full_patient_metadata", "dcm");
             }
             else
             {
-                OutputHelper.WriteLine($"Seeding Minio with artifacts from **/DICOMs/{folderName}/dcm/");
+                OutputHelper.WriteLine($"Seeding Minio with artifacts from **/DICOMs/{folderName}/dcm");
 
                 localPath = Path.Combine(GetDirectory(), "DICOMs", folderName, "dcm");
             }
 
-            OutputHelper.WriteLine($"Seeding objects to {TestExecutionConfig.MinioConfig.Bucket}/{payloadId}/dcm/");
-            await MinioClient.AddFileToStorage(localPath, $"{payloadId}/dcm/");
+            OutputHelper.WriteLine($"Seeding objects to {TestExecutionConfig.MinioConfig.Bucket}/{payloadId}/dcm");
+            await MinioClient.AddFileToStorage(localPath, $"{payloadId}/dcm");
             OutputHelper.WriteLine($"Objects seeded");
         }
 
@@ -64,13 +64,13 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support
 
             if (string.IsNullOrEmpty(folderName))
             {
-                OutputHelper.WriteLine($"folderName not specified. Seeding Minio with objects from **/DICOMs/output_metadata/dcm/");
+                OutputHelper.WriteLine($"folderName not specified. Seeding Minio with objects from **/DICOMs/output_metadata/dcm");
 
                 localPath = Path.Combine(GetDirectory(), "DICOMs", "output_metadata", "dcm");
             }
             else
             {
-                OutputHelper.WriteLine($"Seeding Minio with objects from **/DICOMs/{folderName}/dcm/");
+                OutputHelper.WriteLine($"Seeding Minio with objects from **/DICOMs/{folderName}/dcm");
 
                 localPath = Path.Combine(GetDirectory(), "DICOMs", folderName, "dcm");
             }
