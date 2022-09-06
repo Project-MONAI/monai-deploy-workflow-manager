@@ -289,16 +289,16 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             updatedWorkflowInstance.Tasks[0].Status.Should().Be(taskExecutionStatus);
         }
 
-        public static void AssertPagination<T>(int count, string queries, T? Response)
+        public static void AssertPagination<T>(int count, string? queries, T? Response)
         {
             var responseType = Response?.GetType();
             GetPropertyValues(Response, responseType, out var data, out var totalPages, out var pageSize, out var totalRecords, out var pageNumber);
             var pageNumberQuery = 1;
             var pageSizeQuery = 10;
-            var splitQuery = queries.Split("&").ToList();
 
-            if (queries != "")
+            if (string.IsNullOrWhiteSpace(queries) is false)
             {
+                var splitQuery = queries?.Split("&") ?? Array.Empty<string>();
                 foreach (var query in splitQuery)
                 {
                     if (query.Contains("status=") || query.Contains("payloadId="))

@@ -65,7 +65,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"All results have correct (.*) and (.*)")]
         public void AllResultsHaveExpectedStatusOrPayloadId(int? expected_status, string? expected_payloadId)
         {
-            //var request = ApiHelper.Request.RequestUri?.Query;
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var deserializedResult = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowInstance>>>(result);
 

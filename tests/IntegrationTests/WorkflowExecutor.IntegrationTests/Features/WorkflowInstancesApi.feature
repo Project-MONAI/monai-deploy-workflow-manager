@@ -65,7 +65,7 @@ Scenario Outline: Get all workflow instances from API - Test pagination
     |                            | 0      | 0                |
     | ?pageNumber=1&pageSize=100 | 15     | 15               |
 
-@WorkflowInstancePagination2
+@WorkflowInstancePagination
 Scenario Outline: Get all workflow instances from API with provided status or PayloadId - Test pagination
     Given I have an endpoint /workflowinstances/<pagination_query>
     And I have <amount> Workflow Instances
@@ -78,18 +78,6 @@ Scenario Outline: Get all workflow instances from API with provided status or Pa
     | ?pageSize=1                                                | 15     | 15               |                 |                                      |
     | ?pageSize=1&status=created                                 | 15     | 15               | 0               |                                      |
     | ?pageSize=1&payloadId=5450c3a9-2b19-45b0-8b17-fb10f89d1b2d | 15     | 15               |                 | 5450c3a9-2b19-45b0-8b17-fb10f89d1b2d |
-    #| ?pageNumber=10             | 15     | 15               |
-    #| ?pageNumber=1&pageSize=10  | 15     | 15               |
-    #| ?pageSize=10&pageNumber=2  | 13     | 13               |
-    #| ?pageNumber=2&pageSize=7   | 4      | 4                |
-    #| ?pageNumber=3&pageSize=10  | 7      | 7                |
-    #| ?pageNumber=1&pageSize=3   | 10     | 10               |
-    #|                            | 15     | 15               |
-    #|                            | 3      | 3                |
-    #| ?pageNumber=3&pageSize=10  | 0      | 0                |
-    #| ?pageNumber=1              | 0      | 0                |
-    #|                            | 0      | 0                |
-    #| ?pageNumber=1&pageSize=100 | 15     | 15               |
 
 @WorkflowInstancePagination
 Scenario Outline: Invalid pagination returns 400
