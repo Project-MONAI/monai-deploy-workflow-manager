@@ -51,32 +51,27 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
         /// <summary>
         /// Key for setting the message broker's endpoint.
         /// </summary>
-        public static readonly string MessagingEnddpoint = "messaging_endpoint";
+        public static readonly string MessagingEndpoint = "endpoint";
 
         /// <summary>
         /// Key for setting the user name to access the message broker.
         /// </summary>
-        public static readonly string MessagingUsername = "messaging_username";
+        public static readonly string MessagingUsername = "username";
 
         /// <summary>
         /// Key for setting the password to access the message broker.
         /// </summary>
-        public static readonly string MessagingPassword = "messaging_password";
-
-        /// <summary>
-        /// Key for setting the topic of the completion event.
-        /// </summary>
-        public static readonly string MessagingTopic = "messaging_topic";
+        public static readonly string MessagingPassword = "password";
 
         /// <summary>
         /// Key for setting the exchange of the message broker.
         /// </summary>
-        public static readonly string MessagingExchange = "messaging_exchange";
+        public static readonly string MessagingExchange = "exchange";
 
         /// <summary>
         /// Key for setting the vhost of the message broker.
         /// </summary>
-        public static readonly string MessagingVhost = "messaging_vhost";
+        public static readonly string MessagingVhost = "virtualHost";
 
         /// <summary>
         /// Key for resource limitations
@@ -99,13 +94,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
         public static readonly IReadOnlyList<string> RequiredParameters =
             new List<string> {
                 BaseUrl,
-                WorkflowTemplateName,
-                MessagingEnddpoint,
-                MessagingUsername,
-                MessagingPassword,
-                MessagingTopic,
-                MessagingExchange,
-                MessagingVhost,
+                WorkflowTemplateName
             };
     }
 }

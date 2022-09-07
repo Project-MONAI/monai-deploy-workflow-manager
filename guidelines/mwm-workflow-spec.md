@@ -260,15 +260,10 @@ The Task's "args" object should contain the following fields:
 
 | Property | Type | Required | Description |
 |------|------|------|------|
-|workflow_id|str|Yes|The ID of this workflow as registered on the Argo server.|
+|workflow_template_name|str|Yes|The ID of this workflow as registered on the Argo server.|
+|namespace|str|Yes|The namespace of the argo workflow.|
 |server_url|url|Yes|The URL of the Argo server.|
 |allow_insecure|bool|No|Allow insecure connections to argo from the plug-in.|
-|messaging_endpoint|url|Yes|Address for RabbitMq, used for a callback message at the end of the Argo workflow.|
-|messaging_username|str|No|The username for RabbitMq.|
-|messaging_password|str|No|The password for RabbitMq.|
-|messaging_topic|str|No|The topic to post to ie. md.tasks.callback.|
-|messaging_exchange|str|No|The exchange to post to. ie monaideploy.|
-|messaging_vhost|str|No|The vhost to post to. ie monaideploy.|
 |parameters|dictionary|No|Key value pairs, Argo parameters that will be passed on to the Argo workflow.|
 |priority_class|string|No|The name of a valid Kubernetes priority class to be assigned to the Argo workflow pods|
 |resources|object|No|A resource requests & limits object (see below). These will be applied to the Argo workflow pods|
