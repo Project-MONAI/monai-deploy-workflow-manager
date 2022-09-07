@@ -33,6 +33,7 @@ jobs:
       REGISTRY: ghcr.io
     permissions:
       packages: write
+      security-events: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
