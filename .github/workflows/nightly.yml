@@ -26,9 +26,9 @@ jobs:
       matrix:
         include:
           - dockerfile: WorkflowManager.Dockerfile
-            image: ghcr.io/project-monai/mona-deploy-workflow-manager
+            image: ghcr.io/project-monai/monai-deploy-workflow-manager
           - dockerfile: TaskManager.Dockerfile
-            image: ghcr.io/project-monai/mona-deploy-task-manager
+            image: ghcr.io/project-monai/monai-deploy-task-manager
     env: 
       REGISTRY: ghcr.io
     permissions:
