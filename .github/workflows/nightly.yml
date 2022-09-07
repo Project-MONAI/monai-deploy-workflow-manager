@@ -28,9 +28,13 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        feature: [WorkflowManager, TaskManager]
       fail-fast: false
+      matrix:
+        include:
+          - dockerfile: WorkflowManager.Dockerfile
+            image: ghcr.io/project-monai/mona-deploy-workflow-manager
+          - dockerfile: TaskManager.Dockerfile
+            image: ghcr.io/project-monai/mona-deploy-task-manager
     env: 
       IMAGE_NAME: ${{ github.repository_owner }}/${{ matrix.feature }}
       REGISTRY: ghcr.io
@@ -55,7 +59,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4.0.1
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ matrix.image }}
           tags: |
             type=raw,value=develop-latest
             type=raw,value=develop-nightly-${{ steps.date.outputs.date }}
@@ -67,7 +71,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: ${{ matrix.feature }}.Dockerfile
+          file: ${{ matrix.dockerfile }}
 
       - name: Scan Image with Azure Container Scan
         env:
