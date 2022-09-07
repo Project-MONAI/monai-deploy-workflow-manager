@@ -36,8 +36,9 @@ jobs:
           - dockerfile: TaskManager.Dockerfile
             image: ghcr.io/project-monai/mona-deploy-task-manager
     env: 
-      IMAGE_NAME: ${{ github.repository_owner }}/${{ matrix.feature }}
       REGISTRY: ghcr.io
+    permissions:
+      packages: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
