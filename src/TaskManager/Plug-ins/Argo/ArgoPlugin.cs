@@ -27,6 +27,7 @@ using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.Messaging.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
@@ -109,6 +110,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 if (!Event.TaskPluginArguments.ContainsKey(key))
                 {
                     throw new InvalidTaskException($"Required parameter to execute Argo workflow is missing: {key}");
+                }
+            }
+
+            foreach (var key in Keys.RequiredSettings)
+            {
+                if (!_options.Value.Messaging.PublisherSettings.ContainsKey(key))
+                {
+                    throw new ConfigurationException($"Required message publisher setting to execute Argo workflow is missing: {key}");
                 }
             }
 

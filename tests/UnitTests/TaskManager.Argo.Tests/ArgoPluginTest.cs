@@ -28,6 +28,7 @@ using k8s.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.SharedTest;
@@ -103,6 +104,23 @@ public class ArgoPluginTest
 
         message.TaskPluginArguments[Keys.BaseUrl] = "/api";
         Assert.Throws<InvalidTaskException>(() => new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message));
+    }
+
+    [Fact(DisplayName = "Throws when missing required settings")]
+    public void ArgoPlugin_ThrowsWhenMissingRequiredSettings()
+    {
+        var message = GenerateTaskDispatchEventWithValidArguments();
+
+        _options.Value.Messaging.PublisherSettings.Remove("password");
+        Assert.Throws<ConfigurationException>(() => new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message));
+
+        foreach (var key in Keys.RequiredSettings.Take(Keys.RequiredSettings.Count - 1))
+        {
+            message.TaskPluginArguments.Add(key, Guid.NewGuid().ToString());
+            Assert.Throws<ConfigurationException>(() => new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message));
+        }
+        message.TaskPluginArguments[Keys.RequiredSettings[Keys.RequiredSettings.Count - 1]] = Guid.NewGuid().ToString();
+        Assert.Throws<ConfigurationException>(() => new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message));
     }
 
     [Fact(DisplayName = "Initializes values")]

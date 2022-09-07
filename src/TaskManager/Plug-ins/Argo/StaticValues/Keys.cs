@@ -96,5 +96,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
                 BaseUrl,
                 WorkflowTemplateName
             };
+
+        /// <summary>
+        /// Required settings to run the Argo workflow.
+        /// </summary>
+        public static readonly IReadOnlyList<string> RequiredSettings =
+            new List<string> {
+                MessagingEndpoint,
+                MessagingUsername,
+                MessagingPassword,
+                MessagingExchange,
+                MessagingVhost
+            };
     }
 }
