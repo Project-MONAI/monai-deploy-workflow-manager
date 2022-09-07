@@ -640,7 +640,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
                 Assert.True(workflowHasErrors);
 
-                Assert.Equal(26, results.Errors.Count);
+                Assert.Equal(14, results.Errors.Count);
 
                 var successPath = "rootTask => taskSucessdesc1 => taskSucessdesc2";
                 Assert.Contains(successPath, results.SuccessfulPaths);
