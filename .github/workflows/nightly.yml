@@ -14,12 +14,6 @@
 
 name: Nightly Builds (develop)
 on:
-  pull_request:
-    branches:
-        - 'develop'
-  push:
-    branches:
-      - 'develop'
   schedule:
     - cron: '0 7 * * *' # run at 7 AM UTC/12 AM PT
   workflow_dispatch:
