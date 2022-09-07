@@ -68,15 +68,24 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <param name="filter">Filters.</param>
         /// <param name="status">Workflow instance status filter.</param>
         /// <param name="payloadId">PayloadId.</param>
+        /// <param name="disablePagination">Disabled pagination.</param>
         /// <returns>A list of workflow instances.</returns>
         [HttpGet]
-        public async Task<IActionResult> GetListAsync([FromQuery] PaginationFilter filter, [FromQuery] string status = null, [FromQuery] string? payloadId = null)
+        public async Task<IActionResult> GetListAsync([FromQuery] PaginationFilter filter, [FromQuery] string status = null, [FromQuery] string? payloadId = null, [FromQuery] bool disablePagination = false)
         {
             try
             {
+                Status? parsedStatus = status == null ? null : Enum.Parse<Status>(status, true);
+
+                if (disablePagination is true)
+                {
+                    var unpagedData = await _workflowInstanceService.GetAllAsync(null, null, parsedStatus, payloadId);
+
+                    return Ok(unpagedData);
+                }
+
                 var route = Request?.Path.Value ?? string.Empty;
                 var pageSize = filter.PageSize ?? _options.Value.EndpointSettings.DefaultPageSize;
-                Status? parsedStatus = status == null ? null : Enum.Parse<Status>(status, true);
                 var validFilter = new PaginationFilter(filter.PageNumber, pageSize, _options.Value.EndpointSettings.MaxPageSize);
 
                 var pagedData = await _workflowInstanceService.GetAllAsync(
