@@ -154,7 +154,10 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
 
             var jsonString = JsonConvert.SerializeObject(objectLog);
 
-            logger.LogInformation(29, message: jsonString);
+            logger.LogInformation(30, message: jsonString);
         }
+
+        [LoggerMessage(EventId = 31, Level = LogLevel.Warning, Message = "Unable to locate a matching workflow for the given workflow request.")]
+        public static partial void NoMatchingWorkflowFoundForPayload(this ILogger logger);
     }
 }

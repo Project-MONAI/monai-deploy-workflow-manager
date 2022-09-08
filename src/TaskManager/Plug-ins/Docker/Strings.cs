@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.TaskManager
+namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 {
-    public static class PluginStrings
+    internal static class Strings
     {
-        // note not to be confused with the ApplicationId Monai.Deploy.WorkflowManager.TaskManager.Argo
-        public const string Argo = "argo";
-        public const string Docker = "docker";
+        public const string ApplicationId = "Docker";
+        public static readonly string RuntimeNvidia = "nvidia";
 
-        public static readonly List<string> PlugsRequiresPermanentAccoutns = new List<string>() { Argo, Docker };
     }
 }

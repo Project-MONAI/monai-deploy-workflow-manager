@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Ardalis.GuardClauses;
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +32,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 {
     public class DockerPlugin : TaskPluginBase
     {
-        public const string ApplicationId = "Docker";
 
         private readonly TimeSpan _containerTimeout = TimeSpan.FromMinutes(5);
         private readonly DockerClient _dockerClient;
@@ -46,6 +46,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             TaskDispatchEvent taskDispatchEvent)
             : base(taskDispatchEvent)
         {
+            Guard.Against.Null(serviceScopeFactory, nameof(serviceScopeFactory));
+
             _dockerClient = new DockerClientConfiguration(new Uri(Event.TaskPluginArguments[Keys.BaseUrl])).CreateClient();
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _options = options ?? throw new ArgumentNullException(nameof(options));
@@ -55,15 +57,42 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             Initialize();
         }
 
+        private void Initialize()
+        {
+            _logger.Initialized(Event.TaskPluginArguments[Keys.BaseUrl]);
+        }
+        private void ValidateEvent()
+        {
+            if (Event.TaskPluginArguments is null || Event.TaskPluginArguments.Count == 0)
+            {
+                throw new InvalidTaskException($"Required parameters to execute Argo workflow are missing: {string.Join(',', Keys.RequiredParameters)}");
+            }
+
+            foreach (var key in Keys.RequiredParameters)
+            {
+                if (!Event.TaskPluginArguments.ContainsKey(key))
+                {
+                    throw new InvalidTaskException($"Required parameter to execute Argo workflow is missing: {key}");
+                }
+            }
+
+            if (!Uri.IsWellFormedUriString(Event.TaskPluginArguments[Keys.BaseUrl], UriKind.Absolute))
+            {
+                throw new InvalidTaskException($"The value '{Event.TaskPluginArguments[Keys.BaseUrl]}' provided for '{Keys.BaseUrl}' is not a valid URI.");
+            }
+        }
+
+
         public override async Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken = default)
         {
             var inputVolumeMounts = await SetupInputs(cancellationToken);
+            var intermediateVolumeMount = SetupIntermediateVolume();
             var outputVolumeMounts = SetupOutputs();
 
             CreateContainerParameters parameters;
             try
             {
-                parameters = BuildContainerSpecification(inputVolumeMounts, outputVolumeMounts);
+                parameters = BuildContainerSpecification(inputVolumeMounts, intermediateVolumeMount, outputVolumeMounts);
             }
             catch (Exception exception)
             {
@@ -109,52 +138,66 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                             Outputs = Event.Outputs ?? new List<Messaging.Common.Storage>(),
                             TaskId = Event.TaskId,
                             WorkflowInstanceId = Event.WorkflowInstanceId,
-                        }, applicationId: ApplicationId, correlationId: Event.CorrelationId);
+                        }, applicationId: Strings.ApplicationId, correlationId: Event.CorrelationId);
 
                         var messageBrokerPublisherService = _scope.ServiceProvider.GetService<IMessageBrokerPublisherService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerPublisherService));
-                        messageBrokerPublisherService.Publish(_options.Value.Messaging.Topics.TaskCallbackRequest, message);
-
-                        return;
+                        await messageBrokerPublisherService.Publish(_options.Value.Messaging.Topics.TaskCallbackRequest, message.ToMessage());
+                        break;
                     }
                 }
             });
 
-            var status = new ExecutionStatus() { Status = TaskExecutionStatus.Accepted };
-            return status;
+            return new ExecutionStatus() { Status = TaskExecutionStatus.Accepted };
         }
+
 
         public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrEmpty(identity))
-            {
-                throw new ArgumentException($"'{nameof(identity)}' cannot be null or empty.", nameof(identity));
-            }
+            Guard.Against.NullOrWhiteSpace(identity, nameof(identity));
 
-            var response = await _dockerClient.Containers.InspectContainerAsync(identity);
-            if (response == null)
-                throw new InvalidOperationException($"Unable to obtain status returned for container {identity}");
+            try
+            {
+                var response = await _dockerClient.Containers.InspectContainerAsync(identity);
 
-            var status = new ExecutionStatus();
-            if (response.State.Running)
-            {
-                status.Status = TaskExecutionStatus.Accepted;
-            }
-            else if (response.State.OOMKilled)
-            {
-                status.Status = TaskExecutionStatus.Failed;
-                status.Errors = response.State.Error;
-            }
-            else if (response.State.Dead)
-            {
-                status.Status = TaskExecutionStatus.Failed;
-                status.Errors = response.State.Error;
-            }
-            else if (!string.IsNullOrEmpty(response.State.FinishedAt))
-            {
-                status.Status = TaskExecutionStatus.Succeeded;
-            }
+                if (response == null)
+                {
+                    throw new InvalidOperationException($"Unable to obtain status for container {identity}");
+                }
 
-            return status;
+                var status = new ExecutionStatus();
+                if (response.State.Running)
+                {
+                    status.Status = TaskExecutionStatus.Accepted;
+                }
+                else if (response.State.OOMKilled)
+                {
+                    status.Status = TaskExecutionStatus.Failed;
+                    status.Errors = response.State.Error;
+                    status.FailureReason = FailureReason.ExternalServiceError;
+                }
+                else if (response.State.Dead)
+                {
+                    status.Status = TaskExecutionStatus.Failed;
+                    status.Errors = response.State.Error;
+                    status.FailureReason = FailureReason.ExternalServiceError;
+                }
+                else if (!string.IsNullOrEmpty(response.State.FinishedAt))
+                {
+                    status.Status = TaskExecutionStatus.Succeeded;
+                }
+
+                return status;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorGettingStatusFromDocker(identity, ex);
+                return new ExecutionStatus
+                {
+                    Status = TaskExecutionStatus.Failed,
+                    FailureReason = FailureReason.PluginError,
+                    Errors = ex.Message
+                };
+            }
         }
 
         public override async Task HandleTimeout(string identity)
@@ -163,36 +206,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             _logger.TerminatedContainer(identity);
         }
 
-        private void Initialize()
+        private CreateContainerParameters BuildContainerSpecification(IList<ContainerVolumeMount> inputs, ContainerVolumeMount intermediateVolumeMount, IList<ContainerVolumeMount> outputs)
         {
-            _logger.Initialized(Event.TaskPluginArguments[Keys.BaseUrl]);
-        }
-
-        private void ValidateEvent()
-        {
-            if (Event.TaskPluginArguments is null || Event.TaskPluginArguments.Count == 0)
-            {
-                throw new InvalidTaskException($"Required parameters to execute Argo workflow are missing: {string.Join(',', Keys.RequiredParameters)}");
-            }
-
-            foreach (var key in Keys.RequiredParameters)
-            {
-                if (!Event.TaskPluginArguments.ContainsKey(key))
-                {
-                    throw new InvalidTaskException($"Required parameter to execute Argo workflow is missing: {key}");
-                }
-            }
-
-            if (!Uri.IsWellFormedUriString(Event.TaskPluginArguments[Keys.BaseUrl], UriKind.Absolute))
-            {
-                throw new InvalidTaskException($"The value '{Event.TaskPluginArguments[Keys.BaseUrl]}' provided for '{Keys.BaseUrl}' is not a valid URI.");
-            }
-        }
-
-        private CreateContainerParameters BuildContainerSpecification(IList<ContainerVolumeMount> inputs, IList<ContainerVolumeMount> outputs)
-        {
-            var commandString = Event.TaskPluginArguments[Keys.Command];
-            var command = commandString.Split(',');
+            var entrypoint = Event.TaskPluginArguments[Keys.EntryPoint].Split(',');
+            var command = Event.TaskPluginArguments[Keys.Command].Split(',');
 
             var volumeMounts = new List<Mount>();
 
@@ -200,21 +217,44 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             {
                 var mount = new Mount { Type = "bind", ReadOnly = true, Source = input.HostPath, Target = input.ContainerPath };
                 volumeMounts.Add(mount);
+                _logger.DockerInputMapped(input.HostPath, input.ContainerPath);
             }
 
             foreach (var output in outputs)
             {
                 var mount = new Mount { Type = "bind", ReadOnly = false, Source = output.HostPath, Target = output.ContainerPath };
                 volumeMounts.Add(mount);
+                _logger.DockerOutputMapped(output.HostPath, output.ContainerPath);
+            }
+
+            if (intermediateVolumeMount is not null)
+            {
+                volumeMounts.Add(new Mount { Type = "bind", ReadOnly = false, Source = intermediateVolumeMount.HostPath, Target = intermediateVolumeMount.ContainerPath });
+                _logger.DockerIntermediateVolumeMapped(intermediateVolumeMount.HostPath, intermediateVolumeMount.ContainerPath);
+            }
+
+            var envvars = new List<string>();
+
+            foreach (var key in Event.TaskPluginArguments.Keys)
+            {
+                if (key.StartsWith(Keys.EnvironmentVariableKeyPrefix, false, System.Globalization.CultureInfo.InvariantCulture))
+                {
+                    var envVarKey = key.Replace(Keys.EnvironmentVariableKeyPrefix, string.Empty);
+                    envvars.Add($"{envVarKey}={Event.TaskPluginArguments[key]}");
+                    _logger.DockerEnvironmentVariableAdded(envVarKey, Event.TaskPluginArguments[key]);
+                }
             }
 
             var parameters = new CreateContainerParameters()
             {
                 Name = Event.ExecutionId,
+                Env = envvars,
+                Entrypoint = entrypoint,
                 Cmd = command,
                 Image = Event.TaskPluginArguments[Keys.ContainerImage],
                 HostConfig = new HostConfig()
                 {
+                    Runtime = Strings.RuntimeNvidia,
                     Mounts = volumeMounts,
                 }
             };
@@ -224,95 +264,111 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
         private async Task<List<ContainerVolumeMount>> SetupInputs(CancellationToken cancellationToken = default)
         {
+            var volumeMounts = new List<ContainerVolumeMount>();
+
+            if (Event.Inputs.Count == 0)
+            {
+                _logger.NoInputVolumesConfigured();
+                return volumeMounts;
+            }
+
             var storageService = _scope.ServiceProvider.GetRequiredService<IStorageService>();
 
-            // Task Manager Container Path of the Input Directory.
-            var payloadContainerPath = Path.Combine(Event.TaskPluginArguments[Keys.TemporaryStorageContainerPath], Event.ExecutionId, "inputs");
-            Directory.CreateDirectory(payloadContainerPath);
-
+            // Container Path of the Input Directory.
+            var containerPath = Path.Combine(Event.TaskPluginArguments[Keys.TemporaryStorageContainerPath], Event.ExecutionId, "inputs");
             // Host Path of the Input Directory.
             var hostPath = Path.Combine(Event.TaskPluginArguments[Keys.TemporaryStorageHostPath], Event.ExecutionId, "inputs");
-            Directory.CreateDirectory(hostPath);
 
-            var volumeMounts = new List<ContainerVolumeMount>();
 
             foreach (var input in Event.Inputs)
             {
-                var credentials = new Amazon.SecurityToken.Model.Credentials()
+                var objects = await storageService.ListObjectsAsync(input.Bucket, input.RelativeRootPath, true, cancellationToken);
+                if (objects.Count == 0)
                 {
-                    AccessKeyId = input.Credentials?.AccessToken,
-                    SecretAccessKey = input.Credentials?.AccessKey,
-                    SessionToken = input.Credentials?.SessionToken,
-                };
+                    _logger.NoFilesFoundIn(input.Bucket, input.RelativeRootPath);
+                    continue;
+                }
 
-                var objects = await storageService.ListObjectsWithCredentialsAsync(input.Bucket, credentials, input.RelativeRootPath, true, cancellationToken);
-                var id = Guid.NewGuid();
+                var inputDirName = Guid.NewGuid().ToString();
 
                 // Host Path of the Directory for this Input File.
                 // <host-path>/id/
-                var inputHostPath = Path.Combine(hostPath, id.ToString());
-                Directory.CreateDirectory(inputHostPath);
+                var inputHostDirRoot = Path.Combine(hostPath, inputDirName);
+                var inputContainerDirRoot = Path.Combine(containerPath, inputDirName);
 
                 // eg: /monai/input
-                var volumeMount = new ContainerVolumeMount(input.Name, inputHostPath);
+                var volumeMount = new ContainerVolumeMount(input.Name, inputHostDirRoot);
                 volumeMounts.Add(volumeMount);
 
                 // For each file, download from bucket and store in Task Manager Container.
                 foreach (var obj in objects)
                 {
                     // Task Manager Container Path of the Input File.
-                    var inputContainerPath = Path.Combine(payloadContainerPath, id.ToString(), obj.Filename.Replace(input.RelativeRootPath, ""));
+                    var filePath = Path.Combine(inputContainerDirRoot, obj.FilePath.Replace(input.RelativeRootPath, "").TrimStart('/'));
 
                     // Task Manager Container Path of the Directory for this Input File.
-                    var parentPath = Directory.GetParent(inputContainerPath).Parent.FullName;
-                    Directory.CreateDirectory(parentPath);
+                    var fileDirectory = Path.GetDirectoryName(filePath);
+                    Directory.CreateDirectory(fileDirectory);
 
-                    var stream = await storageService.GetObjectWithCredentialsAsync(input.Bucket, obj.Filename, credentials, cancellationToken);
-                    var streamWriter = new StreamWriter(inputContainerPath);
-                    var bufferSize = 1 * 1024 * 1024;
-                    byte[] buffer = new byte[bufferSize];
-
-                    while (stream.Read(buffer, 0, bufferSize) != 0)
-                    {
-                        streamWriter.Write(buffer);
-                    }
+                    _logger.DownloadingArtifactFromStorageService(obj.Filename, filePath);
+                    using var stream = await storageService.GetObjectAsync(input.Bucket, obj.FilePath, cancellationToken) as MemoryStream;
+                    using var fileStream = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write);
+                    stream!.WriteTo(fileStream);
                 }
             }
 
             return volumeMounts;
         }
 
+        private ContainerVolumeMount SetupIntermediateVolume()
+        {
+            if (Event.TaskPluginArguments.ContainsKey(Keys.WorkingDirectory))
+            {
+                var containerPath = Path.Combine(Event.TaskPluginArguments[Keys.TemporaryStorageContainerPath], Event.ExecutionId, "temp");
+                var hostPath = Path.Combine(Event.TaskPluginArguments[Keys.TemporaryStorageHostPath], Event.ExecutionId, "temp");
+
+                Directory.CreateDirectory(containerPath);
+
+                return new ContainerVolumeMount(Event.TaskPluginArguments[Keys.WorkingDirectory], hostPath);
+            }
+
+            return default!;
+        }
+
         private List<ContainerVolumeMount> SetupOutputs()
         {
-            // Task Manager Container Path of the Output Directory.
-            var payloadContainerPath = Path.Combine(Event.TaskPluginArguments[Keys.TemporaryStorageContainerPath], Event.ExecutionId, "outputs");
-            Directory.CreateDirectory(payloadContainerPath);
+            var volumeMounts = new List<ContainerVolumeMount>();
+
+            if (Event.Outputs.Count == 0)
+            {
+                _logger.NoOutputVolumesConfigured();
+                return volumeMounts;
+            }
+
+
+            // Container Path of the Output Directory.
+            var containerPath = Path.Combine(Event.TaskPluginArguments[Keys.TemporaryStorageContainerPath], Event.ExecutionId, "outputs");
 
             // Host Path of the Output Directory.
             var hostPath = Path.Combine(Event.TaskPluginArguments[Keys.TemporaryStorageHostPath], Event.ExecutionId, "outputs");
-            Directory.CreateDirectory(hostPath);
 
-            var volumeMounts = new List<ContainerVolumeMount>();
-
-            foreach (var outputs in Event.Outputs)
+            foreach (var output in Event.Outputs)
             {
-                var id = Guid.NewGuid();
+                var outputDirName = Guid.NewGuid();
 
-                // Host Path of the Directory for this Output.
-                // <host-path>/id/
-                var inputHostPath = Path.Combine(hostPath, id.ToString());
-                Directory.CreateDirectory(inputHostPath);
+                var outputHostPath = Path.Combine(hostPath, outputDirName.ToString());
 
-                // eg: /monai/output
-                var volumeMount = new ContainerVolumeMount(outputs.Name, inputHostPath);
-                volumeMounts.Add(volumeMount);
+                var outputContainerPath = Path.Combine(containerPath, outputDirName.ToString());
+                Directory.CreateDirectory(outputContainerPath);
+
+                volumeMounts.Add(new ContainerVolumeMount(output.Name, outputHostPath));
             }
 
             return volumeMounts;
         }
     }
 
-    public struct ContainerVolumeMount
+    public class ContainerVolumeMount
     {
         public ContainerVolumeMount(string containerPath, string hostPath)
         {

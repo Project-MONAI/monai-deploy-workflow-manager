@@ -37,5 +37,33 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker.Logging
 
         [LoggerMessage(EventId = 1005, Level = LogLevel.Information, Message = "Docker container terminated: container Id={containerId}.")]
         public static partial void TerminatedContainer(this ILogger logger, string containerId);
+
+        [LoggerMessage(EventId = 1006, Level = LogLevel.Information, Message = "Input volume mapping host=={hostPath}, container={containerPath}.")]
+        public static partial void DockerInputMapped(this ILogger logger, string hostPath, string containerPath);
+
+        [LoggerMessage(EventId = 1007, Level = LogLevel.Information, Message = "Output volume mapping host=={hostPath}, container={containerPath}.")]
+        public static partial void DockerOutputMapped(this ILogger logger, string hostPath, string containerPath);
+
+        [LoggerMessage(EventId = 1008, Level = LogLevel.Information, Message = "Environment variabled added {key}={value}.")]
+        public static partial void DockerEnvironmentVariableAdded(this ILogger logger, string key, string value);
+
+        [LoggerMessage(EventId = 1009, Level = LogLevel.Error, Message = "Error retreiving status from container {identity}.")]
+        public static partial void ErrorGettingStatusFromDocker(this ILogger logger, string identity, Exception ex);
+
+        [LoggerMessage(EventId = 1010, Level = LogLevel.Debug, Message = "Downloading artifact {source} to {target}.")]
+        public static partial void DownloadingArtifactFromStorageService(this ILogger logger, string source, string target);
+
+        [LoggerMessage(EventId = 1011, Level = LogLevel.Warning, Message = "No input volumes configured for the task.")]
+        public static partial void NoInputVolumesConfigured(this ILogger logger);
+
+        [LoggerMessage(EventId = 1012, Level = LogLevel.Warning, Message = "No files found in bucket {bucket} - {path}.")]
+        public static partial void NoFilesFoundIn(this ILogger logger, string bucket, string path);
+
+        [LoggerMessage(EventId = 1013, Level = LogLevel.Warning, Message = "No output volumes configured for the task.")]
+        public static partial void NoOutputVolumesConfigured(this ILogger logger);
+
+        [LoggerMessage(EventId = 1008, Level = LogLevel.Information, Message = "Intermediate volume mapping host=={hostPath}, container={containerPath}.")]
+        public static partial void DockerIntermediateVolumeMapped(this ILogger logger, string hostPath, string containerPath);
+        
     }
 }

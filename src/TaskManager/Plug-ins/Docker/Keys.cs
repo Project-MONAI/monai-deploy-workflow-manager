@@ -29,39 +29,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
         public static readonly string ContainerImage = "container_image";
 
         /// <summary>
-        /// Key for the image of the container to deploy the MAP.
+        /// Key for the entrypoint to the container.
+        /// </summary>
+        public static readonly string EntryPoint = "entrypoint";
+
+        /// <summary>
+        /// Key for the command to execute by the container.
         /// </summary>
         public static readonly string Command = "command";
-
-        /// <summary>
-        /// Key for setting the message broker's endpoint.
-        /// </summary>
-        public static readonly string MessagingEnddpoint = "messaging_endpoint";
-
-        /// <summary>
-        /// Key for setting the user name to access the message broker.
-        /// </summary>
-        public static readonly string MessagingUsername = "messaging_username";
-
-        /// <summary>
-        /// Key for setting the password to access the message broker.
-        /// </summary>
-        public static readonly string MessagingPassword = "messaging_password";
-
-        /// <summary>
-        /// Key for setting the topic of the completion event.
-        /// </summary>
-        public static readonly string MessagingTopic = "messaging_topic";
-
-        /// <summary>
-        /// Key for setting the exchange of the message broker.
-        /// </summary>
-        public static readonly string MessagingExchange = "messaging_exchange";
-
-        /// <summary>
-        /// Key for setting the vhost of the message broker.
-        /// </summary>
-        public static readonly string MessagingVhost = "messaging_vhost";
 
         /// <summary>
         /// Key for priority classnames on task plugin arguments side
@@ -74,19 +49,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
         public static readonly string TemporaryStorageHostPath = "temp_storage_host_path";
 
         /// <summary>
+        /// Prefix for envrionment variables.
+        /// </summary>
+        public static readonly string EnvironmentVariableKeyPrefix = "env_";
+
+        /// <summary>
+        /// Key to the intermediate volume map path.
+        /// </summary>
+        public static readonly string WorkingDirectory = "env_MONAI_WORKDIR";
+
+        /// <summary>
         /// Required arguments to run the Docker workflow.
         /// </summary>
         public static readonly IReadOnlyList<string> RequiredParameters =
             new List<string> {
                 BaseUrl,
+                EntryPoint,
                 Command,
                 ContainerImage,
-                MessagingEnddpoint,
-                MessagingUsername,
-                MessagingPassword,
-                MessagingTopic,
-                MessagingExchange,
-                MessagingVhost,
                 TemporaryStorageContainerPath,
                 TemporaryStorageHostPath
             };

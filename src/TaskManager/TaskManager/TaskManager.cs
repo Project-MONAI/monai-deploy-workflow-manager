@@ -341,9 +341,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             try
             {
-                if (string.Equals(message.Body.TaskPluginType,
-                                  PluginStrings.Argo,
-                                  StringComparison.InvariantCultureIgnoreCase))
+                if (PluginStrings.PlugsRequiresPermanentAccoutns.Contains(
+                        message.Body.TaskPluginType,
+                        StringComparer.InvariantCultureIgnoreCase))
                 {
                     eventInfo.AddUserAccount(await AddCredentialsToPlugin(message).ConfigureAwait(false));
                 }
