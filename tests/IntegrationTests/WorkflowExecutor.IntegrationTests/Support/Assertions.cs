@@ -283,6 +283,13 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             payloadCollection.Timestamp.Should().BeCloseTo(DateTime.UtcNow, precision: TimeSpan.FromMinutes(1));
             payloadCollection.PatientDetails.Should().BeEquivalentTo(patientDetails);
         }
+        public void AssertPayloadWorkflowInstanceId(Payload payloadCollection, List<WorkflowInstance> workflowInstances)
+        {
+            foreach (var workflowInstance in workflowInstances)
+            {
+                payloadCollection.WorkflowInstanceIds.Should().Contain(workflowInstance.Id.ToString());
+            }
+        }
 
         public void AssertWorkflowIstanceMatchesExpectedTaskStatusUpdate(WorkflowInstance updatedWorkflowInstance, TaskExecutionStatus taskExecutionStatus)
         {

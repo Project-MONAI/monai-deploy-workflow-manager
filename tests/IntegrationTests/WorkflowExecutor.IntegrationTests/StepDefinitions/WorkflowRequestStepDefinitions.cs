@@ -70,6 +70,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             }
         }
 
+        [Given(@"I publish a Workflow Request Message (.*) with artifacts (.*) in minio")]
         [When(@"I publish a Workflow Request Message (.*) with artifacts (.*) in minio")]
         public async Task WhenIPublishAWorkflowRequestMessageWithObjects(string name, string folderName)
         {
