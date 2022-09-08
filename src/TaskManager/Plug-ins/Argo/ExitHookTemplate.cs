@@ -39,7 +39,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             _taskDispatchEvent = taskDispatchEvent ?? throw new ArgumentNullException(nameof(taskDispatchEvent));
             _options = options ?? throw new ArgumentNullException(nameof(options));
-            _messagingEndpoint = options.Messaging.PublisherSettings[Keys.MessagingEndpoint];
+
+            _messagingEndpoint = options.Messaging.ArgoCallback.ArgoCallbackOverrideEnabled ?
+                options.Messaging.ArgoCallback.ArgoRabbitOverrideEndpoint :
+                options.Messaging.PublisherSettings[Keys.MessagingEndpoint];
+
             _messagingUsername = options.Messaging.PublisherSettings[Keys.MessagingUsername];
             _messagingPassword = options.Messaging.PublisherSettings[Keys.MessagingPassword];
             _messagingTopic = options.Messaging.Topics.TaskCallbackRequest;
