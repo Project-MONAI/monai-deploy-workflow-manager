@@ -17,6 +17,10 @@
 using BoDi;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using TechTalk.SpecFlow.Infrastructure;
+using Polly;
+using Polly.Retry;
+using NUnit.Framework;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
@@ -29,6 +33,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private Assertions Assertions { get; set; }
         private DataHelper DataHelper { get; set; }
         private readonly ISpecFlowOutputHelper _outputHelper;
+        private RetryPolicy RetryPolicy { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public PayloadCollectionStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
@@ -37,6 +42,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             _outputHelper = outputHelper;
             Assertions = new Assertions(objectContainer);
             DataHelper = objectContainer.Resolve<DataHelper>();
+            RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 5, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
         [Then(@"A payload collection is created with patient details (.*)")]
@@ -63,6 +69,40 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                     }
                 }
             }
+        }
+        [Then(@"A payload collection is created with (.*) workflow instance id")]
+        public void ThenAPayloadCollectionIsCreatedWithWorkflowInstanceId(int count)
+        {
+            RetryPolicy.Execute(() =>
+            {
+                _outputHelper.WriteLine($"Retrieving payload collection using the payloadid={DataHelper.WorkflowRequestMessage.PayloadId}");
+                var payloadCollections = DataHelper.GetPayloadCollections(DataHelper.WorkflowRequestMessage.PayloadId.ToString());
+                _outputHelper.WriteLine($"Retrieved payload collection");
+
+                if (payloadCollections != null)
+                {
+                    foreach (var payloadCollection in payloadCollections)
+                    {
+
+                        var workflowInstances = DataHelper.GetWorkflowInstances(count, DataHelper.WorkflowRequestMessage.PayloadId.ToString());
+                        if (count != 0)
+                        {
+                            if (workflowInstances != null)
+                            {
+                                Assertions.AssertPayloadWorkflowInstanceId(payloadCollection, workflowInstances);
+                            }
+                            else
+                            {
+                                throw new Exception($"Workflow Instance not found");
+                            }
+                        }
+                        else
+                        {
+                            payloadCollection.WorkflowInstanceIds.Should().BeEmpty();
+                        }
+                    }
+                }
+            });
         }
     }
 }

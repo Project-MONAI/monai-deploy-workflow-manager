@@ -22,6 +22,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -33,47 +34,58 @@ using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Test.Controllers
 {
-    public class PayloadControllerTests
+    public class WorkflowsInstanceControllerTests
     {
-        private PayloadsController PayloadController { get; set; }
+        private WorkflowInstanceController WorkflowInstanceController { get; set; }
 
-        private readonly Mock<IPayloadService> _payloadService;
-        private readonly Mock<ILogger<PayloadsController>> _logger;
+        private readonly Mock<IWorkflowInstanceService> _workflowInstanceService;
+        private readonly Mock<ILogger<WorkflowInstanceController>> _logger;
         private readonly Mock<IUriService> _uriService;
         private readonly IOptions<WorkflowManagerOptions> _options;
 
-        public PayloadControllerTests()
+        public WorkflowsInstanceControllerTests()
         {
             _options = Options.Create(new WorkflowManagerOptions());
-            _payloadService = new Mock<IPayloadService>();
-            _logger = new Mock<ILogger<PayloadsController>>();
+            _workflowInstanceService = new Mock<IWorkflowInstanceService>();
+            _logger = new Mock<ILogger<WorkflowInstanceController>>();
             _uriService = new Mock<IUriService>();
 
-            PayloadController = new PayloadsController(_payloadService.Object, _logger.Object, _uriService.Object, _options);
+            WorkflowInstanceController = new WorkflowInstanceController(_workflowInstanceService.Object, _logger.Object, _uriService.Object, _options);
         }
 
         [Fact]
-        public async Task GetListAsync_PayloadsExist_ReturnsList()
+        public async Task GetListAsync_WorkflowInstancesExist_ReturnsList()
         {
-            var payloads = new List<Payload>
+            var workflowsInstances = new List<WorkflowInstance>
             {
-                new Payload
+                new WorkflowInstance
                 {
                     Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
                     PayloadId = Guid.NewGuid().ToString(),
+                    Status = Status.Created,
+                    BucketId = "bucket",
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = Guid.NewGuid().ToString(),
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
                 }
             };
 
-            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(payloads);
-            _payloadService.Setup(w => w.CountAsync()).ReturnsAsync(payloads.Count);
+            _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<Status?>(), It.IsAny<string>())).ReturnsAsync(() => workflowsInstances);
+            _workflowInstanceService.Setup(w => w.CountAsync()).ReturnsAsync(workflowsInstances.Count);
             _uriService.Setup(s => s.GetPageUriString(It.IsAny<Filter.PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
-            var result = await PayloadController.GetAllAsync(new Filter.PaginationFilter());
+            var result = await WorkflowInstanceController.GetListAsync(new Filter.PaginationFilter());
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
 
-            var responseValue = (PagedResponse<List<Payload>>)objectResult.Value;
-            responseValue.Data.Should().BeEquivalentTo(payloads);
+            var responseValue = (PagedResponse<List<WorkflowInstance>>)objectResult.Value;
+            responseValue.Data.Should().BeEquivalentTo(workflowsInstances);
             responseValue.FirstPage.Should().Be("unitTest");
             responseValue.LastPage.Should().Be("unitTest");
             responseValue.PageNumber.Should().Be(1);
@@ -87,41 +99,85 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Fact]
+        public async Task GetListAsync_PaginationDisabled_ReturnsList()
+        {
+            var workflowsInstances = new List<WorkflowInstance>
+            {
+                new WorkflowInstance
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Status = Status.Created,
+                    BucketId = "bucket",
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = Guid.NewGuid().ToString(),
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+                }
+            };
+
+            _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<Status?>(), It.IsAny<string>())).ReturnsAsync(() => workflowsInstances);
+
+            var result = await WorkflowInstanceController.GetListAsync(new Filter.PaginationFilter(), null, null, true);
+
+            var objectResult = Assert.IsType<OkObjectResult>(result);
+
+            var responseValue = (List<WorkflowInstance>)objectResult.Value;
+            responseValue.Should().BeEquivalentTo(workflowsInstances);
+        }
+
+        [Fact]
         public async Task GetListAsync_ServiceException_ReturnProblem()
         {
-            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
+            _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<Status>(), It.IsAny<string>())).ThrowsAsync(new Exception());
+            _workflowInstanceService.Setup(w => w.CountAsync()).ReturnsAsync(0);
 
-            var result = await PayloadController.GetAllAsync(new Filter.PaginationFilter());
+            var result = await WorkflowInstanceController.GetListAsync(new Filter.PaginationFilter());
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
         }
 
         [Fact]
-        public async Task GetByIdAsync_PayloadExists_ReturnsOk()
+        public async Task GetByIdAsync_WorkflowInstancesExist_ReturnsOk()
         {
-            var payloadId = Guid.NewGuid().ToString();
-            var payload = new Payload
+            var workflowsInstance = new WorkflowInstance
             {
                 Id = Guid.NewGuid().ToString(),
-                PayloadId = payloadId,
+                WorkflowId = Guid.NewGuid().ToString(),
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = Guid.NewGuid().ToString(),
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
             };
 
-            _payloadService.Setup(w => w.GetByIdAsync(payloadId)).ReturnsAsync(payload);
+            _workflowInstanceService.Setup(w => w.GetByIdAsync(workflowsInstance.WorkflowId)).ReturnsAsync(workflowsInstance);
 
-            var result = await PayloadController.GetAsync(payloadId);
+            var result = await WorkflowInstanceController.GetByIdAsync(workflowsInstance.WorkflowId);
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
 
-            objectResult.Value.Should().BeEquivalentTo(payload);
+            objectResult.Value.Should().BeEquivalentTo(workflowsInstance);
         }
 
         [Fact]
-        public async Task GetByIdAsync_PayloadDoesNotExist_ReturnsNotFound()
+        public async Task GetByIdAsync_WorkflowInstanceDoesNotExist_ReturnsNotFound()
         {
-            var payloadId = Guid.NewGuid().ToString();
+            var workflowId = Guid.NewGuid().ToString();
 
-            var result = await PayloadController.GetAsync(payloadId);
+            var result = await WorkflowInstanceController.GetByIdAsync(workflowId);
 
             var objectResult = Assert.IsType<NotFoundObjectResult>(result);
 
@@ -131,9 +187,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         [Fact]
         public async Task GetByIdAsync_InvalidId_ReturnsBadRequest()
         {
-            var payloadId = "2";
+            var workflowId = "2";
 
-            var result = await PayloadController.GetAsync(payloadId);
+            var result = await WorkflowInstanceController.GetByIdAsync(workflowId);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
 
@@ -143,10 +199,10 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         [Fact]
         public async Task GetByIdAsync_ServiceException_ReturnProblem()
         {
-            var payloadId = Guid.NewGuid().ToString();
-            _payloadService.Setup(w => w.GetByIdAsync(payloadId)).ThrowsAsync(new Exception());
+            var workflowId = Guid.NewGuid().ToString();
+            _workflowInstanceService.Setup(w => w.GetByIdAsync(workflowId)).ThrowsAsync(new Exception());
 
-            var result = await PayloadController.GetAsync(payloadId);
+            var result = await WorkflowInstanceController.GetByIdAsync(workflowId);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);

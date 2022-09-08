@@ -116,7 +116,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 processed &= await _workflowInstanceRepository.CreateAsync(workflowInstances);
 
-                var workflowInstanceIds = workflowInstances.Select(workflowInstance => workflowInstance.WorkflowId);
+                var workflowInstanceIds = workflowInstances.Select(workflowInstance => workflowInstance.Id);
                 await _payloadService.UpdateWorkflowInstanceIdsAsync(payload.Id, workflowInstanceIds).ConfigureAwait(false);
             }
 
