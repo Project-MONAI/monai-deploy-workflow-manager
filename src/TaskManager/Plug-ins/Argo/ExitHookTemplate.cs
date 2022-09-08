@@ -16,6 +16,7 @@
 
 using Argo;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
 using Newtonsoft.Json;
 
@@ -24,6 +25,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
     internal sealed class ExitHookTemplate
     {
         private readonly TaskDispatchEvent _taskDispatchEvent;
+        private readonly WorkflowManagerOptions _options;
         private readonly string _messagingEndpoint;
         private readonly string _messagingUsername;
         private readonly string _messagingPassword;
@@ -33,15 +35,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         private readonly string _messageFileName;
         private readonly string _messagingVhost;
 
-        public ExitHookTemplate(TaskDispatchEvent taskDispatchEvent)
+        public ExitHookTemplate(WorkflowManagerOptions options, TaskDispatchEvent taskDispatchEvent)
         {
             _taskDispatchEvent = taskDispatchEvent ?? throw new ArgumentNullException(nameof(taskDispatchEvent));
-            _messagingEndpoint = taskDispatchEvent.TaskPluginArguments[Keys.MessagingEnddpoint];
-            _messagingUsername = taskDispatchEvent.TaskPluginArguments[Keys.MessagingUsername];
-            _messagingPassword = taskDispatchEvent.TaskPluginArguments[Keys.MessagingPassword];
-            _messagingTopic = taskDispatchEvent.TaskPluginArguments[Keys.MessagingTopic];
-            _messagingExchange = taskDispatchEvent.TaskPluginArguments[Keys.MessagingExchange];
-            _messagingVhost = taskDispatchEvent.TaskPluginArguments[Keys.MessagingVhost];
+            _options = options ?? throw new ArgumentNullException(nameof(options));
+
+            _messagingEndpoint = options.Messaging.ArgoCallback.ArgoCallbackOverrideEnabled ?
+                options.Messaging.ArgoCallback.ArgoRabbitOverrideEndpoint :
+                options.Messaging.PublisherSettings[Keys.MessagingEndpoint];
+
+            _messagingUsername = options.Messaging.PublisherSettings[Keys.MessagingUsername];
+            _messagingPassword = options.Messaging.PublisherSettings[Keys.MessagingPassword];
+            _messagingTopic = options.Messaging.Topics.TaskCallbackRequest;
+            _messagingExchange = options.Messaging.PublisherSettings[Keys.MessagingExchange];
+            _messagingVhost = options.Messaging.PublisherSettings[Keys.MessagingVhost];
             _messageId = Guid.NewGuid();
             _messageFileName = $"{_messageId}.json";
         }
