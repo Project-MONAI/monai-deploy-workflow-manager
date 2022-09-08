@@ -63,6 +63,34 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowObjectTestData()
             {
+                Name = "Basic_Workflow_2",
+                Workflow = new Workflow()
+                {
+                    Name = "Basic update",
+                    Description = "Basic workflow update",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "basic_id_with-legal-chars",
+                            Type = "Basic_task",
+                            Description = "Basic Workflow update Task update",
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {}
+                            }
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
                 Name = "Invalid_Workflow_Name_Length",
                 Workflow = new Workflow()
                 {

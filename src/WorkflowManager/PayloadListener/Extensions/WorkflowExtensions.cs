@@ -87,21 +87,9 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             var valid = true;
 
             valid &= ValidationExtensions.IsAeTitleValid(informaticsGateway.GetType().Name, informaticsGateway.AeTitle, validationErrors);
-            valid &= IsDataOriginsValid(informaticsGateway.GetType().Name, informaticsGateway.DataOrigins, validationErrors);
             valid &= IsExportDestinationsValid(informaticsGateway.GetType().Name, informaticsGateway.ExportDestinations, validationErrors);
 
             return valid;
-        }
-
-        public static bool IsDataOriginsValid(string source, string[] dataOrigins, IList<string> validationErrors = null)
-        {
-            Guard.Against.NullOrWhiteSpace(source, nameof(source));
-
-            if (dataOrigins?.Length > 0) return true;
-
-            validationErrors?.Add($"'{dataOrigins}' is not a valid Informatics Gateway - {nameof(dataOrigins)} (source: {source}).");
-
-            return false;
         }
 
         public static bool IsExportDestinationsValid(string source, string[] exportDestinations, IList<string> validationErrors = null)
@@ -128,7 +116,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             valid &= IsTaskIdValid(taskObject.Id, taskObject.Id, validationErrors);
             valid &= IsTaskDescriptionValid(taskObject.Id, taskObject.Description, validationErrors);
             valid &= IsTaskTypeValid(taskObject.Id, taskObject.Type, validationErrors);
-            valid &= IsArgsValid(taskObject.Id, taskObject.Args, validationErrors);
 
             return valid;
         }
@@ -162,18 +149,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             if (!string.IsNullOrWhiteSpace(taskType) && taskType.Length <= TaskTypeLengthLimit) return true;
 
             validationErrors?.Add($"'{taskType}' is not a valid {nameof(taskType)} (source: {source}).");
-
-            return false;
-        }
-
-        public static bool IsArgsValid(string source, Dictionary<string, string> args, IList<string> validationErrors = null)
-        {
-            Guard.Against.NullOrWhiteSpace(source, nameof(source));
-
-            if (!args.IsNullOrEmpty()) return true;
-
-            var jsontext = JsonConvert.SerializeObject(args);
-            validationErrors?.Add($"'{jsontext}' is not a valid {nameof(args)} (source: {source}).");
 
             return false;
         }
