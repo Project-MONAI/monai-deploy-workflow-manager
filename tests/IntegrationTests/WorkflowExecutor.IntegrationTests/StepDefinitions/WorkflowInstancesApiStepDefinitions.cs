@@ -19,22 +19,26 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.Wrappers;
 using Newtonsoft.Json;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class WorkflowInstancesApiStepDefinitions
     {
-        public WorkflowInstancesApiStepDefinitions(ObjectContainer objectContainer)
+        public WorkflowInstancesApiStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             DataHelper = objectContainer.Resolve<DataHelper>();
             ApiHelper = objectContainer.Resolve<ApiHelper>();
             Assertions = new Assertions(objectContainer);
+            _outputHelper = outputHelper;
         }
 
         private ApiHelper ApiHelper { get; }
         private Assertions Assertions { get; }
         private DataHelper DataHelper { get; }
+        private readonly ISpecFlowOutputHelper _outputHelper;
+
 
         [Then(@"I can see expected workflow instances are returned")]
         public void ThenICanSeeExpectedWorkflowInstancesAreReturned()
@@ -80,6 +84,28 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
             deserializedResult.Should().NotBeNull();
             deserializedResult?.Data.ForEach(func);
+        }
+
+        [Then(@"I can see (.*) triggered workflow instances from payload id (.*)")]
+        public void ThenICanSeeTriggeredWorkflowInstancesFromPayloadId(int count, string payloadId)
+        {
+            _outputHelper.WriteLine($"Retrieving {count} workflow instance/s using the payloadid={payloadId}");
+            var workflowInstances = DataHelper.GetWorkflowInstances(count, payloadId);
+            _outputHelper.WriteLine($"Retrieved {count} workflow instance/s");
+
+            if (workflowInstances != null)
+            {
+                // Serialize the response and compare this with the workflow instances objects. Too complicated and potentially bad to do contains
+                foreach (var workflowInstance in workflowInstances)
+                {
+                    ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Contain(workflowInstance.ToString());
+                }
+            }
+            else
+            {
+                throw new Exception($"Workflow Instance not found for payloadId {payloadId}");
+            }
+
         }
     }
 }
