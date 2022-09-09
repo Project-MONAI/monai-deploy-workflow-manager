@@ -138,6 +138,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             string containerId;
             try
             {
+                var imageCreateParameters = new ImagesCreateParameters()
+                {
+                    FromImage = Event.TaskPluginArguments[Keys.ContainerImage],
+                };
+
+                // Pull image.
+                await _dockerClient.Images.CreateImageAsync(imageCreateParameters, new AuthConfig(), new Progress<JSONMessage>(), cancellationToken);
+
                 var response = await _dockerClient.Containers.CreateContainerAsync(parameters);
                 containerId = response.ID;
                 _logger.CreatedContainer(containerId);
@@ -262,7 +270,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                 {
                     throw new InvalidOperationException($"Unable to obtain status for container {identity}");
                 }
-
 
                 var stats = GetExecutuionStats(response);
                 if (!string.IsNullOrEmpty(response.State.FinishedAt))
