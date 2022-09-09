@@ -117,9 +117,8 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
             var workflows = new List<WorkflowRevision>();
 
-
             workflows = await _workflowCollection
-                .Find(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle)
+                .Find(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle && x.Deleted == null)
                 .Sort(Builders<WorkflowRevision>.Sort.Descending("Revision"))
                 .ToListAsync();
 #pragma warning restore CS8602 // Dereference of a possibly null reference.

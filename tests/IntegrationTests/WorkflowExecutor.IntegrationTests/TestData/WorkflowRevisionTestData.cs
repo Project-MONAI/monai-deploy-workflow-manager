@@ -2463,6 +2463,102 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Basic_Workflow_1_Deleted",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = "66678af8-e8ac-4b77-a431-9d1a289d6c3b",
+                    WorkflowId = "c86a437d-d026-4bdf-b1df-c7a6372b89e3",
+                    Revision = 1,
+                    Deleted = new DateTime(2000, 01, 01),
+                    Workflow = new Workflow()
+                    {
+                        Name = "Basic workflow",
+                        Description = "Basic workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Basic_task",
+                                Description = "Basic Workflow 1 Task 1",
+                                Args = new Dictionary<string, string> { { "test", "test" } },
+                                Artifacts = new ArtifactMap(),
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Static_AE",
+                            DataOrigins = new string[]{"test"},
+                            ExportDestinations = new string[]{"test"}
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Basic_Workflow_Multiple_Revisions_1_Deleted",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = "85c48175-f4db-4d3c-bf3a-14f736edaccd",
+                    Revision = 1,
+                    Deleted = new DateTime(2000, 01, 01),
+                    Workflow = new Workflow()
+                    {
+                        Name = "Basic workflow multiple revisions 1",
+                        Description = "Basic workflow multiple revisions 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Basic_Workflow_Multiple_Revisions_1",
+                                Description = "Basic_Workflow_Multiple_Revisions_1",
+                                Artifacts = new ArtifactMap(),
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Multi_Revision"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Basic_Workflow_Multiple_Revisions_2_Deleted",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = "85c48175-f4db-4d3c-bf3a-14f736edaccd",
+                    Revision = 2,
+                    Deleted = new DateTime(2000, 01, 01),
+                    Workflow = new Workflow()
+                    {
+                        Name = "Basic workflow multiple revisions 2",
+                        Description = "Basic workflow multiple revisions 2",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Basic_Workflow_Multiple_Revisions_2",
+                                Description = "Basic_Workflow_Multiple_Revisions_2",
+                                Artifacts = new ArtifactMap(),
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Multi_Revision"
+                        }
+                    }
+                }
+            },
         };
     }
 }
