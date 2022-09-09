@@ -39,6 +39,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
         public static readonly string Command = "command";
 
         /// <summary>
+        /// Key for task timeout value.
+        /// </summary>
+        public static readonly string TaskTimeoutMinutes = "task_timeout_minutes";
+
+        /// <summary>
         /// Key for priority classnames on task plugin arguments side
         /// </summary>
         public static readonly string TemporaryStorageContainerPath = "temp_storage_container_path";

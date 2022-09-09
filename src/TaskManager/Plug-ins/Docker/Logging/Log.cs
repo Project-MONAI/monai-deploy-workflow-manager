@@ -20,8 +20,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker.Logging
 {
     public static partial class Log
     {
-        [LoggerMessage(EventId = 1000, Level = LogLevel.Information, Message = "Docker plugin initialized: base URL={baseUrl}.")]
-        public static partial void Initialized(this ILogger logger, string baseUrl);
+        [LoggerMessage(EventId = 1000, Level = LogLevel.Information, Message = "Docker plugin initialized: base URL={baseUrl}, timeout={timeoutMinutes}.")]
+        public static partial void Initialized(this ILogger logger, string baseUrl, int timeoutMinutes);
 
         [LoggerMessage(EventId = 1001, Level = LogLevel.Error, Message = "Error generating Container Specification.")]
         public static partial void ErrorGeneratingContainerSpecification(this ILogger logger, Exception ex);
@@ -62,8 +62,28 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker.Logging
         [LoggerMessage(EventId = 1013, Level = LogLevel.Warning, Message = "No output volumes configured for the task.")]
         public static partial void NoOutputVolumesConfigured(this ILogger logger);
 
-        [LoggerMessage(EventId = 1008, Level = LogLevel.Information, Message = "Intermediate volume mapping host=={hostPath}, container={containerPath}.")]
+        [LoggerMessage(EventId = 10014, Level = LogLevel.Information, Message = "Intermediate volume mapping host=={hostPath}, container={containerPath}.")]
         public static partial void DockerIntermediateVolumeMapped(this ILogger logger, string hostPath, string containerPath);
-        
+
+        [LoggerMessage(EventId = 1015, Level = LogLevel.Error, Message = "Error generating volume mounts.")]
+        public static partial void ErrorGeneratingVolumeMounts(this ILogger logger, Exception exception);
+
+        [LoggerMessage(EventId = 1016, Level = LogLevel.Error, Message = "Error uploading file {file}.")]
+        public static partial void ErrorUploadingFile(this ILogger logger, string file, Exception exception);
+
+        [LoggerMessage(EventId = 1017, Level = LogLevel.Debug, Message = "Uploading {source} to {bucket} - {destination}")]
+        public static partial void UploadingFile(this ILogger logger, string source, string bucket, string destination);
+
+        [LoggerMessage(EventId = 1018, Level = LogLevel.Information, Message = "Sending task callback event for completed container {containerId}.")]
+        public static partial void SendingCallbackMessage(this ILogger logger, string containerId);
+
+        [LoggerMessage(EventId = 1019, Level = LogLevel.Error, Message = "Error monitoring container {containerId}.")]
+        public static partial void ErrorMonitoringContainerStatus(this ILogger logger, string containerId, Exception ex);
+
+        [LoggerMessage(EventId = 1020, Level = LogLevel.Warning, Message = "Timeout waiting for container to complete {containerId}.")]
+        public static partial void TimedOutMonitoringContainerStatus(this ILogger logger, string containerId);
+
+        [LoggerMessage(EventId = 1021, Level = LogLevel.Warning, Message = "No files found in {artifactsPath} for upload.")]
+        public static partial void NoFilesFoundForUpload(this ILogger logger, string artifactsPath);
     }
 }
