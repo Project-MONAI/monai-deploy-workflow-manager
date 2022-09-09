@@ -87,3 +87,16 @@ Scenario: Publish a valid workflow request with an exiting Workflow Instance wit
     When I publish a Workflow Request Message Multi_WF_Dispatched with no artifacts
     Then I can see an additional Workflow Instance is not created
     And A Task Dispatch event is not published
+
+@DeleteWorkflows
+Scenario: Delete a workflow with 1 revision and the workflow cannot trigger any new workflow instances
+    Given I have a clinical workflow Basic_Workflow_1_Deleted
+    And I publish a Workflow Request Message Static_AeTitle_WF_Request with artifacts full_patient_metadata in minio
+    Then No workflow instances will be created
+
+@DeleteWorkflows
+Scenario: Delete a workflow with 2 revisions and the workflow cannot trigger any new workflow instances
+    Given I have a clinical workflow Basic_Workflow_Multiple_Revisions_1_Deleted
+    And I have a clinical workflow Basic_Workflow_Multiple_Revisions_2_Deleted
+    And I publish a Workflow Request Message AeTitle_Multi_Revision_WF_Request with artifacts full_patient_metadata in minio
+    Then No workflow instances will be created
