@@ -203,7 +203,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             Guard.Against.Null(destination, nameof(destination));
             Guard.Against.NullOrWhiteSpace(artifactsPath, nameof(artifactsPath));
 
-            var files = Directory.EnumerateFileSystemEntries(artifactsPath, "*", SearchOption.AllDirectories);
+            var files = Directory.EnumerateFiles(artifactsPath, "*", SearchOption.AllDirectories);
             if (!files.Any())
             {
                 _logger.NoFilesFoundForUpload(artifactsPath);
