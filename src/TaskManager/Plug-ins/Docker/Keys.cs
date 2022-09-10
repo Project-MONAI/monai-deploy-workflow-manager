@@ -49,11 +49,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
         public static readonly string TemporaryStorageContainerPath = "temp_storage_container_path";
 
         /// <summary>
-        /// Key for priority classnames on task plugin arguments side
-        /// </summary>
-        public static readonly string TemporaryStorageHostPath = "temp_storage_host_path";
-
-        /// <summary>
         /// Prefix for envrionment variables.
         /// </summary>
         public static readonly string EnvironmentVariableKeyPrefix = "env_";
@@ -72,8 +67,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                 EntryPoint,
                 Command,
                 ContainerImage,
-                TemporaryStorageContainerPath,
-                TemporaryStorageHostPath
+                TemporaryStorageContainerPath
             };
     }
 }

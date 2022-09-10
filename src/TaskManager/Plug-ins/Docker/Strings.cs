@@ -19,6 +19,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
     internal static class Strings
     {
         public const string ApplicationId = "Docker";
+        public const string HostTemporaryStorageEnvironmentVariableName = "HOST_TEMP_STORAGE";
         public static readonly string RuntimeNvidia = "nvidia";
 
         public const string DockerStatusCreated = "created";

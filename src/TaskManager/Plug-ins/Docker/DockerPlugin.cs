@@ -39,6 +39,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
         private readonly ILogger<DockerPlugin> _logger;
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IServiceScope _scope;
+        private string _hostTemporaryStoragePath;
 
         public DockerPlugin(
             ILogger<DockerPlugin> logger,
@@ -53,6 +54,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _scope = serviceScopeFactory.CreateScope() ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
+            _hostTemporaryStoragePath = Environment.GetEnvironmentVariable(Strings.HostTemporaryStorageEnvironmentVariableName) ?? throw new ApplicationException($"Environment variable {Strings.HostTemporaryStorageEnvironmentVariableName} is not set.");
 
             ValidateEvent();
             Initialize();
@@ -262,7 +264,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
         }
 
         private string? GetContentType(string ext)
-        {            
+        {
             return ext.ToLowerInvariant() switch
             {
                 ".dcm" => "applicatoin/dicom",
@@ -448,7 +450,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             // Container Path of the Input Directory.
             var containerPath = Path.Combine(Event.TaskPluginArguments[Keys.TemporaryStorageContainerPath], Event.ExecutionId, "inputs");
             // Host Path of the Input Directory.
-            var hostPath = Path.Combine(Event.TaskPluginArguments[Keys.TemporaryStorageHostPath], Event.ExecutionId, "inputs");
+            var hostPath = Path.Combine(_hostTemporaryStoragePath, Event.ExecutionId, "inputs");
 
 
             foreach (var input in Event.Inputs)
@@ -496,7 +498,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             if (Event.TaskPluginArguments.ContainsKey(Keys.WorkingDirectory))
             {
                 var containerPath = Path.Combine(Event.TaskPluginArguments[Keys.TemporaryStorageContainerPath], Event.ExecutionId, "temp");
-                var hostPath = Path.Combine(Event.TaskPluginArguments[Keys.TemporaryStorageHostPath], Event.ExecutionId, "temp");
+                var hostPath = Path.Combine(_hostTemporaryStoragePath, Event.ExecutionId, "temp");
 
                 Directory.CreateDirectory(containerPath);
 
@@ -520,7 +522,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             var containerRootPath = Path.Combine(Event.TaskPluginArguments[Keys.TemporaryStorageContainerPath], Event.ExecutionId, "outputs");
 
             // Host Path of the Output Directory.
-            var hostRootPath = Path.Combine(Event.TaskPluginArguments[Keys.TemporaryStorageHostPath], Event.ExecutionId, "outputs");
+            var hostRootPath = Path.Combine(_hostTemporaryStoragePath, Event.ExecutionId, "outputs");
 
             foreach (var output in Event.Outputs)
             {
