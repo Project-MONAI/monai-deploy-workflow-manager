@@ -19,15 +19,15 @@ using Ardalis.GuardClauses;
 using Argo;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
+using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
-using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
 using Newtonsoft.Json;
-using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.Messaging.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {

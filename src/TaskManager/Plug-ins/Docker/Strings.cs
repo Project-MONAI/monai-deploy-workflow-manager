@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using System.Collections.Specialized;
+
 namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 {
     internal static class Strings
@@ -30,6 +32,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
         public const string DockerStatusExited = "exited";
         public const string DockerStatusDead = "dead";
 
-        public static readonly List<string> DockerEndStates = new List<string> { DockerStatusExited, DockerStatusDead };
+        public static readonly List<string> DockerEndStates = new() { DockerStatusExited, DockerStatusDead };
+
+        public const string MimeTypeDicom = "application/dicom";
+        public const string MimeTypeUnknown = "application/unknown";
+
+        public const string FileExtensionDicom = ".dcm";
     }
 }

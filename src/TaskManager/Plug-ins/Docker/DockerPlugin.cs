@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Globalization;
 using Ardalis.GuardClauses;
 using Docker.DotNet;
 using Docker.DotNet.Models;
@@ -33,13 +34,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 {
     public class DockerPlugin : TaskPluginBase
     {
-
         private TimeSpan _containerTimeout;
         private readonly DockerClient _dockerClient;
         private readonly ILogger<DockerPlugin> _logger;
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IServiceScope _scope;
-        private string _hostTemporaryStoragePath;
+        private readonly string _hostTemporaryStoragePath;
 
         public DockerPlugin(
             ILogger<DockerPlugin> logger,
@@ -63,7 +63,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
         private void Initialize()
         {
             if (Event.TaskPluginArguments.ContainsKey(Keys.TaskTimeoutMinutes) &&
-                int.TryParse(Event.TaskPluginArguments[Keys.TaskTimeoutMinutes], out int timeoutMinutes))
+                int.TryParse(Event.TaskPluginArguments[Keys.TaskTimeoutMinutes], out var timeoutMinutes))
             {
                 _containerTimeout = TimeSpan.FromMinutes(timeoutMinutes);
             }
@@ -74,6 +74,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
             _logger.Initialized(Event.TaskPluginArguments[Keys.BaseUrl], _containerTimeout.Minutes);
         }
+
         private void ValidateEvent()
         {
             if (Event.TaskPluginArguments is null || Event.TaskPluginArguments.Count == 0)
@@ -108,7 +109,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             }
         }
 
-
         public override async Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken = default)
         {
             List<ContainerVolumeMount> inputVolumeMounts;
@@ -117,7 +117,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
             try
             {
-                inputVolumeMounts = await SetupInputs(cancellationToken);
+                inputVolumeMounts = await SetupInputs(cancellationToken).ConfigureAwait(false);
                 intermediateVolumeMount = SetupIntermediateVolume();
                 outputVolumeMounts = SetupOutputs();
             }
@@ -147,13 +147,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                 };
 
                 // Pull image.
-                await _dockerClient.Images.CreateImageAsync(imageCreateParameters, new AuthConfig(), new Progress<JSONMessage>(), cancellationToken);
+                await _dockerClient.Images.CreateImageAsync(imageCreateParameters, new AuthConfig(), new Progress<JSONMessage>(), cancellationToken).ConfigureAwait(false);
 
-                var response = await _dockerClient.Containers.CreateContainerAsync(parameters);
+                var response = await _dockerClient.Containers.CreateContainerAsync(parameters, cancellationToken).ConfigureAwait(false);
                 containerId = response.ID;
                 _logger.CreatedContainer(containerId);
 
-                _ = await _dockerClient.Containers.StartContainerAsync(containerId, new ContainerStartParameters());
+                _ = await _dockerClient.Containers.StartContainerAsync(containerId, new ContainerStartParameters(), cancellationToken).ConfigureAwait(false);
                 _logger.StartedContainer(containerId);
             }
             catch (Exception exception)
@@ -162,7 +162,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                 return new ExecutionStatus { Status = TaskExecutionStatus.Failed, FailureReason = FailureReason.PluginError, Errors = exception.Message };
             }
 
-            var monitoringTask = Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 var waitingTime = TimeSpan.FromSeconds(1);
                 var pollingPeriod = TimeSpan.FromSeconds(1);
@@ -171,12 +171,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                 {
                     try
                     {
-                        var response = await _dockerClient.Containers.InspectContainerAsync(containerId);
+                        var response = await _dockerClient.Containers.InspectContainerAsync(containerId).ConfigureAwait(false);
 
                         if (IsContainerCompleted(response.State))
                         {
-                            await UploadOutputArtifacts(intermediateVolumeMount, outputVolumeMounts, cancellationToken);
-                            await SendCallbackMessage(containerId);
+                            await UploadOutputArtifacts(intermediateVolumeMount, outputVolumeMounts, cancellationToken).ConfigureAwait(false);
+                            await SendCallbackMessage(containerId).ConfigureAwait(false);
 
                             return;
                         }
@@ -186,16 +186,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                         _logger.ErrorMonitoringContainerStatus(containerId, ex);
                     }
 
-                    await Task.Delay(pollingPeriod);
+                    await Task.Delay(pollingPeriod).ConfigureAwait(false);
                     waitingTime += pollingPeriod;
                 }
                 _logger.TimedOutMonitoringContainerStatus(containerId);
-            });
+            }, cancellationToken);
 
             return new ExecutionStatus() { Status = TaskExecutionStatus.Accepted };
         }
 
-        private bool IsContainerCompleted(ContainerState state)
+        private static bool IsContainerCompleted(ContainerState state)
         {
             if (Strings.DockerEndStates.Contains(state.Status, StringComparer.InvariantCultureIgnoreCase) &&
                 !string.IsNullOrWhiteSpace(state.FinishedAt))
@@ -215,12 +215,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
             if (intermediateVolumeMount is not null)
             {
-                await UploadOutputArtifacts(storageService, contentTypeProvider, intermediateVolumeMount.Source, intermediateVolumeMount.TaskManagerPath, cancellationToken);
+                await UploadOutputArtifacts(storageService, contentTypeProvider, intermediateVolumeMount.Source, intermediateVolumeMount.TaskManagerPath, cancellationToken).ConfigureAwait(false);
             }
 
             foreach (var output in outputVolumeMounts)
             {
-                await UploadOutputArtifacts(storageService, contentTypeProvider, output.Source, output.TaskManagerPath, cancellationToken);
+                await UploadOutputArtifacts(storageService, contentTypeProvider, output.Source, output.TaskManagerPath, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -229,12 +229,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             Guard.Against.Null(destination, nameof(destination));
             Guard.Against.NullOrWhiteSpace(artifactsPath, nameof(artifactsPath));
 
-            int count = 5;
+            var count = 5;
             IEnumerable<string> files;
             do
             {
                 files = Directory.EnumerateFiles(artifactsPath, "*", SearchOption.AllDirectories);
-                await Task.Delay(1000);
+                await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
             } while (count-- > 0 && !files.Any());
 
             if (!files.Any())
@@ -248,13 +248,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                     var objectName = file.Replace(artifactsPath, string.Empty).TrimStart('/');
                     objectName = Path.Combine(destination.RelativeRootPath, objectName);
                     _logger.UploadingFile(file, destination.Bucket, objectName);
-                    if (!contentTypeProvider.TryGetContentType(file, out string contentType))
+                    if (!contentTypeProvider.TryGetContentType(file, out var contentType))
                     {
                         contentType = GetContentType(Path.GetExtension(file));
                     }
                     _logger.ContentTypeForFile(objectName, contentType);
                     using var stream = File.OpenRead(file);
-                    await storageService.PutObjectAsync(destination.Bucket, objectName, stream, stream.Length, contentType, null, cancellationToken);
+                    await storageService.PutObjectAsync(destination.Bucket, objectName, stream, stream.Length, contentType, null, cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -263,12 +263,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             }
         }
 
-        private string? GetContentType(string ext)
+        private static string GetContentType(string? ext)
         {
+            if (string.IsNullOrWhiteSpace(ext))
+            {
+                return Strings.MimeTypeUnknown;
+            }
+
             return ext.ToLowerInvariant() switch
             {
-                ".dcm" => "applicatoin/dicom",
-                _ => "application/unknown"
+                Strings.FileExtensionDicom => Strings.MimeTypeDicom,
+                _ => Strings.MimeTypeUnknown
             };
         }
 
@@ -288,7 +293,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             }, applicationId: Strings.ApplicationId, correlationId: Event.CorrelationId);
 
             var messageBrokerPublisherService = _scope.ServiceProvider.GetService<IMessageBrokerPublisherService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerPublisherService));
-            await messageBrokerPublisherService.Publish(_options.Value.Messaging.Topics.TaskCallbackRequest, message.ToMessage());
+            await messageBrokerPublisherService.Publish(_options.Value.Messaging.Topics.TaskCallbackRequest, message.ToMessage()).ConfigureAwait(false);
         }
 
         public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
@@ -297,12 +302,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
             try
             {
-                var response = await _dockerClient.Containers.InspectContainerAsync(identity);
+                var response = await _dockerClient.Containers.InspectContainerAsync(identity, cancellationToken).ConfigureAwait(false);
                 var retryCount = 30;
                 while ((response == null || !IsContainerCompleted(response.State)) && retryCount-- > 0)
                 {
                     await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
-                    response = await _dockerClient.Containers.InspectContainerAsync(identity);
+                    response = await _dockerClient.Containers.InspectContainerAsync(identity, cancellationToken).ConfigureAwait(false);
                 }
 
                 if (response == null)
@@ -359,7 +364,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
             TimeSpan? duration = null;
 
-            if (DateTime.TryParse(response.State.FinishedAt, out DateTime completedTime))
+            if (DateTime.TryParse(response.State.FinishedAt, out var completedTime))
             {
                 duration = completedTime.Subtract(response.Created);
             }
@@ -367,15 +372,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             return new Dictionary<string, string>
             {
                 { "workflowId", Event.WorkflowInstanceId },
-                { "duration", duration.HasValue ? duration.Value.TotalMilliseconds.ToString() : string.Empty },
-                { "startedAt", response.Created.ToString()  },
-                { "finishedAt", completedTime.ToString() }
+                { "duration", duration.HasValue ? duration.Value.TotalMilliseconds.ToString(CultureInfo.InvariantCulture) : string.Empty },
+                { "startedAt", response.Created.ToString("s")  },
+                { "finishedAt", completedTime.ToString("s") }
             };
         }
 
         public override async Task HandleTimeout(string identity)
         {
-            await _dockerClient.Containers.KillContainerAsync(identity, new ContainerKillParameters());
+            await _dockerClient.Containers.KillContainerAsync(identity, new ContainerKillParameters()).ConfigureAwait(false);
             _logger.TerminatedContainer(identity);
         }
 
@@ -452,10 +457,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             // Host Path of the Input Directory.
             var hostPath = Path.Combine(_hostTemporaryStoragePath, Event.ExecutionId, "inputs");
 
-
             foreach (var input in Event.Inputs)
             {
-                var objects = await storageService.ListObjectsAsync(input.Bucket, input.RelativeRootPath, true, cancellationToken);
+                var objects = await storageService.ListObjectsAsync(input.Bucket, input.RelativeRootPath, true, cancellationToken).ConfigureAwait(false);
                 if (objects.Count == 0)
                 {
                     _logger.NoFilesFoundIn(input.Bucket, input.RelativeRootPath);
@@ -481,10 +485,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
                     // Task Manager Container Path of the Directory for this Input File.
                     var fileDirectory = Path.GetDirectoryName(filePath);
-                    Directory.CreateDirectory(fileDirectory);
+                    Directory.CreateDirectory(fileDirectory!);
 
                     _logger.DownloadingArtifactFromStorageService(obj.Filename, filePath);
-                    using var stream = await storageService.GetObjectAsync(input.Bucket, obj.FilePath, cancellationToken) as MemoryStream;
+                    using var stream = await storageService.GetObjectAsync(input.Bucket, obj.FilePath, cancellationToken).ConfigureAwait(false) as MemoryStream;
                     using var fileStream = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write);
                     stream!.WriteTo(fileStream);
                 }
@@ -557,5 +561,4 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
         public string HostPath { get; }
         public string TaskManagerPath { get; }
     }
-
 }

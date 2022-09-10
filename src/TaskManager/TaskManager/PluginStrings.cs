@@ -20,8 +20,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
     {
         // note not to be confused with the ApplicationId Monai.Deploy.WorkflowManager.TaskManager.Argo
         public const string Argo = "argo";
+
         public const string Docker = "docker";
 
-        public static readonly List<string> PlugsRequiresPermanentAccoutns = new List<string>() { Argo, Docker };
+        public static readonly IReadOnlyList<string> PlugsRequiresPermanentAccoutns = new List<string>() { Argo, Docker };
     }
 }
