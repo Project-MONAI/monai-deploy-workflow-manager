@@ -17,6 +17,7 @@
 using Ardalis.GuardClauses;
 using Docker.DotNet;
 using Docker.DotNet.Models;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -170,7 +171,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                     {
                         var response = await _dockerClient.Containers.InspectContainerAsync(containerId);
 
-                        if (!string.IsNullOrWhiteSpace(response.State.FinishedAt))
+                        if (IsContainerCompleted(response.State))
                         {
                             await UploadOutputArtifacts(intermediateVolumeMount, outputVolumeMounts, cancellationToken);
                             await SendCallbackMessage(containerId);
@@ -192,26 +193,48 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             return new ExecutionStatus() { Status = TaskExecutionStatus.Accepted };
         }
 
+        private bool IsContainerCompleted(ContainerState state)
+        {
+            if (Strings.DockerEndStates.Contains(state.Status, StringComparer.InvariantCultureIgnoreCase) &&
+                !string.IsNullOrWhiteSpace(state.FinishedAt))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private async Task UploadOutputArtifacts(ContainerVolumeMount intermediateVolumeMount, List<ContainerVolumeMount> outputVolumeMounts, CancellationToken cancellationToken)
         {
-            Guard.Against.Null(intermediateVolumeMount, nameof(intermediateVolumeMount));
             Guard.Against.Null(outputVolumeMounts, nameof(outputVolumeMounts));
 
-            var storageService = _scope.ServiceProvider.GetRequiredService<IStorageService>();
-            await UploadOutputArtifacts(storageService, intermediateVolumeMount.Source, intermediateVolumeMount.TaskManagerPath, cancellationToken);
+            var storageService = _scope.ServiceProvider.GetService<IStorageService>() ?? throw new ServiceNotFoundException(nameof(IStorageService));
+            var contentTypeProvider = _scope.ServiceProvider.GetService<IContentTypeProvider>() ?? throw new ServiceNotFoundException(nameof(IContentTypeProvider));
+
+            if (intermediateVolumeMount is not null)
+            {
+                await UploadOutputArtifacts(storageService, contentTypeProvider, intermediateVolumeMount.Source, intermediateVolumeMount.TaskManagerPath, cancellationToken);
+            }
 
             foreach (var output in outputVolumeMounts)
             {
-                await UploadOutputArtifacts(storageService, output.Source, output.TaskManagerPath, cancellationToken);
+                await UploadOutputArtifacts(storageService, contentTypeProvider, output.Source, output.TaskManagerPath, cancellationToken);
             }
         }
 
-        private async Task UploadOutputArtifacts(IStorageService storageService, Messaging.Common.Storage destination, string artifactsPath, CancellationToken cancellationToken)
+        private async Task UploadOutputArtifacts(IStorageService storageService, IContentTypeProvider contentTypeProvider, Messaging.Common.Storage destination, string artifactsPath, CancellationToken cancellationToken)
         {
             Guard.Against.Null(destination, nameof(destination));
             Guard.Against.NullOrWhiteSpace(artifactsPath, nameof(artifactsPath));
 
-            var files = Directory.EnumerateFiles(artifactsPath, "*", SearchOption.AllDirectories);
+            int count = 5;
+            IEnumerable<string> files;
+            do
+            {
+                files = Directory.EnumerateFiles(artifactsPath, "*", SearchOption.AllDirectories);
+                await Task.Delay(1000);
+            } while (count-- > 0 && !files.Any());
+
             if (!files.Any())
             {
                 _logger.NoFilesFoundForUpload(artifactsPath);
@@ -220,17 +243,31 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             {
                 try
                 {
-                    var objectName = file.Replace(artifactsPath, string.Empty);
+                    var objectName = file.Replace(artifactsPath, string.Empty).TrimStart('/');
                     objectName = Path.Combine(destination.RelativeRootPath, objectName);
                     _logger.UploadingFile(file, destination.Bucket, objectName);
+                    if (!contentTypeProvider.TryGetContentType(file, out string contentType))
+                    {
+                        contentType = GetContentType(Path.GetExtension(file));
+                    }
+                    _logger.ContentTypeForFile(objectName, contentType);
                     using var stream = File.OpenRead(file);
-                    await storageService.PutObjectAsync(destination.Bucket, objectName, stream, stream.Length, null, null, cancellationToken);
+                    await storageService.PutObjectAsync(destination.Bucket, objectName, stream, stream.Length, contentType, null, cancellationToken);
                 }
                 catch (Exception ex)
                 {
                     _logger.ErrorUploadingFile(file, ex);
                 }
             }
+        }
+
+        private string? GetContentType(string ext)
+        {            
+            return ext.ToLowerInvariant() switch
+            {
+                ".dcm" => "applicatoin/dicom",
+                _ => "application/unknown"
+            };
         }
 
         private async Task SendCallbackMessage(string containerId)
@@ -260,7 +297,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             {
                 var response = await _dockerClient.Containers.InspectContainerAsync(identity);
                 var retryCount = 30;
-                while ((response == null || !string.IsNullOrEmpty(response.State.FinishedAt)) && retryCount-- > 0)
+                while ((response == null || !IsContainerCompleted(response.State)) && retryCount-- > 0)
                 {
                     await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
                     response = await _dockerClient.Containers.InspectContainerAsync(identity);

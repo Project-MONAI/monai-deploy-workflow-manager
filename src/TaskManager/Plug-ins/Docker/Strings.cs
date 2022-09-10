@@ -21,5 +21,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
         public const string ApplicationId = "Docker";
         public static readonly string RuntimeNvidia = "nvidia";
 
+        public const string DockerStatusCreated = "created";
+        public const string DockerStatusRunning = "running";
+        public const string DockerStatusPaused = "paused";
+        public const string DockerStatusRestarting = "restarting";
+        public const string DockerStatusRemoving = "removing";
+        public const string DockerStatusExited = "exited";
+        public const string DockerStatusDead = "dead";
+
+        public static readonly List<string> DockerEndStates = new List<string> { DockerStatusExited, DockerStatusDead };
     }
 }

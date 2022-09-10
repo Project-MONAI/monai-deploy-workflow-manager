@@ -85,5 +85,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker.Logging
 
         [LoggerMessage(EventId = 1021, Level = LogLevel.Warning, Message = "No files found in {artifactsPath} for upload.")]
         public static partial void NoFilesFoundForUpload(this ILogger logger, string artifactsPath);
+
+        [LoggerMessage(EventId = 1022, Level = LogLevel.Debug, Message = "Content type set to {contentType} for {filename}.")]
+        public static partial void ContentTypeForFile(this ILogger logger, string filename, string contentType);
     }
 }
