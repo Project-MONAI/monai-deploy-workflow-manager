@@ -477,7 +477,7 @@ public class ArgoPluginTest
         _argoClient.Verify(p => p.WorkflowService_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
     }
 
-    [Fact(DisplayName = "ExecuteTask - Stats contains info")]
+    [Fact(DisplayName = "GetStatus - Stats contains info")]
     public async Task ArgoPlugin_GetStatus_HasStatsInfo()
     {
         var tryCount = 0;

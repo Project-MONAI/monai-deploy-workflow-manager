@@ -199,6 +199,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+
         public async ValueTask DisposeAsync()
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
@@ -206,6 +207,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             GC.SuppressFinalize(this);
         }
 
-        public override Task HandleTimeout(string identity) { return Task.CompletedTask; } // not implemented
+        public override Task HandleTimeout(string identity)
+        { return Task.CompletedTask; } // not implemented
     }
 }

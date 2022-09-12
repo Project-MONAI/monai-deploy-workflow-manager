@@ -15,6 +15,7 @@
  */
 
 using System.IO.Abstractions;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -84,6 +85,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
             services.AddTransient<ITaskDispatchEventRepository, TaskDispatchEventRepository>();
             services.AddTransient<IFileSystem, FileSystem>();
+
+            services.AddTransient<IContentTypeProvider, FileExtensionContentTypeProvider>();
 
             services.AddTaskManager(hostContext);
         }
