@@ -93,7 +93,7 @@ Scenario Outline: Get all workflow instances from API with provided status or Pa
     | pagination_query                                           | amount | pagination_count | expected_status | expected_payloadId                   |
     | ?pageSize=1                                                | 15     | 15               |                 |                                      |
     | ?pageSize=1&status=created                                 | 15     | 15               | 0               |                                      |
-    | ?pageSize=1&payloadId=5450c3a9-2b19-45b0-8b17-fb10f89d1b2d | 15     | 15               |                 | 5450c3a9-2b19-45b0-8b17-fb10f89d1b2d |
+    | ?pageSize=1&payloadId=5450c3a9-2b19-45b0-8b17-fb10f89d1b2d | 15     | 1                |                 | 5450c3a9-2b19-45b0-8b17-fb10f89d1b2d |
 
 @WorkflowInstancePagination
 Scenario Outline: Invalid pagination returns 400
