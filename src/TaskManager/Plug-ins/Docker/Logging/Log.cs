@@ -20,8 +20,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker.Logging
 {
     public static partial class Log
     {
-        [LoggerMessage(EventId = 1000, Level = LogLevel.Information, Message = "Docker plugin initialized: base URL={baseUrl}, timeout={timeoutMinutes}.")]
-        public static partial void Initialized(this ILogger logger, string baseUrl, int timeoutMinutes);
+        [LoggerMessage(EventId = 1000, Level = LogLevel.Information, Message = "Docker plugin initialized: base URL={baseUrl}, timeout={timeoutMinutes} minutes.")]
+        public static partial void Initialized(this ILogger logger, string baseUrl, double timeoutMinutes);
 
         [LoggerMessage(EventId = 1001, Level = LogLevel.Error, Message = "Error generating Container Specification.")]
         public static partial void ErrorGeneratingContainerSpecification(this ILogger logger, Exception ex);
@@ -88,5 +88,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker.Logging
 
         [LoggerMessage(EventId = 1022, Level = LogLevel.Debug, Message = "Content type set to {contentType} for {filename}.")]
         public static partial void ContentTypeForFile(this ILogger logger, string filename, string contentType);
+
+        [LoggerMessage(EventId = 1023, Level = LogLevel.Error, Message = "Error pulling container image {image}.")]
+        public static partial void ErrorPullingContainerImage(this ILogger logger, string image, Exception ex);
+
+        [LoggerMessage(EventId = 1024, Level = LogLevel.Error, Message = "Error starting container monitoring for container {container}.")]
+        public static partial void ErrorLaunchingContainerMonitor(this ILogger logger, string container, Exception ex);
+
+        [LoggerMessage(EventId = 1025, Level = LogLevel.Warning, Message = "Container '{container}' created with warnings: {warnings}.")]
+        public static partial void ContainerCreatedWithWarnings(this ILogger logger, string container, string warnings);
+
+        [LoggerMessage(EventId = 1026, Level = LogLevel.Error, Message = "Error terminating container '{container}'.")]
+        public static partial void ErrorTerminatingContainer(this ILogger logger, string container, Exception ex);
     }
 }

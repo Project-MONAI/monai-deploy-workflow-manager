@@ -16,4 +16,4 @@
 
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests")]
+[assembly: InternalsVisibleTo("Monai.Deploy.WorkflowManager.TaskManager.Docker.Tests")]
