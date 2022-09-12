@@ -19,6 +19,7 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.Wrappers;
 using Newtonsoft.Json;
+using TechTalk.SpecFlow.CommonModels;
 using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
@@ -95,17 +96,32 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
             if (workflowInstances != null)
             {
-                // Serialize the response and compare this with the workflow instances objects. Too complicated and potentially bad to do contains
-                foreach (var workflowInstance in workflowInstances)
-                {
-                    ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Contain(workflowInstance.ToString());
-                }
+                var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+                var actualWorkflowInstances = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowInstance>>>(result);
+                Assertions.AssertWorkflowInstanceList(workflowInstances, actualWorkflowInstances.Data);
             }
             else
             {
                 throw new Exception($"Workflow Instance not found for payloadId {payloadId}");
             }
 
+        }
+
+        [Then(@"I will recieve no pagination response")]
+        public void ThenIWillRecieveNoPaginationResponse()
+        {
+            var response = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            response.Should().NotContainAny(new List<string>
+            {
+                "pageNumber",
+                "pageSize",
+                "firstPage",
+                "lastPage",
+                "totalPages",
+                "totalRecords",
+                "nextPage",
+                "previousPage"
+            });
         }
     }
 }
