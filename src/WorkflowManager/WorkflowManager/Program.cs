@@ -17,6 +17,7 @@
 using System;
 using System.IO;
 using System.IO.Abstractions;
+using Elastic.CommonSchema.Serilog;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -40,7 +41,6 @@ using Monai.Deploy.WorkflowManager.Services.Http;
 using MongoDB.Driver;
 using Serilog;
 using Serilog.Events;
-using Serilog.Sinks.Elasticsearch;
 
 namespace Monai.Deploy.WorkflowManager
 {
@@ -77,7 +77,10 @@ namespace Monai.Deploy.WorkflowManager
                     .ReadFrom.Services(services)
                     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                     .Enrich.FromLogContext()
-                    //.WriteTo.File("logs/myapp.txt", rollingInterval: RollingInterval.Day)
+                    .WriteTo.File(
+                        path: "logs/MWM-.log",
+                        rollingInterval: RollingInterval.Day,
+                        formatter: new EcsTextFormatter())
                     .WriteTo.Console())
                 .ConfigureServices((hostContext, services) =>
                 {

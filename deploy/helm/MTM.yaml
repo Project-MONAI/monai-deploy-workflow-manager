@@ -15,9 +15,9 @@
 replicaCount: 1
 
 image:
-  repository: registry.gitlab.com/answerdigital/londonai/aide/workflow-manager-images/task-manager
+  repository: mtm
   pullPolicy: IfNotPresent
-  tag: 2022-08-22-02
+  tag: "02"
 
 imagePullSecrets:
  - name: gitlab-image-pull
@@ -27,8 +27,12 @@ enviromentVariables:
   WorkflowManager__storage__settings__accessKey: "rootminio"
   WorkflowManager__storage__settings__accessToken: "rootminio"
   WorkflowManager__storage__settings__executableLocation: "mc"
-  WorkflowManager__messaging__publisherSettings__endpoint: "rabbitmq.monai"
-  WorkflowManager__messaging__subscriberSettings__endpoint: "rabbitmq.monai"
+  WorkflowManager__messaging__publisherSettings__endpoint: "rabbit-monai.argo"
+  WorkflowManager__messaging__publisherSettings__port: "5672"  
+  WorkflowManager__messaging__subscriberSettings__endpoint: "rabbit-monai.argo"
+  WorkflowManager__messaging__subscriberSettings__port: "5672"
+  Serilog__WriteTo__0__Args__indexFormat: "index-monai{0:yyyy.MM}"
+  Serilog__WriteTo__0__Args__nodeUris: "http://192.168.0.22:9200"
 
 enviromentVariablesFromSecrets:
   secrets:

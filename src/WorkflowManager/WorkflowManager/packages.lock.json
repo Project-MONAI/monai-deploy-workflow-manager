@@ -11,6 +11,17 @@
           "JetBrains.Annotations": "2021.3.0"
         }
       },
+      "Elastic.CommonSchema.Serilog": {
+        "type": "Direct",
+        "requested": "[1.5.3, )",
+        "resolved": "1.5.3",
+        "contentHash": "bp2qHOWmN15fTKUecFMt7oCra68I1cm3yAEmwPcLuz4v2pQ5YxC8nVtyCTSSibquUS/ZPH5JInjlmuywV3UoyQ==",
+        "dependencies": {
+          "Elastic.CommonSchema": "1.5.3",
+          "Microsoft.AspNetCore.Http.Abstractions": "2.1.0",
+          "Serilog": "2.9.0"
+        }
+      },
       "Karambolo.Extensions.Logging.File": {
         "type": "Direct",
         "requested": "[3.3.1, )",
@@ -189,20 +200,14 @@
           "Serilog.Sinks.File": "5.0.0"
         }
       },
-      "Serilog.Sinks.Elasticsearch": {
+      "Serilog.Sinks.Http": {
         "type": "Direct",
-        "requested": "[8.4.1, )",
-        "resolved": "8.4.1",
-        "contentHash": "SM17WdHUshJSm44uC45jEUW4Wzp9wCltbWry5iY5fNgxJ3PkIkW6I8p+WviU5lx/bayCvAoB5uO07UK2qjBSAQ==",
+        "requested": "[8.0.0, )",
+        "resolved": "8.0.0",
+        "contentHash": "eHyl2/93Roymf2eudPl/6Eeu2GQ93Ucy4GM1UPF0jyd7CIW8r+Bk5ohdbjjyjB9TQSpP2ovOuj6ltf9DjoWHtg==",
         "dependencies": {
-          "Elasticsearch.Net": "7.8.1",
-          "Microsoft.CSharp": "4.6.0",
-          "Serilog": "2.8.0",
-          "Serilog.Formatting.Compact": "1.0.0",
-          "Serilog.Formatting.Elasticsearch": "8.4.1",
-          "Serilog.Sinks.File": "4.0.0",
-          "Serilog.Sinks.PeriodicBatching": "2.1.1",
-          "System.Diagnostics.DiagnosticSource": "4.5.1"
+          "Microsoft.Extensions.Configuration.Abstractions": "2.0.0",
+          "Serilog.Sinks.File": "5.0.0"
         }
       },
       "StyleCop.Analyzers": {
@@ -252,14 +257,12 @@
           "Microsoft.Win32.Registry": "5.0.0"
         }
       },
-      "Elasticsearch.Net": {
+      "Elastic.CommonSchema": {
         "type": "Transitive",
-        "resolved": "7.8.1",
-        "contentHash": "vGHlxY72LH8/DcKb/QDpvrIelQIUFxNnXa+HmS/ifX7M7dgwmTpA2i4SagQ65gg7oi088cteUuDl4fKIystg7Q==",
+        "resolved": "1.5.3",
+        "contentHash": "JgwhfThYY/s17asUiBCUVqnZtDdGTWO/2hTPG01QDfw2+T6kfwskrj5eh6XpBZsOh6r9SpBL95vSsU+q44i7Zg==",
         "dependencies": {
-          "Microsoft.CSharp": "4.6.0",
-          "System.Buffers": "4.5.0",
-          "System.Diagnostics.DiagnosticSource": "4.5.1"
+          "System.Text.Json": "4.7.0"
         }
       },
       "JetBrains.Annotations": {
@@ -1009,14 +1012,6 @@
           "Serilog": "2.8.0"
         }
       },
-      "Serilog.Formatting.Elasticsearch": {
-        "type": "Transitive",
-        "resolved": "8.4.1",
-        "contentHash": "768KS00+XwQSxVIYKJ4KWdqyLd5/w3DKndf+94U8NCk7qpXCeZl4HlczsDeyVsNPTyRF6MVss6Wr9uj4rhprfA==",
-        "dependencies": {
-          "Serilog": "2.8.0"
-        }
-      },
       "Serilog.Settings.Configuration": {
         "type": "Transitive",
         "resolved": "3.3.0",
@@ -1049,16 +1044,6 @@
         "contentHash": "uwV5hdhWPwUH1szhO8PJpFiahqXmzPzJT/sOijH/kFgUx+cyoDTMM8MHD0adw9+Iem6itoibbUXHYslzXsLEAg==",
         "dependencies": {
           "Serilog": "2.10.0"
-        }
-      },
-      "Serilog.Sinks.PeriodicBatching": {
-        "type": "Transitive",
-        "resolved": "2.1.1",
-        "contentHash": "L1iZtcEzQdEIYCPvhYJYB2RofPg+i1NhHJfS+DpXLyLSMS6OXebqaI1fxWhmJRIjD9D9BuXi23FkZTQDiP7cHw==",
-        "dependencies": {
-          "Serilog": "2.0.0",
-          "System.Collections.Concurrent": "4.0.12",
-          "System.Threading.Timer": "4.0.1"
         }
       },
       "SharpCompress": {
@@ -1615,16 +1600,6 @@
         "type": "Transitive",
         "resolved": "4.5.4",
         "contentHash": "zteT+G8xuGu6mS+mzDzYXbzS7rd3K6Fjb9RiZlYlJPam2/hU7JCBZBVEcywNuR+oZ1ncTvc/cq0faRr3P01OVg=="
-      },
-      "System.Threading.Timer": {
-        "type": "Transitive",
-        "resolved": "4.0.1",
-        "contentHash": "saGfUV8uqVW6LeURiqxcGhZ24PzuRNaUBtbhVeuUAvky1naH395A/1nY0P2bWvrw/BreRtIB/EzTDkGBpqCwEw==",
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.0.1",
-          "Microsoft.NETCore.Targets": "1.0.1",
-          "System.Runtime": "4.1.0"
-        }
       },
       "System.ValueTuple": {
         "type": "Transitive",

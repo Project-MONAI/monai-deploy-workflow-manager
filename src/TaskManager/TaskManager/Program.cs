@@ -15,6 +15,7 @@
  */
 
 using System.IO.Abstractions;
+using Elastic.CommonSchema.Serilog;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,6 +29,8 @@ using Monai.Deploy.WorkflowManager.TaskManager.Database;
 using Monai.Deploy.WorkflowManager.TaskManager.Database.Options;
 using Monai.Deploy.WorkflowManager.TaskManager.Extensions;
 using MongoDB.Driver;
+using Serilog;
+using Serilog.Events;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
@@ -63,6 +66,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                     configureLogging.AddConfiguration(builderContext.Configuration.GetSection("Logging"));
                     configureLogging.AddFile(o => o.RootPath = AppContext.BaseDirectory);
                 })
+                .UseSerilog((context, services, configuration) => configuration
+                    .ReadFrom.Configuration(context.Configuration)
+                    .ReadFrom.Services(services)
+                    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                    .Enrich.FromLogContext()
+                    .WriteTo.File(
+                        path: "logs/MTM-.log",
+                        rollingInterval: RollingInterval.Day,
+                        formatter: new EcsTextFormatter())
+                    .WriteTo.Console())
                 .ConfigureServices((hostContext, services) =>
                 {
                     ConfigureServices(hostContext, services);
