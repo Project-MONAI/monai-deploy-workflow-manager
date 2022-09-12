@@ -51,9 +51,11 @@ Scenario: Get all triggered workflows instances for payload
     Then I will get a 200 response
     And I can see 1 triggered workflow instances from payload id c2219298-44ec-44d6-b9c7-b2c3e5abaf45
     Examples:
-    | query                                                                  |
-    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45                        |
-    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45?disablePagination=true |
+    | query                                                                                           |
+    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45                                                 |
+    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&pageNumber=1&pageSize=10                        |
+    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&pageNumber=1&pageSize=10&disablePagination=true |
+    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&disablePagination=true                          |
 
 @WorkflowInstancePagination
 Scenario Outline: Get all workflow instances from API - Test pagination
@@ -63,20 +65,21 @@ Scenario Outline: Get all workflow instances from API - Test pagination
     Then I will get a 200 response
     And Pagination is working correctly for the <pagination_count> workflow instances
     Examples:
-    | pagination_query           | amount | pagination_count |
-    | ?pageSize=1                | 15     | 15               |
-    | ?pageNumber=10             | 15     | 15               |
-    | ?pageNumber=1&pageSize=10  | 15     | 15               |
-    | ?pageSize=10&pageNumber=2  | 13     | 13               |
-    | ?pageNumber=2&pageSize=7   | 4      | 4                |
-    | ?pageNumber=3&pageSize=10  | 7      | 7                |
-    | ?pageNumber=1&pageSize=3   | 10     | 10               |
-    |                            | 15     | 15               |
-    |                            | 3      | 3                |
-    | ?pageNumber=3&pageSize=10  | 0      | 0                |
-    | ?pageNumber=1              | 0      | 0                |
-    |                            | 0      | 0                |
-    | ?pageNumber=1&pageSize=100 | 15     | 15               |
+    | pagination_query                                                          | amount | pagination_count |
+    | ?pageSize=1                                                               | 15     | 15               |
+    | ?pageNumber=10                                                            | 15     | 15               |
+    | ?pageNumber=1&pageSize=10                                                 | 15     | 15               |
+    | ?pageSize=10&pageNumber=2                                                 | 13     | 13               |
+    | ?pageNumber=2&pageSize=7                                                  | 4      | 4                |
+    | ?pageNumber=3&pageSize=10                                                 | 7      | 7                |
+    | ?pageNumber=1&pageSize=3                                                  | 10     | 10               |
+    |                                                                           | 15     | 15               |
+    |                                                                           | 3      | 3                |
+    | ?pageNumber=3&pageSize=10                                                 | 0      | 0                |
+    | ?pageNumber=1                                                             | 0      | 0                |
+    |                                                                           | 0      | 0                |
+    | ?pageNumber=1&pageSize=100                                                | 15     | 15               |
+    | ?pageNumber=1&pageSize=100&payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45 | 15     | 1                |
 
 @WorkflowInstancePagination
 Scenario Outline: Get all workflow instances from API with provided status or PayloadId - Test pagination
@@ -115,9 +118,11 @@ Scenario Outline: Disable workflow instance pagination
     Then I will get a 200 response
     And I will recieve no pagination response
     Examples:
-    | query                                                                  |
-    | ?disablePagination=true                                                |
-    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45?disablePagination=true |
+    | query                                                                                           |
+    | ?disablePagination=true                                                                         |
+    | ?pageNumber=1&pageSize=10&disablePagination=true                                                |
+    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&disablePagination=true                          |
+    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&pageNumber=1&pageSize=10&disablePagination=true |
 
 @GetWorkflowInstances
 Scenario: Get all workflows instances by Id

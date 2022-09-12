@@ -93,18 +93,33 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             _outputHelper.WriteLine($"Retrieving {count} workflow instance/s using the payloadid={payloadId}");
             var workflowInstances = DataHelper.GetWorkflowInstances(count, payloadId);
             _outputHelper.WriteLine($"Retrieved {count} workflow instance/s");
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
 
             if (workflowInstances != null)
             {
-                var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
-                var actualWorkflowInstances = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowInstance>>>(result);
-                if (actualWorkflowInstances != null)
+                if (ApiHelper.Request.RequestUri.ToString().Contains("disablePagination"))
                 {
-                    Assertions.AssertWorkflowInstanceList(workflowInstances, actualWorkflowInstances.Data);
+                    var actualWorkflowInstances = JsonConvert.DeserializeObject<List<WorkflowInstance>>(result);
+                    if (actualWorkflowInstances != null)
+                    {
+                        Assertions.AssertWorkflowInstanceList(workflowInstances, actualWorkflowInstances);
+                    }
+                    else
+                    {
+                        throw new Exception("Api response could not be deserialized by the <List<WorkflowInstance>> object");
+                    }
                 }
                 else
                 {
-                    throw new Exception("Api response could not be deserialized by the List<WorkflowInstance> object");
+                    var actualWorkflowInstances = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowInstance>>>(result);
+                    if (actualWorkflowInstances != null)
+                    {
+                        Assertions.AssertWorkflowInstanceList(workflowInstances, actualWorkflowInstances.Data);
+                    }
+                    else
+                    {
+                        throw new Exception("Api response could not be deserialized by the <PagedResponseList<WorkflowInstance>> object");
+                    }
                 }
             }
             else
