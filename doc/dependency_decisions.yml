@@ -1430,3 +1430,10 @@
     :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
     :versions: []
     :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  -  Docker.DotNet
+  - :who: Victor Chang (mocsharp)
+    :why: MIT - https://github.com/dotnet/Docker.DotNet/blob/master/LICENSE
+    :versions: []
+    :when: 2022-09-12 16:27:00.000000000 +01:00
+
