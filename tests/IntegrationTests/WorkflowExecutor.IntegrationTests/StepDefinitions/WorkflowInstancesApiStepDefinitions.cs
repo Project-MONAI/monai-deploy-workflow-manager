@@ -98,7 +98,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             {
                 var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
                 var actualWorkflowInstances = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowInstance>>>(result);
-                Assertions.AssertWorkflowInstanceList(workflowInstances, actualWorkflowInstances.Data);
+                if (actualWorkflowInstances != null)
+                {
+                    Assertions.AssertWorkflowInstanceList(workflowInstances, actualWorkflowInstances.Data);
+                }
+                else
+                {
+                    throw new Exception("Api response could not be deserialized by the List<WorkflowInstance> object");
+                }
             }
             else
             {

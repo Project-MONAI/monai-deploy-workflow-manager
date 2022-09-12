@@ -43,13 +43,17 @@ Scenario: Get all workflows instances - empty
     And I can see expected workflow instances are returned
 
 @GetWorkflowInstances
-Scenario: Get all triggered workflows instances for payload 
-	Given I have an endpoint /workflowinstances?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45
+Scenario: Get all triggered workflows instances for payload
+    Given I have an endpoint /workflowinstances<query>
     And I have a Workflow Instance Existing_WFI_Created_Static_PayloadId with no artifacts
     And I have a Workflow Instance Existing_WFI_Dispatched_Static_PayloadId with no artifacts
     When I send a GET request
     Then I will get a 200 response
     And I can see 1 triggered workflow instances from payload id c2219298-44ec-44d6-b9c7-b2c3e5abaf45
+    Examples:
+    | query                                                                  |
+    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45                        |
+    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45?disablePagination=true |
 
 @WorkflowInstancePagination
 Scenario Outline: Get all workflow instances from API - Test pagination
