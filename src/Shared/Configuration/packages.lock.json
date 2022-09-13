@@ -49,17 +49,18 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.3-rc0012, )",
-        "resolved": "0.1.3-rc0012",
-        "contentHash": "cTVT2sId7/mGKTwuUvBqnoOAN7CBZmSlZK3WMXdBlmsHs3vHi5wvjho0sUP7psl7hhivd/cSP5cfZ8x2Sry3Xg==",
+        "requested": "[0.1.6-rc0001, )",
+        "resolved": "0.1.6-rc0001",
+        "contentHash": "hQMo8/7sWrn14KnTodUN8UkuPVnCDOScgMvfG3jErx6Tm6Bpyp6h4PXwL56Q2U0Og2pVG7X7aX2N0XpY+HWQMA==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.8",
           "Microsoft.Extensions.Logging": "6.0.0",
           "Newtonsoft.Json": "13.0.1",
           "RabbitMQ.Client": "6.4.0",
           "System.ComponentModel.Annotations": "5.0.0",
-          "System.IO.Abstractions": "17.0.18"
+          "System.IO.Abstractions": "17.1.1"
         }
       },
       "Monai.Deploy.Storage": {
