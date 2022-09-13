@@ -77,7 +77,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             };
 
             _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<Status?>(), It.IsAny<string>())).ReturnsAsync(() => workflowsInstances);
-            _workflowInstanceService.Setup(w => w.CountAsync()).ReturnsAsync(workflowsInstances.Count);
+            _workflowInstanceService.Setup(w => w.FilteredCountAsync(It.IsAny<Status?>(), It.IsAny<string>())).ReturnsAsync(workflowsInstances.Count);
             _uriService.Setup(s => s.GetPageUriString(It.IsAny<Filter.PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
             var result = await WorkflowInstanceController.GetListAsync(new Filter.PaginationFilter());

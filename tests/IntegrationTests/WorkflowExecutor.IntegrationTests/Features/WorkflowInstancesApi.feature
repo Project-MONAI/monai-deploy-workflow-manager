@@ -42,32 +42,48 @@ Scenario: Get all workflows instances - empty
     Then I will get a 200 response
     And I can see expected workflow instances are returned
 
+@GetWorkflowInstances
+Scenario: Get all triggered workflows instances for payload
+    Given I have an endpoint /workflowinstances<query>
+    And I have a Workflow Instance Existing_WFI_Created_Static_PayloadId with no artifacts
+    And I have a Workflow Instance Existing_WFI_Dispatched_Static_PayloadId with no artifacts
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see 1 triggered workflow instances from payload id c2219298-44ec-44d6-b9c7-b2c3e5abaf45
+    Examples:
+    | query                                                                                           |
+    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45                                                 |
+    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&pageNumber=1&pageSize=10                        |
+    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&pageNumber=1&pageSize=10&disablePagination=true |
+    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&disablePagination=true                          |
+
 @WorkflowInstancePagination
 Scenario Outline: Get all workflow instances from API - Test pagination
-    Given I have an endpoint /workflowinstances/<pagination_query>
+    Given I have an endpoint /workflowinstances<pagination_query>
     And I have <amount> Workflow Instances
     When I send a GET request
     Then I will get a 200 response
     And Pagination is working correctly for the <pagination_count> workflow instances
     Examples:
-    | pagination_query           | amount | pagination_count |
-    | ?pageSize=1                | 15     | 15               |
-    | ?pageNumber=10             | 15     | 15               |
-    | ?pageNumber=1&pageSize=10  | 15     | 15               |
-    | ?pageSize=10&pageNumber=2  | 13     | 13               |
-    | ?pageNumber=2&pageSize=7   | 4      | 4                |
-    | ?pageNumber=3&pageSize=10  | 7      | 7                |
-    | ?pageNumber=1&pageSize=3   | 10     | 10               |
-    |                            | 15     | 15               |
-    |                            | 3      | 3                |
-    | ?pageNumber=3&pageSize=10  | 0      | 0                |
-    | ?pageNumber=1              | 0      | 0                |
-    |                            | 0      | 0                |
-    | ?pageNumber=1&pageSize=100 | 15     | 15               |
+    | pagination_query                                                          | amount | pagination_count |
+    | ?pageSize=1                                                               | 15     | 15               |
+    | ?pageNumber=10                                                            | 15     | 15               |
+    | ?pageNumber=1&pageSize=10                                                 | 15     | 15               |
+    | ?pageSize=10&pageNumber=2                                                 | 13     | 13               |
+    | ?pageNumber=2&pageSize=7                                                  | 4      | 4                |
+    | ?pageNumber=3&pageSize=10                                                 | 7      | 7                |
+    | ?pageNumber=1&pageSize=3                                                  | 10     | 10               |
+    |                                                                           | 15     | 15               |
+    |                                                                           | 3      | 3                |
+    | ?pageNumber=3&pageSize=10                                                 | 0      | 0                |
+    | ?pageNumber=1                                                             | 0      | 0                |
+    |                                                                           | 0      | 0                |
+    | ?pageNumber=1&pageSize=100                                                | 15     | 15               |
+    | ?pageNumber=1&pageSize=100&payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45 | 15     | 1                |
 
 @WorkflowInstancePagination
 Scenario Outline: Get all workflow instances from API with provided status or PayloadId - Test pagination
-    Given I have an endpoint /workflowinstances/<pagination_query>
+    Given I have an endpoint /workflowinstances<pagination_query>
     And I have <amount> Workflow Instances
     When I send a GET request
     Then I will get a 200 response
@@ -77,11 +93,11 @@ Scenario Outline: Get all workflow instances from API with provided status or Pa
     | pagination_query                                           | amount | pagination_count | expected_status | expected_payloadId                   |
     | ?pageSize=1                                                | 15     | 15               |                 |                                      |
     | ?pageSize=1&status=created                                 | 15     | 15               | 0               |                                      |
-    | ?pageSize=1&payloadId=5450c3a9-2b19-45b0-8b17-fb10f89d1b2d | 15     | 15               |                 | 5450c3a9-2b19-45b0-8b17-fb10f89d1b2d |
+    | ?pageSize=1&payloadId=5450c3a9-2b19-45b0-8b17-fb10f89d1b2d | 15     | 1                |                 | 5450c3a9-2b19-45b0-8b17-fb10f89d1b2d |
 
 @WorkflowInstancePagination
 Scenario Outline: Invalid pagination returns 400
-    Given I have an endpoint /workflowinstances/<pagination_query>
+    Given I have an endpoint /workflowinstances<pagination_query>
     And I have 10 Workflow Instances
     When I send a GET request
     Then I will get a 400 response
@@ -93,6 +109,20 @@ Scenario Outline: Invalid pagination returns 400
     | ?pageNumber=NotANumber&pageSize=NotANumber | The value 'NotANumber' is not valid for PageSize."],"PageNumber":["The value 'NotANumber' is not valid for PageNumber. |
     | ?pageSize=10000000000000&pageNumber=2      | The value '10000000000000' is not valid for PageSize.                                                                   |
     | ?pageNumber=10000000000000&pageSize=1      | The value '10000000000000' is not valid for PageNumber.                                                                 |
+
+@WorkflowInstancePagination
+Scenario Outline: Disable workflow instance pagination
+	Given I have an endpoint /workflowinstances<query>
+    And I have a Workflow Instance Existing_WFI_Created_Static_PayloadId with no artifacts
+    When I send a GET request
+    Then I will get a 200 response
+    And I will recieve no pagination response
+    Examples:
+    | query                                                                                           |
+    | ?disablePagination=true                                                                         |
+    | ?pageNumber=1&pageSize=10&disablePagination=true                                                |
+    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&disablePagination=true                          |
+    | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&pageNumber=1&pageSize=10&disablePagination=true |
 
 @GetWorkflowInstances
 Scenario: Get all workflows instances by Id

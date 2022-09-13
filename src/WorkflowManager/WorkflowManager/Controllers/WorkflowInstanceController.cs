@@ -94,7 +94,8 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                     parsedStatus,
                     payloadId);
 
-                var dataTotal = await _workflowInstanceService.CountAsync();
+                var dataTotal = await _workflowInstanceService.FilteredCountAsync(parsedStatus, payloadId);
+
                 var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
 
                 return Ok(pagedReponse);
