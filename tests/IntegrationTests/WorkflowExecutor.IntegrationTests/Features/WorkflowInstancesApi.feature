@@ -66,6 +66,20 @@ Scenario Outline: Get all workflow instances from API - Test pagination
     | ?pageNumber=1&pageSize=100 | 15     | 15               |
 
 @WorkflowInstancePagination
+Scenario Outline: Get all workflow instances from API with provided status or PayloadId - Test pagination
+    Given I have an endpoint /workflowinstances/<pagination_query>
+    And I have <amount> Workflow Instances
+    When I send a GET request
+    Then I will get a 200 response
+    And Pagination is working correctly for the <pagination_count> workflow instances
+    And All results have correct <expected_status> and <expected_payloadId>
+    Examples:
+    | pagination_query                                           | amount | pagination_count | expected_status | expected_payloadId                   |
+    | ?pageSize=1                                                | 15     | 15               |                 |                                      |
+    | ?pageSize=1&status=created                                 | 15     | 15               | 0               |                                      |
+    | ?pageSize=1&payloadId=5450c3a9-2b19-45b0-8b17-fb10f89d1b2d | 15     | 15               |                 | 5450c3a9-2b19-45b0-8b17-fb10f89d1b2d |
+
+@WorkflowInstancePagination
 Scenario Outline: Invalid pagination returns 400
     Given I have an endpoint /workflowinstances/<pagination_query>
     And I have 10 Workflow Instances

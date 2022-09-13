@@ -44,6 +44,11 @@ namespace Monai.Deploy.WorkflowManager.Services
         /// <returns>Uri.</returns>
         public string GetPageUriString(PaginationFilter filter, string route)
         {
+            if (_baseUri.ToString().EndsWith('/') && route.StartsWith('/'))
+            {
+                route = route.TrimStart('/');
+            }
+
             var endpointUri = new Uri(string.Concat(_baseUri, route));
             var modifiedUri = QueryHelpers.AddQueryString(endpointUri.ToString(), "pageNumber", filter.PageNumber.ToString());
             modifiedUri = QueryHelpers.AddQueryString(modifiedUri, "pageSize", filter?.PageSize?.ToString() ?? string.Empty);

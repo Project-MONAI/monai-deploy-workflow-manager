@@ -40,5 +40,11 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         /// </summary>
         [ConfigurationKeyName("dicomAgents")]
         public DicomAgentConfiguration DicomAgents { get; set; } = new DicomAgentConfiguration();
+
+        /// <summary>
+        /// Gets or sets the argo callback rabbit override
+        /// </summary>
+        [ConfigurationKeyName("argoCallback")]
+        public ArgoCallbackConfiguration ArgoCallback { get; set; } = new ArgoCallbackConfiguration();
     }
 }

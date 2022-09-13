@@ -90,6 +90,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         {
             Guard.Against.Null(message, nameof(message));
 
+            using var loggerScope = _logger.BeginScope($"Correlation ID={message.CorrelationId}, Payload ID={payload.PayloadId}");
             var processed = true;
             var workflows = new List<WorkflowRevision>();
 
@@ -99,6 +100,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (workflows is null || workflows.Any() is false)
             {
+                _logger.NoMatchingWorkflowFoundForPayload();
                 return false;
             }
 
@@ -116,7 +118,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 processed &= await _workflowInstanceRepository.CreateAsync(workflowInstances);
 
-                var workflowInstanceIds = workflowInstances.Select(workflowInstance => workflowInstance.WorkflowId);
+                var workflowInstanceIds = workflowInstances.Select(workflowInstance => workflowInstance.Id);
                 await _payloadService.UpdateWorkflowInstanceIdsAsync(payload.Id, workflowInstanceIds).ConfigureAwait(false);
             }
 
@@ -124,6 +126,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (!processed)
             {
+                _logger.LogWarning("!processed");
                 return false;
             }
 

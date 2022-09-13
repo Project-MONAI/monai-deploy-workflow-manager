@@ -104,7 +104,6 @@ Scenario Outline: Update workflow with invalid details
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Name_Length       | is not a valid Workflow Name                            |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Desc_Length       | is not a valid Workflow Description                     |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_AETitle_Length    | is not a valid AE Title                                 |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_DataOrg           | is not a valid Informatics Gateway - dataOrigins        |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_ExportDest        | is not a valid Informatics Gateway - exportDestinations |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskDesc_Length   | is not a valid taskDescription                          |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskType_Length   | is not a valid taskType                                 |
@@ -134,6 +133,13 @@ Scenario: Add workflow with valid details
     Then I will get a 201 response
 
 @AddWorkflows
+Scenario: Add workflow with valid empty details
+    Given  I have an endpoint /workflows
+    And I have a body Basic_Workflow_2
+    When I send a POST request
+    Then I will get a 201 response
+
+@AddWorkflows
 Scenario Outline: Add workflow with invalid details
     Given  I have an endpoint /workflows
     And I have a body <post_body>
@@ -145,7 +151,6 @@ Scenario Outline: Add workflow with invalid details
     | Invalid_Workflow_Name_Length       | is not a valid Workflow Name                            |
     | Invalid_Workflow_Desc_Length       | is not a valid Workflow Description                     |
     | Invalid_Workflow_AETitle_Length    | is not a valid AE Title                                 |
-    | Invalid_Workflow_DataOrg           | is not a valid Informatics Gateway - dataOrigins        |
     | Invalid_Workflow_ExportDest        | is not a valid Informatics Gateway - exportDestinations |
     | Invalid_Workflow_TaskDesc_Length   | is not a valid taskDescription                          |
     | Invalid_Workflow_TaskType_Length   | is not a valid taskType                                 |

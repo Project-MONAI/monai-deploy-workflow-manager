@@ -23,13 +23,13 @@ fi
 if [ -f /.dockerenv ]; then
     echo "##### Installing apt packages..."
     apt-get update
-    apt-get install -y dcmtk sudo sqlite3
+    apt-get install -y dcmtk sudo 
 fi
 
 if [ ! -z ${CI} ]; then
     echo "##### Installing apt packages..."
     sudo apt-get update
-    sudo apt-get install -y dcmtk sqlite3
+    sudo apt-get install -y dcmtk 
 fi
 
 if [ -d "$RESULTS_DIR" ]; then

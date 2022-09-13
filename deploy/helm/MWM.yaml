@@ -27,9 +27,10 @@ enviromentVariables:
   WorkflowManager__storage__settings__accessKey: "rootminio"
   WorkflowManager__storage__settings__accessToken: "rootminio"
   WorkflowManager__storage__settings__executableLocation: "mc"
-  WorkflowManager__messaging__publisherSettings__endpoint: "rabbitmq.monai"
-  WorkflowManager__messaging__subscriberSettings__endpoint: "rabbitmq.monai"
+  WorkflowManager__messaging__publisherSettings__endpoint: "rabbitmq-monai.monai"
+  WorkflowManager__messaging__subscriberSettings__endpoint: "rabbitmq-monai.monai"
   WorkloadManagerDatabase__ConnectionString: "mongodb://root:rootpassword@mongo-monai.monai:27017"
+  Kestrel__EndPoints__Http__Url: "http://::5000"
 
 enviromentVariablesFromSecrets:
   secrets:

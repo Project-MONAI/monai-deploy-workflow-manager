@@ -70,6 +70,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             }
         }
 
+        [Given(@"I publish a Workflow Request Message (.*) with artifacts (.*) in minio")]
         [When(@"I publish a Workflow Request Message (.*) with artifacts (.*) in minio")]
         public async Task WhenIPublishAWorkflowRequestMessageWithObjects(string name, string folderName)
         {
@@ -151,6 +152,20 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 }
 
                 Thread.Sleep(1000);
+            }
+        }
+
+        [Then(@"No workflow instances will be created")]
+        public void ThenTheWorkflowWillNotTriggerAnyNewWorkflowInstances()
+        {
+            foreach (var workflowRevision in DataHelper.WorkflowRevisions)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    var workflowInstance = MongoClient.GetWorkflowInstanceByWorkflowId(workflowRevision.WorkflowId);
+                    workflowInstance.Should().BeNull();
+                    Thread.Sleep(500);
+                }
             }
         }
     }
