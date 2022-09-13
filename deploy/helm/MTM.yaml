@@ -15,9 +15,9 @@
 replicaCount: 1
 
 image:
-  repository: mtm
+  repository: registry.gitlab.com/answerdigital/londonai/aide/workflow-manager-images/task-manager
   pullPolicy: IfNotPresent
-  tag: "02"
+  tag: 2022-09-05-01
 
 imagePullSecrets:
  - name: gitlab-image-pull
@@ -53,6 +53,16 @@ service:
   type: ClusterIP
   port: 5000
 
+serviceAccount:
+  create: true
+  name: mtm
+  namespace: monai
+  clusterrole:
+    name: clusterrole-taskmanager-argo-secret-master
+    rules:
+      apiGroups: [""]
+      resources: ["secrets"]
+      verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 
 
   

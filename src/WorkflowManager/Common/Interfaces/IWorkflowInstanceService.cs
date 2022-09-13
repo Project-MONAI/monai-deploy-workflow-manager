@@ -31,7 +31,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// <param name="skip"></param>
         /// <param name="limit"></param>
         /// <param name="status"></param>
+        /// <param name="payloadId"></param>
         /// <returns></returns>
-        public Task<IList<WorkflowInstance>> GetAllAsync(int? skip = null, int? limit = null, Status? status = null);
+        public Task<IList<WorkflowInstance>> GetAllAsync(int? skip = null, int? limit = null, Status? status = null, string? payloadId = null);
     }
 }

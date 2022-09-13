@@ -318,6 +318,20 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     CallingAeTitle = "MWM",
                 }
             },
+            new WorkflowRequestTestData
+            {
+                Name = "Static_AeTitle_WF_Request",
+                WorkflowRequestMessage = new WorkflowRequestMessage
+                {
+                    Bucket = "bucket1",
+                    PayloadId = new Guid("23b96697-0174-465c-b9cb-368b20a4591d"),
+                    Workflows = new List<string>() { },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.Now,
+                    CalledAeTitle = "Static_AE",
+                    CallingAeTitle = "Static_AE",
+                }
+            },
         };
     }
 }

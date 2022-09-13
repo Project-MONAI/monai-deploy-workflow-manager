@@ -116,7 +116,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 processed &= await _workflowInstanceRepository.CreateAsync(workflowInstances);
 
-                var workflowInstanceIds = workflowInstances.Select(workflowInstance => workflowInstance.WorkflowId);
+                var workflowInstanceIds = workflowInstances.Select(workflowInstance => workflowInstance.Id);
                 await _payloadService.UpdateWorkflowInstanceIdsAsync(payload.Id, workflowInstanceIds).ConfigureAwait(false);
             }
 
@@ -339,6 +339,24 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return;
             }
 
+            var files = new List<VirtualFileInfo>();
+            foreach (var artifact in artifactValues)
+            {
+                if (artifact is not null)
+                {
+                    var objects = await _storageService.ListObjectsAsync(
+                        workflowInstance.BucketId,
+                        artifact,
+                        true);
+                    if (objects.IsNullOrEmpty() is false)
+                    {
+                        files.AddRange(objects.ToList());
+                    }
+                }
+            }
+
+            artifactValues = files.Select(f => f.FilePath).ToArray();
+
             await DispatchDicomExport(workflowInstance, task, exportList, artifactValues, correlationId);
         }
 
@@ -346,13 +364,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         {
             var validExportDestinations = workflow.Workflow?.InformaticsGateway?.ExportDestinations;
 
-#pragma warning disable CS8604 // Possible null reference argument.
-            if (exportDestinations.IsNullOrEmpty()
+            if (exportDestinations is null
+                || exportDestinations.IsNullOrEmpty()
+                || validExportDestinations is null
                 || validExportDestinations.IsNullOrEmpty())
             {
                 return Array.Empty<string>();
             }
-#pragma warning restore CS8604 // Possible null reference argument.
 
             foreach (var exportDestination in exportDestinations)
             {
@@ -509,7 +527,28 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
         private async Task<bool> DispatchTask(WorkflowInstance workflowInstance, WorkflowRevision workflow, TaskExecution taskExec, string correlationId)
         {
-            var outputArtifacts = workflow?.Workflow?.Tasks?.FirstOrDefault(t => t.Id == taskExec.TaskId)?.Artifacts?.Output;
+            var task = workflow?.Workflow?.Tasks?.FirstOrDefault(t => t.Id == taskExec.TaskId);
+
+            if (task is null)
+            {
+                return false;
+            }
+
+            var outputArtifacts = task.Artifacts?.Output;
+
+            if (outputArtifacts is not null && outputArtifacts.Any())
+            {
+                foreach (var artifact in outputArtifacts)
+                {
+                    if (!string.IsNullOrWhiteSpace(artifact.Value))
+                    {
+                        continue;
+                    }
+
+                    artifact.Value = $"{{ context.executions.{task.Id}.output_dir }}/{artifact.Name}";
+                }
+            }
+
             var pathOutputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(outputArtifacts ?? Array.Empty<Artifact>(), workflowInstance.PayloadId, workflowInstance.Id, workflowInstance.BucketId, false);
 
             var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(taskExec, workflowInstance, pathOutputArtifacts, correlationId, _storageConfiguration);

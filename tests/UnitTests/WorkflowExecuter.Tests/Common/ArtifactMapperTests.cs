@@ -75,9 +75,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
 
             var expected = new Dictionary<string, string>
             {
-                { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/" },
-                { "dicomimage", $"{payloadId}/dcm/" },
-                { "outputtaskdir", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/" }
+                { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}" },
+                { "dicomimage", $"{payloadId}/dcm" },
+                { "outputtaskdir", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}" }
             };
 
             var workflowInstance = new WorkflowInstance
@@ -96,14 +96,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                             Status = TaskExecutionStatus.Dispatched,
                             OutputArtifacts = new Dictionary<string, string>
                             {
-                                { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/" }
+                                { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}" }
                             }
                         },
                         new TaskExecution
                         {
                             TaskId = "coffee",
                             Status = TaskExecutionStatus.Created,
-                            OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/"
+                            OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}"
                         }
                     }
             };
@@ -111,9 +111,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
             _workflowInstanceRepository.Setup(w => w.GetTaskByIdAsync(workflowInstance.Id, "image_type_detector")).ReturnsAsync(workflowInstance.Tasks[0]);
             _workflowInstanceRepository.Setup(w => w.GetTaskByIdAsync(workflowInstance.Id, "coffee")).ReturnsAsync(workflowInstance.Tasks[1]);
 
-            var value1 = new KeyValuePair<string, string>("dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/");
-            var value2 = new KeyValuePair<string, string>("dicomimage", $"{payloadId}/dcm/");
-            var value3 = new KeyValuePair<string, string>("outputtaskdir", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/");
+            var value1 = new KeyValuePair<string, string>("dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}");
+            var value2 = new KeyValuePair<string, string>("dicomimage", $"{payloadId}/dcm");
+            var value3 = new KeyValuePair<string, string>("outputtaskdir", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}");
 
             _storageService.Setup(w => w.VerifyObjectExistsAsync(workflowInstance.BucketId, value1)).ReturnsAsync(value1);
             _storageService.Setup(w => w.VerifyObjectExistsAsync(workflowInstance.BucketId, value2)).ReturnsAsync(value2);
@@ -169,14 +169,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                             Status = TaskExecutionStatus.Dispatched,
                             OutputArtifacts = new Dictionary<string, string>
                             {
-                                { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/" }
+                                { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}" }
                             }
                         },
                         new TaskExecution
                         {
                             TaskId = "coffee",
                             Status = TaskExecutionStatus.Created,
-                            OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/"
+                            OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}"
                         }
                     }
             };
@@ -291,9 +291,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
 
             var expected = new Dictionary<string, string>
             {
-                { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/" },
-                { "dicomimage", $"{payloadId}/dcm/" },
-                { "outputtaskdir", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/" }
+                { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}" },
+                { "dicomimage", $"{payloadId}/dcm" },
+                { "outputtaskdir", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}" }
             };
 
             var workflowInstance = new WorkflowInstance
@@ -312,14 +312,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                             Status = TaskExecutionStatus.Dispatched,
                             OutputArtifacts = new Dictionary<string, string>
                             {
-                                { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/" }
+                                { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}" }
                             }
                         },
                         new TaskExecution
                         {
                             TaskId = "coffee",
                             Status = TaskExecutionStatus.Created,
-                            OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/"
+                            OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}"
                         }
                     }
             };
@@ -327,9 +327,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
             _workflowInstanceRepository.Setup(w => w.GetTaskByIdAsync(workflowInstance.Id, "image_type_detector")).ReturnsAsync(workflowInstance.Tasks[0]);
             _workflowInstanceRepository.Setup(w => w.GetTaskByIdAsync(workflowInstance.Id, "coffee")).ReturnsAsync(workflowInstance.Tasks[1]);
 
-            var value1 = new KeyValuePair<string, string>("dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/");
-            var value2 = new KeyValuePair<string, string>("dicomimage", $"{payloadId}/dcm/");
-            var value3 = new KeyValuePair<string, string>("outputtaskdir", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}/");
+            var value1 = new KeyValuePair<string, string>("dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}");
+            var value2 = new KeyValuePair<string, string>("dicomimage", $"{payloadId}/dcm");
+            var value3 = new KeyValuePair<string, string>("outputtaskdir", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}");
 
             _storageService.Setup(w => w.VerifyObjectExistsAsync(workflowInstance.BucketId, value1)).ReturnsAsync(new KeyValuePair<string, string>());
             _storageService.Setup(w => w.VerifyObjectExistsAsync(workflowInstance.BucketId, value2)).ReturnsAsync(value2);

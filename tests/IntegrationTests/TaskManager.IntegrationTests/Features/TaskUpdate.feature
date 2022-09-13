@@ -54,5 +54,4 @@ Scenario: TaskDispatchEvent with different permutations is published and matchin
     Examples:
     | taskDispatchMessage                 |
     | Task_Dispatch_Basic_Clinical_Review |
-    | Task_Dispatch_Basic_Argo            |
     | Task_Dispatch_Invalid               |

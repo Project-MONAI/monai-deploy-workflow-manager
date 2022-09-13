@@ -84,7 +84,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             {
                 if (workflowArtifact.Value == "{{ context.input.dicom }}")
                 {
-                    workflowInstanceTask.InputArtifacts[workflowArtifact.Name].Should().Match($"{payloadId}/dcm/");
+                    workflowInstanceTask.InputArtifacts[workflowArtifact.Name].Should().Match($"{payloadId}/dcm");
                 }
                 else if (workflowArtifact.Value.Contains("artifacts"))
                 {
@@ -108,7 +108,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
                 if (workflowArtifact.Value == "{{ context.input.dicom }}")
                 {
-                    taskDispatchArtifact.RelativeRootPath.Should().Match($"{payloadId}/dcm/");
+                    taskDispatchArtifact.RelativeRootPath.Should().Match($"{payloadId}/dcm");
                 }
                 else if (workflowArtifact.Value.Contains("artifacts"))
                 {
@@ -283,34 +283,42 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             payloadCollection.Timestamp.Should().BeCloseTo(DateTime.UtcNow, precision: TimeSpan.FromMinutes(1));
             payloadCollection.PatientDetails.Should().BeEquivalentTo(patientDetails);
         }
+        public void AssertPayloadWorkflowInstanceId(Payload payloadCollection, List<WorkflowInstance> workflowInstances)
+        {
+            foreach (var workflowInstance in workflowInstances)
+            {
+                payloadCollection.WorkflowInstanceIds.Should().Contain(workflowInstance.Id.ToString());
+            }
+        }
 
         public void AssertWorkflowIstanceMatchesExpectedTaskStatusUpdate(WorkflowInstance updatedWorkflowInstance, TaskExecutionStatus taskExecutionStatus)
         {
             updatedWorkflowInstance.Tasks[0].Status.Should().Be(taskExecutionStatus);
         }
 
-        public static void AssertPagination<T>(int count, string queries, T? Response)
+        public static void AssertPagination<T>(int count, string? queries, T? Response)
         {
             var responseType = Response?.GetType();
-            var data = responseType?.GetProperty("Data")?.GetValue(Response, null) as ICollection;
-            var totalPages = responseType?.GetProperty("TotalPages")?.GetValue(Response, null);
-            var pageSize = responseType?.GetProperty("PageSize")?.GetValue(Response, null);
-            var totalRecords = responseType?.GetProperty("TotalRecords")?.GetValue(Response, null);
-            var pageNumber = responseType?.GetProperty("PageNumber")?.GetValue(Response, null);
-            int pageNumberQuery = 1;
-            int pageSizeQuery = 10;
-            var splitQuery = queries.Split("&").ToList();
-            if (queries != "")
+            GetPropertyValues(Response, responseType, out var data, out var totalPages, out var pageSize, out var totalRecords, out var pageNumber);
+            var pageNumberQuery = 1;
+            var pageSizeQuery = 10;
+
+            if (string.IsNullOrWhiteSpace(queries) is false)
             {
+                var splitQuery = queries?.Split("&") ?? Array.Empty<string>();
                 foreach (var query in splitQuery)
                 {
-                    if (query.Contains("pageNumber"))
+                    if (query.Contains("status=") || query.Contains("payloadId="))
                     {
-                        pageNumberQuery = Int32.Parse(query.Split("=")[1]);
+                        continue;
                     }
-                    else if (query.Contains("pageSize"))
+                    else if (query.Contains("pageNumber") && int.TryParse(query.Split("=")[1], out var pageNumberResult))
                     {
-                        pageSizeQuery = Int32.Parse(query.Split("=")[1]);
+                        pageNumberQuery = pageNumberResult;
+                    }
+                    else if (query.Contains("pageSize") && int.TryParse(query.Split("=")[1], out var pageSizeResult))
+                    {
+                        pageSizeQuery = pageSizeResult;
                     }
                     else
                     {
@@ -318,11 +326,21 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     }
                 }
             }
+
             AssertDataCount(data, pageNumberQuery, pageSizeQuery, count);
             AssertTotalPages(totalPages, count, pageSizeQuery);
             totalRecords.Should().Be(count);
             pageNumber.Should().Be(pageNumberQuery);
             pageSize.Should().Be(pageSizeQuery);
+        }
+
+        private static void GetPropertyValues<T>(T? Response, Type? responseType, out ICollection? data, out object? totalPages, out object? pageSize, out object? totalRecords, out object? pageNumber)
+        {
+            data = responseType?.GetProperty("Data")?.GetValue(Response, null) as ICollection;
+            totalPages = responseType?.GetProperty("TotalPages")?.GetValue(Response, null);
+            pageSize = responseType?.GetProperty("PageSize")?.GetValue(Response, null);
+            totalRecords = responseType?.GetProperty("TotalRecords")?.GetValue(Response, null);
+            pageNumber = responseType?.GetProperty("PageNumber")?.GetValue(Response, null);
         }
 
         public void WorkflowInstanceIncludesTaskDetails(List<TaskDispatchEvent> taskDispatchEvents, WorkflowInstance workflowInstance, WorkflowRevision workflowRevision)
