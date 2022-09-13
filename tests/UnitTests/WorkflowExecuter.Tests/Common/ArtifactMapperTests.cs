@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -35,13 +36,15 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
 
         private readonly Mock<IWorkflowInstanceRepository> _workflowInstanceRepository;
         private readonly Mock<IStorageService> _storageService;
+        private readonly Mock<ILogger<ArtifactMapper>> _logger;
 
         public ArtifactMapperTests()
         {
             _workflowInstanceRepository = new Mock<IWorkflowInstanceRepository>();
             _storageService = new Mock<IStorageService>();
+            _logger = new Mock<ILogger<ArtifactMapper>>();
 
-            ArtifactMapper = new ArtifactMapper(_workflowInstanceRepository.Object, _storageService.Object);
+            ArtifactMapper = new ArtifactMapper(_workflowInstanceRepository.Object, _storageService.Object, _logger.Object);
         }
 
         [Fact]

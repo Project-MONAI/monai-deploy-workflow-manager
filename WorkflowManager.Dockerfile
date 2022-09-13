@@ -39,7 +39,6 @@ RUN apt-get clean \
  && apt-get install -y --no-install-recommends \
     libssl1.1 \
     openssl \
-    sqlite3 \
    && rm -rf /var/lib/apt/lists
 
 WORKDIR /opt/monai/wm

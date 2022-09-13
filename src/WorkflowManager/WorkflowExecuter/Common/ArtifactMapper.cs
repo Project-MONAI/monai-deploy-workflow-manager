@@ -15,9 +15,11 @@
  */
 
 using Ardalis.GuardClauses;
+using Microsoft.Extensions.Logging;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Logging.Logging;
 
 namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 {
@@ -25,14 +27,16 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
     {
         private readonly IWorkflowInstanceRepository _workflowInstanceRepository;
         private readonly IStorageService _storageService;
+        private readonly ILogger<ArtifactMapper> _logger;
 
         public ArtifactMapper(
             IWorkflowInstanceRepository workflowInstanceRepository,
-            IStorageService storageService
-            )
+            IStorageService storageService,
+            ILogger<ArtifactMapper> logger)
         {
             _workflowInstanceRepository = workflowInstanceRepository ?? throw new ArgumentNullException(nameof(workflowInstanceRepository));
             _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet = true)
@@ -137,12 +141,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                     var artifactName = variableWords[4];
                     var outputArtifact = task.OutputArtifacts?.FirstOrDefault(a => a.Key == artifactName);
 
-                    if (outputArtifact is null)
+                    if (!outputArtifact.HasValue)
                     {
                         return default;
                     }
 
-                    return await VerifyExists((KeyValuePair<string, string>)outputArtifact, bucketId, shouldExistYet);
+                    return await VerifyExists(outputArtifact.Value, bucketId, shouldExistYet);
                 }
             }
 
@@ -158,6 +162,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
             if (shouldExistYet)
             {
+                _logger.VerifyArtifactExistence(bucketId, artifact.Key, artifact.Value);
                 artifact = await _storageService.VerifyObjectExistsAsync(bucketId, artifact);
             }
 

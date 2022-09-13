@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
@@ -23,20 +25,22 @@ using Monai.Deploy.Messaging.Messages;
 
 namespace Monai.Deploy.WorkflowManager.Tests
 {
+    internal class DummyMessageSubscriberHealtCheck : SubscriberServiceHealthCheckRegistrationBase
+    {
+        public override IHealthChecksBuilder Configure(IHealthChecksBuilder builder, HealthStatus? failureStatus = null, IEnumerable<string> tags = null, TimeSpan? timeout = null) => builder;
+    }
+
+    internal class DummyMessagePublisherHealtCheck : PublisherServiceHealthCheckRegistrationBase
+    {
+        public override IHealthChecksBuilder Configure(IHealthChecksBuilder builder, HealthStatus? failureStatus = null, IEnumerable<string> tags = null, TimeSpan? timeout = null) => builder;
+    }
+
     internal class DummyMessagePublisherRegistrar : PublisherServiceRegistrationBase
     {
-        public DummyMessagePublisherRegistrar(string fullyQualifiedAssemblyName) : base(fullyQualifiedAssemblyName)
-        {
-        }
-
         public override IServiceCollection Configure(IServiceCollection services) => services;
     }
     internal class DummyMessageSubscriberRegistrar : SubscriberServiceRegistrationBase
     {
-        public DummyMessageSubscriberRegistrar(string fullyQualifiedAssemblyName) : base(fullyQualifiedAssemblyName)
-        {
-        }
-
         public override IServiceCollection Configure(IServiceCollection services) => services;
     }
 

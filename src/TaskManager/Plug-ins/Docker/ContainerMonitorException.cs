@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,15 +14,27 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.TaskManager
+using System.Runtime.Serialization;
+
+namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 {
-    public static class PluginStrings
+    [Serializable]
+    internal class ContainerMonitorException : Exception
     {
-        // note not to be confused with the ApplicationId Monai.Deploy.WorkflowManager.TaskManager.Argo
-        public const string Argo = "argo";
+        public ContainerMonitorException()
+        {
+        }
 
-        public const string Docker = "docker";
+        public ContainerMonitorException(string? message) : base(message)
+        {
+        }
 
-        public static readonly IReadOnlyList<string> PlugsRequiresPermanentAccoutns = new List<string>() { Argo, Docker };
+        public ContainerMonitorException(string? message, Exception? innerException) : base(message, innerException)
+        {
+        }
+
+        protected ContainerMonitorException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
     }
 }

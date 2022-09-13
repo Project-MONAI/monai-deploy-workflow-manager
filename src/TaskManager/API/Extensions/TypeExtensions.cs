@@ -56,7 +56,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Extensions
 
                           if (assembly is null)
                           {
-                              assembly = Assembly.Load($"{AppDomain.CurrentDomain.BaseDirectory}{name.FullName}.dll");
+                              assembly = Assembly.LoadFile($"{AppDomain.CurrentDomain.BaseDirectory}{name.FullName}.dll");
                           }
 
                           return assembly;

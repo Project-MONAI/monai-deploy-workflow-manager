@@ -18,19 +18,22 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.1" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.6-rc0001" />
+    <Compile Include="..\..\Shared\VerifyLogExtension.cs" Link="VerifyLogExtension.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
     <PackageReference Include="Moq" Version="4.18.2" />
-    <PackageReference Include="xunit" Version="2.4.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+    <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="17.1.1" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -41,8 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\TaskManager\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />
-    <ProjectReference Include="..\..\..\src\TaskManager\TaskManager\Monai.Deploy.WorkflowManager.TaskManager.csproj" />
+    <ProjectReference Include="..\..\..\src\TaskManager\Plug-ins\Docker\Monai.Deploy.WorkflowManager.TaskManager.Docker.csproj" />
   </ItemGroup>
 
 </Project>

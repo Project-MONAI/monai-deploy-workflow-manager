@@ -20,6 +20,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <CodeAnalysisRuleSet>..\..\..\.sonarlint\project-monai_monai-deploy-workflow-managercsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,26 +28,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityModel.OidcClient" Version="5.0.2" />
-    <PackageReference Include="KubernetesClient" Version="7.2.19" />
-    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="6.0.8">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.6-rc0001" />
-    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.5" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj" />
     <ProjectReference Include="..\..\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />
+    <PackageReference Include="Docker.DotNet" Version="3.125.10" />
   </ItemGroup>
-
-  <PropertyGroup>
-    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
-    <CodeAnalysisRuleSet>..\..\..\.sonarlint\project-monai_monai-deploy-workflow-managercsharp.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
 
 </Project>
