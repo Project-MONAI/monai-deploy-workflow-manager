@@ -94,7 +94,7 @@ Scenario: Publish a valid workflow request with an existing Workflow Instance wi
 @DeleteWorkflows
 Scenario: Delete a workflow with 1 revision and the workflow cannot trigger any new workflow instances
     Given I have a clinical workflow Basic_Workflow_1_Deleted
-    And I publish a Workflow Request Message Static_AeTitle_WF_Request with artifacts full_patient_metadata in minio
+    And I publish a Workflow Request Message No_Matching_AE_Title with artifacts full_patient_metadata in minio
     Then No workflow instances will be created
 
 @DeleteWorkflows
