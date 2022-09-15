@@ -24,7 +24,7 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
 {
     public static partial class Log
     {
-        [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "{ServiceName} started.")]
+        [LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = "{ServiceName} started.")]
         public static partial void ServiceStarted(this ILogger logger, string serviceName);
 
         [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "{ServiceName} starting.")]
@@ -105,6 +105,9 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
         [LoggerMessage(EventId = 27, Level = LogLevel.Error, Message = "The following task: {taskId} in workflow {workflowInstanceId} is currently timed out and not processing anymore updates, timed out at {timedOut}.")]
         public static partial void TaskTimedOut(this ILogger logger, string taskId, string workflowInstanceId, DateTime timedOut);
 
+        [LoggerMessage(EventId = 28, Level = LogLevel.Warning, Message = "Not Processing workflow: {workflowInstanceId} as it already has a status of {status}")]
+        public static partial void WorkflowBadStatus(this ILogger logger, string workflowInstanceId, string status);
+
         public static void TaskComplete(this ILogger logger, TaskExecution task, WorkflowInstance workflowInstance, PatientDetails patientDetails, string correlationId, string taskStatus)
         {
             logger.LogInformation("TaskComplete Task {task}, workflowInstance {workflowInstance}, patientDetails {patientDetails}, correlationId {correlationId}, taskStatus {taskStatus}",
@@ -114,21 +117,15 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
         public static void LogControllerStartTime(this ILogger logger, ActionExecutingContext context)
         {
             var request = context.HttpContext.Request;
-            var correlationId = request.Headers["correlationId"].FirstOrDefault() ?? Guid.NewGuid().ToString();
             var body = JsonConvert.SerializeObject(context.ActionArguments.FirstOrDefault());
-            var startTime = DateTime.UtcNow;
-            context.HttpContext.Items["startTime"] = startTime;
-            context.HttpContext.Items["correlationId"] = correlationId;
-
-            logger.LogInformation("ControllerActionStart data StartTime {starttime}, HttpType {httptype}, Path {path}, QueryString {querystring}, Body {body}, CorrelationId {correlationId}",
-               startTime, request.Method, request.Path, request.QueryString.Value.ToString(), body, correlationId);
+            logger.LogInformation("ControllerActionStart data  HttpType {httptype}, Path {path}, QueryString {querystring}, Body {body}",
+            request.Method, request.Path, request.QueryString.Value.ToString(), body);
         }
 
         public static void LogControllerEndTime(this ILogger logger, ResultExecutedContext context)
         {
             var request = context.HttpContext.Request;
             var response = context.HttpContext.Response;
-            var correlationId = context.HttpContext.Items["correlationId"] ?? "NotFound";
 
             var startTime = context.HttpContext.Items["startTime"] as DateTime? ?? DateTime.UtcNow;
             var endtime = DateTime.UtcNow;
@@ -140,9 +137,10 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
                 objResult = (ObjectResult)context.Result;
             }
 
-            logger.LogInformation("ControllerActionEnd data StartTime {starttime}, EndTime {endtime}, Duration {duration}, HttpType {httptype}, Path {path}, QueryString {querystring}, StatusCode {statuscode}, Result {result}, CorrelationId {correlationId}",
-                startTime, endtime, (endtime - startTime).TotalMilliseconds, request.Method, request.Path,
-                request.QueryString.Value.ToString(), response.StatusCode, JsonConvert.SerializeObject(objResult), correlationId);
+            logger.LogInformation("ControllerActionEnd data  EndTime {endtime}, Duration {duration}, HttpType {httptype}, Path {path}, QueryString {querystring}, StatusCode {statuscode}, Result {result}",
+                endtime, (endtime - startTime).TotalMilliseconds, request.Method, request.Path,
+                request.QueryString.Value.ToString(), response.StatusCode, JsonConvert.SerializeObject(objResult));
+
         }
     }
 }

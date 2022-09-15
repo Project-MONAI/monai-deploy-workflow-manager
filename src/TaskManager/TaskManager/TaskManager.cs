@@ -31,6 +31,7 @@ using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.Logging;
+using Minio.DataModel;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
@@ -133,12 +134,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         {
             Guard.Against.Null(args, nameof(args));
 
-            using var loggingScope = _logger.BeginScope($"Message Type={args.Message.MessageDescription}, ID={args.Message.MessageId}. Correlation ID={args.Message.CorrelationId}");
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["correlationId"] = args.Message.CorrelationId,
+                ["messageId"] = args.Message.MessageId,
+                ["messageType"] = args.Message.MessageDescription
+            });
+
 
             JsonMessage<T>? message = null;
             try
             {
                 message = args.Message.ConvertToJsonMessage<T>();
+
                 // Run action on the message
                 await func(message).ConfigureAwait(false);
             }
@@ -320,6 +328,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             var eventInfo = new API.Models.TaskDispatchEventInfo(message.Body);
             try
             {
+                using var messageLoggingScope = _logger.BeginScope(new Dictionary<string, object>
+                {
+                    ["workflowInstanceId"] = eventInfo.Event.WorkflowInstanceId,
+                    ["taskId"] = eventInfo.Event.TaskId,
+                    ["executionId"] = eventInfo.Event.ExecutionId
+                });
+
                 await _taskDispatchEventService.CreateAsync(eventInfo).ConfigureAwait(false);
                 message.Body.Validate();
                 pluginAssembly = _options.Value.TaskManager.PluginAssemblyMappings[message.Body.TaskPluginType];
@@ -536,7 +551,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 return;
             }
 
-            using var loggerScope = _logger.BeginScope($"Workflow ID={WorkflowInstanceId}, Execution ID={executionId}, Task ID={taskId}, Correlation ID={message.CorrelationId}");
+            using var loggingScope = (_logger.BeginScope(new Dictionary<string, object>
+            {
+                ["correlationId"] = message.CorrelationId,
+                ["workflowInstanceId"] = WorkflowInstanceId,
+                ["taskId"] = taskId,
+                ["executionId"] = executionId
+            }));
 
             try
             {

@@ -200,6 +200,25 @@
           "Serilog.Sinks.File": "5.0.0"
         }
       },
+      "Serilog.Enrichers.Environment": {
+        "type": "Direct",
+        "requested": "[2.2.0, )",
+        "resolved": "2.2.0",
+        "contentHash": "DMrj3A4l65kc4JouQyZjjFv7N58Y7lGsB81kSzorTwUGeI2wrTy7CVwSOfG90/Pcu/HV5bwGrUmxDZ38pON+5Q==",
+        "dependencies": {
+          "Serilog": "2.3.0"
+        }
+      },
+      "Serilog.Exceptions": {
+        "type": "Direct",
+        "requested": "[8.4.0, )",
+        "resolved": "8.4.0",
+        "contentHash": "nc/+hUw3lsdo0zCj0KMIybAu7perMx79vu72w0za9Nsi6mWyNkGXxYxakAjWB7nEmYL6zdmhEQRB4oJ2ALUeug==",
+        "dependencies": {
+          "Serilog": "2.8.0",
+          "System.Reflection.TypeExtensions": "4.7.0"
+        }
+      },
       "Serilog.Sinks.Http": {
         "type": "Direct",
         "requested": "[8.0.0, )",
@@ -230,15 +249,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.12.27",
-        "contentHash": "pCX0yHPFuREXOqGaEQoCSlPZwsiijT1rBBiyk1pdD19Db8gVFglO7wMbxl37OhRNcLZprmtWJFvaDfuzeV10Wg=="
+        "resolved": "3.7.12.29",
+        "contentHash": "bxSbEjbCyAzjmUpxVKXiQhkXEvb3w9OHL7AOL9LItY1f5xLB9/qbtHoi5FvmZXTPPi2RahPJr9fDyHMLwQnxiA=="
       },
       "AWSSDK.SecurityToken": {
         "type": "Transitive",
-        "resolved": "3.7.1.191",
-        "contentHash": "tTIqJ/QKaPzTu5ZPdRFa2sW9p5F441RLV7nDdTAVVuu6oLyemna0bTtE+luGLaw17oE4GZHpa5n5p0oJmpzcxA==",
+        "resolved": "3.7.1.193",
+        "contentHash": "xDZAerod8OUtyIgIYPiGRO+PRdGDjepGGgH2/DuAK/aoARU/FinaFr+yuUjJItrP53dCezbpdFVSRa1BFpIGfA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.12.27, 4.0.0)"
+          "AWSSDK.Core": "[3.7.12.29, 4.0.0)"
         }
       },
       "Crc32.NET": {
@@ -1347,6 +1366,11 @@
           "System.Runtime": "4.3.0"
         }
       },
+      "System.Reflection.TypeExtensions": {
+        "type": "Transitive",
+        "resolved": "4.7.0",
+        "contentHash": "VybpaOQQhqE6siHppMktjfGBw1GCwvCqiufqmP8F1nj7fTUNtW35LOEt3UZTEsECfo+ELAl/9o9nJx3U91i7vA=="
+      },
       "System.Resources.ResourceManager": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -1626,111 +1650,112 @@
       "monai.deploy.workflowmanager.authentication": {
         "type": "Project",
         "dependencies": {
-          "Ardalis.GuardClauses": "4.0.1",
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.8",
-          "Monai.Deploy.WorkflowManager.Common": "1.0.0"
+          "Ardalis.GuardClauses": "[4.0.1, )",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "[6.0.8, )",
+          "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.common": {
         "type": "Project",
         "dependencies": {
-          "Ardalis.GuardClauses": "4.0.1",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
-          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
-          "Monai.Deploy.WorkflowManager.Database": "1.0.0",
-          "Monai.Deploy.WorkflowManager.Storage": "1.0.0"
+          "Ardalis.GuardClauses": "[4.0.1, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[6.0.0, )",
+          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Database": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Storage": "[1.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.conditionsresolver": {
         "type": "Project",
         "dependencies": {
-          "Ardalis.GuardClauses": "4.0.1",
-          "Monai.Deploy.WorkflowManager.Common": "1.0.0",
-          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
-          "Monai.Deploy.WorkflowManager.Database": "1.0.0",
-          "Monai.Deploy.WorkflowManager.Storage": "1.0.0"
+          "Ardalis.GuardClauses": "[4.0.1, )",
+          "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Database": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Storage": "[1.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.configuration": {
         "type": "Project",
         "dependencies": {
-          "Karambolo.Extensions.Logging.File": "3.3.1",
-          "Microsoft.Extensions.Configuration": "6.0.1",
-          "Microsoft.Extensions.Logging": "6.0.0",
-          "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.3-rc0012",
-          "Monai.Deploy.Storage": "0.2.5",
-          "Newtonsoft.Json": "13.0.1",
-          "System.IO.Abstractions": "17.1.1"
+          "Karambolo.Extensions.Logging.File": "[3.3.1, )",
+          "Microsoft.Extensions.Configuration": "[6.0.1, )",
+          "Microsoft.Extensions.Logging": "[6.0.0, )",
+          "Microsoft.Extensions.Options": "[6.0.0, )",
+          "Monai.Deploy.Messaging": "[0.1.3-rc0012, )",
+          "Monai.Deploy.Storage": "[0.2.5, )",
+          "Newtonsoft.Json": "[13.0.1, )",
+          "System.IO.Abstractions": "[17.1.1, )"
         }
       },
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.SecurityToken": "3.7.1.191",
-          "Microsoft.Extensions.Configuration": "6.0.1",
-          "Monai.Deploy.Messaging": "0.1.3-rc0012",
-          "MongoDB.Bson": "2.17.1",
-          "Newtonsoft.Json": "13.0.1"
+          "AWSSDK.SecurityToken": "[3.7.1.193, )",
+          "Microsoft.Extensions.Configuration": "[6.0.1, )",
+          "Monai.Deploy.Messaging": "[0.1.3-rc0012, )",
+          "MongoDB.Bson": "[2.17.1, )",
+          "Newtonsoft.Json": "[13.0.1, )"
         }
       },
       "monai.deploy.workflowmanager.database": {
         "type": "Project",
         "dependencies": {
-          "Ardalis.GuardClauses": "4.0.1",
-          "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
-          "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
-          "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
-          "MongoDB.Bson": "2.17.1",
-          "MongoDB.Driver": "2.17.1"
+          "Ardalis.GuardClauses": "[4.0.1, )",
+          "Microsoft.Extensions.Logging.Abstractions": "[6.0.1, )",
+          "Microsoft.Extensions.Options": "[6.0.0, )",
+          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Logging": "[1.0.0, )",
+          "MongoDB.Bson": "[2.17.1, )",
+          "MongoDB.Driver": "[2.17.1, )"
         }
       },
       "monai.deploy.workflowmanager.logging": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.AspNetCore.Mvc.Core": "2.2.5",
-          "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
-          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0"
+          "Microsoft.AspNetCore.Mvc.Core": "[2.2.5, )",
+          "Microsoft.Extensions.Logging.Abstractions": "[6.0.1, )",
+          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
+          "Serilog": "[2.11.0, )"
         }
       },
       "monai.deploy.workflowmanager.monaibackgroundservice": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.Extensions.Hosting": "6.0.1",
-          "Monai.Deploy.WorkflowManager.Common": "1.0.0",
-          "Monai.Deploy.WorkloadManager.WorkfowExecuter": "1.0.0"
+          "Microsoft.Extensions.Hosting": "[6.0.1, )",
+          "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
+          "Monai.Deploy.WorkloadManager.WorkfowExecuter": "[1.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.payloadlistener": {
         "type": "Project",
         "dependencies": {
-          "Ardalis.GuardClauses": "4.0.1",
-          "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
-          "Monai.Deploy.Storage": "0.2.5",
-          "Monai.Deploy.WorkflowManager.Common": "1.0.0",
-          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
-          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
-          "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
-          "Monai.Deploy.WorkloadManager.WorkfowExecuter": "1.0.0"
+          "Ardalis.GuardClauses": "[4.0.1, )",
+          "Microsoft.Extensions.Hosting.Abstractions": "[6.0.0, )",
+          "Monai.Deploy.Storage": "[0.2.5, )",
+          "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Logging": "[1.0.0, )",
+          "Monai.Deploy.WorkloadManager.WorkfowExecuter": "[1.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.storage": {
         "type": "Project",
         "dependencies": {
-          "Ardalis.GuardClauses": "4.0.1",
-          "Monai.Deploy.Storage": "0.2.5",
-          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
-          "Monai.Deploy.WorkflowManager.Logging": "1.0.0"
+          "Ardalis.GuardClauses": "[4.0.1, )",
+          "Monai.Deploy.Storage": "[0.2.5, )",
+          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Logging": "[1.0.0, )"
         }
       },
       "monai.deploy.workloadmanager.workfowexecuter": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.SecurityToken": "[3.7.1.187, )",
+          "AWSSDK.SecurityToken": "[3.7.1.193, )",
           "Ardalis.GuardClauses": "[4.0.1, )",
           "Monai.Deploy.Messaging": "[0.1.3-rc0012, )",
-          "Monai.Deploy.Storage": "[0.2.1, )",
+          "Monai.Deploy.Storage": "[0.2.5, )",
           "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.ConditionsResolver": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",

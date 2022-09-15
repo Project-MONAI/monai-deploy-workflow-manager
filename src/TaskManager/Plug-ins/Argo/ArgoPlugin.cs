@@ -129,7 +129,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         public override async Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken = default)
         {
-            using var loggerScope = _logger.BeginScope($"Workflow ID={Event.WorkflowInstanceId}, Task ID={Event.TaskId}, Execution ID={Event.ExecutionId}, Argo namespace={_namespace}");
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["correlationId"] = Event.CorrelationId,
+                ["workflowInstanceId"] = Event.WorkflowInstanceId,
+                ["taskId"] = Event.TaskId,
+                ["argoNamespace"] = _namespace
+            });
 
             Workflow workflow;
             try
@@ -237,7 +243,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             }
             var stats = new Dictionary<string, string>
             {
-                { "workflowId", Event.WorkflowInstanceId },
+                { "workflowInstanceId", Event.WorkflowInstanceId },
                 { "duration", duration.HasValue ? duration.Value.TotalMilliseconds.ToString() : string.Empty },
                 { "startedAt", workflow.Status?.StartedAt.ToString() ?? string.Empty  },
                 { "finishedAt", workflow.Status?.FinishedAt.ToString() ?? string.Empty  }

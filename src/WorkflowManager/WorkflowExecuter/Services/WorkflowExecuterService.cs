@@ -139,6 +139,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         {
             if (workflowInstance.Status == Status.Failed)
             {
+                _logger.WorkflowBadStatus(workflowInstance.WorkflowId, workflowInstance.Status.ToString());
                 return;
             }
 
@@ -534,29 +535,32 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return false;
             }
 
-            var outputArtifacts = task.Artifacts?.Output;
-
-            if (outputArtifacts is not null && outputArtifacts.Any())
+            using (_logger.BeginScope(new Dictionary<string, object> { ["correlationId"] = correlationId, ["taskId"] = task.Id }))
             {
-                foreach (var artifact in outputArtifacts)
+                var outputArtifacts = task.Artifacts?.Output;
+
+                if (outputArtifacts is not null && outputArtifacts.Any())
                 {
-                    if (!string.IsNullOrWhiteSpace(artifact.Value))
+                    foreach (var artifact in outputArtifacts)
                     {
-                        continue;
+                        if (!string.IsNullOrWhiteSpace(artifact.Value))
+                        {
+                            continue;
+                        }
+
+                        artifact.Value = $"{{ context.executions.{task.Id}.output_dir }}/{artifact.Name}";
                     }
-
-                    artifact.Value = $"{{ context.executions.{task.Id}.output_dir }}/{artifact.Name}";
                 }
+
+                var pathOutputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(outputArtifacts ?? Array.Empty<Artifact>(), workflowInstance.PayloadId, workflowInstance.Id, workflowInstance.BucketId, false);
+
+                var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(taskExec, workflowInstance, pathOutputArtifacts, correlationId, _storageConfiguration);
+                var jsonMesssage = new JsonMessage<TaskDispatchEvent>(taskDispatchEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, taskDispatchEvent.CorrelationId, Guid.NewGuid().ToString());
+
+                await _messageBrokerPublisherService.Publish(TaskDispatchRoutingKey, jsonMesssage.ToMessage());
+
+                return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, taskExec.TaskId, TaskExecutionStatus.Dispatched);
             }
-
-            var pathOutputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(outputArtifacts ?? Array.Empty<Artifact>(), workflowInstance.PayloadId, workflowInstance.Id, workflowInstance.BucketId, false);
-
-            var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(taskExec, workflowInstance, pathOutputArtifacts, correlationId, _storageConfiguration);
-            var jsonMesssage = new JsonMessage<TaskDispatchEvent>(taskDispatchEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, taskDispatchEvent.CorrelationId, Guid.NewGuid().ToString());
-
-            await _messageBrokerPublisherService.Publish(TaskDispatchRoutingKey, jsonMesssage.ToMessage());
-
-            return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, taskExec.TaskId, TaskExecutionStatus.Dispatched);
         }
 
         private async Task<bool> ExportRequest(WorkflowInstance workflowInstance, TaskExecution taskExec, string[] exportDestinations, IList<string> dicomImages, string correlationId)

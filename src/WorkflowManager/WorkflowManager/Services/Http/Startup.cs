@@ -108,8 +108,6 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
             app.UseAuthorization();
             app.UseEndpointAuthorizationMiddleware();
 
-            app.UseSerilogRequestLogging();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
