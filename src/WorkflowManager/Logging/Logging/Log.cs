@@ -118,7 +118,7 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
         {
             var request = context.HttpContext.Request;
             var body = JsonConvert.SerializeObject(context.ActionArguments.FirstOrDefault());
-            logger.LogInformation("ControllerActionStart data  HttpType {httptype}, Path {path}, QueryString {querystring}, Body {body}",
+            logger.LogInformation(29, "ControllerActionStart data  HttpType {httptype}, Path {path}, QueryString {querystring}, Body {body}",
             request.Method, request.Path, request.QueryString.Value.ToString(), body);
         }
 
@@ -137,7 +137,7 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
                 objResult = (ObjectResult)context.Result;
             }
 
-            logger.LogInformation("ControllerActionEnd data  EndTime {endtime}, Duration {duration}, HttpType {httptype}, Path {path}, QueryString {querystring}, StatusCode {statuscode}, Result {result}",
+            logger.LogInformation(30, "ControllerActionEnd data  EndTime {endtime}, Duration {duration}, HttpType {httptype}, Path {path}, QueryString {querystring}, StatusCode {statuscode}, Result {result}",
                 endtime, (endtime - startTime).TotalMilliseconds, request.Method, request.Path,
                 request.QueryString.Value.ToString(), response.StatusCode, JsonConvert.SerializeObject(objResult));
 

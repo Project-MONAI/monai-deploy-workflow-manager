@@ -2,6 +2,15 @@
   "version": 1,
   "dependencies": {
     "net6.0": {
+      "Elastic.CommonSchema": {
+        "type": "Direct",
+        "requested": "[1.5.3, )",
+        "resolved": "1.5.3",
+        "contentHash": "JgwhfThYY/s17asUiBCUVqnZtDdGTWO/2hTPG01QDfw2+T6kfwskrj5eh6XpBZsOh6r9SpBL95vSsU+q44i7Zg==",
+        "dependencies": {
+          "System.Text.Json": "4.7.0"
+        }
+      },
       "Elastic.CommonSchema.Serilog": {
         "type": "Direct",
         "requested": "[1.5.3, )",

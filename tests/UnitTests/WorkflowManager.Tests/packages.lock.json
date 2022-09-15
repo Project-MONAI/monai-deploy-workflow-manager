@@ -1831,6 +1831,7 @@
         "type": "Project",
         "dependencies": {
           "Ardalis.GuardClauses": "[4.0.1, )",
+          "Elastic.CommonSchema.Serilog": "[1.5.3, )",
           "Karambolo.Extensions.Logging.File": "[3.3.1, )",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "[6.0.8, )",
           "Microsoft.AspNetCore.Mvc.Versioning": "[5.0.0, )",
@@ -1852,6 +1853,11 @@
           "Monai.Deploy.WorkflowManager.MonaiBackgroundService": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.PayloadListener": "[1.0.0, )",
           "Newtonsoft.Json": "[13.0.1, )",
+          "Serilog": "[2.11.0, )",
+          "Serilog.AspNetCore": "[6.0.1, )",
+          "Serilog.Enrichers.Environment": "[2.2.0, )",
+          "Serilog.Exceptions": "[8.4.0, )",
+          "Serilog.Sinks.Http": "[8.0.0, )",
           "Swashbuckle.AspNetCore": "[6.4.0, )"
         }
       },
@@ -1923,7 +1929,8 @@
         "dependencies": {
           "Microsoft.AspNetCore.Mvc.Core": "[2.2.5, )",
           "Microsoft.Extensions.Logging.Abstractions": "[6.0.1, )",
-          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )"
+          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
+          "Serilog": "[2.11.0, )"
         }
       },
       "monai.deploy.workflowmanager.monaibackgroundservice": {

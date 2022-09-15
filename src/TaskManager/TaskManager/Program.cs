@@ -17,7 +17,7 @@
 using System.IO.Abstractions;
 using System.Reflection;
 using Elastic.CommonSchema.Serilog;
-using k8s.KubeConfigModels;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
