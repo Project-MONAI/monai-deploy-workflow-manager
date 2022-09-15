@@ -94,9 +94,20 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             var processed = true;
             var workflows = new List<WorkflowRevision>();
 
-            workflows = message.Workflows?.Any() != true ?
-                await _workflowRepository.GetWorkflowsByAeTitleAsync(message.CalledAeTitle) as List<WorkflowRevision> :
-                await _workflowRepository.GetByWorkflowsIdsAsync(message.Workflows) as List<WorkflowRevision>;
+            if (message.Workflows?.Any() == true)
+            {
+                workflows = await _workflowRepository.GetByWorkflowsIdsAsync(message.Workflows) as List<WorkflowRevision>;
+            }
+            else
+            {
+                var aeTitles = new List<string>
+                {
+                    message.CalledAeTitle,
+                    message.CallingAeTitle
+                };
+
+                workflows = await _workflowRepository.GetWorkflowsByAeTitleAsync(aeTitles) as List<WorkflowRevision>;
+            }
 
             if (workflows is null || workflows.Any() is false)
             {
