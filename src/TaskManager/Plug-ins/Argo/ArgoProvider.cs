@@ -53,8 +53,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             }
             return new ArgoClient(httpClient) { BaseUrl = baseUrl };
         }
-
-
     }
 
 #pragma warning restore CA1054 // URI-like parameters should not be strings

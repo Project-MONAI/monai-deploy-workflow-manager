@@ -126,7 +126,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
 
             var fileContents = new Dictionary<string, DicomValue>
             {
-                { DicomTagConstants.PatientNameTag, new DicomValue{ Value = new object[] { "Jack" }, Vr = "RR" } },
+                { DicomTagConstants.PatientNameTag, new DicomValue{ Value = new object[] { new { Alphabetic = "Jack" } }, Vr = "RR" } },
                 { DicomTagConstants.PatientSexTag, new DicomValue{ Value = new object[] { "Male" }, Vr = "RR" } },
                 { DicomTagConstants.PatientIdTag, new DicomValue{ Value = new object[] { "patientid" }, Vr = "RR" } },
                 { DicomTagConstants.PatientDateOfBirthTag, new DicomValue{ Value = new object[] { "19960120" }, Vr = "RR" } },

@@ -26,10 +26,10 @@ using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.S3Policy.Policies;
 using Monai.Deploy.TaskManager.API;
-using Monai.Deploy.WorkflowManager.TaskManager.API;
-using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
+using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Monai.Deploy.WorkflowManager.TaskManager.Logging;
 using Minio.DataModel;
 
@@ -356,9 +356,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             try
             {
-                if (string.Equals(message.Body.TaskPluginType,
-                                  PluginStrings.Argo,
-                                  StringComparison.InvariantCultureIgnoreCase))
+                if (PluginStrings.PlugsRequiresPermanentAccoutns.Contains(
+                        message.Body.TaskPluginType,
+                        StringComparer.InvariantCultureIgnoreCase))
                 {
                     eventInfo.AddUserAccount(await AddCredentialsToPlugin(message).ConfigureAwait(false));
                 }

@@ -1395,38 +1395,62 @@
     :versions: []
     :when: 2022-08-16 14:46:00.000000000 +01:00
 - - :approve
-  -  Microsoft.AspNetCore.Routing
+  - Microsoft.AspNetCore.Routing
   - :who: Jack Schofield (JackSchofield23)
     :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
     :versions: []
     :when: 2022-08-16 14:46:00.000000000 +01:00
 - - :approve
-  -  Microsoft.AspNetCore.Routing.Abstractions
+  - Microsoft.AspNetCore.Routing.Abstractions
   - :who: Jack Schofield (JackSchofield23)
     :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
     :versions: []
     :when: 2022-08-16 14:46:00.000000000 +01:00
 - - :approve
-  -  Microsoft.Net.Http.Headers
+  - Microsoft.Net.Http.Headers
   - :who: Jack Schofield (JackSchofield23)
     :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
     :versions: []
     :when: 2022-08-16 14:46:00.000000000 +01:00
 - - :approve
-  -  Microsoft.DotNet.PlatformAbstractions
+  - Microsoft.DotNet.PlatformAbstractions
   - :who: Jack Schofield (JackSchofield23)
     :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
     :versions: []
     :when: 2022-08-16 14:46:00.000000000 +01:00
 - - :approve
-  -  Microsoft.Extensions.ObjectPool
+  - Microsoft.Extensions.ObjectPool
   - :who: Jack Schofield (JackSchofield23)
     :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
     :versions: []
     :when: 2022-08-16 14:46:00.000000000 +01:00
 - - :approve
-  -  Microsoft.AspNetCore.WebUtilities
+  - Microsoft.AspNetCore.WebUtilities
   - :who: Jack Schofield (JackSchofield23)
     :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
     :versions: []
     :when: 2022-08-16 14:46:00.000000000 +01:00
+- - :approve
+  - Docker.DotNet
+  - :who: Victor Chang (mocsharp)
+    :why: MIT - https://github.com/dotnet/Docker.DotNet/blob/master/LICENSE
+    :versions: []
+    :when: 2022-09-12 16:27:00.000000000 +01:00
+- - :approve
+  - AspNetCore.HealthChecks.MongoDb
+  - :who: Victor Chang (mocsharp)
+    :why: Apache 2.0 - https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks/blob/master/LICENSE
+    :versions: []
+    :when: 2022-09-12 15:39:28.416111911 Z
+- - :approve
+  - AspNetCore.HealthChecks.Rabbitmq
+  - :who: Victor Chang (mocsharp)
+    :why: Apache 2.0 - https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks/blob/master/LICENSE
+    :versions: []
+    :when: 2022-09-12 15:39:46.593579624 Z
+- - :approve
+  - Microsoft.AspNetCore.Diagnostics.HealthChecks
+  - :who: Victor Chang (mocsharp)
+    :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
+    :versions: []
+    :when: 2022-09-12 15:40:42.030017822 Z

@@ -16,5 +16,4 @@
 
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Monai.Deploy.WorkflowManager.TaskManager.Runner")]
 [assembly: InternalsVisibleTo("Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests")]

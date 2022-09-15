@@ -34,5 +34,13 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// <param name="payloadId"></param>
         /// <returns></returns>
         public Task<IList<WorkflowInstance>> GetAllAsync(int? skip = null, int? limit = null, Status? status = null, string? payloadId = null);
+
+        /// <summary>
+        /// Used to get a filtered count.
+        /// </summary>
+        /// <param name="status"></param>
+        /// <param name="payloadId"></param>
+        /// <returns></returns>
+        public Task<long> FilteredCountAsync(Status? status = null, string? payloadId = null);
     }
 }

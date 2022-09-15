@@ -19,22 +19,27 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.Wrappers;
 using Newtonsoft.Json;
+using TechTalk.SpecFlow.CommonModels;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class WorkflowInstancesApiStepDefinitions
     {
-        public WorkflowInstancesApiStepDefinitions(ObjectContainer objectContainer)
+        public WorkflowInstancesApiStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             DataHelper = objectContainer.Resolve<DataHelper>();
             ApiHelper = objectContainer.Resolve<ApiHelper>();
             Assertions = new Assertions(objectContainer);
+            _outputHelper = outputHelper;
         }
 
         private ApiHelper ApiHelper { get; }
         private Assertions Assertions { get; }
         private DataHelper DataHelper { get; }
+        private readonly ISpecFlowOutputHelper _outputHelper;
+
 
         [Then(@"I can see expected workflow instances are returned")]
         public void ThenICanSeeExpectedWorkflowInstancesAreReturned()
@@ -80,6 +85,65 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
             deserializedResult.Should().NotBeNull();
             deserializedResult?.Data.ForEach(func);
+        }
+
+        [Then(@"I can see (.*) triggered workflow instances from payload id (.*)")]
+        public void ThenICanSeeTriggeredWorkflowInstancesFromPayloadId(int count, string payloadId)
+        {
+            _outputHelper.WriteLine($"Retrieving {count} workflow instance/s using the payloadid={payloadId}");
+            var workflowInstances = DataHelper.GetWorkflowInstances(count, payloadId);
+            _outputHelper.WriteLine($"Retrieved {count} workflow instance/s");
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+
+            if (workflowInstances != null)
+            {
+                if (ApiHelper.Request.RequestUri.ToString().Contains("disablePagination"))
+                {
+                    var actualWorkflowInstances = JsonConvert.DeserializeObject<List<WorkflowInstance>>(result);
+                    if (actualWorkflowInstances != null)
+                    {
+                        Assertions.AssertWorkflowInstanceList(workflowInstances, actualWorkflowInstances);
+                    }
+                    else
+                    {
+                        throw new Exception("Api response could not be deserialized by the <List<WorkflowInstance>> object");
+                    }
+                }
+                else
+                {
+                    var actualWorkflowInstances = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowInstance>>>(result);
+                    if (actualWorkflowInstances != null)
+                    {
+                        Assertions.AssertWorkflowInstanceList(workflowInstances, actualWorkflowInstances.Data);
+                    }
+                    else
+                    {
+                        throw new Exception("Api response could not be deserialized by the <PagedResponseList<WorkflowInstance>> object");
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception($"Workflow Instance not found for payloadId {payloadId}");
+            }
+
+        }
+
+        [Then(@"I will recieve no pagination response")]
+        public void ThenIWillRecieveNoPaginationResponse()
+        {
+            var response = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            response.Should().NotContainAny(new List<string>
+            {
+                "pageNumber",
+                "pageSize",
+                "firstPage",
+                "lastPage",
+                "totalPages",
+                "totalRecords",
+                "nextPage",
+                "previousPage"
+            });
         }
     }
 }

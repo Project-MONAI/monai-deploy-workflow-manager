@@ -142,5 +142,11 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
                 request.QueryString.Value.ToString(), response.StatusCode, JsonConvert.SerializeObject(objResult));
 
         }
+
+        [LoggerMessage(EventId = 31, Level = LogLevel.Warning, Message = "Unable to locate a matching workflow for the given workflow request.")]
+        public static partial void NoMatchingWorkflowFoundForPayload(this ILogger logger);
+
+        [LoggerMessage(EventId = 32, Level = LogLevel.Debug, Message = "Verifying artifact existence on bucket {bucket}: {artifactKey}={artifactValue}.")]
+        public static partial void VerifyArtifactExistence(this ILogger logger, string bucket, string artifactKey, string artifactValue);
     }
 }

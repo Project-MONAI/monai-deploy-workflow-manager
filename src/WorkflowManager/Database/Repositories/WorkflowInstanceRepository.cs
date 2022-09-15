@@ -234,7 +234,23 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             return workflow;
         }
 
-        public Task<long> CountAsync() => CountAsync(_workflowInstanceCollection, null);
+        public async Task<long> CountAsync() => await CountAsync(_workflowInstanceCollection, null);
+
+        public async Task<long> FilteredCountAsync(Status? status = null, string? payloadId = null)
+        {
+            var builder = Builders<WorkflowInstance>.Filter;
+            var filter = builder.Empty;
+            if (status is not null)
+            {
+                filter &= builder.Eq(w => w.Status, status);
+            }
+            if (string.IsNullOrEmpty(payloadId) is false)
+            {
+                filter &= builder.Eq(w => w.PayloadId, payloadId);
+            }
+
+            return await CountAsync(_workflowInstanceCollection, filter);
+        }
 
         public async Task<IList<WorkflowInstance>> GetAllAsync(int? skip = null, int? limit = null, Status? status = null, string? payloadId = null)
         {

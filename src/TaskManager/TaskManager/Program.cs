@@ -106,6 +106,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             services.AddTransient<ITaskDispatchEventRepository, TaskDispatchEventRepository>();
             services.AddTransient<IFileSystem, FileSystem>();
 
+            services.AddTransient<IContentTypeProvider, FileExtensionContentTypeProvider>();
+
             services.AddTaskManager(hostContext);
         }
     }
