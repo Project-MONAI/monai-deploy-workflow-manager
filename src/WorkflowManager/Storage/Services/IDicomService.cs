@@ -41,8 +41,8 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
         /// 'null'
         /// </summary>
         /// <param name="keyId"></param>
-        /// <param name="matchValue"></param>
-        /// <param name="workflowInstance"></param>
+        /// <param name="payloadId"></param>
+        /// <param name="bucketId"></param>
         /// <returns></returns>
         Task<string> GetAllValueAsync(string keyId, string payloadId, string bucketId);
 
@@ -51,7 +51,8 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
         /// if no matchs return 'null'
         /// </summary>
         /// <param name="keyId">example of keyId 00100040</param>
-        /// <param name="workflowInstance"></param>
+        /// <param name="payloadId"></param>
+        /// <param name="bucketId"></param>
         /// <returns></returns>
         Task<string> GetAnyValueAsync(string keyId, string payloadId, string bucketId);
     }
