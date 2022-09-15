@@ -56,9 +56,9 @@
   },
   "00100010": {
     "vr": "PN",
-    "Value": [
-      "Patient_Full_Patient"
-    ]
+    "Value": [{
+      "Alphabetic": "Patient_Full_Patient"
+    }]
   },
   "00100020": {
     "vr": "LO",
