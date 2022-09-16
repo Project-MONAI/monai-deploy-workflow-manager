@@ -757,11 +757,11 @@
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.SecurityToken": "[3.7.1.193, )",
-          "Microsoft.Extensions.Configuration": "[6.0.1, )",
-          "Monai.Deploy.Messaging": "[0.1.6-rc0001, )",
-          "MongoDB.Bson": "[2.17.1, )",
-          "Newtonsoft.Json": "[13.0.1, )"
+          "AWSSDK.SecurityToken": "3.7.1.193",
+          "Microsoft.Extensions.Configuration": "6.0.1",
+          "Monai.Deploy.Messaging": "0.1.6-rc0001",
+          "MongoDB.Bson": "2.17.1",
+          "Newtonsoft.Json": "13.0.1"
         }
       }
     }
