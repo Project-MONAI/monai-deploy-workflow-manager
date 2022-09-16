@@ -375,7 +375,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             foreach (var originalWorkflowRevision in originalWorkflowRevisions)
             {
                 var actualWorkflowRevision = actualWorkflowRevisions.FirstOrDefault(x => x.Revision.Equals(originalWorkflowRevision.Revision));
-                actualWorkflowRevision.Should().BeEquivalentTo(originalWorkflowRevision);
+                actualWorkflowRevision.Should().BeEquivalentTo(originalWorkflowRevision, o => o.Excluding(x => x.Deleted).Excluding(x => x.IsDeleted));
+                actualWorkflowRevision?.Deleted.Should().NotBeNull();
+                actualWorkflowRevision?.IsDeleted.Should().BeTrue();
             }
 
             var actualWorkflow = actualWorkflowRevisions[actualWorkflowRevisions.Count - 1].Workflow;
