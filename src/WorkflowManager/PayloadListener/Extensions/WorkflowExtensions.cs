@@ -15,9 +15,7 @@
  */
 
 using Ardalis.GuardClauses;
-using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 {
@@ -38,16 +36,15 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 
             var valid = true;
 
-            valid &= IsNameValid(workflow.GetType().Name, workflow.Name, validationErrors);
-            valid &= IsDescriptionValid(workflow.Name, workflow.Description, validationErrors);
-            valid &= IsInformaticsGatewayValid(workflow.Name, workflow.InformaticsGateway, validationErrors);
+            var workflowName = string.IsNullOrWhiteSpace(workflow.Name) ? "Unnamed workflow" : workflow.Name;
 
-            Guard.Against.Null(workflow.Tasks, nameof(workflow.Tasks));
-            valid &= workflow.Tasks.Length > 0;
+            valid &= IsNameValid(workflowName, workflow.Name, validationErrors);
+            valid &= IsDescriptionValid(workflowName, workflow.Description, validationErrors);
+            valid &= IsInformaticsGatewayValid(workflowName, workflow.InformaticsGateway, validationErrors);
 
-            foreach (var task in workflow.Tasks)
+            foreach (var task in workflow?.Tasks)
             {
-                valid &= IsTaskObjectValid(workflow.Name, task, validationErrors);
+                valid &= IsTaskObjectValid(workflowName, task, validationErrors);
             }
 
             return valid;
@@ -57,7 +54,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
         {
             Guard.Against.NullOrWhiteSpace(source, nameof(source));
 
-            if (!string.IsNullOrWhiteSpace(name) && name.Length <= WorkflowNameLimit) return true;
+            if (name is not null && name.Length <= WorkflowNameLimit) return true;
 
             validationErrors?.Add($"'{name}' is not a valid Workflow Name (source: {source}).");
 
