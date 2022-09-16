@@ -158,6 +158,8 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
                 Workflow = workflow
             };
 
+            await SoftDeleteWorkflow(existingWorkflow);
+
             await _workflowCollection.InsertOneAsync(workflowRevision);
 
             return workflowRevision.WorkflowId;
@@ -170,7 +172,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             var deletedTimeStamp = DateTime.UtcNow;
 
             await _workflowCollection.UpdateManyAsync(
-                wr => wr.WorkflowId == workflow.WorkflowId,
+                wr => wr.WorkflowId == workflow.WorkflowId && wr.Deleted == null,
                 Builders<WorkflowRevision>.Update.Set(rec => rec.Deleted, deletedTimeStamp));
 
             return deletedTimeStamp;
