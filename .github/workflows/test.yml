@@ -62,16 +62,6 @@ jobs:
         --collect:"XPlat Code Coverage" --settings "./coverlet.runsettings"
       working-directory: ./tests
 
-    - name: Run CodeCov analysis
-      uses: codecov/codecov-action@v3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        files: "**/coverage.opencover.xml"
-        flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: true
-        verbose: true
-
     - name: Archive code coverage results
       uses: actions/upload-artifact@v3
       with:
