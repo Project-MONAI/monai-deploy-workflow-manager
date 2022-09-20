@@ -373,6 +373,34 @@ Example (run my-task-id when the patient is female):
 }
 ```
 
+The following examples both function the same and act as an AND condition.
+
+```json
+{
+    ...task...
+    "task_destinations": [
+        {
+            "name": "my-task-id",
+            "conditions": ["{{context.input.dicom.series.all('0010','0040')}} == 'F' AND {{context.input.dicom.series.all('0010','0040')}} == 'M'"]
+        },
+    ],
+    ...
+}
+```
+
+```json
+{
+    ...task...
+    "task_destinations": [
+        {
+            "name": "my-task-id",
+            "conditions": ["{{context.input.dicom.series.all('0010','0040')}} == 'F'", "{{context.input.dicom.series.all('0010','0040')}} == 'M'"]
+        },
+    ],
+    ...
+}
+```
+
 ### Retention Policies
 _Future version: TBD_
 
