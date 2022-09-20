@@ -672,7 +672,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 {
                                     new TaskDestination()
                                     {
-                                        Conditions = "{{ context.dicom.series.any('0010','0040') }} == 'lordge'",
+                                        Conditions = new string[] { "{{ context.dicom.series.any('0010','0040') }} == 'lordge'" },
                                         Name = "cake"
                                     }
                                 }
@@ -722,7 +722,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                     new TaskDestination()
                                     {
                                         Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
-                                        Conditions = "'true'=='true'"
+                                        Conditions = new string[] {"'true'=='true'"}
                                     },
                                 }
                             },
@@ -773,7 +773,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                     new TaskDestination()
                                     {
                                         Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
-                                        Conditions = "{{ context.input.patient_details.name }} == 'Steve Jobs'"
+                                        Conditions = new string[] {"{{ context.input.patient_details.name }} == 'Steve Jobs'"}
                                     },
                                 }
                             },
@@ -824,7 +824,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                     new TaskDestination()
                                     {
                                         Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
-                                        Conditions = "{{ context.input.patient_details.name }} == null"
+                                        Conditions = new string[] { "{{ context.input.patient_details.name }} == null" }
                                     },
                                 }
                             },
@@ -869,7 +869,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                     new TaskDestination()
                                     {
                                         Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
-                                        Conditions = "'false'=='true'"
+                                        Conditions = new string[] { "'false'=='true'" }
                                     },
                                 }
                             },
@@ -920,7 +920,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                     new TaskDestination()
                                     {
                                         Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
-                                        Conditions = "{{ context.input.patient_details.name }} == 'Incorrect Name'"
+                                        Conditions = new string[] { "{{ context.input.patient_details.name }} == 'Incorrect Name'" }
                                     },
                                 }
                             },
@@ -965,17 +965,17 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                     new TaskDestination()
                                     {
                                         Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
-                                        Conditions = "'true'=='true'"
+                                        Conditions = new string[] { "'true'=='true'" }
                                     },
                                     new TaskDestination()
                                     {
                                         Name = "e12849f3-247d-47eb-95c8-5aa16f551f62",
-                                        Conditions = "'true'=='true'"
+                                        Conditions = new string[] { "'true'=='true'" }
                                     },
                                     new TaskDestination()
                                     {
                                         Name = "d2e5219d-9ccb-4584-b078-5216ee4b9b8b",
-                                        Conditions = "'true'=='true'"
+                                        Conditions = new string[] { "'true'=='true'" }
                                     },
                                 }
                             },
@@ -1034,7 +1034,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                     new TaskDestination()
                                     {
                                         Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
-                                        Conditions = "'false'=='true'"
+                                        Conditions = new string[] { "'false'=='true'" }
                                     },
                                 }
                             },
@@ -1079,17 +1079,17 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                     new TaskDestination()
                                     {
                                         Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
-                                        Conditions = "'true'=='true'"
+                                        Conditions = new string[] { "'true'=='true'" }
                                     },
                                     new TaskDestination()
                                     {
                                         Name = "e12849f3-247d-47eb-95c8-5aa16f551f62",
-                                        Conditions = "'true'=='true'"
+                                        Conditions = new string[] { "'true'=='true'" }
                                     },
                                     new TaskDestination()
                                     {
                                         Name = "d2e5219d-9ccb-4584-b078-5216ee4b9b8b",
-                                        Conditions = "'true'=='true'"
+                                        Conditions = new string[] {"'true'=='true'" }
                                     },
                                 }
                             },
@@ -1148,17 +1148,17 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                     new TaskDestination()
                                     {
                                         Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
-                                        Conditions = "'false'=='true'"
+                                        Conditions = new string[] { "'false'=='true'" }
                                     },
                                     new TaskDestination()
                                     {
                                         Name = "e12849f3-247d-47eb-95c8-5aa16f551f62",
-                                        Conditions = "'false'=='true'"
+                                        Conditions = new string[] { "'false'=='true'" }
                                     },
                                     new TaskDestination()
                                     {
                                         Name = "d2e5219d-9ccb-4584-b078-5216ee4b9b8b",
-                                        Conditions = "'false'=='true'"
+                                        Conditions = new string[] { "'false'=='true'" }
                                     },
                                 }
                             },
@@ -1211,12 +1211,12 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                     new TaskDestination()
                                     {
                                         Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
-                                        Conditions = "'true'=='true'"
+                                        Conditions = new string[] { "'true'=='true'" }
                                     },
                                     new TaskDestination()
                                     {
                                         Name = "e12849f3-247d-47eb-95c8-5aa16f551f62",
-                                        Conditions = "'false'=='true'"
+                                        Conditions = new string[] { "'false'=='true'" }
                                     },
                                 }
                             },
@@ -1268,7 +1268,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                     new TaskDestination()
                                     {
                                         Name = "b9964b10-acb4-4050-a610-374fdbe2100d",
-                                        Conditions = "'invalid'>'false'"
+                                        Conditions = new string[] { "'invalid'>'false'" }
                                     },
                                 }
                             },
@@ -1400,8 +1400,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
-                                    new TaskDestination { Name = "taskdest1", Conditions = "'true'=='true'" },
-                                    new TaskDestination { Name = "taskdest2", Conditions = "'false'=='true'" }
+                                    new TaskDestination { Name = "taskdest1", Conditions = new string[] { "'true'=='true'" } },
+                                    new TaskDestination { Name = "taskdest2", Conditions = new string[] { "'false'=='true'" } }
                                 }
                             },
                             new TaskObject
@@ -1449,8 +1449,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Artifacts = new ArtifactMap(),
                                 TaskDestinations = new TaskDestination[]
                                 {
-                                    new TaskDestination { Name = "taskdest1", Conditions = "'false'=='true'" },
-                                    new TaskDestination { Name = "taskdest2", Conditions = "'false'=='true'" }
+                                    new TaskDestination { Name = "taskdest1", Conditions = new string[] { "'false'=='true'" } },
+                                    new TaskDestination { Name = "taskdest2", Conditions = new string[] { "'false'=='true'" } }
                                 }
                             },
                             new TaskObject

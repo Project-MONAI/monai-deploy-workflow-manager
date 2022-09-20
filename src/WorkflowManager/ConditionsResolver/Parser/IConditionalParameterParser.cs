@@ -20,10 +20,34 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 {
     public interface IConditionalParameterParser
     {
+        /// <summary>
+        /// Resolves parameters in query string.
+        /// </summary>
+        /// <param name="conditions">The query string Example: {{ context.executions.other_task.'Fred' }}</param>
+        /// <param name="workflowInstance">workflow instance to resolve metadata parameter</param>
+        /// <returns></returns>
         string ResolveParameters(string conditions, WorkflowInstance workflowInstance);
 
+        /// <summary>
+        /// Resolves parameters in query string.
+        /// </summary>
+        /// <param name="conditions">The query string Example: {{ context.executions.other_task.'Fred' }}</param>
+        /// <param name="workflowInstanceId">workflow instance id to resolve metadata parameter</param>
+        /// <returns></returns>
         string ResolveParameters(string conditions, string workflowInstanceId);
 
+        /// <summary>
+        /// Verifies if an array of strings of conditions evaluates to true.
+        /// </summary>
+        /// <param name="conditions">An array of strings of conditions.</param>
+        /// <param name="workflowInstance">The workflow instance of the task.</param>
+        bool TryParse(string[] conditions, WorkflowInstance workflowInstance);
+
+        /// <summary>
+        /// Verifies if a string of conditions evaluates to true.
+        /// </summary>
+        /// <param name="conditions">A string of conditions.</param>
+        /// <param name="workflowInstance">The workflow instance of the task.</param>
         bool TryParse(string conditions, WorkflowInstance workflowInstance);
     }
 }

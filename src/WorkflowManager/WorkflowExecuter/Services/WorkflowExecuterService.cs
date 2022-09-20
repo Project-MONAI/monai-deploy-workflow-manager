@@ -507,10 +507,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             foreach (var taskDest in currentTaskDestinations)
             {
                 //Evaluate Conditional
-                if (!string.IsNullOrEmpty(taskDest.Conditions)
-                    && taskDest.Conditions != string.Empty
-                    && !_conditionalParameterParser.TryParse(taskDest.Conditions, workflowInstance))
+                if (taskDest.Conditions.IsNullOrEmpty() is false
+                    && taskDest.Conditions.All(c => c.Equals(string.Empty) is false)
+                    && _conditionalParameterParser.TryParse(taskDest.Conditions, workflowInstance) is false)
                 {
+                    _logger.TaskDestinationConditionFalse(string.Join(" AND ", taskDest.Conditions), taskDest.Name);
+
                     continue;
                 }
 
