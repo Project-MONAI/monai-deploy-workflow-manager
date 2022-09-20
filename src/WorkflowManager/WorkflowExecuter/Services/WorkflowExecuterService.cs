@@ -509,7 +509,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 //Evaluate Conditional
                 if (taskDest.Conditions.IsNullOrEmpty() is false
-                    && taskDest.Conditions.Any(c => c.Equals(string.Empty) is false)
+                    && taskDest.Conditions.Any(c => string.IsNullOrWhiteSpace(c) is false)
                     && _conditionalParameterParser.TryParse(taskDest.Conditions, workflowInstance) is false)
                 {
                     _logger.TaskDestinationConditionFalse(taskDest.Conditions.CombineConditionString(), taskDest.Name);

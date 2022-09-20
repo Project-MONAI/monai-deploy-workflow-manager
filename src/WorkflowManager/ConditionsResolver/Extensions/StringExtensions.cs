@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using System.Text;
+
 namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions
 {
     public static class StringExtensions
@@ -61,7 +63,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions
         /// <returns></returns>
         public static string CombineConditionString(this string[] input)
         {
-            var value = string.Empty;
+            var value = new StringBuilder();
 
             if (input.Length == 1)
             {
@@ -70,15 +72,15 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions
 
             for (var i = 0; i < input.Length; i++)
             {
-                value += $"({input[i]})";
+                value.Append($"({input[i]})");
 
                 if (i != input.Length - 1)
                 {
-                    value += " AND ";
+                    value.Append(" AND ");
                 }
             }
 
-            return value;
+            return value.ToString();
         }
     }
 }
