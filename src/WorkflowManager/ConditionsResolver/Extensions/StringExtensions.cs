@@ -53,5 +53,32 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions
             }
             return string.Empty;
         }
+
+        /// <summary>
+        /// Adds brackets to multiple conditions.
+        /// </summary>
+        /// <param name="input">Array of conditions.</param>
+        /// <returns></returns>
+        public static string CombineConditionString(this string[] input)
+        {
+            var value = string.Empty;
+
+            if (input.Length == 1)
+            {
+                return input.First();
+            }
+
+            for (var i = 0; i < input.Length; i++)
+            {
+                value += $"({input[i]})";
+
+                if (i != input.Length - 1)
+                {
+                    value += " AND ";
+                }
+            }
+
+            return value;
+        }
     }
 }

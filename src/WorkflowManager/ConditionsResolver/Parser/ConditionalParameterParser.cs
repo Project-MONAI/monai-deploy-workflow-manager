@@ -19,6 +19,7 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Constants;
+using Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Storage.Services;
@@ -98,7 +99,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             Guard.Against.Null(workflowInstance);
             try
             {
-                var joinedConditions = string.Join(" AND ", conditions);
+                var joinedConditions = conditions.CombineConditionString();
                 joinedConditions = ResolveParameters(joinedConditions, workflowInstance);
                 var conditionalGroup = ConditionalGroup.Create(joinedConditions);
                 return conditionalGroup.Evaluate();

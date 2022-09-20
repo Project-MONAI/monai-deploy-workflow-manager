@@ -24,6 +24,7 @@ using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Constants;
@@ -508,10 +509,10 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 //Evaluate Conditional
                 if (taskDest.Conditions.IsNullOrEmpty() is false
-                    && taskDest.Conditions.All(c => c.Equals(string.Empty) is false)
+                    && taskDest.Conditions.Any(c => c.Equals(string.Empty) is false)
                     && _conditionalParameterParser.TryParse(taskDest.Conditions, workflowInstance) is false)
                 {
-                    _logger.TaskDestinationConditionFalse(string.Join(" AND ", taskDest.Conditions), taskDest.Name);
+                    _logger.TaskDestinationConditionFalse(taskDest.Conditions.CombineConditionString(), taskDest.Name);
 
                     continue;
                 }
