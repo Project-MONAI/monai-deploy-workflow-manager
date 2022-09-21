@@ -70,8 +70,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 {
                     artifactPathDictionary.Add(mappedArtifact.Key, mappedArtifact.Value);
 
+                    _logger.LogArtifactPassing(artifact, mappedArtifact.Value, shouldExistYet ? "Input" : "Output", true);
+
                     continue;
                 }
+
+                _logger.LogArtifactPassing(artifact, mappedArtifact.Value, shouldExistYet ? "Input" : "Output", false);
 
                 if (artifact.Mandatory)
                 {

@@ -152,6 +152,19 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
         [LoggerMessage(EventId = 33, Level = LogLevel.Debug, Message = "Task destination condition for task {taskId} with condition: {conditions} resolved to false.")]
         public static partial void TaskDestinationConditionFalse(this ILogger logger, string conditions, string taskId);
 
+        public static void LogArtifactPassing(this ILogger logger, Artifact artifact, string path, string artifactType, bool exists)
+        {
+            var objectLog = new ObjectLog
+            {
+                Message = "Artifact Passed",
+                Object = LoggerHelpers.ToLogArtifactPassingObject(artifact, path, artifactType, exists)
+            };
+
+            var jsonString = JsonConvert.SerializeObject(objectLog);
+
+            logger.LogInformation(34, message: jsonString);
+        }
+
         [LoggerMessage(EventId = 34, Level = LogLevel.Debug, Message = "Payload already exists for {payloadId}. This is likley due to being requeued")]
         public static partial void PayloadAlreadyExists(this ILogger logger, string payloadId);
     }
