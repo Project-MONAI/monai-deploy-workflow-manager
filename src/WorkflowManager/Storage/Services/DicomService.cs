@@ -243,7 +243,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
                 }
             }
 
-            if(resultStr.Any() is true)
+            if (resultStr.Any() is true)
             {
                 return string.Concat(resultStr);
             }
