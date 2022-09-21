@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
@@ -24,6 +25,6 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         public string Name { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "conditions")]
-        public string Conditions { get; set; } = string.Empty;
+        public string[] Conditions { get; set; } = Array.Empty<string>();
     }
 }

@@ -114,7 +114,23 @@ Scenario: Workflow instance status remains created when any task status is eithe
     And Workflow Instance status is Created
 
 @TaskDestinationConditions
-Scenario: Workflow instance status is failed when a condition is invalid
+Scenario: Single task destinations with multiple conditions true, single task dispatch message sent
+    Given I have a clinical workflow Multi_Task_Workflow_Destination_Single_Multi_Condition_True
+    And I have a Workflow Instance WFI_Task_Destination_Multi_Condition_True with no artifacts
+    When I publish a Task Update Message Task_Update_Task_Destination_Multi_Condition_True with status Succeeded
+    Then 1 Task Dispatch event is published
+    And Workflow Instance status is Created
+
+@TaskDestinationConditions
+Scenario: Single task destinations with one condition true and one false, workflow instance status is succeeded
+    Given I have a clinical workflow Multi_Task_Workflow_Destination_Single_Multi_Condition_False
+    And I have a Workflow Instance WFI_Task_Destination_Multi_Condition_False with no artifacts
+    When I publish a Task Update Message Task_Update_Task_Destination_Multi_Condition_False with status Succeeded
+    Then A Task Dispatch event is not published
+    And Workflow Instance status is Succeeded
+
+@TaskDestinationConditions
+Scenario: Workflow instance status is succeeded when a condition is invalid
     Given I have a clinical workflow Multi_Task_Workflow_Task_Destination_Invalid_Condition
     And I have a Workflow Instance WFI_Task_Destination_Invalid_Condition with no artifacts
     When I publish a Task Update Message Task_Update_Task_Destination_Invalid_Condition with status Succeeded
