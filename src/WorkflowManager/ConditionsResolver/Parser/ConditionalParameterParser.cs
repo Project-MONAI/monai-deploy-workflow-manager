@@ -139,9 +139,14 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 var parameters = ParseMatches(matches).Reverse();
                 foreach (var parameter in parameters)
                 {
+                    var result = parameter.Value.Result ?? "";
+                    if (ResultNullCheck(result.Trim()))
+                    {
+                        result = "NULL";
+                    }
                     conditions = conditions
                         .Remove(parameter.Key.Index, parameter.Key.Length)
-                        .Insert(parameter.Key.Index, $"'{parameter.Value.Result ?? "null"}'");
+                        .Insert(parameter.Key.Index, $"'{result}'");
                 }
 
                 ClearWorkflowParser();
@@ -153,6 +158,15 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 ClearWorkflowParser();
                 throw;
             }
+        }
+
+        private static bool ResultNullCheck(string? result)
+        {
+            var isNull =
+                string.IsNullOrWhiteSpace(result)
+                || result.ToUpper() == "NULL"
+                || result.ToUpper() == "UNDEFINED";
+            return isNull;
         }
 
         private void ClearWorkflowParser()

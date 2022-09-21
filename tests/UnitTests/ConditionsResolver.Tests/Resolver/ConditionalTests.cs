@@ -27,6 +27,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [InlineData("{{context.executions.body_part_identifier.result.body_part}}", "leg", "{{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
         [InlineData("F", "F", "'F' == 'F'")]
         [InlineData("F", "{{context.dicom.tags[('0010','0040')]}}", "'F' == {{context.dicom.tags[('0010','0040')]}}")]
+        [InlineData("{{context.dicom.tags[('0010','0040')]}}", "“Donkey”, “Alpaca”, “Zebra”", "{{context.dicom.tags[('0010','0040')]}} IN [“Donkey”, “Alpaca”, “Zebra”]")]
         public void Conditional_CreatesAndEvaluates(string expectedLeftParam, string expectedRightParam, string input)
         {
             var conditional = Conditional.Create(input);
@@ -69,11 +70,9 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [Fact]
         public void Conditional_GiveNullStringConditionalSetNextParameter_ShouldThrowException()
         {
-            var expectedMessage = "Value cannot be null. (Parameter 'value')";
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            var exception = Assert.Throws<ArgumentNullException>(() => new Conditional().SetNextParameter(null));
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-            Assert.Equal(expectedMessage, exception.Message);
+            var conditional = new Conditional();
+            conditional.SetNextParameter(null);
+            Assert.Equal(conditional.LeftParameter, "NULL");
         }
     }
 }

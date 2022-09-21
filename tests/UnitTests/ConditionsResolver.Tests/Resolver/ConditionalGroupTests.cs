@@ -42,6 +42,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [InlineData("'F' == 'F' AND 'F' == 'leg' OR 'F' == 'F' AND 'F' == 'F' OR 'F' == 'F'")]
         [InlineData("'F' == 'F' AND 'F' == 'leg' OR 'F' == 'F' OR 'F' == 'F' AND 'F' == 'F'")]
         [InlineData("'AND' == 'OR' AND 'F' == 'leg' OR 'F' == 'F' OR 'F' == 'F' AND 'F' == 'F'")]
+        [InlineData("'F' == 'F' OR 'F' == 'leg' OR 'F' == 'F'")]
+        [InlineData("'Donkey' IN [“Donkey”, “Alpaca”, “Zebra”] AND 'F' == 'F'")]
         public void ConditionalGroup_WhenProvidedCorrectInput_ShouldCreateAndHaveLeftAndRightGroups(string input)
         {
             var conditionalGroup = ConditionalGroup.Create(input);
@@ -52,6 +54,15 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [Theory]
         [InlineData(true, "'F' == 'F'")]
         [InlineData(false, "'F' == 'leg'")]
+        [InlineData(true, "'Donkey' IN [“Donkey”, “Alpaca”, “Zebra”]")]
+        [InlineData(true, "[“Donkey”, “Alpaca”, “Zebra”] IN 'Donkey'")]
+        [InlineData(false, "[“Donkey”, “Alpaca”, “Zebra”] IN 'Betty'")]
+        [InlineData(true, "'Donkey' NOT IN [“Donkey”, “Alpaca”, “Zebra”]")]
+        [InlineData(true, "'' == NULL")]
+        [InlineData(true, "'donkey' == NULL")]
+        [InlineData(true, "null == ''")]
+        [InlineData(true, "UNDEFINED == ''")]
+        [InlineData(true, "NULL == ''")]
         public void ConditionalGroup_WhenSetSingularConditional_ShouldCreateAndEvaluate(bool expectedEvaluation, string input)
         {
             var conditionalGroup = ConditionalGroup.Create(input);
@@ -74,6 +85,10 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [InlineData(true, "'5' > '1' AND 'Donkey' != 'donkey'")]
         [InlineData(true, "'5' => '5' AND 'Donkey' != 'donkey'")]
         [InlineData(false, "'5' >= '5' AND 'Donkey' != 'donkey'")]
+        [InlineData(true, "'Jack' IN [\"Lillie\", \"Jack\", \"Lucy\"] AND 'Donkey' != 'donkey'")]
+        [InlineData(false, "'ill' IN [\"Lillie\", \"Billy\", \"Silly\"] AND 'Donkey' != 'donkey'")]
+        [InlineData(true, "NULL IN [\"Lillie\", NULL, \"Silly\"] AND 'Donkey' != 'donkey'")]
+        [InlineData(true, "NULL IN [\"Lillie\", Null, \"Silly\"] AND 'Donkey' != 'donkey'")]
         public void ConditionalGroup_WhenProvidedCorrectInput_ShouldCreateAndEvaluate(bool expectedResult, string input)
         {
             var conditionalGroup = ConditionalGroup.Create(input);
@@ -105,6 +120,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         }
 
         [Theory]
+        [InlineData("Unable to parse \"NULLLL == ''\"", "NULLLL == ''")]
         [InlineData("Matching brackets missing.", "('TRUE' == 'TRUE' AND ('TRUE' == 'TRUE' OR ('TRUE' == 'TRUE' AND ((('TRUE' == 'TRUE' OR 'TRUE' == 'TRUE'))))")]
         public void ConditionalGroup_WhenErrorHappens_ShouldShowsCorrectError(string expectedMessage, string input)
         {
