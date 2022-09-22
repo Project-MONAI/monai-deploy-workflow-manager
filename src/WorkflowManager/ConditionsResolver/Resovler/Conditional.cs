@@ -120,6 +120,29 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             var currentChar = input[currentIndex];
             var nextIndex = currentIndex + 1;
 
+            // bulk of complexity is here.
+            currentIndex = ParseChars(input, currentIndex, currentChar, nextIndex);
+
+            if (currentIndex + 1 >= input.Length)
+            {
+                return currentIndex;
+            }
+
+            var lengthTillEnd = input.Length - currentIndex;
+            currentIndex = ParseExtendedOperators(
+                SliceInput(input, currentIndex, lengthTillEnd), currentIndex);
+
+            if (string.IsNullOrWhiteSpace(LeftParameter)
+                && string.IsNullOrWhiteSpace(RightParameter)
+                && string.IsNullOrWhiteSpace(LogicalOperator))
+            {
+                throw new ArgumentException($"Unable to parse \"{originalInput}\"");
+            }
+            return Parse(input, currentIndex + 1);
+        }
+
+        private int ParseChars(ReadOnlySpan<char> input, int currentIndex, char currentChar, int nextIndex)
+        {
             switch (currentChar)
             {
                 case OPEN_SQUARE_BRACKET:
@@ -181,22 +204,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                     break;
             }
 
-            if (currentIndex + 1 >= input.Length)
-            {
-                return currentIndex;
-            }
-
-            var lengthTillEnd = input.Length - currentIndex;
-            currentIndex = ParseExtendedOperators(
-                SliceInput(input, currentIndex, lengthTillEnd), currentIndex);
-
-            if (string.IsNullOrWhiteSpace(LeftParameter)
-                && string.IsNullOrWhiteSpace(RightParameter)
-                && string.IsNullOrWhiteSpace(LogicalOperator))
-            {
-                throw new ArgumentException($"Unable to parse \"{originalInput}\"");
-            }
-            return Parse(input, currentIndex + 1);
+            return currentIndex;
         }
 
         private int ParseExtendedOperators(ReadOnlySpan<char> input, int currentIndex)
