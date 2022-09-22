@@ -21,8 +21,8 @@ on:
       - 'develop'
       - 'main'
     paths:
-      - 'src/**'
-      - '!**.csproj'
+      - src/**
+      - !**.csproj
   workflow_dispatch:
 
 env:
