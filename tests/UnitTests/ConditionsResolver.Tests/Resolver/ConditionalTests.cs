@@ -76,7 +76,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         }
 
         [Fact]
-        public void Conditional_GiveNullStringConditionalSetNextParameter_ShouldThrowException()
+        public void Conditional_GiveNullStringConditionalSetNextParameter_ShouldHaveNULL()
         {
             var conditional = new Conditional();
             conditional.SetNextParameter(null);
