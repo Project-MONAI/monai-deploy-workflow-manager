@@ -15,13 +15,14 @@
  */
 
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 {
     public sealed class Conditional
     {
-        public const string CONTAINS = " IN ";
-        public const string NOT_CONTAINS = " NOT IN ";
+        public const string CONTAINS = "CONTAINS";
+        public const string NOT_CONTAINS = "NOT_CONTAINS";
 
         public const char GT = '>';
         public const string GTstr = ">";
@@ -38,9 +39,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
         public const string GE = ">=";
         public const string EG = "=>";
 
-        public const string NULL = "NULL ";
-        public const string UNDEFINED = "UNDEFINED ";
-
+        public const string NULL = "NULL";
+        public const string UNDEFINED = "UNDEFINED";
 
         public const char OPEN_SQUIGGILY_BRACKET = '{';
         public const char OPEN_SQUARE_BRACKET = '[';
@@ -84,8 +84,16 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             throw new ArgumentException("All parameters set");
         }
 
-        public void Parse(ReadOnlySpan<char> input, int currentIndex = 0)
+        public int Parse(ReadOnlySpan<char> input, int currentIndex = 0)
         {
+            var originalInput = input;
+            if (currentIndex == 0)
+            {
+                var pattern = @"(?i:\bnull\b|''|""""|\bundefined\b)";
+                var replace = "NULL";
+                input = Regex.Replace(input.ToString(), pattern, replace, RegexOptions.IgnoreCase);
+            }
+
             if (input.IsEmpty || input.IsWhiteSpace())
             {
                 throw new ArgumentNullException(nameof(input));
@@ -93,7 +101,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
             if (currentIndex >= input.Length)
             {
-                return;
+                return currentIndex;
             }
 
             var isAnd = SliceInput(input, 0, 3) == AND;
@@ -112,74 +120,6 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             var currentChar = input[currentIndex];
             var nextIndex = currentIndex + 1;
 
-            // The bulk of the parsing is here in ParseChar
-            currentIndex = ParseChar(input, currentIndex, currentChar, nextIndex);
-
-            if (currentIndex + 1 >= input.Length)
-            {
-                return;
-            }
-
-            ParseSlices(input, currentIndex);
-
-            if (string.IsNullOrWhiteSpace(LeftParameter)
-                && string.IsNullOrWhiteSpace(RightParameter)
-                && string.IsNullOrWhiteSpace(LogicalOperator))
-            {
-                throw new ArgumentException($"Unable to parse \"{input}\"");
-            }
-            Parse(input, currentIndex + 1);
-        }
-
-        private void ParseSlices(ReadOnlySpan<char> input, int currentIndex)
-        {
-            var isIn = false;
-            if (input.Length - currentIndex > CONTAINS.Length && currentIndex != 0)
-            {
-                isIn = SliceInput(input, currentIndex - 1, CONTAINS.Length) == CONTAINS;
-            }
-
-            var isNotIn = false;
-            if (input.Length - currentIndex > NOT_CONTAINS.Length && currentIndex != 0)
-            {
-                isNotIn = SliceInput(input, currentIndex - 1, NOT_CONTAINS.Length) == NOT_CONTAINS;
-            }
-
-            var isNull = false;
-            if (input.Length - currentIndex > NULL.Length)
-            {
-                isNull = SliceInput(input, currentIndex, NULL.Length)
-                    .StartsWith(NULL, StringComparison.InvariantCultureIgnoreCase);
-            }
-
-            var isUndefined = false;
-            if (input.Length - currentIndex > UNDEFINED.Length)
-            {
-                isUndefined = SliceInput(input, currentIndex, UNDEFINED.Length)
-                    .StartsWith(UNDEFINED, StringComparison.InvariantCultureIgnoreCase);
-            }
-
-            if (isNull || isUndefined || input.IsWhiteSpace() || input.IsEmpty)
-            {
-                SetNextParameter("");
-            }
-
-            if (isIn)
-            {
-                LogicalOperator = CONTAINS;
-            }
-
-            if (isNotIn)
-            {
-                LogicalOperator = NOT_CONTAINS;
-            }
-        }
-
-        private static string SliceInput(ReadOnlySpan<char> input, int start, int length)
-            => input.Slice(start, length).ToString().ToUpper();
-
-        private int ParseChar(ReadOnlySpan<char> input, int currentIndex, char currentChar, int nextIndex)
-        {
             switch (currentChar)
             {
                 case OPEN_SQUARE_BRACKET:
@@ -189,8 +129,9 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                         throw new ArgumentException($"Matching closing bracket missing in \"{input}\"");
                     }
                     SetNextParameter(input.Slice(nextIndex, lengthTillClosingBracket).ToString(), true);
-                    currentIndex = nextIndex + lengthTillClosingBracket + 1;
+                    currentIndex = Parse(input, nextIndex + lengthTillClosingBracket + 1);
                     break;
+
                 case OPEN_SQUIGGILY_BRACKET:
                     var idxClosingBracket = input.Slice(nextIndex).IndexOf('}') + 3;
                     if (idxClosingBracket == -1)
@@ -200,15 +141,24 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                     SetNextParameter(input.Slice(currentIndex, idxClosingBracket).ToString());
                     currentIndex = nextIndex + idxClosingBracket;
                     break;
+
                 case SINGLE_QUOTE:
                     var lengthTillClosingQuote = input.Slice(nextIndex).IndexOf('\'');
                     if (lengthTillClosingQuote == -1)
                     {
                         throw new ArgumentException($"Matching closing quotation mark missing in \"{input}\"");
                     }
-                    SetNextParameter(input.Slice(nextIndex, lengthTillClosingQuote).ToString());
+                    if (lengthTillClosingQuote == 0)
+                    {
+                        SetNextParameter("");
+                    }
+                    else
+                    {
+                        SetNextParameter(input.Slice(nextIndex, lengthTillClosingQuote).ToString());
+                    }
                     currentIndex = nextIndex + lengthTillClosingQuote;
                     break;
+
                 case NOT:
                 case EQUAL:
                     // this checks for  == or !=
@@ -221,16 +171,61 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                         currentIndex += 1;
                     }
                     break;
+
                 case GT:
                 case LT:
                     LogicalOperator = currentChar.ToString();
                     break;
+
                 default:
                     break;
             }
 
+            if (currentIndex + 1 >= input.Length)
+            {
+                return currentIndex;
+            }
+
+            var lengthTillEnd = input.Length - currentIndex;
+            currentIndex = ParseExtendedOperators(
+                SliceInput(input, currentIndex, lengthTillEnd), currentIndex);
+
+            if (string.IsNullOrWhiteSpace(LeftParameter)
+                && string.IsNullOrWhiteSpace(RightParameter)
+                && string.IsNullOrWhiteSpace(LogicalOperator))
+            {
+                throw new ArgumentException($"Unable to parse \"{originalInput}\"");
+            }
+            return Parse(input, currentIndex + 1);
+        }
+
+        private int ParseExtendedOperators(ReadOnlySpan<char> input, int currentIndex)
+        {
+            var currentWord = Regex.Match(input.ToString(), @"\'\w+\'|^\w+").Value;
+
+            if (currentWord.ToUpper() == CONTAINS && currentIndex != 0)
+            {
+                LogicalOperator = CONTAINS;
+                return currentIndex + currentWord.Length - 1;
+            }
+
+            if (currentWord.ToUpper() == NOT_CONTAINS && currentIndex != 0)
+            {
+                LogicalOperator = NOT_CONTAINS;
+                return currentIndex + currentWord.Length - 1;
+            }
+
+            if (currentWord.ToUpper() == NULL)
+            {
+                SetNextParameter("");
+                return currentIndex + currentWord.Length - 1;
+            }
+
             return currentIndex;
         }
+
+        private static string SliceInput(ReadOnlySpan<char> input, int start, int length)
+            => input.Slice(start, length).ToString().ToUpper();
 
         public static Conditional Create(string input)
         {
@@ -268,6 +263,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
         {
             string[] arr;
             var compare = string.Empty;
+
             if (LeftParameterIsArray)
             {
                 arr = LeftParameter.Split(',');
@@ -292,7 +288,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 }
             }
 
-            return arr.Any(p => p.Trim().Trim('\"').Trim('\'').Equals(compare));
+            return arr.Any(p => p.Trim().Trim('\"').Trim('\'').Trim('“').Trim('”').Equals(compare));
         }
     }
 }

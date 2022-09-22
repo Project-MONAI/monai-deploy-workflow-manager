@@ -27,7 +27,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [InlineData("{{context.executions.body_part_identifier.result.body_part}}", "leg", "{{context.executions.body_part_identifier.result.body_part}} == 'leg'")]
         [InlineData("F", "F", "'F' == 'F'")]
         [InlineData("F", "{{context.dicom.tags[('0010','0040')]}}", "'F' == {{context.dicom.tags[('0010','0040')]}}")]
-        [InlineData("{{context.dicom.tags[('0010','0040')]}}", "“Donkey”, “Alpaca”, “Zebra”", "{{context.dicom.tags[('0010','0040')]}} IN [“Donkey”, “Alpaca”, “Zebra”]")]
+        [InlineData("{{context.dicom.tags[('0010','0040')]}}", "“Donkey”, “Alpaca”, “Zebra”", "{{context.dicom.tags[('0010','0040')]}} CONTAINS [“Donkey”, “Alpaca”, “Zebra”]")]
         public void Conditional_CreatesAndEvaluates(string expectedLeftParam, string expectedRightParam, string input)
         {
             var conditional = Conditional.Create(input);
