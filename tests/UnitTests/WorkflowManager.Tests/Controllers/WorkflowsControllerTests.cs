@@ -237,7 +237,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             var result = await WorkflowsController.UpdateAsync(newWorkflow, workflowRevision.WorkflowId);
 
-            var objectResult = Assert.IsType<NotFoundObjectResult>(result);
+            var objectResult = Assert.IsType<ObjectResult>(result);
 
             Assert.Equal(404, objectResult.StatusCode);
         }
