@@ -663,5 +663,43 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 WorkflowValidator.Reset();
             }
         }
+
+        [Fact]
+        public void ValidateWorkflow_ValidatesEmptyWorkflow_ReturnsTrueAndHasCorrectValidationResultsAsync()
+        {
+            for (var i = 0; i < 15; i++)
+            {
+                var workflow = new Workflow();
+
+                var workflowHasErrors = WorkflowValidator.ValidateWorkflow(workflow, out var results);
+
+                Assert.True(workflowHasErrors);
+
+                Assert.Equal(7, results.Errors.Count);
+
+                var error1 = "'' is not a valid Workflow Description (source: Unnamed workflow).";
+                Assert.Contains(error1, results.Errors);
+
+                var error2 = "'informaticsGateway' cannot be null (source: Unnamed workflow).";
+                Assert.Contains(error2, results.Errors);
+
+                var error3 = "'' is not a valid AE Title (source: informaticsGateway).";
+                Assert.Contains(error3, results.Errors);
+
+                var error4 = "'' is not a valid Informatics Gateway - exportDestinations (source: informaticsGateway).";
+                Assert.Contains(error4, results.Errors);
+
+                var error5 = "Missing Workflow Name.";
+                Assert.Contains(error5, results.Errors);
+
+                var error6 = "Missing Workflow Version.";
+                Assert.Contains(error6, results.Errors);
+
+                var error7 = "Missing Workflow Tasks.";
+                Assert.Contains(error7, results.Errors);
+
+                WorkflowValidator.Reset();
+            }
+        }
     }
 }
