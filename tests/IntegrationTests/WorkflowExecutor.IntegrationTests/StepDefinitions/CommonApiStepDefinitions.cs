@@ -68,6 +68,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"I will recieve the error message (.*)")]
         public void ThenIWillRecieveTheCorrectErrorMessage(string message)
         {
+            ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().ContainAll("type", "title", "status", "traceId");
             ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Contain(message);
         }
     }

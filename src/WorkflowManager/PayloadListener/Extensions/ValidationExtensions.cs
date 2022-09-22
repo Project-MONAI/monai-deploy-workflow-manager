@@ -16,6 +16,7 @@
 
 using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 {
@@ -36,6 +37,16 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             valid &= IsPayloadIdValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.PayloadId.ToString(), validationErrors);
 
             return valid;
+        }
+
+        public static bool IsInformaticsGatewayNotNull(string source, InformaticsGateway informaticsGateway, IList<string> validationErrors)
+        {
+            Guard.Against.NullOrWhiteSpace(source, nameof(source));
+
+            if (informaticsGateway is not null) return true;
+
+            validationErrors?.Add($"'{nameof(informaticsGateway)}' cannot be null (source: {source}).");
+            return false;
         }
 
         public static bool IsAeTitleValid(string source, string aeTitle, IList<string> validationErrors)
