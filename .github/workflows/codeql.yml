@@ -22,7 +22,7 @@ on:
       - 'main'
     paths:
       - 'src/**'
-      - '!**/*.csproj'
+      - '!**.csproj'
   workflow_dispatch:
 
 env:
