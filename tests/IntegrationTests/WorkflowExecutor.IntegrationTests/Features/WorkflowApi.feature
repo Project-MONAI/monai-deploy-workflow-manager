@@ -114,6 +114,8 @@ Scenario Outline: Update workflow with invalid details
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_0_Tasks           | Missing Workflow Tasks                                  |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Version_Null      | Missing Workflow Version                                |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Version_Blank     | Missing Workflow Version                                |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Body_Object       | 'informaticsGateway' cannot be null                     |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Empty_Workflow_Body                | '' is not a valid Workflow Description                  |
 
 
 @UpdateWorkflows
