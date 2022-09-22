@@ -161,7 +161,9 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
                 case NOT:
                 case EQUAL:
-                    // this checks for  == or !=
+                case GT:
+                case LT:
+                    // this checks for  ==, !=, =>, =<, <=, >=
                     var nextChar = input[currentIndex + 1];
 
                     if (nextChar == '=' || nextChar == '>' || nextChar == '<')
@@ -170,13 +172,11 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                         LogicalOperator = new string(chars);
                         currentIndex += 1;
                     }
+                    else if (currentChar == GT || currentChar == LT)
+                    {
+                        LogicalOperator = currentChar.ToString();
+                    }
                     break;
-
-                case GT:
-                case LT:
-                    LogicalOperator = currentChar.ToString();
-                    break;
-
                 default:
                     break;
             }
@@ -236,6 +236,22 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             var conditionalGroup = new Conditional();
             conditionalGroup.Parse(input.Trim());
 
+            switch (conditionalGroup.LogicalOperator)
+            {
+                case GTstr:
+                case LTstr:
+                case GE:
+                case LE:
+                case EG:
+                case EL:
+                    if ((int.TryParse(conditionalGroup.LeftParameter, out _)
+                        || int.TryParse(conditionalGroup.RightParameter, out _)) is false)
+                    {
+                        throw new ArgumentException($"Invalid numeric value in: {input}");
+                    }
+                    break;
+            }
+
             return conditionalGroup;
         }
 
@@ -247,8 +263,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             {
                 CONTAINS => ContainsEvaluate(),
                 NOT_CONTAINS => !ContainsEvaluate(),
-                EQUAL_EQUALS => LeftParameter == RightParameter,
-                NOT_EQUAL => LeftParameter != RightParameter,
+                EQUAL_EQUALS => string.Equals(LeftParameter.Trim(), RightParameter.Trim(), StringComparison.InvariantCultureIgnoreCase),
+                NOT_EQUAL => !string.Equals(LeftParameter.Trim(), RightParameter.Trim(), StringComparison.InvariantCultureIgnoreCase),
                 GTstr => Convert.ToInt16(LeftParameter, culture) > Convert.ToInt16(RightParameter, culture),
                 LTstr => Convert.ToInt16(LeftParameter, culture) < Convert.ToInt16(RightParameter, culture),
                 GE => Convert.ToInt16(LeftParameter, culture) >= Convert.ToInt16(RightParameter, culture),

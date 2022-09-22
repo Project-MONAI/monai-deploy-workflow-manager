@@ -60,6 +60,14 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         }
 
         [Fact]
+        public void Conditional_GivenInvalidNumberStringConditional_ShouldThrowException()
+        {
+            var expectedMessage = "Invalid numeric value in: 'F' > 'F'";
+            var exception = Assert.Throws<ArgumentException>(() => Conditional.Create("'F' > 'F'"));
+            Assert.Equal(expectedMessage, exception.Message);
+        }
+
+        [Fact]
         public void Conditional_GivenEmptyStringConditionalParse_ShouldThrowException()
         {
             var expectedMessage = "Value cannot be null. (Parameter 'input')";
