@@ -79,12 +79,11 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
         public static bool IsInformaticsGatewayValid(string source, InformaticsGateway informaticsGateway, IList<string> validationErrors = null)
         {
             Guard.Against.NullOrWhiteSpace(source, nameof(source));
-            Guard.Against.Null(informaticsGateway, nameof(informaticsGateway));
 
             var valid = true;
-
-            valid &= ValidationExtensions.IsAeTitleValid(informaticsGateway.GetType().Name, informaticsGateway.AeTitle, validationErrors);
-            valid &= IsExportDestinationsValid(informaticsGateway.GetType().Name, informaticsGateway.ExportDestinations, validationErrors);
+            valid &= ValidationExtensions.IsInformaticsGatewayNotNull(source, informaticsGateway, validationErrors);
+            valid &= ValidationExtensions.IsAeTitleValid(nameof(informaticsGateway), informaticsGateway?.AeTitle, validationErrors);
+            valid &= IsExportDestinationsValid(nameof(informaticsGateway), informaticsGateway?.ExportDestinations, validationErrors);
 
             return valid;
         }
