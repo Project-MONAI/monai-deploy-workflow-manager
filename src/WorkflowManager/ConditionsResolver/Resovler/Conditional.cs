@@ -64,7 +64,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
         {
             if (string.IsNullOrWhiteSpace(value))
             {
-                value = "NULL";
+                value = NULL;
             }
 
             if (string.IsNullOrEmpty(LeftParameter))
@@ -90,7 +90,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             if (currentIndex == 0)
             {
                 var pattern = @"(?i:\bnull\b|''|""""|\bundefined\b)";
-                var replace = "NULL";
+                var replace = NULL;
                 input = Regex.Replace(input.ToString(), pattern, replace, RegexOptions.IgnoreCase);
             }
 
@@ -292,14 +292,14 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             }
 
             if (arr.Any(p =>
-                p.Trim().Equals("NULL", StringComparison.InvariantCultureIgnoreCase)
-                || p.Trim().Equals("UNDEFINED", StringComparison.InvariantCultureIgnoreCase)))
+                p.Trim().Equals(NULL, StringComparison.InvariantCultureIgnoreCase)
+                || p.Trim().Equals(UNDEFINED, StringComparison.InvariantCultureIgnoreCase)))
             {
                 for (var i = 0; i < arr.Length; i++)
                 {
-                    if (arr[i].Trim().Equals("NULL", StringComparison.InvariantCultureIgnoreCase) || arr[i].Equals("UNDEFINED", StringComparison.InvariantCultureIgnoreCase))
+                    if (arr[i].Trim().Equals(NULL, StringComparison.InvariantCultureIgnoreCase) || arr[i].Equals(UNDEFINED, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        arr[i] = "NULL";
+                        arr[i] = NULL;
                     }
                 }
             }
