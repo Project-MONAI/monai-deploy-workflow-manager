@@ -132,6 +132,18 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Fact]
+        public async Task GetListAsync_InvalidPayloadId_Returns400()
+        {
+            var expectedErrorMessage = "Failed to validate payloadId, not a valid guid";
+            var result = await WorkflowInstanceController.GetListAsync(new Filter.PaginationFilter(), null, "invalid", true);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            var responseValue = (ProblemDetails)objectResult.Value;
+            responseValue.Detail.Should().BeEquivalentTo(expectedErrorMessage);
+        }
+
+        [Fact]
         public async Task GetListAsync_ServiceException_ReturnProblem()
         {
             _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<Status>(), It.IsAny<string>())).ThrowsAsync(new Exception());

@@ -75,6 +75,13 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(payloadId) || !Guid.TryParse(payloadId, out _))
+                {
+                    _logger.LogDebug($"{nameof(GetListAsync)} - Failed to validate {nameof(payloadId)}");
+
+                    return Problem($"Failed to validate {nameof(payloadId)}, not a valid guid", $"/workflowinstances/{payloadId}", BadRequest);
+                }
+
                 Status? parsedStatus = status == null ? null : Enum.Parse<Status>(status, true);
 
                 if (disablePagination is true)
