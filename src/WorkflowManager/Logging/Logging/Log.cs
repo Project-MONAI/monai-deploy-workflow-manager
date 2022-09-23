@@ -106,6 +106,10 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
         [LoggerMessage(EventId = 27, Level = LogLevel.Error, Message = "The following task: {taskId} in workflow {workflowInstanceId} is currently timed out and not processing anymore updates, timed out at {timedOut}.")]
         public static partial void TaskTimedOut(this ILogger logger, string taskId, string workflowInstanceId, DateTime timedOut);
 
+        [LoggerMessage(EventId = 28, Level = LogLevel.Error, Message = "The following payload: {payloadId} in workflow instance {workflowInstanceId} workflow revision {workflowRevisionId} for task {taskId} failed to load artifact and was unable to update DB.")]
+        public static partial void LoadArtifactAndDBFailiure(this ILogger logger, string payloadId, string taskId, string workflowInstanceId, string workflowRevisionId);
+
+
         public static void TaskComplete(this ILogger logger, TaskExecution task, WorkflowInstance workflowInstance, PatientDetails patientDetails, string correlationId, string taskStatus)
         {
             var objectLog = new ObjectLog
