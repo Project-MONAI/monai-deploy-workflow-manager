@@ -139,6 +139,7 @@ Scenario: Get all workflows instances by Id. Id Not Found
     And I have a Workflow Instance WFI_Static_1 with no artifacts
     When I send a GET request
     Then I will get a 404 response
+    And I will recieve the error message Failed to find workflow instance with Id: 0a072095-0f6c-4a5a-8e20-ef541ccf4f0d
 
 @GetWorkflowInstances
 Scenario: Get all workflows instances by Id. Id Bad Request
@@ -146,3 +147,13 @@ Scenario: Get all workflows instances by Id. Id Bad Request
     And I have a Workflow Instance WFI_Static_1 with no artifacts
     When I send a GET request
     Then I will get a 400 response
+    And I will recieve the error message Failed to validate id, not a valid guid
+
+
+@GetWorkflowInstances
+Scenario: Get workflow instances by payloadId. Id Bad Request
+	Given I have an endpoint /workflowinstances?payloadid=invalidid
+    And I have a Workflow Instance WFI_Static_1 with no artifacts
+    When I send a GET request
+    Then I will get a 400 response
+    And I will recieve the error message Failed to validate payloadId, not a valid guid
