@@ -16,13 +16,13 @@ name: CodeQL
 
 on:
   pull_request:
+    paths:
+      - 'src/**'
+      - '!**.csproj':
   push:
     branches:
       - 'develop'
       - 'main'
-    paths:
-      - src/**
-      - '!**.csproj'
   workflow_dispatch:
 
 env:
