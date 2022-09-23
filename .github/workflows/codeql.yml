@@ -58,7 +58,6 @@ jobs:
       uses: github/codeql-action/init@v2
       with:
         languages: csharp
-        config-file: ./.github/codeql-config.yml
 
     - name: Restore Solution
       run: dotnet restore Monai.Deploy.WorkflowManager.sln
