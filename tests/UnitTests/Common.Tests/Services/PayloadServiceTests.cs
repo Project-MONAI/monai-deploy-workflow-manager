@@ -89,6 +89,51 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
 
             Assert.NotNull(result);
         }
+
+        [Fact]
+        public async Task CreateAsync_ValidWorkflowPayloadExists_ReturnsExisting()
+        {
+            var workflowRequest = new WorkflowRequestEvent
+            {
+                Timestamp = DateTime.UtcNow,
+                Bucket = "bucket",
+                CalledAeTitle = "aetitle",
+                CallingAeTitle = "aetitle",
+                CorrelationId = Guid.NewGuid().ToString(),
+                PayloadId = Guid.NewGuid(),
+                Workflows = new List<string> { Guid.NewGuid().ToString() },
+                FileCount = 0
+            };
+
+            var patientDetails = new PatientDetails
+            {
+                PatientDob = new DateTime(1996, 02, 05),
+                PatientId = Guid.NewGuid().ToString(),
+                PatientName = "Steve",
+                PatientSex = "male"
+            };
+
+            var expected = new Payload
+            {
+                Timestamp = workflowRequest.Timestamp,
+                Bucket = workflowRequest.Bucket,
+                FileCount = workflowRequest.FileCount,
+                CalledAeTitle = workflowRequest.CalledAeTitle,
+                CallingAeTitle = workflowRequest.CallingAeTitle,
+                CorrelationId = workflowRequest.CorrelationId,
+                PayloadId = workflowRequest.PayloadId.ToString(),
+                PatientDetails = patientDetails,
+                Workflows = workflowRequest.Workflows
+            };
+
+
+            _payloadRepository.Setup(p => p.GetByIdAsync(expected.PayloadId)).ReturnsAsync(expected);
+
+            var result = await PayloadService.CreateAsync(workflowRequest);
+
+            Assert.NotNull(result);
+        }
+
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         [Fact]
         public async Task CreateAsync_NullPayload_ReturnsThrowsException() => await Assert.ThrowsAsync<ArgumentNullException>(async () => await PayloadService.CreateAsync(null));
@@ -121,6 +166,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
 
             result.Should().BeEquivalentTo(payload);
         }
+
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         [Fact]
         public async Task GetByIdAsync_NullId_ReturnsThrowsException() => await Assert.ThrowsAsync<ArgumentNullException>(async () => await PayloadService.GetByIdAsync(null));
