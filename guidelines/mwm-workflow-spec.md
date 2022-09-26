@@ -156,7 +156,7 @@ Example (output sent to another task if the patient is female, otherwise to PACS
     "task_destinations": [
         {
             "name": "my-task-id",
-            "conditions": ["{{context.input.dicom.series.all('0010','0040')}} == 'F'"]
+            "conditions": ["{{context.dicom.series.all('0010','0040')}} == 'F'"]
         }
     ],
     ...
@@ -322,7 +322,7 @@ Example:
 
 ##### DICOM Tags
 When the input data is DICOM, Evaluators can use DICOM tag values in conditional statements.
-DICOM tags are available in `context.input.dicom`. The reference for that object is as follows:
+DICOM tags are available in `context.dicom`. The reference for that object is as follows:
 
 | Property | Type | Description |
 |------|------|------|
@@ -334,12 +334,12 @@ Each `Series` object contains the tags of that series. They can be accessed eith
 
 The DICOM tag matching engine allows evaluating conditions against all series and resulting in True if the condition matches _any one_ of them:
 ```python
-{{context.input.dicom.series.any('0018','0050')}} < 5
+{{context.dicom.series.any('0018','0050')}} < 5
 ```
 
 In order to check a certain tag across _all_ series, use the study level tags. For example, to only evaluate True for Female patients:
 ```python
-{{context.input.dicom.series.all('0010','0040')}} == 'F'
+{{context.dicom.series.all('0010','0040')}} == 'F'
 ```
 
 ### Destinations
@@ -366,7 +366,7 @@ Example (run my-task-id when the patient is female):
     "task_destinations": [
         {
             "name": "my-task-id",
-            "conditions": ["{{context.input.dicom.series.all('0010','0040')}} == 'F'"]
+            "conditions": ["{{context.dicom.series.all('0010','0040')}} == 'F'"]
         },
     ],
     ...
@@ -381,7 +381,7 @@ The following examples both function the same and act as an AND condition.
     "task_destinations": [
         {
             "name": "my-task-id",
-            "conditions": ["{{context.input.dicom.series.all('0010','0040')}} == 'F' AND {{context.input.dicom.series.all('0010','0040')}} == 'M'"]
+            "conditions": ["{{context.dicom.series.all('0010','0040')}} == 'F' AND {{context.dicom.series.all('0010','0040')}} == 'M'"]
         },
     ],
     ...
@@ -394,7 +394,7 @@ The following examples both function the same and act as an AND condition.
     "task_destinations": [
         {
             "name": "my-task-id",
-            "conditions": ["{{context.input.dicom.series.all('0010','0040')}} == 'F'", "{{context.input.dicom.series.all('0010','0040')}} == 'M'"]
+            "conditions": ["{{context.dicom.series.all('0010','0040')}} == 'F'", "{{context.dicom.series.all('0010','0040')}} == 'M'"]
         },
     ],
     ...
