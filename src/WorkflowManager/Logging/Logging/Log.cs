@@ -18,14 +18,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Logging.Models;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Logging.Logging
 {
     public static partial class Log
     {
-        [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "{ServiceName} started.")]
+        [LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = "{ServiceName} started.")]
         public static partial void ServiceStarted(this ILogger logger, string serviceName);
 
         [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "{ServiceName} starting.")]
@@ -106,38 +105,30 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
         [LoggerMessage(EventId = 27, Level = LogLevel.Error, Message = "The following task: {taskId} in workflow {workflowInstanceId} is currently timed out and not processing anymore updates, timed out at {timedOut}.")]
         public static partial void TaskTimedOut(this ILogger logger, string taskId, string workflowInstanceId, DateTime timedOut);
 
+        [LoggerMessage(EventId = 28, Level = LogLevel.Warning, Message = "Not Processing workflow: {workflowInstanceId} as it already has a status of {status}")]
+        public static partial void WorkflowBadStatus(this ILogger logger, string workflowInstanceId, string status);
+
         public static void TaskComplete(this ILogger logger, TaskExecution task, WorkflowInstance workflowInstance, PatientDetails patientDetails, string correlationId, string taskStatus)
         {
-            var objectLog = new ObjectLog
-            {
-                Message = "Task Complete",
-                Object = LoggerHelpers.ToTaskCompleteObject(task, workflowInstance, patientDetails, correlationId, taskStatus)
-            };
-
-            var jsonString = JsonConvert.SerializeObject(objectLog);
-
-            logger.LogInformation(28, message: jsonString);
+            logger.LogInformation("TaskComplete Task {task}, workflowInstance {workflowInstance}, patientDetails {patientDetails}, correlationId {correlationId}, taskStatus {taskStatus}",
+              JsonConvert.SerializeObject(task), JsonConvert.SerializeObject(workflowInstance), JsonConvert.SerializeObject(patientDetails), correlationId, taskStatus);
         }
 
         public static void LogControllerStartTime(this ILogger logger, ActionExecutingContext context)
         {
             var request = context.HttpContext.Request;
-            var body = context.ActionArguments.FirstOrDefault();
-            var objectLog = new ObjectLog
-            {
-                Message = "ControllerActionStart",
-                Object = LoggerHelpers.ToLogControllerStartObject(request.Method, request.Path, request.QueryString.Value.ToString(), body.Value ?? "", "", "")
-            };
-
-            var jsonString = JsonConvert.SerializeObject(objectLog);
-
-            logger.LogInformation(29, message: jsonString);
+            var body = JsonConvert.SerializeObject(context.ActionArguments.FirstOrDefault());
+            logger.LogInformation(29, "ControllerActionStart data  HttpType {httptype}, Path {path}, QueryString {querystring}, Body {body}",
+            request.Method, request.Path, request.QueryString.Value.ToString(), body);
         }
 
         public static void LogControllerEndTime(this ILogger logger, ResultExecutedContext context)
         {
             var request = context.HttpContext.Request;
             var response = context.HttpContext.Response;
+
+            var startTime = context.HttpContext.Items["startTime"] as DateTime? ?? DateTime.UtcNow;
+            var endtime = DateTime.UtcNow;
 
             var objResult = new ObjectResult("");
 
@@ -146,15 +137,10 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
                 objResult = (ObjectResult)context.Result;
             }
 
-            var objectLog = new ObjectLog
-            {
-                Message = "ControllerActionEnd",
-                Object = LoggerHelpers.ToLogControllerEndObject(request.Method, request.Path, request.QueryString.Value.ToString(), response.StatusCode.ToString(), objResult?.Value ?? "", "", "")
-            };
+            logger.LogInformation(30, "ControllerActionEnd data  EndTime {endtime}, Duration {duration}, HttpType {httptype}, Path {path}, QueryString {querystring}, StatusCode {statuscode}, Result {result}",
+                endtime, (endtime - startTime).TotalMilliseconds, request.Method, request.Path,
+                request.QueryString.Value.ToString(), response.StatusCode, JsonConvert.SerializeObject(objResult));
 
-            var jsonString = JsonConvert.SerializeObject(objectLog);
-
-            logger.LogInformation(30, message: jsonString);
         }
 
         [LoggerMessage(EventId = 31, Level = LogLevel.Warning, Message = "Unable to locate a matching workflow for the given workflow request.")]

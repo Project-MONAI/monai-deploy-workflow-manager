@@ -74,7 +74,7 @@ Open the post/workflows tab and click `try it out`, paste in the following to th
 	"version": "1.0.0",
 	"description": "Attempt at making a workflow",
 	"informatics_gateway": {
-		"ae_title": "MonaiSCU",
+		"ae_title": "MONAISCU",
 		"data_origins": [
 			"MY_SCANNER"
 		],
@@ -91,25 +91,19 @@ Open the post/workflows tab and click `try it out`, paste in the following to th
 				"namespace":"argo",
 				"workflow_template_name": "simple-workflow",
 				"server_url": "https://localhost:2746",
-				"allow_insecure": true,
-				"messaging_endpoint": "rabbit-monai",
-                "messaging_username" : "admin",
-                "messaging_password" : "admin",
-                "messaging_topic" : "md.tasks.callback",
-                "messaging_exchange" : "monaideploy",
-				"messaging_vhost" : "monaideploy",
+				"allow_insecure": true
 			},
 			"artifacts": {
 				"input": [
 					{
 						"name": "input_diacom",
-						"value": "{{ context.input.dicom }}/input_dicom"
+						"value": "{{ context.input.dicom }}"
 					}
 				],
 				"output": [
 					{
 						"name": "report",
-						"value": "{{ context.output }}/report",
+						"value": "{{ context.output }}",
 						"Mandatory": false
 					}
 				]

@@ -15,6 +15,8 @@
  */
 
 using System.IO.Abstractions;
+using System.Reflection;
+using Elastic.CommonSchema.Serilog;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +31,9 @@ using Monai.Deploy.WorkflowManager.TaskManager.Database;
 using Monai.Deploy.WorkflowManager.TaskManager.Database.Options;
 using Monai.Deploy.WorkflowManager.TaskManager.Extensions;
 using MongoDB.Driver;
+using Serilog;
+using Serilog.Events;
+using Serilog.Exceptions;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
@@ -64,6 +69,21 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                     configureLogging.AddConfiguration(builderContext.Configuration.GetSection("Logging"));
                     configureLogging.AddFile(o => o.RootPath = AppContext.BaseDirectory);
                 })
+                .UseSerilog((context, services, configuration) => configuration
+                    .ReadFrom.Configuration(context.Configuration)
+                    .ReadFrom.Services(services)
+                    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                    .MinimumLevel.Debug()
+                    .Enrich.FromLogContext()
+                    .Enrich.WithExceptionDetails()
+                    .Enrich.WithProperty("dllversion", Assembly.GetEntryAssembly()?.GetName().Version)
+                    .Enrich.WithProperty("dllName", Assembly.GetEntryAssembly()?.GetName().Name)
+                    .WriteTo.File(
+                        path: "logs/MTM-.log",
+                        rollingInterval: RollingInterval.Day,
+                        formatter: new EcsTextFormatter())
+                .WriteTo.Console())
+
                 .ConfigureServices((hostContext, services) =>
                 {
                     ConfigureServices(hostContext, services);

@@ -55,9 +55,9 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
                 IsRunning = true;
                 var time = DateTimeOffset.Now;
                 _logger.ServiceStarted(ServiceName);
-                _logger.LogInformation("Worker running at: {time}", time);
+                _logger.LogDebug("Worker running at: {time}", time);
                 await DoWork();
-                _logger.LogInformation("Worker completed in: {time} milliseconds", (int)(DateTimeOffset.Now - time).TotalMilliseconds);
+                _logger.LogDebug("Worker completed in: {time} milliseconds", (int)(DateTimeOffset.Now - time).TotalMilliseconds);
                 await Task.Delay(_options.Value.BackgroundServiceSettings.BackgroundServiceDelay, stoppingToken);
             }
             _logger.ServiceStopping(ServiceName);
