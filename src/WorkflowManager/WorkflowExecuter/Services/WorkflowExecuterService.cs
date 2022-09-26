@@ -690,7 +690,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 TaskId = task.Id,
                 WorkflowInstanceId = workflowInstanceId,
                 Status = artifactFound ? TaskExecutionStatus.Created : TaskExecutionStatus.Failed,
-                Reason = FailureReason.None,
+                Reason = artifactFound ? FailureReason.None : FailureReason.ExternalServiceError,
                 InputArtifacts = inputArtifacts,
                 OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}",
                 ResultMetadata = { },
