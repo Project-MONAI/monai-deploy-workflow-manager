@@ -127,7 +127,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             workflowInstances.RemoveAll(i => existingInstances.Any(e => e.WorkflowId == i.WorkflowId
                                                                            && e.PayloadId == i.PayloadId));
 
-            processed &= !workflowInstances.Any(wi => wi.Status != Status.Failed);
+            processed &= workflowInstances.All(wi => wi.Status != Status.Failed);
 
             if (workflowInstances.Any())
             {
