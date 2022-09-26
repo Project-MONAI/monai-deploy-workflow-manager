@@ -16,8 +16,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Monai.Deploy.WorkflowManager.Common.Extensions;
 using System.Text.RegularExpressions;
+using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
 
@@ -199,6 +199,17 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 paths.Add(currentTask.Id);
                 SuccessfulPaths.Add(string.Join(" => ", paths));
                 return;
+            }
+
+            if (currentTask.Artifacts != null && !currentTask.Artifacts.Output.IsNullOrEmpty())
+            {
+                var uniqueOutputNames = new HashSet<string>();
+                var allOutputsUnique = currentTask.Artifacts.Output.All(x => uniqueOutputNames.Add(x.Name));
+
+                if (!allOutputsUnique)
+                {
+                    Errors.Add($"Task: \"{currentTask.Id}\" has multiple output names with the same value.\n");
+                }
             }
 
             foreach (var tasksDestinationName in currentTask.TaskDestinations.Select(td => td.Name))
