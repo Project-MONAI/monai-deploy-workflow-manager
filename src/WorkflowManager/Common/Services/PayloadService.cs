@@ -46,6 +46,15 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
 
             try
             {
+                var exists = await GetByIdAsync(eventPayload.PayloadId.ToString());
+
+                if (exists is not null)
+                {
+                    _logger.PayloadAlreadyExists(eventPayload.PayloadId.ToString());
+
+                    return exists;
+                }
+
                 var patientDetails = await _dicomService.GetPayloadPatientDetailsAsync(eventPayload.PayloadId.ToString(), eventPayload.Bucket);
 
                 var payload = new Payload

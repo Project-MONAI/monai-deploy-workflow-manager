@@ -148,5 +148,11 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
 
         [LoggerMessage(EventId = 32, Level = LogLevel.Debug, Message = "Verifying artifact existence on bucket {bucket}: {artifactKey}={artifactValue}.")]
         public static partial void VerifyArtifactExistence(this ILogger logger, string bucket, string artifactKey, string artifactValue);
+
+        [LoggerMessage(EventId = 33, Level = LogLevel.Debug, Message = "Task destination condition for task {taskId} with condition: {conditions} resolved to false.")]
+        public static partial void TaskDestinationConditionFalse(this ILogger logger, string conditions, string taskId);
+
+        [LoggerMessage(EventId = 34, Level = LogLevel.Debug, Message = "Payload already exists for {payloadId}. This is likley due to being requeued")]
+        public static partial void PayloadAlreadyExists(this ILogger logger, string payloadId);
     }
 }

@@ -840,7 +840,8 @@
         "dependencies": {
           "Microsoft.AspNetCore.Mvc.Core": "[2.2.5, )",
           "Microsoft.Extensions.Logging.Abstractions": "[6.0.2, )",
-          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )"
+          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
+          "Serilog": "[2.11.0, )"
         }
       }
     }

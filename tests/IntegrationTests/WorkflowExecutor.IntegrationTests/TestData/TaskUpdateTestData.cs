@@ -445,6 +445,38 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new TaskUpdateTestData()
             {
+                Name = "Task_Update_Task_Destination_Multi_Condition_True",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Task_Destination_Multi_Condition_True").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Task_Destination_Multi_Condition_True").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Task_Destination_Multi_Condition_True").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "Task_Update_Task_Destination_Multi_Condition_False",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Task_Destination_Multi_Condition_False").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Task_Destination_Multi_Condition_False").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Task_Destination_Multi_Condition_False").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
                 Name = "Task_Update_Task_Destination_Metadata_Condition_True",
                 TaskUpdateEvent = new TaskUpdateEvent()
                 {

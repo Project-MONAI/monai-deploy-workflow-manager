@@ -669,6 +669,21 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_Body_Object",
+                Workflow = new Workflow()
+                {
+                    Name = "Artifact 1",
+                    Description = "Artifact 1",
+                    Version = ""
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Empty_Workflow_Body",
+                Workflow = new Workflow()
+            },
         };
     }
 }

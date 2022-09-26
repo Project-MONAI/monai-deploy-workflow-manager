@@ -24,6 +24,7 @@ using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Constants;
@@ -94,9 +95,20 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             var processed = true;
             var workflows = new List<WorkflowRevision>();
 
-            workflows = message.Workflows?.Any() != true ?
-                await _workflowRepository.GetWorkflowsByAeTitleAsync(message.CalledAeTitle) as List<WorkflowRevision> :
-                await _workflowRepository.GetByWorkflowsIdsAsync(message.Workflows) as List<WorkflowRevision>;
+            if (message.Workflows?.Any() == true)
+            {
+                workflows = await _workflowRepository.GetByWorkflowsIdsAsync(message.Workflows) as List<WorkflowRevision>;
+            }
+            else
+            {
+                var aeTitles = new List<string>
+                {
+                    message.CalledAeTitle,
+                    message.CallingAeTitle
+                };
+
+                workflows = await _workflowRepository.GetWorkflowsByAeTitleAsync(aeTitles) as List<WorkflowRevision>;
+            }
 
             if (workflows is null || workflows.Any() is false)
             {
@@ -497,10 +509,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             foreach (var taskDest in currentTaskDestinations)
             {
                 //Evaluate Conditional
-                if (!string.IsNullOrEmpty(taskDest.Conditions)
-                    && taskDest.Conditions != string.Empty
-                    && !_conditionalParameterParser.TryParse(taskDest.Conditions, workflowInstance))
+                if (taskDest.Conditions.IsNullOrEmpty() is false
+                    && taskDest.Conditions.Any(c => string.IsNullOrWhiteSpace(c) is false)
+                    && _conditionalParameterParser.TryParse(taskDest.Conditions, workflowInstance) is false)
                 {
+                    _logger.TaskDestinationConditionFalse(taskDest.Conditions.CombineConditionString(), taskDest.Name);
+
                     continue;
                 }
 

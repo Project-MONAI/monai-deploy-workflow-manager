@@ -46,17 +46,17 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         }
 
         [Theory]
-        [InlineData("{{ context.dicom.series.all('0010','0040') }} == 'lordge' AND " +
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'Fred' }} == 'Bob' AND " +
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'fred' }} == 'lowercasefred'", true, "lordge")]
+        [InlineData(new string[] {"{{ context.dicom.series.all('0010','0040') }} == 'lordge'",
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'Fred' }} == 'Bob'",
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'fred' }} == 'lowercasefred'" }, true, "lordge")]
         [InlineData(
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'Fred' }} == 'Bob' AND " +
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'fred' }} == 'lowercasefred' AND " +
+            new string[] {"{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'Fred' }} == 'Bob'",
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'fred' }} == 'lowercasefred'",
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'Sandra' }} == 'YassQueen' OR " +
             "{{ context.executions.other_task.result.'Fred' }} >= '32' OR " +
             "{{ context.executions.other_task.result.'Sandra' }} == 'other YassQueen' OR " +
-            "{{ context.executions.other_task.result.'Derick' }} == 'lordge'", true)]
-        public void ConditionalParameterParser_WhenGivenCorrectResultMetadataString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
+            "{{ context.executions.other_task.result.'Derick' }} == 'lordge'" }, true)]
+        public void ConditionalParameterParser_WhenGivenCorrectResultMetadataString_MultiConditionShouldEvaluate(string[] input, bool expectedResult, string? expectedDicomReturn = null)
         {
             if (expectedDicomReturn is not null)
             {

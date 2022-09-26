@@ -16,6 +16,9 @@ name: CodeQL
 
 on:
   pull_request:
+    paths:
+      - 'src/**'
+      - '!**.csproj'
   push:
     branches:
       - 'develop'
@@ -44,7 +47,7 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Enable NuGet cache
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.8
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}

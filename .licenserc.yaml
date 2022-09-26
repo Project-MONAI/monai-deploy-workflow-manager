@@ -21,6 +21,7 @@ header:
     - 'LICENSE'
     - 'VERSION'
     - '.github/**/*.md'
+    - '.github/containerscan/allowedlist.yaml'
     - '**/*.log'
     - '**/bin/**'
     - '**/obj/**'
