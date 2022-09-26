@@ -17,6 +17,8 @@
 using System;
 using System.IO;
 using System.IO.Abstractions;
+using System.Reflection;
+using Elastic.CommonSchema.Serilog;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -33,12 +35,14 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
 using Monai.Deploy.WorkflowManager.Database.Repositories;
-using Monai.Deploy.WorkflowManager.Logging.Attributes;
 using Monai.Deploy.WorkflowManager.MonaiBackgroundService;
 using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
 using MongoDB.Driver;
+using Serilog;
+using Serilog.Events;
+using Serilog.Exceptions;
 
 namespace Monai.Deploy.WorkflowManager
 {
@@ -70,6 +74,20 @@ namespace Monai.Deploy.WorkflowManager
                     configureLogging.AddConfiguration(builderContext.Configuration.GetSection("Logging"));
                     configureLogging.AddFile(o => o.RootPath = AppContext.BaseDirectory);
                 })
+                .UseSerilog((context, services, configuration) => configuration
+                    .ReadFrom.Configuration(context.Configuration)
+                    .ReadFrom.Services(services)
+                    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                    .MinimumLevel.Debug()
+                    .Enrich.FromLogContext()
+                    .Enrich.WithExceptionDetails()
+                    .Enrich.WithProperty("dllversion", Assembly.GetEntryAssembly().GetName().Version)
+                    .Enrich.WithProperty("dllName", Assembly.GetEntryAssembly().GetName().Name)
+                    .WriteTo.File(
+                        path: "logs/MWM-.log",
+                        rollingInterval: RollingInterval.Day,
+                        formatter: new EcsTextFormatter())
+                    .WriteTo.Console())
                 .ConfigureServices((hostContext, services) =>
                 {
                     ConfigureServices(hostContext, services);
