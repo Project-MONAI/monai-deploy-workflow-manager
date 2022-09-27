@@ -36,7 +36,7 @@ jobs:
         ruby-version: '3.0' 
         bundler-cache: true 
 
-    - name: Install License Finder tool with Homebrew
+    - name: Install License Finder tool with Ruby
       run: gem install license_finder
 
     - name: Install Dotnet
