@@ -30,14 +30,14 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Install Homebrew
-      run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-    - name: Add Homebrew to path
-      run: eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    - name: Install Ruby
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0' 
+        bundler-cache: true 
 
     - name: Install License Finder tool with Homebrew
-      run: brew install licensefinder
+      run: gem install license_finder
 
     - name: Install Dotnet
       uses: actions/setup-dotnet@v2
