@@ -34,7 +34,7 @@
     <PackageReference Include="Ardalis.GuardClauses" Version="4.0.1" />
     <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.6-rc0001" />
     <PackageReference Include="Monai.Deploy.Storage" Version="0.2.5" />
-    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.203" />
+    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.206" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
