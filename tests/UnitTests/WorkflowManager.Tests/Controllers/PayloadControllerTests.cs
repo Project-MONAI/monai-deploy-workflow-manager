@@ -123,7 +123,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             var result = await PayloadController.GetAsync(payloadId);
 
-            var objectResult = Assert.IsType<NotFoundObjectResult>(result);
+            var objectResult = Assert.IsType<ObjectResult>(result);
 
             Assert.Equal((int)HttpStatusCode.NotFound, objectResult.StatusCode);
         }
