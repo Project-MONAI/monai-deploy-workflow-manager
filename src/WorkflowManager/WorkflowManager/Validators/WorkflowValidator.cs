@@ -194,13 +194,6 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 paths = new List<string>();
             }
 
-            if (currentTask.TaskDestinations.IsNullOrEmpty())
-            {
-                paths.Add(currentTask.Id);
-                SuccessfulPaths.Add(string.Join(" => ", paths));
-                return;
-            }
-
             if (currentTask.Artifacts != null && !currentTask.Artifacts.Output.IsNullOrEmpty())
             {
                 var uniqueOutputNames = new HashSet<string>();
@@ -210,6 +203,13 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 {
                     Errors.Add($"Task: \"{currentTask.Id}\" has multiple output names with the same value.\n");
                 }
+            }
+
+            if (currentTask.TaskDestinations.IsNullOrEmpty())
+            {
+                paths.Add(currentTask.Id);
+                SuccessfulPaths.Add(string.Join(" => ", paths));
+                return;
             }
 
             foreach (var tasksDestinationName in currentTask.TaskDestinations.Select(td => td.Name))
