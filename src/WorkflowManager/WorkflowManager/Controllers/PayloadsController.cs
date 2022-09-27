@@ -117,7 +117,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 {
                     _logger.LogDebug($"{nameof(GetAsync)} - Failed to find payload with payload id: {id}");
 
-                    return NotFound($"Failed to find payload with payload id: {id}");
+                    return Problem($"Failed to find payload with payload id: {id}", $"/payload/{id}", NotFound);
                 }
 
                 return Ok(payload);

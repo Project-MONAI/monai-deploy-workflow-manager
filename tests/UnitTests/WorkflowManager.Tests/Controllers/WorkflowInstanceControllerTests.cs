@@ -191,7 +191,13 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             var result = await WorkflowInstanceController.GetByIdAsync(workflowId);
 
-            var objectResult = Assert.IsType<NotFoundObjectResult>(result);
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            var responseValue = (ProblemDetails)objectResult.Value;
+            string expectedErrorMessage = $"Failed to find workflow instance with Id: {workflowId}";
+            responseValue.Detail.Should().BeEquivalentTo(expectedErrorMessage);
+
+            Assert.Equal((int)HttpStatusCode.NotFound, responseValue.Status);
 
             Assert.Equal((int)HttpStatusCode.NotFound, objectResult.StatusCode);
         }

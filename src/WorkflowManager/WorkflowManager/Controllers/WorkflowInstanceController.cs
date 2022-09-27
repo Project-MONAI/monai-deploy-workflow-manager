@@ -75,7 +75,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(payloadId) || !Guid.TryParse(payloadId, out _))
+                if (!string.IsNullOrWhiteSpace(payloadId) && !Guid.TryParse(payloadId, out _))
                 {
                     _logger.LogDebug($"{nameof(GetListAsync)} - Failed to validate {nameof(payloadId)}");
 
@@ -111,7 +111,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             {
                 _logger.LogError($"{nameof(GetListAsync)} - Failed to get workflowInstances", e);
 
-                return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances", (int)HttpStatusCode.InternalServerError);
+                return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances", InternalServerError);
             }
         }
 
@@ -128,7 +128,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             {
                 _logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to validate {nameof(id)}");
 
-                return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", (int)HttpStatusCode.BadRequest);
+                return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}",  BadRequest);
             }
 
             try
@@ -139,14 +139,14 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 {
                     _logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to find workflow instance with Id: {id}");
 
-                    return NotFound($"Failed to find workflow instance with Id: {id}");
+                    return Problem($"Failed to find workflow instance with Id: {id}", $"/workflows/{id}", NotFound);
                 }
 
                 return Ok(workflowInstance);
             }
             catch (Exception e)
             {
-                return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances/{nameof(id)}", (int)HttpStatusCode.InternalServerError);
+                return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances/{nameof(id)}", InternalServerError);
             }
         }
     }
