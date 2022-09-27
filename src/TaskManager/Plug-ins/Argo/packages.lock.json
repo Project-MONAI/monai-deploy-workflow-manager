@@ -28,9 +28,9 @@
       },
       "Microsoft.Extensions.ApiDescription.Client": {
         "type": "Direct",
-        "requested": "[6.0.8, )",
-        "resolved": "6.0.8",
-        "contentHash": "fN3zEuHjSql9w2Md29dYkmPbAijxr+LqxoOoJ9B8G2j+fHgAK/N0g89miIUwepwbk8izTi5m8cVyWTKQgkd+ww=="
+        "requested": "[6.0.9, )",
+        "resolved": "6.0.9",
+        "contentHash": "DjwJLPdOzBceBV+V91FfFGHGV2I0UKfOpCLtCXQhaSdkyDF/0Ce2j0GnNrqYesU/LJ9R6n6mIU8fgieD5absMg=="
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
@@ -416,8 +416,8 @@
       },
       "System.IO.Abstractions": {
         "type": "Transitive",
-        "resolved": "17.1.1",
-        "contentHash": "LWOM12Bd0kp/gaH4g1o/O2/6JDcHF/fuctF1IqDZt0aAqU2BwGiMihi9Cdcm5jJz8La1wFWbRPuRui8WeX6m8w=="
+        "resolved": "17.2.3",
+        "contentHash": "VcozGeE4SxIo0cnXrDHhbrh/Gb8KQnZ3BvMelvh+iw0PrIKtuuA46U2Xm4e4pgnaWFgT4RdZfTpWl/WPRdw0WQ=="
       },
       "System.Memory": {
         "type": "Transitive",
