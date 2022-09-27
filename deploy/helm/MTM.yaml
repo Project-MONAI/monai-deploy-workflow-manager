@@ -27,9 +27,12 @@ enviromentVariables:
   WorkflowManager__storage__settings__accessKey: "rootminio"
   WorkflowManager__storage__settings__accessToken: "rootminio"
   WorkflowManager__storage__settings__executableLocation: "mc"
-  WorkflowManager__messaging__publisherSettings__endpoint: "rabbitmq.monai"
-  WorkflowManager__messaging__subscriberSettings__endpoint: "rabbitmq.monai"
-  WorkloadManagerDatabase__ConnectionString: "mongodb://root:rootpassword@mongo-monai.monai:27017"
+  WorkflowManager__messaging__publisherSettings__endpoint: "rabbit-monai.argo"
+  WorkflowManager__messaging__publisherSettings__port: "5672"  
+  WorkflowManager__messaging__subscriberSettings__endpoint: "rabbit-monai.argo"
+  WorkflowManager__messaging__subscriberSettings__port: "5672"
+  Serilog__WriteTo__0__Args__indexFormat: "index-monai{0:yyyy.MM}"
+  Serilog__WriteTo__0__Args__nodeUris: "http://192.168.0.22:9200"
 
 enviromentVariablesFromSecrets:
   secrets:

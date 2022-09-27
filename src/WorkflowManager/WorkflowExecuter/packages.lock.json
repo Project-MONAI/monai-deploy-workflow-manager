@@ -514,6 +514,11 @@
           "Microsoft.NETCore.Targets": "1.0.1"
         }
       },
+      "Serilog": {
+        "type": "Transitive",
+        "resolved": "2.11.0",
+        "contentHash": "ysv+hBzTul6Dp+Hvm10FlhJO3yMQcFKSAleus+LpiIzvNstpeV4Z7gGuIZ1OPNfIMulSHOjmLuGAEDKzpnV8ZQ=="
+      },
       "SharpCompress": {
         "type": "Transitive",
         "resolved": "0.30.1",
@@ -611,8 +616,8 @@
       },
       "System.IO.Abstractions": {
         "type": "Transitive",
-        "resolved": "17.2.1",
-        "contentHash": "QiPMiZa6SP9FxvM4k2Tso4j7DHbdpZo5dcGnVD38XjXnm2fOsYg4BkHmADTa5Tq7Fc0OzUGvHhV5KePPCwxB8Q=="
+        "resolved": "17.2.3",
+        "contentHash": "VcozGeE4SxIo0cnXrDHhbrh/Gb8KQnZ3BvMelvh+iw0PrIKtuuA46U2Xm4e4pgnaWFgT4RdZfTpWl/WPRdw0WQ=="
       },
       "System.IO.FileSystem": {
         "type": "Transitive",
@@ -926,7 +931,7 @@
           "Monai.Deploy.Messaging": "[0.1.6-rc0001, )",
           "Monai.Deploy.Storage": "[0.2.5, )",
           "Newtonsoft.Json": "[13.0.1, )",
-          "System.IO.Abstractions": "[17.2.1, )"
+          "System.IO.Abstractions": "[17.2.3, )"
         }
       },
       "monai.deploy.workflowmanager.contracts": {
@@ -956,7 +961,8 @@
         "dependencies": {
           "Microsoft.AspNetCore.Mvc.Core": "[2.2.5, )",
           "Microsoft.Extensions.Logging.Abstractions": "[6.0.2, )",
-          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )"
+          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
+          "Serilog": "[2.11.0, )"
         }
       },
       "monai.deploy.workflowmanager.storage": {

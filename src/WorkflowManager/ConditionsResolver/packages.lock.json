@@ -457,6 +457,11 @@
           "Microsoft.NETCore.Targets": "1.0.1"
         }
       },
+      "Serilog": {
+        "type": "Transitive",
+        "resolved": "2.11.0",
+        "contentHash": "ysv+hBzTul6Dp+Hvm10FlhJO3yMQcFKSAleus+LpiIzvNstpeV4Z7gGuIZ1OPNfIMulSHOjmLuGAEDKzpnV8ZQ=="
+      },
       "SharpCompress": {
         "type": "Transitive",
         "resolved": "0.30.1",
@@ -876,7 +881,8 @@
         "dependencies": {
           "Microsoft.AspNetCore.Mvc.Core": "[2.2.5, )",
           "Microsoft.Extensions.Logging.Abstractions": "[6.0.2, )",
-          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )"
+          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
+          "Serilog": "[2.11.0, )"
         }
       },
       "monai.deploy.workflowmanager.storage": {
