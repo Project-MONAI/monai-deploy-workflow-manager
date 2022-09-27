@@ -30,10 +30,14 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Install License Finder tool with Homebrew
-      uses: tecoli-com/actions-use-homebrew-tools@v0
+    - name: Install Ruby
+      uses: ruby/setup-ruby@v1
       with:
-        tools: licensefinder
+        ruby-version: '3.0' 
+        bundler-cache: true 
+
+    - name: Install License Finder tool with Ruby
+      run: gem install license_finder
 
     - name: Install Dotnet
       uses: actions/setup-dotnet@v2
