@@ -526,6 +526,24 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                                 {
                                     new ExportDestination { Name = "oneDestination" },
                                     new ExportDestination { Name = "twoDestination" },
+                                },
+                                Artifacts = new ArtifactMap
+                                {
+                                    Output = new Artifact[]
+                                    {
+                                        new Artifact
+                                        {
+                                            Name = "non_unique_artifact",
+                                            Mandatory = true,
+                                            Value = "Example Value"
+                                        },
+                                        new Artifact
+                                        {
+                                            Name = "non_unique_artifact",
+                                            Mandatory = true,
+                                            Value = "Example Value"
+                                        }
+                                    }
                                 }
                             },
                             #region LoopingTasks
@@ -640,7 +658,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
                 Assert.True(workflowHasErrors);
 
-                Assert.Equal(14, results.Errors.Count);
+                Assert.Equal(15, results.Errors.Count);
 
                 var successPath = "rootTask => taskSucessdesc1 => taskSucessdesc2";
                 Assert.Contains(successPath, results.SuccessfulPaths);
@@ -659,6 +677,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
                 var invalidTaskId = "TaskId: task_de.sc3? Contains Invalid Characters.";
                 Assert.Contains(invalidTaskId, results.Errors);
+
+                var duplicateOutputArtifactName = "Task: \"rootTask\" has multiple output names with the same value.\n";
+                Assert.Contains(duplicateOutputArtifactName, results.Errors);
 
                 WorkflowValidator.Reset();
             }
