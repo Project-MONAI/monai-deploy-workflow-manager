@@ -30,11 +30,13 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Install Ruby and license_finder
+    - name: Install Ruby
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.0' 
         bundler-cache: true 
+
+    - name: Install License Finder tool with Homebrew
       run: gem install license_finder
 
     - name: Install Dotnet
