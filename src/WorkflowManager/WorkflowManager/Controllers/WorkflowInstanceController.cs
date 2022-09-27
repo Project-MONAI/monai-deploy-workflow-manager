@@ -132,7 +132,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 {
                     _logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to find workflow instance with Id: {id}");
 
-                    return NotFound($"Failed to find workflow instance with Id: {id}");
+                    return Problem($"Failed to find workflow instance with Id: {id}", $"/workflows/{id}", (int)HttpStatusCode.NotFound);
                 }
 
                 return Ok(workflowInstance);
