@@ -53,6 +53,15 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 artifactPaths = new Dictionary<string, string>();
                 return false;
             }
+            catch(AggregateException ex)
+            {
+                if (ex.InnerException is FileNotFoundException)
+                {
+                    artifactPaths = new Dictionary<string, string>();
+                    return false;
+                }
+                throw;
+            }
         }
 
         public async Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet = true)

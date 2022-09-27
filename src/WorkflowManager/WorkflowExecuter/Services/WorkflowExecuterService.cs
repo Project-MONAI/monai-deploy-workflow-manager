@@ -127,7 +127,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             workflowInstances.RemoveAll(i => existingInstances.Any(e => e.WorkflowId == i.WorkflowId
                                                                            && e.PayloadId == i.PayloadId));
 
-            processed &= workflowInstances.All(wi => wi.Status != Status.Failed);
+            //processed &= workflowInstances.All(wi => wi.Status != Status.Failed);
 
             if (workflowInstances.Any())
             {
@@ -683,7 +683,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             var newInputParameters = GetInputParameters(task, workflowInstance);
             var newTaskArgs = GetTaskArgs(task, workflowInstance);
 
-            var artifactFound = _artifactMapper.TryConvertArtifactVariablesToPath(task?.Artifacts?.Input ?? Array.Empty<Artifact>(), payloadId, workflowInstanceId, bucketName, true, out var inputArtifacts);
+            var inputArtifacts = new Dictionary<string, string>();
+            var artifactFound = true;
+            if (task?.Artifacts?.Input.IsNullOrEmpty() is false)
+            {
+                artifactFound = _artifactMapper.TryConvertArtifactVariablesToPath(task?.Artifacts?.Input
+                    ?? Array.Empty<Artifact>(), payloadId, workflowInstanceId, bucketName, true, out inputArtifacts);
+            }
 
             return new TaskExecution()
             {
