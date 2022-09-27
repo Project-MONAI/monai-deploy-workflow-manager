@@ -31,7 +31,7 @@ jobs:
         fetch-depth: 0
 
     - name: Install Ruby and license_finder
-    - uses: ruby/setup-ruby@v1
+      uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.0' 
         bundler-cache: true 
