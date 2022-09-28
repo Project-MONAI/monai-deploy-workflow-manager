@@ -1418,53 +1418,53 @@
       "monai.deploy.workflowmanager.configuration": {
         "type": "Project",
         "dependencies": {
-          "Karambolo.Extensions.Logging.File": "3.3.1",
-          "Microsoft.Extensions.Configuration": "6.0.1",
-          "Microsoft.Extensions.Logging": "6.0.0",
-          "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.Messaging": "0.1.6-rc0001",
-          "Monai.Deploy.Storage": "0.2.5",
-          "Newtonsoft.Json": "13.0.1",
-          "System.IO.Abstractions": "17.2.3"
+          "Karambolo.Extensions.Logging.File": "[3.3.1, )",
+          "Microsoft.Extensions.Configuration": "[6.0.1, )",
+          "Microsoft.Extensions.Logging": "[6.0.0, )",
+          "Microsoft.Extensions.Options": "[6.0.0, )",
+          "Monai.Deploy.Messaging": "[0.1.6-rc0001, )",
+          "Monai.Deploy.Storage": "[0.2.5, )",
+          "Newtonsoft.Json": "[13.0.1, )",
+          "System.IO.Abstractions": "[17.2.3, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.6-rc0001",
-          "Monai.Deploy.Storage": "0.2.5",
-          "MongoDB.Bson": "2.17.1"
+          "Monai.Deploy.Messaging": "[0.1.6-rc0001, )",
+          "Monai.Deploy.Storage": "[0.2.5, )",
+          "MongoDB.Bson": "[2.17.1, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.argo": {
         "type": "Project",
         "dependencies": {
-          "IdentityModel.OidcClient": "5.0.2",
-          "KubernetesClient": "7.2.19",
-          "Monai.Deploy.Messaging": "0.1.6-rc0001",
-          "Monai.Deploy.Storage": "0.2.5",
-          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
-          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
-          "Newtonsoft.Json": "13.0.1"
+          "IdentityModel.OidcClient": "[5.0.2, )",
+          "KubernetesClient": "[7.2.19, )",
+          "Monai.Deploy.Messaging": "[0.1.6-rc0001, )",
+          "Monai.Deploy.Storage": "[0.2.5, )",
+          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )",
+          "Newtonsoft.Json": "[13.0.1, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.database": {
         "type": "Project",
         "dependencies": {
-          "Ardalis.GuardClauses": "4.0.1",
-          "Microsoft.Extensions.Logging.Abstractions": "6.0.2",
-          "Microsoft.Extensions.Options": "6.0.0",
-          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
-          "MongoDB.Bson": "2.17.1",
-          "MongoDB.Driver": "2.17.1"
+          "Ardalis.GuardClauses": "[4.0.1, )",
+          "Microsoft.Extensions.Logging.Abstractions": "[6.0.2, )",
+          "Microsoft.Extensions.Options": "[6.0.0, )",
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )",
+          "MongoDB.Bson": "[2.17.1, )",
+          "MongoDB.Driver": "[2.17.1, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.docker": {
         "type": "Project",
         "dependencies": {
-          "Docker.DotNet": "3.125.12",
-          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
-          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0"
+          "Docker.DotNet": "[3.125.12, )",
+          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )"
         }
       }
     }
