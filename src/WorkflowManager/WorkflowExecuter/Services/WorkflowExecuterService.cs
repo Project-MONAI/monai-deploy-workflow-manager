@@ -119,8 +119,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             var workflowInstances = new List<WorkflowInstance>();
 
             var tasks = workflows.Select(workflow => CreateWorkflowInstanceAsync(message, workflow));
-            await Task.WhenAll(tasks).ConfigureAwait(false);
-            workflowInstances.AddRange(tasks.Select(t => t.Result));
+            var newInstances = await Task.WhenAll(tasks).ConfigureAwait(false);
+            workflowInstances.AddRange(newInstances);
 
             var existingInstances = await _workflowInstanceRepository.GetByWorkflowsIdsAsync(workflowInstances.Select(w => w.WorkflowId).ToList());
 
@@ -423,13 +423,17 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             var validOutputArtifacts = await _storageService.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactDict);
 
-            workflowInstance.Tasks?.ForEach(t =>
+            foreach (var artifact in artifactDict)
             {
-                if (t.TaskId == task.TaskId)
-                {
-                    t.OutputArtifacts = validOutputArtifacts;
-                }
-            });
+                _logger.LogArtifactPassing(new Artifact { Name = artifact.Key, Value = artifact.Value }, artifact.Value, "Post-Task Output Artifact", validOutputArtifacts.ContainsKey(artifact.Key));
+            }
+
+            var currentTask = workflowInstance.Tasks?.FirstOrDefault(t => t.TaskId == task.TaskId);
+
+            if (currentTask is not null)
+            {
+                currentTask.OutputArtifacts = validOutputArtifacts;
+            }
 
             if (validOutputArtifacts is not null && validOutputArtifacts.Any())
             {
