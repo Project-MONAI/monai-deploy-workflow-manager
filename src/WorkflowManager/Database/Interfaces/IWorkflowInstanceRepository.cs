@@ -47,6 +47,12 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         Task<long> CountAsync();
 
         /// <summary>
+        /// Gets the count of workflow instances with a filter.
+        /// </summary>
+        /// <returns></returns>
+        Task<long> FilteredCountAsync(Status? status = null, string? payloadId = null);
+
+        /// <summary>
         /// Gets a list of workflow instances for a given set of workflowIds.
         /// </summary>
         /// <param name="workflowIds">A list of workflowIds to retrieve.</param>

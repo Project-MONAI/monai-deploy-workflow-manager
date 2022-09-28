@@ -114,6 +114,9 @@ Scenario Outline: Update workflow with invalid details
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_0_Tasks           | Missing Workflow Tasks                                  |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Version_Null      | Missing Workflow Version                                |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Version_Blank     | Missing Workflow Version                                |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Body_Object       | 'informaticsGateway' cannot be null                     |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Empty_Workflow_Body                | '' is not a valid Workflow Description                  |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Dup_Output        | has multiple output names with the same value           |
 
 
 @UpdateWorkflows
@@ -158,9 +161,12 @@ Scenario Outline: Add workflow with invalid details
     | Invalid_Workflow_TaskID_Content    | Contains Invalid Characters.                            |
     | Invalid_Workflow_Unreferenced_Task | Found Task(s) without any task destinations to it       |
     | Invalid_Workflow_Loopback_Task     | Detected task convergence on path                       |
-    | Invalid_Workflow_0_Tasks           | Missing Workflow Tasks                               |
+    | Invalid_Workflow_0_Tasks           | Missing Workflow Tasks                                  |
     | Invalid_Workflow_Version_Null      | Missing Workflow Version                                |
     | Invalid_Workflow_Version_Blank     | Missing Workflow Version                                |
+    | Invalid_Workflow_Body_Object       | 'informaticsGateway' cannot be null                     |
+    | Empty_Workflow_Body                | '' is not a valid Workflow Description                  |
+    | Invalid_Workflow_Dup_Output        | has multiple output names with the same value           |
 
 @DeleteWorkflows
 Scenario: Delete a workflow with one revision

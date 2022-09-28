@@ -24,6 +24,7 @@ using Microsoft.OpenApi.Models;
 using Monai.Deploy.WorkflowManager.Authentication.Extensions;
 using Monai.Deploy.WorkflowManager.Logging.Attributes;
 using Newtonsoft.Json.Converters;
+using Serilog;
 
 namespace Monai.Deploy.WorkflowManager.Services.Http
 {

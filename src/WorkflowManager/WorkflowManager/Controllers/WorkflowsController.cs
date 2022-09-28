@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -189,7 +188,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 {
                     _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to find workflow with Id: {id}");
 
-                    return NotFound($"Failed to find workflow with Id: {id}");
+                    return Problem($"Failed to find workflow with Id: {id}", $"/workflows/{id}", NotFound);
                 }
 
                 return StatusCode(StatusCodes.Status201Created, new CreateWorkflowResponse(workflowId));

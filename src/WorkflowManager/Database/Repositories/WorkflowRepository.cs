@@ -111,19 +111,28 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             return workflow;
         }
 
-        public async Task<IList<WorkflowRevision>> GetWorkflowsByAeTitleAsync(string aeTitle)
+        public async Task<IList<WorkflowRevision>> GetWorkflowsByAeTitleAsync(List<string> aeTitles)
         {
-            Guard.Against.NullOrWhiteSpace(aeTitle, nameof(aeTitle));
+            Guard.Against.NullOrEmpty(aeTitles, nameof(aeTitles));
 
             var workflows = new List<WorkflowRevision>();
 
-            workflows = await _workflowCollection
-                .Find(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle && x.Deleted == null)
-                .Sort(Builders<WorkflowRevision>.Sort.Descending("Revision"))
-                .ToListAsync();
+            foreach (var aeTitle in aeTitles)
+            {
+                var wfs = await _workflowCollection
+                        .Find(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle && x.Deleted == null)
+                        .ToListAsync();
+
+                workflows.AddRange(wfs);
+            }
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
-            workflows = workflows.GroupBy(w => w.WorkflowId).Select(g => g.First()).ToList();
+            workflows = workflows
+                .Distinct()
+                .OrderByDescending(w => w.Revision)
+                .GroupBy(w => w.WorkflowId)
+                .Select(g => g.First())
+                .ToList();
 
             return workflows;
         }
@@ -158,6 +167,8 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
                 Workflow = workflow
             };
 
+            await SoftDeleteWorkflow(existingWorkflow);
+
             await _workflowCollection.InsertOneAsync(workflowRevision);
 
             return workflowRevision.WorkflowId;
@@ -170,7 +181,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             var deletedTimeStamp = DateTime.UtcNow;
 
             await _workflowCollection.UpdateManyAsync(
-                wr => wr.WorkflowId == workflow.WorkflowId,
+                wr => wr.WorkflowId == workflow.WorkflowId && wr.Deleted == null,
                 Builders<WorkflowRevision>.Update.Set(rec => rec.Deleted, deletedTimeStamp));
 
             return deletedTimeStamp;

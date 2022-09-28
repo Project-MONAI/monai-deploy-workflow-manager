@@ -39,7 +39,7 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Enable NuGet cache
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.8
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -60,16 +60,6 @@ jobs:
         xargs -L1 dotnet test -v=minimal --results-directory "./results" \
         --collect:"XPlat Code Coverage" --settings "./coverlet.runsettings"
       working-directory: ./tests
-
-    - name: Run CodeCov analysis
-      uses: codecov/codecov-action@v3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        files: "**/coverage.opencover.xml"
-        flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: true
-        verbose: true
 
     - name: Archive code coverage results
       uses: actions/upload-artifact@v3
@@ -123,7 +113,7 @@ jobs:
       run: dotnet tool install --global SpecFlow.Plus.LivingDoc.CLI
 
     - name: Enable NuGet cache
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.8
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -200,7 +190,7 @@ jobs:
       run: dotnet tool install --global SpecFlow.Plus.LivingDoc.CLI
 
     - name: Enable NuGet cache
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.8
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -246,7 +236,7 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Enable NuGet cache
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.8
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -261,7 +251,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: dotnet sonarscanner begin /k:"Project-MONAI_monai-deploy-workflow-manager" /o:"project-monai" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="../**/coverage.opencover.xml" /d:sonar.coverage.exclusions="./tests"
+      run: dotnet sonarscanner begin /k:"Project-MONAI_monai-deploy-workflow-manager" /o:"project-monai" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="../**/coverage.opencover.xml" /d:sonar.coverage.exclusions="src/WorkflowManager/Database/Repositories/**/*"
       working-directory: ./src
 
     - name: Restore Solution

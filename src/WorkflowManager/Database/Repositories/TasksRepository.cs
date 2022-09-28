@@ -76,7 +76,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
         }
 
-        public async Task<(IList<TaskExecution>, long)> GetAllAsync(int? skip, int? limit)
+        public async Task<(IList<TaskExecution> Tasks, long Count)> GetAllAsync(int? skip, int? limit)
         {
             try
             {

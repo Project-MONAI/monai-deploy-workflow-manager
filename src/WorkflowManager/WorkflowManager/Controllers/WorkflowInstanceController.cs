@@ -75,6 +75,13 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         {
             try
             {
+                if (!string.IsNullOrWhiteSpace(payloadId) && !Guid.TryParse(payloadId, out _))
+                {
+                    _logger.LogDebug($"{nameof(GetListAsync)} - Failed to validate {nameof(payloadId)}");
+
+                    return Problem($"Failed to validate {nameof(payloadId)}, not a valid guid", $"/workflowinstances/{payloadId}", BadRequest);
+                }
+
                 Status? parsedStatus = status == null ? null : Enum.Parse<Status>(status, true);
 
                 if (disablePagination is true)
@@ -94,7 +101,8 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                     parsedStatus,
                     payloadId);
 
-                var dataTotal = await _workflowInstanceService.CountAsync();
+                var dataTotal = await _workflowInstanceService.FilteredCountAsync(parsedStatus, payloadId);
+
                 var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
 
                 return Ok(pagedReponse);
@@ -103,7 +111,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             {
                 _logger.LogError($"{nameof(GetListAsync)} - Failed to get workflowInstances", e);
 
-                return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances", (int)HttpStatusCode.InternalServerError);
+                return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances", InternalServerError);
             }
         }
 
@@ -120,7 +128,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             {
                 _logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to validate {nameof(id)}");
 
-                return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", (int)HttpStatusCode.BadRequest);
+                return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}",  BadRequest);
             }
 
             try
@@ -131,14 +139,14 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 {
                     _logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to find workflow instance with Id: {id}");
 
-                    return NotFound($"Failed to find workflow instance with Id: {id}");
+                    return Problem($"Failed to find workflow instance with Id: {id}", $"/workflows/{id}", NotFound);
                 }
 
                 return Ok(workflowInstance);
             }
             catch (Exception e)
             {
-                return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances/{nameof(id)}", (int)HttpStatusCode.InternalServerError);
+                return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances/{nameof(id)}", InternalServerError);
             }
         }
     }

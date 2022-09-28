@@ -19,6 +19,7 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Constants;
+using Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Storage.Services;
@@ -92,6 +93,24 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             }
         }
 
+        public bool TryParse(string[] conditions, WorkflowInstance workflowInstance)
+        {
+            Guard.Against.NullOrEmpty(conditions);
+            Guard.Against.Null(workflowInstance);
+            try
+            {
+                var joinedConditions = conditions.CombineConditionString();
+                joinedConditions = ResolveParameters(joinedConditions, workflowInstance);
+                var conditionalGroup = ConditionalGroup.Create(joinedConditions);
+                return conditionalGroup.Evaluate();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Failure attemping to parse condition - {conditions}", ex);
+                return false;
+            }
+        }
+
         public bool TryParse(string conditions, WorkflowInstance workflowInstance)
         {
             Guard.Against.NullOrEmpty(conditions);
@@ -109,12 +128,6 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             }
         }
 
-        /// <summary>
-        /// Resolves parameters in query string.
-        /// </summary>
-        /// <param name="conditions">The query string Example: {{ context.executions.task['other task'].'Fred' }}</param>
-        /// <param name="workflowInstance">workflow instance to resolve metadata parameter</param>
-        /// <returns></returns>
         public string ResolveParameters(string conditions, WorkflowInstance workflowInstance)
         {
             Guard.Against.NullOrEmpty(conditions);
@@ -139,9 +152,14 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 var parameters = ParseMatches(matches).Reverse();
                 foreach (var parameter in parameters)
                 {
+                    var result = parameter.Value.Result ?? "";
+                    if (ResultNullCheck(result.Trim()))
+                    {
+                        result = "NULL";
+                    }
                     conditions = conditions
                         .Remove(parameter.Key.Index, parameter.Key.Length)
-                        .Insert(parameter.Key.Index, $"'{parameter.Value.Result ?? "null"}'");
+                        .Insert(parameter.Key.Index, $"'{result}'");
                 }
 
                 ClearWorkflowParser();
@@ -153,6 +171,15 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 ClearWorkflowParser();
                 throw;
             }
+        }
+
+        private static bool ResultNullCheck(string? result)
+        {
+            var isNull =
+                string.IsNullOrWhiteSpace(result)
+                || result.ToUpper() == "NULL"
+                || result.ToUpper() == "UNDEFINED";
+            return isNull;
         }
 
         private void ClearWorkflowParser()

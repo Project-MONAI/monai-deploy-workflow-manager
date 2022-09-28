@@ -24,8 +24,8 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 {
     public abstract class RepositoryBase
     {
-        public static async Task<long> CountAsync<T>(IMongoCollection<T> collection, Expression<Func<T, bool>>? filterFunction)
-            => await collection.CountDocumentsAsync(filterFunction ?? Builders<T>.Filter.Empty);
+        public static async Task<long> CountAsync<T>(IMongoCollection<T> collection, FilterDefinition<T> filter)
+            => await collection.CountDocumentsAsync(filter ?? Builders<T>.Filter.Empty);
 
         /// <summary>
         /// Get All T that match filters provided.

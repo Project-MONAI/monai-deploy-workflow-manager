@@ -50,7 +50,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// Retrieves a list of workflows based on an aeTitle.
         /// </summary>
         /// <param name="aeTitle">An aeTitle to retrieve workflows for.</param>
-        Task<IList<WorkflowRevision>> GetWorkflowsByAeTitleAsync(string aeTitle);
+        Task<IList<WorkflowRevision>> GetWorkflowsByAeTitleAsync(List<string> aeTitles);
 
         /// <summary>
         /// Creates a workflow object.

@@ -57,6 +57,12 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             {
                 var requestEvent = message.Message.ConvertTo<WorkflowRequestEvent>();
 
+                using var loggingScope = (Logger.BeginScope(new Dictionary<string, object>
+                {
+                    ["correlationId"] = requestEvent.CorrelationId,
+                    ["workflowId"] = requestEvent.Workflows.FirstOrDefault()
+                }));
+
                 var validation = PayloadValidator.ValidateWorkflowRequest(requestEvent);
 
                 if (!validation)
@@ -85,6 +91,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 }
 
                 _messageSubscriber.Acknowledge(message.Message);
+
             }
             catch (Exception e)
             {
@@ -100,6 +107,13 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             try
             {
                 var payload = message.Message.ConvertTo<TaskUpdateEvent>();
+
+                using var loggerScope = Logger.BeginScope(new Dictionary<string, object>
+                {
+                    ["correlationId"] = payload.CorrelationId,
+                    ["workflowInstanceId"] = payload.WorkflowInstanceId,
+                    ["taskId"] = payload.TaskId
+                });
 
                 if (!PayloadValidator.ValidateTaskUpdate(payload))
                 {
@@ -120,6 +134,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 }
 
                 _messageSubscriber.Acknowledge(message.Message);
+
             }
             catch (Exception e)
             {
@@ -135,6 +150,9 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             try
             {
                 var payload = message.Message.ConvertTo<ExportCompleteEvent>();
+
+                using var loggerScope = Logger.BeginScope(new Dictionary<string, object> { ["workflowInstanceId"] = payload.WorkflowInstanceId });
+
 
                 if (!PayloadValidator.ValidateExportComplete(payload))
                 {
@@ -154,6 +172,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 }
 
                 _messageSubscriber.Acknowledge(message.Message);
+
             }
             catch (Exception e)
             {

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using System.Text;
+
 namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions
 {
     public static class StringExtensions
@@ -52,6 +54,33 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions
                     return input?.TrimStart() ?? string.Empty;
             }
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Adds brackets to multiple conditions.
+        /// </summary>
+        /// <param name="input">Array of conditions.</param>
+        /// <returns></returns>
+        public static string CombineConditionString(this string[] input)
+        {
+            var value = new StringBuilder();
+
+            if (input.Length == 1)
+            {
+                return input.First();
+            }
+
+            for (var i = 0; i < input.Length; i++)
+            {
+                value.Append($"({input[i]})");
+
+                if (i != input.Length - 1)
+                {
+                    value.Append(" AND ");
+                }
+            }
+
+            return value.ToString();
         }
     }
 }

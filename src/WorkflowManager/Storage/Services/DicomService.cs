@@ -23,6 +23,7 @@ using Monai.Deploy.WorkflowManager.Storage.Constants;
 using Newtonsoft.Json;
 using Monai.Deploy.Storage.API;
 using System.Globalization;
+using Newtonsoft.Json.Linq;
 
 namespace Monai.Deploy.WorkflowManager.Storage.Services
 {
@@ -87,20 +88,11 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
                     var jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
 
                     var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
-                    if (dict is not null)
+                    var value = GetValue(dict, keyId);
+
+                    if (!string.IsNullOrWhiteSpace(value))
                     {
-                        dict.TryGetValue(keyId, out var value);
-                        if (value is null || value.Value is null)
-                        {
-                            continue;
-                        }
-
-                        var firstValue = value.Value.FirstOrDefault()?.ToString();
-
-                        if (!string.IsNullOrWhiteSpace(firstValue))
-                        {
-                            return firstValue;
-                        }
+                        return value;
                     }
                 }
             }
@@ -204,6 +196,11 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
 
             var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
 
+            return GetValue(dict, keyId);
+        }
+
+        private static string GetValue(Dictionary<string, DicomValue>? dict, string keyId)
+        {
             if (dict is null)
             {
                 return string.Empty;
@@ -213,11 +210,42 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
 
             if (value is not null && value.Value is not null)
             {
+
+                if (string.Equals(keyId, DicomTagConstants.PatientNameTag))
+                {
+                    return GetPatientName(value.Value);
+                }
+
                 var str = value?.Value.Cast<string>();
+
                 if (str is not null)
                 {
                     return string.Concat(str);
                 }
+            }
+
+            return string.Empty;
+        }
+
+        private static string GetPatientName(object[] values)
+        {
+            var resultStr = new List<string>();
+
+            foreach (var value in values)
+            {
+                var valueStr = JObject.FromObject(value)?
+                    .GetValue("Alphabetic", StringComparison.OrdinalIgnoreCase)?
+                    .Value<string>();
+
+                if (valueStr is not null)
+                {
+                    resultStr.Add(valueStr);
+                }
+            }
+
+            if (resultStr.Any() is true)
+            {
+                return string.Concat(resultStr);
             }
 
             return string.Empty;

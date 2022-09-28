@@ -39,8 +39,21 @@ namespace Monai.Deploy.WorkflowManager.Logging.Attributes
         /// <param name="context">The current executing context.</param>  
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            _logger.LogControllerStartTime(context);
-            base.OnActionExecuting(context);
+            var request = context.HttpContext.Request;
+            var correlationId = request.Headers["correlationId"].FirstOrDefault() ?? Guid.NewGuid().ToString();
+            var startTime = DateTime.UtcNow;
+            context.HttpContext.Items["startTime"] = startTime;
+            context.HttpContext.Items["correlationId"] = correlationId;
+
+            using (_logger.BeginScope(new Dictionary<string, object>
+            {
+                ["correlationId"] = correlationId,
+                ["startTime"] = startTime
+            }))
+            {
+                _logger.LogControllerStartTime(context);
+                base.OnActionExecuting(context);
+            }
         }
 
         /// <summary>  
@@ -49,8 +62,17 @@ namespace Monai.Deploy.WorkflowManager.Logging.Attributes
         /// <param name="context">The current executing context.</param>  
         public override void OnResultExecuted(ResultExecutedContext context)
         {
-            _logger.LogControllerEndTime(context);
-            base.OnResultExecuted(context);
+            var startTime = context.HttpContext.Items["startTime"];
+            var correlationId = context.HttpContext.Items["correlationId"];
+            using (_logger.BeginScope(new Dictionary<string, object>
+            {
+                ["correlationId"] = correlationId,
+                ["startTime"] = startTime
+            }))
+            {
+                _logger.LogControllerEndTime(context);
+                base.OnResultExecuted(context);
+            }
         }
     }
 }

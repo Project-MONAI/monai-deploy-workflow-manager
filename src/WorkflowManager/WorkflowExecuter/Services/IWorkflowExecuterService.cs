@@ -38,5 +38,16 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         /// </summary>
         /// <param name="message">The export complete message event.</param>
         Task<bool> ProcessExportComplete(ExportCompleteEvent message, string correlationId);
+
+        /// <summary>
+        /// Creates a new Task Execution.
+        /// </summary>
+        /// <param name="task">Task Object.</param>
+        /// <param name="workflowInstance">Workflow Instance.</param>
+        /// <param name="bucketName">Bucket Name.</param>
+        /// <param name="payloadId">Payload Id.</param>
+        /// <param name="previousTaskId">Previous Tasks Id.</param>
+        /// <returns></returns>
+        Task<TaskExecution> CreateTaskExecutionAsync(TaskObject task, WorkflowInstance workflowInstance, string? bucketName = null, string? payloadId = null, string? previousTaskId = null);
     }
 }

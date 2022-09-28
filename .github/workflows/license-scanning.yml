@@ -30,10 +30,14 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Install License Finder tool with Homebrew
-      uses: tecoli-com/actions-use-homebrew-tools@v0
+    - name: Install Ruby
+      uses: ruby/setup-ruby@v1
       with:
-        tools: licensefinder
+        ruby-version: '3.0' 
+        bundler-cache: true 
+
+    - name: Install License Finder tool with Ruby
+      run: gem install license_finder
 
     - name: Install Dotnet
       uses: actions/setup-dotnet@v2
@@ -41,7 +45,7 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Enable NuGet cache
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.8
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
