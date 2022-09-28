@@ -21,6 +21,7 @@ using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.MonaiBackgroundService.Logging;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 
 namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
@@ -56,18 +57,21 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
                 var time = DateTimeOffset.Now;
                 _logger.ServiceStarted(ServiceName);
                 _logger.LogDebug("Worker running at: {time}", time);
+
                 await DoWork();
+
                 _logger.LogDebug("Worker completed in: {time} milliseconds", (int)(DateTimeOffset.Now - time).TotalMilliseconds);
                 await Task.Delay(_options.Value.BackgroundServiceSettings.BackgroundServiceDelay, stoppingToken);
             }
+
             _logger.ServiceStopping(ServiceName);
             IsRunning = false;
         }
 
         public async Task DoWork()
         {
-            var runningTasks = await _tasksService.GetAllAsync();
-            foreach (var task in runningTasks.Item1.Where(t => t.TimeoutInterval != 0 && t.Timeout < DateTime.UtcNow))
+            var (Tasks, _) = await _tasksService.GetAllAsync();
+            foreach (var task in Tasks.Where(t => t.TimeoutInterval != 0 && t.Timeout < DateTime.UtcNow))
             {
                 task.ExecutionStats.TryGetValue(IdentityKey, out var identity);
 
@@ -75,12 +79,27 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
 
                 await PublishTimeoutUpdateEvent(task, correlationId, task.WorkflowInstanceId).ConfigureAwait(false); // -> task manager
 
-                await PublishCancellationEvent(task, correlationId, identity ?? String.Empty, task.WorkflowInstanceId).ConfigureAwait(false); // -> workflow executor
+                await PublishCancellationEvent(task, correlationId, identity ?? string.Empty, task.WorkflowInstanceId).ConfigureAwait(false); // -> workflow executor
             }
         }
 
         private async Task PublishCancellationEvent(TaskExecution task, string correlationId, string identity, string workflowInstanceId)
         {
+            _logger.TimingOutTaskCancellationEvent(identity, task.WorkflowInstanceId);
+
+            var updateEvent = EventMapper.GenerateTaskUpdateEvent(new GenerateTaskUpdateEventParams
+            {
+                CorrelationId = correlationId,
+                ExecutionId = task.ExecutionId,
+                WorkflowInstanceId = workflowInstanceId,
+                TaskId = task.TaskId,
+                TaskExecutionStatus = TaskExecutionStatus.Failed,
+                FailureReason = FailureReason.TimedOut,
+                Stats = task.ExecutionStats
+            });
+
+            updateEvent.Validate();
+
             var cancellationEvent = EventMapper.GenerateTaskCancellationEvent(
                 identity,
                 task.ExecutionId,
@@ -98,6 +117,12 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
 
         private async Task PublishTimeoutUpdateEvent(TaskExecution task, string correlationId, string workflowInstanceId)
         {
+            var timeoutString = $"{task.TaskStartTime.ToShortDateString()} {task.TaskStartTime.ToShortTimeString}";
+            var duration = DateTime.UtcNow - task.TaskStartTime;
+            var durationString = $"{duration.Seconds} Seconds";
+
+            _logger.TimingOutTask(task.TaskId, timeoutString, durationString, task.ExecutionId, correlationId);
+
             var updateEvent = EventMapper.GenerateTaskUpdateEvent(new GenerateTaskUpdateEventParams
             {
                 CorrelationId = correlationId,
@@ -108,7 +133,9 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
                 FailureReason = FailureReason.TimedOut,
                 Stats = task.ExecutionStats
             });
+
             updateEvent.Validate();
+
             var message = EventMapper.ToJsonMessage(updateEvent, ServiceName, updateEvent.CorrelationId);
 
             await _publisherService!.Publish(_options.Value.Messaging.Topics.TaskUpdateRequest, message.ToMessage()).ConfigureAwait(false); // to task manager

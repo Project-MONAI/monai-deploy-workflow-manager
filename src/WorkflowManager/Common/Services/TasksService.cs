@@ -35,7 +35,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
         /// <param name="skip"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        public async Task<(IList<TaskExecution>, long)> GetAllAsync(int? skip = null, int? limit = null)
+        public async Task<(IList<TaskExecution> Tasks, long Count)> GetAllAsync(int? skip = null, int? limit = null)
             => await _tasksRepository.GetAllAsync(skip, limit);
 
         /// <summary>

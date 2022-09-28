@@ -28,7 +28,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <param name="skip">skip.</param>
         /// <param name="limit">limit.</param>
         /// <returns></returns>
-        Task<(IList<TaskExecution>, long)> GetAllAsync(int? skip, int? limit);
+        Task<(IList<TaskExecution> Tasks, long Count)> GetAllAsync(int? skip, int? limit);
 
         /// <summary>
         /// Gets Task Execution given workflowInstanceId, taskId and executionId.

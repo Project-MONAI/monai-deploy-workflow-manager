@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 
@@ -33,11 +32,6 @@ namespace Monai.Deploy.WorkflowManager.Configuration
 
         [ConfigurationKeyName("storageCredentialDurationSeconds")]
         public int TemporaryStorageCredentialDurationSeconds { get; set; } = 3600;
-
-        [ConfigurationKeyName("taskTimeoutMinutes")]
-        public double TaskTimeoutMinutes { get; set; } = 60;
-
-        public TimeSpan TaskTimeout { get => TimeSpan.FromMinutes(TaskTimeoutMinutes); }
 
         public TaskManagerConfiguration()
         {

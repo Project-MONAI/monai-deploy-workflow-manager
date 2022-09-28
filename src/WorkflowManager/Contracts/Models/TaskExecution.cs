@@ -72,6 +72,6 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         public DateTime Timeout { get => TaskStartTime.AddMinutes(TimeoutInterval); }
 
         [JsonProperty(PropertyName = "timeout_interval")]
-        public int TimeoutInterval { get; set; } = 0;
+        public double TimeoutInterval { get; set; } = 0;
     }
 }
