@@ -365,9 +365,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                         workflowInstance.BucketId,
                         artifact,
                         true);
-                    if (objects.IsNullOrEmpty() is false)
+
+                    var dcmFiles = objects?.Where(o => o.FilePath.EndsWith(".dcm"))?.ToList();
+
+                    if (dcmFiles?.IsNullOrEmpty() is false)
                     {
-                        files.AddRange(objects.ToList());
+                        files.AddRange(dcmFiles.ToList());
                     }
                 }
             }
