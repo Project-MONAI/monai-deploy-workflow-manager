@@ -96,6 +96,8 @@ Scenario Outline: Get payload by Id returns 404
     And I have a payload saved in mongo Payload_Partial_Patient
     When I send a GET request
     Then I will get a 404 response
+    And I will recieve the error message Failed to find payload with payload id: c5c3636b-81dd-44a9-8c4b-71adec7d47c3
+
 
 @GetPayloadById
 Scenario Outline: Get payload by Id returns 400
@@ -103,3 +105,4 @@ Scenario Outline: Get payload by Id returns 400
     And I have a payload saved in mongo Payload_Full_Patient
     When I send a GET request
     Then I will get a 400 response
+    And I will recieve the error message Failed to validate id, not a valid guid

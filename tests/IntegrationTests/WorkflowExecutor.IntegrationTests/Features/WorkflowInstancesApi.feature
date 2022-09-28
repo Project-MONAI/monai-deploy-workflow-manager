@@ -139,6 +139,7 @@ Scenario: Get all workflows instances by Id. Id Not Found
     And I have a Workflow Instance WFI_Static_1 with no artifacts
     When I send a GET request
     Then I will get a 404 response
+    And I will recieve the error message Failed to find workflow instance with Id: bff4cfd0-3af3-4e2b-9f3c-de2a6f2b9575
 
 @GetWorkflowInstances
 Scenario: Get all workflows instances by Id. Id Bad Request
