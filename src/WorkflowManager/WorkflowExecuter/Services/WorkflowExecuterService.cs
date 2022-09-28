@@ -46,6 +46,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         private readonly IStorageService _storageService;
         private readonly IPayloadService _payloadService;
         private readonly StorageServiceConfiguration _storageConfiguration;
+        private readonly double _defaultTaskTimeoutMinutes;
 
         private string TaskDispatchRoutingKey { get; }
         private string ExportRequestRoutingKey { get; }
@@ -73,7 +74,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             }
 
             _storageConfiguration = storageConfiguration.Value;
-
+            _defaultTaskTimeoutMinutes = configuration.Value.TaskTimeoutMinutes;
             TaskDispatchRoutingKey = configuration.Value.Messaging.Topics.TaskDispatchRequest;
             ExportRequestRoutingKey = $"{configuration.Value.Messaging.Topics.ExportRequestPrefix}.{configuration.Value.Messaging.DicomAgents.ScuAgentName}";
 
@@ -638,30 +639,26 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return workflowInstance;
         }
 
-        private async Task<TaskExecution> CreateTaskExecutionAsync(TaskObject task,
+        public async Task<TaskExecution> CreateTaskExecutionAsync(TaskObject task,
                                                   WorkflowInstance workflowInstance,
                                                   string? bucketName = null,
                                                   string? payloadId = null,
                                                   string? previousTaskId = null)
         {
-            Guard.Against.Null(workflowInstance, nameof(workflowInstance));
+            Guard.Against.Null(workflowInstance);
 
             var workflowInstanceId = workflowInstance.Id;
-            if (bucketName is null)
-            {
-                bucketName = workflowInstance.BucketId;
-            }
-            if (payloadId is null)
-            {
-                payloadId = workflowInstance.PayloadId;
-            }
 
-            Guard.Against.Null(task, nameof(task));
-            Guard.Against.NullOrWhiteSpace(task.Type, nameof(task.Type));
-            Guard.Against.NullOrWhiteSpace(task.Id, nameof(task.Id));
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
-            Guard.Against.NullOrWhiteSpace(bucketName, nameof(bucketName));
-            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
+            bucketName ??= workflowInstance.BucketId;
+
+            payloadId ??= workflowInstance.PayloadId;
+
+            Guard.Against.Null(task);
+            Guard.Against.NullOrWhiteSpace(task.Type);
+            Guard.Against.NullOrWhiteSpace(task.Id);
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId);
+            Guard.Against.NullOrWhiteSpace(bucketName);
+            Guard.Against.NullOrWhiteSpace(payloadId);
 
             var executionId = Guid.NewGuid().ToString();
             var newInputParameters = GetInputParameters(task, workflowInstance);
@@ -681,7 +678,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}",
                 ResultMetadata = { },
                 InputParameters = newInputParameters,
-                PreviousTaskId = previousTaskId ?? string.Empty
+                PreviousTaskId = previousTaskId ?? string.Empty,
+                TimeoutInterval = task?.TimeoutMinutes ?? _defaultTaskTimeoutMinutes,
             };
         }
 

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System;
 using Microsoft.Extensions.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.Configuration
@@ -48,6 +49,11 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         /// </summary>
         [ConfigurationKeyName("endpointSettings")]
         public EndpointSettings EndpointSettings { get; set; }
+
+        [ConfigurationKeyName("taskTimeoutMinutes")]
+        public double TaskTimeoutMinutes { get; set; } = 60;
+
+        public TimeSpan TaskTimeout { get => TimeSpan.FromMinutes(TaskTimeoutMinutes); }
 
         /// <summary>
         /// Represents the <c>backgroundServiceSettings</c> section of the configuration file.

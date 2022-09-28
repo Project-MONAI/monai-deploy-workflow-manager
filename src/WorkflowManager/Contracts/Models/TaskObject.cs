@@ -48,5 +48,8 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         [JsonProperty(PropertyName = "input_parameters")]
         public Dictionary<string, object>? InputParameters { get; set; }
+
+        [JsonProperty(PropertyName = "timeout_minutes")]
+        public double TimeoutMinutes { get; set; } = double.MaxValue;
     }
 }
