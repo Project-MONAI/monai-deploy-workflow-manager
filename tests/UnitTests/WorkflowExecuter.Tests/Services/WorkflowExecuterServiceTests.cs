@@ -1552,11 +1552,12 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         public async Task ProcessTaskUpdate_ValidTaskUpdateEventWithOutputArtifacts_ReturnsTrue()
         {
             var workflowInstanceId = Guid.NewGuid().ToString();
+            const string taskId = "pizza";
 
             var updateEvent = new TaskUpdateEvent
             {
                 WorkflowInstanceId = workflowInstanceId,
-                TaskId = "pizza",
+                TaskId = taskId,
                 ExecutionId = Guid.NewGuid().ToString(),
                 Status = TaskExecutionStatus.Succeeded,
                 Reason = FailureReason.None,
@@ -1592,7 +1593,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                     Tasks = new TaskObject[]
                     {
                         new TaskObject {
-                            Id = "pizza",
+                            Id = taskId,
                             Type = "type",
                             Description = "taskdesc",
                             TaskDestinations = new TaskDestination[]
@@ -1621,6 +1622,16 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 }
             };
 
+            var pizzaTask = new TaskExecution
+            {
+                TaskId = "pizza",
+                Status = TaskExecutionStatus.Dispatched,
+                OutputArtifacts = new Dictionary<string, string>
+                {
+                    { "k", "v" }
+                }
+            };
+
             var workflowInstance = new WorkflowInstance
             {
                 Id = workflowInstanceId,
@@ -1629,18 +1640,14 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 Status = Status.Created,
                 BucketId = "bucket",
                 Tasks = new List<TaskExecution>
+                {
+                    pizzaTask,
+                    new TaskExecution
                     {
-                        new TaskExecution
-                        {
-                            TaskId = "pizza",
-                            Status = TaskExecutionStatus.Dispatched
-                        },
-                        new TaskExecution
-                        {
-                            TaskId = "coffee",
-                            Status = TaskExecutionStatus.Dispatched
-                        }
+                        TaskId = "coffee",
+                        Status = TaskExecutionStatus.Dispatched
                     }
+                }
             };
 
             var artifactDict = updateEvent.Outputs.ToArtifactDictionary();
@@ -1648,6 +1655,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskOutputArtifactsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, string>>())).ReturnsAsync(true);
+
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
             _storageService.Setup(w => w.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactDict)).ReturnsAsync(artifactDict);
             _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Payload { PatientDetails = new PatientDetails { } });
@@ -1940,7 +1949,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 WorkflowId = workflowId,
             };
 
-            _artifactMapper.Setup(a => a.ConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(new Dictionary<string, string>());
+            var newDict = new Dictionary<string, string>();
+            _artifactMapper.Setup(a => a.TryConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), out newDict)).Returns(true);
 
             var newPizza = await WorkflowExecuterService.CreateTaskExecutionAsync(pizzaTask, workflowInstance, bucket, payloadId);
 
@@ -1952,6 +1962,133 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             Assert.Equal(FailureReason.None, newPizza.Reason);
             Assert.Equal(expectedTaskTimeoutLength, newPizza.TimeoutInterval);
             newPizza.Timeout.Should().BeCloseTo(expectedTaskTimeoutLengthDT, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public async Task CreateTaskExecutionAsync_InvalidArtifactInWorkflowInstanceAndTask_ShouldCreateTaskExecutionWithFailedStatus()
+        {
+            const int expectedTaskTimeoutLength = 10;
+            const string bucket = "bucket";
+            var expectedTaskTimeoutLengthDT = DateTime.UtcNow.AddMinutes(expectedTaskTimeoutLength);
+            var workflowId = Guid.NewGuid().ToString();
+            var payloadId = Guid.NewGuid().ToString();
+            var workflowInstanceId = Guid.NewGuid().ToString();
+
+            var pizzaTask = new TaskObject
+            {
+                Id = "pizza",
+                Type = "type",
+                Description = "taskdesc",
+                TimeoutMinutes = expectedTaskTimeoutLength,
+                Artifacts = new ArtifactMap
+                {
+                    Input = new Artifact[]
+                    {
+                        new Artifact
+                        {
+                            Name = "arti1",
+                            Value = "arti1Value"
+                        }
+                    }
+                },
+                TaskDestinations = new TaskDestination[]
+                {
+                    new TaskDestination
+                    {
+                        Name = "coffee"
+                    },
+                    new TaskDestination
+                    {
+                        Name = "doughnuts"
+                    }
+                }
+            };
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId,
+            };
+
+            var expectedDict = new Dictionary<string, string>();
+            _artifactMapper.Setup(a => a.TryConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), out expectedDict)).Returns(false);
+
+            var newPizza = await WorkflowExecuterService.CreateTaskExecutionAsync(pizzaTask, workflowInstance, bucket, payloadId);
+
+            newPizza.Should().NotBeNull();
+            Assert.Equal(pizzaTask.Id, newPizza.TaskId);
+            Assert.Equal(pizzaTask.Type, newPizza.TaskType);
+            Assert.Equal(workflowInstance.Id, newPizza.WorkflowInstanceId);
+            Assert.Equal(TaskExecutionStatus.Failed, newPizza.Status);
+            Assert.Equal(FailureReason.ExternalServiceError, newPizza.Reason);
+            Assert.Equal(expectedTaskTimeoutLength, newPizza.TimeoutInterval);
+            newPizza.Timeout.Should().BeCloseTo(expectedTaskTimeoutLengthDT, TimeSpan.FromSeconds(2));
+            Assert.Equal(expectedDict, newPizza.InputArtifacts);
+        }
+
+        [Fact]
+        public async Task CreateTaskExecutionAsync_ValidArtifactInWorkflowInstanceAndTask_ShouldCreateTaskExecutionWithCreatedStatus()
+        {
+            const int expectedTaskTimeoutLength = 10;
+            const string bucket = "bucket";
+            var expectedTaskTimeoutLengthDT = DateTime.UtcNow.AddMinutes(expectedTaskTimeoutLength);
+            var workflowId = Guid.NewGuid().ToString();
+            var payloadId = Guid.NewGuid().ToString();
+            var workflowInstanceId = Guid.NewGuid().ToString();
+
+            var pizzaTask = new TaskObject
+            {
+                Id = "pizza",
+                Type = "type",
+                Description = "taskdesc",
+                TimeoutMinutes = expectedTaskTimeoutLength,
+                Artifacts = new ArtifactMap
+                {
+                    Input = new Artifact[]
+                    {
+                        new Artifact
+                        {
+                            Name = "arti1",
+                            Value = "arti1Value"
+                        }
+                    }
+                },
+                TaskDestinations = new TaskDestination[]
+                {
+                    new TaskDestination
+                    {
+                        Name = "coffee"
+                    },
+                    new TaskDestination
+                    {
+                        Name = "doughnuts"
+                    }
+                }
+            };
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId,
+            };
+
+            var expectedDict = new Dictionary<string, string>()
+            {
+                { "k", "v" }
+            };
+            _artifactMapper.Setup(a => a.TryConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), out expectedDict)).Returns(true);
+
+            var newPizza = await WorkflowExecuterService.CreateTaskExecutionAsync(pizzaTask, workflowInstance, bucket, payloadId);
+
+            newPizza.Should().NotBeNull();
+            Assert.Equal(pizzaTask.Id, newPizza.TaskId);
+            Assert.Equal(pizzaTask.Type, newPizza.TaskType);
+            Assert.Equal(workflowInstance.Id, newPizza.WorkflowInstanceId);
+            Assert.Equal(TaskExecutionStatus.Created, newPizza.Status);
+            Assert.Equal(FailureReason.None, newPizza.Reason);
+            Assert.Equal(expectedTaskTimeoutLength, newPizza.TimeoutInterval);
+            newPizza.Timeout.Should().BeCloseTo(expectedTaskTimeoutLengthDT, TimeSpan.FromSeconds(2));
+            Assert.Equal(expectedDict, newPizza.InputArtifacts);
         }
     }
 }

@@ -118,6 +118,12 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
               JsonConvert.SerializeObject(task), JsonConvert.SerializeObject(workflowInstance), JsonConvert.SerializeObject(patientDetails), correlationId, taskStatus);
         }
 
+        public static void TaskFailed(this ILogger logger, TaskExecution task, WorkflowInstance workflowInstance, PatientDetails patientDetails, string correlationId, string taskStatus)
+        {
+            logger.LogInformation("TaskFailed, Task {task}, workflowInstance {workflowInstance}, patientDetails {patientDetails}, correlationId {correlationId}, taskStatus {taskStatus}",
+              JsonConvert.SerializeObject(task), JsonConvert.SerializeObject(workflowInstance), JsonConvert.SerializeObject(patientDetails), correlationId, taskStatus);
+        }
+
         public static void LogControllerStartTime(this ILogger logger, ActionExecutingContext context)
         {
             var request = context.HttpContext.Request;
@@ -165,7 +171,7 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
         [LoggerMessage(EventId = 35, Level = LogLevel.Debug, Message = "Payload already exists for {payloadId}. This is likley due to being requeued")]
         public static partial void PayloadAlreadyExists(this ILogger logger, string payloadId);
 
-        [LoggerMessage(EventId = 35, Level = LogLevel.Debug, Message = "Mandatory output artefacts for task {taskId} are missing.")]
+        [LoggerMessage(EventId = 36, Level = LogLevel.Debug, Message = "Mandatory output artefacts for task {taskId} are missing.")]
         public static partial void MandatoryOutputArtefactsMissingForTask(this ILogger logger, string taskId);
     }
 }

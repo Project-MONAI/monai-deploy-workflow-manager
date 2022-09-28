@@ -53,7 +53,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 artifactPaths = new Dictionary<string, string>();
                 return false;
             }
-            catch(AggregateException ex)
+            catch (AggregateException ex)
             {
                 if (ex.InnerException is FileNotFoundException)
                 {

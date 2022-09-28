@@ -197,8 +197,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
         public async Task<bool> ProcessTaskUpdate(TaskUpdateEvent message)
         {
-            Guard.Against.Null(message, nameof(message));
-            Guard.Against.Null(message.WorkflowInstanceId, nameof(message.WorkflowInstanceId));
+            Guard.Against.Null(message);
+            Guard.Against.Null(message.WorkflowInstanceId);
 
             var workflowInstance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId);
 
@@ -315,6 +315,14 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             }
 
             return true;
+        }
+
+        private async Task<bool> FailedTask(TaskExecution task, WorkflowInstance workflowInstance, string correlationId, TaskExecutionStatus status)
+        {
+            var payload = await _payloadService.GetByIdAsync(workflowInstance.PayloadId);
+            _logger.TaskFailed(task, workflowInstance, payload?.PatientDetails, correlationId, status.ToString());
+
+            return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, status);
         }
 
         private async Task<bool> CompleteTask(TaskExecution task, WorkflowInstance workflowInstance, string correlationId, TaskExecutionStatus status)
@@ -517,6 +525,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         {
             var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, task.TaskId);
 
+            if (newTaskExecutions.Any(task => task.Status == TaskExecutionStatus.Failed))
+            {
+                await UpdateWorkflowInstanceStatus(workflowInstance, task.TaskId, TaskExecutionStatus.Failed);
+
+                return await FailedTask(task, workflowInstance, correlationId, TaskExecutionStatus.Failed);
+            }
+
             if (newTaskExecutions.Any() is false)
             {
                 await UpdateWorkflowInstanceStatus(workflowInstance, task.TaskId, TaskExecutionStatus.Succeeded);
@@ -715,13 +730,21 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 task.TimeoutMinutes = _defaultTaskTimeoutMinutes;
             }
 
+            var inputArtifacts = new Dictionary<string, string>();
+            var artifactFound = true;
+            if (task?.Artifacts?.Input.IsNullOrEmpty() is false)
+            {
+                artifactFound = _artifactMapper.TryConvertArtifactVariablesToPath(task?.Artifacts?.Input
+                    ?? Array.Empty<Artifact>(), payloadId, workflowInstanceId, bucketName, true, out inputArtifacts);
+            }
+
             return new TaskExecution()
             {
                 ExecutionId = executionId,
-                TaskType = task.Type,
+                TaskType = task?.Type ?? "UnknownTaskType",
                 TaskPluginArguments = newTaskArgs,
                 TaskStartTime = DateTime.UtcNow,
-                TaskId = task.Id,
+                TaskId = task?.Id ?? "0",
                 WorkflowInstanceId = workflowInstanceId,
                 Status = artifactFound ? TaskExecutionStatus.Created : TaskExecutionStatus.Failed,
                 Reason = artifactFound ? FailureReason.None : FailureReason.ExternalServiceError,
