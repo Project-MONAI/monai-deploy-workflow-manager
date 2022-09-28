@@ -668,6 +668,11 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             var newInputParameters = GetInputParameters(task, workflowInstance);
             var newTaskArgs = GetTaskArgs(task, workflowInstance);
 
+            if (task.TimeoutMinutes == -1)
+            {
+                task.TimeoutMinutes = _defaultTaskTimeoutMinutes;
+            }
+
             return new TaskExecution()
             {
                 ExecutionId = executionId,
