@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Amazon.Runtime.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
@@ -152,7 +153,13 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
         [LoggerMessage(EventId = 33, Level = LogLevel.Debug, Message = "Task destination condition for task {taskId} with condition: {conditions} resolved to false.")]
         public static partial void TaskDestinationConditionFalse(this ILogger logger, string conditions, string taskId);
 
-        [LoggerMessage(EventId = 34, Level = LogLevel.Debug, Message = "Payload already exists for {payloadId}. This is likley due to being requeued")]
+        public static void LogArtifactPassing(this ILogger logger, Artifact artifact, string path, string artifactType, bool exists)
+        {
+            logger.LogInformation(34, "Artifact Passed data  Artifact {artifact}, Path {path}, ArtifactType {artifactType}, Exists {exists}",
+            JsonConvert.SerializeObject(artifact), path, artifactType, exists);
+        }
+
+        [LoggerMessage(EventId = 35, Level = LogLevel.Debug, Message = "Payload already exists for {payloadId}. This is likley due to being requeued")]
         public static partial void PayloadAlreadyExists(this ILogger logger, string payloadId);
     }
 }
