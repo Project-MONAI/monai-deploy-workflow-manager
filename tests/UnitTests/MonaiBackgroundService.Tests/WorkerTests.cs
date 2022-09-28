@@ -76,7 +76,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService.Tests
             };
 
             _pubService.Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>())).Returns(Task.CompletedTask);
-            _repo.Setup(r => r.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>())).ReturnsAsync(() => (taskExecution, 1));
+            _repo.Setup(r => r.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>())).ReturnsAsync(() => (Tasks: taskExecution, Count: 1));
             var tokenSource = new CancellationTokenSource();
 
             await _service.DoWork();

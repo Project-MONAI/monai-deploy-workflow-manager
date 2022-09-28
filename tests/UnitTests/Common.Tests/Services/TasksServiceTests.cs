@@ -54,13 +54,13 @@ namespace Monai.Deploy.WorkflowManager.Test.Services
             };
 
             _tasksRepository.Setup(tr => tr.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>()))
-                .ReturnsAsync(() => (taskExecution, 1));
+                .ReturnsAsync(() => (Tasks: taskExecution, Count: 1));
 
             var result = await TasksService.GetAllAsync();
 
             result.Should().NotBeNull();
-            result.Item1.Count.Should().Be(1);
-            result.Item2.Should().Be(1);
+            result.Tasks.Count.Should().Be(1);
+            result.Count.Should().Be(1);
 
             var objectResult = Assert.IsType<TaskExecution>(result.Item1.First());
 

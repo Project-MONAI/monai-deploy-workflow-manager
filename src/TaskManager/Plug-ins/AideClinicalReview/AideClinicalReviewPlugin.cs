@@ -207,7 +207,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             GC.SuppressFinalize(this);
         }
 
-        public override Task HandleTimeout(string identity)
-        { return Task.CompletedTask; } // not implemented
+        public override Task HandleTimeout(string identity) => Task.CompletedTask; // not implemented
     }
 }
