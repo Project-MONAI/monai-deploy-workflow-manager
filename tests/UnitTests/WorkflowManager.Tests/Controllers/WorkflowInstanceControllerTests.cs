@@ -132,6 +132,18 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Fact]
+        public async Task GetListAsync_InvalidPayloadId_Returns400()
+        {
+            var expectedErrorMessage = "Failed to validate payloadId, not a valid guid";
+            var result = await WorkflowInstanceController.GetListAsync(new Filter.PaginationFilter(), null, "invalid", true);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            var responseValue = (ProblemDetails)objectResult.Value;
+            responseValue.Detail.Should().BeEquivalentTo(expectedErrorMessage);
+        }
+
+        [Fact]
         public async Task GetListAsync_ServiceException_ReturnProblem()
         {
             _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<Status>(), It.IsAny<string>())).ThrowsAsync(new Exception());
@@ -179,7 +191,13 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             var result = await WorkflowInstanceController.GetByIdAsync(workflowId);
 
-            var objectResult = Assert.IsType<NotFoundObjectResult>(result);
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            var responseValue = (ProblemDetails)objectResult.Value;
+            string expectedErrorMessage = $"Failed to find workflow instance with Id: {workflowId}";
+            responseValue.Detail.Should().BeEquivalentTo(expectedErrorMessage);
+
+            Assert.Equal((int)HttpStatusCode.NotFound, responseValue.Status);
 
             Assert.Equal((int)HttpStatusCode.NotFound, objectResult.StatusCode);
         }
