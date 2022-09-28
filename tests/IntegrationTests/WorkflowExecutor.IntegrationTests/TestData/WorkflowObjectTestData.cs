@@ -671,6 +671,52 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowObjectTestData()
             {
+                Name = "Invalid_Workflow_Dup_Output",
+                Workflow = new Workflow()
+                {
+                    Name = "Dup Output",
+                    Description = "Basic workflow update",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "basic_id_with-legal-chars",
+                            Type = "Basic_task",
+                            Description = "Basic Workflow update Task update",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new Artifact[]
+                                {
+                                new Artifact
+                                    {
+                                        Name = "non_unique_name",
+                                        Value = "{{ context.executions.artifact_task_1.output_dir }}",
+                                        Mandatory = true
+                                    },
+                                new Artifact
+                                    {
+                                        Name = "non_unique_name",
+                                        Value = "{{ context.executions.artifact_task_1.output_dir }}",
+                                        Mandatory = true
+                                    },
+                                },
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        DataOrigins = new string[]{"test"},
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
                 Name = "Invalid_Workflow_Body_Object",
                 Workflow = new Workflow()
                 {

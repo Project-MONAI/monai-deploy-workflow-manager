@@ -1454,3 +1454,81 @@
     :why: Apache 2.0 - https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt
     :versions: []
     :when: 2022-09-12 15:40:42.030017822 Z
+- - :approve
+  - Elastic.CommonSchema
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-09-27 13:57:42.030017822 Z
+- - :approve
+  - Elastic.CommonSchema.Serilog
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-09-27 13:57:42.030017822 Z
+- - :approve
+  - Serilog
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-09-27 13:57:42.030017822 Z
+- - :approve
+  - Serilog.AspNetCore
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-09-27 13:57:42.030017822 Z
+- - :approve
+  - Serilog.Enrichers.Environment
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-09-27 13:57:42.030017822 Z
+- - :approve
+  - Serilog.Extensions.Hosting
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-09-27 13:57:42.030017822 Z
+- - :approve
+  - Serilog.Extensions.Logging
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-09-27 13:57:42.030017822 Z
+- - :approve
+  - Serilog.Formatting.Compact
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-09-27 13:57:42.030017822 Z
+- - :approve
+  - Serilog.Settings.Configuration
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-09-27 13:57:42.030017822 Z
+- - :approve
+  - Serilog.Sinks.Console
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-09-27 13:57:42.030017822 Z
+- - :approve
+  - Serilog.Sinks.Debug
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-09-27 13:57:42.030017822 Z
+- - :approve
+  - Serilog.Sinks.File
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-09-27 13:57:42.030017822 Z
+- - :approve
+  - Serilog.Sinks.Http
+  - :who: Joss Sparkes (RemakingEden)
+    :why: Apache 2.0 - https://licenses.nuget.org/Apache-2.0
+    :versions: []
+    :when: 2022-09-27 13:57:42.030017822 Z
