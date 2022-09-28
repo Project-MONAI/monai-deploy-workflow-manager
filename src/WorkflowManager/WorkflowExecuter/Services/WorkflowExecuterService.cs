@@ -267,7 +267,14 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 await _workflowInstanceRepository.UpdateTaskAsync(workflowInstance.Id, currentTask.TaskId, currentTask);
             }
 
-            await HandleOutputArtifacts(workflowInstance, message.Outputs, currentTask);
+            var isValid = await HandleOutputArtifacts(workflowInstance, message.Outputs, currentTask, workflow);
+
+            if (isValid is false)
+            {
+                await UpdateWorkflowInstanceStatus(workflowInstance, message.TaskId, TaskExecutionStatus.Failed);
+
+                return await CompleteTask(currentTask, workflowInstance, message.CorrelationId, TaskExecutionStatus.Failed);
+            }
 
             return await HandleTaskDestinations(workflowInstance, workflow, currentTask, message.CorrelationId);
         }
@@ -417,15 +424,34 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Dispatched);
         }
 
-        private async Task<bool> HandleOutputArtifacts(WorkflowInstance workflowInstance, List<Messaging.Common.Storage> outputs, TaskExecution task)
+        private async Task<bool> HandleOutputArtifacts(WorkflowInstance workflowInstance, List<Messaging.Common.Storage> outputs, TaskExecution task, WorkflowRevision workflowRevision)
         {
             var artifactDict = outputs.ToArtifactDictionary();
 
             var validOutputArtifacts = await _storageService.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactDict);
 
+            var revisionTask = workflowRevision.Workflow?.Tasks.FirstOrDefault(t => t.Id == task.TaskId);
+
+            if (revisionTask is null)
+            {
+                _logger.TaskNotFoundInWorkfow(workflowInstance.PayloadId, task.TaskId, workflowRevision.WorkflowId);
+
+                return false;
+            }
+
             foreach (var artifact in artifactDict)
             {
-                _logger.LogArtifactPassing(new Artifact { Name = artifact.Key, Value = artifact.Value }, artifact.Value, "Post-Task Output Artifact", validOutputArtifacts.ContainsKey(artifact.Key));
+                var outputArtifact = revisionTask.Artifacts.Output.FirstOrDefault(o => o.Name == artifact.Key);
+                _logger.LogArtifactPassing(new Artifact { Name = artifact.Key, Value = artifact.Value, Mandatory = outputArtifact?.Mandatory ?? true }, artifact.Value, "Post-Task Output Artifact", validOutputArtifacts.ContainsKey(artifact.Key));
+            }
+
+            var missingOutputs = revisionTask.Artifacts.Output.Where(o => validOutputArtifacts.ContainsKey(o.Name) is false);
+
+            if (missingOutputs.Any(o => o.Mandatory))
+            {
+                _logger.MandatoryOutputArtefactsMissingForTask(task.TaskId);
+
+                return false;
             }
 
             var currentTask = workflowInstance.Tasks?.FirstOrDefault(t => t.TaskId == task.TaskId);
