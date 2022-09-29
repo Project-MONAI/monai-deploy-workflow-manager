@@ -349,13 +349,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             var artifactValues = GetDicomExports(workflow, workflowInstance, task, exportList);
 
-            if (artifactValues.Any() is false)
-            {
-                await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
-
-                return;
-            }
-
             var files = new List<VirtualFileInfo>();
             foreach (var artifact in artifactValues)
             {
@@ -376,6 +369,17 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             }
 
             artifactValues = files.Select(f => f.FilePath).ToArray();
+
+            if (artifactValues.IsNullOrEmpty())
+            {
+                _logger.ExportFilesNotFound(task.TaskId, workflowInstance.Id);
+
+                await UpdateWorkflowInstanceStatus(workflowInstance, task.TaskId, TaskExecutionStatus.Failed);
+
+                await CompleteTask(task, workflowInstance, correlationId, TaskExecutionStatus.Failed);
+
+                return;
+            }
 
             await DispatchDicomExport(workflowInstance, task, exportList, artifactValues, correlationId);
         }
