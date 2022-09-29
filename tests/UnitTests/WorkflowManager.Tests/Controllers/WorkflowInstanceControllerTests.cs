@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -283,6 +284,29 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
         }
 
+        [Fact]
+        public async Task AcknowledgeTaskError_WorkflowInstanceUpdated_ReturnsOk()
+        {
+            var workflowsInstance = new WorkflowInstance
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = Guid.NewGuid().ToString(),
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Failed,
+                AcknowledgedWorkflowErrors = DateTime.UtcNow,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = Guid.NewGuid().ToString(),
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            Status = TaskExecutionStatus.Failed,
+                            AcknowledgedTaskErrors = DateTime.UtcNow
+                        }
+                    }
+            };
+
         [Theory]
         [InlineData("2022-02-21", "en-GB")]
         [InlineData("2022-02-21", "en-US")]
@@ -437,6 +461,14 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);
 
+        }
+            _workflowInstanceService.Setup(w => w.AcknowledgeTaskError(workflowsInstance.WorkflowId, workflowsInstance.Tasks.First().ExecutionId)).ReturnsAsync(workflowsInstance);
+
+            var result = await WorkflowInstanceController.AcknowledgeTaskError(workflowsInstance.WorkflowId, workflowsInstance.Tasks.First().ExecutionId);
+
+            var objectResult = Assert.IsType<OkObjectResult>(result);
+
+            objectResult.Value.Should().BeEquivalentTo(workflowsInstance);
         }
     }
 }

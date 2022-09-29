@@ -118,8 +118,19 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <param name="timeSpan">length of period to check.</param>
         Task<IList<WorkflowInstance>> GetAllFailedAsync(DateTime startDate);
 
+        /// <summary>
+        /// Acknowledges a workflowinstance error.
+        /// </summary>
+        /// <param name="workflowInstanceId">The Workflow Instance Id.</param>
+        /// <returns>An updated workflow.</returns>
         Task<WorkflowInstance> AcknowledgeWorkflowInstanceErrors(string workflowInstanceId);
 
+        /// <summary>
+        /// Acknowledges a task error.
+        /// </summary>
+        /// <param name="workflowInstanceId">The Workflow Instance Id.</param>
+        /// <param name="executionId">The Execution Id.</param>
+        /// <returns>An updated workflow.</returns>
         Task<WorkflowInstance> AcknowledgeTaskError(string workflowInstanceId, string executionId);
     }
 }
