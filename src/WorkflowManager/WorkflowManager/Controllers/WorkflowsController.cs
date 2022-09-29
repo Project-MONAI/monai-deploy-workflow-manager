@@ -89,7 +89,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
-                return Problem($"Unexpected error occured: {e.Message}", $"/workflows", InternalServerError);
+                return Problem($"Unexpected error occurred: {e.Message}", $"/workflows", InternalServerError);
             }
         }
 
@@ -121,7 +121,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
-                return Problem($"Unexpected error occured: {e.Message}", $"/workflows/{nameof(id)}", InternalServerError);
+                return Problem($"Unexpected error occurred: {e.Message}", $"/workflows/{nameof(id)}", InternalServerError);
             }
         }
 
@@ -149,7 +149,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
-                return Problem($"Unexpected error occured: {e.Message}", $"/workflows", InternalServerError);
+                return Problem($"Unexpected error occurred: {e.Message}", $"/workflows", InternalServerError);
             }
         }
 
@@ -195,7 +195,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
-                return Problem($"Unexpected error occured: {e.Message}", $"/workflows", InternalServerError);
+                return Problem($"Unexpected error occurred: {e.Message}", $"/workflows", InternalServerError);
             }
         }
 
@@ -232,7 +232,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             catch (Exception e)
             {
                 return Problem(
-                    $"Unexpected error occured: {e.Message}",
+                    $"Unexpected error occurred: {e.Message}",
                     $"/workflows/{nameof(id)}",
                     InternalServerError);
             }

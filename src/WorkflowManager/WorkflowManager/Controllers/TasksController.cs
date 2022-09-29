@@ -86,7 +86,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
-                return Problem($"Unexpected error occured: {e.Message}", $"/tasks/running", InternalServerError);
+                return Problem($"Unexpected error occurred: {e.Message}", $"/tasks/running", InternalServerError);
             }
         }
 
@@ -125,7 +125,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
-                return Problem($"Unexpected error occured: {e.Message}", $"/tasks/", InternalServerError);
+                return Problem($"Unexpected error occurred: {e.Message}", $"/tasks/", InternalServerError);
             }
         }
     }

@@ -15,12 +15,13 @@
  */
 
 using System;
+using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -36,6 +37,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
     [Route("workflowinstances")]
     public class WorkflowInstanceController : AuthenticatedApiControllerBase
     {
+        private const string ENDPOINT = "/workflowinstances/";
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IWorkflowInstanceService _workflowInstanceService;
 
@@ -79,7 +81,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 {
                     _logger.LogDebug($"{nameof(GetListAsync)} - Failed to validate {nameof(payloadId)}");
 
-                    return Problem($"Failed to validate {nameof(payloadId)}, not a valid guid", $"/workflowinstances/{payloadId}", BadRequest);
+                    return Problem($"Failed to validate {nameof(payloadId)}, not a valid guid", $"{ENDPOINT}{payloadId}", BadRequest);
                 }
 
                 Status? parsedStatus = status == null ? null : Enum.Parse<Status>(status, true);
@@ -111,7 +113,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             {
                 _logger.LogError($"{nameof(GetListAsync)} - Failed to get workflowInstances", e);
 
-                return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances", InternalServerError);
+                return Problem($"Unexpected error occurred: {e.Message}", $"{ENDPOINT}", InternalServerError);
             }
         }
 
@@ -128,7 +130,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             {
                 _logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to validate {nameof(id)}");
 
-                return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}",  BadRequest);
+                return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"{ENDPOINT}{id}", BadRequest);
             }
 
             try
@@ -139,14 +141,57 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 {
                     _logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to find workflow instance with Id: {id}");
 
-                    return Problem($"Failed to find workflow instance with Id: {id}", $"/workflows/{id}", NotFound);
+                    return Problem($"Failed to find workflow instance with Id: {id}", $"{ENDPOINT}{id}", NotFound);
                 }
 
                 return Ok(workflowInstance);
             }
             catch (Exception e)
             {
-                return Problem($"Unexpected error occured: {e.Message}", $"/workflowinstances/{nameof(id)}", InternalServerError);
+                return Problem($"Unexpected error occurred: {e.Message}", $"{ENDPOINT}{nameof(id)}", InternalServerError);
+            }
+        }
+
+        /// <summary>
+        /// Returns failed workflow instances, that have an empty value of.
+        /// </summary>
+        /// <param name="acknowledged">Failed workflow's since this date.</param>
+        /// <returns>This should be a new endpoint to return failed workflow's instances, that have an empty value of.</returns>
+        [Route("failed")]
+        [HttpGet]
+        public async Task<IActionResult> GetFailedAsync([FromQuery] string acknowledged)
+        {
+            if (string.IsNullOrWhiteSpace(acknowledged))
+            {
+                return Problem($"Failed to validate, no {nameof(acknowledged)} parameter provided", $"{ENDPOINT}failed", BadRequest);
+            }
+
+            var parseResult = DateTime.TryParse(acknowledged, out var acknowledgedDateTime);
+            if (parseResult is false)
+            {
+                return Problem($"Failed to validate provided date", $"{ENDPOINT}failed", BadRequest);
+            }
+
+            if (acknowledgedDateTime > DateTime.UtcNow)
+            {
+                return Problem($"Failed to validate {nameof(acknowledged)} value: {acknowledgedDateTime.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)}, provided time is in the future.", $"{ENDPOINT}failed", BadRequest);
+            }
+
+            try
+            {
+                var workflowInstances = await _workflowInstanceService.GetAllFailedAsync(acknowledgedDateTime);
+                if (workflowInstances.IsNullOrEmpty())
+                {
+                    return Problem($"Request failed, no workflow instances found since {acknowledgedDateTime.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)}", $"{ENDPOINT}failed", NotFound);
+                }
+
+                return Ok(workflowInstances);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"{nameof(GetFailedAsync)} - Failed to get failed workflowInstances", e);
+
+                return Problem($"Unexpected error occurred.", $"{ENDPOINT}failed", InternalServerError);
             }
         }
     }

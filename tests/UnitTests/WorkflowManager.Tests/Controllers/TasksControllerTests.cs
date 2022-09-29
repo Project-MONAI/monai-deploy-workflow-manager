@@ -162,6 +162,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             var problemDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
             problemDetails.Detail.Should().Be("Failed to validate ids, not a valid guid");
+
+            const string expectedInstance = "/tasks";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
 
         [Fact]
@@ -188,6 +191,8 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             var problemDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
             problemDetails.Detail.Should().Be("Failed to validate ids, workflow or task not found");
 
+            const string expectedInstance = "/tasks";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
     }
 }
