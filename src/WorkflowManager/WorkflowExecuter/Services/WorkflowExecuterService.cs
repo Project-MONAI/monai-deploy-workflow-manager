@@ -406,8 +406,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (!task.InputArtifacts.Any())
             {
-                _logger.ExportFilesNotFound(task.TaskId, workflowInstance.Id);
-
                 return Array.Empty<string>();
             }
 
