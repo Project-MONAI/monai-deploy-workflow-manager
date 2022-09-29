@@ -129,8 +129,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
         }
 
-        [Then(@"I will recieve no pagination response")]
-        public void ThenIWillRecieveNoPaginationResponse()
+        [Then(@"I will receive no pagination response")]
+        public void ThenIWillReceiveNoPaginationResponse()
         {
             var response = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             response.Should().NotContainAny(new List<string>
