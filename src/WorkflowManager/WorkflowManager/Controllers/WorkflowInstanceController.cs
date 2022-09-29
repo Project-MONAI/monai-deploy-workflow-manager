@@ -219,6 +219,13 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             {
                 var workflowInstance = await _workflowInstanceService.AcknowledgeTaskError(id, executionId);
 
+                if (workflowInstance is null)
+                {
+                    _logger.LogDebug($"{nameof(AcknowledgeTaskError)} - Failed to find workflow instance with Id: {id} or Task with ExecutionId: {executionId}");
+
+                    return Problem($"Failed to find workflow instance with Id: {id} or Task with ExecutionId: {executionId}", $"/workflows/{id}/executions/{executionId}/acknowledge", NotFound);
+                }
+
                 return Ok(workflowInstance);
             }
             catch (Exception e)

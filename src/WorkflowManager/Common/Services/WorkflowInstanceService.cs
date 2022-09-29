@@ -38,16 +38,24 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             return await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(id);
         }
 
-        public async Task<WorkflowInstance> AcknowledgeTaskError(string workflowInstanceId, string executionId)
+        public async Task<WorkflowInstance?> AcknowledgeTaskError(string workflowInstanceId, string executionId)
         {
             Guard.Against.NullOrWhiteSpace(workflowInstanceId);
             Guard.Against.NullOrWhiteSpace(executionId);
+
+            var workflowInstance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(workflowInstanceId);
+
+            if (workflowInstance is null || workflowInstance.Tasks.FirstOrDefault(t => t.ExecutionId == executionId) is null)
+            {
+                return null;
+            }
 
             var updatedInstance = await _workflowInstanceRepository.AcknowledgeTaskError(workflowInstanceId, executionId);
 
             var failedTasks = updatedInstance.Tasks.Where(t => t.Status == TaskExecutionStatus.Failed);
 
-            if (failedTasks.All(t => t.AcknowledgedTaskErrors != null))
+            if (failedTasks.Any() && failedTasks.All(t => t.AcknowledgedTaskErrors != null)
+                && updatedInstance.AcknowledgedWorkflowErrors == null)
             {
                 return await _workflowInstanceRepository.AcknowledgeWorkflowInstanceErrors(workflowInstanceId);
             }

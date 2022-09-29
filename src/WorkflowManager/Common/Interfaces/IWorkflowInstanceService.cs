@@ -31,7 +31,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// <param name="id">The Workflow Instance Id.</param>
         /// <param name="executionId">The Task Execution Id.</param>
         /// <returns>An updated workflow.</returns>
-        public Task<WorkflowInstance> AcknowledgeTaskError(string id, string executionId);
+        public Task<WorkflowInstance?> AcknowledgeTaskError(string id, string executionId);
 
         /// <summary>
         /// Used for filtering status also.
