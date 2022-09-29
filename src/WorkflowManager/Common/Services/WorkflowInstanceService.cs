@@ -18,6 +18,7 @@ using Ardalis.GuardClauses;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.Messaging.Events;
 
 namespace Monai.Deploy.WorkflowManager.Common.Services
 {
@@ -35,6 +36,23 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             Guard.Against.NullOrWhiteSpace(id);
 
             return await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(id);
+        }
+
+        public async Task<WorkflowInstance> AcknowledgeTaskError(string workflowInstanceId, string executionId)
+        {
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId);
+            Guard.Against.NullOrWhiteSpace(executionId);
+
+            var updatedInstance = await _workflowInstanceRepository.AcknowledgeTaskError(workflowInstanceId, executionId);
+
+            var failedTasks = updatedInstance.Tasks.Where(t => t.Status == TaskExecutionStatus.Failed);
+
+            if (failedTasks.All(t => t.AcknowledgedTaskErrors != null))
+            {
+                return await _workflowInstanceRepository.AcknowledgeWorkflowInstanceErrors(workflowInstanceId);
+            }
+
+            return updatedInstance;
         }
 
         public async Task<long> CountAsync() => await _workflowInstanceRepository.CountAsync();

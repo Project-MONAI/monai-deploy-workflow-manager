@@ -182,6 +182,33 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
         }
 
+        public async Task<WorkflowInstance> AcknowledgeWorkflowInstanceErrors(string workflowInstanceId)
+        {
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+
+            var acknowledgedTimeStamp = DateTime.UtcNow;
+
+            var workflowInstance = await _workflowInstanceCollection.FindOneAndUpdateAsync(
+                i => i.Id == workflowInstanceId && i.AcknowledgedWorkflowErrors == null,
+                Builders<WorkflowInstance>.Update.Set(w => w.AcknowledgedWorkflowErrors, acknowledgedTimeStamp));
+
+            return workflowInstance;
+        }
+
+        public async Task<WorkflowInstance> AcknowledgeTaskError(string workflowInstanceId, string executionId)
+        {
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            Guard.Against.NullOrWhiteSpace(executionId, nameof(executionId));
+
+            var acknowledgedTimeStamp = DateTime.UtcNow;
+
+            var workflowInstance = await _workflowInstanceCollection.FindOneAndUpdateAsync(
+                i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.ExecutionId == executionId && t.Status == TaskExecutionStatus.Failed && t.AcknowledgedTaskErrors == null),
+                Builders<WorkflowInstance>.Update.Set(w => w.Tasks[-1].AcknowledgedTaskErrors, acknowledgedTimeStamp));
+
+            return workflowInstance;
+        }
+
         public async Task<TaskExecution?> GetTaskByIdAsync(string workflowInstanceId, string taskId)
         {
             Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));

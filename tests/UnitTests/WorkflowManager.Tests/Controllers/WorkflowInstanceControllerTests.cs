@@ -244,6 +244,45 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
 
+        [Fact]
+        public async Task AcknowledgeTaskError_ServiceException_ReturnProblem()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var executionId = Guid.NewGuid().ToString();
+            _workflowInstanceService.Setup(w => w.AcknowledgeTaskError(workflowInstanceId, executionId)).ThrowsAsync(new Exception());
+
+            var result = await WorkflowInstanceController.AcknowledgeTaskError(workflowInstanceId, executionId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task AcknowledgeTaskError_InvalidWorkflowInstanceId_ReturnsBadRequest()
+        {
+            var workflowInstanceId = "2";
+            var executionId = Guid.NewGuid().ToString();
+
+            var result = await WorkflowInstanceController.AcknowledgeTaskError(workflowInstanceId, executionId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task AcknowledgeTaskError_InvalidExecutionId_ReturnsBadRequest()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var executionId = "2";
+
+            var result = await WorkflowInstanceController.AcknowledgeTaskError(workflowInstanceId, executionId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+        }
+
         [Theory]
         [InlineData("2022-02-21", "en-GB")]
         [InlineData("2022-02-21", "en-US")]

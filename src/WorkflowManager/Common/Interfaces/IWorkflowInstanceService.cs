@@ -23,7 +23,15 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// <summary>
         /// Gets a workflow instance from the workflow instance repository by Id.
         /// </summary>
-        Task<WorkflowInstance> GetByIdAsync(string id);
+        public Task<WorkflowInstance> GetByIdAsync(string id);
+
+        /// <summary>
+        /// Acknowledges a task error and acknowledges a workflow if all tasks are acknowledged.
+        /// </summary>
+        /// <param name="id">The Workflow Instance Id.</param>
+        /// <param name="executionId">The Task Execution Id.</param>
+        /// <returns>An updated workflow.</returns>
+        public Task<WorkflowInstance> AcknowledgeTaskError(string id, string executionId);
 
         /// <summary>
         /// Used for filtering status also.

@@ -117,5 +117,9 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// </summary>
         /// <param name="timeSpan">length of period to check.</param>
         Task<IList<WorkflowInstance>> GetAllFailedAsync(DateTime startDate);
+
+        Task<WorkflowInstance> AcknowledgeWorkflowInstanceErrors(string workflowInstanceId);
+
+        Task<WorkflowInstance> AcknowledgeTaskError(string workflowInstanceId, string executionId);
     }
 }
