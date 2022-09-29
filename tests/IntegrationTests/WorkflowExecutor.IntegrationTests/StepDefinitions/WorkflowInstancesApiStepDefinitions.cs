@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+using System.Globalization;
 using BoDi;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.Wrappers;
 using Newtonsoft.Json;
-using TechTalk.SpecFlow.CommonModels;
 using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
@@ -51,6 +51,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
         [Then(@"I can see expected workflow instance is returned")]
         public void ThenICanSeeExpectedWorkflowInstanceIsReturned()
+        {
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            var actualWorkflowInstance = JsonConvert.DeserializeObject<WorkflowInstance>(result);
+            Assertions.AssertWorkflowInstance(DataHelper.WorkflowInstances, actualWorkflowInstance);
+        }
+
+        [Then(@"I can see (.*) expected workflow instance is returned")]
+        public void ThenICanSeeExpectedWorkflowInstanceIsReturned(int count)
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var actualWorkflowInstance = JsonConvert.DeserializeObject<WorkflowInstance>(result);
@@ -126,7 +134,34 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             {
                 throw new Exception($"Workflow Instance not found for payloadId {payloadId}");
             }
+        }
 
+        [Then(@"I can see (.*) failed workflow instances since (.*)")]
+        public void ThenICanSeeFailedWorkflowInstancesSince(int count, string dateTime)
+        {
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+
+            var currentCulture = Thread.CurrentThread.CurrentCulture;
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
+            var parseResult = DateTime.TryParse(dateTime, out var dateTimeParsed);
+            Thread.CurrentThread.CurrentCulture = currentCulture;
+
+            if (parseResult is false)
+            {
+                throw new Exception("Bad date time provided");
+            }
+
+            var expectedData = DataHelper.SeededWorkflowInstances.Where(wfInstance => wfInstance.Status == Status.Failed
+                                      && wfInstance.AcknowledgedWorkflowErrors.HasValue
+                                      && wfInstance.AcknowledgedWorkflowErrors.Value > dateTimeParsed).ToList();
+            expectedData.Count.Should().Be(count);
+
+            var actualWorkflowInstances = JsonConvert.DeserializeObject<List<WorkflowInstance>>(result);
+
+            actualWorkflowInstances.Should().NotBeNull();
+            actualWorkflowInstances?.Count.Should().Be(count);
+            Assertions.AssertWorkflowInstanceList(expectedData, actualWorkflowInstances
+                ?? throw new Exception("No workflow instance data returned"));
         }
 
         [Then(@"I will receive no pagination response")]

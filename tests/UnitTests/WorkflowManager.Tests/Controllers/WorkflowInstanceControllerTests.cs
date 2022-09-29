@@ -248,6 +248,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         [InlineData("02-12-1971")]
         [InlineData("10-1980")]
         [InlineData("01-01")]
+        [InlineData("15-12-2021")]
         public async Task TaskGetFailedAsync_GivenCorrectDateString_ReturnsWorkflows(string inputString)
         {
             var workflowsInstance = new WorkflowInstance

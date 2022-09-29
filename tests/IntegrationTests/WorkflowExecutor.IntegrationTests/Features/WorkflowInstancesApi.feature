@@ -158,9 +158,38 @@ Scenario: Get workflow instances by payloadId. Id Bad Request
     Then I will get a 400 response
     And I will receive the error message Failed to validate payloadId, not a valid guid
 
-@GetWorkflowInstances
-Scenario: Get workflow failed instances. Bad Request
+@GetFailedWorkflowInstances
+Scenario: Get workflow failed instances with invalid parameter. Bad Request
 	Given I have an endpoint /workflowinstances/failed?acknowledged=donkey
     When I send a GET request
     Then I will get a 400 response
-    And I will receive the error message Failed to validate, no acknowledged parameter provided
+    And I will receive the error message Failed to validate provided date
+
+@GetFailedWorkflowInstances
+Scenario: Get workflow failed instances with invalid date. Bad Request
+	Given I have an endpoint /workflowinstances/failed?acknowledged=00-00-0000
+    When I send a GET request
+    Then I will get a 400 response
+    And I will receive the error message Failed to validate provided date
+    
+@GetFailedWorkflowInstances
+Scenario: Get workflow failed instances in future. Bad Request
+	Given I have an endpoint /workflowinstances/failed?acknowledged=15-12-2199
+    When I send a GET request
+    Then I will get a 400 response
+    And I will receive the error message Failed to validate acknowledged value: 15-12-2199, provided time is in the future.
+    
+@GetFailedWorkflowInstances
+Scenario: Get workflow failed instances returns no values. Not Found
+	Given I have an endpoint /workflowinstances/failed?acknowledged=15-12-2021
+    When I send a GET request
+    Then I will get a 404 response
+    And I will receive the error message Request failed, no workflow instances found since 15-12-2021
+        
+@GetFailedWorkflowInstances
+Scenario: Get workflow failed instances returns values. Ok Request
+	Given I have an endpoint /workflowinstances/failed?acknowledged=15-12-2021
+    And I have 10 failed workflow Instances with acknowledged workflow errors with mid date as 15-12-2021
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see 5 failed workflow instances since 15-12-2021
