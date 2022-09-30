@@ -48,7 +48,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
         }
 
         [Fact]
-        public async Task ConvertArtifactVariablesToPath_MultipleArtifacts_ReturnsMappedPaths()
+        public void ConvertArtifactVariablesToPath_MultipleArtifacts_ReturnsMappedPaths()
         {
             var artifacts = new Artifact[]
             {
