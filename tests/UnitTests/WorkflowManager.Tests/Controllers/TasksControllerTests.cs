@@ -77,7 +77,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                     }
                 }
             };
-            _tasksService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>())).ReturnsAsync(() => (new List<TaskExecution> { taskExecution }, 1));
+            _tasksService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>())).ReturnsAsync(() => (Tasks: new List<TaskExecution> { taskExecution }, Count: 1));
             _uriService.Setup(s => s.GetPageUriString(It.IsAny<Filter.PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
             var result = await TasksController.GetListAsync(new Filter.PaginationFilter());

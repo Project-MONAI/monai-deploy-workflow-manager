@@ -20,7 +20,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
 {
     public interface ITasksService
     {
-        Task<(IList<TaskExecution>, long)> GetAllAsync(int? skip = null, int? limit = null);
+        Task<(IList<TaskExecution> Tasks, long Count)> GetAllAsync(int? skip = null, int? limit = null);
 
         Task<TaskExecution?> GetTaskAsync(string workflowInstanceId, string taskId, string executionId);
     }

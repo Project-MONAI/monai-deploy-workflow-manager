@@ -2028,5 +2028,54 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             response.Should().BeTrue();
         }
+
+        [Fact]
+        public async Task CreateTaskExecutionAsync_ValidWorkflowInstanceAndTask_ShouldCreateTaskExecution()
+        {
+            const int expectedTaskTimeoutLength = 10;
+            const string bucket = "bucket";
+            var expectedTaskTimeoutLengthDT = DateTime.UtcNow.AddMinutes(expectedTaskTimeoutLength);
+            var workflowId = Guid.NewGuid().ToString();
+            var payloadId = Guid.NewGuid().ToString();
+            var workflowInstanceId = Guid.NewGuid().ToString();
+
+            var pizzaTask = new TaskObject
+            {
+                Id = "pizza",
+                Type = "type",
+                Description = "taskdesc",
+                TimeoutMinutes = expectedTaskTimeoutLength,
+                TaskDestinations = new TaskDestination[]
+                {
+                    new TaskDestination
+                    {
+                        Name = "coffee"
+                    },
+                    new TaskDestination
+                    {
+                        Name = "doughnuts"
+                    }
+                }
+            };
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId,
+            };
+
+            _artifactMapper.Setup(a => a.ConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(new Dictionary<string, string>());
+
+            var newPizza = await WorkflowExecuterService.CreateTaskExecutionAsync(pizzaTask, workflowInstance, bucket, payloadId);
+
+            newPizza.Should().NotBeNull();
+            Assert.Equal(pizzaTask.Id, newPizza.TaskId);
+            Assert.Equal(pizzaTask.Type, newPizza.TaskType);
+            Assert.Equal(workflowInstance.Id, newPizza.WorkflowInstanceId);
+            Assert.Equal(TaskExecutionStatus.Created, newPizza.Status);
+            Assert.Equal(FailureReason.None, newPizza.Reason);
+            Assert.Equal(expectedTaskTimeoutLength, newPizza.TimeoutInterval);
+            newPizza.Timeout.Should().BeCloseTo(expectedTaskTimeoutLengthDT, TimeSpan.FromSeconds(2));
+        }
     }
 }
