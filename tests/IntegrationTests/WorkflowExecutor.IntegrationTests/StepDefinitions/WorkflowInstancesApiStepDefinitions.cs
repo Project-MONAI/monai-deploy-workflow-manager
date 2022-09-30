@@ -141,10 +141,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
 
-            var currentCulture = Thread.CurrentThread.CurrentCulture;
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
+            //var currentCulture = Thread.CurrentThread.CurrentCulture;
+            //Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
             var parseResult = DateTime.TryParse(dateTime, out var dateTimeParsed);
-            Thread.CurrentThread.CurrentCulture = currentCulture;
+            //Thread.CurrentThread.CurrentCulture = currentCulture;
 
             if (parseResult is false)
             {

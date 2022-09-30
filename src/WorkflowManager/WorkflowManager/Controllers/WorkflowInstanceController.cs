@@ -155,26 +155,22 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <summary>
         /// Returns failed workflow instances, that have an empty value of.
         /// </summary>
-        /// <param name="acknowledged">Failed workflow's since this date.</param>
+        /// <param name="acknowledged">Failed workflow's since this date as ISO 8601 standard ("YYYY-MM-DDT00:00").</param>
         /// <returns>This should be a new endpoint to return failed workflow's instances, that have an empty value of.</returns>
         [Route("failed")]
         [HttpGet]
-        public async Task<IActionResult> GetFailedAsync([FromQuery] string acknowledged)
+        public async Task<IActionResult> GetFailedAsync([FromQuery] DateTime? acknowledged)
         {
-            if (string.IsNullOrWhiteSpace(acknowledged))
+            if (acknowledged is null)
             {
                 return Problem($"Failed to validate, no {nameof(acknowledged)} parameter provided", $"{ENDPOINT}failed", BadRequest);
             }
 
-            var parseResult = DateTime.TryParse(acknowledged, out var acknowledgedDateTime);
-            if (parseResult is false)
-            {
-                return Problem($"Failed to validate provided date", $"{ENDPOINT}failed", BadRequest);
-            }
+            var acknowledgedDateTime = acknowledged.Value;
 
             if (acknowledgedDateTime > DateTime.UtcNow)
             {
-                return Problem($"Failed to validate {nameof(acknowledged)} value: {acknowledgedDateTime.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)}, provided time is in the future.", $"{ENDPOINT}failed", BadRequest);
+                return Problem($"Failed to validate {nameof(acknowledged)} value: {acknowledgedDateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}, provided time is in the future.", $"{ENDPOINT}failed", BadRequest);
             }
 
             try
@@ -182,7 +178,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 var workflowInstances = await _workflowInstanceService.GetAllFailedAsync(acknowledgedDateTime);
                 if (workflowInstances.IsNullOrEmpty())
                 {
-                    return Problem($"Request failed, no workflow instances found since {acknowledgedDateTime.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)}", $"{ENDPOINT}failed", NotFound);
+                    return Problem($"Request failed, no workflow instances found since {acknowledgedDateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}", $"{ENDPOINT}failed", NotFound);
                 }
 
                 return Ok(workflowInstances);

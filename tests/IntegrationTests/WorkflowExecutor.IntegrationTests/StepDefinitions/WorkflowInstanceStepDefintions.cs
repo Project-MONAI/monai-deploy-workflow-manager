@@ -87,10 +87,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             _outputHelper.WriteLine($"Retrieving {count} workflow instances");
             var listOfWorkflowInstance = new List<WorkflowInstance>();
 
-            var currentCulture = Thread.CurrentThread.CurrentCulture;
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
             var parseResult = DateTime.TryParse(midDate, out var dateTimeParsed);
-            Thread.CurrentThread.CurrentCulture = currentCulture;
 
             if (parseResult is false)
             {

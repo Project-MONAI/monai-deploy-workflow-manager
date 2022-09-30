@@ -271,6 +271,22 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Theory]
+        [InlineData("2022-02-21", "en-GB")]
+        [InlineData("2022-02-21", "en-US")]
+        [InlineData("2022-02-21", "fil-PH")]
+        [InlineData("2022-02-21", "de-DE")]
+        [InlineData("2022-02-21", "sk-SK")]
+        [InlineData("2022-02-21", "fr-FR")]
+        [InlineData("2022-02-21", "hi-IN")]
+        [InlineData("2022-02-21", "de-CH")]
+        [InlineData("2022-02-21T00:00", "en-GB")]
+        [InlineData("2022-02-21T00:00", "en-US")]
+        [InlineData("2022-02-21T00:00", "fil-PH")]
+        [InlineData("2022-02-21T00:00", "de-DE")]
+        [InlineData("2022-02-21T00:00", "sk-SK")]
+        [InlineData("2022-02-21T00:00", "fr-FR")]
+        [InlineData("2022-02-21T00:00", "hi-IN")]
+        [InlineData("2022-02-21T00:00", "de-CH")]
         [InlineData("21-02-2022", "en-GB")]
         [InlineData("21-02-2022", "de-DE")]
         [InlineData("21-02-2022", "sk-SK")]
@@ -287,6 +303,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         [InlineData("15-12-2021", "en-GB")]
         public async Task TaskGetFailedAsync_GivenCorrectDateString_ReturnsWorkflows(string inputString, string controlerCulture)
         {
+            var input = DateTime.Parse(inputString, new CultureInfo(controlerCulture));
             var workflowsInstance = new WorkflowInstance
             {
                 Id = Guid.NewGuid().ToString(),
@@ -309,7 +326,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 .ReturnsAsync(expectedResponse);
 
             Thread.CurrentThread.CurrentCulture = new CultureInfo(controlerCulture);
-            var result = await WorkflowInstanceController.GetFailedAsync(inputString);
+            var result = await WorkflowInstanceController.GetFailedAsync(input);
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal((int)HttpStatusCode.OK, objectResult.StatusCode);
@@ -339,8 +356,8 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             _workflowInstanceService.Setup(w => w.GetAllFailedAsync(It.IsAny<DateTime>()))
                 .ReturnsAsync(new List<WorkflowInstance>() { workflowsInstance });
-            var inputString = DateTime.UtcNow.AddDays(5).ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
-            var result = await WorkflowInstanceController.GetFailedAsync(inputString);
+
+            var result = await WorkflowInstanceController.GetFailedAsync(DateTime.UtcNow.AddDays(5));
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             objectResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
@@ -356,64 +373,22 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             Assert.StartsWith(expectedInstance, responseValue.Instance);
         }
 
-        [Theory]
-        [InlineData("", "Failed to validate, no acknowledged parameter provided")]
-        [InlineData(null, "Failed to validate, no acknowledged parameter provided")]
-        [InlineData("donkey", "Failed to validate provided date")]
-        [InlineData("99-99-9999", "Failed to validate provided date")]
-        [InlineData("00-00-0000", "Failed to validate provided date")]
-        [InlineData("-01-1980", "Failed to validate provided date")]
-        [InlineData("01-12-", "Failed to validate provided date")]
-        [InlineData("x1-1x-198x", "Failed to validate provided date")]
-        public async Task TaskGetFailedAsync_GivenInvalidDateString_ReturnsProblem(string inputString, string expectedErrorMessage)
-        {
-            var workflowsInstance = new WorkflowInstance
-            {
-                Id = Guid.NewGuid().ToString(),
-                WorkflowId = Guid.NewGuid().ToString(),
-                PayloadId = Guid.NewGuid().ToString(),
-                Status = Status.Created,
-                BucketId = "bucket",
-                Tasks = new List<TaskExecution>
-                    {
-                        new TaskExecution
-                        {
-                            TaskId = Guid.NewGuid().ToString(),
-                            Status = TaskExecutionStatus.Dispatched
-                        }
-                    }
-            };
-
-            _workflowInstanceService.Setup(w => w.GetAllFailedAsync(It.IsAny<DateTime>()))
-                .ReturnsAsync(new List<WorkflowInstance>() { workflowsInstance });
-
-            var result = await WorkflowInstanceController.GetFailedAsync(inputString);
-
-            var objectResult = Assert.IsType<ObjectResult>(result);
-            objectResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
-
-            var responseValue = (ProblemDetails)objectResult.Value;
-            responseValue.Status.Should().Be((int)HttpStatusCode.BadRequest);
-            responseValue.Detail.Should().Be(expectedErrorMessage);
-
-            const string expectedInstance = "/workflowinstances";
-            Assert.StartsWith(expectedInstance, responseValue.Instance);
-        }
-
         [Fact]
         public async Task TaskGetFailedAsync_GivenGetAllFailedAsyncReturnsNoResults_ReturnsProblem()
         {
             _workflowInstanceService.Setup(w => w.GetAllFailedAsync(It.IsAny<DateTime>()))
                 .ReturnsAsync(new List<WorkflowInstance>() { });
-            var inputString = "21-02-2022";
-            var result = await WorkflowInstanceController.GetFailedAsync(inputString);
+            var inputString = "2022-02-21";
+            var input = DateTime.Parse(inputString, CultureInfo.InvariantCulture);
+
+            var result = await WorkflowInstanceController.GetFailedAsync(input);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             objectResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
             var responseValue = (ProblemDetails)objectResult.Value;
             responseValue.Status.Should().Be((int)HttpStatusCode.NotFound);
 
-            var problemMessage = "Request failed, no workflow instances found since 21-02-2022";
+            var problemMessage = "Request failed, no workflow instances found since 2022-02-21";
             responseValue.Detail.Should().Be(problemMessage);
 
             const string expectedInstance = "/workflowinstances";
@@ -424,8 +399,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         public async Task TaskGetFailedAsync_GivenGetAllFailedAsyncReturnsThrowsException_ReturnsInternalServiceError()
         {
             _workflowInstanceService.Setup(w => w.GetAllFailedAsync(It.IsAny<DateTime>())).ThrowsAsync(new Exception());
-            var inputString = "21-02-2022";
-            var result = await WorkflowInstanceController.GetFailedAsync(inputString);
+            var inputString = "2022-02-21";
+            var input = DateTime.Parse(inputString, CultureInfo.InvariantCulture);
+            var result = await WorkflowInstanceController.GetFailedAsync(input);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             objectResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
