@@ -28,10 +28,10 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// <summary>
         /// Acknowledges a task error and acknowledges a workflow if all tasks are acknowledged.
         /// </summary>
-        /// <param name="id">The Workflow Instance Id.</param>
+        /// <param name="workflowInstanceId">The Workflow Instance Id.</param>
         /// <param name="executionId">The Task Execution Id.</param>
         /// <returns>An updated workflow.</returns>
-        public Task<WorkflowInstance?> AcknowledgeTaskError(string id, string executionId);
+        public Task<WorkflowInstance> AcknowledgeTaskError(string workflowInstanceId, string executionId);
 
         /// <summary>
         /// Used for filtering status also.

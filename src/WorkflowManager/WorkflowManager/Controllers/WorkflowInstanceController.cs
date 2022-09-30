@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Extensions;
+using Monai.Deploy.WorkflowManager.Common.Exceptions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -203,14 +204,14 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         {
             if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
             {
-                _logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to validate {nameof(id)}");
+                _logger.LogDebug($"{nameof(AcknowledgeTaskError)} - Failed to validate {nameof(id)}");
 
                 return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}/executions/{executionId}/acknowledge", BadRequest);
             }
 
             if (string.IsNullOrWhiteSpace(executionId) || !Guid.TryParse(executionId, out _))
             {
-                _logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to validate {nameof(executionId)}");
+                _logger.LogDebug($"{nameof(AcknowledgeTaskError)} - Failed to validate {nameof(executionId)}");
 
                 return Problem($"Failed to validate {nameof(executionId)}, not a valid guid", $"/workflows/{id}/executions/{executionId}/acknowledge", BadRequest);
             }
@@ -219,17 +220,24 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             {
                 var workflowInstance = await _workflowInstanceService.AcknowledgeTaskError(id, executionId);
 
-                if (workflowInstance is null)
-                {
-                    _logger.LogDebug($"{nameof(AcknowledgeTaskError)} - Failed to find workflow instance with Id: {id} or Task with ExecutionId: {executionId}");
-
-                    return Problem($"Failed to find workflow instance with Id: {id} or Task with ExecutionId: {executionId}", $"/workflows/{id}/executions/{executionId}/acknowledge", NotFound);
-                }
-
                 return Ok(workflowInstance);
+            }
+            catch (MonaiBadRequestException e)
+            {
+                _logger.LogDebug($"{nameof(AcknowledgeTaskError)} - {e.Message}");
+
+                return Problem(e.Message, $"/workflows/{id}/executions/{executionId}/acknowledge", BadRequest);
+            }
+            catch (MonaiNotFoundException e)
+            {
+                _logger.LogDebug($"{nameof(AcknowledgeTaskError)} - {e.Message}");
+
+                return Problem(e.Message, $"/workflows/{id}/executions/{executionId}/acknowledge", NotFound);
             }
             catch (Exception e)
             {
+                _logger.LogDebug($"{nameof(AcknowledgeTaskError)} - Unexpected error occured: {e.Message}");
+
                 return Problem($"Unexpected error occured: {e.Message}", $"/workflows/{id}/executions/{executionId}/acknowledge", InternalServerError);
             }
         }

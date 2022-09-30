@@ -189,7 +189,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             var acknowledgedTimeStamp = DateTime.UtcNow;
 
             await _workflowInstanceCollection.FindOneAndUpdateAsync(
-                i => i.Id == workflowInstanceId && i.AcknowledgedWorkflowErrors == null,
+                i => i.Id == workflowInstanceId,
                 Builders<WorkflowInstance>.Update.Set(w => w.AcknowledgedWorkflowErrors, acknowledgedTimeStamp));
 
             return await GetByWorkflowInstanceIdAsync(workflowInstanceId);
@@ -202,8 +202,8 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
             var acknowledgedTimeStamp = DateTime.UtcNow;
 
-            var workflowInstance = await _workflowInstanceCollection.FindOneAndUpdateAsync(
-                i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.ExecutionId == executionId && t.Status == TaskExecutionStatus.Failed && t.AcknowledgedTaskErrors == null),
+            var result = await _workflowInstanceCollection.UpdateOneAsync(
+                i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.ExecutionId == executionId && t.Status == TaskExecutionStatus.Failed),
                 Builders<WorkflowInstance>.Update.Set(w => w.Tasks[-1].AcknowledgedTaskErrors, acknowledgedTimeStamp));
 
             return await GetByWorkflowInstanceIdAsync(workflowInstanceId);

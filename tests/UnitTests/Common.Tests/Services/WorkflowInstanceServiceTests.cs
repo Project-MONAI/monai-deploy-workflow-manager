@@ -16,6 +16,7 @@
 
 using FluentAssertions;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.Common.Exceptions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -51,7 +52,7 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
         }
 
         [Fact]
-        public async Task AcknowledgeTaskError_WorkflowDoesNotExist_ReturnsNull()
+        public async Task AcknowledgeTaskError_WorkflowDoesNotExist_ThrowsNotFoundException()
         {
             var workflowInstance = new WorkflowInstance
             {
@@ -70,9 +71,30 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
 
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(value: null);
 
-            var result = await WorkflowInstanceService.AcknowledgeTaskError(workflowInstance.Id, workflowInstance.Tasks.First().ExecutionId);
+            await Assert.ThrowsAsync<MonaiNotFoundException>(() => WorkflowInstanceService.AcknowledgeTaskError(workflowInstance.Id, workflowInstance.Tasks.First().ExecutionId));
+        }
 
-            Assert.Null(result);
+        [Fact]
+        public async Task AcknowledgeTaskError_WorkflowNotFailed_ThrowsBadRequestException()
+        {
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = Guid.NewGuid().ToString(),
+                Status = Status.Failed,
+                Tasks = new List<TaskExecution>
+                {
+                    new TaskExecution
+                    {
+                        ExecutionId = Guid.NewGuid().ToString(),
+                        Status = TaskExecutionStatus.Succeeded
+                    }
+                }
+            };
+
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
+
+            await Assert.ThrowsAsync<MonaiBadRequestException>(() => WorkflowInstanceService.AcknowledgeTaskError(workflowInstance.Id, workflowInstance.Tasks.First().ExecutionId));
         }
 
         [Fact]

@@ -19,6 +19,7 @@ using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.Common.Exceptions;
 
 namespace Monai.Deploy.WorkflowManager.Common.Services
 {
@@ -38,7 +39,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             return await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(id);
         }
 
-        public async Task<WorkflowInstance?> AcknowledgeTaskError(string workflowInstanceId, string executionId)
+        public async Task<WorkflowInstance> AcknowledgeTaskError(string workflowInstanceId, string executionId)
         {
             Guard.Against.NullOrWhiteSpace(workflowInstanceId);
             Guard.Against.NullOrWhiteSpace(executionId);
@@ -47,7 +48,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
 
             if (workflowInstance is null || workflowInstance.Tasks.FirstOrDefault(t => t.ExecutionId == executionId) is null)
             {
-                return null;
+                throw new MonaiNotFoundException($"WorkflowInstance or task execution not found for workflowInstanceId: {workflowInstance}, executionId: {executionId}");
+            }
+
+            if (workflowInstance.Status != Status.Failed || workflowInstance.Tasks.First(t => t.ExecutionId == executionId).Status != TaskExecutionStatus.Failed)
+            {
+                throw new MonaiBadRequestException($"WorkflowInstance status or task execution status is not failed for workflowInstanceId: {workflowInstance}, executionId: {executionId}");
             }
 
             var updatedInstance = await _workflowInstanceRepository.AcknowledgeTaskError(workflowInstanceId, executionId);
