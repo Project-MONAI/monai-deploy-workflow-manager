@@ -703,7 +703,9 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return workflowInstance;
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<TaskExecution> CreateTaskExecutionAsync(TaskObject task,
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
                                                   WorkflowInstance workflowInstance,
                                                   string? bucketName = null,
                                                   string? payloadId = null,
