@@ -48,20 +48,19 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
 
             if (workflowInstance is null || workflowInstance.Tasks.FirstOrDefault(t => t.ExecutionId == executionId) is null)
             {
-                throw new MonaiNotFoundException($"WorkflowInstance or task execution not found for workflowInstanceId: {workflowInstance}, executionId: {executionId}");
+                throw new MonaiNotFoundException($"WorkflowInstance or task execution not found for workflowInstanceId: {workflowInstanceId}, executionId: {executionId}");
             }
 
             if (workflowInstance.Status != Status.Failed || workflowInstance.Tasks.First(t => t.ExecutionId == executionId).Status != TaskExecutionStatus.Failed)
             {
-                throw new MonaiBadRequestException($"WorkflowInstance status or task execution status is not failed for workflowInstanceId: {workflowInstance}, executionId: {executionId}");
+                throw new MonaiBadRequestException($"WorkflowInstance status or task execution status is not failed for workflowInstanceId: {workflowInstanceId}, executionId: {executionId}");
             }
 
             var updatedInstance = await _workflowInstanceRepository.AcknowledgeTaskError(workflowInstanceId, executionId);
 
             var failedTasks = updatedInstance.Tasks.Where(t => t.Status == TaskExecutionStatus.Failed);
 
-            if (failedTasks.Any() && failedTasks.All(t => t.AcknowledgedTaskErrors != null)
-                && updatedInstance.AcknowledgedWorkflowErrors == null)
+            if (failedTasks.Any() && failedTasks.All(t => t.AcknowledgedTaskErrors != null))
             {
                 return await _workflowInstanceRepository.AcknowledgeWorkflowInstanceErrors(workflowInstanceId);
             }
