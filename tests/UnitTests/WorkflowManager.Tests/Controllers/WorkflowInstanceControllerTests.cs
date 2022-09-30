@@ -45,6 +45,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         private readonly Mock<ILogger<WorkflowInstanceController>> _logger;
         private readonly Mock<IUriService> _uriService;
         private readonly IOptions<WorkflowManagerOptions> _options;
+        private bool _disposed;
 
         public WorkflowsInstanceControllerTests()
         {
@@ -61,8 +62,23 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
         public void Dispose()
         {
-            Thread.CurrentThread.CurrentCulture = _currentCulture;
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                Thread.CurrentThread.CurrentCulture = _currentCulture;
+            }
+
+            _disposed = true;
         }
 
 
@@ -213,7 +229,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             var objectResult = Assert.IsType<ObjectResult>(result);
 
             var responseValue = (ProblemDetails)objectResult.Value;
-            string expectedErrorMessage = $"Failed to find workflow instance with Id: {workflowId}";
+            var expectedErrorMessage = $"Failed to find workflow instance with Id: {workflowId}";
             responseValue.Detail.Should().BeEquivalentTo(expectedErrorMessage);
 
             Assert.Equal((int)HttpStatusCode.NotFound, responseValue.Status);
@@ -255,13 +271,21 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Theory]
-        [InlineData("21-02-2022")]
-        [InlineData("02-02-2022")]
-        [InlineData("02-12-1971")]
-        [InlineData("10-1980")]
-        [InlineData("01-01")]
-        [InlineData("15-12-2021")]
-        public async Task TaskGetFailedAsync_GivenCorrectDateString_ReturnsWorkflows(string inputString)
+        [InlineData("21-02-2022", "en-GB")]
+        [InlineData("21-02-2022", "de-DE")]
+        [InlineData("21-02-2022", "sk-SK")]
+        [InlineData("21-02-2022", "fr-FR")]
+        [InlineData("21-02-2022", "hi-IN")]
+        [InlineData("21-02-2022", "de-CH")]
+        [InlineData("21-02-2022", "es-ES")]
+        [InlineData("02-21-2022", "en-US")]
+        [InlineData("02-02-2022", "en-GB")]
+        [InlineData("02-12-1971", "en-GB")]
+        [InlineData("02-12-1971", "fil-PH")]
+        [InlineData("10-1980", "en-GB")]
+        [InlineData("01-01", "en-GB")]
+        [InlineData("15-12-2021", "en-GB")]
+        public async Task TaskGetFailedAsync_GivenCorrectDateString_ReturnsWorkflows(string inputString, string controlerCulture)
         {
             var workflowsInstance = new WorkflowInstance
             {
@@ -284,11 +308,13 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             _workflowInstanceService.Setup(w => w.GetAllFailedAsync(It.IsAny<DateTime>()))
                 .ReturnsAsync(expectedResponse);
 
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(controlerCulture);
             var result = await WorkflowInstanceController.GetFailedAsync(inputString);
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal((int)HttpStatusCode.OK, objectResult.StatusCode);
             objectResult.Value.Should().BeEquivalentTo(expectedResponse);
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
         }
 
         [Fact]
