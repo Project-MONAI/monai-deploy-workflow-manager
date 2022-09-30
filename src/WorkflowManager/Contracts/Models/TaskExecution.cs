@@ -74,7 +74,7 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "timeout_interval")]
         public double TimeoutInterval { get; set; } = 0;
 
-        [JsonProperty(PropertyName = "acknowledged_task _errors")]
+        [JsonProperty(PropertyName = "acknowledged_task_errors")]
         public DateTime? AcknowledgedTaskErrors { get; set; } = null;
     }
 }
