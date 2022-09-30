@@ -36,16 +36,14 @@ using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Test.Controllers
 {
-    public class WorkflowsInstanceControllerTests : IDisposable
+    public sealed class WorkflowsInstanceControllerTests
     {
         private WorkflowInstanceController WorkflowInstanceController { get; set; }
 
-        private readonly CultureInfo _currentCulture;
         private readonly Mock<IWorkflowInstanceService> _workflowInstanceService;
         private readonly Mock<ILogger<WorkflowInstanceController>> _logger;
         private readonly Mock<IUriService> _uriService;
         private readonly IOptions<WorkflowManagerOptions> _options;
-        private bool _disposed;
 
         public WorkflowsInstanceControllerTests()
         {
@@ -55,30 +53,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             _uriService = new Mock<IUriService>();
 
             WorkflowInstanceController = new WorkflowInstanceController(_workflowInstanceService.Object, _logger.Object, _uriService.Object, _options);
-
-            _currentCulture = Thread.CurrentThread.CurrentCulture;
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_disposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                Thread.CurrentThread.CurrentCulture = _currentCulture;
-            }
-
-            _disposed = true;
         }
 
 
