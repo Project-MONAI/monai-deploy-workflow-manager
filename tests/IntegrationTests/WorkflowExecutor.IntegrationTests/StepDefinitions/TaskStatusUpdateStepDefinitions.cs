@@ -256,39 +256,5 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 });
             }
         }
-
-        //[Then(@"The export request message has all dicoms in folder listed")]
-        //public void ThenTheExportRequestMessageHasAllDicomsInFolderListed()
-        //{
-        //    _outputHelper.WriteLine($"Retrieving export request event/s");
-        //    var exportRequestEvents = DataHelper.GetAllExportRequestEvents(DataHelper.WorkflowInstances);
-        //    _outputHelper.WriteLine($"Retrieved export request event/s");
-
-        //    if (exportRequestEvents.Count == 1)
-        //    {
-        //        RetryPolicy.Execute(() =>
-        //        {
-        //            foreach (var exportRequestEvent in exportRequestEvents)
-        //            {
-        //                var workflowInstance = MongoClient.GetWorkflowInstanceById(exportRequestEvent.WorkflowInstanceId);
-
-        //                var workflowRevision = DataHelper.WorkflowRevisions.OrderByDescending(x => x.Revision).FirstOrDefault(x => x.WorkflowId.Equals(workflowInstance.WorkflowId));
-
-        //                if (string.IsNullOrEmpty(DataHelper.TaskUpdateEvent.ExecutionId))
-        //                {
-        //                    Assertions.AssertExportRequestEvent(exportRequestEvent, workflowInstance, workflowRevision, DataHelper.WorkflowRequestMessage, null);
-        //                }
-        //                else
-        //                {
-        //                    Assertions.AssertExportRequestEvent(exportRequestEvent, workflowInstance, workflowRevision, null, DataHelper.TaskUpdateEvent);
-        //                }
-        //            }
-        //        });
-        //    }
-        //    else
-        //    {
-        //        throw new Exception($"More than 1 export request was published");
-        //    }
-        //}
     }
 }
