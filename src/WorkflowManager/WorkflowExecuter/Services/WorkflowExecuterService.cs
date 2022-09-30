@@ -365,13 +365,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             var artifactValues = GetDicomExports(workflow, workflowInstance, task, exportList);
 
-            if (artifactValues.Any() is false)
-            {
-                await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
-
-                return;
-            }
-
             var files = new List<VirtualFileInfo>();
             foreach (var artifact in artifactValues)
             {
@@ -381,14 +374,28 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                         workflowInstance.BucketId,
                         artifact,
                         true);
-                    if (objects.IsNullOrEmpty() is false)
+
+                    var dcmFiles = objects?.Where(o => o.FilePath.EndsWith(".dcm"))?.ToList();
+
+                    if (dcmFiles?.IsNullOrEmpty() is false)
                     {
-                        files.AddRange(objects.ToList());
+                        files.AddRange(dcmFiles.ToList());
                     }
                 }
             }
 
             artifactValues = files.Select(f => f.FilePath).ToArray();
+
+            if (artifactValues.IsNullOrEmpty())
+            {
+                _logger.ExportFilesNotFound(task.TaskId, workflowInstance.Id);
+
+                await UpdateWorkflowInstanceStatus(workflowInstance, task.TaskId, TaskExecutionStatus.Failed);
+
+                await CompleteTask(task, workflowInstance, correlationId, TaskExecutionStatus.Failed);
+
+                return;
+            }
 
             await DispatchDicomExport(workflowInstance, task, exportList, artifactValues, correlationId);
         }
@@ -415,8 +422,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (!task.InputArtifacts.Any())
             {
-                _logger.ExportFilesNotFound(task.TaskId, workflowInstance.Id);
-
                 return Array.Empty<string>();
             }
 
