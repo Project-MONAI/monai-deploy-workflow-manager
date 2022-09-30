@@ -161,5 +161,8 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
 
         [LoggerMessage(EventId = 35, Level = LogLevel.Debug, Message = "Payload already exists for {payloadId}. This is likley due to being requeued")]
         public static partial void PayloadAlreadyExists(this ILogger logger, string payloadId);
+
+        [LoggerMessage(EventId = 36, Level = LogLevel.Debug, Message = "Mandatory output artefacts for task {taskId} are missing.")]
+        public static partial void MandatoryOutputArtefactsMissingForTask(this ILogger logger, string taskId);
     }
 }
