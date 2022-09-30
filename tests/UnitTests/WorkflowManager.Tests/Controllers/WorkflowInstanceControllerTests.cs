@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -35,10 +36,11 @@ using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Test.Controllers
 {
-    public class WorkflowsInstanceControllerTests
+    public class WorkflowsInstanceControllerTests : IDisposable
     {
         private WorkflowInstanceController WorkflowInstanceController { get; set; }
 
+        private readonly CultureInfo _currentCulture;
         private readonly Mock<IWorkflowInstanceService> _workflowInstanceService;
         private readonly Mock<ILogger<WorkflowInstanceController>> _logger;
         private readonly Mock<IUriService> _uriService;
@@ -52,7 +54,17 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             _uriService = new Mock<IUriService>();
 
             WorkflowInstanceController = new WorkflowInstanceController(_workflowInstanceService.Object, _logger.Object, _uriService.Object, _options);
+
+            _currentCulture = Thread.CurrentThread.CurrentCulture;
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
         }
+
+        public void Dispose()
+        {
+            Thread.CurrentThread.CurrentCulture = _currentCulture;
+
+        }
+
 
         [Fact]
         public async Task GetListAsync_WorkflowInstancesExist_ReturnsList()
