@@ -65,8 +65,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             Support.HttpRequestMessageExtensions.AddJsonBody(ApiHelper.Request, DataHelper.GetTaskRequestTestData(name));
         }
 
-        [Then(@"I will recieve the error message (.*)")]
-        public void ThenIWillRecieveTheCorrectErrorMessage(string message)
+        [Then(@"I will receive the error message (.*)")]
+        public void ThenIWillReceiveTheCorrectErrorMessage(string message)
         {
             ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().ContainAll("type", "title", "status", "traceId");
             ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Contain(message);

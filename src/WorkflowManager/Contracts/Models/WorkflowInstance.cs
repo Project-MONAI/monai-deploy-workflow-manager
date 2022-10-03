@@ -48,5 +48,8 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         [JsonProperty(PropertyName = "tasks")]
         public List<TaskExecution> Tasks { get; set; } = new List<TaskExecution>();
+
+        [JsonProperty(PropertyName = "acknowledged_workflow_errors")]
+        public DateTime? AcknowledgedWorkflowErrors { get; set; } = null;
     }
 }

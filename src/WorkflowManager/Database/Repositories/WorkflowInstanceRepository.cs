@@ -278,5 +278,14 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
                                 Builders<WorkflowInstance>.Sort.Descending(x => x.StartTime),
                                 skip,
                                 limit);
+
+        public async Task<IList<WorkflowInstance>> GetAllFailedAsync(DateTime startDate)
+        {
+            return await GetAllAsync(_workflowInstanceCollection,
+                                  wfInstance => wfInstance.Status == Status.Failed
+                                      && wfInstance.AcknowledgedWorkflowErrors.HasValue
+                                      && wfInstance.AcknowledgedWorkflowErrors.Value > startDate,
+                                  Builders<WorkflowInstance>.Sort.Descending(x => x.Id));
+        }
     }
 }

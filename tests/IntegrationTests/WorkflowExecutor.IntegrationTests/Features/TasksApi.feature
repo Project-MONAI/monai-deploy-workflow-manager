@@ -37,7 +37,7 @@ Scenario Outline: Get details of a Task with invalid payload
     And I have a Workflow Instance WorkflowInstance_TaskApi_1 with no artifacts
     When I send a GET request
     Then I will get a 400 response
-    And I will recieve the error message Failed to validate ids, not a valid guid
+    And I will receive the error message Failed to validate ids, not a valid guid
     Examples:
     | taskRequest                        |
     | Invalid_WorkflowID_Task_Details_1  |
@@ -51,7 +51,7 @@ Scenario Outline: Get details of a Task with non-existent id payload
     And I have a Workflow Instance WorkflowInstance_TaskApi_1 with no artifacts
     When I send a GET request
     Then I will get a 404 response
-    And I will recieve the error message Failed to validate ids, workflow or task not found
+    And I will receive the error message Failed to validate ids, workflow or task not found
     Examples:
     | taskRequest                             |
     | Non_Existent_WorkflowID_Task_Details_1  |

@@ -86,11 +86,15 @@ Scenario Outline: Publish an valid Task Update event with a status that is inval
     | WFI_Task_Status_Canceled  | Task_Status_Update_Status_Invalid_When_Canceled  | Accepted         |
 
 @TaskExport
-Scenario: Export task with single destination is in progress, export message is sent 
-    Given I have a clinical workflow Workflow_Revision_for_export_single_dest_1
-    And I have a Workflow Instance Workflow_Instance_for_export_single_dest_1 with no artifacts
-    When I publish a Task Update Message Task_status_update_for_export_single_dest_1 with artifacts output_metadata in minio
+Scenario Outline: Export task with single destination is in progress, export message is sent 
+    Given I have a clinical workflow <workflow>
+    And I have a Workflow Instance <workflowInstance> with no artifacts
+    When I publish a Task Update Message <taskUpdate> with artifacts <minioFiles> in minio
     Then 1 Export Request message is published
+    Examples:
+    | workflow                                   | workflowInstance                           | taskUpdate                                  | minioFiles                     |
+    | Workflow_Revision_for_export_single_dest_1 | Workflow_Instance_for_export_single_dest_1 | Task_status_update_for_export_single_dest_1 | output_metadata                |
+    | Workflow_Revision_for_export_folder        | Workflow_Instance_for_export_folder        | Task_status_update_for_export_folder        | output_metadata_multiple_files |
 
 @TaskExport
 Scenario: Export task with mutliple destinations is in progress, export message is sent 

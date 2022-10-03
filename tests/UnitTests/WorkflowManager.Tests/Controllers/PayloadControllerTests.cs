@@ -95,6 +95,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+
+            const string expectedInstance = "/payload";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
 
         [Fact]
@@ -130,6 +133,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             responseValue.Detail.Should().BeEquivalentTo(expectedErrorMessage);
 
             Assert.Equal((int)HttpStatusCode.NotFound, responseValue.Status);
+
+            const string expectedInstance = "/payload";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
 
         [Fact]
@@ -142,6 +148,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             var objectResult = Assert.IsType<ObjectResult>(result);
 
             Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+
+            const string expectedInstance = "/payload";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
 
         [Fact]
@@ -154,6 +163,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+
+            const string expectedInstance = "/payload";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
 
     }

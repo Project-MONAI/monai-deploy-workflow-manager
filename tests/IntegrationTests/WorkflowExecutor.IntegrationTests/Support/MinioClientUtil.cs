@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
+using System.Reactive.Linq;
 using Minio;
+using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Polly;
 using Polly.Retry;
-using System.Reactive.Linq;
-
+using File = System.IO.File;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
@@ -179,6 +180,39 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             {
                 await Client.RemoveObjectAsync(bucketName, objectName);
             }
+        }
+
+        public async Task<IList<VirtualFileInfo>> ListFilesFromDir(string bucketName, string objectName)
+        {
+            var cancellationToken = default(CancellationToken);
+            return await Task.Run(() =>
+            {
+                var files = new List<VirtualFileInfo>();
+                var listArgs = new ListObjectsArgs()
+                    .WithBucket(bucketName)
+                    .WithPrefix(objectName)
+                    .WithRecursive(true);
+
+                var objservable = Client.ListObjectsAsync(listArgs, cancellationToken);
+                var completedEvent = new ManualResetEventSlim(false);
+                objservable.Subscribe(item =>
+                {
+                    if (!item.IsDir)
+                    {
+                        files.Add(new VirtualFileInfo(Path.GetFileName(item.Key), item.Key, item.ETag, item.Size)
+                        {
+                            LastModifiedDateTime = item.LastModifiedDateTime
+                        });
+                    }
+                },
+                error =>
+                {
+                },
+                () => completedEvent.Set(), cancellationToken);
+
+                completedEvent.Wait(cancellationToken);
+                return files;
+            }).ConfigureAwait(false);
         }
     }
 }

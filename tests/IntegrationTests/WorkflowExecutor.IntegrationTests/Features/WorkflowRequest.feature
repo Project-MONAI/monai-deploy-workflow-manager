@@ -81,7 +81,7 @@ Scenario: Publish a valid workflow request with an existing Workflow Instance wi
     And I have a Workflow Instance Existing_WFI_Created with no artifacts
     When I publish a Workflow Request Message Multi_WF_Created with no artifacts
     Then I can see an additional Workflow Instance is not created
-    And 1 Task Dispatch event is published
+    And 0 Task Dispatch event is published
 
 @WorkflowRequest
 Scenario: Publish a valid workflow request with an existing Workflow Instance with a Task which is dispatched
