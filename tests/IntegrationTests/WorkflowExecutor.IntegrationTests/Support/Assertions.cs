@@ -225,7 +225,16 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
 
             workflowRevisionTask.ExportDestinations.Select(x => x.Name).ToArray().Should().BeEquivalentTo(exportRequestEvent.Destinations);
-            exportRequestEvent.Files.Count().Should().Be(workflowRevisionTask.Artifacts.Input.Count());
+            if (taskUpdateEvent.Outputs[0].RelativeRootPath.EndsWith(".dcm"))
+            {
+                exportRequestEvent.Files.Count().Should().Be(workflowRevisionTask.Artifacts.Input.Count());
+            }
+            else
+            {
+                var filesList = MinioClient.ListFilesFromDir(TestExecutionConfig.MinioConfig.Bucket, taskUpdateEvent.Outputs[0].RelativeRootPath).Result;
+                var filteredFileList = filesList.Where(f => f.FilePath.EndsWith(".dcm"));
+                exportRequestEvent.Files.Count().Should().Be(filteredFileList.Count());
+            }
             exportRequestEvent.WorkflowInstanceId.Should().Match(workflowInstance.Id);
             exportRequestEvent.ExportTaskId.Should().Match(workflowInstanceTask?.TaskId);
         }

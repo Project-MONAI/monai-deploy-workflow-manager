@@ -79,6 +79,15 @@
     <None Update="DICOMs\null_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="DICOMs\output_metadata_multiple_files\dcm\output3.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\output_metadata_multiple_files\dcm\output2.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\output_metadata_multiple_files\dcm\output1.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="DICOMs\output_metadata\dcm\output.dcm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
