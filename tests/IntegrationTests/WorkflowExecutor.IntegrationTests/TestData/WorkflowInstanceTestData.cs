@@ -16,6 +16,7 @@
 
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Controllers;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8601 // Possible null reference assignment.
@@ -1234,10 +1235,10 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 Name = "Workflow_Instance_for_export_folder",
                 WorkflowInstance = new WorkflowInstance()
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = "99333d69-806f-420a-932f-2cc23501f018",
                     AeTitle = Helper.GetWorkflowByName("Workflow_Revision_for_export_folder").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
                     WorkflowId = Helper.GetWorkflowByName("Workflow_Revision_for_export_folder").WorkflowRevision.WorkflowId,
-                    PayloadId = Guid.NewGuid().ToString(),
+                    PayloadId = "fd1e99c1-341a-4400-aa28-3fa89d874968",
                     StartTime = DateTime.Now,
                     Status = Status.Created,
                     BucketId = TestExecutionConfig.MinioConfig.Bucket,
@@ -1249,12 +1250,13 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     {
                         new TaskExecution()
                         {
-                            ExecutionId = Guid.NewGuid().ToString(),
+                            ExecutionId = "f8b6118e-bf4f-4a12-8a03-71f4a7469154",
                             TaskId = Helper.GetWorkflowByName("Workflow_Revision_for_export_folder").WorkflowRevision.Workflow.Tasks[0].Id,
                             TaskType = Helper.GetWorkflowByName("Workflow_Revision_for_export_folder").WorkflowRevision?.Workflow.Tasks[0].Type,
                             Status = TaskExecutionStatus.Accepted,
                             InputArtifacts = null,
                             OutputArtifacts = null,
+                            OutputDirectory = "fd1e99c1-341a-4400-aa28-3fa89d874968/workflows/99333d69-806f-420a-932f-2cc23501f018/f8b6118e-bf4f-4a12-8a03-71f4a7469154",
                         }
                     }
                 }
