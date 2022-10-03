@@ -116,6 +116,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal(500, objectResult.StatusCode);
+
+            const string expectedInstance = "/workflows";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
 
         [Fact]
@@ -177,6 +180,10 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             var objectResult = Assert.IsType<ObjectResult>(result);
 
             Assert.Equal(400, objectResult.StatusCode);
+
+            const string expectedInstance = "/workflows";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+
         }
 
         [Fact]
@@ -240,6 +247,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             var objectResult = Assert.IsType<ObjectResult>(result);
 
             Assert.Equal(404, objectResult.StatusCode);
+
+            const string expectedInstance = "/workflows";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
 
         [Fact]
@@ -450,6 +460,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             Assert.Equal("Failed to validate id, workflow not found", result.As<ObjectResult>().Value.As<ProblemDetails>().Detail);
 
             Assert.Equal(404, objectResult.StatusCode);
+
+            const string expectedInstance = "/workflows";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
 
         [Fact]
@@ -463,9 +476,12 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             var result = await WorkflowsController.DeleteAsync(workflowRevisionId);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
-            Assert.Equal("Unexpected error occured: Error in the application.", result.As<ObjectResult>().Value.As<ProblemDetails>().Detail);
+            Assert.Equal("Unexpected error occurred: Error in the application.", result.As<ObjectResult>().Value.As<ProblemDetails>().Detail);
 
             Assert.Equal(500, objectResult.StatusCode);
+
+            const string expectedInstance = "/workflows";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
 
         [Fact]
@@ -479,6 +495,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             Assert.Equal("Failed to validate id, not a valid guid", result.As<ObjectResult>().Value.As<ProblemDetails>().Detail);
 
             Assert.Equal(400, objectResult.StatusCode);
+
+            const string expectedInstance = "/workflows";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
 
         [Fact]

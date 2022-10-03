@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Monai.Deploy.Messaging.Events;
@@ -110,5 +111,11 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <param name="workflowInstanceId">Workflow Instance to update.</param>
         /// <param name="status">Status to set.</param>
         Task<bool> UpdateWorkflowInstanceStatusAsync(string workflowInstanceId, Status status);
+
+        /// <summary>
+        /// Get all failed workflow instance's within a time span.
+        /// </summary>
+        /// <param name="timeSpan">length of period to check.</param>
+        Task<IList<WorkflowInstance>> GetAllFailedAsync(DateTime startDate);
     }
 }

@@ -101,7 +101,7 @@ Scenario Outline: Invalid pagination returns 400
     And I have 10 Workflow Instances
     When I send a GET request
     Then I will get a 400 response
-    And I will recieve the error message <error_message>
+    And I will receive the error message <error_message>
     Examples:
     | pagination_query                           | error_message                                                                                                           |
     | ?pageSize=NotANumber                       | The value 'NotANumber' is not valid for PageSize.                                                                       |
@@ -116,7 +116,7 @@ Scenario Outline: Disable workflow instance pagination
     And I have a Workflow Instance Existing_WFI_Created_Static_PayloadId with no artifacts
     When I send a GET request
     Then I will get a 200 response
-    And I will recieve no pagination response
+    And I will receive no pagination response
     Examples:
     | query                                                                                           |
     | ?disablePagination=true                                                                         |
@@ -139,7 +139,7 @@ Scenario: Get all workflows instances by Id. Id Not Found
     And I have a Workflow Instance WFI_Static_1 with no artifacts
     When I send a GET request
     Then I will get a 404 response
-    And I will recieve the error message Failed to find workflow instance with Id: bff4cfd0-3af3-4e2b-9f3c-de2a6f2b9575
+    And I will receive the error message Failed to find workflow instance with Id: bff4cfd0-3af3-4e2b-9f3c-de2a6f2b9575
 
 @GetWorkflowInstances
 Scenario: Get all workflows instances by Id. Id Bad Request
@@ -147,7 +147,7 @@ Scenario: Get all workflows instances by Id. Id Bad Request
     And I have a Workflow Instance WFI_Static_1 with no artifacts
     When I send a GET request
     Then I will get a 400 response
-    And I will recieve the error message Failed to validate id, not a valid guid
+    And I will receive the error message Failed to validate id, not a valid guid
 
 
 @GetWorkflowInstances
@@ -156,4 +156,44 @@ Scenario: Get workflow instances by payloadId. Id Bad Request
     And I have a Workflow Instance WFI_Static_1 with no artifacts
     When I send a GET request
     Then I will get a 400 response
-    And I will recieve the error message Failed to validate payloadId, not a valid guid
+    And I will receive the error message Failed to validate payloadId, not a valid guid
+
+@GetFailedWorkflowInstances
+Scenario: Get workflow failed instances with invalid parameter. Bad Request
+	Given I have an endpoint /workflowinstances/failed?acknowledged=donkey
+    When I send a GET request
+    Then I will get a 400 response
+    And I will receive the error message The value 'donkey' is not valid.
+
+@GetFailedWorkflowInstances
+Scenario: Get workflow failed instances with invalid date. Bad Request
+	Given I have an endpoint /workflowinstances/failed?acknowledged=0000-00-00
+    When I send a GET request
+    Then I will get a 400 response
+    And I will receive the error message The value '0000-00-00' is not valid.
+    
+@GetFailedWorkflowInstances
+Scenario: Get workflow failed instances in future. Bad Request
+	Given I have an endpoint /workflowinstances/failed?acknowledged=2199-12-15
+    When I send a GET request
+    Then I will get a 400 response
+    And I will receive the error message Failed to validate acknowledged value: 2199-12-15, provided time is in the future.
+    
+@GetFailedWorkflowInstances
+Scenario: Get workflow failed instances returns no values. Not Found
+	Given I have an endpoint /workflowinstances/failed?acknowledged=2021-12-15
+    When I send a GET request
+    Then I will get a 404 response
+    And I will receive the error message Request failed, no workflow instances found since 2021-12-15
+        
+@GetFailedWorkflowInstances
+Scenario: Get workflow failed instances returns values. Ok Request
+	Given I have an endpoint /workflowinstances/failed?acknowledged=<date_query>
+    And I have 10 failed workflow Instances with acknowledged workflow errors with mid date as <date_query>
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see 5 failed workflow instances since <date_query>
+    Examples:
+    | date_query | 
+    | 2021-12-15 | 
+    | 2021-02-02 | 
