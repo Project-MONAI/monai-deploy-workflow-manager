@@ -2616,6 +2616,70 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowRevisionTestData()
             {
+                Name = "Mandatory_Output",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Artifact 1",
+                        Description = "Artifact 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "artifact_task_1",
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                    },
+                                    Output = new Artifact[]
+                                    {
+                                        new Artifact {
+                                            Name = "output",
+                                            Mandatory = true
+                                        },
+                                    }
+                                },
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination{ Name = "artifact_task_2" }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "artifact_task_2",
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 2",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact
+                                        {
+                                            Name = "output",
+                                            Value = "{{ context.input.dicom }}",
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Artifact_AE"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
                 Name = "Basic_Workflow_1_Deleted",
                 WorkflowRevision = new WorkflowRevision()
                 {

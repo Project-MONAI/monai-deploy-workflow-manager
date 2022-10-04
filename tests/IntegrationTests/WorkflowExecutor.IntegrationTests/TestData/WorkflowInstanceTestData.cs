@@ -1347,6 +1347,37 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowInstanceTestData()
             {
+                Name = "Mandatory_Output",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = "73dcde74-8f9c-47d2-9b91-b62c9ad2235c",
+                    AeTitle = Helper.GetWorkflowByName("Mandatory_Output").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Mandatory_Output").WorkflowRevision.WorkflowId,
+                    PayloadId = "85dce342-e5b0-4a40-9725-9a34f8e1fda0",
+                    StartTime = DateTime.Now,
+                    Status = Status.Created,
+                    BucketId = TestExecutionConfig.MinioConfig.Bucket,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = "77250b38-c262-4367-97b8-0094439cca94",
+                            TaskId = Helper.GetWorkflowByName("Mandatory_Output").WorkflowRevision.Workflow.Tasks[0].Id,
+                            TaskType = Helper.GetWorkflowByName("Mandatory_Output").WorkflowRevision?.Workflow.Tasks[0].Type,
+                            Status = TaskExecutionStatus.Accepted,
+                            InputArtifacts = null,
+                            OutputArtifacts = null,
+                            OutputDirectory = "85dce342-e5b0-4a40-9725-9a34f8e1fda0/workflows/73dcde74-8f9c-47d2-9b91-b62c9ad2235c/77250b38-c262-4367-97b8-0094439cca94"
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
                 Name = "WorkflowInstance_TaskApi_1",
                 WorkflowInstance = new WorkflowInstance()
                 {
