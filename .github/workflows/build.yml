@@ -30,7 +30,7 @@ jobs:
       with:
         fetch-depth: 0
 
-    - uses: actions/cache@v3.0.8
+    - uses: actions/cache@v3.0.10
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -38,7 +38,7 @@ jobs:
           ${{ runner.os }}-nuget-
 
     - name: Install Dotnet
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
