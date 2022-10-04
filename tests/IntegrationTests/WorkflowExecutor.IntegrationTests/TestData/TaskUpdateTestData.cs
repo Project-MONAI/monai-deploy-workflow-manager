@@ -792,6 +792,11 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new TaskUpdateTestData()
             {
+                Name = "Mandatory_Output",
+                TaskUpdateEvent = CreateTaskUpdateEvent("Mandatory_Output")
+            },
+            new TaskUpdateTestData()
+            {
                 Name = "TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=False_No_Outputs",
                 TaskUpdateEvent = new TaskUpdateEvent()
                 {
