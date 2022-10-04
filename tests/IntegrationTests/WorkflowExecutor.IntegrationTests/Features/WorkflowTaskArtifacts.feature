@@ -149,6 +149,14 @@ Scenario: Task with context.executions.task_id.output_dir is not triggered when 
     | TwoTask_Context.Executions.Task_id.Output_Dir_Mandatory=Null  |
 
 @TaskArtifacts_TaskUpdate
+Scenario: Task is not triggered when previous task mandatory output files are missing
+    Given I have a clinical workflow Mandatory_Output
+    And I have a Workflow Instance Mandatory_Output with artifacts full_patient_metadata in minio
+    When I publish a Task Update Message Mandatory_Output with no artifacts
+    Then Workflow Instance status is Failed
+    And I can see the status of the Task artifact_task_1 is Failed
+
+@TaskArtifacts_TaskUpdate
 Scenario: Task with context.executions.task_id.output_dir is triggered when non mandatory files are missing
     Given I have a clinical workflow <testData>
     And I have a Workflow Instance <testData> with artifacts full_patient_metadata in minio
