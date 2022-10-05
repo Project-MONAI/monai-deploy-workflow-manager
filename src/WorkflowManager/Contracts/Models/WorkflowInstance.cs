@@ -28,6 +28,9 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "ae_title")]
         public string? AeTitle { get; set; } = string.Empty;
 
+        [JsonProperty(PropertyName = "workflow_name")]
+        public string WorkflowName { get; set; } = string.Empty;
+
         [JsonProperty(PropertyName = "workflow_id")]
         public string WorkflowId { get; set; } = string.Empty;
 

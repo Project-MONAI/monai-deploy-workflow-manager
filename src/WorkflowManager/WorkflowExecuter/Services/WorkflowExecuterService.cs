@@ -637,6 +637,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 Id = workflowInstanceId,
                 WorkflowId = workflow.WorkflowId,
+                WorkflowName = workflow.Workflow.Name,
                 PayloadId = message.PayloadId.ToString(),
                 StartTime = DateTime.UtcNow,
                 Status = Status.Created,
@@ -650,14 +651,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             if (workflow?.Workflow?.Tasks.Length > 0)
             {
                 var firstTask = workflow.Workflow.Tasks.First();
-
-                // check if template exists merge args.
-
-                //if (!string.IsNullOrEmpty(firstTask.Ref))
-                //{
-                //    var template = workflow.TaskTemplates.Where(x => x.Id == firstTask.Ref).FirstOrDefault();
-                //    firstTask = template ?? firstTask;
-                //}
 
                 try
                 {

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Test.Controllers
 {
-    public sealed class WorkflowsInstanceControllerTests
+    public class WorkflowsInstanceControllerTests
     {
         private WorkflowInstanceController WorkflowInstanceController { get; set; }
 
@@ -242,6 +243,77 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             const string expectedInstance = "/workflowinstances";
             Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
+
+        [Fact]
+        public async Task AcknowledgeTaskError_ServiceException_ReturnProblem()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var executionId = Guid.NewGuid().ToString();
+            _workflowInstanceService.Setup(w => w.AcknowledgeTaskError(workflowInstanceId, executionId)).ThrowsAsync(new Exception());
+
+            var result = await WorkflowInstanceController.AcknowledgeTaskError(workflowInstanceId, executionId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task AcknowledgeTaskError_InvalidWorkflowInstanceId_ReturnsBadRequest()
+        {
+            var workflowInstanceId = "2";
+            var executionId = Guid.NewGuid().ToString();
+
+            var result = await WorkflowInstanceController.AcknowledgeTaskError(workflowInstanceId, executionId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task AcknowledgeTaskError_InvalidExecutionId_ReturnsBadRequest()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var executionId = "2";
+
+            var result = await WorkflowInstanceController.AcknowledgeTaskError(workflowInstanceId, executionId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task AcknowledgeTaskError_WorkflowInstanceUpdated_ReturnsOk()
+        {
+            var workflowsInstance = new WorkflowInstance
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = Guid.NewGuid().ToString(),
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Failed,
+                AcknowledgedWorkflowErrors = DateTime.UtcNow,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = Guid.NewGuid().ToString(),
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            Status = TaskExecutionStatus.Failed,
+                            AcknowledgedTaskErrors = DateTime.UtcNow
+                        }
+                    }
+            };
+
+            _workflowInstanceService.Setup(w => w.AcknowledgeTaskError(workflowsInstance.WorkflowId, workflowsInstance.Tasks.First().ExecutionId)).ReturnsAsync(workflowsInstance);
+
+            var result = await WorkflowInstanceController.AcknowledgeTaskError(workflowsInstance.WorkflowId, workflowsInstance.Tasks.First().ExecutionId);
+
+            var objectResult = Assert.IsType<OkObjectResult>(result);
+
+            objectResult.Value.Should().BeEquivalentTo(workflowsInstance);
         }
 
         [Theory]
