@@ -72,19 +72,19 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
 
             try
             {
-                if (items is null || items.Count == 0)
+                if (items is null || items.Any() is false)
                 {
                     return null;
                 }
 
-                foreach (var item in items)
+                foreach (var filePath in items.Select(item => item.FilePath))
                 {
-                    if (!item.FilePath.EndsWith(".dcm.json"))
+                    if (filePath.EndsWith(".dcm.json") is false)
                     {
                         continue;
                     }
 
-                    var stream = await _storageService.GetObjectAsync(bucketId, item.FilePath);
+                    var stream = await _storageService.GetObjectAsync(bucketId, filePath);
                     var jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
 
                     var dict = new Dictionary<string, DicomValue>(StringComparer.OrdinalIgnoreCase);
