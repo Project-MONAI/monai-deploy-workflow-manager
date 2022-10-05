@@ -17,7 +17,7 @@
 using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Common.Tests
+namespace Monai.Deploy.WorkflowManager.Common.Tests.Extensions
 {
     public class CollectionExtensionsTests
     {
