@@ -87,7 +87,9 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
                     var stream = await _storageService.GetObjectAsync(bucketId, item.FilePath);
                     var jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
 
-                    var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
+                    var dict = new Dictionary<string, DicomValue>(StringComparer.OrdinalIgnoreCase);
+                    JsonConvert.PopulateObject(jsonStr, dict);
+
                     var value = GetValue(dict, keyId);
 
                     if (!string.IsNullOrWhiteSpace(value))
@@ -194,14 +196,15 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             var stream = await _storageService.GetObjectAsync(bucketId, items[index].FilePath);
             var jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
 
-            var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
+            var dict = new Dictionary<string, DicomValue>(StringComparer.OrdinalIgnoreCase);
+            JsonConvert.PopulateObject(jsonStr, dict);
 
             return GetValue(dict, keyId);
         }
 
-        private static string GetValue(Dictionary<string, DicomValue>? dict, string keyId)
+        private static string GetValue(Dictionary<string, DicomValue> dict, string keyId)
         {
-            if (dict is null)
+            if (dict.Any() is false)
             {
                 return string.Empty;
             }
