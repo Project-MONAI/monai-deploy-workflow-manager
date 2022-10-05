@@ -555,6 +555,23 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+
+             new TaskUpdateTestData()
+            {
+                Name = "Task_Update_Task_Multiple_Destination_Condition_Case_Sensitivity",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("Workflow_Instance_For_Case_Sensitivity").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("Workflow_Instance_For_Case_Sensitivity").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("Workflow_Instance_For_Case_Sensitivity").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
             new TaskUpdateTestData()
             {
                 Name = "Task_Update_Task_Multiple_Destination_Condition_False",
