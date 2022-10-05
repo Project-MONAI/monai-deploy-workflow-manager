@@ -241,41 +241,5 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 return Problem($"Unexpected error occured: {e.Message}", $"/workflows/{id}/executions/{executionId}/acknowledge", InternalServerError);
             }
         }
-
-        /// <summary>
-        /// Acknowledges a task error and acknowledges a workflow if all tasks are acknowledged.
-        /// </summary>
-        /// <param name="id">The Workflow Instance Id.</param>
-        /// <param name="executionId">The Task Execution Id.</param>
-        /// <returns>An updated workflow.</returns>
-        [Route("{id}/executions/{executionId}/acknowledge")]
-        [HttpPut]
-        public async Task<IActionResult> AcknowledgeTaskError([FromRoute] string id, [FromRoute] string executionId)
-        {
-            if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
-            {
-                _logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to validate {nameof(id)}");
-
-                return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}/executions/{executionId}/acknowledge", BadRequest);
-            }
-
-            if (string.IsNullOrWhiteSpace(executionId) || !Guid.TryParse(executionId, out _))
-            {
-                _logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to validate {nameof(executionId)}");
-
-                return Problem($"Failed to validate {nameof(executionId)}, not a valid guid", $"/workflows/{id}/executions/{executionId}/acknowledge", BadRequest);
-            }
-
-            try
-            {
-                var workflowInstance = await _workflowInstanceService.AcknowledgeTaskError(id, executionId);
-
-                return Ok(workflowInstance);
-            }
-            catch (Exception e)
-            {
-                return Problem($"Unexpected error occured: {e.Message}", $"/workflows/{id}/executions/{executionId}/acknowledge", InternalServerError);
-            }
-        }
     }
 }
