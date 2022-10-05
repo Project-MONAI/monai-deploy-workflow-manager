@@ -366,7 +366,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                         artifact,
                         true);
 
-                    var dcmFiles = objects?.Where(o => o.FilePath.EndsWith(".dcm"))?.ToList();
+                    var dcmFiles = objects?.Where(o => o.IsValidDicomFile())?.ToList();
 
                     if (dcmFiles?.IsNullOrEmpty() is false)
                     {
