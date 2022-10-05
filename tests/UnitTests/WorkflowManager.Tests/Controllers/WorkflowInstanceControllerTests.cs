@@ -37,7 +37,7 @@ using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Test.Controllers
 {
-    public sealed class WorkflowsInstanceControllerTests
+    public class WorkflowsInstanceControllerTests
     {
         private WorkflowInstanceController WorkflowInstanceController { get; set; }
 
@@ -307,6 +307,15 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                     }
             };
 
+            _workflowInstanceService.Setup(w => w.AcknowledgeTaskError(workflowsInstance.WorkflowId, workflowsInstance.Tasks.First().ExecutionId)).ReturnsAsync(workflowsInstance);
+
+            var result = await WorkflowInstanceController.AcknowledgeTaskError(workflowsInstance.WorkflowId, workflowsInstance.Tasks.First().ExecutionId);
+
+            var objectResult = Assert.IsType<OkObjectResult>(result);
+
+            objectResult.Value.Should().BeEquivalentTo(workflowsInstance);
+        }
+
         [Theory]
         [InlineData("2022-02-21", "en-GB")]
         [InlineData("2022-02-21", "en-US")]
@@ -461,14 +470,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);
 
-        }
-            _workflowInstanceService.Setup(w => w.AcknowledgeTaskError(workflowsInstance.WorkflowId, workflowsInstance.Tasks.First().ExecutionId)).ReturnsAsync(workflowsInstance);
-
-            var result = await WorkflowInstanceController.AcknowledgeTaskError(workflowsInstance.WorkflowId, workflowsInstance.Tasks.First().ExecutionId);
-
-            var objectResult = Assert.IsType<OkObjectResult>(result);
-
-            objectResult.Value.Should().BeEquivalentTo(workflowsInstance);
         }
     }
 }
