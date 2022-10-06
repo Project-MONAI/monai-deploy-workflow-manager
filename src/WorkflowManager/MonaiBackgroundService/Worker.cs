@@ -113,7 +113,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
                 workflowInstanceId,
                 task.TaskId,
                 FailureReason.TimedOut,
-                $"Task ({task.TaskId.Substring(0, 15)}) timed out @ {DateTime.UtcNow}");
+                $"{DateTime.UtcNow}");
 
             cancellationEvent.Validate();
 
