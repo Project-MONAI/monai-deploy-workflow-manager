@@ -53,5 +53,30 @@ namespace Monai.Deploy.WorkflowManager.Common.Extensions
             }
             return;
         }
+
+        /// <summary>
+        /// Appends a dictionary without duplicates.
+        /// </summary>
+        /// <param name="appendingDict"></param>
+        /// <param name="dictionary"></param>
+        public static void AppendSafe<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, Dictionary<TKey, TValue> appendingDict) where TKey : notnull
+        {
+            foreach (var item in appendingDict)
+            {
+                dictionary.AppendSafe(item.Key, item.Value);
+            }
+        }
+
+        /// <summary>
+        /// Appends a single dictionary value without duplicates.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="dictionary"></param>
+        public static void AppendSafe<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue value) where TKey : notnull
+        {
+            if (!dictionary.ContainsKey(key))
+                dictionary.Add(key, value);
+        }
     }
 }

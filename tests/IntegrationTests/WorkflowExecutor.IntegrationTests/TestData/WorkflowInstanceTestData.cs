@@ -55,6 +55,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     new TaskExecution()
                     {
                         ExecutionId = executionId,
+                        WorkflowInstanceId = id,
                         TaskId = Helper.GetWorkflowByName(workflowName).WorkflowRevision.Workflow.Tasks[0].Id,
                         TaskType = Helper.GetWorkflowByName(workflowName).WorkflowRevision?.Workflow.Tasks[0].Type,
                         Status = TaskExecutionStatus.Accepted,

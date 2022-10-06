@@ -182,7 +182,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             {
                 _logger.ErrorLaunchingContainerMonitor(containerId, exception);
             }
-            return new ExecutionStatus() { Status = TaskExecutionStatus.Accepted };
+
+            return new ExecutionStatus()
+            {
+                Status = TaskExecutionStatus.Accepted,
+                Stats = new Dictionary<string, string> { { Strings.IdentityKey, containerId } }
+            };
         }
 
         public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)

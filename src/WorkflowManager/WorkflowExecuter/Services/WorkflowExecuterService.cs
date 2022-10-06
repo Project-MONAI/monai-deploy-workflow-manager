@@ -238,15 +238,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return false;
             }
 
-            if (message.Reason != FailureReason.None)
-            {
-                if (message.ExecutionStats?.IsNullOrEmpty() is false)
-                {
-                    currentTask.ExecutionStats.Append(message.ExecutionStats);
-                }
-                currentTask.Reason = message.Reason;
-                await _workflowInstanceRepository.UpdateTaskAsync(workflowInstance.Id, currentTask.TaskId, currentTask);
-            }
+            await UpdateTaskDetails(currentTask, workflowInstance.Id, message.ExecutionStats, message.Metadata, message.Reason);
 
             var previouslyFailed = workflowInstance.Tasks.Any(t => t.Status == TaskExecutionStatus.Failed) || workflowInstance.Status == Status.Failed;
 
@@ -262,12 +254,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, message.TaskId, message.Status);
             }
 
-            if (message.Metadata.Any())
-            {
-                currentTask.ResultMetadata = message.Metadata;
-                await _workflowInstanceRepository.UpdateTaskAsync(workflowInstance.Id, currentTask.TaskId, currentTask);
-            }
-
             var isValid = await HandleOutputArtifacts(workflowInstance, message.Outputs, currentTask, workflow);
 
             if (isValid is false)
@@ -278,6 +264,28 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             }
 
             return await HandleTaskDestinations(workflowInstance, workflow, currentTask, message.CorrelationId);
+        }
+
+        public async Task UpdateTaskDetails(TaskExecution currentTask, string workflowInstanceId, Dictionary<string, string> executionStats, Dictionary<string, object> metadata, FailureReason failureReason)
+        {
+            if (executionStats?.IsNullOrEmpty() is false)
+            {
+                currentTask.ExecutionStats.AppendSafe(executionStats);
+            }
+
+            if (metadata.Any())
+            {
+                currentTask.ResultMetadata.AppendSafe(metadata);
+            }
+
+            currentTask.Reason = failureReason;
+
+            if (currentTask.Reason == FailureReason.TimedOut)
+            {
+                _logger.TaskTimedOut(currentTask.TaskId, workflowInstanceId, currentTask.Timeout);
+            }
+
+            await _workflowInstanceRepository.UpdateTaskAsync(workflowInstanceId, currentTask.TaskId, currentTask);
         }
 
         public async Task<bool> ProcessExportComplete(ExportCompleteEvent message, string correlationId)
