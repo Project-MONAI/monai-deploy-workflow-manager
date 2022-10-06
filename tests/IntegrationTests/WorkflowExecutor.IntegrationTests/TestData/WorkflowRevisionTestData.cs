@@ -696,6 +696,57 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+
+               new WorkflowRevisionTestData()
+            {
+                Name = "Workflow_Revision_For_Case_Sensitivity",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = "B0B4387A-3A84-456B-86AE-890E268C7BF1",
+                    WorkflowId = "1D995113-AE61-481E-B3FD-BC27D47D82EE",
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Basic workflow",
+                        Description = "Basic workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "router",
+                                Type = "Basic_task",
+                                Description = "Basic Workflow 1 Task 1",
+                                Args = new Dictionary<string, string> { { "test", "test" } },
+                                Artifacts = new ArtifactMap(),
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination()
+                                    {
+                                        Conditions = new string[] { "{{ context.dicom.series.any('0008','103e') }} == 'Processed by Clara'" },
+                                        Name = "argo"
+                                    }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "argo",
+                                Type = "Basic_task",
+                                Description = "Basic Workflow 1 Task 2",
+                                Artifacts = new ArtifactMap(),
+                                Args = new Dictionary<string, string> { { "test", "test" } }
+
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Basic_AE",
+                            DataOrigins = new string[]{"test"},
+                            ExportDestinations = new string[]{"test"}
+                        }
+                    }
+                }
+            },
             new WorkflowRevisionTestData()
             {
                 Name = "Multi_Task_Workflow_Destination_Single_Condition_True",

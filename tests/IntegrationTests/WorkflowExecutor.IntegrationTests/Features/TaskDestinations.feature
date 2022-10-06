@@ -91,6 +91,13 @@ Scenario: Multiple task destinations with condition true, multiple task dispatch
     Then 3 Task Dispatch events are published
 
 @TaskDestinationConditions
+Scenario: Multiple task destinations based on Dicom data with upper and lower cases condition, mutiple task dispatch messages sen
+    Given I have a clinical workflow Workflow_Revision_For_Case_Sensitivity
+    And I have a Workflow Instance Workflow_Instance_For_Case_Sensitivity with artifacts full_patient_metadata in minio
+    When I publish a Task Update Message Task_Update_Task_Multiple_Destination_Condition_Case_Sensitivity with status Succeeded
+    Then 1 Task Dispatch events are published
+
+@TaskDestinationConditions
 Scenario: Multiple task destinations with condition false, no task dispatch messages sent
     Given I have a clinical workflow Multi_Task_Workflow_Multiple_Destination_Single_Condition_False
     And I have a Workflow Instance WFI_Task_Multiple_Destination_Condition_False with no artifacts
