@@ -142,19 +142,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowRequestTestData
             {
-                Name = "Missing_WorkflowID_Invalid_WF_Request ",
-                WorkflowRequestMessage = new WorkflowRequestMessage
-                {
-                    Bucket = "bucket1",
-                    PayloadId = Guid.NewGuid(),
-                    CorrelationId = Guid.NewGuid().ToString(),
-                    Timestamp = DateTime.Now,
-                    CalledAeTitle = "Basic_AE_3",
-                    CallingAeTitle = "MWM",
-                }
-            },
-            new WorkflowRequestTestData
-            {
                 Name = "Missing_Bucket_Invalid_WF_Request",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
