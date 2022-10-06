@@ -16,6 +16,7 @@
 
 using System.Collections;
 using BoDi;
+using Microsoft.Extensions.Configuration;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
@@ -212,7 +213,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public void AssertExportRequestEvent(ExportRequestEvent exportRequestEvent, WorkflowInstance workflowInstance, WorkflowRevision workflowRevision, WorkflowRequestMessage? workflowRequestMessage = null, TaskUpdateEvent? taskUpdateEvent = null)
         {
             var workflowInstanceTask = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(exportRequestEvent.ExportTaskId, StringComparison.OrdinalIgnoreCase));
-
             var workflowRevisionTask = workflowRevision?.Workflow?.Tasks.FirstOrDefault(x => x.Id.Equals(exportRequestEvent.ExportTaskId, StringComparison.OrdinalIgnoreCase));
 
             if (workflowRequestMessage != null)
@@ -225,16 +225,15 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
 
             workflowRevisionTask.ExportDestinations.Select(x => x.Name).ToArray().Should().BeEquivalentTo(exportRequestEvent.Destinations);
-            if (taskUpdateEvent.Outputs[0].RelativeRootPath.EndsWith(".dcm"))
-            {
-                exportRequestEvent.Files.Count().Should().Be(workflowRevisionTask.Artifacts.Input.Count());
-            }
-            else
-            {
-                var filesList = MinioClient.ListFilesFromDir(TestExecutionConfig.MinioConfig.Bucket, taskUpdateEvent.Outputs[0].RelativeRootPath).Result;
-                var filteredFileList = filesList.Where(f => f.FilePath.EndsWith(".dcm"));
-                exportRequestEvent.Files.Count().Should().Be(filteredFileList.Count());
-            }
+            var outputPath = taskUpdateEvent.Outputs[0].RelativeRootPath;
+            var outputExtension = Path.GetExtension(taskUpdateEvent.Outputs[0].RelativeRootPath);
+
+            var filesList = MinioClient.ListFilesFromDir(TestExecutionConfig.MinioConfig.Bucket, taskUpdateEvent.Outputs[0].RelativeRootPath).Result;
+            var filteredFileList = filesList.Where(f => f.FilePath.EndsWith(".dcm")
+            || f.FilePath.EndsWith(".DCM")
+            || (string.IsNullOrWhiteSpace(Path.GetExtension(f.FilePath)) && string.IsNullOrWhiteSpace(f.FilePath) is false));
+            exportRequestEvent.Files.Count().Should().Be(filteredFileList.Count());
+
             exportRequestEvent.WorkflowInstanceId.Should().Match(workflowInstance.Id);
             exportRequestEvent.ExportTaskId.Should().Match(workflowInstanceTask?.TaskId);
         }
