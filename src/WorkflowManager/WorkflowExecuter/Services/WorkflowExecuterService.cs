@@ -682,14 +682,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 var firstTask = workflow.Workflow.Tasks.First();
 
-                // check if template exists merge args.
-
-                //if (!string.IsNullOrEmpty(firstTask.Ref))
-                //{
-                //    var template = workflow.TaskTemplates.Where(x => x.Id == firstTask.Ref).FirstOrDefault();
-                //    firstTask = template ?? firstTask;
-                //}
-
                 var task = await CreateTaskExecutionAsync(firstTask, workflowInstance, message.Bucket, message.PayloadId.ToString());
 
                 tasks.Add(task);
