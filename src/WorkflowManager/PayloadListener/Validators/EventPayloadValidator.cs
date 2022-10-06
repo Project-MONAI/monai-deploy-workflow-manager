@@ -46,20 +46,13 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
 
             valid &= payloadValid;
 
-            if (payload.Workflows is null)
-            {
-                return valid;
-            }
-
             foreach (var workflow in payload.Workflows)
             {
-                Guard.Against.Null(workflow, nameof(workflow));
-
                 var workflowValid = !string.IsNullOrEmpty(workflow);
 
                 if (!workflowValid)
                 {
-                    Logger.ValidationErrors("Workflow is null or empty");
+                    Logger.ValidationErrors("Workflow id is empty string");
                 }
 
                 valid &= workflowValid;

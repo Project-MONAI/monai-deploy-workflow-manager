@@ -116,30 +116,39 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             DataHelper.SeededWorkflowInstances = listOfWorkflowInstance;
         }
 
-        [Then(@"I can see (.*) Workflow Instances are created")]
-        [Then(@"I can see (.*) Workflow Instance is created")]
+        [Then(@"I can see (\d*) Workflow Instances are created")]
+        [Then(@"I can see (\d*) Workflow Instance is created")]
         public void ThenICanSeeAWorkflowInstanceIsCreated(int count)
         {
             _outputHelper.WriteLine($"Retrieving {count} workflow instance/s using the payloadid={DataHelper.WorkflowRequestMessage.PayloadId.ToString()}");
             var workflowInstances = DataHelper.GetWorkflowInstances(count, DataHelper.WorkflowRequestMessage.PayloadId.ToString());
             _outputHelper.WriteLine($"Retrieved {count} workflow instance/s");
 
-            if (workflowInstances != null)
+            foreach (var workflowInstance in workflowInstances)
             {
-                foreach (var workflowInstance in workflowInstances)
+                var workflowRevision = DataHelper.WorkflowRevisions.OrderByDescending(x => x.Revision).FirstOrDefault(x => x.WorkflowId.Equals(workflowInstance.WorkflowId));
+
+                if (workflowRevision != null)
                 {
-                    var workflowRevision = DataHelper.WorkflowRevisions.OrderByDescending(x => x.Revision).FirstOrDefault(x => x.WorkflowId.Equals(workflowInstance.WorkflowId));
+                    Assertions.AssertWorkflowInstanceMatchesExpectedWorkflow(workflowInstance, workflowRevision, DataHelper.WorkflowRequestMessage);
 
-                    if (workflowRevision != null)
-                    {
-                        Assertions.AssertWorkflowInstanceMatchesExpectedWorkflow(workflowInstance, workflowRevision, DataHelper.WorkflowRequestMessage);
-
-                    }
-                    else
-                    {
-                        throw new Exception($"Workflow not found for workflowId {workflowInstance.WorkflowId}");
-                    }
                 }
+                else
+                {
+                    throw new Exception($"Workflow not found for workflowId {workflowInstance.WorkflowId}");
+                }
+            }
+        }
+
+        [Then(@"I can see no Workflow Instances are created")]
+        public void ThenICanSeeNoWorkflowInstanceIsCreated()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                _outputHelper.WriteLine($"Trying to Retreive 0 workflow instance/s using the payloadid={DataHelper.WorkflowRequestMessage.PayloadId.ToString()}");
+                var workflowInstances = DataHelper.GetWorkflowInstances(0, DataHelper.WorkflowRequestMessage.PayloadId.ToString());
+                _outputHelper.WriteLine($"Retrieved {workflowInstances.Count} workflow instance/s");
+                Thread.Sleep(300);
             }
         }
 

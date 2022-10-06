@@ -129,12 +129,11 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         public void ValidateWorkflowRequest_WorkflowRequestMessageWithNullWorkflow_ThrowsArgumentNullException()
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
-            message.Workflows = new List<string> { null };
+            message.Workflows = new List<string> { "" };
 
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                _eventPayloadValidator.ValidateWorkflowRequest(message);
-            });
+            var result = _eventPayloadValidator.ValidateWorkflowRequest(message);
+
+            Assert.IsFalse(result);
         }
 
         [Test]

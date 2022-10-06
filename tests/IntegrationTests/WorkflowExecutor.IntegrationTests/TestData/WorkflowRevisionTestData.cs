@@ -2825,6 +2825,67 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Basic_Workflow_Multiple_Revisions_Different_AE_1",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = "85c48175-f4db-4d3c-bf3a-14f736edaccd",
+                    Revision = 1,
+                    Deleted = new DateTime(2000, 01, 01, 12, 00, 00),
+                    Workflow = new Workflow()
+                    {
+                        Name = "Basic workflow multiple revisions 1",
+                        Description = "Basic workflow multiple revisions 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Basic_Workflow_Multiple_Revisions_1",
+                                Description = "Basic_Workflow_Multiple_Revisions_1",
+                                Artifacts = new ArtifactMap(),
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Multi_Rev_Old"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Basic_Workflow_Multiple_Revisions_Different_AE_2",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = "85c48175-f4db-4d3c-bf3a-14f736edaccd",
+                    Revision = 2,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Basic workflow multiple revisions 2",
+                        Description = "Basic workflow multiple revisions 2",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Basic_Workflow_Multiple_Revisions_2",
+                                Description = "Basic_Workflow_Multiple_Revisions_2",
+                                Artifacts = new ArtifactMap(),
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Multi_Rev_New"
+                        }
+                    }
+                }
+            },
         };
     }
 }
