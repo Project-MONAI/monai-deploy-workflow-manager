@@ -375,7 +375,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                         artifact,
                         true);
 
-                    var dcmFiles = objects?.Where(o => o.FilePath.EndsWith(".dcm"))?.ToList();
+                    var dcmFiles = objects?.Where(o => o.IsValidDicomFile())?.ToList();
 
                     if (dcmFiles?.IsNullOrEmpty() is false)
                     {
@@ -667,6 +667,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 Id = workflowInstanceId,
                 WorkflowId = workflow.WorkflowId,
+                WorkflowName = workflow.Workflow.Name,
                 PayloadId = message.PayloadId.ToString(),
                 StartTime = DateTime.UtcNow,
                 Status = Status.Created,
@@ -681,6 +682,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 var firstTask = workflow.Workflow.Tasks.First();
 
+<<<<<<< HEAD
                 // check if template exists merge args.
 
                 //if (!string.IsNullOrEmpty(firstTask.Ref))
@@ -693,6 +695,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
                 tasks.Add(task);
                 if (task.Status == TaskExecutionStatus.Failed)
+=======
+                try
+                {
+                    tasks.Add(await CreateTaskExecutionAsync(firstTask, workflowInstance, message.Bucket, message.PayloadId.ToString()));
+                }
+                catch (FileNotFoundException)
+>>>>>>> 081db322649a7f378d99883359f365c9bd5c1da3
                 {
                     workflowInstance.Status = Status.Failed;
                 }

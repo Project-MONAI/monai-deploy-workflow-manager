@@ -19,7 +19,7 @@ using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Configuration.Exceptions;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
 
-namespace Monai.Deploy.WorkflowManager.Common
+namespace Monai.Deploy.WorkflowManager.Extentions
 {
     internal static class ServiceProviderExtensions
     {

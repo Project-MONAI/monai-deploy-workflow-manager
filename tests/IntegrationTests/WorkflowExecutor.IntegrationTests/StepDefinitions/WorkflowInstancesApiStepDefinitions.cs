@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
+using System.Threading.Tasks;
 using BoDi;
+using FluentAssertions.Extensions;
+using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.MonaiBackgroundService;
+using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
 using Monai.Deploy.WorkflowManager.Wrappers;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 using TechTalk.SpecFlow.Infrastructure;
 
@@ -30,6 +36,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             DataHelper = objectContainer.Resolve<DataHelper>();
             ApiHelper = objectContainer.Resolve<ApiHelper>();
+            MongoClient = objectContainer.Resolve<MongoClientUtil>();
             Assertions = new Assertions(objectContainer);
             _outputHelper = outputHelper;
         }
@@ -38,6 +45,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private Assertions Assertions { get; }
         private DataHelper DataHelper { get; }
         private readonly ISpecFlowOutputHelper _outputHelper;
+        private MongoClientUtil MongoClient { get; set; }
+
 
 
         [Then(@"I can see expected workflow instances are returned")]
@@ -175,5 +184,68 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 "previousPage"
             });
         }
+
+        [Then(@"I can see the Task (.*) error is acknowledged on workflow instance (.*)")]
+        public void ThenICanSeeTheTaskIsAcknowledgedOnWorkflowInstance(string taskId, string workflowInstanceName)
+        {
+            string? workflowInstanceId = null;
+            WorkflowInstance workflowInstance = DataHelper.GetWorkflowInstanceTestData(workflowInstanceName);
+            if (workflowInstance != null)
+            {
+                workflowInstanceId = workflowInstance.Id;
+            }
+            else
+            {
+                throw new Exception($"Workflow instance {workflowInstanceName} does not exist");
+            };
+
+            _outputHelper.WriteLine($"Retrieving workflow instance by id={workflowInstanceId}");
+            var updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(workflowInstanceId);
+            _outputHelper.WriteLine("Retrieved workflow instance");
+
+            var task = updatedWorkflowInstance.Tasks.FirstOrDefault(i => i.TaskId.Equals(taskId));
+            task.AcknowledgedTaskErrors.Should().BeCloseTo(DateTime.UtcNow, new TimeSpan(50000000));
+        }
+
+        [Then(@"I can see the workflow Instance (.*) error is acknowledged")]
+        public void ThenICanSeeTheWorkflowInstanceErrorIsAcknowledged(string workflowInstanceName)
+        {
+            string? workflowInstanceId = null;
+            WorkflowInstance workflowInstance = DataHelper.GetWorkflowInstanceTestData(workflowInstanceName);
+            if (workflowInstance != null)
+            {
+                workflowInstanceId = workflowInstance.Id;
+            }
+            else
+            {
+                throw new Exception($"Workflow instance {workflowInstanceName} does not exist");
+            };
+
+            _outputHelper.WriteLine($"Retrieving workflow instance by id={workflowInstanceId}");
+            var updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(workflowInstanceId);
+            _outputHelper.WriteLine("Retrieved workflow instance");
+            updatedWorkflowInstance.AcknowledgedWorkflowErrors.Should().BeCloseTo(DateTime.UtcNow, new TimeSpan(50000000));
+        }
+
+        [Then(@"I can see the workflow Instance (.*) error is not acknowledged")]
+        public void ThenICanSeeTheWorkflowInstanceErrorIsNotAcknowledged(string workflowInstanceName)
+        {
+            string? workflowInstanceId = null;
+            WorkflowInstance workflowInstance = DataHelper.GetWorkflowInstanceTestData(workflowInstanceName);
+            if (workflowInstance != null)
+            {
+                workflowInstanceId = workflowInstance.Id;
+            }
+            else
+            {
+                throw new Exception($"Workflow instance {workflowInstanceName} does not exist");
+            };
+
+            _outputHelper.WriteLine($"Retrieving workflow instance by id={workflowInstanceId}");
+            var updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(workflowInstanceId);
+            _outputHelper.WriteLine("Retrieved workflow instance");
+            updatedWorkflowInstance.AcknowledgedWorkflowErrors.Should().Be(null);
+        }
+
     }
 }

@@ -727,6 +727,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 {
                     Id = Guid.NewGuid().ToString(),
                     WorkflowId = workflowId2,
+                    WorkflowName = workflows[1].Workflow.Name,
                     PayloadId = workflowRequest.PayloadId.ToString(),
                     Status = Status.Created,
                     BucketId = $"{workflowRequest.Bucket}/{workflowId2}",
@@ -804,6 +805,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             {
                 Id = workflowInstanceId,
                 WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
                 PayloadId = Guid.NewGuid().ToString(),
                 Status = Status.Created,
                 BucketId = "bucket",
@@ -900,6 +902,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             {
                 Id = workflowInstanceId,
                 WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
                 PayloadId = Guid.NewGuid().ToString(),
                 Status = Status.Created,
                 BucketId = "bucket",
@@ -1021,6 +1024,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             {
                 Id = workflowInstanceId,
                 WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
                 PayloadId = Guid.NewGuid().ToString(),
                 Status = Status.Created,
                 BucketId = "bucket",
@@ -1122,6 +1126,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             {
                 Id = workflowInstanceId,
                 WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
                 PayloadId = Guid.NewGuid().ToString(),
                 Status = Status.Created,
                 BucketId = "bucket",
@@ -1221,6 +1226,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             {
                 Id = workflowInstanceId,
                 WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
                 PayloadId = Guid.NewGuid().ToString(),
                 Status = Status.Created,
                 BucketId = "bucket",
@@ -1317,6 +1323,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             {
                 Id = workflowInstanceId,
                 WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
                 PayloadId = Guid.NewGuid().ToString(),
                 Status = Status.Created,
                 BucketId = "bucket",
@@ -1414,6 +1421,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             {
                 Id = workflowInstanceId,
                 WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
                 PayloadId = Guid.NewGuid().ToString(),
                 Status = Status.Created,
                 BucketId = "bucket",
@@ -1517,6 +1525,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             {
                 Id = workflowInstanceId,
                 WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
                 PayloadId = Guid.NewGuid().ToString(),
                 Status = Status.Created,
                 BucketId = "bucket",
@@ -1636,6 +1645,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             {
                 Id = workflowInstanceId,
                 WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
                 PayloadId = Guid.NewGuid().ToString(),
                 Status = Status.Created,
                 BucketId = "bucket",
@@ -1756,6 +1766,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             {
                 Id = workflowInstanceId,
                 WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
                 PayloadId = Guid.NewGuid().ToString(),
                 Status = Status.Created,
                 BucketId = "bucket",
@@ -1859,6 +1870,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             {
                 Id = workflowInstanceId,
                 WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
                 PayloadId = Guid.NewGuid().ToString(),
                 Status = Status.Created,
                 BucketId = "bucket",
@@ -1956,6 +1968,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             {
                 Id = workflowInstanceId,
                 WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
                 PayloadId = Guid.NewGuid().ToString(),
                 Status = Status.Created,
                 BucketId = "bucket",
