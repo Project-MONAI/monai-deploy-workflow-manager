@@ -68,7 +68,6 @@ Scenario: Publish an invalid workflow request which does not create a workflow i
     Examples:
     | workflowRequestMessage                    |
     | Missing_PayloadID_Invalid_WF_Request      |
-    | Missing_WorkflowID_Invalid_WF_Request     |
     | Missing_Bucket_Invalid_WF_Request         |
     | Missing_CorrelationID_Invalid_WF_Request  |
     | Missing_CallingAETitle_Invalid_WF_Request |
