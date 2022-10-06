@@ -682,7 +682,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 var firstTask = workflow.Workflow.Tasks.First();
 
-<<<<<<< HEAD
                 // check if template exists merge args.
 
                 //if (!string.IsNullOrEmpty(firstTask.Ref))
@@ -695,13 +694,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
                 tasks.Add(task);
                 if (task.Status == TaskExecutionStatus.Failed)
-=======
-                try
-                {
-                    tasks.Add(await CreateTaskExecutionAsync(firstTask, workflowInstance, message.Bucket, message.PayloadId.ToString()));
-                }
-                catch (FileNotFoundException)
->>>>>>> 081db322649a7f378d99883359f365c9bd5c1da3
                 {
                     workflowInstance.Status = Status.Failed;
                 }
