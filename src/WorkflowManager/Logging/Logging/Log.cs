@@ -106,12 +106,21 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
         [LoggerMessage(EventId = 27, Level = LogLevel.Error, Message = "The following task: {taskId} in workflow {workflowInstanceId} is currently timed out and not processing anymore updates, timed out at {timedOut}.")]
         public static partial void TaskTimedOut(this ILogger logger, string taskId, string workflowInstanceId, DateTime timedOut);
 
-        [LoggerMessage(EventId = 28, Level = LogLevel.Warning, Message = "Not Processing workflow: {workflowInstanceId} as it already has a status of {status}")]
+        [LoggerMessage(EventId = 28, Level = LogLevel.Error, Message = "The following payload: {payloadId} in workflow instance {workflowInstanceId} workflow revision {workflowRevisionId} for task {taskId} failed to load artifact and was unable to update DB.")]
+        public static partial void LoadArtifactAndDBFailiure(this ILogger logger, string payloadId, string taskId, string workflowInstanceId, string workflowRevisionId);
+
+        [LoggerMessage(EventId = 29, Level = LogLevel.Warning, Message = "Not Processing workflow: {workflowInstanceId} as it already has a status of {status}")]
         public static partial void WorkflowBadStatus(this ILogger logger, string workflowInstanceId, string status);
 
         public static void TaskComplete(this ILogger logger, TaskExecution task, WorkflowInstance workflowInstance, PatientDetails patientDetails, string correlationId, string taskStatus)
         {
             logger.LogInformation("TaskComplete Task {task}, workflowInstance {workflowInstance}, patientDetails {patientDetails}, correlationId {correlationId}, taskStatus {taskStatus}",
+              JsonConvert.SerializeObject(task), JsonConvert.SerializeObject(workflowInstance), JsonConvert.SerializeObject(patientDetails), correlationId, taskStatus);
+        }
+
+        public static void TaskFailed(this ILogger logger, TaskExecution task, WorkflowInstance workflowInstance, PatientDetails patientDetails, string correlationId, string taskStatus)
+        {
+            logger.LogInformation("TaskFailed, Task {task}, workflowInstance {workflowInstance}, patientDetails {patientDetails}, correlationId {correlationId}, taskStatus {taskStatus}",
               JsonConvert.SerializeObject(task), JsonConvert.SerializeObject(workflowInstance), JsonConvert.SerializeObject(patientDetails), correlationId, taskStatus);
         }
 

@@ -94,7 +94,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             using var loggerScope = _logger.BeginScope($"Correlation ID={message.CorrelationId}, Payload ID={payload.PayloadId}");
             var processed = true;
-            var workflows = new List<WorkflowRevision>();
+            List<WorkflowRevision>? workflows;
 
             if (message.Workflows?.Any() == true)
             {
@@ -127,6 +127,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             workflowInstances.RemoveAll(i => existingInstances.Any(e => e.WorkflowId == i.WorkflowId
                                                                            && e.PayloadId == i.PayloadId));
+
             if (workflowInstances.Any())
             {
                 processed &= await _workflowInstanceRepository.CreateAsync(workflowInstances);
@@ -194,8 +195,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
         public async Task<bool> ProcessTaskUpdate(TaskUpdateEvent message)
         {
-            Guard.Against.Null(message, nameof(message));
-            Guard.Against.Null(message.WorkflowInstanceId, nameof(message.WorkflowInstanceId));
+            Guard.Against.Null(message);
+            Guard.Against.Null(message.WorkflowInstanceId);
 
             var workflowInstance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId);
 
@@ -320,6 +321,14 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             }
 
             return true;
+        }
+
+        private async Task<bool> FailedTask(TaskExecution task, WorkflowInstance workflowInstance, string correlationId, TaskExecutionStatus status)
+        {
+            var payload = await _payloadService.GetByIdAsync(workflowInstance.PayloadId);
+            _logger.TaskFailed(task, workflowInstance, payload?.PatientDetails, correlationId, status.ToString());
+
+            return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, status);
         }
 
         private async Task<bool> CompleteTask(TaskExecution task, WorkflowInstance workflowInstance, string correlationId, TaskExecutionStatus status)
@@ -527,6 +536,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         {
             var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, task.TaskId);
 
+            if (newTaskExecutions.Any(task => task.Status == TaskExecutionStatus.Failed))
+            {
+                await UpdateWorkflowInstanceStatus(workflowInstance, task.TaskId, TaskExecutionStatus.Failed);
+
+                return await FailedTask(task, workflowInstance, correlationId, TaskExecutionStatus.Failed);
+            }
+
             if (newTaskExecutions.Any() is false)
             {
                 await UpdateWorkflowInstanceStatus(workflowInstance, task.TaskId, TaskExecutionStatus.Succeeded);
@@ -613,7 +629,21 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                     }
                 }
 
-                var pathOutputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(outputArtifacts ?? Array.Empty<Artifact>(), workflowInstance.PayloadId, workflowInstance.Id, workflowInstance.BucketId, false);
+                var pathOutputArtifacts = new Dictionary<string, string>();
+                try
+                {
+                    pathOutputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(outputArtifacts ?? Array.Empty<Artifact>(), workflowInstance.PayloadId, workflowInstance.Id, workflowInstance.BucketId, false);
+                }
+                catch (FileNotFoundException)
+                {
+                    workflowInstance.Tasks.Add(taskExec);
+                    var updateResult = await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, taskExec.TaskId, TaskExecutionStatus.Failed);
+                    if (updateResult is false)
+                    {
+                        _logger.LoadArtifactAndDBFailiure(workflowInstance.PayloadId, taskExec.TaskId, workflowInstance.Id, workflow?.Id);
+                    }
+                    throw;
+                }
 
                 var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(taskExec, workflowInstance, pathOutputArtifacts, correlationId, _storageConfiguration);
                 var jsonMesssage = new JsonMessage<TaskDispatchEvent>(taskDispatchEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, taskDispatchEvent.CorrelationId, Guid.NewGuid().ToString());
@@ -660,11 +690,10 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 var firstTask = workflow.Workflow.Tasks.First();
 
-                try
-                {
-                    tasks.Add(await CreateTaskExecutionAsync(firstTask, workflowInstance, message.Bucket, message.PayloadId.ToString()));
-                }
-                catch (FileNotFoundException)
+                var task = await CreateTaskExecutionAsync(firstTask, workflowInstance, message.Bucket, message.PayloadId.ToString());
+
+                tasks.Add(task);
+                if (task.Status == TaskExecutionStatus.Failed)
                 {
                     workflowInstance.Status = Status.Failed;
                 }
@@ -675,7 +704,9 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return workflowInstance;
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<TaskExecution> CreateTaskExecutionAsync(TaskObject task,
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
                                                   WorkflowInstance workflowInstance,
                                                   string? bucketName = null,
                                                   string? payloadId = null,
@@ -705,17 +736,25 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 task.TimeoutMinutes = _defaultTaskTimeoutMinutes;
             }
 
+            var inputArtifacts = new Dictionary<string, string>();
+            var artifactFound = true;
+            if (task?.Artifacts?.Input.IsNullOrEmpty() is false)
+            {
+                artifactFound = _artifactMapper.TryConvertArtifactVariablesToPath(task?.Artifacts?.Input
+                    ?? Array.Empty<Artifact>(), payloadId, workflowInstanceId, bucketName, true, out inputArtifacts);
+            }
+
             return new TaskExecution()
             {
                 ExecutionId = executionId,
-                TaskType = task.Type,
+                TaskType = task?.Type ?? "UnknownTaskType",
                 TaskPluginArguments = newTaskArgs,
                 TaskStartTime = DateTime.UtcNow,
-                TaskId = task.Id,
+                TaskId = task?.Id ?? "0",
                 WorkflowInstanceId = workflowInstanceId,
-                Status = TaskExecutionStatus.Created,
-                Reason = FailureReason.None,
-                InputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(task?.Artifacts?.Input ?? Array.Empty<Artifact>(), payloadId, workflowInstanceId, bucketName),
+                Status = artifactFound ? TaskExecutionStatus.Created : TaskExecutionStatus.Failed,
+                Reason = artifactFound ? FailureReason.None : FailureReason.ExternalServiceError,
+                InputArtifacts = inputArtifacts,
                 OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}",
                 ResultMetadata = { },
                 InputParameters = newInputParameters,

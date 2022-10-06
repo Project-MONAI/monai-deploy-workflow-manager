@@ -29,5 +29,18 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
         /// <param name="bucketId">Bucket id used to verify.</param>
         /// <param name="shouldExistYet">Checks if it should exist yet.</param>
         Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet = true);
+
+        /// <summary>
+        /// If ConvertArtifactVariablesToPath throws a FileNotFoundException will only return false and artifactPaths will be empty.
+        /// </summary>
+        /// <param name="artifacts"></param>
+        /// <param name="payloadId"></param>
+        /// <param name="workflowInstanceId"></param>
+        /// <param name="bucketId"></param>
+        /// <param name="shouldExistYet"></param>
+        /// <param name="artifactPaths"></param>
+        /// <returns>bool if ConvertArtifactVariablesToPath runs successfully</returns>
+        bool TryConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet, out Dictionary<string, string> artifactPaths);
+
     }
 }

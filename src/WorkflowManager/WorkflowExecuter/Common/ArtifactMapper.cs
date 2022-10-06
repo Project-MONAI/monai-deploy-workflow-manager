@@ -39,6 +39,31 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        public bool TryConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet, out Dictionary<string, string> artifactPaths)
+        {
+            try
+            {
+                var task = ConvertArtifactVariablesToPath(artifacts, payloadId, workflowInstanceId, bucketId, shouldExistYet);
+                task.Wait();
+                artifactPaths = task.Result;
+                return true;
+            }
+            catch (FileNotFoundException)
+            {
+                artifactPaths = new Dictionary<string, string>();
+                return false;
+            }
+            catch (AggregateException ex)
+            {
+                if (ex.InnerException is FileNotFoundException)
+                {
+                    artifactPaths = new Dictionary<string, string>();
+                    return false;
+                }
+                throw;
+            }
+        }
+
         public async Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet = true)
         {
             Guard.Against.Null(artifacts);
