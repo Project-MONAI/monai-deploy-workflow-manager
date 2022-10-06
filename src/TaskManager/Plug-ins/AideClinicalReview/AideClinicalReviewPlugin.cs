@@ -139,7 +139,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
                 var reviewEvent = GenerateClinicalReviewRequestEventMessage();
                 await SendClinicalReviewRequestEvent(reviewEvent).ConfigureAwait(false);
 
-                return new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None };
+                return new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None, Stats = new Dictionary<string, string> { { Strings.IdentityKey, reviewEvent.Body.ExecutionId } } };
             }
             catch (Exception ex)
             {
