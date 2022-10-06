@@ -101,6 +101,20 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowRequestTestData
             {
+                Name = "AE_Title_From_Old_Version",
+                WorkflowRequestMessage = new WorkflowRequestMessage
+                {
+                    Bucket = "bucket1",
+                    PayloadId = Guid.NewGuid(),
+                    Workflows = new List<string>() { },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.Now,
+                    CalledAeTitle = "Multi_Rev_Old",
+                    CallingAeTitle = "MWM",
+                }
+            },
+            new WorkflowRequestTestData
+            {
                 Name = "WorkflowID_Multi_Revision_WF_Request",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {
