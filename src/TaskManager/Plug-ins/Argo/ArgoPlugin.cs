@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Reflection;
 using System.Text;
 using Ardalis.GuardClauses;
 using Argo;
@@ -171,7 +172,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
         {
             Guard.Against.NullOrWhiteSpace(identity, nameof(identity));
-
+            Task? logTask = null;
             try
             {
                 var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
@@ -184,6 +185,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
                     workflow = await client.WorkflowService_GetWorkflowAsync(_namespace, identity, null, null, cancellationToken).ConfigureAwait(false);
                 }
+                logTask = PipeExecutionLogs(client, identity);
 
                 var stats = GetExecutuionStats(workflow);
                 if (stats is null)
@@ -230,6 +232,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     Errors = ex.Message
                 };
             }
+            finally
+            {
+                if (logTask is not null)
+                {
+                    await logTask;
+                }
+            }
         }
 
         private Dictionary<string, string> GetExecutuionStats(Workflow workflow)
@@ -272,6 +281,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             }
 
             return stats;
+        }
+
+        private async Task PipeExecutionLogs(IArgoClient client, string identity)
+        {
+#pragma warning disable CA2254 // Template should be a static expression
+            var logs = await client.WorkflowService_WorkflowLogsAsync(_namespace, identity, null, "init", null, null, null, null, null, null, null, null, null, null, null);
+            _logger.LogInformation(logs);
+            logs = await client.WorkflowService_WorkflowLogsAsync(_namespace, identity, null, "main", null, null, null, null, null, null, null, null, null, null, null);
+            _logger.LogInformation(logs);
+            logs = await client.WorkflowService_WorkflowLogsAsync(_namespace, identity, null, "wait", null, null, null, null, null, null, null, null, null, null, null);
+            _logger.LogInformation(logs);
+#pragma warning restore CA2254 // Template should be a static expression
         }
 
         private async Task<Workflow> BuildWorkflowWrapper(CancellationToken cancellationToken)
@@ -516,19 +537,44 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             await CopyTemplateSteps(template.Steps, workflowTemplate, name, workflow, cancellationToken).ConfigureAwait(false);
             await CopyTemplateDags(template.Dag, workflowTemplate, name, workflow, cancellationToken).ConfigureAwait(false);
-            CopyImagePullSecrets(workflowTemplate, workflow);
+            AddAllTopLevelAttrs(workflowTemplate, workflow);
+            SetArgoTtlStratergy(workflow);
         }
 
-        private void CopyImagePullSecrets(WorkflowTemplate workflowTemplate, Workflow workflow)
+        private static void AddAllTopLevelAttrs(WorkflowTemplate workflowTemplate, Workflow workflow)
         {
-            if (workflowTemplate.Spec.ImagePullSecrets?.Any() is true)
+            var props = workflow.Spec.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var property in props.Where(p => p.CanWrite))
             {
-                workflow.Spec.ImagePullSecrets = new List<LocalObjectReference>();
-                foreach (var secret in workflowTemplate.Spec.ImagePullSecrets)
+                var p = property;
+                if (p.GetValue(workflowTemplate.Spec) is not null && p.GetValue(workflow.Spec) is null)
                 {
-                    workflow.Spec.ImagePullSecrets.Add(secret);
+                    p.SetValue(workflow.Spec, p.GetValue(workflowTemplate.Spec));
                 }
             }
+        }
+
+        private void SetArgoTtlStratergy(Workflow workflow)
+        {
+            if (workflow.Spec.TtlStrategy is null)
+            {
+                workflow.Spec.TtlStrategy = new TTLStrategy { SecondsAfterCompletion = _options.Value.ArgoTtlStatergySeconds };
+            }
+            else
+            {
+                if (workflow.Spec.TtlStrategy.SecondsAfterCompletion.HasValue)
+                    workflow.Spec.TtlStrategy.SecondsAfterCompletion = Math.Max(_options.Value.MinArgoTtlStatergySeconds, workflow.Spec.TtlStrategy.SecondsAfterCompletion.Value);
+                if (workflow.Spec.TtlStrategy.SecondsAfterSuccess.HasValue)
+                    workflow.Spec.TtlStrategy.SecondsAfterSuccess = Math.Max(_options.Value.MinArgoTtlStatergySeconds, workflow.Spec.TtlStrategy.SecondsAfterSuccess.Value);
+                if (workflow.Spec.TtlStrategy.SecondsAfterFailure.HasValue)
+                    workflow.Spec.TtlStrategy.SecondsAfterFailure = Math.Max(_options.Value.MinArgoTtlStatergySeconds, workflow.Spec.TtlStrategy.SecondsAfterFailure.Value);
+            }
+            RemovePodGCStratergy(workflow);
+        }
+
+        private static void RemovePodGCStratergy(Workflow workflow)
+        {
+            workflow.Spec.PodGC = null;
         }
 
         /// <summary>

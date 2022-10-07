@@ -39,6 +39,7 @@ using Moq.Language.Flow;
 using Newtonsoft.Json;
 using Xunit;
 using YamlDotNet.Serialization;
+using Options = Microsoft.Extensions.Options.Options;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests;
 
@@ -52,6 +53,9 @@ public class ArgoPluginTest
     private readonly Mock<IArgoClient> _argoClient;
     private readonly Mock<IKubernetes> _kubernetesClient;
     private readonly IOptions<WorkflowManagerOptions> _options;
+    private Workflow? _submittedArgoTemplate;
+    private readonly int _argoTtlStatergySeconds = 360;
+    private readonly int _minAgoTtlStatergySeconds = 30;
 
     public ArgoPluginTest()
     {
@@ -70,6 +74,8 @@ public class ArgoPluginTest
         _options.Value.Messaging.PublisherSettings.Add("exchange", "exchange");
         _options.Value.Messaging.PublisherSettings.Add("virtualHost", "vhost");
         _options.Value.Messaging.Topics.TaskCallbackRequest = "md.tasks.callback";
+        _options.Value.ArgoTtlStatergySeconds = _argoTtlStatergySeconds;
+        _options.Value.MinArgoTtlStatergySeconds = _minAgoTtlStatergySeconds;
 
         _serviceScopeFactory.Setup(p => p.CreateScope()).Returns(_serviceScope.Object);
 
@@ -609,22 +615,147 @@ public class ArgoPluginTest
     public async Task ArgoPlugin_Copies_ImagePullSecrets()
     {
         var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
-
         Assert.NotNull(argoTemplate);
+
         var secret = new LocalObjectReference() { Name = "ImagePullSecret" };
         argoTemplate.Spec.ImagePullSecrets = new List<LocalObjectReference>() { secret };
 
         var message = GenerateTaskDispatchEventWithValidArguments();
-        message.TaskPluginArguments["resources"] = "{\"memory_reservation\": \"string\",\"cpu_reservation\": \"string\",\"gpu_limit\": 1,\"memory_limit\": \"string\",\"cpu_limit\": \"string\"}";
-        message.TaskPluginArguments["priorityClass"] = "Helo";
-        Workflow? submittedArgoTemplate = null;
+
+        SetUpSimpleArgoWorkFlow(argoTemplate);
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
+        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+        Assert.Equal(secret, _submittedArgoTemplate?.Spec.ImagePullSecrets.First());
+    }
+
+    [Fact(DisplayName = "TTL gets added if not pressent")]
+    public async Task ArgoPlugin_Ensures_TTL_Added_If_Not_pressent()
+    {
+        var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
+        Assert.NotNull(argoTemplate);
+
+        SetUpSimpleArgoWorkFlow(argoTemplate);
+
+        var message = GenerateTaskDispatchEventWithValidArguments();
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
+        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+        Assert.Equal(_argoTtlStatergySeconds, _submittedArgoTemplate?.Spec.TtlStrategy?.SecondsAfterCompletion);
+    }
+
+    [Theory(DisplayName = "TTL gets extended if too short")]
+    [InlineData(31, 31, 29)]
+    [InlineData(1, null, null)]
+    [InlineData(null, 31, 3)]
+    public async Task ArgoPlugin_Ensures_TTL_Extended_If_Too_Short(int? secondsAfterCompletion, int? secondsAfterSuccess, int? secondsAfterFailure)
+    {
+        var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
+        Assert.NotNull(argoTemplate);
+
+        argoTemplate.Spec.TtlStrategy = new TTLStrategy();
+        argoTemplate.Spec.TtlStrategy.SecondsAfterCompletion = secondsAfterCompletion;
+        argoTemplate.Spec.TtlStrategy.SecondsAfterSuccess = secondsAfterSuccess;
+        argoTemplate.Spec.TtlStrategy.SecondsAfterFailure = secondsAfterFailure;
+
+        SetUpSimpleArgoWorkFlow(argoTemplate);
+
+        var message = GenerateTaskDispatchEventWithValidArguments();
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
+        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+        if (secondsAfterCompletion is not null)
+        {
+            Assert.Equal(Math.Max(_minAgoTtlStatergySeconds, secondsAfterCompletion.Value), _submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterCompletion);
+        }
+        else
+        {
+            Assert.Null(_submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterCompletion);
+        }
+
+        if (secondsAfterSuccess is not null)
+        {
+            Assert.Equal(Math.Max(_minAgoTtlStatergySeconds, secondsAfterSuccess.Value), _submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterSuccess);
+        }
+        else
+        {
+            Assert.Null(_submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterSuccess);
+        }
+
+        if (secondsAfterFailure is not null)
+        {
+            Assert.Equal(Math.Max(_minAgoTtlStatergySeconds, secondsAfterFailure.Value), _submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterFailure);
+        }
+        else
+        {
+            Assert.Null(_submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterFailure);
+        }
+    }
+
+    [Theory(DisplayName = "TTL gets left as is if longer")]
+    [InlineData(31, 31, 31)]
+    [InlineData(9999999, 31, 31)]
+    [InlineData(31, null, null)]
+    [InlineData(31, 31, null)]
+    public async Task ArgoPlugin_Ensures_TTL_Remains(int? secondsAfterCompletion, int? secondsAfterSuccess, int? secondsAfterFailure)
+    {
+        var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
+        Assert.NotNull(argoTemplate);
+
+        argoTemplate.Spec.TtlStrategy = new TTLStrategy();
+        argoTemplate.Spec.TtlStrategy.SecondsAfterCompletion = secondsAfterCompletion;
+        argoTemplate.Spec.TtlStrategy.SecondsAfterSuccess = secondsAfterSuccess;
+        argoTemplate.Spec.TtlStrategy.SecondsAfterFailure = secondsAfterFailure;
+
+        SetUpSimpleArgoWorkFlow(argoTemplate);
+
+        var message = GenerateTaskDispatchEventWithValidArguments();
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
+        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+        Assert.Equal(secondsAfterCompletion, _submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterCompletion);
+        Assert.Equal(secondsAfterSuccess, _submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterSuccess);
+        Assert.Equal(secondsAfterFailure, _submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterFailure);
+    }
+
+    [Fact(DisplayName = "pocGC gets removed if pressent")]
+    public async Task ArgoPlugin_Ensures_podGC_is_removed()
+    {
+        var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
+        Assert.NotNull(argoTemplate);
+
+        argoTemplate.Spec.PodGC = new PodGC { Strategy = "OnePodSeccess" };
+
+        SetUpSimpleArgoWorkFlow(argoTemplate);
+
+        var message = GenerateTaskDispatchEventWithValidArguments();
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
+        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+        Assert.Null(_submittedArgoTemplate?.Spec.PodGC);
+
+    }
+    private void SetUpSimpleArgoWorkFlow(WorkflowTemplate argoTemplate)
+    {
+        Assert.NotNull(argoTemplate);
 
         _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(argoTemplate);
+
         _argoClient.Setup(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
             .Callback((string ns, WorkflowCreateRequest body, CancellationToken cancellationToken) =>
             {
-                submittedArgoTemplate = body.Workflow;
+                _submittedArgoTemplate = body.Workflow;
             })
             .ReturnsAsync((string ns, WorkflowCreateRequest body, CancellationToken cancellationToken) =>
             {
@@ -637,12 +768,6 @@ public class ArgoPluginTest
                 return new HttpOperationResponse<V1Secret> { Body = body, Response = new HttpResponseMessage { } };
             });
         SetupKubernetesDeleteSecret();
-
-        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
-        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
-
-        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
-        Assert.Equal(secret, submittedArgoTemplate?.Spec.ImagePullSecrets.First());
     }
 
     private static TaskDispatchEvent GenerateTaskDispatchEventWithValidArguments()
