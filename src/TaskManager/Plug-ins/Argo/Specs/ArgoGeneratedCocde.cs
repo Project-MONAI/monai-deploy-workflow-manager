@@ -3354,7 +3354,7 @@ namespace Argo
         /// <br/>+optional.</param>
         /// <returns>A successful response.(streaming responses)</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response10> WorkflowService_WorkflowLogsAsync(string @namespace, string name, string podName, string logOptions_container, bool? logOptions_follow, bool? logOptions_previous, string logOptions_sinceSeconds, string logOptions_sinceTime_seconds, int? logOptions_sinceTime_nanos, bool? logOptions_timestamps, string logOptions_tailLines, string logOptions_limitBytes, bool? logOptions_insecureSkipTLSVerifyBackend, string grep, string selector);
+        System.Threading.Tasks.Task<string> WorkflowService_WorkflowLogsAsync(string @namespace, string name, string podName, string logOptions_container, bool? logOptions_follow, bool? logOptions_previous, string logOptions_sinceSeconds, string logOptions_sinceTime_seconds, int? logOptions_sinceTime_nanos, bool? logOptions_timestamps, string logOptions_tailLines, string logOptions_limitBytes, bool? logOptions_insecureSkipTLSVerifyBackend, string grep, string selector);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <param name="logOptions_container">The container for which to stream logs. Defaults to only container if there is one container in the pod.
@@ -3394,7 +3394,7 @@ namespace Argo
         /// <br/>+optional.</param>
         /// <returns>A successful response.(streaming responses)</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Response10> WorkflowService_WorkflowLogsAsync(string @namespace, string name, string podName, string logOptions_container, bool? logOptions_follow, bool? logOptions_previous, string logOptions_sinceSeconds, string logOptions_sinceTime_seconds, int? logOptions_sinceTime_nanos, bool? logOptions_timestamps, string logOptions_tailLines, string logOptions_limitBytes, bool? logOptions_insecureSkipTLSVerifyBackend, string grep, string selector, System.Threading.CancellationToken cancellationToken);
+        //System.Threading.Tasks.Task<Response10> WorkflowService_WorkflowLogsAsync(string @namespace, string name, string podName, string logOptions_container, bool? logOptions_follow, bool? logOptions_previous, string logOptions_sinceSeconds, string logOptions_sinceTime_seconds, int? logOptions_sinceTime_nanos, bool? logOptions_timestamps, string logOptions_tailLines, string logOptions_limitBytes, bool? logOptions_insecureSkipTLSVerifyBackend, string grep, string selector, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>A successful response.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -12400,7 +12400,7 @@ namespace Argo
         /// <br/>+optional.</param>
         /// <returns>A successful response.(streaming responses)</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Response10> WorkflowService_WorkflowLogsAsync(string @namespace, string name, string podName, string logOptions_container, bool? logOptions_follow, bool? logOptions_previous, string logOptions_sinceSeconds, string logOptions_sinceTime_seconds, int? logOptions_sinceTime_nanos, bool? logOptions_timestamps, string logOptions_tailLines, string logOptions_limitBytes, bool? logOptions_insecureSkipTLSVerifyBackend, string grep, string selector)
+        public virtual System.Threading.Tasks.Task<string> WorkflowService_WorkflowLogsAsync(string @namespace, string name, string podName, string logOptions_container, bool? logOptions_follow, bool? logOptions_previous, string logOptions_sinceSeconds, string logOptions_sinceTime_seconds, int? logOptions_sinceTime_nanos, bool? logOptions_timestamps, string logOptions_tailLines, string logOptions_limitBytes, bool? logOptions_insecureSkipTLSVerifyBackend, string grep, string selector)
         {
             return WorkflowService_WorkflowLogsAsync(@namespace, name, podName, logOptions_container, logOptions_follow, logOptions_previous, logOptions_sinceSeconds, logOptions_sinceTime_seconds, logOptions_sinceTime_nanos, logOptions_timestamps, logOptions_tailLines, logOptions_limitBytes, logOptions_insecureSkipTLSVerifyBackend, grep, selector, System.Threading.CancellationToken.None);
         }
@@ -12443,7 +12443,7 @@ namespace Argo
         /// <br/>+optional.</param>
         /// <returns>A successful response.(streaming responses)</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response10> WorkflowService_WorkflowLogsAsync(string @namespace, string name, string podName, string logOptions_container, bool? logOptions_follow, bool? logOptions_previous, string logOptions_sinceSeconds, string logOptions_sinceTime_seconds, int? logOptions_sinceTime_nanos, bool? logOptions_timestamps, string logOptions_tailLines, string logOptions_limitBytes, bool? logOptions_insecureSkipTLSVerifyBackend, string grep, string selector, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<string> WorkflowService_WorkflowLogsAsync(string @namespace, string name, string podName, string logOptions_container, bool? logOptions_follow, bool? logOptions_previous, string logOptions_sinceSeconds, string logOptions_sinceTime_seconds, int? logOptions_sinceTime_nanos, bool? logOptions_timestamps, string logOptions_tailLines, string logOptions_limitBytes, bool? logOptions_insecureSkipTLSVerifyBackend, string grep, string selector, System.Threading.CancellationToken cancellationToken)
         {
             if (@namespace == null)
                 throw new System.ArgumentNullException("@namespace");
@@ -12541,12 +12541,9 @@ namespace Argo
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Response10>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var responseText = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            return responseText;
+
                         }
                         else
                         {
