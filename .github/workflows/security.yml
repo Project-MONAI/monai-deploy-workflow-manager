@@ -34,7 +34,7 @@ jobs:
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: ${{ github.ref_name }}
+          base: "jsparkes/add-new-secret-scanning"
           head: HEAD
           extra_args: --debug --only-verified
 
