@@ -54,13 +54,12 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
             while (!stoppingToken.IsCancellationRequested)
             {
                 IsRunning = true;
-                var time = DateTimeOffset.Now;
+                var time = DateTime.UtcNow;
                 _logger.ServiceStarted(ServiceName);
-                _logger.LogDebug("Worker running at: {time}", time);
 
                 await DoWork();
 
-                _logger.LogDebug("Worker completed in: {time} milliseconds", (int)(DateTimeOffset.Now - time).TotalMilliseconds);
+                _logger.LogDebug("Worker completed in: {elapsed_millis} milliseconds", (int)(DateTime.UtcNow - time).TotalMilliseconds);
                 await Task.Delay(_options.Value.BackgroundServiceSettings.BackgroundServiceDelay, stoppingToken);
             }
 

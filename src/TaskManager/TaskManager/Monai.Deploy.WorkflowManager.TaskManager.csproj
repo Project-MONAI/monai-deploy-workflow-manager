@@ -62,11 +62,8 @@
     <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.8" />
     <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.7" />
     <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.8" />
-    <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
-    <PackageReference Include="Elastic.CommonSchema.Serilog" Version="1.5.3" />
-    <PackageReference Include="Serilog.Sinks.Http" Version="8.0.0" />
-    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
-    <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
+    <PackageReference Include="NLog" Version="5.0.4" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.1.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -85,6 +82,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="appsettings.Local.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="nlog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

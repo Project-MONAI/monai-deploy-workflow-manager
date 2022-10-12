@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Xml.Linq;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -207,6 +208,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return false;
             }
 
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["workflowInstanceId"] = workflowInstance.Id,
+                ["durationSoFar"] = (DateTime.UtcNow - workflowInstance.StartTime).TotalMilliseconds
+            });
+
             var currentTask = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId == message.TaskId);
 
             if (currentTask is null)
@@ -296,6 +303,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 return false;
             }
+
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["workflowInstanceId"] = workflowInstance.Id,
+                ["durationSoFar"] = (DateTime.UtcNow - workflowInstance.StartTime).TotalMilliseconds
+            });
 
             if (message.Status.Equals(ExportStatus.Success)
                 && TaskExecutionStatus.Succeeded.IsTaskExecutionStatusUpdateValid(task.Status))

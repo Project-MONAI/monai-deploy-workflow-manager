@@ -17,8 +17,8 @@
 using System;
 using System.IO;
 using System.IO.Abstractions;
+using System.Linq;
 using System.Reflection;
-using Elastic.CommonSchema.Serilog;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -40,9 +40,9 @@ using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
 using MongoDB.Driver;
-using Serilog;
-using Serilog.Events;
-using Serilog.Exceptions;
+using NLog;
+using NLog.LayoutRenderers;
+using NLog.Web;
 
 namespace Monai.Deploy.WorkflowManager
 {
@@ -74,20 +74,6 @@ namespace Monai.Deploy.WorkflowManager
                     configureLogging.AddConfiguration(builderContext.Configuration.GetSection("Logging"));
                     configureLogging.AddFile(o => o.RootPath = AppContext.BaseDirectory);
                 })
-                .UseSerilog((context, services, configuration) => configuration
-                    .ReadFrom.Configuration(context.Configuration)
-                    .ReadFrom.Services(services)
-                    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                    .MinimumLevel.Debug()
-                    .Enrich.FromLogContext()
-                    .Enrich.WithExceptionDetails()
-                    .Enrich.WithProperty("dllversion", Assembly.GetEntryAssembly().GetName().Version)
-                    .Enrich.WithProperty("dllName", Assembly.GetEntryAssembly().GetName().Name)
-                    .WriteTo.File(
-                        path: "logs/MWM-.log",
-                        rollingInterval: RollingInterval.Day,
-                        formatter: new EcsTextFormatter())
-                    .WriteTo.Console())
                 .ConfigureServices((hostContext, services) =>
                 {
                     ConfigureServices(hostContext, services);
@@ -96,7 +82,8 @@ namespace Monai.Deploy.WorkflowManager
                 {
                     webBuilder.CaptureStartupErrors(true);
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+               .UseNLog();
 
         private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
         {
@@ -168,11 +155,29 @@ namespace Monai.Deploy.WorkflowManager
 
         private static void Main(string[] args)
         {
+            var logger = ConfigureNLog();
+            logger.Info("init main");
+
             var host = CreateHostBuilder(args).Build();
 
             host.Run();
+
+            NLog.LogManager.Shutdown();
         }
 
+        private static Logger ConfigureNLog()
+        {
+            var version = typeof(Program).Assembly;
+            var assemblyVersionNumber = version.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0.1";
+
+            LayoutRenderer.Register("servicename", logEvent => Assembly.GetEntryAssembly()?.GetName().Name);
+            LayoutRenderer.Register("serviceversion", logEvent => assemblyVersionNumber);
+            LayoutRenderer.Register("machinename", logEvent => Environment.MachineName);
+
+            var nLog = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+
+            return nLog;
+        }
 #pragma warning restore SA1600 // Elements should be documented
     }
 }
