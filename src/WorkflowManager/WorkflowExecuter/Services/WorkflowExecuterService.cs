@@ -259,8 +259,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (isValid is false)
             {
-                await UpdateWorkflowInstanceStatus(workflowInstance, message.TaskId, TaskExecutionStatus.Failed);
-
                 return await CompleteTask(currentTask, workflowInstance, message.CorrelationId, TaskExecutionStatus.Failed);
             }
 
@@ -323,18 +321,20 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return true;
         }
 
-        private async Task<bool> FailedTask(TaskExecution task, WorkflowInstance workflowInstance, string correlationId, TaskExecutionStatus status)
-        {
-            var payload = await _payloadService.GetByIdAsync(workflowInstance.PayloadId);
-            _logger.TaskFailed(task, workflowInstance, payload?.PatientDetails, correlationId, status.ToString());
-
-            return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, status);
-        }
-
         private async Task<bool> CompleteTask(TaskExecution task, WorkflowInstance workflowInstance, string correlationId, TaskExecutionStatus status)
         {
             var payload = await _payloadService.GetByIdAsync(workflowInstance.PayloadId);
-            _logger.TaskComplete(task, workflowInstance, payload?.PatientDetails, correlationId, status.ToString());
+
+            if (status is TaskExecutionStatus.Failed)
+            {
+                _logger.TaskFailed(task, workflowInstance, payload?.PatientDetails, correlationId, status.ToString());
+
+                await UpdateWorkflowInstanceStatus(workflowInstance, task.TaskId, TaskExecutionStatus.Failed);
+            }
+            else
+            {
+                _logger.TaskComplete(task, workflowInstance, payload?.PatientDetails, correlationId, status.ToString());
+            }
 
             return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, status);
         }
@@ -397,8 +397,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             if (artifactValues.IsNullOrEmpty())
             {
                 _logger.ExportFilesNotFound(task.TaskId, workflowInstance.Id);
-
-                await UpdateWorkflowInstanceStatus(workflowInstance, task.TaskId, TaskExecutionStatus.Failed);
 
                 await CompleteTask(task, workflowInstance, correlationId, TaskExecutionStatus.Failed);
 
@@ -538,9 +536,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (newTaskExecutions.Any(task => task.Status == TaskExecutionStatus.Failed))
             {
-                await UpdateWorkflowInstanceStatus(workflowInstance, task.TaskId, TaskExecutionStatus.Failed);
-
-                return await FailedTask(task, workflowInstance, correlationId, TaskExecutionStatus.Failed);
+                return await CompleteTask(task, workflowInstance, correlationId, TaskExecutionStatus.Failed);
             }
 
             if (newTaskExecutions.Any() is false)
