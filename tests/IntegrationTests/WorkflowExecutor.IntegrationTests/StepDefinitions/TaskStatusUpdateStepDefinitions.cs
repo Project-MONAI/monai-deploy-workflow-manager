@@ -144,12 +144,29 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"I can see the status of the Task is not updated")]
         public void ThenICanSeeTheStatusOfTheTaskIsNotUpdated()
         {
-            for (int i = 0; i < 2; i++)
+            if (DataHelper.TaskUpdateEvent.TaskId != "")
             {
-                Thread.Sleep(2000);
-                var updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
-                var orignalWorkflowInstance = DataHelper.WorkflowInstances.FirstOrDefault(x => x.Id.Equals(DataHelper.TaskUpdateEvent.WorkflowInstanceId));
-                updatedWorkflowInstance.Tasks[0].Status.Should().Be(orignalWorkflowInstance?.Tasks[0].Status);
+                RetryPolicy.Execute(() =>
+                {
+                    _outputHelper.WriteLine($"Retrieving workflow instance by id={DataHelper.TaskUpdateEvent.WorkflowInstanceId}");
+                    var workflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
+                    _outputHelper.WriteLine("Retrieved workflow instance");
+
+                    var taskUpdated = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(DataHelper.TaskUpdateEvent.TaskId));
+
+                    if (taskUpdated != null)
+                    {
+                        taskUpdated.Status.Should().Be(DataHelper.TaskUpdateEvent.Status);
+                    }
+                    else
+                    {
+                        throw new Exception($"Task Update Event could not be found with task ID {DataHelper.TaskUpdateEvent.TaskId}");
+                    }
+                });
+            }
+            else
+            {
+                throw new Exception("A task update has not been sent which is required for this assertion");
             }
         }
 

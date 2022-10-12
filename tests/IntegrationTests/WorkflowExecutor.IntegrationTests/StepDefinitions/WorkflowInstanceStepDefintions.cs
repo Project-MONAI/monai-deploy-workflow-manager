@@ -116,8 +116,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             DataHelper.SeededWorkflowInstances = listOfWorkflowInstance;
         }
 
-        [Then(@"I can see (\d*) Workflow Instances are created")]
-        [Then(@"I can see (\d*) Workflow Instance is created")]
+        [Then(@"I can see ([1-9]*) Workflow Instances are created")]
+        [Then(@"I can see ([1-9]*) Workflow Instance is created")]
         public void ThenICanSeeAWorkflowInstanceIsCreated(int count)
         {
             _outputHelper.WriteLine($"Retrieving {count} workflow instance/s using the payloadid={DataHelper.WorkflowRequestMessage.PayloadId.ToString()}");

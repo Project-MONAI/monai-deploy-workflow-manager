@@ -334,7 +334,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 }
                 else
                 {
-                    throw new Exception($"{count} task dispatch events could not be found");
+                    throw new Exception($"{count} task dispatch events could not be found, actual amount is {TaskDispatchEvents.Count}");
                 }
             });
 

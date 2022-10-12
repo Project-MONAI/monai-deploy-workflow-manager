@@ -200,7 +200,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     CorrelationId = Guid.NewGuid().ToString(),
                     Reason = FailureReason.None,
                     Message = "Task Message",
-                    TaskId = "303c441f-7181-43cf-b1fd-83e5acec99fa",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Tasks[0].TaskId,
                     Metadata = new Dictionary<string, object>()
                     {
                     }
