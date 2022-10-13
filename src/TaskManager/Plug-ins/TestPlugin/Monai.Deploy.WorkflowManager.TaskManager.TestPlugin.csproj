@@ -19,6 +19,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
@@ -28,6 +29,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\..\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
   </ItemGroup>
 
 </Project>
