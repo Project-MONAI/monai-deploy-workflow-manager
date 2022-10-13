@@ -208,21 +208,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new TaskUpdateTestData()
             {
-                Name = "Task_Status_Update_Missing_TaskId",
-                TaskUpdateEvent = new TaskUpdateEvent()
-                {
-                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Id,
-                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Tasks[0].ExecutionId,
-                    CorrelationId = Guid.NewGuid().ToString(),
-                    Reason = FailureReason.None,
-                    Message = "Task Message",
-                    Metadata = new Dictionary<string, object>()
-                    {
-                    }
-                }
-            },
-            new TaskUpdateTestData()
-            {
                 Name = "Task_Status_Update_Missing_ExecutionId",
                 TaskUpdateEvent = new TaskUpdateEvent()
                 {

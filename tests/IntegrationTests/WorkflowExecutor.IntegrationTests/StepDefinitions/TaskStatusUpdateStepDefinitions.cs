@@ -156,7 +156,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
                     if (taskUpdated != null)
                     {
-                        taskUpdated.Status.Should().Be(DataHelper.TaskUpdateEvent.Status);
+                        taskUpdated.Status.Should().NotBe(DataHelper.TaskUpdateEvent.Status);
                     }
                     else
                     {
