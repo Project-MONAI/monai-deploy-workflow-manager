@@ -14,6 +14,8 @@
 
 name: Release
 on:
+  pull_request:
+  push:
   workflow_dispatch:
 
 jobs:
@@ -59,20 +61,30 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
+      - name: Extract metadata (tags, labels) for Docker (main branch)
+        if: ${{ contains(github.ref, 'refs/heads/main') }}
         id: meta
         uses: docker/metadata-action@v4.0.1
         with:
           images: ${{ matrix.image }}
           tags: |
-            type=raw,value=develop-latest
-            type=raw,value=develop-nightly-${{ steps.date.outputs.date }}
+            type=raw,value=latest
+            type=raw,value=develop-nightly-${{ steps.gitversion.outputs.semVer }}
+            
+      - name: Extract metadata (tags, labels) for Docker
+        if: ${{ !contains(github.ref, 'refs/heads/main') }}
+        id: meta
+        uses: docker/metadata-action@v4.0.1
+        with:
+          images: ${{ matrix.image }}
+          tags: |
+            type=raw,value=develop-nightly-${{ steps.gitversion.outputs.semVer }}
 
       - name: Build and Push Container Image for ${{ matrix.feature }}
         uses: docker/build-push-action@v3.1.1
         with:
           context: .
-          push: true
+          push: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/develop') ||contains(github.head_ref, 'release/') || contains(github.head_ref, 'feature/') || contains(github.head_ref, 'develop') }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ matrix.dockerfile }}
