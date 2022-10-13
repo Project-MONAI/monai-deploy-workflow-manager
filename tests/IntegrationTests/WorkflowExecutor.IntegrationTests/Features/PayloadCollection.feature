@@ -51,7 +51,7 @@ Scenario: Payload collection will be populated with workflow instance id after r
 @WorkflowInstanceDetails
 Scenario: Payload collection will be populated with workflow instance ids after receiving a Workflow Request when multiple workflows are matched
     Given I have a clinical workflow Basic_Workflow_1
-    Given I have a clinical workflow Basic_Workflow_2
+    And I have a clinical workflow Basic_Workflow_2
     When I publish a Workflow Request Message Basic_AeTitle_Payload_Collection_Request_1 with artifacts full_patient_metadata in minio
     Then A payload collection is created with 2 workflow instance id
 

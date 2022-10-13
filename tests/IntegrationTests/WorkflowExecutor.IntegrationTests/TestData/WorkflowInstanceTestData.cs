@@ -279,7 +279,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 {
                     Id = Guid.NewGuid().ToString(),
                     AeTitle = "Task_Update_9",
-                    WorkflowId = Guid.NewGuid().ToString(),
+                    WorkflowId = "5A99B6B4-8ADF-45CA-A664-882C85399AEE",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
@@ -307,7 +307,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 {
                     Id = Guid.NewGuid().ToString(),
                     AeTitle = "Task_Update_10",
-                    WorkflowId = Guid.NewGuid().ToString(),
+                    WorkflowId = "5A99B6B4-8ADF-45CA-A664-882C85399AEE",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
@@ -335,7 +335,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 {
                     Id = Guid.NewGuid().ToString(),
                     AeTitle = "Task_Update_11",
-                    WorkflowId = Guid.NewGuid().ToString(),
+                    WorkflowId = "5A99B6B4-8ADF-45CA-A664-882C85399AEE",
                     PayloadId = Guid.NewGuid().ToString(),
                     StartTime = DateTime.UtcNow,
                     Status = Status.Created,
