@@ -124,6 +124,7 @@ Scenario: Export request complete message is sent as Partial Failed or Failed, w
     And I have a Workflow Instance Workflow_Instance_for_export_multi_dest_2 with artifacts output_metadata in minio
     When I publish a Export Complete Message <exportCompleteMessage>
     Then I can see the status of the Task export_task_1 is Failed
+    And Workflow Instance status is Failed
     Examples:
     | exportCompleteMessage                                         |
     | Export_Complete_Message_for_export_multi_dest_2_PartialFailed |
