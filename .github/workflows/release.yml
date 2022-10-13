@@ -72,7 +72,7 @@ jobs:
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
             type=raw,value=${{ steps.gitversion.outputs.semVer }}
 
-      - name: Build and Push Container Image for ${{ matrix.feature }}
+      - name: Build and Push Container Image for ${{ matrix.dockerfile }}
         uses: docker/build-push-action@v3.1.1
         with:
           context: .
