@@ -55,6 +55,9 @@ jobs:
           updateAssemblyInfoFilename: src/AssemblyInfo.cs
           configFilePath: .github/.gitversion.yml
 
+      - name: Print Assembly File
+        run: cat src/AssemblyInfo.cs
+
       - name: Log in to the Container registry
         uses: docker/login-action@v2.0.0
         with:
