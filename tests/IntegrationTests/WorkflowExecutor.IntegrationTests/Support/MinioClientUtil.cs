@@ -65,7 +65,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                         }
                         catch (Exception)
                         {
-
                         }
                     }
                     else

@@ -36,14 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ardalis.GuardClauses" Version="4.0.1" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.8" />
-    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.7" />
-    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.214" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Shared\Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj" />
     <ProjectReference Include="..\Common\Monai.Deploy.WorkflowManager.Common.csproj" />
     <ProjectReference Include="..\ConditionsResolver\Monai.Deploy.WorkflowManager.ConditionsResolver.csproj" />
