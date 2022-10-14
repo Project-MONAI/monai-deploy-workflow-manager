@@ -60,12 +60,17 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             RetryPolicy.Execute(() =>
             {
                 Contracts.Models.WorkflowInstance workflowInstance;
-                if (DataHelper.TaskUpdateEvent.WorkflowInstanceId != "")
+                if (string.IsNullOrWhiteSpace(DataHelper.TaskUpdateEvent.WorkflowInstanceId) is false)
                 {
                     _outputHelper.WriteLine($"Retrieving workflow instance by id={DataHelper.TaskUpdateEvent.WorkflowInstanceId}");
                     workflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
                 }
-                else if (DataHelper.WorkflowRequestMessage.PayloadId != null)
+                else if (string.IsNullOrWhiteSpace(DataHelper.ExportCompleteEvent.WorkflowInstanceId) is false)
+                {
+                    _outputHelper.WriteLine($"Retrieving workflow instance by Workflow Instance Id={DataHelper.ExportCompleteEvent.WorkflowInstanceId}");
+                    workflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.ExportCompleteEvent.WorkflowInstanceId);
+                }
+                else if (DataHelper.WorkflowRequestMessage.PayloadId != Guid.Empty)
                 {
                     _outputHelper.WriteLine($"Retrieving workflow instance by PayloadId={DataHelper.WorkflowRequestMessage.PayloadId}");
                     workflowInstance = MongoClient.GetWorkflowInstance(DataHelper.WorkflowRequestMessage.PayloadId.ToString());

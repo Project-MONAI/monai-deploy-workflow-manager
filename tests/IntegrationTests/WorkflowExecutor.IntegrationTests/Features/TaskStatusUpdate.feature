@@ -70,20 +70,20 @@ Scenario Outline: Publish an invalid Task Update event which does not update the
     Then I can see the status of the Task is not updated
     Examples:
     | taskUpdateMessage                        |
-    | Task_Status_Update_Missing_TaskId        |
     | Task_Status_Update_Missing_ExecutionId   |
     | Task_Status_Update_Missing_CorrelationId |
 
 @TaskUpdate
 Scenario Outline: Publish an valid Task Update event with a status that is invalid for current status
-    Given I have a Workflow Instance <existingWFI> with no artifacts
+    Given I have a clinical workflow <workflow>
+    And I have a Workflow Instance <existingWFI> with no artifacts
     When I publish a Task Update Message <taskUpdateMessage> with status <taskUpdateStatus>
     Then I can see the status of the Task is not updated
     Examples:
-    | existingWFI               | taskUpdateMessage                                | taskUpdateStatus |
-    | WFI_Task_Status_Succeeded | Task_Status_Update_Status_Invalid_When_Succeeded | Accepted         |
-    | WFI_Task_Status_Failed    | Task_Status_Update_Status_Invalid_When_Failed    | Accepted         |
-    | WFI_Task_Status_Canceled  | Task_Status_Update_Status_Invalid_When_Canceled  | Accepted         |
+    | workflow                                              | existingWFI               | taskUpdateMessage                                | taskUpdateStatus |
+    | Workflow_Revision_for_publish_an_invalid_task_update  | WFI_Task_Status_Succeeded | Task_Status_Update_Status_Invalid_When_Succeeded | Accepted         |
+    | Workflow_Revision_for_publish_an_invalid_task_update  | WFI_Task_Status_Failed    | Task_Status_Update_Status_Invalid_When_Failed    | Accepted         |
+    | Workflow_Revision_for_publish_an_invalid_task_update  | WFI_Task_Status_Canceled  | Task_Status_Update_Status_Invalid_When_Canceled  | Accepted         |
 
 @TaskExport
 Scenario Outline: Export task with single destination is in progress, export message is sent 
@@ -124,6 +124,7 @@ Scenario: Export request complete message is sent as Partial Failed or Failed, w
     And I have a Workflow Instance Workflow_Instance_for_export_multi_dest_2 with artifacts output_metadata in minio
     When I publish a Export Complete Message <exportCompleteMessage>
     Then I can see the status of the Task export_task_1 is Failed
+    And Workflow Instance status is Failed
     Examples:
     | exportCompleteMessage                                         |
     | Export_Complete_Message_for_export_multi_dest_2_PartialFailed |

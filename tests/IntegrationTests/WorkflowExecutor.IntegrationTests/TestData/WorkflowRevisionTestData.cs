@@ -2106,6 +2106,67 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+                        new WorkflowRevisionTestData()
+            {
+                Name = "Workflow_Revision_for_publish_an_invalid_task_update",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = "5A99B6B4-8ADF-45CA-A664-882C85399AEE",
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Artifact 1",
+                        Description = "Artifact 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "artifact_task_1",
+                                Type = "Artifact_task",
+                                Description = "Artifact Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                    },
+                                },
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination{ Name = "export_task_1" }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "export_task_1",
+                                Type = "Export",
+                                Description = "Export Workflow 1 Task 2",
+                                ExportDestinations = new ExportDestination[]
+                                {
+                                    new ExportDestination { Name = "PROD_PACS" }
+                                },
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                        new Artifact { Name = "output", Value = "{{ context.executions.artifact_task_1.output_dir }}" },
+                                    },
+                                },
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Artifact_AE",
+                            ExportDestinations = new string[]
+                            {
+                                "PROD_PACS"
+                            }
+                        }
+                    }
+                }
+            },
             new WorkflowRevisionTestData()
             {
                 Name = "Workflow_Revision_for_export_folder",
