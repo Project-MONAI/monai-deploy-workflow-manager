@@ -37,9 +37,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.213" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.6-rc0001" />
-    <PackageReference Include="MongoDB.Bson" Version="2.17.1" />
+    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.214" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.8" />
+    <PackageReference Include="MongoDB.Bson" Version="2.18.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
   </ItemGroup>
