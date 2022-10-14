@@ -109,6 +109,64 @@ jobs:
           sarif_file: ${{ steps.anchore-scan.outputs.sarif }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
+  docs:
+    runs-on: windows-latest
+    needs: [calc-version]
+    env:
+      SEMVER: ${{ needs.build-and-deploy.outputs.semVer }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "6.0.x"
+
+      - name: Enable NuGet cache
+        uses: actions/cache@v3.0.10
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget
+
+      - name: Setup DocFX
+        uses: crazy-max/ghaction-chocolatey@v2
+        with:
+          args: install docfx
+
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ./src
+
+      - name: Build Solution
+        run: dotnet build -c ${{ env.BUILD_CONFIG }} --nologo ${{ env.SOLUTION }}
+        working-directory: ./src
+
+      - name: Update docs version
+        run: |
+          sed -i -e "s,v0.0.0,v${{ env.SEMVER }},g" ./docs/docfx.json
+          sed -i -e "s,v0.0.0,v${{ env.SEMVER }},g" ./docs/index.md
+
+      - name: Build Docs
+        working-directory: docs
+        run: docfx docfx.json
+        continue-on-error: false
+
+      - name: Package docs
+        run: |
+          mkdir ~\release
+          Compress-Archive -Path docs\_site\* -DestinationPath ~\release\mig-docs-${{ env.SEMVER }}.zip
+          Get-ChildItem ~\release -Recurse   
+
+      - name: Upload docs
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: artifacts
+          path: ~/release
+          retention-days: 7
+
   release:
     if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/develop') ||contains(github.head_ref, 'release/') || contains(github.head_ref, 'feature/') || contains(github.head_ref, 'develop') }}
     runs-on: ubuntu-latest
