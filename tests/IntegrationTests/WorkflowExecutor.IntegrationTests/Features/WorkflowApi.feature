@@ -23,7 +23,7 @@ Scenario: Get all clinical workflows from API - Single workflow
     And I have a clinical workflow Basic_Workflow_1
     When I send a GET request
     Then I will get a 200 response
-    And I can see 1 workflow is returned
+    And I can see the expected workflows are returned
 
 @GetWorkflows
 Scenario: Get all clinical workflows from API - Multiple workflows
@@ -32,14 +32,14 @@ Scenario: Get all clinical workflows from API - Multiple workflows
     And I have a clinical workflow Basic_Workflow_3
     When I send a GET request
     Then I will get a 200 response
-    And I can see 2 workflows are returned
+    And I can see the expected workflows are returned
 
 @GetWorkflows
 Scenario: Get all clinical workflows from API - No workflows
     Given I have an endpoint /workflows
     When I send a GET request
     Then I will get a 200 response
-    And I can see 0 workflows are returned
+    And I can see the expected workflows are returned
 
 @WorkflowPagination
 Scenario Outline: Get all clinical workflows from API - Test pagination
