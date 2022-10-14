@@ -157,7 +157,7 @@ jobs:
       - name: Package docs
         run: |
           mkdir ~\release
-          Compress-Archive -Path docs\_site\* -DestinationPath ~\release\mig-docs-${{ env.SEMVER }}.zip
+          Compress-Archive -Path docs\_site\* -DestinationPath ~\release\mwm-docs-${{ env.SEMVER }}.zip
           Get-ChildItem ~\release -Recurse   
 
       - name: Upload docs
@@ -170,7 +170,7 @@ jobs:
   release:
     if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/develop') ||contains(github.head_ref, 'release/') || contains(github.head_ref, 'feature/') || contains(github.head_ref, 'develop') }}
     runs-on: ubuntu-latest
-    needs: [build-and-deploy]
+    needs: [build-and-deploy, docs]
     env:
       SEMVER: ${{ needs.build-and-deploy.outputs.semVer }}
       MAJORMINORPATCH: ${{ needs.build-and-deploy.outputs.majorMinorPatch }}
@@ -200,6 +200,8 @@ jobs:
           repository: ${{ steps.repo.outputs._1 }}
           milestone: ${{ env.MAJORMINORPATCH }}
           name: "Release v${{ env.MAJORMINORPATCH }}"
+          assets: |
+            artifacts/mwm-docs-${{ env.SEMVER }}.zip
 
       - name: Publish release with GitReleaseManager
         uses: gittools/actions/gitreleasemanager/publish@v0.9.13
@@ -218,3 +220,18 @@ jobs:
           owner: ${{ steps.repo.outputs._0 }}
           repository: ${{ steps.repo.outputs._1 }}
           milestone: ${{ env.MAJORMINORPATCH }}
+
+      - name: Unzip docs
+        if: ${{ contains(github.ref, 'refs/heads/main') }}
+        run: |
+          mkdir userguide
+          unzip artifacts/mwm-docs-${{ env.SEMVER }}.zip -d userguide/
+          ls -lR userguide/
+
+      - name: Deploy Docs
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ contains(github.ref, 'refs/heads/main') }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: userguide/
+          publish_branch: docs
