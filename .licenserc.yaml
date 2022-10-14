@@ -33,6 +33,7 @@ header:
     - 'src/.sonarlint/**'
     - 'src/coverlet.runsettings'
     - 'src/.vs'
+    - 'docs/templates/**'
 
   comment: never
 
