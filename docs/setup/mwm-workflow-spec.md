@@ -33,22 +33,9 @@ The MONAI Workflow Manager is responsible for executing pre-registered clinical 
 - [Task Object](#task-object)
   - [Common Feilds](#common-feilds)
     - [Data Attributes for specific task types](#data-attributes-for-specific-task-types)
-      - [Router](#router)
-      - [Export](#export)
-      - [Plugin](#plugin)
     - [Artifacts](#artifacts)
-      - [Artifact Map](#artifact-map)
-      - [Artifact](#artifact)
-      - [Task Types](#task-types-1)
-        - [Argo](#argo)
-          - [Resource Request Object](#resource-request-object)
     - [Evaluators](#evaluators)
-      - [Context](#context)
-        - [Execution Context](#execution-context)
-        - [DICOM Tags](#dicom-tags)
     - [Destinations](#destinations)
-      - [Task Destinations](#task-destinations)
-      - [Export Destinations](#export-destinations)
     - [Retention Policies](#retention-policies)
 
 
@@ -69,9 +56,9 @@ This is the top-level object in a workflow spec. It contains the following prope
 
 ## Examples
 The following is an example of a complete workflow:
-![scenario1](static/workflow_examples/scenario1.png)
+![scenario1](../images/workflow_examples/scenario1.png)
 
-The JSON implementing that scenario is available [here](static/workflow_examples/scenario1.json).
+The JSON implementing that scenario is available [here](../images/workflow_examples/scenario1.json).
 *Note: the examples are not up to date. Please do not rely on them*
 ### Informatics Gateway
 This section contains the IG configuration. Specifically, it contains the following properties:
@@ -92,7 +79,7 @@ This section contains the IG configuration. Specifically, it contains the follow
 The above specifies that the workflow should be triggered for inputs sent to the ae-title "MY_AET" from "MY_MODALITY".
 It also defines the "PROD_PACS" output destination, meaning that it can be used:
 * By tasks as the [destination of their output](#output).
-* By subscribers to [export notifications](mwm-sadd.md#export-service).
+* By subscribers to [export notifications](https://github.com/Project-MONAI/monai-deploy-workflow-manager/blob/develop/guidelines/mwm-sadd.md#export-service).
 
 ### Tasks
 Tasks are the basic building block of a workflow. They are provided as a list - the first Task in the list is executed when the workflow is triggered.
