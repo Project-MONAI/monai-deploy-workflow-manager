@@ -37,7 +37,7 @@ WORKDIR /opt/monai/wm
 COPY --from=build /app/out .
 COPY --from=build /tools /opt/dotnetcore-tools
 COPY --from=build /app/mc /usr/local/bin/mc
-COPY docs/compliance/open-source-licenses.md .
+COPY docs/compliance/third-party-licenses.md .
 
 EXPOSE 5000
 
