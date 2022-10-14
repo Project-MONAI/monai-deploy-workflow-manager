@@ -19,7 +19,6 @@ header:
 
   paths-ignore:
     - 'LICENSE'
-    - 'VERSION'
     - '.github/**/*.md'
     - '.github/containerscan/allowedlist.yaml'
     - '**/*.log'
