@@ -18,6 +18,10 @@ on:
   push:
   workflow_dispatch:
 
+env:
+  BUILD_CONFIG: "Release"
+  SOLUTION: "Monai.Deploy.WorkflowManager.sln"
+  
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
