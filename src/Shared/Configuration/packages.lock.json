@@ -18,7 +18,7 @@
         "type": "Direct",
         "requested": "[0.1.8, )",
         "resolved": "0.1.8",
-        "contentHash": "4hwBHpbynEUulEAT0vEb0VlZ7vsxbpRsnZR39bO/vY9EoEMTbk2GPiPbn58YX9VUItqe7uYxlyVhLFvKUzx+YQ==",
+        "contentHash": "MKRDN203Xv6b/DCK2E0S9vNJhHgeml1we5YBA+IHApEBYU/siLdlRRECfn3AKPTJXwmJ57kobQXliBkpF1yEoQ==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
