@@ -126,9 +126,21 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
             try
             {
+
+                var update = Builders<WorkflowInstance>.Update
+                    .Set(w => w.Tasks[-1].Status, status);
+
+                if (status is TaskExecutionStatus.Succeeded
+                    || status is TaskExecutionStatus.Failed
+                    || status is TaskExecutionStatus.Canceled)
+                {
+                    update = Builders<WorkflowInstance>.Update
+                    .Set(w => w.Tasks[-1].Status, status)
+                    .Set(w => w.Tasks[-1].TaskEndTime, DateTime.UtcNow);
+                }
+
                 await _workflowInstanceCollection.FindOneAndUpdateAsync(
-                    i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.TaskId == taskId),
-                    Builders<WorkflowInstance>.Update.Set(w => w.Tasks[-1].Status, status));
+                    i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.TaskId == taskId), update);
 
                 return true;
             }

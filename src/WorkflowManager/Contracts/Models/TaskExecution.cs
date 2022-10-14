@@ -35,6 +35,9 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "task_start_time")]
         public DateTime TaskStartTime { get; set; }
 
+        [JsonProperty(PropertyName = "task_end_time")]
+        public DateTime? TaskEndTime { get; set; }
+
         [JsonProperty(PropertyName = "execution_stats")]
         public Dictionary<string, string> ExecutionStats { get; set; } = new Dictionary<string, string>();
 
