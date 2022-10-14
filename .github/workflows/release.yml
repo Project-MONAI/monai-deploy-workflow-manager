@@ -111,7 +111,7 @@ jobs:
 
   docs:
     runs-on: windows-latest
-    needs: [calc-version]
+    needs: [build-and-deploy]
     env:
       SEMVER: ${{ needs.build-and-deploy.outputs.semVer }}
     steps:
