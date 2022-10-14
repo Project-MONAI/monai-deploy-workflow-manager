@@ -1,3 +1,9 @@
 general:
   vulnerabilities:
     - CVE-2022-27664
+    - CVE-2022-37434 # medium https://ubuntu.com/security/CVE-2022-37434
+    - CVE-2015-5237 # low https://ubuntu.com/security/CVE-2015-5237
+    - CVE-2016-20013 # negligible https://ubuntu.com/security/CVE-2016-20013
+    - CVE-2017-11164 # negligible https://ubuntu.com/security/CVE-2017-11164
+    - CVE-2020-16156 # medium https://ubuntu.com/security/CVE-2020-16156
+    - CVE-2022-29458 # negligible https://ubuntu.com/security/CVE-2022-29458
