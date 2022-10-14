@@ -16,8 +16,8 @@
 
 # Health APIs
 
-The _health_ endpoint provides the following APIs to get the status of the internals of the Workflow Manager.
-
+The _health_ endpoint provides the following APIs to get the status of the internal services & dependent services of 
+the Workflow Manager and the Task Manager.
 
 
 ## GET /health/
