@@ -1953,7 +1953,7 @@
 - - :approve
   - System.Threading.Channels
   - :who: mocsharp
-    :why: " (https://licenses.nuget.org/MIT)"
+    :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 4.7.1
     :when: 2022-10-14 23:38:26.916570960 Z
