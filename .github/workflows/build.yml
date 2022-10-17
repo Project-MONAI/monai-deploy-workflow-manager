@@ -184,6 +184,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: actions/download-artifact@v3
+        id: download
+
+      - name: List artifacts
+        run: ls -ldR ${{steps.download.outputs.download-path}}/**/*
+
       - name: Extract owner and repo
         uses: jungwinter/split@v2
         id: repo
