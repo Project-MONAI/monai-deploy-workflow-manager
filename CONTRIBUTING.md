@@ -20,6 +20,7 @@
   - [Preparing pull requests](#preparing-pull-requests)
   - [Submitting pull requests](#submitting-pull-requests)
   - [Release a new version](#release-a-new-version)
+  - [Vulnerability Reporting](#vulnerability-reporting)
 
 
 ## Introduction
@@ -267,3 +268,12 @@ A PR is made from a `release/` branch to the `main` branch when a new official r
 - [Milestones](https://github.com/Project-MONAI/monai-deploy-workflow-manager/milestones)
 - [Releases](https://github.com/Project-MONAI/monai-deploy-workflow-manager/releases)
 - [Packages](https://github.com/orgs/Project-MONAI/packages?repo_name=monai-deploy-workflow-manager)
+
+
+### Vulnerability Reporting
+
+Container scanning with Anchor & Gyrpe are integrated into the build workflows. For any vulnerabilities found or to 
+report any vulnerabilities, please ensure to open a new GitHub issue with the CVE as the title and label it with `Security`.
+
+If fix isn't available at the time of reporting, ensure a GitHub issue is raised before adding the CVE to the ignorelist in 
+`.gyrpe.yaml` file.

@@ -14,3 +14,5 @@ A few sentences describing the changes proposed in this pull request.
 - [ ] New tests added to cover the changes.
 - [ ] All tests passed locally.
 - [ ] [Documentation comments](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments) included/updated.
+- [ ] User guide updated.
+- [ ] I have updated the changelog
