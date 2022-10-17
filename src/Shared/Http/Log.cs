@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.Contracts.Rest;
+using Microsoft.Extensions.Logging;
 
-namespace Monai.Deploy.WorkflowManager.Common.Services
+namespace Monai.Deploy.WorkflowManager.Shared
 {
-    public interface IMonaiService
+    public static partial class Log
     {
-        ServiceStatus Status { get; set; }
-        string ServiceName { get; }
+        [LoggerMessage(EventId = 10000, Level = LogLevel.Debug, Message = "{ServiceName} started.")]
+        public static partial void LogControllerStartTime(this ILogger logger, string serviceName);
     }
 }

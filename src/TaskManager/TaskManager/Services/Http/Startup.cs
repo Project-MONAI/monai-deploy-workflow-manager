@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Linq;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,7 +29,7 @@ using Monai.Deploy.WorkflowManager.Logging.Attributes;
 using Monai.Deploy.WorkflowManager.Shared;
 using Newtonsoft.Json.Converters;
 
-namespace Monai.Deploy.WorkflowManager.Services.Http
+namespace Monai.Deploy.WorkflowManager.TaskManager.Services.Http
 {
     /// <summary>
     /// Http Api Endpoint Startup Class.
@@ -78,6 +77,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
                 });
 
             services.AddControllers(options => options.Filters.Add(typeof(LogActionFilterAttribute))).AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MONAI Workflow Manager", Version = "v1" });
@@ -91,8 +91,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
 
             services.AddHttpLogging(options =>
             {
-                options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestQuery |
-                                        Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
+                options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.Request | Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.Response;
             });
 
             services.Configure<ApiBehaviorOptions>(options =>
@@ -111,7 +110,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
             });
 
             services.AddHealthChecks()
-                .AddCheck<MonaiHealthCheck>("Workflow Manager Services")
+                .AddCheck<MonaiHealthCheck>("Task Manager Services")
                 .AddMongoDb(mongodbConnectionString: Configuration["WorkloadManagerDatabase:ConnectionString"], mongoDatabaseName: Configuration["WorkloadManagerDatabase:DatabaseName"]);
         }
 
@@ -121,6 +120,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
         /// <param name="app">Application Builder.</param>
         /// <param name="env">Web Host Environment.</param>
 #pragma warning disable SA1204 // Static elements should appear before instance elements
+
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 #pragma warning restore SA1204 // Static elements should appear before instance elements
         {

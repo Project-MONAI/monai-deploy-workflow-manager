@@ -18,6 +18,7 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Monai.Deploy.TaskManager.API;
+using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo;
 using Monai.Deploy.WorkflowManager.TaskManager.Docker;
 using Monai.Deploy.WorkflowManager.TaskManager.Services;
@@ -39,6 +40,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Extensions
         {
             Guard.Against.Null(hostContext, nameof(hostContext));
 
+            services.AddTransient<IMonaiServiceLocator, MonaiServiceLocator>();
             // TODO: the plug-in dependencies need to be injected dynamically similar to how storage lib is loaded
             services.AddSingleton<IArgoProvider, ArgoProvider>();
             services.AddSingleton<IKubernetesProvider, KubernetesProvider>();

@@ -18,8 +18,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.WorkflowManager.Contracts.Rest;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
+using Monai.Deploy.WorkflowManager.Shared;
 using Moq;
 using Xunit;
 

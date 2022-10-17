@@ -17,13 +17,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Messaging.API;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
-using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Rest;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Shared;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 {

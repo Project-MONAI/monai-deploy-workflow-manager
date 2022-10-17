@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Rest
+namespace Monai.Deploy.WorkflowManager.Shared
 {
     /// <summary>
     /// Defines the state of a running service.
