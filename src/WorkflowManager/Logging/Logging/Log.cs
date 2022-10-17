@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using Amazon.Runtime.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
@@ -150,7 +149,6 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
             logger.LogInformation(30, "ControllerActionEnd data  EndTime {endtime}, Duration {duration}, HttpType {httptype}, Path {path}, QueryString {querystring}, StatusCode {statuscode}, Result {result}",
                 endtime, (endtime - startTime).TotalMilliseconds, request.Method, request.Path,
                 request.QueryString.Value.ToString(), response.StatusCode, JsonConvert.SerializeObject(objResult));
-
         }
 
         [LoggerMessage(EventId = 31, Level = LogLevel.Warning, Message = "Unable to locate a matching workflow for the given workflow request.")]

@@ -31,7 +31,6 @@ using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Monai.Deploy.WorkflowManager.TaskManager.Logging;
-using Minio.DataModel;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
@@ -140,7 +139,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 ["messageId"] = args.Message.MessageId,
                 ["messageType"] = args.Message.MessageDescription
             });
-
 
             JsonMessage<T>? message = null;
             try

@@ -2,40 +2,6 @@
   "version": 1,
   "dependencies": {
     "net6.0": {
-      "Ardalis.GuardClauses": {
-        "type": "Direct",
-        "requested": "[4.0.1, )",
-        "resolved": "4.0.1",
-        "contentHash": "RemnImQf/BWR8oYqFpdw+hn+b4Q1w+pGujkRiSfjQhMPuiERwGn4UMmQv+6UDE4qbPlnIN+e3e40JkvBhzgfzg==",
-        "dependencies": {
-          "JetBrains.Annotations": "2021.3.0"
-        }
-      },
-      "Microsoft.Extensions.Logging.Abstractions": {
-        "type": "Direct",
-        "requested": "[6.0.2, )",
-        "resolved": "6.0.2",
-        "contentHash": "pwXCZKaA7m5wgmCj49dW+H1RPSY7U62SKLTQYCcavf/k3Nyt/WnBgAjG4jMGnwy9rElfAZ2KvxvM5CJzJWG0hg=="
-      },
-      "Microsoft.Extensions.Options": {
-        "type": "Direct",
-        "requested": "[6.0.0, )",
-        "resolved": "6.0.0",
-        "contentHash": "dzXN0+V1AyjOe2xcJ86Qbo233KHuLEY0njf/P2Kw8SfJU+d45HNS2ctJdnEnrWbM9Ye2eFgaC5Mj9otRMU6IsQ==",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
-          "Microsoft.Extensions.Primitives": "6.0.0"
-        }
-      },
-      "MongoDB.Bson": {
-        "type": "Direct",
-        "requested": "[2.18.0, )",
-        "resolved": "2.18.0",
-        "contentHash": "iyiVjkCAZIUiyYDZXXUqISeW7n3O/qcM90PUeJybryg7g4rXhSMRY0oLpAg+NdoXD/Qm9LlmVIePAluHQB91tQ==",
-        "dependencies": {
-          "System.Runtime.CompilerServices.Unsafe": "5.0.0"
-        }
-      },
       "MongoDB.Driver": {
         "type": "Direct",
         "requested": "[2.18.0, )",
@@ -48,17 +14,12 @@
           "MongoDB.Libmongocrypt": "1.6.0"
         }
       },
-      "AWSSDK.Core": {
+      "Ardalis.GuardClauses": {
         "type": "Transitive",
-        "resolved": "3.7.13.19",
-        "contentHash": "i0L84RBDTCAORZCyzsaHnEKXQR/lhtIsTcVjvb+ZGeiwbO9eNcDjA7XOCFiE2VTrf2I1yxZXhI4KX9aTDK7jqQ=="
-      },
-      "AWSSDK.SecurityToken": {
-        "type": "Transitive",
-        "resolved": "3.7.1.214",
-        "contentHash": "W9QaTpVsFw5Levp9H/RrSHGA3c8ULcjV/e21CQybeG9RSZzko9NU1gdVxkz/yC9BY5hbGBkLS+DHY85+sxd8BA==",
+        "resolved": "4.0.1",
+        "contentHash": "RemnImQf/BWR8oYqFpdw+hn+b4Q1w+pGujkRiSfjQhMPuiERwGn4UMmQv+6UDE4qbPlnIN+e3e40JkvBhzgfzg==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.13.19, 4.0.0)"
+          "JetBrains.Annotations": "2021.3.0"
         }
       },
       "DnsClient": {
@@ -343,10 +304,24 @@
           "System.Diagnostics.DiagnosticSource": "6.0.0"
         }
       },
+      "Microsoft.Extensions.Logging.Abstractions": {
+        "type": "Transitive",
+        "resolved": "6.0.2",
+        "contentHash": "pwXCZKaA7m5wgmCj49dW+H1RPSY7U62SKLTQYCcavf/k3Nyt/WnBgAjG4jMGnwy9rElfAZ2KvxvM5CJzJWG0hg=="
+      },
       "Microsoft.Extensions.ObjectPool": {
         "type": "Transitive",
         "resolved": "2.2.0",
         "contentHash": "gA8H7uQOnM5gb+L0uTNjViHYr+hRDqCdfugheGo/MxQnuHzmhhzCBTIPm19qL1z1Xe0NEMabfcOBGv9QghlZ8g=="
+      },
+      "Microsoft.Extensions.Options": {
+        "type": "Transitive",
+        "resolved": "6.0.0",
+        "contentHash": "dzXN0+V1AyjOe2xcJ86Qbo233KHuLEY0njf/P2Kw8SfJU+d45HNS2ctJdnEnrWbM9Ye2eFgaC5Mj9otRMU6IsQ==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Primitives": "6.0.0"
+        }
       },
       "Microsoft.Extensions.Primitives": {
         "type": "Transitive",
@@ -397,6 +372,14 @@
           "RabbitMQ.Client": "6.4.0",
           "System.ComponentModel.Annotations": "5.0.0",
           "System.IO.Abstractions": "17.2.3"
+        }
+      },
+      "MongoDB.Bson": {
+        "type": "Transitive",
+        "resolved": "2.18.0",
+        "contentHash": "iyiVjkCAZIUiyYDZXXUqISeW7n3O/qcM90PUeJybryg7g4rXhSMRY0oLpAg+NdoXD/Qm9LlmVIePAluHQB91tQ==",
+        "dependencies": {
+          "System.Runtime.CompilerServices.Unsafe": "5.0.0"
         }
       },
       "MongoDB.Driver.Core": {
@@ -842,18 +825,14 @@
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.SecurityToken": "[3.7.1.214, )",
-          "Microsoft.Extensions.Configuration": "[6.0.1, )",
           "Monai.Deploy.Messaging": "[0.1.8, )",
-          "MongoDB.Bson": "[2.18.0, )",
-          "Newtonsoft.Json": "[13.0.1, )"
+          "MongoDB.Bson": "[2.18.0, )"
         }
       },
       "monai.deploy.workflowmanager.logging": {
         "type": "Project",
         "dependencies": {
           "Microsoft.AspNetCore.Mvc.Core": "[2.2.5, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[6.0.2, )",
           "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
           "Serilog": "[2.12.0, )"
         }

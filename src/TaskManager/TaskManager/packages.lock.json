@@ -2,15 +2,6 @@
   "version": 1,
   "dependencies": {
     "net6.0": {
-      "Elastic.CommonSchema": {
-        "type": "Direct",
-        "requested": "[1.5.3, )",
-        "resolved": "1.5.3",
-        "contentHash": "JgwhfThYY/s17asUiBCUVqnZtDdGTWO/2hTPG01QDfw2+T6kfwskrj5eh6XpBZsOh6r9SpBL95vSsU+q44i7Zg==",
-        "dependencies": {
-          "System.Text.Json": "4.7.0"
-        }
-      },
       "Elastic.CommonSchema.Serilog": {
         "type": "Direct",
         "requested": "[1.5.3, )",
@@ -20,18 +11,6 @@
           "Elastic.CommonSchema": "1.5.3",
           "Microsoft.AspNetCore.Http.Abstractions": "2.1.0",
           "Serilog": "2.9.0"
-        }
-      },
-      "Karambolo.Extensions.Logging.File": {
-        "type": "Direct",
-        "requested": "[3.3.1, )",
-        "resolved": "3.3.1",
-        "contentHash": "wkPTc/UEuSAwbO3/Ee+oCdotxncmc/DKwjM533Z0BKvJm94NLOvU2i7pifgMd6uAUJ8jy69OcFZRu7hXKbMW6g==",
-        "dependencies": {
-          "Microsoft.Extensions.FileProviders.Physical": "3.0.0",
-          "Microsoft.Extensions.Logging.Configuration": "3.0.0",
-          "Microsoft.Extensions.Options.ConfigurationExtensions": "3.0.0",
-          "System.Threading.Channels": "4.7.1"
         }
       },
       "Microsoft.Extensions.Hosting": {
@@ -61,33 +40,6 @@
           "Microsoft.Extensions.Logging.EventLog": "6.0.0",
           "Microsoft.Extensions.Logging.EventSource": "6.0.0",
           "Microsoft.Extensions.Options": "6.0.0"
-        }
-      },
-      "Microsoft.Extensions.Logging": {
-        "type": "Direct",
-        "requested": "[6.0.0, )",
-        "resolved": "6.0.0",
-        "contentHash": "eIbyj40QDg1NDz0HBW0S5f3wrLVnKWnDJ/JtZ+yJDFnDj90VoPuoPmFkeaXrtu+0cKm5GRAwoDf+dBWXK0TUdg==",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection": "6.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
-          "Microsoft.Extensions.Logging.Abstractions": "6.0.0",
-          "Microsoft.Extensions.Options": "6.0.0",
-          "System.Diagnostics.DiagnosticSource": "6.0.0"
-        }
-      },
-      "Microsoft.Extensions.Logging.Console": {
-        "type": "Direct",
-        "requested": "[6.0.0, )",
-        "resolved": "6.0.0",
-        "contentHash": "gsqKzOEdsvq28QiXFxagmn1oRB9GeI5GgYCkoybZtQA0IUb7QPwf1WmN3AwJeNIsadTvIFQCiVK0OVIgKfOBGg==",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
-          "Microsoft.Extensions.Logging": "6.0.0",
-          "Microsoft.Extensions.Logging.Abstractions": "6.0.0",
-          "Microsoft.Extensions.Logging.Configuration": "6.0.0",
-          "Microsoft.Extensions.Options": "6.0.0",
-          "System.Text.Json": "6.0.0"
         }
       },
       "Microsoft.Extensions.Options": {
@@ -257,6 +209,14 @@
           "System.Threading.Tasks.Extensions": "4.5.4"
         }
       },
+      "Elastic.CommonSchema": {
+        "type": "Transitive",
+        "resolved": "1.5.3",
+        "contentHash": "JgwhfThYY/s17asUiBCUVqnZtDdGTWO/2hTPG01QDfw2+T6kfwskrj5eh6XpBZsOh6r9SpBL95vSsU+q44i7Zg==",
+        "dependencies": {
+          "System.Text.Json": "4.7.0"
+        }
+      },
       "Fractions": {
         "type": "Transitive",
         "resolved": "7.0.0",
@@ -267,22 +227,37 @@
       },
       "IdentityModel": {
         "type": "Transitive",
-        "resolved": "5.2.0",
-        "contentHash": "nuhkbaDH9l5QzNJp2MtP3qio57MPtiRneUN8Ocr7od0JvSYaIe3gBj/vxllr11S/Qvu1AG4GZXoyv5469ewYDA=="
+        "resolved": "5.1.0",
+        "contentHash": "Gcv4YYXncvUvTNLF8lDJyItZzaEDFcEi3geMDtylGcl/Rx90vcV7Kv3yAofktJBW7GvmIjQgC8LtUq0s9XQT2w==",
+        "dependencies": {
+          "System.Text.Encodings.Web": "5.0.1",
+          "System.Text.Json": "5.0.1"
+        }
       },
       "IdentityModel.OidcClient": {
         "type": "Transitive",
-        "resolved": "5.1.0",
-        "contentHash": "hTyT7TRhG1+/6xcIh69YlWhyKtQa0eN3PrfraxxP1zMDhDFqKiGoNjMGwXsDMITUOLNhjJYJpq8C53sUJ7ipnQ==",
+        "resolved": "4.0.0",
+        "contentHash": "qAWbsg8dihy4UlTCW89Vc9LPKwx12lCR4JlM+ilZX/Jwk1h1++GmgXUV0Rs9lZ/4DivU1hkcfYGBBUzlW088Ug==",
         "dependencies": {
-          "IdentityModel": "5.2.0",
-          "Microsoft.Extensions.Logging": "6.0.0"
+          "IdentityModel": "5.1.0",
+          "Microsoft.Extensions.Logging": "5.0.0"
         }
       },
       "JetBrains.Annotations": {
         "type": "Transitive",
         "resolved": "2021.3.0",
         "contentHash": "Ddxjs5RRjf+c8m9m++WvhW1lz1bqNhsTjWvCLbQN9bvKbkJeR9MhtfNwKgBRRdG2yLHcXFr5Lf7fsvvkiPaDRg=="
+      },
+      "Karambolo.Extensions.Logging.File": {
+        "type": "Transitive",
+        "resolved": "3.3.1",
+        "contentHash": "wkPTc/UEuSAwbO3/Ee+oCdotxncmc/DKwjM533Z0BKvJm94NLOvU2i7pifgMd6uAUJ8jy69OcFZRu7hXKbMW6g==",
+        "dependencies": {
+          "Microsoft.Extensions.FileProviders.Physical": "3.0.0",
+          "Microsoft.Extensions.Logging.Configuration": "3.0.0",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "3.0.0",
+          "System.Threading.Channels": "4.7.1"
+        }
       },
       "KubernetesClient": {
         "type": "Transitive",
@@ -497,6 +472,18 @@
           "Microsoft.Extensions.Options": "3.1.9"
         }
       },
+      "Microsoft.Extensions.Logging": {
+        "type": "Transitive",
+        "resolved": "6.0.0",
+        "contentHash": "eIbyj40QDg1NDz0HBW0S5f3wrLVnKWnDJ/JtZ+yJDFnDj90VoPuoPmFkeaXrtu+0cKm5GRAwoDf+dBWXK0TUdg==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "6.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Options": "6.0.0",
+          "System.Diagnostics.DiagnosticSource": "6.0.0"
+        }
+      },
       "Microsoft.Extensions.Logging.Abstractions": {
         "type": "Transitive",
         "resolved": "6.0.2",
@@ -515,6 +502,19 @@
           "Microsoft.Extensions.Logging.Abstractions": "6.0.0",
           "Microsoft.Extensions.Options": "6.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "6.0.0"
+        }
+      },
+      "Microsoft.Extensions.Logging.Console": {
+        "type": "Transitive",
+        "resolved": "6.0.0",
+        "contentHash": "gsqKzOEdsvq28QiXFxagmn1oRB9GeI5GgYCkoybZtQA0IUb7QPwf1WmN3AwJeNIsadTvIFQCiVK0OVIgKfOBGg==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Logging": "6.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Logging.Configuration": "6.0.0",
+          "Microsoft.Extensions.Options": "6.0.0",
+          "System.Text.Json": "6.0.0"
         }
       },
       "Microsoft.Extensions.Logging.Debug": {
@@ -1433,43 +1433,29 @@
         "type": "Project",
         "dependencies": {
           "Karambolo.Extensions.Logging.File": "[3.3.1, )",
-          "Microsoft.Extensions.Configuration": "[6.0.1, )",
-          "Microsoft.Extensions.Logging": "[6.0.0, )",
-          "Microsoft.Extensions.Options": "[6.0.0, )",
           "Monai.Deploy.Messaging": "[0.1.8, )",
-          "Monai.Deploy.Storage": "[0.2.7, )",
-          "Newtonsoft.Json": "[13.0.1, )",
-          "System.IO.Abstractions": "[17.2.3, )"
+          "Monai.Deploy.Storage": "[0.2.7, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
           "Monai.Deploy.Messaging": "[0.1.8, )",
-          "Monai.Deploy.Storage": "[0.2.7, )",
           "MongoDB.Bson": "[2.18.0, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.argo": {
         "type": "Project",
         "dependencies": {
-          "IdentityModel.OidcClient": "[5.1.0, )",
           "KubernetesClient": "[7.2.19, )",
-          "Monai.Deploy.Messaging": "[0.1.8, )",
-          "Monai.Deploy.Storage": "[0.2.7, )",
           "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )",
-          "Newtonsoft.Json": "[13.0.1, )"
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.database": {
         "type": "Project",
         "dependencies": {
-          "Ardalis.GuardClauses": "[4.0.1, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[6.0.2, )",
-          "Microsoft.Extensions.Options": "[6.0.0, )",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )",
-          "MongoDB.Bson": "[2.18.0, )",
           "MongoDB.Driver": "[2.18.0, )"
         }
       },
