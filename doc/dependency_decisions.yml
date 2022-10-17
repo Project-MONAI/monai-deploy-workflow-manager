@@ -1001,28 +1001,28 @@
 - - :approve
   - Serilog
   - :who: mocsharp
-    :why: Apache-2.0 (https://github.com/serilog/serilog/blob/dev/LICENSE)
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
     :versions:
     - 2.10.0
     :when: 2022-10-14 23:37:30.926882753 Z
 - - :approve
   - Serilog
   - :who: mocsharp
-    :why: Apache-2.0 (https://github.com/serilog/serilog/blob/dev/LICENSE)
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
     :versions:
     - 2.12.0
     :when: 2022-10-14 23:37:31.312837906 Z
 - - :approve
   - Serilog.AspNetCore
   - :who: mocsharp
-    :why: Apache-2.0 (https://github.com/serilog/serilog/blob/dev/LICENSE)
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
     :versions:
     - 6.0.1
     :when: 2022-10-14 23:37:31.684523386 Z
 - - :approve
   - Serilog.Enrichers.Environment
   - :who: mocsharp
-    :why: Apache-2.0 (https://github.com/serilog/serilog/blob/dev/LICENSE)
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
     :versions:
     - 2.2.0
     :when: 2022-10-14 23:37:32.079861004 Z
@@ -1036,56 +1036,56 @@
 - - :approve
   - Serilog.Extensions.Hosting
   - :who: mocsharp
-    :why: Apache-2.0 (https://github.com/serilog/serilog/blob/dev/LICENSE)
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
     :versions:
     - 5.0.1
     :when: 2022-10-14 23:37:32.987249593 Z
 - - :approve
   - Serilog.Extensions.Logging
   - :who: mocsharp
-    :why: Apache-2.0 (https://github.com/serilog/serilog/blob/dev/LICENSE)
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
     :versions:
     - 3.1.0
     :when: 2022-10-14 23:37:33.387895862 Z
 - - :approve
   - Serilog.Formatting.Compact
   - :who: mocsharp
-    :why: Apache-2.0 (https://github.com/serilog/serilog/blob/dev/LICENSE)
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
     :versions:
     - 1.1.0
     :when: 2022-10-14 23:37:33.755291739 Z
 - - :approve
   - Serilog.Settings.Configuration
   - :who: mocsharp
-    :why: Apache-2.0 (https://github.com/serilog/serilog/blob/dev/LICENSE)
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
     :versions:
     - 3.3.0
     :when: 2022-10-14 23:37:34.139440996 Z
 - - :approve
   - Serilog.Sinks.Console
   - :who: mocsharp
-    :why: Apache-2.0 (https://github.com/serilog/serilog/blob/dev/LICENSE)
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
     :versions:
     - 4.0.1
     :when: 2022-10-14 23:37:34.532284674 Z
 - - :approve
   - Serilog.Sinks.Debug
   - :who: mocsharp
-    :why: Apache-2.0 (https://github.com/serilog/serilog/blob/dev/LICENSE)
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
     :versions:
     - 2.0.0
     :when: 2022-10-14 23:37:34.948902793 Z
 - - :approve
   - Serilog.Sinks.File
   - :who: mocsharp
-    :why: Apache-2.0 (https://github.com/serilog/serilog/blob/dev/LICENSE)
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
     :versions:
     - 5.0.0
     :when: 2022-10-14 23:37:35.402868961 Z
 - - :approve
   - Serilog.Sinks.Http
   - :who: mocsharp
-    :why: Apache-2.0 (https://github.com/serilog/serilog/blob/dev/LICENSE)
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
     :versions:
     - 8.0.0
     :when: 2022-10-14 23:37:35.867331522 Z
@@ -1285,6 +1285,13 @@
     :versions:
     - 4.3.0
     :when: 2022-10-14 23:37:47.186567543 Z
+- - :approve
+  - System.Diagnostics.DiagnosticSource
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License (http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-10-14 23:37:47.604075647 Z
 - - :approve
   - System.Diagnostics.DiagnosticSource
   - :who: mocsharp

@@ -9802,1941 +9802,201 @@ Apache License
 - Authors: Serilog Contributors
 - Project URL: https://serilog.net/
 - Source: [NuGet](https://www.nuget.org/packages/Serilog/2.10.0)
-- License: [Apache-2.0](https://github.com/serilog/serilog/blob/dev/LICENSE)
+- License: [Apache-2.0](https://github.com/serilog/serilog/raw/dev/LICENSE)
 
 
 ```
-serilog/LICENSE at dev · serilog/serilog · GitHub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Skip to content
-
-
-
-
-
-
-
-Toggle navigation
-
-
-
-
-
-
-
-
-
-
-            Sign up
-          
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-      Product
-      
-
-
-
-
-
-
-
-
-
-
-
-Actions
-        Automate any workflow
-      
-
-
-
-
-
-
-
-Packages
-        Host and manage packages
-      
-
-
-
-
-
-
-
-Security
-        Find and fix vulnerabilities
-      
-
-
-
-
-
-
-
-Codespaces
-        Instant dev environments
-      
-
-
-
-
-
-
-
-Copilot
-        Write better code with AI
-      
-
-
-
-
-
-
-
-Code review
-        Manage code changes
-      
-
-
-
-
-
-
-
-Issues
-        Plan and track work
-      
-
-
-
-
-
-
-
-Discussions
-        Collaborate outside of code
-      
-
-
-
-Explore
-
-
-      All features
-
-    
-
-
-
-      Documentation
-
-    
-
-
-
-
-
-      GitHub Skills
-
-    
-
-
-
-
-
-      Blog
-
-    
-
-
-
-
-
-
-
-
-      Solutions
-      
-
-
-
-
-
-By Plan
-
-
-      Enterprise
-
-    
-
-
-
-      Teams
-
-    
-
-
-
-      Compare all
-
-    
-
-
-
-By Solution
-
-
-      CI/CD & Automation
-
-    
-
-
-
-
-
-      DevOps
-
-    
-
-
-
-
-
-      DevSecOps
-
-    
-
-
-
-
-
-Case Studies
-
-
-      Customer Stories
-
-    
-
-
-
-      Resources
-
-    
-
-
-
-
-
-
-
-
-      Open Source
-      
-
-
-
-
-
-
-
-
-GitHub Sponsors
-        Fund open source developers
-      
-
-
-
-
-
-
-The ReadME Project
-        GitHub community articles
-      
-
-
-
-Repositories
-
-
-      Topics
-
-    
-
-
-
-      Trending
-
-    
-
-
-
-      Collections
-
-    
-
-
-
-
-
-Pricing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-No suggested jump to results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this organization
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
- 
-
-
-
-
-              Sign in
-            
-
-
-              Sign up
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-serilog
-
-/
-
-serilog
-
-Public
-
-
-
-
- 
-
-Notifications
-
-
-
- 
-
-Fork
-    713
-
-
-
-
- 
-
-
-          Star
- 5.8k
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Code
-
-
-
-
-
-
-
-Issues
-32
-
-
-
-
-
-
-Pull requests
-1
-
-
-
-
-
-
-Actions
-
-
-
-
-
-
-
-Wiki
-
-
-
-
-
-
-
-Security
-
-
-
-
-
-
-
-Insights
-
-
-
- 
- 
-
-
-
-More
-
-
- 
-
-
-                  Code
- 
-
-
-                  Issues
- 
-
-
-                  Pull requests
- 
-
-
-                  Actions
- 
-
-
-                  Wiki
- 
-
-
-                  Security
- 
-
-
-                  Insights
- 
-
-
-
-
-
-
-
-
-
-Permalink
-
-
-
-
-
-
-
-dev
-
-
-
-
-
-Switch branches/tags
-
-
-
-
-
-
-
-
-
-
-Branches
-Tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all branches
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-Name already in use
-
-
-
-
-
-
-
-
-
-      A tag already exists with the provided branch name. Many Git commands accept both tag and branch names, so creating this branch may cause unexpected behavior. Are you sure you want to create this branch?
-
-
-
-    Cancel
-
-    Create
-
-
-
-
-serilog/LICENSE
-
-    Go to file
-
-
- 
-
-
-
- 
-
-
-Go to file
-T
- 
-
- 
-Go to line
-L
-
- 
-
-
-
-    
-            Copy path
-
- 
-
-
-
-Copy permalink
-
- 
-
-
-
-
-
-
-
-
-
-
-        serilog/serilog
-        is licensed under  the
-      
-Apache License 2.0
-A permissive license whose main conditions require preservation of copyright and license notices. Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
-
-
-
-Permissions
-
-
-
-
-                  Commercial use
-                
-
-
-
-
-                  Modification
-                
-
-
-
-
-                  Distribution
-                
-
-
-
-
-                  Patent use
-                
-
-
-
-
-                  Private use
-                
-
-
-
-
-Limitations
-
-
-
-
-                  Trademark use
-                
-
-
-
-
-                  Liability
-                
-
-
-
-
-                  Warranty
-                
-
-
-
-
-Conditions
-
-
-
-
-                  License and copyright notice
-                
-
-
-
-
-                  State changes
-                
-
-
-
-
-
-
-    This is not legal advice.
-    Learn more about repository licenses.
-  
-
-
-
-
-
-
-This commit does not belong to any branch on this repository, and may belong to a fork outside of the repository.
-
-
-
-
-
-
-
-
-
-
-tvjames
-
-GitHub Apache 2 licence template
-
-
-
-
-
-
-
-
-Latest commit
-5eb8e10
-Oct 11, 2013
-
-
-
-
-
-
-History
-
-
-
-
-
-
-
-
-
-
-
-1
-        
-        contributor
-      
-
-
-
-
-
-
-
-
-            Users who have contributed to this file
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      191 lines (155 sloc)
-      
-    10 KB
-  
-
-
-    Raw
-     Blame
- 
-
-
-
- 
-
-
-
-
-
- 
-
-
-
- Edit this file
-E
-
-
-              Open in GitHub Desktop
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  Open with Desktop
-                
-
-
-
-              View raw
-            
-
-
-
-
-
-                View blame
-              
-
-
-
-
-
-
-
-
-
-
-
-
 Apache License
-
-
-
 Version 2.0, January 2004
-
-
-
 http://www.apache.org/licenses/
-
-
-
-
-
-
-
 
 TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-
-
-
-
-
-
-
 1. Definitions.
 
-
-
-
-
-
-
-
 "License" shall mean the terms and conditions for use, reproduction, and
-
-
-
 distribution as defined by Sections 1 through 9 of this document.
 
-
-
-
-
-
-
-
 "Licensor" shall mean the copyright owner or entity authorized by the copyright
-
-
-
 owner that is granting the License.
 
-
-
-
-
-
-
-
 "Legal Entity" shall mean the union of the acting entity and all other entities
-
-
-
 that control, are controlled by, or are under common control with that entity.
-
-
-
 For the purposes of this definition, "control" means (i) the power, direct or
-
-
-
 indirect, to cause the direction or management of such entity, whether by
-
-
-
 contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the
-
-
-
 outstanding shares, or (iii) beneficial ownership of such entity.
 
-
-
-
-
-
-
-
 "You" (or "Your") shall mean an individual or Legal Entity exercising
-
-
-
 permissions granted by this License.
 
-
-
-
-
-
-
-
 "Source" form shall mean the preferred form for making modifications, including
-
-
-
 but not limited to software source code, documentation source, and configuration
-
-
-
 files.
 
-
-
-
-
-
-
-
 "Object" form shall mean any form resulting from mechanical transformation or
-
-
-
 translation of a Source form, including but not limited to compiled object code,
-
-
-
 generated documentation, and conversions to other media types.
 
-
-
-
-
-
-
-
 "Work" shall mean the work of authorship, whether in Source or Object form, made
-
-
-
 available under the License, as indicated by a copyright notice that is included
-
-
-
 in or attached to the work (an example is provided in the Appendix below).
 
-
-
-
-
-
-
-
 "Derivative Works" shall mean any work, whether in Source or Object form, that
-
-
-
 is based on (or derived from) the Work and for which the editorial revisions,
-
-
-
 annotations, elaborations, or other modifications represent, as a whole, an
-
-
-
 original work of authorship. For the purposes of this License, Derivative Works
-
-
-
 shall not include works that remain separable from, or merely link (or bind by
-
-
-
 name) to the interfaces of, the Work and Derivative Works thereof.
 
-
-
-
-
-
-
-
 "Contribution" shall mean any work of authorship, including the original version
-
-
-
 of the Work and any modifications or additions to that Work or Derivative Works
-
-
-
 thereof, that is intentionally submitted to Licensor for inclusion in the Work
-
-
-
 by the copyright owner or by an individual or Legal Entity authorized to submit
-
-
-
 on behalf of the copyright owner. For the purposes of this definition,
-
-
-
 "submitted" means any form of electronic, verbal, or written communication sent
-
-
-
 to the Licensor or its representatives, including but not limited to
-
-
-
 communication on electronic mailing lists, source code control systems, and
-
-
-
 issue tracking systems that are managed by, or on behalf of, the Licensor for
-
-
-
 the purpose of discussing and improving the Work, but excluding communication
-
-
-
 that is conspicuously marked or otherwise designated in writing by the copyright
-
-
-
 owner as "Not a Contribution."
 
-
-
-
-
-
-
-
 "Contributor" shall mean Licensor and any individual or Legal Entity on behalf
-
-
-
 of whom a Contribution has been received by Licensor and subsequently
-
-
-
 incorporated within the Work.
-
-
-
-
-
-
-
 
 2. Grant of Copyright License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable copyright license to reproduce, prepare Derivative Works of,
-
-
-
 publicly display, publicly perform, sublicense, and distribute the Work and such
-
-
-
 Derivative Works in Source or Object form.
-
-
-
-
-
-
-
 
 3. Grant of Patent License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable (except as stated in this section) patent license to make, have
-
-
-
 made, use, offer to sell, sell, import, and otherwise transfer the Work, where
-
-
-
 such license applies only to those patent claims licensable by such Contributor
-
-
-
 that are necessarily infringed by their Contribution(s) alone or by combination
-
-
-
 of their Contribution(s) with the Work to which such Contribution(s) was
-
-
-
 submitted. If You institute patent litigation against any entity (including a
-
-
-
 cross-claim or counterclaim in a lawsuit) alleging that the Work or a
-
-
-
 Contribution incorporated within the Work constitutes direct or contributory
-
-
-
 patent infringement, then any patent licenses granted to You under this License
-
-
-
 for that Work shall terminate as of the date such litigation is filed.
-
-
-
-
-
-
-
 
 4. Redistribution.
 
-
-
-
-
-
-
-
 You may reproduce and distribute copies of the Work or Derivative Works thereof
-
-
-
 in any medium, with or without modifications, and in Source or Object form,
-
-
-
 provided that You meet the following conditions:
 
-
-
-
-
-
-
-
 You must give any other recipients of the Work or Derivative Works a copy of
-
-
-
 this License; and
-
-
-
 You must cause any modified files to carry prominent notices stating that You
-
-
-
 changed the files; and
-
-
-
 You must retain, in the Source form of any Derivative Works that You distribute,
-
-
-
 all copyright, patent, trademark, and attribution notices from the Source form
-
-
-
 of the Work, excluding those notices that do not pertain to any part of the
-
-
-
 Derivative Works; and
-
-
-
 If the Work includes a "NOTICE" text file as part of its distribution, then any
-
-
-
 Derivative Works that You distribute must include a readable copy of the
-
-
-
 attribution notices contained within such NOTICE file, excluding those notices
-
-
-
 that do not pertain to any part of the Derivative Works, in at least one of the
-
-
-
 following places: within a NOTICE text file distributed as part of the
-
-
-
 Derivative Works; within the Source form or documentation, if provided along
-
-
-
 with the Derivative Works; or, within a display generated by the Derivative
-
-
-
 Works, if and wherever such third-party notices normally appear. The contents of
-
-
-
 the NOTICE file are for informational purposes only and do not modify the
-
-
-
 License. You may add Your own attribution notices within Derivative Works that
-
-
-
 You distribute, alongside or as an addendum to the NOTICE text from the Work,
-
-
-
 provided that such additional attribution notices cannot be construed as
-
-
-
 modifying the License.
-
-
-
 You may add Your own copyright statement to Your modifications and may provide
-
-
-
 additional or different license terms and conditions for use, reproduction, or
-
-
-
 distribution of Your modifications, or for any such Derivative Works as a whole,
-
-
-
 provided Your use, reproduction, and distribution of the Work otherwise complies
-
-
-
 with the conditions stated in this License.
-
-
-
-
-
-
-
 
 5. Submission of Contributions.
 
-
-
-
-
-
-
-
 Unless You explicitly state otherwise, any Contribution intentionally submitted
-
-
-
 for inclusion in the Work by You to the Licensor shall be under the terms and
-
-
-
 conditions of this License, without any additional terms or conditions.
-
-
-
 Notwithstanding the above, nothing herein shall supersede or modify the terms of
-
-
-
 any separate license agreement you may have executed with Licensor regarding
-
-
-
 such Contributions.
-
-
-
-
-
-
-
 
 6. Trademarks.
 
-
-
-
-
-
-
-
 This License does not grant permission to use the trade names, trademarks,
-
-
-
 service marks, or product names of the Licensor, except as required for
-
-
-
 reasonable and customary use in describing the origin of the Work and
-
-
-
 reproducing the content of the NOTICE file.
-
-
-
-
-
-
-
 
 7. Disclaimer of Warranty.
 
-
-
-
-
-
-
-
 Unless required by applicable law or agreed to in writing, Licensor provides the
-
-
-
 Work (and each Contributor provides its Contributions) on an "AS IS" BASIS,
-
-
-
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
-
-
-
 including, without limitation, any warranties or conditions of TITLE,
-
-
-
 NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are
-
-
-
 solely responsible for determining the appropriateness of using or
-
-
-
 redistributing the Work and assume any risks associated with Your exercise of
-
-
-
 permissions under this License.
-
-
-
-
-
-
-
 
 8. Limitation of Liability.
 
-
-
-
-
-
-
-
 In no event and under no legal theory, whether in tort (including negligence),
-
-
-
 contract, or otherwise, unless required by applicable law (such as deliberate
-
-
-
 and grossly negligent acts) or agreed to in writing, shall any Contributor be
-
-
-
 liable to You for damages, including any direct, indirect, special, incidental,
-
-
-
 or consequential damages of any character arising as a result of this License or
-
-
-
 out of the use or inability to use the Work (including but not limited to
-
-
-
 damages for loss of goodwill, work stoppage, computer failure or malfunction, or
-
-
-
 any and all other commercial damages or losses), even if such Contributor has
-
-
-
 been advised of the possibility of such damages.
-
-
-
-
-
-
-
 
 9. Accepting Warranty or Additional Liability.
 
-
-
-
-
-
-
-
 While redistributing the Work or Derivative Works thereof, You may choose to
-
-
-
 offer, and charge a fee for, acceptance of support, warranty, indemnity, or
-
-
-
 other liability obligations and/or rights consistent with this License. However,
-
-
-
 in accepting such obligations, You may act only on Your own behalf and on Your
-
-
-
 sole responsibility, not on behalf of any other Contributor, and only if You
-
-
-
 agree to indemnify, defend, and hold each Contributor harmless for any liability
-
-
-
 incurred by, or claims asserted against, such Contributor by reason of your
-
-
-
 accepting any such warranty or additional liability.
-
-
-
-
-
-
-
 
 END OF TERMS AND CONDITIONS
 
-
-
-
-
-
-
-
 APPENDIX: How to apply the Apache License to your work
 
-
-
-
-
-
-
-
 To apply the Apache License to your work, attach the following boilerplate
-
-
-
 notice, with the fields enclosed by brackets "[]" replaced with your own
-
-
-
 identifying information. (Don't include the brackets!) The text should be
-
-
-
 enclosed in the appropriate comment syntax for the file format. We also
-
-
-
 recommend that a file or class name and description of purpose be included on
-
-
-
 the same "printed page" as the copyright notice for easier identification within
-
-
-
 third-party archives.
-
-
-
-
-
-
-
 
    Copyright [yyyy] [name of copyright owner]
 
-
-
-
-
-
-
-
    Licensed under the Apache License, Version 2.0 (the "License");
-
-
-
    you may not use this file except in compliance with the License.
-
-
-
    You may obtain a copy of the License at
-
-
-
-
-
-
-
 
      http://www.apache.org/licenses/LICENSE-2.0
 
-
-
-
-
-
-
-
    Unless required by applicable law or agreed to in writing, software
-
-
-
    distributed under the License is distributed on an "AS IS" BASIS,
-
-
-
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-
-
    See the License for the specific language governing permissions and
-
-
-
    limitations under the License.
-
-
-
-
-
-
-
-
-
-
-
-
-
-            Copy lines
-          
-
-
-
-            Copy permalink
-          
-
-View git blame
-Reference in new issue
-
-
-
-
-
-
-
-
-
-
-    Go
-
- 
-
-
-
-
-
-
-
-
-
-Footer
-
-
-
-
-
-
-
- 
-        © 2022 GitHub, Inc.
-        
-
-
-
-Footer navigation
-
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    You can’t perform that action at this time.
-  
-
-
-
-
-You signed in with another tab or window. Reload to refresh your session.
-You signed out in another tab or window. Reload to refresh your session.
 ```
 
 </details>
@@ -11751,1941 +10011,201 @@ You signed out in another tab or window. Reload to refresh your session.
 - Authors: Serilog Contributors
 - Project URL: https://serilog.net/
 - Source: [NuGet](https://www.nuget.org/packages/Serilog/2.12.0)
-- License: [Apache-2.0](https://github.com/serilog/serilog/blob/dev/LICENSE)
+- License: [Apache-2.0](https://github.com/serilog/serilog/raw/dev/LICENSE)
 
 
 ```
-serilog/LICENSE at dev · serilog/serilog · GitHub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Skip to content
-
-
-
-
-
-
-
-Toggle navigation
-
-
-
-
-
-
-
-
-
-
-            Sign up
-          
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-      Product
-      
-
-
-
-
-
-
-
-
-
-
-
-Actions
-        Automate any workflow
-      
-
-
-
-
-
-
-
-Packages
-        Host and manage packages
-      
-
-
-
-
-
-
-
-Security
-        Find and fix vulnerabilities
-      
-
-
-
-
-
-
-
-Codespaces
-        Instant dev environments
-      
-
-
-
-
-
-
-
-Copilot
-        Write better code with AI
-      
-
-
-
-
-
-
-
-Code review
-        Manage code changes
-      
-
-
-
-
-
-
-
-Issues
-        Plan and track work
-      
-
-
-
-
-
-
-
-Discussions
-        Collaborate outside of code
-      
-
-
-
-Explore
-
-
-      All features
-
-    
-
-
-
-      Documentation
-
-    
-
-
-
-
-
-      GitHub Skills
-
-    
-
-
-
-
-
-      Blog
-
-    
-
-
-
-
-
-
-
-
-      Solutions
-      
-
-
-
-
-
-By Plan
-
-
-      Enterprise
-
-    
-
-
-
-      Teams
-
-    
-
-
-
-      Compare all
-
-    
-
-
-
-By Solution
-
-
-      CI/CD & Automation
-
-    
-
-
-
-
-
-      DevOps
-
-    
-
-
-
-
-
-      DevSecOps
-
-    
-
-
-
-
-
-Case Studies
-
-
-      Customer Stories
-
-    
-
-
-
-      Resources
-
-    
-
-
-
-
-
-
-
-
-      Open Source
-      
-
-
-
-
-
-
-
-
-GitHub Sponsors
-        Fund open source developers
-      
-
-
-
-
-
-
-The ReadME Project
-        GitHub community articles
-      
-
-
-
-Repositories
-
-
-      Topics
-
-    
-
-
-
-      Trending
-
-    
-
-
-
-      Collections
-
-    
-
-
-
-
-
-Pricing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-No suggested jump to results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this organization
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
- 
-
-
-
-
-              Sign in
-            
-
-
-              Sign up
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-serilog
-
-/
-
-serilog
-
-Public
-
-
-
-
- 
-
-Notifications
-
-
-
- 
-
-Fork
-    713
-
-
-
-
- 
-
-
-          Star
- 5.8k
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Code
-
-
-
-
-
-
-
-Issues
-32
-
-
-
-
-
-
-Pull requests
-1
-
-
-
-
-
-
-Actions
-
-
-
-
-
-
-
-Wiki
-
-
-
-
-
-
-
-Security
-
-
-
-
-
-
-
-Insights
-
-
-
- 
- 
-
-
-
-More
-
-
- 
-
-
-                  Code
- 
-
-
-                  Issues
- 
-
-
-                  Pull requests
- 
-
-
-                  Actions
- 
-
-
-                  Wiki
- 
-
-
-                  Security
- 
-
-
-                  Insights
- 
-
-
-
-
-
-
-
-
-
-Permalink
-
-
-
-
-
-
-
-dev
-
-
-
-
-
-Switch branches/tags
-
-
-
-
-
-
-
-
-
-
-Branches
-Tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all branches
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-Name already in use
-
-
-
-
-
-
-
-
-
-      A tag already exists with the provided branch name. Many Git commands accept both tag and branch names, so creating this branch may cause unexpected behavior. Are you sure you want to create this branch?
-
-
-
-    Cancel
-
-    Create
-
-
-
-
-serilog/LICENSE
-
-    Go to file
-
-
- 
-
-
-
- 
-
-
-Go to file
-T
- 
-
- 
-Go to line
-L
-
- 
-
-
-
-    
-            Copy path
-
- 
-
-
-
-Copy permalink
-
- 
-
-
-
-
-
-
-
-
-
-
-        serilog/serilog
-        is licensed under  the
-      
-Apache License 2.0
-A permissive license whose main conditions require preservation of copyright and license notices. Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
-
-
-
-Permissions
-
-
-
-
-                  Commercial use
-                
-
-
-
-
-                  Modification
-                
-
-
-
-
-                  Distribution
-                
-
-
-
-
-                  Patent use
-                
-
-
-
-
-                  Private use
-                
-
-
-
-
-Limitations
-
-
-
-
-                  Trademark use
-                
-
-
-
-
-                  Liability
-                
-
-
-
-
-                  Warranty
-                
-
-
-
-
-Conditions
-
-
-
-
-                  License and copyright notice
-                
-
-
-
-
-                  State changes
-                
-
-
-
-
-
-
-    This is not legal advice.
-    Learn more about repository licenses.
-  
-
-
-
-
-
-
-This commit does not belong to any branch on this repository, and may belong to a fork outside of the repository.
-
-
-
-
-
-
-
-
-
-
-tvjames
-
-GitHub Apache 2 licence template
-
-
-
-
-
-
-
-
-Latest commit
-5eb8e10
-Oct 11, 2013
-
-
-
-
-
-
-History
-
-
-
-
-
-
-
-
-
-
-
-1
-        
-        contributor
-      
-
-
-
-
-
-
-
-
-            Users who have contributed to this file
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      191 lines (155 sloc)
-      
-    10 KB
-  
-
-
-    Raw
-     Blame
- 
-
-
-
- 
-
-
-
-
-
- 
-
-
-
- Edit this file
-E
-
-
-              Open in GitHub Desktop
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  Open with Desktop
-                
-
-
-
-              View raw
-            
-
-
-
-
-
-                View blame
-              
-
-
-
-
-
-
-
-
-
-
-
-
 Apache License
-
-
-
 Version 2.0, January 2004
-
-
-
 http://www.apache.org/licenses/
-
-
-
-
-
-
-
 
 TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-
-
-
-
-
-
-
 1. Definitions.
 
-
-
-
-
-
-
-
 "License" shall mean the terms and conditions for use, reproduction, and
-
-
-
 distribution as defined by Sections 1 through 9 of this document.
 
-
-
-
-
-
-
-
 "Licensor" shall mean the copyright owner or entity authorized by the copyright
-
-
-
 owner that is granting the License.
 
-
-
-
-
-
-
-
 "Legal Entity" shall mean the union of the acting entity and all other entities
-
-
-
 that control, are controlled by, or are under common control with that entity.
-
-
-
 For the purposes of this definition, "control" means (i) the power, direct or
-
-
-
 indirect, to cause the direction or management of such entity, whether by
-
-
-
 contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the
-
-
-
 outstanding shares, or (iii) beneficial ownership of such entity.
 
-
-
-
-
-
-
-
 "You" (or "Your") shall mean an individual or Legal Entity exercising
-
-
-
 permissions granted by this License.
 
-
-
-
-
-
-
-
 "Source" form shall mean the preferred form for making modifications, including
-
-
-
 but not limited to software source code, documentation source, and configuration
-
-
-
 files.
 
-
-
-
-
-
-
-
 "Object" form shall mean any form resulting from mechanical transformation or
-
-
-
 translation of a Source form, including but not limited to compiled object code,
-
-
-
 generated documentation, and conversions to other media types.
 
-
-
-
-
-
-
-
 "Work" shall mean the work of authorship, whether in Source or Object form, made
-
-
-
 available under the License, as indicated by a copyright notice that is included
-
-
-
 in or attached to the work (an example is provided in the Appendix below).
 
-
-
-
-
-
-
-
 "Derivative Works" shall mean any work, whether in Source or Object form, that
-
-
-
 is based on (or derived from) the Work and for which the editorial revisions,
-
-
-
 annotations, elaborations, or other modifications represent, as a whole, an
-
-
-
 original work of authorship. For the purposes of this License, Derivative Works
-
-
-
 shall not include works that remain separable from, or merely link (or bind by
-
-
-
 name) to the interfaces of, the Work and Derivative Works thereof.
 
-
-
-
-
-
-
-
 "Contribution" shall mean any work of authorship, including the original version
-
-
-
 of the Work and any modifications or additions to that Work or Derivative Works
-
-
-
 thereof, that is intentionally submitted to Licensor for inclusion in the Work
-
-
-
 by the copyright owner or by an individual or Legal Entity authorized to submit
-
-
-
 on behalf of the copyright owner. For the purposes of this definition,
-
-
-
 "submitted" means any form of electronic, verbal, or written communication sent
-
-
-
 to the Licensor or its representatives, including but not limited to
-
-
-
 communication on electronic mailing lists, source code control systems, and
-
-
-
 issue tracking systems that are managed by, or on behalf of, the Licensor for
-
-
-
 the purpose of discussing and improving the Work, but excluding communication
-
-
-
 that is conspicuously marked or otherwise designated in writing by the copyright
-
-
-
 owner as "Not a Contribution."
 
-
-
-
-
-
-
-
 "Contributor" shall mean Licensor and any individual or Legal Entity on behalf
-
-
-
 of whom a Contribution has been received by Licensor and subsequently
-
-
-
 incorporated within the Work.
-
-
-
-
-
-
-
 
 2. Grant of Copyright License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable copyright license to reproduce, prepare Derivative Works of,
-
-
-
 publicly display, publicly perform, sublicense, and distribute the Work and such
-
-
-
 Derivative Works in Source or Object form.
-
-
-
-
-
-
-
 
 3. Grant of Patent License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable (except as stated in this section) patent license to make, have
-
-
-
 made, use, offer to sell, sell, import, and otherwise transfer the Work, where
-
-
-
 such license applies only to those patent claims licensable by such Contributor
-
-
-
 that are necessarily infringed by their Contribution(s) alone or by combination
-
-
-
 of their Contribution(s) with the Work to which such Contribution(s) was
-
-
-
 submitted. If You institute patent litigation against any entity (including a
-
-
-
 cross-claim or counterclaim in a lawsuit) alleging that the Work or a
-
-
-
 Contribution incorporated within the Work constitutes direct or contributory
-
-
-
 patent infringement, then any patent licenses granted to You under this License
-
-
-
 for that Work shall terminate as of the date such litigation is filed.
-
-
-
-
-
-
-
 
 4. Redistribution.
 
-
-
-
-
-
-
-
 You may reproduce and distribute copies of the Work or Derivative Works thereof
-
-
-
 in any medium, with or without modifications, and in Source or Object form,
-
-
-
 provided that You meet the following conditions:
 
-
-
-
-
-
-
-
 You must give any other recipients of the Work or Derivative Works a copy of
-
-
-
 this License; and
-
-
-
 You must cause any modified files to carry prominent notices stating that You
-
-
-
 changed the files; and
-
-
-
 You must retain, in the Source form of any Derivative Works that You distribute,
-
-
-
 all copyright, patent, trademark, and attribution notices from the Source form
-
-
-
 of the Work, excluding those notices that do not pertain to any part of the
-
-
-
 Derivative Works; and
-
-
-
 If the Work includes a "NOTICE" text file as part of its distribution, then any
-
-
-
 Derivative Works that You distribute must include a readable copy of the
-
-
-
 attribution notices contained within such NOTICE file, excluding those notices
-
-
-
 that do not pertain to any part of the Derivative Works, in at least one of the
-
-
-
 following places: within a NOTICE text file distributed as part of the
-
-
-
 Derivative Works; within the Source form or documentation, if provided along
-
-
-
 with the Derivative Works; or, within a display generated by the Derivative
-
-
-
 Works, if and wherever such third-party notices normally appear. The contents of
-
-
-
 the NOTICE file are for informational purposes only and do not modify the
-
-
-
 License. You may add Your own attribution notices within Derivative Works that
-
-
-
 You distribute, alongside or as an addendum to the NOTICE text from the Work,
-
-
-
 provided that such additional attribution notices cannot be construed as
-
-
-
 modifying the License.
-
-
-
 You may add Your own copyright statement to Your modifications and may provide
-
-
-
 additional or different license terms and conditions for use, reproduction, or
-
-
-
 distribution of Your modifications, or for any such Derivative Works as a whole,
-
-
-
 provided Your use, reproduction, and distribution of the Work otherwise complies
-
-
-
 with the conditions stated in this License.
-
-
-
-
-
-
-
 
 5. Submission of Contributions.
 
-
-
-
-
-
-
-
 Unless You explicitly state otherwise, any Contribution intentionally submitted
-
-
-
 for inclusion in the Work by You to the Licensor shall be under the terms and
-
-
-
 conditions of this License, without any additional terms or conditions.
-
-
-
 Notwithstanding the above, nothing herein shall supersede or modify the terms of
-
-
-
 any separate license agreement you may have executed with Licensor regarding
-
-
-
 such Contributions.
-
-
-
-
-
-
-
 
 6. Trademarks.
 
-
-
-
-
-
-
-
 This License does not grant permission to use the trade names, trademarks,
-
-
-
 service marks, or product names of the Licensor, except as required for
-
-
-
 reasonable and customary use in describing the origin of the Work and
-
-
-
 reproducing the content of the NOTICE file.
-
-
-
-
-
-
-
 
 7. Disclaimer of Warranty.
 
-
-
-
-
-
-
-
 Unless required by applicable law or agreed to in writing, Licensor provides the
-
-
-
 Work (and each Contributor provides its Contributions) on an "AS IS" BASIS,
-
-
-
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
-
-
-
 including, without limitation, any warranties or conditions of TITLE,
-
-
-
 NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are
-
-
-
 solely responsible for determining the appropriateness of using or
-
-
-
 redistributing the Work and assume any risks associated with Your exercise of
-
-
-
 permissions under this License.
-
-
-
-
-
-
-
 
 8. Limitation of Liability.
 
-
-
-
-
-
-
-
 In no event and under no legal theory, whether in tort (including negligence),
-
-
-
 contract, or otherwise, unless required by applicable law (such as deliberate
-
-
-
 and grossly negligent acts) or agreed to in writing, shall any Contributor be
-
-
-
 liable to You for damages, including any direct, indirect, special, incidental,
-
-
-
 or consequential damages of any character arising as a result of this License or
-
-
-
 out of the use or inability to use the Work (including but not limited to
-
-
-
 damages for loss of goodwill, work stoppage, computer failure or malfunction, or
-
-
-
 any and all other commercial damages or losses), even if such Contributor has
-
-
-
 been advised of the possibility of such damages.
-
-
-
-
-
-
-
 
 9. Accepting Warranty or Additional Liability.
 
-
-
-
-
-
-
-
 While redistributing the Work or Derivative Works thereof, You may choose to
-
-
-
 offer, and charge a fee for, acceptance of support, warranty, indemnity, or
-
-
-
 other liability obligations and/or rights consistent with this License. However,
-
-
-
 in accepting such obligations, You may act only on Your own behalf and on Your
-
-
-
 sole responsibility, not on behalf of any other Contributor, and only if You
-
-
-
 agree to indemnify, defend, and hold each Contributor harmless for any liability
-
-
-
 incurred by, or claims asserted against, such Contributor by reason of your
-
-
-
 accepting any such warranty or additional liability.
-
-
-
-
-
-
-
 
 END OF TERMS AND CONDITIONS
 
-
-
-
-
-
-
-
 APPENDIX: How to apply the Apache License to your work
 
-
-
-
-
-
-
-
 To apply the Apache License to your work, attach the following boilerplate
-
-
-
 notice, with the fields enclosed by brackets "[]" replaced with your own
-
-
-
 identifying information. (Don't include the brackets!) The text should be
-
-
-
 enclosed in the appropriate comment syntax for the file format. We also
-
-
-
 recommend that a file or class name and description of purpose be included on
-
-
-
 the same "printed page" as the copyright notice for easier identification within
-
-
-
 third-party archives.
-
-
-
-
-
-
-
 
    Copyright [yyyy] [name of copyright owner]
 
-
-
-
-
-
-
-
    Licensed under the Apache License, Version 2.0 (the "License");
-
-
-
    you may not use this file except in compliance with the License.
-
-
-
    You may obtain a copy of the License at
-
-
-
-
-
-
-
 
      http://www.apache.org/licenses/LICENSE-2.0
 
-
-
-
-
-
-
-
    Unless required by applicable law or agreed to in writing, software
-
-
-
    distributed under the License is distributed on an "AS IS" BASIS,
-
-
-
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-
-
    See the License for the specific language governing permissions and
-
-
-
    limitations under the License.
-
-
-
-
-
-
-
-
-
-
-
-
-
-            Copy lines
-          
-
-
-
-            Copy permalink
-          
-
-View git blame
-Reference in new issue
-
-
-
-
-
-
-
-
-
-
-    Go
-
- 
-
-
-
-
-
-
-
-
-
-Footer
-
-
-
-
-
-
-
- 
-        © 2022 GitHub, Inc.
-        
-
-
-
-Footer navigation
-
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    You can’t perform that action at this time.
-  
-
-
-
-
-You signed in with another tab or window. Reload to refresh your session.
-You signed out in another tab or window. Reload to refresh your session.
 ```
 
 </details>
@@ -13700,1941 +10220,201 @@ You signed out in another tab or window. Reload to refresh your session.
 - Authors: Microsoft,Serilog Contributors
 - Project URL: https://github.com/serilog/serilog-aspnetcore
 - Source: [NuGet](https://www.nuget.org/packages/Serilog.AspNetCore/6.0.1)
-- License: [Apache-2.0](https://github.com/serilog/serilog/blob/dev/LICENSE)
+- License: [Apache-2.0](https://github.com/serilog/serilog/raw/dev/LICENSE)
 
 
 ```
-serilog/LICENSE at dev · serilog/serilog · GitHub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Skip to content
-
-
-
-
-
-
-
-Toggle navigation
-
-
-
-
-
-
-
-
-
-
-            Sign up
-          
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-      Product
-      
-
-
-
-
-
-
-
-
-
-
-
-Actions
-        Automate any workflow
-      
-
-
-
-
-
-
-
-Packages
-        Host and manage packages
-      
-
-
-
-
-
-
-
-Security
-        Find and fix vulnerabilities
-      
-
-
-
-
-
-
-
-Codespaces
-        Instant dev environments
-      
-
-
-
-
-
-
-
-Copilot
-        Write better code with AI
-      
-
-
-
-
-
-
-
-Code review
-        Manage code changes
-      
-
-
-
-
-
-
-
-Issues
-        Plan and track work
-      
-
-
-
-
-
-
-
-Discussions
-        Collaborate outside of code
-      
-
-
-
-Explore
-
-
-      All features
-
-    
-
-
-
-      Documentation
-
-    
-
-
-
-
-
-      GitHub Skills
-
-    
-
-
-
-
-
-      Blog
-
-    
-
-
-
-
-
-
-
-
-      Solutions
-      
-
-
-
-
-
-By Plan
-
-
-      Enterprise
-
-    
-
-
-
-      Teams
-
-    
-
-
-
-      Compare all
-
-    
-
-
-
-By Solution
-
-
-      CI/CD & Automation
-
-    
-
-
-
-
-
-      DevOps
-
-    
-
-
-
-
-
-      DevSecOps
-
-    
-
-
-
-
-
-Case Studies
-
-
-      Customer Stories
-
-    
-
-
-
-      Resources
-
-    
-
-
-
-
-
-
-
-
-      Open Source
-      
-
-
-
-
-
-
-
-
-GitHub Sponsors
-        Fund open source developers
-      
-
-
-
-
-
-
-The ReadME Project
-        GitHub community articles
-      
-
-
-
-Repositories
-
-
-      Topics
-
-    
-
-
-
-      Trending
-
-    
-
-
-
-      Collections
-
-    
-
-
-
-
-
-Pricing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-No suggested jump to results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this organization
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
- 
-
-
-
-
-              Sign in
-            
-
-
-              Sign up
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-serilog
-
-/
-
-serilog
-
-Public
-
-
-
-
- 
-
-Notifications
-
-
-
- 
-
-Fork
-    713
-
-
-
-
- 
-
-
-          Star
- 5.8k
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Code
-
-
-
-
-
-
-
-Issues
-32
-
-
-
-
-
-
-Pull requests
-1
-
-
-
-
-
-
-Actions
-
-
-
-
-
-
-
-Wiki
-
-
-
-
-
-
-
-Security
-
-
-
-
-
-
-
-Insights
-
-
-
- 
- 
-
-
-
-More
-
-
- 
-
-
-                  Code
- 
-
-
-                  Issues
- 
-
-
-                  Pull requests
- 
-
-
-                  Actions
- 
-
-
-                  Wiki
- 
-
-
-                  Security
- 
-
-
-                  Insights
- 
-
-
-
-
-
-
-
-
-
-Permalink
-
-
-
-
-
-
-
-dev
-
-
-
-
-
-Switch branches/tags
-
-
-
-
-
-
-
-
-
-
-Branches
-Tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all branches
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-Name already in use
-
-
-
-
-
-
-
-
-
-      A tag already exists with the provided branch name. Many Git commands accept both tag and branch names, so creating this branch may cause unexpected behavior. Are you sure you want to create this branch?
-
-
-
-    Cancel
-
-    Create
-
-
-
-
-serilog/LICENSE
-
-    Go to file
-
-
- 
-
-
-
- 
-
-
-Go to file
-T
- 
-
- 
-Go to line
-L
-
- 
-
-
-
-    
-            Copy path
-
- 
-
-
-
-Copy permalink
-
- 
-
-
-
-
-
-
-
-
-
-
-        serilog/serilog
-        is licensed under  the
-      
-Apache License 2.0
-A permissive license whose main conditions require preservation of copyright and license notices. Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
-
-
-
-Permissions
-
-
-
-
-                  Commercial use
-                
-
-
-
-
-                  Modification
-                
-
-
-
-
-                  Distribution
-                
-
-
-
-
-                  Patent use
-                
-
-
-
-
-                  Private use
-                
-
-
-
-
-Limitations
-
-
-
-
-                  Trademark use
-                
-
-
-
-
-                  Liability
-                
-
-
-
-
-                  Warranty
-                
-
-
-
-
-Conditions
-
-
-
-
-                  License and copyright notice
-                
-
-
-
-
-                  State changes
-                
-
-
-
-
-
-
-    This is not legal advice.
-    Learn more about repository licenses.
-  
-
-
-
-
-
-
-This commit does not belong to any branch on this repository, and may belong to a fork outside of the repository.
-
-
-
-
-
-
-
-
-
-
-tvjames
-
-GitHub Apache 2 licence template
-
-
-
-
-
-
-
-
-Latest commit
-5eb8e10
-Oct 11, 2013
-
-
-
-
-
-
-History
-
-
-
-
-
-
-
-
-
-
-
-1
-        
-        contributor
-      
-
-
-
-
-
-
-
-
-            Users who have contributed to this file
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      191 lines (155 sloc)
-      
-    10 KB
-  
-
-
-    Raw
-     Blame
- 
-
-
-
- 
-
-
-
-
-
- 
-
-
-
- Edit this file
-E
-
-
-              Open in GitHub Desktop
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  Open with Desktop
-                
-
-
-
-              View raw
-            
-
-
-
-
-
-                View blame
-              
-
-
-
-
-
-
-
-
-
-
-
-
 Apache License
-
-
-
 Version 2.0, January 2004
-
-
-
 http://www.apache.org/licenses/
-
-
-
-
-
-
-
 
 TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-
-
-
-
-
-
-
 1. Definitions.
 
-
-
-
-
-
-
-
 "License" shall mean the terms and conditions for use, reproduction, and
-
-
-
 distribution as defined by Sections 1 through 9 of this document.
 
-
-
-
-
-
-
-
 "Licensor" shall mean the copyright owner or entity authorized by the copyright
-
-
-
 owner that is granting the License.
 
-
-
-
-
-
-
-
 "Legal Entity" shall mean the union of the acting entity and all other entities
-
-
-
 that control, are controlled by, or are under common control with that entity.
-
-
-
 For the purposes of this definition, "control" means (i) the power, direct or
-
-
-
 indirect, to cause the direction or management of such entity, whether by
-
-
-
 contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the
-
-
-
 outstanding shares, or (iii) beneficial ownership of such entity.
 
-
-
-
-
-
-
-
 "You" (or "Your") shall mean an individual or Legal Entity exercising
-
-
-
 permissions granted by this License.
 
-
-
-
-
-
-
-
 "Source" form shall mean the preferred form for making modifications, including
-
-
-
 but not limited to software source code, documentation source, and configuration
-
-
-
 files.
 
-
-
-
-
-
-
-
 "Object" form shall mean any form resulting from mechanical transformation or
-
-
-
 translation of a Source form, including but not limited to compiled object code,
-
-
-
 generated documentation, and conversions to other media types.
 
-
-
-
-
-
-
-
 "Work" shall mean the work of authorship, whether in Source or Object form, made
-
-
-
 available under the License, as indicated by a copyright notice that is included
-
-
-
 in or attached to the work (an example is provided in the Appendix below).
 
-
-
-
-
-
-
-
 "Derivative Works" shall mean any work, whether in Source or Object form, that
-
-
-
 is based on (or derived from) the Work and for which the editorial revisions,
-
-
-
 annotations, elaborations, or other modifications represent, as a whole, an
-
-
-
 original work of authorship. For the purposes of this License, Derivative Works
-
-
-
 shall not include works that remain separable from, or merely link (or bind by
-
-
-
 name) to the interfaces of, the Work and Derivative Works thereof.
 
-
-
-
-
-
-
-
 "Contribution" shall mean any work of authorship, including the original version
-
-
-
 of the Work and any modifications or additions to that Work or Derivative Works
-
-
-
 thereof, that is intentionally submitted to Licensor for inclusion in the Work
-
-
-
 by the copyright owner or by an individual or Legal Entity authorized to submit
-
-
-
 on behalf of the copyright owner. For the purposes of this definition,
-
-
-
 "submitted" means any form of electronic, verbal, or written communication sent
-
-
-
 to the Licensor or its representatives, including but not limited to
-
-
-
 communication on electronic mailing lists, source code control systems, and
-
-
-
 issue tracking systems that are managed by, or on behalf of, the Licensor for
-
-
-
 the purpose of discussing and improving the Work, but excluding communication
-
-
-
 that is conspicuously marked or otherwise designated in writing by the copyright
-
-
-
 owner as "Not a Contribution."
 
-
-
-
-
-
-
-
 "Contributor" shall mean Licensor and any individual or Legal Entity on behalf
-
-
-
 of whom a Contribution has been received by Licensor and subsequently
-
-
-
 incorporated within the Work.
-
-
-
-
-
-
-
 
 2. Grant of Copyright License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable copyright license to reproduce, prepare Derivative Works of,
-
-
-
 publicly display, publicly perform, sublicense, and distribute the Work and such
-
-
-
 Derivative Works in Source or Object form.
-
-
-
-
-
-
-
 
 3. Grant of Patent License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable (except as stated in this section) patent license to make, have
-
-
-
 made, use, offer to sell, sell, import, and otherwise transfer the Work, where
-
-
-
 such license applies only to those patent claims licensable by such Contributor
-
-
-
 that are necessarily infringed by their Contribution(s) alone or by combination
-
-
-
 of their Contribution(s) with the Work to which such Contribution(s) was
-
-
-
 submitted. If You institute patent litigation against any entity (including a
-
-
-
 cross-claim or counterclaim in a lawsuit) alleging that the Work or a
-
-
-
 Contribution incorporated within the Work constitutes direct or contributory
-
-
-
 patent infringement, then any patent licenses granted to You under this License
-
-
-
 for that Work shall terminate as of the date such litigation is filed.
-
-
-
-
-
-
-
 
 4. Redistribution.
 
-
-
-
-
-
-
-
 You may reproduce and distribute copies of the Work or Derivative Works thereof
-
-
-
 in any medium, with or without modifications, and in Source or Object form,
-
-
-
 provided that You meet the following conditions:
 
-
-
-
-
-
-
-
 You must give any other recipients of the Work or Derivative Works a copy of
-
-
-
 this License; and
-
-
-
 You must cause any modified files to carry prominent notices stating that You
-
-
-
 changed the files; and
-
-
-
 You must retain, in the Source form of any Derivative Works that You distribute,
-
-
-
 all copyright, patent, trademark, and attribution notices from the Source form
-
-
-
 of the Work, excluding those notices that do not pertain to any part of the
-
-
-
 Derivative Works; and
-
-
-
 If the Work includes a "NOTICE" text file as part of its distribution, then any
-
-
-
 Derivative Works that You distribute must include a readable copy of the
-
-
-
 attribution notices contained within such NOTICE file, excluding those notices
-
-
-
 that do not pertain to any part of the Derivative Works, in at least one of the
-
-
-
 following places: within a NOTICE text file distributed as part of the
-
-
-
 Derivative Works; within the Source form or documentation, if provided along
-
-
-
 with the Derivative Works; or, within a display generated by the Derivative
-
-
-
 Works, if and wherever such third-party notices normally appear. The contents of
-
-
-
 the NOTICE file are for informational purposes only and do not modify the
-
-
-
 License. You may add Your own attribution notices within Derivative Works that
-
-
-
 You distribute, alongside or as an addendum to the NOTICE text from the Work,
-
-
-
 provided that such additional attribution notices cannot be construed as
-
-
-
 modifying the License.
-
-
-
 You may add Your own copyright statement to Your modifications and may provide
-
-
-
 additional or different license terms and conditions for use, reproduction, or
-
-
-
 distribution of Your modifications, or for any such Derivative Works as a whole,
-
-
-
 provided Your use, reproduction, and distribution of the Work otherwise complies
-
-
-
 with the conditions stated in this License.
-
-
-
-
-
-
-
 
 5. Submission of Contributions.
 
-
-
-
-
-
-
-
 Unless You explicitly state otherwise, any Contribution intentionally submitted
-
-
-
 for inclusion in the Work by You to the Licensor shall be under the terms and
-
-
-
 conditions of this License, without any additional terms or conditions.
-
-
-
 Notwithstanding the above, nothing herein shall supersede or modify the terms of
-
-
-
 any separate license agreement you may have executed with Licensor regarding
-
-
-
 such Contributions.
-
-
-
-
-
-
-
 
 6. Trademarks.
 
-
-
-
-
-
-
-
 This License does not grant permission to use the trade names, trademarks,
-
-
-
 service marks, or product names of the Licensor, except as required for
-
-
-
 reasonable and customary use in describing the origin of the Work and
-
-
-
 reproducing the content of the NOTICE file.
-
-
-
-
-
-
-
 
 7. Disclaimer of Warranty.
 
-
-
-
-
-
-
-
 Unless required by applicable law or agreed to in writing, Licensor provides the
-
-
-
 Work (and each Contributor provides its Contributions) on an "AS IS" BASIS,
-
-
-
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
-
-
-
 including, without limitation, any warranties or conditions of TITLE,
-
-
-
 NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are
-
-
-
 solely responsible for determining the appropriateness of using or
-
-
-
 redistributing the Work and assume any risks associated with Your exercise of
-
-
-
 permissions under this License.
-
-
-
-
-
-
-
 
 8. Limitation of Liability.
 
-
-
-
-
-
-
-
 In no event and under no legal theory, whether in tort (including negligence),
-
-
-
 contract, or otherwise, unless required by applicable law (such as deliberate
-
-
-
 and grossly negligent acts) or agreed to in writing, shall any Contributor be
-
-
-
 liable to You for damages, including any direct, indirect, special, incidental,
-
-
-
 or consequential damages of any character arising as a result of this License or
-
-
-
 out of the use or inability to use the Work (including but not limited to
-
-
-
 damages for loss of goodwill, work stoppage, computer failure or malfunction, or
-
-
-
 any and all other commercial damages or losses), even if such Contributor has
-
-
-
 been advised of the possibility of such damages.
-
-
-
-
-
-
-
 
 9. Accepting Warranty or Additional Liability.
 
-
-
-
-
-
-
-
 While redistributing the Work or Derivative Works thereof, You may choose to
-
-
-
 offer, and charge a fee for, acceptance of support, warranty, indemnity, or
-
-
-
 other liability obligations and/or rights consistent with this License. However,
-
-
-
 in accepting such obligations, You may act only on Your own behalf and on Your
-
-
-
 sole responsibility, not on behalf of any other Contributor, and only if You
-
-
-
 agree to indemnify, defend, and hold each Contributor harmless for any liability
-
-
-
 incurred by, or claims asserted against, such Contributor by reason of your
-
-
-
 accepting any such warranty or additional liability.
-
-
-
-
-
-
-
 
 END OF TERMS AND CONDITIONS
 
-
-
-
-
-
-
-
 APPENDIX: How to apply the Apache License to your work
 
-
-
-
-
-
-
-
 To apply the Apache License to your work, attach the following boilerplate
-
-
-
 notice, with the fields enclosed by brackets "[]" replaced with your own
-
-
-
 identifying information. (Don't include the brackets!) The text should be
-
-
-
 enclosed in the appropriate comment syntax for the file format. We also
-
-
-
 recommend that a file or class name and description of purpose be included on
-
-
-
 the same "printed page" as the copyright notice for easier identification within
-
-
-
 third-party archives.
-
-
-
-
-
-
-
 
    Copyright [yyyy] [name of copyright owner]
 
-
-
-
-
-
-
-
    Licensed under the Apache License, Version 2.0 (the "License");
-
-
-
    you may not use this file except in compliance with the License.
-
-
-
    You may obtain a copy of the License at
-
-
-
-
-
-
-
 
      http://www.apache.org/licenses/LICENSE-2.0
 
-
-
-
-
-
-
-
    Unless required by applicable law or agreed to in writing, software
-
-
-
    distributed under the License is distributed on an "AS IS" BASIS,
-
-
-
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-
-
    See the License for the specific language governing permissions and
-
-
-
    limitations under the License.
-
-
-
-
-
-
-
-
-
-
-
-
-
-            Copy lines
-          
-
-
-
-            Copy permalink
-          
-
-View git blame
-Reference in new issue
-
-
-
-
-
-
-
-
-
-
-    Go
-
- 
-
-
-
-
-
-
-
-
-
-Footer
-
-
-
-
-
-
-
- 
-        © 2022 GitHub, Inc.
-        
-
-
-
-Footer navigation
-
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    You can’t perform that action at this time.
-  
-
-
-
-
-You signed in with another tab or window. Reload to refresh your session.
-You signed out in another tab or window. Reload to refresh your session.
 ```
 
 </details>
@@ -15649,1887 +10429,201 @@ You signed out in another tab or window. Reload to refresh your session.
 - Authors: Serilog Contributors
 - Project URL: http://serilog.net/
 - Source: [NuGet](https://www.nuget.org/packages/Serilog.Enrichers.Environment/2.2.0)
-- License: [Apache-2.0](https://github.com/serilog/serilog/blob/dev/LICENSE)
+- License: [Apache-2.0](https://github.com/serilog/serilog/raw/dev/LICENSE)
 
 
 ```
-serilog/LICENSE at dev · serilog/serilog · GitHub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Skip to content
-
-
-
-
-
-
-
-Toggle navigation
-
-
-
-
-
-
-
-
-
-
-            Sign up
-          
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-      Product
-      
-
-
-
-
-
-
-
-
-
-
-
-Actions
-        Automate any workflow
-      
-
-
-
-
-
-
-
-Packages
-        Host and manage packages
-      
-
-
-
-
-
-
-
-Security
-        Find and fix vulnerabilities
-      
-
-
-
-
-
-
-
-Codespaces
-        Instant dev environments
-      
-
-
-
-
-
-
-
-Copilot
-        Write better code with AI
-      
-
-
-
-
-
-
-
-Code review
-        Manage code changes
-      
-
-
-
-
-
-
-
-Issues
-        Plan and track work
-      
-
-
-
-
-
-
-
-Discussions
-        Collaborate outside of code
-      
-
-
-
-Explore
-
-
-      All features
-
-    
-
-
-
-      Documentation
-
-    
-
-
-
-
-
-      GitHub Skills
-
-    
-
-
-
-
-
-      Blog
-
-    
-
-
-
-
-
-
-
-
-      Solutions
-      
-
-
-
-
-
-By Plan
-
-
-      Enterprise
-
-    
-
-
-
-      Teams
-
-    
-
-
-
-      Compare all
-
-    
-
-
-
-By Solution
-
-
-      CI/CD & Automation
-
-    
-
-
-
-
-
-      DevOps
-
-    
-
-
-
-
-
-      DevSecOps
-
-    
-
-
-
-
-
-Case Studies
-
-
-      Customer Stories
-
-    
-
-
-
-      Resources
-
-    
-
-
-
-
-
-
-
-
-      Open Source
-      
-
-
-
-
-
-
-
-
-GitHub Sponsors
-        Fund open source developers
-      
-
-
-
-
-
-
-The ReadME Project
-        GitHub community articles
-      
-
-
-
-Repositories
-
-
-      Topics
-
-    
-
-
-
-      Trending
-
-    
-
-
-
-      Collections
-
-    
-
-
-
-
-
-Pricing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-No suggested jump to results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this organization
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
- 
-
-
-
-
-              Sign in
-            
-
-
-              Sign up
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-serilog
-
-/
-
-serilog
-
-Public
-
-
-
-
- 
-
-Notifications
-
-
-
- 
-
-Fork
-    713
-
-
-
-
- 
-
-
-          Star
- 5.8k
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Code
-
-
-
-
-
-
-
-Issues
-32
-
-
-
-
-
-
-Pull requests
-1
-
-
-
-
-
-
-Actions
-
-
-
-
-
-
-
-Wiki
-
-
-
-
-
-
-
-Security
-
-
-
-
-
-
-
-Insights
-
-
-
- 
- 
-
-
-
-More
-
-
- 
-
-
-                  Code
- 
-
-
-                  Issues
- 
-
-
-                  Pull requests
- 
-
-
-                  Actions
- 
-
-
-                  Wiki
- 
-
-
-                  Security
- 
-
-
-                  Insights
- 
-
-
-
-
-
-
-
-
-
-Permalink
-
-
-
-
-
-
-
-dev
-
-
-
-
-
-Switch branches/tags
-
-
-
-
-
-
-
-
-
-
-Branches
-Tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all branches
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-Name already in use
-
-
-
-
-
-
-
-
-
-      A tag already exists with the provided branch name. Many Git commands accept both tag and branch names, so creating this branch may cause unexpected behavior. Are you sure you want to create this branch?
-
-
-
-    Cancel
-
-    Create
-
-
-
-
-serilog/LICENSE
-
-    Go to file
-
-
- 
-
-
-
- 
-
-
-Go to file
-T
- 
-
- 
-Go to line
-L
-
- 
-
-
-
-    
-            Copy path
-
- 
-
-
-
-Copy permalink
-
- 
-
-
-
-
-
-
-
-
-
-
-        serilog/serilog
-        is licensed under  the
-      
-Apache License 2.0
-A permissive license whose main conditions require preservation of copyright and license notices. Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
-
-
-
-Permissions
-
-
-
-
-                  Commercial use
-                
-
-
-
-
-                  Modification
-                
-
-
-
-
-                  Distribution
-                
-
-
-
-
-                  Patent use
-                
-
-
-
-
-                  Private use
-                
-
-
-
-
-Limitations
-
-
-
-
-                  Trademark use
-                
-
-
-
-
-                  Liability
-                
-
-
-
-
-                  Warranty
-                
-
-
-
-
-Conditions
-
-
-
-
-                  License and copyright notice
-                
-
-
-
-
-                  State changes
-                
-
-
-
-
-
-
-    This is not legal advice.
-    Learn more about repository licenses.
-  
-
-
-
-
-
-
-This commit does not belong to any branch on this repository, and may belong to a fork outside of the repository.
-
-
-
-
-
-
- 
-
-
- 
-Cannot retrieve contributors at this time
-
-
-
-
-
-
-      191 lines (155 sloc)
-      
-    10 KB
-  
-
-
-    Raw
-     Blame
- 
-
-
-
- 
-
-
-
-
-
- 
-
-
-
- Edit this file
-E
-
-
-              Open in GitHub Desktop
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  Open with Desktop
-                
-
-
-
-              View raw
-            
-
-
-
-
-
-                View blame
-              
-
-
-
-
-
-
-
-
-
-
-
-
 Apache License
-
-
-
 Version 2.0, January 2004
-
-
-
 http://www.apache.org/licenses/
-
-
-
-
-
-
-
 
 TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-
-
-
-
-
-
-
 1. Definitions.
 
-
-
-
-
-
-
-
 "License" shall mean the terms and conditions for use, reproduction, and
-
-
-
 distribution as defined by Sections 1 through 9 of this document.
 
-
-
-
-
-
-
-
 "Licensor" shall mean the copyright owner or entity authorized by the copyright
-
-
-
 owner that is granting the License.
 
-
-
-
-
-
-
-
 "Legal Entity" shall mean the union of the acting entity and all other entities
-
-
-
 that control, are controlled by, or are under common control with that entity.
-
-
-
 For the purposes of this definition, "control" means (i) the power, direct or
-
-
-
 indirect, to cause the direction or management of such entity, whether by
-
-
-
 contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the
-
-
-
 outstanding shares, or (iii) beneficial ownership of such entity.
 
-
-
-
-
-
-
-
 "You" (or "Your") shall mean an individual or Legal Entity exercising
-
-
-
 permissions granted by this License.
 
-
-
-
-
-
-
-
 "Source" form shall mean the preferred form for making modifications, including
-
-
-
 but not limited to software source code, documentation source, and configuration
-
-
-
 files.
 
-
-
-
-
-
-
-
 "Object" form shall mean any form resulting from mechanical transformation or
-
-
-
 translation of a Source form, including but not limited to compiled object code,
-
-
-
 generated documentation, and conversions to other media types.
 
-
-
-
-
-
-
-
 "Work" shall mean the work of authorship, whether in Source or Object form, made
-
-
-
 available under the License, as indicated by a copyright notice that is included
-
-
-
 in or attached to the work (an example is provided in the Appendix below).
 
-
-
-
-
-
-
-
 "Derivative Works" shall mean any work, whether in Source or Object form, that
-
-
-
 is based on (or derived from) the Work and for which the editorial revisions,
-
-
-
 annotations, elaborations, or other modifications represent, as a whole, an
-
-
-
 original work of authorship. For the purposes of this License, Derivative Works
-
-
-
 shall not include works that remain separable from, or merely link (or bind by
-
-
-
 name) to the interfaces of, the Work and Derivative Works thereof.
 
-
-
-
-
-
-
-
 "Contribution" shall mean any work of authorship, including the original version
-
-
-
 of the Work and any modifications or additions to that Work or Derivative Works
-
-
-
 thereof, that is intentionally submitted to Licensor for inclusion in the Work
-
-
-
 by the copyright owner or by an individual or Legal Entity authorized to submit
-
-
-
 on behalf of the copyright owner. For the purposes of this definition,
-
-
-
 "submitted" means any form of electronic, verbal, or written communication sent
-
-
-
 to the Licensor or its representatives, including but not limited to
-
-
-
 communication on electronic mailing lists, source code control systems, and
-
-
-
 issue tracking systems that are managed by, or on behalf of, the Licensor for
-
-
-
 the purpose of discussing and improving the Work, but excluding communication
-
-
-
 that is conspicuously marked or otherwise designated in writing by the copyright
-
-
-
 owner as "Not a Contribution."
 
-
-
-
-
-
-
-
 "Contributor" shall mean Licensor and any individual or Legal Entity on behalf
-
-
-
 of whom a Contribution has been received by Licensor and subsequently
-
-
-
 incorporated within the Work.
-
-
-
-
-
-
-
 
 2. Grant of Copyright License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable copyright license to reproduce, prepare Derivative Works of,
-
-
-
 publicly display, publicly perform, sublicense, and distribute the Work and such
-
-
-
 Derivative Works in Source or Object form.
-
-
-
-
-
-
-
 
 3. Grant of Patent License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable (except as stated in this section) patent license to make, have
-
-
-
 made, use, offer to sell, sell, import, and otherwise transfer the Work, where
-
-
-
 such license applies only to those patent claims licensable by such Contributor
-
-
-
 that are necessarily infringed by their Contribution(s) alone or by combination
-
-
-
 of their Contribution(s) with the Work to which such Contribution(s) was
-
-
-
 submitted. If You institute patent litigation against any entity (including a
-
-
-
 cross-claim or counterclaim in a lawsuit) alleging that the Work or a
-
-
-
 Contribution incorporated within the Work constitutes direct or contributory
-
-
-
 patent infringement, then any patent licenses granted to You under this License
-
-
-
 for that Work shall terminate as of the date such litigation is filed.
-
-
-
-
-
-
-
 
 4. Redistribution.
 
-
-
-
-
-
-
-
 You may reproduce and distribute copies of the Work or Derivative Works thereof
-
-
-
 in any medium, with or without modifications, and in Source or Object form,
-
-
-
 provided that You meet the following conditions:
 
-
-
-
-
-
-
-
 You must give any other recipients of the Work or Derivative Works a copy of
-
-
-
 this License; and
-
-
-
 You must cause any modified files to carry prominent notices stating that You
-
-
-
 changed the files; and
-
-
-
 You must retain, in the Source form of any Derivative Works that You distribute,
-
-
-
 all copyright, patent, trademark, and attribution notices from the Source form
-
-
-
 of the Work, excluding those notices that do not pertain to any part of the
-
-
-
 Derivative Works; and
-
-
-
 If the Work includes a "NOTICE" text file as part of its distribution, then any
-
-
-
 Derivative Works that You distribute must include a readable copy of the
-
-
-
 attribution notices contained within such NOTICE file, excluding those notices
-
-
-
 that do not pertain to any part of the Derivative Works, in at least one of the
-
-
-
 following places: within a NOTICE text file distributed as part of the
-
-
-
 Derivative Works; within the Source form or documentation, if provided along
-
-
-
 with the Derivative Works; or, within a display generated by the Derivative
-
-
-
 Works, if and wherever such third-party notices normally appear. The contents of
-
-
-
 the NOTICE file are for informational purposes only and do not modify the
-
-
-
 License. You may add Your own attribution notices within Derivative Works that
-
-
-
 You distribute, alongside or as an addendum to the NOTICE text from the Work,
-
-
-
 provided that such additional attribution notices cannot be construed as
-
-
-
 modifying the License.
-
-
-
 You may add Your own copyright statement to Your modifications and may provide
-
-
-
 additional or different license terms and conditions for use, reproduction, or
-
-
-
 distribution of Your modifications, or for any such Derivative Works as a whole,
-
-
-
 provided Your use, reproduction, and distribution of the Work otherwise complies
-
-
-
 with the conditions stated in this License.
-
-
-
-
-
-
-
 
 5. Submission of Contributions.
 
-
-
-
-
-
-
-
 Unless You explicitly state otherwise, any Contribution intentionally submitted
-
-
-
 for inclusion in the Work by You to the Licensor shall be under the terms and
-
-
-
 conditions of this License, without any additional terms or conditions.
-
-
-
 Notwithstanding the above, nothing herein shall supersede or modify the terms of
-
-
-
 any separate license agreement you may have executed with Licensor regarding
-
-
-
 such Contributions.
-
-
-
-
-
-
-
 
 6. Trademarks.
 
-
-
-
-
-
-
-
 This License does not grant permission to use the trade names, trademarks,
-
-
-
 service marks, or product names of the Licensor, except as required for
-
-
-
 reasonable and customary use in describing the origin of the Work and
-
-
-
 reproducing the content of the NOTICE file.
-
-
-
-
-
-
-
 
 7. Disclaimer of Warranty.
 
-
-
-
-
-
-
-
 Unless required by applicable law or agreed to in writing, Licensor provides the
-
-
-
 Work (and each Contributor provides its Contributions) on an "AS IS" BASIS,
-
-
-
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
-
-
-
 including, without limitation, any warranties or conditions of TITLE,
-
-
-
 NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are
-
-
-
 solely responsible for determining the appropriateness of using or
-
-
-
 redistributing the Work and assume any risks associated with Your exercise of
-
-
-
 permissions under this License.
-
-
-
-
-
-
-
 
 8. Limitation of Liability.
 
-
-
-
-
-
-
-
 In no event and under no legal theory, whether in tort (including negligence),
-
-
-
 contract, or otherwise, unless required by applicable law (such as deliberate
-
-
-
 and grossly negligent acts) or agreed to in writing, shall any Contributor be
-
-
-
 liable to You for damages, including any direct, indirect, special, incidental,
-
-
-
 or consequential damages of any character arising as a result of this License or
-
-
-
 out of the use or inability to use the Work (including but not limited to
-
-
-
 damages for loss of goodwill, work stoppage, computer failure or malfunction, or
-
-
-
 any and all other commercial damages or losses), even if such Contributor has
-
-
-
 been advised of the possibility of such damages.
-
-
-
-
-
-
-
 
 9. Accepting Warranty or Additional Liability.
 
-
-
-
-
-
-
-
 While redistributing the Work or Derivative Works thereof, You may choose to
-
-
-
 offer, and charge a fee for, acceptance of support, warranty, indemnity, or
-
-
-
 other liability obligations and/or rights consistent with this License. However,
-
-
-
 in accepting such obligations, You may act only on Your own behalf and on Your
-
-
-
 sole responsibility, not on behalf of any other Contributor, and only if You
-
-
-
 agree to indemnify, defend, and hold each Contributor harmless for any liability
-
-
-
 incurred by, or claims asserted against, such Contributor by reason of your
-
-
-
 accepting any such warranty or additional liability.
-
-
-
-
-
-
-
 
 END OF TERMS AND CONDITIONS
 
-
-
-
-
-
-
-
 APPENDIX: How to apply the Apache License to your work
 
-
-
-
-
-
-
-
 To apply the Apache License to your work, attach the following boilerplate
-
-
-
 notice, with the fields enclosed by brackets "[]" replaced with your own
-
-
-
 identifying information. (Don't include the brackets!) The text should be
-
-
-
 enclosed in the appropriate comment syntax for the file format. We also
-
-
-
 recommend that a file or class name and description of purpose be included on
-
-
-
 the same "printed page" as the copyright notice for easier identification within
-
-
-
 third-party archives.
-
-
-
-
-
-
-
 
    Copyright [yyyy] [name of copyright owner]
 
-
-
-
-
-
-
-
    Licensed under the Apache License, Version 2.0 (the "License");
-
-
-
    you may not use this file except in compliance with the License.
-
-
-
    You may obtain a copy of the License at
-
-
-
-
-
-
-
 
      http://www.apache.org/licenses/LICENSE-2.0
 
-
-
-
-
-
-
-
    Unless required by applicable law or agreed to in writing, software
-
-
-
    distributed under the License is distributed on an "AS IS" BASIS,
-
-
-
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-
-
    See the License for the specific language governing permissions and
-
-
-
    limitations under the License.
-
-
-
-
-
-
-
-
-
-
-
-
-
-            Copy lines
-          
-
-
-
-            Copy permalink
-          
-
-View git blame
-Reference in new issue
-
-
-
-
-
-
-
-
-
-
-    Go
-
- 
-
-
-
-
-
-
-
-
-
-Footer
-
-
-
-
-
-
-
- 
-        © 2022 GitHub, Inc.
-        
-
-
-
-Footer navigation
-
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    You can’t perform that action at this time.
-  
-
-
-
-
-You signed in with another tab or window. Reload to refresh your session.
-You signed out in another tab or window. Reload to refresh your session.
 ```
 
 </details>
@@ -17583,1941 +10677,201 @@ SOFTWARE.
 - Authors: Microsoft,Serilog Contributors
 - Project URL: https://github.com/serilog/serilog-extensions-hosting
 - Source: [NuGet](https://www.nuget.org/packages/Serilog.Extensions.Hosting/5.0.1)
-- License: [Apache-2.0](https://github.com/serilog/serilog/blob/dev/LICENSE)
+- License: [Apache-2.0](https://github.com/serilog/serilog/raw/dev/LICENSE)
 
 
 ```
-serilog/LICENSE at dev · serilog/serilog · GitHub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Skip to content
-
-
-
-
-
-
-
-Toggle navigation
-
-
-
-
-
-
-
-
-
-
-            Sign up
-          
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-      Product
-      
-
-
-
-
-
-
-
-
-
-
-
-Actions
-        Automate any workflow
-      
-
-
-
-
-
-
-
-Packages
-        Host and manage packages
-      
-
-
-
-
-
-
-
-Security
-        Find and fix vulnerabilities
-      
-
-
-
-
-
-
-
-Codespaces
-        Instant dev environments
-      
-
-
-
-
-
-
-
-Copilot
-        Write better code with AI
-      
-
-
-
-
-
-
-
-Code review
-        Manage code changes
-      
-
-
-
-
-
-
-
-Issues
-        Plan and track work
-      
-
-
-
-
-
-
-
-Discussions
-        Collaborate outside of code
-      
-
-
-
-Explore
-
-
-      All features
-
-    
-
-
-
-      Documentation
-
-    
-
-
-
-
-
-      GitHub Skills
-
-    
-
-
-
-
-
-      Blog
-
-    
-
-
-
-
-
-
-
-
-      Solutions
-      
-
-
-
-
-
-By Plan
-
-
-      Enterprise
-
-    
-
-
-
-      Teams
-
-    
-
-
-
-      Compare all
-
-    
-
-
-
-By Solution
-
-
-      CI/CD & Automation
-
-    
-
-
-
-
-
-      DevOps
-
-    
-
-
-
-
-
-      DevSecOps
-
-    
-
-
-
-
-
-Case Studies
-
-
-      Customer Stories
-
-    
-
-
-
-      Resources
-
-    
-
-
-
-
-
-
-
-
-      Open Source
-      
-
-
-
-
-
-
-
-
-GitHub Sponsors
-        Fund open source developers
-      
-
-
-
-
-
-
-The ReadME Project
-        GitHub community articles
-      
-
-
-
-Repositories
-
-
-      Topics
-
-    
-
-
-
-      Trending
-
-    
-
-
-
-      Collections
-
-    
-
-
-
-
-
-Pricing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-No suggested jump to results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this organization
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
- 
-
-
-
-
-              Sign in
-            
-
-
-              Sign up
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-serilog
-
-/
-
-serilog
-
-Public
-
-
-
-
- 
-
-Notifications
-
-
-
- 
-
-Fork
-    713
-
-
-
-
- 
-
-
-          Star
- 5.8k
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Code
-
-
-
-
-
-
-
-Issues
-32
-
-
-
-
-
-
-Pull requests
-1
-
-
-
-
-
-
-Actions
-
-
-
-
-
-
-
-Wiki
-
-
-
-
-
-
-
-Security
-
-
-
-
-
-
-
-Insights
-
-
-
- 
- 
-
-
-
-More
-
-
- 
-
-
-                  Code
- 
-
-
-                  Issues
- 
-
-
-                  Pull requests
- 
-
-
-                  Actions
- 
-
-
-                  Wiki
- 
-
-
-                  Security
- 
-
-
-                  Insights
- 
-
-
-
-
-
-
-
-
-
-Permalink
-
-
-
-
-
-
-
-dev
-
-
-
-
-
-Switch branches/tags
-
-
-
-
-
-
-
-
-
-
-Branches
-Tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all branches
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-Name already in use
-
-
-
-
-
-
-
-
-
-      A tag already exists with the provided branch name. Many Git commands accept both tag and branch names, so creating this branch may cause unexpected behavior. Are you sure you want to create this branch?
-
-
-
-    Cancel
-
-    Create
-
-
-
-
-serilog/LICENSE
-
-    Go to file
-
-
- 
-
-
-
- 
-
-
-Go to file
-T
- 
-
- 
-Go to line
-L
-
- 
-
-
-
-    
-            Copy path
-
- 
-
-
-
-Copy permalink
-
- 
-
-
-
-
-
-
-
-
-
-
-        serilog/serilog
-        is licensed under  the
-      
-Apache License 2.0
-A permissive license whose main conditions require preservation of copyright and license notices. Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
-
-
-
-Permissions
-
-
-
-
-                  Commercial use
-                
-
-
-
-
-                  Modification
-                
-
-
-
-
-                  Distribution
-                
-
-
-
-
-                  Patent use
-                
-
-
-
-
-                  Private use
-                
-
-
-
-
-Limitations
-
-
-
-
-                  Trademark use
-                
-
-
-
-
-                  Liability
-                
-
-
-
-
-                  Warranty
-                
-
-
-
-
-Conditions
-
-
-
-
-                  License and copyright notice
-                
-
-
-
-
-                  State changes
-                
-
-
-
-
-
-
-    This is not legal advice.
-    Learn more about repository licenses.
-  
-
-
-
-
-
-
-This commit does not belong to any branch on this repository, and may belong to a fork outside of the repository.
-
-
-
-
-
-
-
-
-
-
-tvjames
-
-GitHub Apache 2 licence template
-
-
-
-
-
-
-
-
-Latest commit
-5eb8e10
-Oct 11, 2013
-
-
-
-
-
-
-History
-
-
-
-
-
-
-
-
-
-
-
-1
-        
-        contributor
-      
-
-
-
-
-
-
-
-
-            Users who have contributed to this file
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      191 lines (155 sloc)
-      
-    10 KB
-  
-
-
-    Raw
-     Blame
- 
-
-
-
- 
-
-
-
-
-
- 
-
-
-
- Edit this file
-E
-
-
-              Open in GitHub Desktop
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  Open with Desktop
-                
-
-
-
-              View raw
-            
-
-
-
-
-
-                View blame
-              
-
-
-
-
-
-
-
-
-
-
-
-
 Apache License
-
-
-
 Version 2.0, January 2004
-
-
-
 http://www.apache.org/licenses/
-
-
-
-
-
-
-
 
 TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-
-
-
-
-
-
-
 1. Definitions.
 
-
-
-
-
-
-
-
 "License" shall mean the terms and conditions for use, reproduction, and
-
-
-
 distribution as defined by Sections 1 through 9 of this document.
 
-
-
-
-
-
-
-
 "Licensor" shall mean the copyright owner or entity authorized by the copyright
-
-
-
 owner that is granting the License.
 
-
-
-
-
-
-
-
 "Legal Entity" shall mean the union of the acting entity and all other entities
-
-
-
 that control, are controlled by, or are under common control with that entity.
-
-
-
 For the purposes of this definition, "control" means (i) the power, direct or
-
-
-
 indirect, to cause the direction or management of such entity, whether by
-
-
-
 contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the
-
-
-
 outstanding shares, or (iii) beneficial ownership of such entity.
 
-
-
-
-
-
-
-
 "You" (or "Your") shall mean an individual or Legal Entity exercising
-
-
-
 permissions granted by this License.
 
-
-
-
-
-
-
-
 "Source" form shall mean the preferred form for making modifications, including
-
-
-
 but not limited to software source code, documentation source, and configuration
-
-
-
 files.
 
-
-
-
-
-
-
-
 "Object" form shall mean any form resulting from mechanical transformation or
-
-
-
 translation of a Source form, including but not limited to compiled object code,
-
-
-
 generated documentation, and conversions to other media types.
 
-
-
-
-
-
-
-
 "Work" shall mean the work of authorship, whether in Source or Object form, made
-
-
-
 available under the License, as indicated by a copyright notice that is included
-
-
-
 in or attached to the work (an example is provided in the Appendix below).
 
-
-
-
-
-
-
-
 "Derivative Works" shall mean any work, whether in Source or Object form, that
-
-
-
 is based on (or derived from) the Work and for which the editorial revisions,
-
-
-
 annotations, elaborations, or other modifications represent, as a whole, an
-
-
-
 original work of authorship. For the purposes of this License, Derivative Works
-
-
-
 shall not include works that remain separable from, or merely link (or bind by
-
-
-
 name) to the interfaces of, the Work and Derivative Works thereof.
 
-
-
-
-
-
-
-
 "Contribution" shall mean any work of authorship, including the original version
-
-
-
 of the Work and any modifications or additions to that Work or Derivative Works
-
-
-
 thereof, that is intentionally submitted to Licensor for inclusion in the Work
-
-
-
 by the copyright owner or by an individual or Legal Entity authorized to submit
-
-
-
 on behalf of the copyright owner. For the purposes of this definition,
-
-
-
 "submitted" means any form of electronic, verbal, or written communication sent
-
-
-
 to the Licensor or its representatives, including but not limited to
-
-
-
 communication on electronic mailing lists, source code control systems, and
-
-
-
 issue tracking systems that are managed by, or on behalf of, the Licensor for
-
-
-
 the purpose of discussing and improving the Work, but excluding communication
-
-
-
 that is conspicuously marked or otherwise designated in writing by the copyright
-
-
-
 owner as "Not a Contribution."
 
-
-
-
-
-
-
-
 "Contributor" shall mean Licensor and any individual or Legal Entity on behalf
-
-
-
 of whom a Contribution has been received by Licensor and subsequently
-
-
-
 incorporated within the Work.
-
-
-
-
-
-
-
 
 2. Grant of Copyright License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable copyright license to reproduce, prepare Derivative Works of,
-
-
-
 publicly display, publicly perform, sublicense, and distribute the Work and such
-
-
-
 Derivative Works in Source or Object form.
-
-
-
-
-
-
-
 
 3. Grant of Patent License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable (except as stated in this section) patent license to make, have
-
-
-
 made, use, offer to sell, sell, import, and otherwise transfer the Work, where
-
-
-
 such license applies only to those patent claims licensable by such Contributor
-
-
-
 that are necessarily infringed by their Contribution(s) alone or by combination
-
-
-
 of their Contribution(s) with the Work to which such Contribution(s) was
-
-
-
 submitted. If You institute patent litigation against any entity (including a
-
-
-
 cross-claim or counterclaim in a lawsuit) alleging that the Work or a
-
-
-
 Contribution incorporated within the Work constitutes direct or contributory
-
-
-
 patent infringement, then any patent licenses granted to You under this License
-
-
-
 for that Work shall terminate as of the date such litigation is filed.
-
-
-
-
-
-
-
 
 4. Redistribution.
 
-
-
-
-
-
-
-
 You may reproduce and distribute copies of the Work or Derivative Works thereof
-
-
-
 in any medium, with or without modifications, and in Source or Object form,
-
-
-
 provided that You meet the following conditions:
 
-
-
-
-
-
-
-
 You must give any other recipients of the Work or Derivative Works a copy of
-
-
-
 this License; and
-
-
-
 You must cause any modified files to carry prominent notices stating that You
-
-
-
 changed the files; and
-
-
-
 You must retain, in the Source form of any Derivative Works that You distribute,
-
-
-
 all copyright, patent, trademark, and attribution notices from the Source form
-
-
-
 of the Work, excluding those notices that do not pertain to any part of the
-
-
-
 Derivative Works; and
-
-
-
 If the Work includes a "NOTICE" text file as part of its distribution, then any
-
-
-
 Derivative Works that You distribute must include a readable copy of the
-
-
-
 attribution notices contained within such NOTICE file, excluding those notices
-
-
-
 that do not pertain to any part of the Derivative Works, in at least one of the
-
-
-
 following places: within a NOTICE text file distributed as part of the
-
-
-
 Derivative Works; within the Source form or documentation, if provided along
-
-
-
 with the Derivative Works; or, within a display generated by the Derivative
-
-
-
 Works, if and wherever such third-party notices normally appear. The contents of
-
-
-
 the NOTICE file are for informational purposes only and do not modify the
-
-
-
 License. You may add Your own attribution notices within Derivative Works that
-
-
-
 You distribute, alongside or as an addendum to the NOTICE text from the Work,
-
-
-
 provided that such additional attribution notices cannot be construed as
-
-
-
 modifying the License.
-
-
-
 You may add Your own copyright statement to Your modifications and may provide
-
-
-
 additional or different license terms and conditions for use, reproduction, or
-
-
-
 distribution of Your modifications, or for any such Derivative Works as a whole,
-
-
-
 provided Your use, reproduction, and distribution of the Work otherwise complies
-
-
-
 with the conditions stated in this License.
-
-
-
-
-
-
-
 
 5. Submission of Contributions.
 
-
-
-
-
-
-
-
 Unless You explicitly state otherwise, any Contribution intentionally submitted
-
-
-
 for inclusion in the Work by You to the Licensor shall be under the terms and
-
-
-
 conditions of this License, without any additional terms or conditions.
-
-
-
 Notwithstanding the above, nothing herein shall supersede or modify the terms of
-
-
-
 any separate license agreement you may have executed with Licensor regarding
-
-
-
 such Contributions.
-
-
-
-
-
-
-
 
 6. Trademarks.
 
-
-
-
-
-
-
-
 This License does not grant permission to use the trade names, trademarks,
-
-
-
 service marks, or product names of the Licensor, except as required for
-
-
-
 reasonable and customary use in describing the origin of the Work and
-
-
-
 reproducing the content of the NOTICE file.
-
-
-
-
-
-
-
 
 7. Disclaimer of Warranty.
 
-
-
-
-
-
-
-
 Unless required by applicable law or agreed to in writing, Licensor provides the
-
-
-
 Work (and each Contributor provides its Contributions) on an "AS IS" BASIS,
-
-
-
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
-
-
-
 including, without limitation, any warranties or conditions of TITLE,
-
-
-
 NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are
-
-
-
 solely responsible for determining the appropriateness of using or
-
-
-
 redistributing the Work and assume any risks associated with Your exercise of
-
-
-
 permissions under this License.
-
-
-
-
-
-
-
 
 8. Limitation of Liability.
 
-
-
-
-
-
-
-
 In no event and under no legal theory, whether in tort (including negligence),
-
-
-
 contract, or otherwise, unless required by applicable law (such as deliberate
-
-
-
 and grossly negligent acts) or agreed to in writing, shall any Contributor be
-
-
-
 liable to You for damages, including any direct, indirect, special, incidental,
-
-
-
 or consequential damages of any character arising as a result of this License or
-
-
-
 out of the use or inability to use the Work (including but not limited to
-
-
-
 damages for loss of goodwill, work stoppage, computer failure or malfunction, or
-
-
-
 any and all other commercial damages or losses), even if such Contributor has
-
-
-
 been advised of the possibility of such damages.
-
-
-
-
-
-
-
 
 9. Accepting Warranty or Additional Liability.
 
-
-
-
-
-
-
-
 While redistributing the Work or Derivative Works thereof, You may choose to
-
-
-
 offer, and charge a fee for, acceptance of support, warranty, indemnity, or
-
-
-
 other liability obligations and/or rights consistent with this License. However,
-
-
-
 in accepting such obligations, You may act only on Your own behalf and on Your
-
-
-
 sole responsibility, not on behalf of any other Contributor, and only if You
-
-
-
 agree to indemnify, defend, and hold each Contributor harmless for any liability
-
-
-
 incurred by, or claims asserted against, such Contributor by reason of your
-
-
-
 accepting any such warranty or additional liability.
-
-
-
-
-
-
-
 
 END OF TERMS AND CONDITIONS
 
-
-
-
-
-
-
-
 APPENDIX: How to apply the Apache License to your work
 
-
-
-
-
-
-
-
 To apply the Apache License to your work, attach the following boilerplate
-
-
-
 notice, with the fields enclosed by brackets "[]" replaced with your own
-
-
-
 identifying information. (Don't include the brackets!) The text should be
-
-
-
 enclosed in the appropriate comment syntax for the file format. We also
-
-
-
 recommend that a file or class name and description of purpose be included on
-
-
-
 the same "printed page" as the copyright notice for easier identification within
-
-
-
 third-party archives.
-
-
-
-
-
-
-
 
    Copyright [yyyy] [name of copyright owner]
 
-
-
-
-
-
-
-
    Licensed under the Apache License, Version 2.0 (the "License");
-
-
-
    you may not use this file except in compliance with the License.
-
-
-
    You may obtain a copy of the License at
-
-
-
-
-
-
-
 
      http://www.apache.org/licenses/LICENSE-2.0
 
-
-
-
-
-
-
-
    Unless required by applicable law or agreed to in writing, software
-
-
-
    distributed under the License is distributed on an "AS IS" BASIS,
-
-
-
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-
-
    See the License for the specific language governing permissions and
-
-
-
    limitations under the License.
-
-
-
-
-
-
-
-
-
-
-
-
-
-            Copy lines
-          
-
-
-
-            Copy permalink
-          
-
-View git blame
-Reference in new issue
-
-
-
-
-
-
-
-
-
-
-    Go
-
- 
-
-
-
-
-
-
-
-
-
-Footer
-
-
-
-
-
-
-
- 
-        © 2022 GitHub, Inc.
-        
-
-
-
-Footer navigation
-
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    You can’t perform that action at this time.
-  
-
-
-
-
-You signed in with another tab or window. Reload to refresh your session.
-You signed out in another tab or window. Reload to refresh your session.
 ```
 
 </details>
@@ -19532,1887 +10886,201 @@ You signed out in another tab or window. Reload to refresh your session.
 - Authors: Microsoft,Serilog Contributors
 - Project URL: https://github.com/serilog/serilog-extensions-logging
 - Source: [NuGet](https://www.nuget.org/packages/Serilog.Extensions.Logging/3.1.0)
-- License: [Apache-2.0](https://github.com/serilog/serilog/blob/dev/LICENSE)
+- License: [Apache-2.0](https://github.com/serilog/serilog/raw/dev/LICENSE)
 
 
 ```
-serilog/LICENSE at dev · serilog/serilog · GitHub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Skip to content
-
-
-
-
-
-
-
-Toggle navigation
-
-
-
-
-
-
-
-
-
-
-            Sign up
-          
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-      Product
-      
-
-
-
-
-
-
-
-
-
-
-
-Actions
-        Automate any workflow
-      
-
-
-
-
-
-
-
-Packages
-        Host and manage packages
-      
-
-
-
-
-
-
-
-Security
-        Find and fix vulnerabilities
-      
-
-
-
-
-
-
-
-Codespaces
-        Instant dev environments
-      
-
-
-
-
-
-
-
-Copilot
-        Write better code with AI
-      
-
-
-
-
-
-
-
-Code review
-        Manage code changes
-      
-
-
-
-
-
-
-
-Issues
-        Plan and track work
-      
-
-
-
-
-
-
-
-Discussions
-        Collaborate outside of code
-      
-
-
-
-Explore
-
-
-      All features
-
-    
-
-
-
-      Documentation
-
-    
-
-
-
-
-
-      GitHub Skills
-
-    
-
-
-
-
-
-      Blog
-
-    
-
-
-
-
-
-
-
-
-      Solutions
-      
-
-
-
-
-
-By Plan
-
-
-      Enterprise
-
-    
-
-
-
-      Teams
-
-    
-
-
-
-      Compare all
-
-    
-
-
-
-By Solution
-
-
-      CI/CD & Automation
-
-    
-
-
-
-
-
-      DevOps
-
-    
-
-
-
-
-
-      DevSecOps
-
-    
-
-
-
-
-
-Case Studies
-
-
-      Customer Stories
-
-    
-
-
-
-      Resources
-
-    
-
-
-
-
-
-
-
-
-      Open Source
-      
-
-
-
-
-
-
-
-
-GitHub Sponsors
-        Fund open source developers
-      
-
-
-
-
-
-
-The ReadME Project
-        GitHub community articles
-      
-
-
-
-Repositories
-
-
-      Topics
-
-    
-
-
-
-      Trending
-
-    
-
-
-
-      Collections
-
-    
-
-
-
-
-
-Pricing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-No suggested jump to results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this organization
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
- 
-
-
-
-
-              Sign in
-            
-
-
-              Sign up
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-serilog
-
-/
-
-serilog
-
-Public
-
-
-
-
- 
-
-Notifications
-
-
-
- 
-
-Fork
-    713
-
-
-
-
- 
-
-
-          Star
- 5.8k
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Code
-
-
-
-
-
-
-
-Issues
-32
-
-
-
-
-
-
-Pull requests
-1
-
-
-
-
-
-
-Actions
-
-
-
-
-
-
-
-Wiki
-
-
-
-
-
-
-
-Security
-
-
-
-
-
-
-
-Insights
-
-
-
- 
- 
-
-
-
-More
-
-
- 
-
-
-                  Code
- 
-
-
-                  Issues
- 
-
-
-                  Pull requests
- 
-
-
-                  Actions
- 
-
-
-                  Wiki
- 
-
-
-                  Security
- 
-
-
-                  Insights
- 
-
-
-
-
-
-
-
-
-
-Permalink
-
-
-
-
-
-
-
-dev
-
-
-
-
-
-Switch branches/tags
-
-
-
-
-
-
-
-
-
-
-Branches
-Tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all branches
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-Name already in use
-
-
-
-
-
-
-
-
-
-      A tag already exists with the provided branch name. Many Git commands accept both tag and branch names, so creating this branch may cause unexpected behavior. Are you sure you want to create this branch?
-
-
-
-    Cancel
-
-    Create
-
-
-
-
-serilog/LICENSE
-
-    Go to file
-
-
- 
-
-
-
- 
-
-
-Go to file
-T
- 
-
- 
-Go to line
-L
-
- 
-
-
-
-    
-            Copy path
-
- 
-
-
-
-Copy permalink
-
- 
-
-
-
-
-
-
-
-
-
-
-        serilog/serilog
-        is licensed under  the
-      
-Apache License 2.0
-A permissive license whose main conditions require preservation of copyright and license notices. Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
-
-
-
-Permissions
-
-
-
-
-                  Commercial use
-                
-
-
-
-
-                  Modification
-                
-
-
-
-
-                  Distribution
-                
-
-
-
-
-                  Patent use
-                
-
-
-
-
-                  Private use
-                
-
-
-
-
-Limitations
-
-
-
-
-                  Trademark use
-                
-
-
-
-
-                  Liability
-                
-
-
-
-
-                  Warranty
-                
-
-
-
-
-Conditions
-
-
-
-
-                  License and copyright notice
-                
-
-
-
-
-                  State changes
-                
-
-
-
-
-
-
-    This is not legal advice.
-    Learn more about repository licenses.
-  
-
-
-
-
-
-
-This commit does not belong to any branch on this repository, and may belong to a fork outside of the repository.
-
-
-
-
-
-
- 
-
-
- 
-Cannot retrieve contributors at this time
-
-
-
-
-
-
-      191 lines (155 sloc)
-      
-    10 KB
-  
-
-
-    Raw
-     Blame
- 
-
-
-
- 
-
-
-
-
-
- 
-
-
-
- Edit this file
-E
-
-
-              Open in GitHub Desktop
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  Open with Desktop
-                
-
-
-
-              View raw
-            
-
-
-
-
-
-                View blame
-              
-
-
-
-
-
-
-
-
-
-
-
-
 Apache License
-
-
-
 Version 2.0, January 2004
-
-
-
 http://www.apache.org/licenses/
-
-
-
-
-
-
-
 
 TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-
-
-
-
-
-
-
 1. Definitions.
 
-
-
-
-
-
-
-
 "License" shall mean the terms and conditions for use, reproduction, and
-
-
-
 distribution as defined by Sections 1 through 9 of this document.
 
-
-
-
-
-
-
-
 "Licensor" shall mean the copyright owner or entity authorized by the copyright
-
-
-
 owner that is granting the License.
 
-
-
-
-
-
-
-
 "Legal Entity" shall mean the union of the acting entity and all other entities
-
-
-
 that control, are controlled by, or are under common control with that entity.
-
-
-
 For the purposes of this definition, "control" means (i) the power, direct or
-
-
-
 indirect, to cause the direction or management of such entity, whether by
-
-
-
 contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the
-
-
-
 outstanding shares, or (iii) beneficial ownership of such entity.
 
-
-
-
-
-
-
-
 "You" (or "Your") shall mean an individual or Legal Entity exercising
-
-
-
 permissions granted by this License.
 
-
-
-
-
-
-
-
 "Source" form shall mean the preferred form for making modifications, including
-
-
-
 but not limited to software source code, documentation source, and configuration
-
-
-
 files.
 
-
-
-
-
-
-
-
 "Object" form shall mean any form resulting from mechanical transformation or
-
-
-
 translation of a Source form, including but not limited to compiled object code,
-
-
-
 generated documentation, and conversions to other media types.
 
-
-
-
-
-
-
-
 "Work" shall mean the work of authorship, whether in Source or Object form, made
-
-
-
 available under the License, as indicated by a copyright notice that is included
-
-
-
 in or attached to the work (an example is provided in the Appendix below).
 
-
-
-
-
-
-
-
 "Derivative Works" shall mean any work, whether in Source or Object form, that
-
-
-
 is based on (or derived from) the Work and for which the editorial revisions,
-
-
-
 annotations, elaborations, or other modifications represent, as a whole, an
-
-
-
 original work of authorship. For the purposes of this License, Derivative Works
-
-
-
 shall not include works that remain separable from, or merely link (or bind by
-
-
-
 name) to the interfaces of, the Work and Derivative Works thereof.
 
-
-
-
-
-
-
-
 "Contribution" shall mean any work of authorship, including the original version
-
-
-
 of the Work and any modifications or additions to that Work or Derivative Works
-
-
-
 thereof, that is intentionally submitted to Licensor for inclusion in the Work
-
-
-
 by the copyright owner or by an individual or Legal Entity authorized to submit
-
-
-
 on behalf of the copyright owner. For the purposes of this definition,
-
-
-
 "submitted" means any form of electronic, verbal, or written communication sent
-
-
-
 to the Licensor or its representatives, including but not limited to
-
-
-
 communication on electronic mailing lists, source code control systems, and
-
-
-
 issue tracking systems that are managed by, or on behalf of, the Licensor for
-
-
-
 the purpose of discussing and improving the Work, but excluding communication
-
-
-
 that is conspicuously marked or otherwise designated in writing by the copyright
-
-
-
 owner as "Not a Contribution."
 
-
-
-
-
-
-
-
 "Contributor" shall mean Licensor and any individual or Legal Entity on behalf
-
-
-
 of whom a Contribution has been received by Licensor and subsequently
-
-
-
 incorporated within the Work.
-
-
-
-
-
-
-
 
 2. Grant of Copyright License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable copyright license to reproduce, prepare Derivative Works of,
-
-
-
 publicly display, publicly perform, sublicense, and distribute the Work and such
-
-
-
 Derivative Works in Source or Object form.
-
-
-
-
-
-
-
 
 3. Grant of Patent License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable (except as stated in this section) patent license to make, have
-
-
-
 made, use, offer to sell, sell, import, and otherwise transfer the Work, where
-
-
-
 such license applies only to those patent claims licensable by such Contributor
-
-
-
 that are necessarily infringed by their Contribution(s) alone or by combination
-
-
-
 of their Contribution(s) with the Work to which such Contribution(s) was
-
-
-
 submitted. If You institute patent litigation against any entity (including a
-
-
-
 cross-claim or counterclaim in a lawsuit) alleging that the Work or a
-
-
-
 Contribution incorporated within the Work constitutes direct or contributory
-
-
-
 patent infringement, then any patent licenses granted to You under this License
-
-
-
 for that Work shall terminate as of the date such litigation is filed.
-
-
-
-
-
-
-
 
 4. Redistribution.
 
-
-
-
-
-
-
-
 You may reproduce and distribute copies of the Work or Derivative Works thereof
-
-
-
 in any medium, with or without modifications, and in Source or Object form,
-
-
-
 provided that You meet the following conditions:
 
-
-
-
-
-
-
-
 You must give any other recipients of the Work or Derivative Works a copy of
-
-
-
 this License; and
-
-
-
 You must cause any modified files to carry prominent notices stating that You
-
-
-
 changed the files; and
-
-
-
 You must retain, in the Source form of any Derivative Works that You distribute,
-
-
-
 all copyright, patent, trademark, and attribution notices from the Source form
-
-
-
 of the Work, excluding those notices that do not pertain to any part of the
-
-
-
 Derivative Works; and
-
-
-
 If the Work includes a "NOTICE" text file as part of its distribution, then any
-
-
-
 Derivative Works that You distribute must include a readable copy of the
-
-
-
 attribution notices contained within such NOTICE file, excluding those notices
-
-
-
 that do not pertain to any part of the Derivative Works, in at least one of the
-
-
-
 following places: within a NOTICE text file distributed as part of the
-
-
-
 Derivative Works; within the Source form or documentation, if provided along
-
-
-
 with the Derivative Works; or, within a display generated by the Derivative
-
-
-
 Works, if and wherever such third-party notices normally appear. The contents of
-
-
-
 the NOTICE file are for informational purposes only and do not modify the
-
-
-
 License. You may add Your own attribution notices within Derivative Works that
-
-
-
 You distribute, alongside or as an addendum to the NOTICE text from the Work,
-
-
-
 provided that such additional attribution notices cannot be construed as
-
-
-
 modifying the License.
-
-
-
 You may add Your own copyright statement to Your modifications and may provide
-
-
-
 additional or different license terms and conditions for use, reproduction, or
-
-
-
 distribution of Your modifications, or for any such Derivative Works as a whole,
-
-
-
 provided Your use, reproduction, and distribution of the Work otherwise complies
-
-
-
 with the conditions stated in this License.
-
-
-
-
-
-
-
 
 5. Submission of Contributions.
 
-
-
-
-
-
-
-
 Unless You explicitly state otherwise, any Contribution intentionally submitted
-
-
-
 for inclusion in the Work by You to the Licensor shall be under the terms and
-
-
-
 conditions of this License, without any additional terms or conditions.
-
-
-
 Notwithstanding the above, nothing herein shall supersede or modify the terms of
-
-
-
 any separate license agreement you may have executed with Licensor regarding
-
-
-
 such Contributions.
-
-
-
-
-
-
-
 
 6. Trademarks.
 
-
-
-
-
-
-
-
 This License does not grant permission to use the trade names, trademarks,
-
-
-
 service marks, or product names of the Licensor, except as required for
-
-
-
 reasonable and customary use in describing the origin of the Work and
-
-
-
 reproducing the content of the NOTICE file.
-
-
-
-
-
-
-
 
 7. Disclaimer of Warranty.
 
-
-
-
-
-
-
-
 Unless required by applicable law or agreed to in writing, Licensor provides the
-
-
-
 Work (and each Contributor provides its Contributions) on an "AS IS" BASIS,
-
-
-
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
-
-
-
 including, without limitation, any warranties or conditions of TITLE,
-
-
-
 NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are
-
-
-
 solely responsible for determining the appropriateness of using or
-
-
-
 redistributing the Work and assume any risks associated with Your exercise of
-
-
-
 permissions under this License.
-
-
-
-
-
-
-
 
 8. Limitation of Liability.
 
-
-
-
-
-
-
-
 In no event and under no legal theory, whether in tort (including negligence),
-
-
-
 contract, or otherwise, unless required by applicable law (such as deliberate
-
-
-
 and grossly negligent acts) or agreed to in writing, shall any Contributor be
-
-
-
 liable to You for damages, including any direct, indirect, special, incidental,
-
-
-
 or consequential damages of any character arising as a result of this License or
-
-
-
 out of the use or inability to use the Work (including but not limited to
-
-
-
 damages for loss of goodwill, work stoppage, computer failure or malfunction, or
-
-
-
 any and all other commercial damages or losses), even if such Contributor has
-
-
-
 been advised of the possibility of such damages.
-
-
-
-
-
-
-
 
 9. Accepting Warranty or Additional Liability.
 
-
-
-
-
-
-
-
 While redistributing the Work or Derivative Works thereof, You may choose to
-
-
-
 offer, and charge a fee for, acceptance of support, warranty, indemnity, or
-
-
-
 other liability obligations and/or rights consistent with this License. However,
-
-
-
 in accepting such obligations, You may act only on Your own behalf and on Your
-
-
-
 sole responsibility, not on behalf of any other Contributor, and only if You
-
-
-
 agree to indemnify, defend, and hold each Contributor harmless for any liability
-
-
-
 incurred by, or claims asserted against, such Contributor by reason of your
-
-
-
 accepting any such warranty or additional liability.
-
-
-
-
-
-
-
 
 END OF TERMS AND CONDITIONS
 
-
-
-
-
-
-
-
 APPENDIX: How to apply the Apache License to your work
 
-
-
-
-
-
-
-
 To apply the Apache License to your work, attach the following boilerplate
-
-
-
 notice, with the fields enclosed by brackets "[]" replaced with your own
-
-
-
 identifying information. (Don't include the brackets!) The text should be
-
-
-
 enclosed in the appropriate comment syntax for the file format. We also
-
-
-
 recommend that a file or class name and description of purpose be included on
-
-
-
 the same "printed page" as the copyright notice for easier identification within
-
-
-
 third-party archives.
-
-
-
-
-
-
-
 
    Copyright [yyyy] [name of copyright owner]
 
-
-
-
-
-
-
-
    Licensed under the Apache License, Version 2.0 (the "License");
-
-
-
    you may not use this file except in compliance with the License.
-
-
-
    You may obtain a copy of the License at
-
-
-
-
-
-
-
 
      http://www.apache.org/licenses/LICENSE-2.0
 
-
-
-
-
-
-
-
    Unless required by applicable law or agreed to in writing, software
-
-
-
    distributed under the License is distributed on an "AS IS" BASIS,
-
-
-
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-
-
    See the License for the specific language governing permissions and
-
-
-
    limitations under the License.
-
-
-
-
-
-
-
-
-
-
-
-
-
-            Copy lines
-          
-
-
-
-            Copy permalink
-          
-
-View git blame
-Reference in new issue
-
-
-
-
-
-
-
-
-
-
-    Go
-
- 
-
-
-
-
-
-
-
-
-
-Footer
-
-
-
-
-
-
-
- 
-        © 2022 GitHub, Inc.
-        
-
-
-
-Footer navigation
-
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    You can’t perform that action at this time.
-  
-
-
-
-
-You signed in with another tab or window. Reload to refresh your session.
-You signed out in another tab or window. Reload to refresh your session.
 ```
 
 </details>
@@ -21428,1941 +11096,201 @@ You signed out in another tab or window. Reload to refresh your session.
 - Owners: Serilog Contributors
 - Project URL: https://github.com/serilog/serilog-formatting-compact
 - Source: [NuGet](https://www.nuget.org/packages/Serilog.Formatting.Compact/1.1.0)
-- License: [Apache-2.0](https://github.com/serilog/serilog/blob/dev/LICENSE)
+- License: [Apache-2.0](https://github.com/serilog/serilog/raw/dev/LICENSE)
 
 
 ```
-serilog/LICENSE at dev · serilog/serilog · GitHub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Skip to content
-
-
-
-
-
-
-
-Toggle navigation
-
-
-
-
-
-
-
-
-
-
-            Sign up
-          
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-      Product
-      
-
-
-
-
-
-
-
-
-
-
-
-Actions
-        Automate any workflow
-      
-
-
-
-
-
-
-
-Packages
-        Host and manage packages
-      
-
-
-
-
-
-
-
-Security
-        Find and fix vulnerabilities
-      
-
-
-
-
-
-
-
-Codespaces
-        Instant dev environments
-      
-
-
-
-
-
-
-
-Copilot
-        Write better code with AI
-      
-
-
-
-
-
-
-
-Code review
-        Manage code changes
-      
-
-
-
-
-
-
-
-Issues
-        Plan and track work
-      
-
-
-
-
-
-
-
-Discussions
-        Collaborate outside of code
-      
-
-
-
-Explore
-
-
-      All features
-
-    
-
-
-
-      Documentation
-
-    
-
-
-
-
-
-      GitHub Skills
-
-    
-
-
-
-
-
-      Blog
-
-    
-
-
-
-
-
-
-
-
-      Solutions
-      
-
-
-
-
-
-By Plan
-
-
-      Enterprise
-
-    
-
-
-
-      Teams
-
-    
-
-
-
-      Compare all
-
-    
-
-
-
-By Solution
-
-
-      CI/CD & Automation
-
-    
-
-
-
-
-
-      DevOps
-
-    
-
-
-
-
-
-      DevSecOps
-
-    
-
-
-
-
-
-Case Studies
-
-
-      Customer Stories
-
-    
-
-
-
-      Resources
-
-    
-
-
-
-
-
-
-
-
-      Open Source
-      
-
-
-
-
-
-
-
-
-GitHub Sponsors
-        Fund open source developers
-      
-
-
-
-
-
-
-The ReadME Project
-        GitHub community articles
-      
-
-
-
-Repositories
-
-
-      Topics
-
-    
-
-
-
-      Trending
-
-    
-
-
-
-      Collections
-
-    
-
-
-
-
-
-Pricing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-No suggested jump to results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this organization
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
- 
-
-
-
-
-              Sign in
-            
-
-
-              Sign up
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-serilog
-
-/
-
-serilog
-
-Public
-
-
-
-
- 
-
-Notifications
-
-
-
- 
-
-Fork
-    713
-
-
-
-
- 
-
-
-          Star
- 5.8k
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Code
-
-
-
-
-
-
-
-Issues
-32
-
-
-
-
-
-
-Pull requests
-1
-
-
-
-
-
-
-Actions
-
-
-
-
-
-
-
-Wiki
-
-
-
-
-
-
-
-Security
-
-
-
-
-
-
-
-Insights
-
-
-
- 
- 
-
-
-
-More
-
-
- 
-
-
-                  Code
- 
-
-
-                  Issues
- 
-
-
-                  Pull requests
- 
-
-
-                  Actions
- 
-
-
-                  Wiki
- 
-
-
-                  Security
- 
-
-
-                  Insights
- 
-
-
-
-
-
-
-
-
-
-Permalink
-
-
-
-
-
-
-
-dev
-
-
-
-
-
-Switch branches/tags
-
-
-
-
-
-
-
-
-
-
-Branches
-Tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all branches
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-Name already in use
-
-
-
-
-
-
-
-
-
-      A tag already exists with the provided branch name. Many Git commands accept both tag and branch names, so creating this branch may cause unexpected behavior. Are you sure you want to create this branch?
-
-
-
-    Cancel
-
-    Create
-
-
-
-
-serilog/LICENSE
-
-    Go to file
-
-
- 
-
-
-
- 
-
-
-Go to file
-T
- 
-
- 
-Go to line
-L
-
- 
-
-
-
-    
-            Copy path
-
- 
-
-
-
-Copy permalink
-
- 
-
-
-
-
-
-
-
-
-
-
-        serilog/serilog
-        is licensed under  the
-      
-Apache License 2.0
-A permissive license whose main conditions require preservation of copyright and license notices. Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
-
-
-
-Permissions
-
-
-
-
-                  Commercial use
-                
-
-
-
-
-                  Modification
-                
-
-
-
-
-                  Distribution
-                
-
-
-
-
-                  Patent use
-                
-
-
-
-
-                  Private use
-                
-
-
-
-
-Limitations
-
-
-
-
-                  Trademark use
-                
-
-
-
-
-                  Liability
-                
-
-
-
-
-                  Warranty
-                
-
-
-
-
-Conditions
-
-
-
-
-                  License and copyright notice
-                
-
-
-
-
-                  State changes
-                
-
-
-
-
-
-
-    This is not legal advice.
-    Learn more about repository licenses.
-  
-
-
-
-
-
-
-This commit does not belong to any branch on this repository, and may belong to a fork outside of the repository.
-
-
-
-
-
-
-
-
-
-
-tvjames
-
-GitHub Apache 2 licence template
-
-
-
-
-
-
-
-
-Latest commit
-5eb8e10
-Oct 11, 2013
-
-
-
-
-
-
-History
-
-
-
-
-
-
-
-
-
-
-
-1
-        
-        contributor
-      
-
-
-
-
-
-
-
-
-            Users who have contributed to this file
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      191 lines (155 sloc)
-      
-    10 KB
-  
-
-
-    Raw
-     Blame
- 
-
-
-
- 
-
-
-
-
-
- 
-
-
-
- Edit this file
-E
-
-
-              Open in GitHub Desktop
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  Open with Desktop
-                
-
-
-
-              View raw
-            
-
-
-
-
-
-                View blame
-              
-
-
-
-
-
-
-
-
-
-
-
-
 Apache License
-
-
-
 Version 2.0, January 2004
-
-
-
 http://www.apache.org/licenses/
-
-
-
-
-
-
-
 
 TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-
-
-
-
-
-
-
 1. Definitions.
 
-
-
-
-
-
-
-
 "License" shall mean the terms and conditions for use, reproduction, and
-
-
-
 distribution as defined by Sections 1 through 9 of this document.
 
-
-
-
-
-
-
-
 "Licensor" shall mean the copyright owner or entity authorized by the copyright
-
-
-
 owner that is granting the License.
 
-
-
-
-
-
-
-
 "Legal Entity" shall mean the union of the acting entity and all other entities
-
-
-
 that control, are controlled by, or are under common control with that entity.
-
-
-
 For the purposes of this definition, "control" means (i) the power, direct or
-
-
-
 indirect, to cause the direction or management of such entity, whether by
-
-
-
 contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the
-
-
-
 outstanding shares, or (iii) beneficial ownership of such entity.
 
-
-
-
-
-
-
-
 "You" (or "Your") shall mean an individual or Legal Entity exercising
-
-
-
 permissions granted by this License.
 
-
-
-
-
-
-
-
 "Source" form shall mean the preferred form for making modifications, including
-
-
-
 but not limited to software source code, documentation source, and configuration
-
-
-
 files.
 
-
-
-
-
-
-
-
 "Object" form shall mean any form resulting from mechanical transformation or
-
-
-
 translation of a Source form, including but not limited to compiled object code,
-
-
-
 generated documentation, and conversions to other media types.
 
-
-
-
-
-
-
-
 "Work" shall mean the work of authorship, whether in Source or Object form, made
-
-
-
 available under the License, as indicated by a copyright notice that is included
-
-
-
 in or attached to the work (an example is provided in the Appendix below).
 
-
-
-
-
-
-
-
 "Derivative Works" shall mean any work, whether in Source or Object form, that
-
-
-
 is based on (or derived from) the Work and for which the editorial revisions,
-
-
-
 annotations, elaborations, or other modifications represent, as a whole, an
-
-
-
 original work of authorship. For the purposes of this License, Derivative Works
-
-
-
 shall not include works that remain separable from, or merely link (or bind by
-
-
-
 name) to the interfaces of, the Work and Derivative Works thereof.
 
-
-
-
-
-
-
-
 "Contribution" shall mean any work of authorship, including the original version
-
-
-
 of the Work and any modifications or additions to that Work or Derivative Works
-
-
-
 thereof, that is intentionally submitted to Licensor for inclusion in the Work
-
-
-
 by the copyright owner or by an individual or Legal Entity authorized to submit
-
-
-
 on behalf of the copyright owner. For the purposes of this definition,
-
-
-
 "submitted" means any form of electronic, verbal, or written communication sent
-
-
-
 to the Licensor or its representatives, including but not limited to
-
-
-
 communication on electronic mailing lists, source code control systems, and
-
-
-
 issue tracking systems that are managed by, or on behalf of, the Licensor for
-
-
-
 the purpose of discussing and improving the Work, but excluding communication
-
-
-
 that is conspicuously marked or otherwise designated in writing by the copyright
-
-
-
 owner as "Not a Contribution."
 
-
-
-
-
-
-
-
 "Contributor" shall mean Licensor and any individual or Legal Entity on behalf
-
-
-
 of whom a Contribution has been received by Licensor and subsequently
-
-
-
 incorporated within the Work.
-
-
-
-
-
-
-
 
 2. Grant of Copyright License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable copyright license to reproduce, prepare Derivative Works of,
-
-
-
 publicly display, publicly perform, sublicense, and distribute the Work and such
-
-
-
 Derivative Works in Source or Object form.
-
-
-
-
-
-
-
 
 3. Grant of Patent License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable (except as stated in this section) patent license to make, have
-
-
-
 made, use, offer to sell, sell, import, and otherwise transfer the Work, where
-
-
-
 such license applies only to those patent claims licensable by such Contributor
-
-
-
 that are necessarily infringed by their Contribution(s) alone or by combination
-
-
-
 of their Contribution(s) with the Work to which such Contribution(s) was
-
-
-
 submitted. If You institute patent litigation against any entity (including a
-
-
-
 cross-claim or counterclaim in a lawsuit) alleging that the Work or a
-
-
-
 Contribution incorporated within the Work constitutes direct or contributory
-
-
-
 patent infringement, then any patent licenses granted to You under this License
-
-
-
 for that Work shall terminate as of the date such litigation is filed.
-
-
-
-
-
-
-
 
 4. Redistribution.
 
-
-
-
-
-
-
-
 You may reproduce and distribute copies of the Work or Derivative Works thereof
-
-
-
 in any medium, with or without modifications, and in Source or Object form,
-
-
-
 provided that You meet the following conditions:
 
-
-
-
-
-
-
-
 You must give any other recipients of the Work or Derivative Works a copy of
-
-
-
 this License; and
-
-
-
 You must cause any modified files to carry prominent notices stating that You
-
-
-
 changed the files; and
-
-
-
 You must retain, in the Source form of any Derivative Works that You distribute,
-
-
-
 all copyright, patent, trademark, and attribution notices from the Source form
-
-
-
 of the Work, excluding those notices that do not pertain to any part of the
-
-
-
 Derivative Works; and
-
-
-
 If the Work includes a "NOTICE" text file as part of its distribution, then any
-
-
-
 Derivative Works that You distribute must include a readable copy of the
-
-
-
 attribution notices contained within such NOTICE file, excluding those notices
-
-
-
 that do not pertain to any part of the Derivative Works, in at least one of the
-
-
-
 following places: within a NOTICE text file distributed as part of the
-
-
-
 Derivative Works; within the Source form or documentation, if provided along
-
-
-
 with the Derivative Works; or, within a display generated by the Derivative
-
-
-
 Works, if and wherever such third-party notices normally appear. The contents of
-
-
-
 the NOTICE file are for informational purposes only and do not modify the
-
-
-
 License. You may add Your own attribution notices within Derivative Works that
-
-
-
 You distribute, alongside or as an addendum to the NOTICE text from the Work,
-
-
-
 provided that such additional attribution notices cannot be construed as
-
-
-
 modifying the License.
-
-
-
 You may add Your own copyright statement to Your modifications and may provide
-
-
-
 additional or different license terms and conditions for use, reproduction, or
-
-
-
 distribution of Your modifications, or for any such Derivative Works as a whole,
-
-
-
 provided Your use, reproduction, and distribution of the Work otherwise complies
-
-
-
 with the conditions stated in this License.
-
-
-
-
-
-
-
 
 5. Submission of Contributions.
 
-
-
-
-
-
-
-
 Unless You explicitly state otherwise, any Contribution intentionally submitted
-
-
-
 for inclusion in the Work by You to the Licensor shall be under the terms and
-
-
-
 conditions of this License, without any additional terms or conditions.
-
-
-
 Notwithstanding the above, nothing herein shall supersede or modify the terms of
-
-
-
 any separate license agreement you may have executed with Licensor regarding
-
-
-
 such Contributions.
-
-
-
-
-
-
-
 
 6. Trademarks.
 
-
-
-
-
-
-
-
 This License does not grant permission to use the trade names, trademarks,
-
-
-
 service marks, or product names of the Licensor, except as required for
-
-
-
 reasonable and customary use in describing the origin of the Work and
-
-
-
 reproducing the content of the NOTICE file.
-
-
-
-
-
-
-
 
 7. Disclaimer of Warranty.
 
-
-
-
-
-
-
-
 Unless required by applicable law or agreed to in writing, Licensor provides the
-
-
-
 Work (and each Contributor provides its Contributions) on an "AS IS" BASIS,
-
-
-
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
-
-
-
 including, without limitation, any warranties or conditions of TITLE,
-
-
-
 NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are
-
-
-
 solely responsible for determining the appropriateness of using or
-
-
-
 redistributing the Work and assume any risks associated with Your exercise of
-
-
-
 permissions under this License.
-
-
-
-
-
-
-
 
 8. Limitation of Liability.
 
-
-
-
-
-
-
-
 In no event and under no legal theory, whether in tort (including negligence),
-
-
-
 contract, or otherwise, unless required by applicable law (such as deliberate
-
-
-
 and grossly negligent acts) or agreed to in writing, shall any Contributor be
-
-
-
 liable to You for damages, including any direct, indirect, special, incidental,
-
-
-
 or consequential damages of any character arising as a result of this License or
-
-
-
 out of the use or inability to use the Work (including but not limited to
-
-
-
 damages for loss of goodwill, work stoppage, computer failure or malfunction, or
-
-
-
 any and all other commercial damages or losses), even if such Contributor has
-
-
-
 been advised of the possibility of such damages.
-
-
-
-
-
-
-
 
 9. Accepting Warranty or Additional Liability.
 
-
-
-
-
-
-
-
 While redistributing the Work or Derivative Works thereof, You may choose to
-
-
-
 offer, and charge a fee for, acceptance of support, warranty, indemnity, or
-
-
-
 other liability obligations and/or rights consistent with this License. However,
-
-
-
 in accepting such obligations, You may act only on Your own behalf and on Your
-
-
-
 sole responsibility, not on behalf of any other Contributor, and only if You
-
-
-
 agree to indemnify, defend, and hold each Contributor harmless for any liability
-
-
-
 incurred by, or claims asserted against, such Contributor by reason of your
-
-
-
 accepting any such warranty or additional liability.
-
-
-
-
-
-
-
 
 END OF TERMS AND CONDITIONS
 
-
-
-
-
-
-
-
 APPENDIX: How to apply the Apache License to your work
 
-
-
-
-
-
-
-
 To apply the Apache License to your work, attach the following boilerplate
-
-
-
 notice, with the fields enclosed by brackets "[]" replaced with your own
-
-
-
 identifying information. (Don't include the brackets!) The text should be
-
-
-
 enclosed in the appropriate comment syntax for the file format. We also
-
-
-
 recommend that a file or class name and description of purpose be included on
-
-
-
 the same "printed page" as the copyright notice for easier identification within
-
-
-
 third-party archives.
-
-
-
-
-
-
-
 
    Copyright [yyyy] [name of copyright owner]
 
-
-
-
-
-
-
-
    Licensed under the Apache License, Version 2.0 (the "License");
-
-
-
    you may not use this file except in compliance with the License.
-
-
-
    You may obtain a copy of the License at
-
-
-
-
-
-
-
 
      http://www.apache.org/licenses/LICENSE-2.0
 
-
-
-
-
-
-
-
    Unless required by applicable law or agreed to in writing, software
-
-
-
    distributed under the License is distributed on an "AS IS" BASIS,
-
-
-
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-
-
    See the License for the specific language governing permissions and
-
-
-
    limitations under the License.
-
-
-
-
-
-
-
-
-
-
-
-
-
-            Copy lines
-          
-
-
-
-            Copy permalink
-          
-
-View git blame
-Reference in new issue
-
-
-
-
-
-
-
-
-
-
-    Go
-
- 
-
-
-
-
-
-
-
-
-
-Footer
-
-
-
-
-
-
-
- 
-        © 2022 GitHub, Inc.
-        
-
-
-
-Footer navigation
-
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    You can’t perform that action at this time.
-  
-
-
-
-
-You signed in with another tab or window. Reload to refresh your session.
-You signed out in another tab or window. Reload to refresh your session.
 ```
 
 </details>
@@ -23377,1941 +11305,201 @@ You signed out in another tab or window. Reload to refresh your session.
 - Authors: Serilog Contributors
 - Project URL: https://github.com/serilog/serilog-settings-configuration/
 - Source: [NuGet](https://www.nuget.org/packages/Serilog.Settings.Configuration/3.3.0)
-- License: [Apache-2.0](https://github.com/serilog/serilog/blob/dev/LICENSE)
+- License: [Apache-2.0](https://github.com/serilog/serilog/raw/dev/LICENSE)
 
 
 ```
-serilog/LICENSE at dev · serilog/serilog · GitHub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Skip to content
-
-
-
-
-
-
-
-Toggle navigation
-
-
-
-
-
-
-
-
-
-
-            Sign up
-          
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-      Product
-      
-
-
-
-
-
-
-
-
-
-
-
-Actions
-        Automate any workflow
-      
-
-
-
-
-
-
-
-Packages
-        Host and manage packages
-      
-
-
-
-
-
-
-
-Security
-        Find and fix vulnerabilities
-      
-
-
-
-
-
-
-
-Codespaces
-        Instant dev environments
-      
-
-
-
-
-
-
-
-Copilot
-        Write better code with AI
-      
-
-
-
-
-
-
-
-Code review
-        Manage code changes
-      
-
-
-
-
-
-
-
-Issues
-        Plan and track work
-      
-
-
-
-
-
-
-
-Discussions
-        Collaborate outside of code
-      
-
-
-
-Explore
-
-
-      All features
-
-    
-
-
-
-      Documentation
-
-    
-
-
-
-
-
-      GitHub Skills
-
-    
-
-
-
-
-
-      Blog
-
-    
-
-
-
-
-
-
-
-
-      Solutions
-      
-
-
-
-
-
-By Plan
-
-
-      Enterprise
-
-    
-
-
-
-      Teams
-
-    
-
-
-
-      Compare all
-
-    
-
-
-
-By Solution
-
-
-      CI/CD & Automation
-
-    
-
-
-
-
-
-      DevOps
-
-    
-
-
-
-
-
-      DevSecOps
-
-    
-
-
-
-
-
-Case Studies
-
-
-      Customer Stories
-
-    
-
-
-
-      Resources
-
-    
-
-
-
-
-
-
-
-
-      Open Source
-      
-
-
-
-
-
-
-
-
-GitHub Sponsors
-        Fund open source developers
-      
-
-
-
-
-
-
-The ReadME Project
-        GitHub community articles
-      
-
-
-
-Repositories
-
-
-      Topics
-
-    
-
-
-
-      Trending
-
-    
-
-
-
-      Collections
-
-    
-
-
-
-
-
-Pricing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-No suggested jump to results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this organization
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
- 
-
-
-
-
-              Sign in
-            
-
-
-              Sign up
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-serilog
-
-/
-
-serilog
-
-Public
-
-
-
-
- 
-
-Notifications
-
-
-
- 
-
-Fork
-    713
-
-
-
-
- 
-
-
-          Star
- 5.8k
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Code
-
-
-
-
-
-
-
-Issues
-32
-
-
-
-
-
-
-Pull requests
-1
-
-
-
-
-
-
-Actions
-
-
-
-
-
-
-
-Wiki
-
-
-
-
-
-
-
-Security
-
-
-
-
-
-
-
-Insights
-
-
-
- 
- 
-
-
-
-More
-
-
- 
-
-
-                  Code
- 
-
-
-                  Issues
- 
-
-
-                  Pull requests
- 
-
-
-                  Actions
- 
-
-
-                  Wiki
- 
-
-
-                  Security
- 
-
-
-                  Insights
- 
-
-
-
-
-
-
-
-
-
-Permalink
-
-
-
-
-
-
-
-dev
-
-
-
-
-
-Switch branches/tags
-
-
-
-
-
-
-
-
-
-
-Branches
-Tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all branches
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-Name already in use
-
-
-
-
-
-
-
-
-
-      A tag already exists with the provided branch name. Many Git commands accept both tag and branch names, so creating this branch may cause unexpected behavior. Are you sure you want to create this branch?
-
-
-
-    Cancel
-
-    Create
-
-
-
-
-serilog/LICENSE
-
-    Go to file
-
-
- 
-
-
-
- 
-
-
-Go to file
-T
- 
-
- 
-Go to line
-L
-
- 
-
-
-
-    
-            Copy path
-
- 
-
-
-
-Copy permalink
-
- 
-
-
-
-
-
-
-
-
-
-
-        serilog/serilog
-        is licensed under  the
-      
-Apache License 2.0
-A permissive license whose main conditions require preservation of copyright and license notices. Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
-
-
-
-Permissions
-
-
-
-
-                  Commercial use
-                
-
-
-
-
-                  Modification
-                
-
-
-
-
-                  Distribution
-                
-
-
-
-
-                  Patent use
-                
-
-
-
-
-                  Private use
-                
-
-
-
-
-Limitations
-
-
-
-
-                  Trademark use
-                
-
-
-
-
-                  Liability
-                
-
-
-
-
-                  Warranty
-                
-
-
-
-
-Conditions
-
-
-
-
-                  License and copyright notice
-                
-
-
-
-
-                  State changes
-                
-
-
-
-
-
-
-    This is not legal advice.
-    Learn more about repository licenses.
-  
-
-
-
-
-
-
-This commit does not belong to any branch on this repository, and may belong to a fork outside of the repository.
-
-
-
-
-
-
-
-
-
-
-tvjames
-
-GitHub Apache 2 licence template
-
-
-
-
-
-
-
-
-Latest commit
-5eb8e10
-Oct 11, 2013
-
-
-
-
-
-
-History
-
-
-
-
-
-
-
-
-
-
-
-1
-        
-        contributor
-      
-
-
-
-
-
-
-
-
-            Users who have contributed to this file
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      191 lines (155 sloc)
-      
-    10 KB
-  
-
-
-    Raw
-     Blame
- 
-
-
-
- 
-
-
-
-
-
- 
-
-
-
- Edit this file
-E
-
-
-              Open in GitHub Desktop
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  Open with Desktop
-                
-
-
-
-              View raw
-            
-
-
-
-
-
-                View blame
-              
-
-
-
-
-
-
-
-
-
-
-
-
 Apache License
-
-
-
 Version 2.0, January 2004
-
-
-
 http://www.apache.org/licenses/
-
-
-
-
-
-
-
 
 TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-
-
-
-
-
-
-
 1. Definitions.
 
-
-
-
-
-
-
-
 "License" shall mean the terms and conditions for use, reproduction, and
-
-
-
 distribution as defined by Sections 1 through 9 of this document.
 
-
-
-
-
-
-
-
 "Licensor" shall mean the copyright owner or entity authorized by the copyright
-
-
-
 owner that is granting the License.
 
-
-
-
-
-
-
-
 "Legal Entity" shall mean the union of the acting entity and all other entities
-
-
-
 that control, are controlled by, or are under common control with that entity.
-
-
-
 For the purposes of this definition, "control" means (i) the power, direct or
-
-
-
 indirect, to cause the direction or management of such entity, whether by
-
-
-
 contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the
-
-
-
 outstanding shares, or (iii) beneficial ownership of such entity.
 
-
-
-
-
-
-
-
 "You" (or "Your") shall mean an individual or Legal Entity exercising
-
-
-
 permissions granted by this License.
 
-
-
-
-
-
-
-
 "Source" form shall mean the preferred form for making modifications, including
-
-
-
 but not limited to software source code, documentation source, and configuration
-
-
-
 files.
 
-
-
-
-
-
-
-
 "Object" form shall mean any form resulting from mechanical transformation or
-
-
-
 translation of a Source form, including but not limited to compiled object code,
-
-
-
 generated documentation, and conversions to other media types.
 
-
-
-
-
-
-
-
 "Work" shall mean the work of authorship, whether in Source or Object form, made
-
-
-
 available under the License, as indicated by a copyright notice that is included
-
-
-
 in or attached to the work (an example is provided in the Appendix below).
 
-
-
-
-
-
-
-
 "Derivative Works" shall mean any work, whether in Source or Object form, that
-
-
-
 is based on (or derived from) the Work and for which the editorial revisions,
-
-
-
 annotations, elaborations, or other modifications represent, as a whole, an
-
-
-
 original work of authorship. For the purposes of this License, Derivative Works
-
-
-
 shall not include works that remain separable from, or merely link (or bind by
-
-
-
 name) to the interfaces of, the Work and Derivative Works thereof.
 
-
-
-
-
-
-
-
 "Contribution" shall mean any work of authorship, including the original version
-
-
-
 of the Work and any modifications or additions to that Work or Derivative Works
-
-
-
 thereof, that is intentionally submitted to Licensor for inclusion in the Work
-
-
-
 by the copyright owner or by an individual or Legal Entity authorized to submit
-
-
-
 on behalf of the copyright owner. For the purposes of this definition,
-
-
-
 "submitted" means any form of electronic, verbal, or written communication sent
-
-
-
 to the Licensor or its representatives, including but not limited to
-
-
-
 communication on electronic mailing lists, source code control systems, and
-
-
-
 issue tracking systems that are managed by, or on behalf of, the Licensor for
-
-
-
 the purpose of discussing and improving the Work, but excluding communication
-
-
-
 that is conspicuously marked or otherwise designated in writing by the copyright
-
-
-
 owner as "Not a Contribution."
 
-
-
-
-
-
-
-
 "Contributor" shall mean Licensor and any individual or Legal Entity on behalf
-
-
-
 of whom a Contribution has been received by Licensor and subsequently
-
-
-
 incorporated within the Work.
-
-
-
-
-
-
-
 
 2. Grant of Copyright License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable copyright license to reproduce, prepare Derivative Works of,
-
-
-
 publicly display, publicly perform, sublicense, and distribute the Work and such
-
-
-
 Derivative Works in Source or Object form.
-
-
-
-
-
-
-
 
 3. Grant of Patent License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable (except as stated in this section) patent license to make, have
-
-
-
 made, use, offer to sell, sell, import, and otherwise transfer the Work, where
-
-
-
 such license applies only to those patent claims licensable by such Contributor
-
-
-
 that are necessarily infringed by their Contribution(s) alone or by combination
-
-
-
 of their Contribution(s) with the Work to which such Contribution(s) was
-
-
-
 submitted. If You institute patent litigation against any entity (including a
-
-
-
 cross-claim or counterclaim in a lawsuit) alleging that the Work or a
-
-
-
 Contribution incorporated within the Work constitutes direct or contributory
-
-
-
 patent infringement, then any patent licenses granted to You under this License
-
-
-
 for that Work shall terminate as of the date such litigation is filed.
-
-
-
-
-
-
-
 
 4. Redistribution.
 
-
-
-
-
-
-
-
 You may reproduce and distribute copies of the Work or Derivative Works thereof
-
-
-
 in any medium, with or without modifications, and in Source or Object form,
-
-
-
 provided that You meet the following conditions:
 
-
-
-
-
-
-
-
 You must give any other recipients of the Work or Derivative Works a copy of
-
-
-
 this License; and
-
-
-
 You must cause any modified files to carry prominent notices stating that You
-
-
-
 changed the files; and
-
-
-
 You must retain, in the Source form of any Derivative Works that You distribute,
-
-
-
 all copyright, patent, trademark, and attribution notices from the Source form
-
-
-
 of the Work, excluding those notices that do not pertain to any part of the
-
-
-
 Derivative Works; and
-
-
-
 If the Work includes a "NOTICE" text file as part of its distribution, then any
-
-
-
 Derivative Works that You distribute must include a readable copy of the
-
-
-
 attribution notices contained within such NOTICE file, excluding those notices
-
-
-
 that do not pertain to any part of the Derivative Works, in at least one of the
-
-
-
 following places: within a NOTICE text file distributed as part of the
-
-
-
 Derivative Works; within the Source form or documentation, if provided along
-
-
-
 with the Derivative Works; or, within a display generated by the Derivative
-
-
-
 Works, if and wherever such third-party notices normally appear. The contents of
-
-
-
 the NOTICE file are for informational purposes only and do not modify the
-
-
-
 License. You may add Your own attribution notices within Derivative Works that
-
-
-
 You distribute, alongside or as an addendum to the NOTICE text from the Work,
-
-
-
 provided that such additional attribution notices cannot be construed as
-
-
-
 modifying the License.
-
-
-
 You may add Your own copyright statement to Your modifications and may provide
-
-
-
 additional or different license terms and conditions for use, reproduction, or
-
-
-
 distribution of Your modifications, or for any such Derivative Works as a whole,
-
-
-
 provided Your use, reproduction, and distribution of the Work otherwise complies
-
-
-
 with the conditions stated in this License.
-
-
-
-
-
-
-
 
 5. Submission of Contributions.
 
-
-
-
-
-
-
-
 Unless You explicitly state otherwise, any Contribution intentionally submitted
-
-
-
 for inclusion in the Work by You to the Licensor shall be under the terms and
-
-
-
 conditions of this License, without any additional terms or conditions.
-
-
-
 Notwithstanding the above, nothing herein shall supersede or modify the terms of
-
-
-
 any separate license agreement you may have executed with Licensor regarding
-
-
-
 such Contributions.
-
-
-
-
-
-
-
 
 6. Trademarks.
 
-
-
-
-
-
-
-
 This License does not grant permission to use the trade names, trademarks,
-
-
-
 service marks, or product names of the Licensor, except as required for
-
-
-
 reasonable and customary use in describing the origin of the Work and
-
-
-
 reproducing the content of the NOTICE file.
-
-
-
-
-
-
-
 
 7. Disclaimer of Warranty.
 
-
-
-
-
-
-
-
 Unless required by applicable law or agreed to in writing, Licensor provides the
-
-
-
 Work (and each Contributor provides its Contributions) on an "AS IS" BASIS,
-
-
-
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
-
-
-
 including, without limitation, any warranties or conditions of TITLE,
-
-
-
 NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are
-
-
-
 solely responsible for determining the appropriateness of using or
-
-
-
 redistributing the Work and assume any risks associated with Your exercise of
-
-
-
 permissions under this License.
-
-
-
-
-
-
-
 
 8. Limitation of Liability.
 
-
-
-
-
-
-
-
 In no event and under no legal theory, whether in tort (including negligence),
-
-
-
 contract, or otherwise, unless required by applicable law (such as deliberate
-
-
-
 and grossly negligent acts) or agreed to in writing, shall any Contributor be
-
-
-
 liable to You for damages, including any direct, indirect, special, incidental,
-
-
-
 or consequential damages of any character arising as a result of this License or
-
-
-
 out of the use or inability to use the Work (including but not limited to
-
-
-
 damages for loss of goodwill, work stoppage, computer failure or malfunction, or
-
-
-
 any and all other commercial damages or losses), even if such Contributor has
-
-
-
 been advised of the possibility of such damages.
-
-
-
-
-
-
-
 
 9. Accepting Warranty or Additional Liability.
 
-
-
-
-
-
-
-
 While redistributing the Work or Derivative Works thereof, You may choose to
-
-
-
 offer, and charge a fee for, acceptance of support, warranty, indemnity, or
-
-
-
 other liability obligations and/or rights consistent with this License. However,
-
-
-
 in accepting such obligations, You may act only on Your own behalf and on Your
-
-
-
 sole responsibility, not on behalf of any other Contributor, and only if You
-
-
-
 agree to indemnify, defend, and hold each Contributor harmless for any liability
-
-
-
 incurred by, or claims asserted against, such Contributor by reason of your
-
-
-
 accepting any such warranty or additional liability.
-
-
-
-
-
-
-
 
 END OF TERMS AND CONDITIONS
 
-
-
-
-
-
-
-
 APPENDIX: How to apply the Apache License to your work
 
-
-
-
-
-
-
-
 To apply the Apache License to your work, attach the following boilerplate
-
-
-
 notice, with the fields enclosed by brackets "[]" replaced with your own
-
-
-
 identifying information. (Don't include the brackets!) The text should be
-
-
-
 enclosed in the appropriate comment syntax for the file format. We also
-
-
-
 recommend that a file or class name and description of purpose be included on
-
-
-
 the same "printed page" as the copyright notice for easier identification within
-
-
-
 third-party archives.
-
-
-
-
-
-
-
 
    Copyright [yyyy] [name of copyright owner]
 
-
-
-
-
-
-
-
    Licensed under the Apache License, Version 2.0 (the "License");
-
-
-
    you may not use this file except in compliance with the License.
-
-
-
    You may obtain a copy of the License at
-
-
-
-
-
-
-
 
      http://www.apache.org/licenses/LICENSE-2.0
 
-
-
-
-
-
-
-
    Unless required by applicable law or agreed to in writing, software
-
-
-
    distributed under the License is distributed on an "AS IS" BASIS,
-
-
-
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-
-
    See the License for the specific language governing permissions and
-
-
-
    limitations under the License.
-
-
-
-
-
-
-
-
-
-
-
-
-
-            Copy lines
-          
-
-
-
-            Copy permalink
-          
-
-View git blame
-Reference in new issue
-
-
-
-
-
-
-
-
-
-
-    Go
-
- 
-
-
-
-
-
-
-
-
-
-Footer
-
-
-
-
-
-
-
- 
-        © 2022 GitHub, Inc.
-        
-
-
-
-Footer navigation
-
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    You can’t perform that action at this time.
-  
-
-
-
-
-You signed in with another tab or window. Reload to refresh your session.
-You signed out in another tab or window. Reload to refresh your session.
 ```
 
 </details>
@@ -25326,1887 +11514,201 @@ You signed out in another tab or window. Reload to refresh your session.
 - Authors: Serilog Contributors
 - Project URL: https://github.com/serilog/serilog-sinks-console
 - Source: [NuGet](https://www.nuget.org/packages/Serilog.Sinks.Console/4.0.1)
-- License: [Apache-2.0](https://github.com/serilog/serilog/blob/dev/LICENSE)
+- License: [Apache-2.0](https://github.com/serilog/serilog/raw/dev/LICENSE)
 
 
 ```
-serilog/LICENSE at dev · serilog/serilog · GitHub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Skip to content
-
-
-
-
-
-
-
-Toggle navigation
-
-
-
-
-
-
-
-
-
-
-            Sign up
-          
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-      Product
-      
-
-
-
-
-
-
-
-
-
-
-
-Actions
-        Automate any workflow
-      
-
-
-
-
-
-
-
-Packages
-        Host and manage packages
-      
-
-
-
-
-
-
-
-Security
-        Find and fix vulnerabilities
-      
-
-
-
-
-
-
-
-Codespaces
-        Instant dev environments
-      
-
-
-
-
-
-
-
-Copilot
-        Write better code with AI
-      
-
-
-
-
-
-
-
-Code review
-        Manage code changes
-      
-
-
-
-
-
-
-
-Issues
-        Plan and track work
-      
-
-
-
-
-
-
-
-Discussions
-        Collaborate outside of code
-      
-
-
-
-Explore
-
-
-      All features
-
-    
-
-
-
-      Documentation
-
-    
-
-
-
-
-
-      GitHub Skills
-
-    
-
-
-
-
-
-      Blog
-
-    
-
-
-
-
-
-
-
-
-      Solutions
-      
-
-
-
-
-
-By Plan
-
-
-      Enterprise
-
-    
-
-
-
-      Teams
-
-    
-
-
-
-      Compare all
-
-    
-
-
-
-By Solution
-
-
-      CI/CD & Automation
-
-    
-
-
-
-
-
-      DevOps
-
-    
-
-
-
-
-
-      DevSecOps
-
-    
-
-
-
-
-
-Case Studies
-
-
-      Customer Stories
-
-    
-
-
-
-      Resources
-
-    
-
-
-
-
-
-
-
-
-      Open Source
-      
-
-
-
-
-
-
-
-
-GitHub Sponsors
-        Fund open source developers
-      
-
-
-
-
-
-
-The ReadME Project
-        GitHub community articles
-      
-
-
-
-Repositories
-
-
-      Topics
-
-    
-
-
-
-      Trending
-
-    
-
-
-
-      Collections
-
-    
-
-
-
-
-
-Pricing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-No suggested jump to results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this organization
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
- 
-
-
-
-
-              Sign in
-            
-
-
-              Sign up
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-serilog
-
-/
-
-serilog
-
-Public
-
-
-
-
- 
-
-Notifications
-
-
-
- 
-
-Fork
-    713
-
-
-
-
- 
-
-
-          Star
- 5.8k
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Code
-
-
-
-
-
-
-
-Issues
-32
-
-
-
-
-
-
-Pull requests
-1
-
-
-
-
-
-
-Actions
-
-
-
-
-
-
-
-Wiki
-
-
-
-
-
-
-
-Security
-
-
-
-
-
-
-
-Insights
-
-
-
- 
- 
-
-
-
-More
-
-
- 
-
-
-                  Code
- 
-
-
-                  Issues
- 
-
-
-                  Pull requests
- 
-
-
-                  Actions
- 
-
-
-                  Wiki
- 
-
-
-                  Security
- 
-
-
-                  Insights
- 
-
-
-
-
-
-
-
-
-
-Permalink
-
-
-
-
-
-
-
-dev
-
-
-
-
-
-Switch branches/tags
-
-
-
-
-
-
-
-
-
-
-Branches
-Tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all branches
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-Name already in use
-
-
-
-
-
-
-
-
-
-      A tag already exists with the provided branch name. Many Git commands accept both tag and branch names, so creating this branch may cause unexpected behavior. Are you sure you want to create this branch?
-
-
-
-    Cancel
-
-    Create
-
-
-
-
-serilog/LICENSE
-
-    Go to file
-
-
- 
-
-
-
- 
-
-
-Go to file
-T
- 
-
- 
-Go to line
-L
-
- 
-
-
-
-    
-            Copy path
-
- 
-
-
-
-Copy permalink
-
- 
-
-
-
-
-
-
-
-
-
-
-        serilog/serilog
-        is licensed under  the
-      
-Apache License 2.0
-A permissive license whose main conditions require preservation of copyright and license notices. Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
-
-
-
-Permissions
-
-
-
-
-                  Commercial use
-                
-
-
-
-
-                  Modification
-                
-
-
-
-
-                  Distribution
-                
-
-
-
-
-                  Patent use
-                
-
-
-
-
-                  Private use
-                
-
-
-
-
-Limitations
-
-
-
-
-                  Trademark use
-                
-
-
-
-
-                  Liability
-                
-
-
-
-
-                  Warranty
-                
-
-
-
-
-Conditions
-
-
-
-
-                  License and copyright notice
-                
-
-
-
-
-                  State changes
-                
-
-
-
-
-
-
-    This is not legal advice.
-    Learn more about repository licenses.
-  
-
-
-
-
-
-
-This commit does not belong to any branch on this repository, and may belong to a fork outside of the repository.
-
-
-
-
-
-
- 
-
-
- 
-Cannot retrieve contributors at this time
-
-
-
-
-
-
-      191 lines (155 sloc)
-      
-    10 KB
-  
-
-
-    Raw
-     Blame
- 
-
-
-
- 
-
-
-
-
-
- 
-
-
-
- Edit this file
-E
-
-
-              Open in GitHub Desktop
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  Open with Desktop
-                
-
-
-
-              View raw
-            
-
-
-
-
-
-                View blame
-              
-
-
-
-
-
-
-
-
-
-
-
-
 Apache License
-
-
-
 Version 2.0, January 2004
-
-
-
 http://www.apache.org/licenses/
-
-
-
-
-
-
-
 
 TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-
-
-
-
-
-
-
 1. Definitions.
 
-
-
-
-
-
-
-
 "License" shall mean the terms and conditions for use, reproduction, and
-
-
-
 distribution as defined by Sections 1 through 9 of this document.
 
-
-
-
-
-
-
-
 "Licensor" shall mean the copyright owner or entity authorized by the copyright
-
-
-
 owner that is granting the License.
 
-
-
-
-
-
-
-
 "Legal Entity" shall mean the union of the acting entity and all other entities
-
-
-
 that control, are controlled by, or are under common control with that entity.
-
-
-
 For the purposes of this definition, "control" means (i) the power, direct or
-
-
-
 indirect, to cause the direction or management of such entity, whether by
-
-
-
 contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the
-
-
-
 outstanding shares, or (iii) beneficial ownership of such entity.
 
-
-
-
-
-
-
-
 "You" (or "Your") shall mean an individual or Legal Entity exercising
-
-
-
 permissions granted by this License.
 
-
-
-
-
-
-
-
 "Source" form shall mean the preferred form for making modifications, including
-
-
-
 but not limited to software source code, documentation source, and configuration
-
-
-
 files.
 
-
-
-
-
-
-
-
 "Object" form shall mean any form resulting from mechanical transformation or
-
-
-
 translation of a Source form, including but not limited to compiled object code,
-
-
-
 generated documentation, and conversions to other media types.
 
-
-
-
-
-
-
-
 "Work" shall mean the work of authorship, whether in Source or Object form, made
-
-
-
 available under the License, as indicated by a copyright notice that is included
-
-
-
 in or attached to the work (an example is provided in the Appendix below).
 
-
-
-
-
-
-
-
 "Derivative Works" shall mean any work, whether in Source or Object form, that
-
-
-
 is based on (or derived from) the Work and for which the editorial revisions,
-
-
-
 annotations, elaborations, or other modifications represent, as a whole, an
-
-
-
 original work of authorship. For the purposes of this License, Derivative Works
-
-
-
 shall not include works that remain separable from, or merely link (or bind by
-
-
-
 name) to the interfaces of, the Work and Derivative Works thereof.
 
-
-
-
-
-
-
-
 "Contribution" shall mean any work of authorship, including the original version
-
-
-
 of the Work and any modifications or additions to that Work or Derivative Works
-
-
-
 thereof, that is intentionally submitted to Licensor for inclusion in the Work
-
-
-
 by the copyright owner or by an individual or Legal Entity authorized to submit
-
-
-
 on behalf of the copyright owner. For the purposes of this definition,
-
-
-
 "submitted" means any form of electronic, verbal, or written communication sent
-
-
-
 to the Licensor or its representatives, including but not limited to
-
-
-
 communication on electronic mailing lists, source code control systems, and
-
-
-
 issue tracking systems that are managed by, or on behalf of, the Licensor for
-
-
-
 the purpose of discussing and improving the Work, but excluding communication
-
-
-
 that is conspicuously marked or otherwise designated in writing by the copyright
-
-
-
 owner as "Not a Contribution."
 
-
-
-
-
-
-
-
 "Contributor" shall mean Licensor and any individual or Legal Entity on behalf
-
-
-
 of whom a Contribution has been received by Licensor and subsequently
-
-
-
 incorporated within the Work.
-
-
-
-
-
-
-
 
 2. Grant of Copyright License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable copyright license to reproduce, prepare Derivative Works of,
-
-
-
 publicly display, publicly perform, sublicense, and distribute the Work and such
-
-
-
 Derivative Works in Source or Object form.
-
-
-
-
-
-
-
 
 3. Grant of Patent License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable (except as stated in this section) patent license to make, have
-
-
-
 made, use, offer to sell, sell, import, and otherwise transfer the Work, where
-
-
-
 such license applies only to those patent claims licensable by such Contributor
-
-
-
 that are necessarily infringed by their Contribution(s) alone or by combination
-
-
-
 of their Contribution(s) with the Work to which such Contribution(s) was
-
-
-
 submitted. If You institute patent litigation against any entity (including a
-
-
-
 cross-claim or counterclaim in a lawsuit) alleging that the Work or a
-
-
-
 Contribution incorporated within the Work constitutes direct or contributory
-
-
-
 patent infringement, then any patent licenses granted to You under this License
-
-
-
 for that Work shall terminate as of the date such litigation is filed.
-
-
-
-
-
-
-
 
 4. Redistribution.
 
-
-
-
-
-
-
-
 You may reproduce and distribute copies of the Work or Derivative Works thereof
-
-
-
 in any medium, with or without modifications, and in Source or Object form,
-
-
-
 provided that You meet the following conditions:
 
-
-
-
-
-
-
-
 You must give any other recipients of the Work or Derivative Works a copy of
-
-
-
 this License; and
-
-
-
 You must cause any modified files to carry prominent notices stating that You
-
-
-
 changed the files; and
-
-
-
 You must retain, in the Source form of any Derivative Works that You distribute,
-
-
-
 all copyright, patent, trademark, and attribution notices from the Source form
-
-
-
 of the Work, excluding those notices that do not pertain to any part of the
-
-
-
 Derivative Works; and
-
-
-
 If the Work includes a "NOTICE" text file as part of its distribution, then any
-
-
-
 Derivative Works that You distribute must include a readable copy of the
-
-
-
 attribution notices contained within such NOTICE file, excluding those notices
-
-
-
 that do not pertain to any part of the Derivative Works, in at least one of the
-
-
-
 following places: within a NOTICE text file distributed as part of the
-
-
-
 Derivative Works; within the Source form or documentation, if provided along
-
-
-
 with the Derivative Works; or, within a display generated by the Derivative
-
-
-
 Works, if and wherever such third-party notices normally appear. The contents of
-
-
-
 the NOTICE file are for informational purposes only and do not modify the
-
-
-
 License. You may add Your own attribution notices within Derivative Works that
-
-
-
 You distribute, alongside or as an addendum to the NOTICE text from the Work,
-
-
-
 provided that such additional attribution notices cannot be construed as
-
-
-
 modifying the License.
-
-
-
 You may add Your own copyright statement to Your modifications and may provide
-
-
-
 additional or different license terms and conditions for use, reproduction, or
-
-
-
 distribution of Your modifications, or for any such Derivative Works as a whole,
-
-
-
 provided Your use, reproduction, and distribution of the Work otherwise complies
-
-
-
 with the conditions stated in this License.
-
-
-
-
-
-
-
 
 5. Submission of Contributions.
 
-
-
-
-
-
-
-
 Unless You explicitly state otherwise, any Contribution intentionally submitted
-
-
-
 for inclusion in the Work by You to the Licensor shall be under the terms and
-
-
-
 conditions of this License, without any additional terms or conditions.
-
-
-
 Notwithstanding the above, nothing herein shall supersede or modify the terms of
-
-
-
 any separate license agreement you may have executed with Licensor regarding
-
-
-
 such Contributions.
-
-
-
-
-
-
-
 
 6. Trademarks.
 
-
-
-
-
-
-
-
 This License does not grant permission to use the trade names, trademarks,
-
-
-
 service marks, or product names of the Licensor, except as required for
-
-
-
 reasonable and customary use in describing the origin of the Work and
-
-
-
 reproducing the content of the NOTICE file.
-
-
-
-
-
-
-
 
 7. Disclaimer of Warranty.
 
-
-
-
-
-
-
-
 Unless required by applicable law or agreed to in writing, Licensor provides the
-
-
-
 Work (and each Contributor provides its Contributions) on an "AS IS" BASIS,
-
-
-
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
-
-
-
 including, without limitation, any warranties or conditions of TITLE,
-
-
-
 NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are
-
-
-
 solely responsible for determining the appropriateness of using or
-
-
-
 redistributing the Work and assume any risks associated with Your exercise of
-
-
-
 permissions under this License.
-
-
-
-
-
-
-
 
 8. Limitation of Liability.
 
-
-
-
-
-
-
-
 In no event and under no legal theory, whether in tort (including negligence),
-
-
-
 contract, or otherwise, unless required by applicable law (such as deliberate
-
-
-
 and grossly negligent acts) or agreed to in writing, shall any Contributor be
-
-
-
 liable to You for damages, including any direct, indirect, special, incidental,
-
-
-
 or consequential damages of any character arising as a result of this License or
-
-
-
 out of the use or inability to use the Work (including but not limited to
-
-
-
 damages for loss of goodwill, work stoppage, computer failure or malfunction, or
-
-
-
 any and all other commercial damages or losses), even if such Contributor has
-
-
-
 been advised of the possibility of such damages.
-
-
-
-
-
-
-
 
 9. Accepting Warranty or Additional Liability.
 
-
-
-
-
-
-
-
 While redistributing the Work or Derivative Works thereof, You may choose to
-
-
-
 offer, and charge a fee for, acceptance of support, warranty, indemnity, or
-
-
-
 other liability obligations and/or rights consistent with this License. However,
-
-
-
 in accepting such obligations, You may act only on Your own behalf and on Your
-
-
-
 sole responsibility, not on behalf of any other Contributor, and only if You
-
-
-
 agree to indemnify, defend, and hold each Contributor harmless for any liability
-
-
-
 incurred by, or claims asserted against, such Contributor by reason of your
-
-
-
 accepting any such warranty or additional liability.
-
-
-
-
-
-
-
 
 END OF TERMS AND CONDITIONS
 
-
-
-
-
-
-
-
 APPENDIX: How to apply the Apache License to your work
 
-
-
-
-
-
-
-
 To apply the Apache License to your work, attach the following boilerplate
-
-
-
 notice, with the fields enclosed by brackets "[]" replaced with your own
-
-
-
 identifying information. (Don't include the brackets!) The text should be
-
-
-
 enclosed in the appropriate comment syntax for the file format. We also
-
-
-
 recommend that a file or class name and description of purpose be included on
-
-
-
 the same "printed page" as the copyright notice for easier identification within
-
-
-
 third-party archives.
-
-
-
-
-
-
-
 
    Copyright [yyyy] [name of copyright owner]
 
-
-
-
-
-
-
-
    Licensed under the Apache License, Version 2.0 (the "License");
-
-
-
    you may not use this file except in compliance with the License.
-
-
-
    You may obtain a copy of the License at
-
-
-
-
-
-
-
 
      http://www.apache.org/licenses/LICENSE-2.0
 
-
-
-
-
-
-
-
    Unless required by applicable law or agreed to in writing, software
-
-
-
    distributed under the License is distributed on an "AS IS" BASIS,
-
-
-
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-
-
    See the License for the specific language governing permissions and
-
-
-
    limitations under the License.
-
-
-
-
-
-
-
-
-
-
-
-
-
-            Copy lines
-          
-
-
-
-            Copy permalink
-          
-
-View git blame
-Reference in new issue
-
-
-
-
-
-
-
-
-
-
-    Go
-
- 
-
-
-
-
-
-
-
-
-
-Footer
-
-
-
-
-
-
-
- 
-        © 2022 GitHub, Inc.
-        
-
-
-
-Footer navigation
-
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    You can’t perform that action at this time.
-  
-
-
-
-
-You signed in with another tab or window. Reload to refresh your session.
-You signed out in another tab or window. Reload to refresh your session.
 ```
 
 </details>
@@ -27221,1941 +11723,201 @@ You signed out in another tab or window. Reload to refresh your session.
 - Authors: Serilog Contributors
 - Project URL: https://github.com/serilog/serilog-sinks-debug
 - Source: [NuGet](https://www.nuget.org/packages/Serilog.Sinks.Debug/2.0.0)
-- License: [Apache-2.0](https://github.com/serilog/serilog/blob/dev/LICENSE)
+- License: [Apache-2.0](https://github.com/serilog/serilog/raw/dev/LICENSE)
 
 
 ```
-serilog/LICENSE at dev · serilog/serilog · GitHub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Skip to content
-
-
-
-
-
-
-
-Toggle navigation
-
-
-
-
-
-
-
-
-
-
-            Sign up
-          
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-      Product
-      
-
-
-
-
-
-
-
-
-
-
-
-Actions
-        Automate any workflow
-      
-
-
-
-
-
-
-
-Packages
-        Host and manage packages
-      
-
-
-
-
-
-
-
-Security
-        Find and fix vulnerabilities
-      
-
-
-
-
-
-
-
-Codespaces
-        Instant dev environments
-      
-
-
-
-
-
-
-
-Copilot
-        Write better code with AI
-      
-
-
-
-
-
-
-
-Code review
-        Manage code changes
-      
-
-
-
-
-
-
-
-Issues
-        Plan and track work
-      
-
-
-
-
-
-
-
-Discussions
-        Collaborate outside of code
-      
-
-
-
-Explore
-
-
-      All features
-
-    
-
-
-
-      Documentation
-
-    
-
-
-
-
-
-      GitHub Skills
-
-    
-
-
-
-
-
-      Blog
-
-    
-
-
-
-
-
-
-
-
-      Solutions
-      
-
-
-
-
-
-By Plan
-
-
-      Enterprise
-
-    
-
-
-
-      Teams
-
-    
-
-
-
-      Compare all
-
-    
-
-
-
-By Solution
-
-
-      CI/CD & Automation
-
-    
-
-
-
-
-
-      DevOps
-
-    
-
-
-
-
-
-      DevSecOps
-
-    
-
-
-
-
-
-Case Studies
-
-
-      Customer Stories
-
-    
-
-
-
-      Resources
-
-    
-
-
-
-
-
-
-
-
-      Open Source
-      
-
-
-
-
-
-
-
-
-GitHub Sponsors
-        Fund open source developers
-      
-
-
-
-
-
-
-The ReadME Project
-        GitHub community articles
-      
-
-
-
-Repositories
-
-
-      Topics
-
-    
-
-
-
-      Trending
-
-    
-
-
-
-      Collections
-
-    
-
-
-
-
-
-Pricing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-No suggested jump to results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this organization
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
- 
-
-
-
-
-              Sign in
-            
-
-
-              Sign up
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-serilog
-
-/
-
-serilog
-
-Public
-
-
-
-
- 
-
-Notifications
-
-
-
- 
-
-Fork
-    713
-
-
-
-
- 
-
-
-          Star
- 5.8k
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Code
-
-
-
-
-
-
-
-Issues
-32
-
-
-
-
-
-
-Pull requests
-1
-
-
-
-
-
-
-Actions
-
-
-
-
-
-
-
-Wiki
-
-
-
-
-
-
-
-Security
-
-
-
-
-
-
-
-Insights
-
-
-
- 
- 
-
-
-
-More
-
-
- 
-
-
-                  Code
- 
-
-
-                  Issues
- 
-
-
-                  Pull requests
- 
-
-
-                  Actions
- 
-
-
-                  Wiki
- 
-
-
-                  Security
- 
-
-
-                  Insights
- 
-
-
-
-
-
-
-
-
-
-Permalink
-
-
-
-
-
-
-
-dev
-
-
-
-
-
-Switch branches/tags
-
-
-
-
-
-
-
-
-
-
-Branches
-Tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all branches
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-Name already in use
-
-
-
-
-
-
-
-
-
-      A tag already exists with the provided branch name. Many Git commands accept both tag and branch names, so creating this branch may cause unexpected behavior. Are you sure you want to create this branch?
-
-
-
-    Cancel
-
-    Create
-
-
-
-
-serilog/LICENSE
-
-    Go to file
-
-
- 
-
-
-
- 
-
-
-Go to file
-T
- 
-
- 
-Go to line
-L
-
- 
-
-
-
-    
-            Copy path
-
- 
-
-
-
-Copy permalink
-
- 
-
-
-
-
-
-
-
-
-
-
-        serilog/serilog
-        is licensed under  the
-      
-Apache License 2.0
-A permissive license whose main conditions require preservation of copyright and license notices. Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
-
-
-
-Permissions
-
-
-
-
-                  Commercial use
-                
-
-
-
-
-                  Modification
-                
-
-
-
-
-                  Distribution
-                
-
-
-
-
-                  Patent use
-                
-
-
-
-
-                  Private use
-                
-
-
-
-
-Limitations
-
-
-
-
-                  Trademark use
-                
-
-
-
-
-                  Liability
-                
-
-
-
-
-                  Warranty
-                
-
-
-
-
-Conditions
-
-
-
-
-                  License and copyright notice
-                
-
-
-
-
-                  State changes
-                
-
-
-
-
-
-
-    This is not legal advice.
-    Learn more about repository licenses.
-  
-
-
-
-
-
-
-This commit does not belong to any branch on this repository, and may belong to a fork outside of the repository.
-
-
-
-
-
-
-
-
-
-
-tvjames
-
-GitHub Apache 2 licence template
-
-
-
-
-
-
-
-
-Latest commit
-5eb8e10
-Oct 11, 2013
-
-
-
-
-
-
-History
-
-
-
-
-
-
-
-
-
-
-
-1
-        
-        contributor
-      
-
-
-
-
-
-
-
-
-            Users who have contributed to this file
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      191 lines (155 sloc)
-      
-    10 KB
-  
-
-
-    Raw
-     Blame
- 
-
-
-
- 
-
-
-
-
-
- 
-
-
-
- Edit this file
-E
-
-
-              Open in GitHub Desktop
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  Open with Desktop
-                
-
-
-
-              View raw
-            
-
-
-
-
-
-                View blame
-              
-
-
-
-
-
-
-
-
-
-
-
-
 Apache License
-
-
-
 Version 2.0, January 2004
-
-
-
 http://www.apache.org/licenses/
-
-
-
-
-
-
-
 
 TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-
-
-
-
-
-
-
 1. Definitions.
 
-
-
-
-
-
-
-
 "License" shall mean the terms and conditions for use, reproduction, and
-
-
-
 distribution as defined by Sections 1 through 9 of this document.
 
-
-
-
-
-
-
-
 "Licensor" shall mean the copyright owner or entity authorized by the copyright
-
-
-
 owner that is granting the License.
 
-
-
-
-
-
-
-
 "Legal Entity" shall mean the union of the acting entity and all other entities
-
-
-
 that control, are controlled by, or are under common control with that entity.
-
-
-
 For the purposes of this definition, "control" means (i) the power, direct or
-
-
-
 indirect, to cause the direction or management of such entity, whether by
-
-
-
 contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the
-
-
-
 outstanding shares, or (iii) beneficial ownership of such entity.
 
-
-
-
-
-
-
-
 "You" (or "Your") shall mean an individual or Legal Entity exercising
-
-
-
 permissions granted by this License.
 
-
-
-
-
-
-
-
 "Source" form shall mean the preferred form for making modifications, including
-
-
-
 but not limited to software source code, documentation source, and configuration
-
-
-
 files.
 
-
-
-
-
-
-
-
 "Object" form shall mean any form resulting from mechanical transformation or
-
-
-
 translation of a Source form, including but not limited to compiled object code,
-
-
-
 generated documentation, and conversions to other media types.
 
-
-
-
-
-
-
-
 "Work" shall mean the work of authorship, whether in Source or Object form, made
-
-
-
 available under the License, as indicated by a copyright notice that is included
-
-
-
 in or attached to the work (an example is provided in the Appendix below).
 
-
-
-
-
-
-
-
 "Derivative Works" shall mean any work, whether in Source or Object form, that
-
-
-
 is based on (or derived from) the Work and for which the editorial revisions,
-
-
-
 annotations, elaborations, or other modifications represent, as a whole, an
-
-
-
 original work of authorship. For the purposes of this License, Derivative Works
-
-
-
 shall not include works that remain separable from, or merely link (or bind by
-
-
-
 name) to the interfaces of, the Work and Derivative Works thereof.
 
-
-
-
-
-
-
-
 "Contribution" shall mean any work of authorship, including the original version
-
-
-
 of the Work and any modifications or additions to that Work or Derivative Works
-
-
-
 thereof, that is intentionally submitted to Licensor for inclusion in the Work
-
-
-
 by the copyright owner or by an individual or Legal Entity authorized to submit
-
-
-
 on behalf of the copyright owner. For the purposes of this definition,
-
-
-
 "submitted" means any form of electronic, verbal, or written communication sent
-
-
-
 to the Licensor or its representatives, including but not limited to
-
-
-
 communication on electronic mailing lists, source code control systems, and
-
-
-
 issue tracking systems that are managed by, or on behalf of, the Licensor for
-
-
-
 the purpose of discussing and improving the Work, but excluding communication
-
-
-
 that is conspicuously marked or otherwise designated in writing by the copyright
-
-
-
 owner as "Not a Contribution."
 
-
-
-
-
-
-
-
 "Contributor" shall mean Licensor and any individual or Legal Entity on behalf
-
-
-
 of whom a Contribution has been received by Licensor and subsequently
-
-
-
 incorporated within the Work.
-
-
-
-
-
-
-
 
 2. Grant of Copyright License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable copyright license to reproduce, prepare Derivative Works of,
-
-
-
 publicly display, publicly perform, sublicense, and distribute the Work and such
-
-
-
 Derivative Works in Source or Object form.
-
-
-
-
-
-
-
 
 3. Grant of Patent License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable (except as stated in this section) patent license to make, have
-
-
-
 made, use, offer to sell, sell, import, and otherwise transfer the Work, where
-
-
-
 such license applies only to those patent claims licensable by such Contributor
-
-
-
 that are necessarily infringed by their Contribution(s) alone or by combination
-
-
-
 of their Contribution(s) with the Work to which such Contribution(s) was
-
-
-
 submitted. If You institute patent litigation against any entity (including a
-
-
-
 cross-claim or counterclaim in a lawsuit) alleging that the Work or a
-
-
-
 Contribution incorporated within the Work constitutes direct or contributory
-
-
-
 patent infringement, then any patent licenses granted to You under this License
-
-
-
 for that Work shall terminate as of the date such litigation is filed.
-
-
-
-
-
-
-
 
 4. Redistribution.
 
-
-
-
-
-
-
-
 You may reproduce and distribute copies of the Work or Derivative Works thereof
-
-
-
 in any medium, with or without modifications, and in Source or Object form,
-
-
-
 provided that You meet the following conditions:
 
-
-
-
-
-
-
-
 You must give any other recipients of the Work or Derivative Works a copy of
-
-
-
 this License; and
-
-
-
 You must cause any modified files to carry prominent notices stating that You
-
-
-
 changed the files; and
-
-
-
 You must retain, in the Source form of any Derivative Works that You distribute,
-
-
-
 all copyright, patent, trademark, and attribution notices from the Source form
-
-
-
 of the Work, excluding those notices that do not pertain to any part of the
-
-
-
 Derivative Works; and
-
-
-
 If the Work includes a "NOTICE" text file as part of its distribution, then any
-
-
-
 Derivative Works that You distribute must include a readable copy of the
-
-
-
 attribution notices contained within such NOTICE file, excluding those notices
-
-
-
 that do not pertain to any part of the Derivative Works, in at least one of the
-
-
-
 following places: within a NOTICE text file distributed as part of the
-
-
-
 Derivative Works; within the Source form or documentation, if provided along
-
-
-
 with the Derivative Works; or, within a display generated by the Derivative
-
-
-
 Works, if and wherever such third-party notices normally appear. The contents of
-
-
-
 the NOTICE file are for informational purposes only and do not modify the
-
-
-
 License. You may add Your own attribution notices within Derivative Works that
-
-
-
 You distribute, alongside or as an addendum to the NOTICE text from the Work,
-
-
-
 provided that such additional attribution notices cannot be construed as
-
-
-
 modifying the License.
-
-
-
 You may add Your own copyright statement to Your modifications and may provide
-
-
-
 additional or different license terms and conditions for use, reproduction, or
-
-
-
 distribution of Your modifications, or for any such Derivative Works as a whole,
-
-
-
 provided Your use, reproduction, and distribution of the Work otherwise complies
-
-
-
 with the conditions stated in this License.
-
-
-
-
-
-
-
 
 5. Submission of Contributions.
 
-
-
-
-
-
-
-
 Unless You explicitly state otherwise, any Contribution intentionally submitted
-
-
-
 for inclusion in the Work by You to the Licensor shall be under the terms and
-
-
-
 conditions of this License, without any additional terms or conditions.
-
-
-
 Notwithstanding the above, nothing herein shall supersede or modify the terms of
-
-
-
 any separate license agreement you may have executed with Licensor regarding
-
-
-
 such Contributions.
-
-
-
-
-
-
-
 
 6. Trademarks.
 
-
-
-
-
-
-
-
 This License does not grant permission to use the trade names, trademarks,
-
-
-
 service marks, or product names of the Licensor, except as required for
-
-
-
 reasonable and customary use in describing the origin of the Work and
-
-
-
 reproducing the content of the NOTICE file.
-
-
-
-
-
-
-
 
 7. Disclaimer of Warranty.
 
-
-
-
-
-
-
-
 Unless required by applicable law or agreed to in writing, Licensor provides the
-
-
-
 Work (and each Contributor provides its Contributions) on an "AS IS" BASIS,
-
-
-
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
-
-
-
 including, without limitation, any warranties or conditions of TITLE,
-
-
-
 NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are
-
-
-
 solely responsible for determining the appropriateness of using or
-
-
-
 redistributing the Work and assume any risks associated with Your exercise of
-
-
-
 permissions under this License.
-
-
-
-
-
-
-
 
 8. Limitation of Liability.
 
-
-
-
-
-
-
-
 In no event and under no legal theory, whether in tort (including negligence),
-
-
-
 contract, or otherwise, unless required by applicable law (such as deliberate
-
-
-
 and grossly negligent acts) or agreed to in writing, shall any Contributor be
-
-
-
 liable to You for damages, including any direct, indirect, special, incidental,
-
-
-
 or consequential damages of any character arising as a result of this License or
-
-
-
 out of the use or inability to use the Work (including but not limited to
-
-
-
 damages for loss of goodwill, work stoppage, computer failure or malfunction, or
-
-
-
 any and all other commercial damages or losses), even if such Contributor has
-
-
-
 been advised of the possibility of such damages.
-
-
-
-
-
-
-
 
 9. Accepting Warranty or Additional Liability.
 
-
-
-
-
-
-
-
 While redistributing the Work or Derivative Works thereof, You may choose to
-
-
-
 offer, and charge a fee for, acceptance of support, warranty, indemnity, or
-
-
-
 other liability obligations and/or rights consistent with this License. However,
-
-
-
 in accepting such obligations, You may act only on Your own behalf and on Your
-
-
-
 sole responsibility, not on behalf of any other Contributor, and only if You
-
-
-
 agree to indemnify, defend, and hold each Contributor harmless for any liability
-
-
-
 incurred by, or claims asserted against, such Contributor by reason of your
-
-
-
 accepting any such warranty or additional liability.
-
-
-
-
-
-
-
 
 END OF TERMS AND CONDITIONS
 
-
-
-
-
-
-
-
 APPENDIX: How to apply the Apache License to your work
 
-
-
-
-
-
-
-
 To apply the Apache License to your work, attach the following boilerplate
-
-
-
 notice, with the fields enclosed by brackets "[]" replaced with your own
-
-
-
 identifying information. (Don't include the brackets!) The text should be
-
-
-
 enclosed in the appropriate comment syntax for the file format. We also
-
-
-
 recommend that a file or class name and description of purpose be included on
-
-
-
 the same "printed page" as the copyright notice for easier identification within
-
-
-
 third-party archives.
-
-
-
-
-
-
-
 
    Copyright [yyyy] [name of copyright owner]
 
-
-
-
-
-
-
-
    Licensed under the Apache License, Version 2.0 (the "License");
-
-
-
    you may not use this file except in compliance with the License.
-
-
-
    You may obtain a copy of the License at
-
-
-
-
-
-
-
 
      http://www.apache.org/licenses/LICENSE-2.0
 
-
-
-
-
-
-
-
    Unless required by applicable law or agreed to in writing, software
-
-
-
    distributed under the License is distributed on an "AS IS" BASIS,
-
-
-
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-
-
    See the License for the specific language governing permissions and
-
-
-
    limitations under the License.
-
-
-
-
-
-
-
-
-
-
-
-
-
-            Copy lines
-          
-
-
-
-            Copy permalink
-          
-
-View git blame
-Reference in new issue
-
-
-
-
-
-
-
-
-
-
-    Go
-
- 
-
-
-
-
-
-
-
-
-
-Footer
-
-
-
-
-
-
-
- 
-        © 2022 GitHub, Inc.
-        
-
-
-
-Footer navigation
-
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    You can’t perform that action at this time.
-  
-
-
-
-
-You signed in with another tab or window. Reload to refresh your session.
-You signed out in another tab or window. Reload to refresh your session.
 ```
 
 </details>
@@ -29170,1941 +11932,201 @@ You signed out in another tab or window. Reload to refresh your session.
 - Authors: Serilog Contributors
 - Project URL: https://serilog.net/
 - Source: [NuGet](https://www.nuget.org/packages/Serilog.Sinks.File/5.0.0)
-- License: [Apache-2.0](https://github.com/serilog/serilog/blob/dev/LICENSE)
+- License: [Apache-2.0](https://github.com/serilog/serilog/raw/dev/LICENSE)
 
 
 ```
-serilog/LICENSE at dev · serilog/serilog · GitHub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Skip to content
-
-
-
-
-
-
-
-Toggle navigation
-
-
-
-
-
-
-
-
-
-
-            Sign up
-          
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-      Product
-      
-
-
-
-
-
-
-
-
-
-
-
-Actions
-        Automate any workflow
-      
-
-
-
-
-
-
-
-Packages
-        Host and manage packages
-      
-
-
-
-
-
-
-
-Security
-        Find and fix vulnerabilities
-      
-
-
-
-
-
-
-
-Codespaces
-        Instant dev environments
-      
-
-
-
-
-
-
-
-Copilot
-        Write better code with AI
-      
-
-
-
-
-
-
-
-Code review
-        Manage code changes
-      
-
-
-
-
-
-
-
-Issues
-        Plan and track work
-      
-
-
-
-
-
-
-
-Discussions
-        Collaborate outside of code
-      
-
-
-
-Explore
-
-
-      All features
-
-    
-
-
-
-      Documentation
-
-    
-
-
-
-
-
-      GitHub Skills
-
-    
-
-
-
-
-
-      Blog
-
-    
-
-
-
-
-
-
-
-
-      Solutions
-      
-
-
-
-
-
-By Plan
-
-
-      Enterprise
-
-    
-
-
-
-      Teams
-
-    
-
-
-
-      Compare all
-
-    
-
-
-
-By Solution
-
-
-      CI/CD & Automation
-
-    
-
-
-
-
-
-      DevOps
-
-    
-
-
-
-
-
-      DevSecOps
-
-    
-
-
-
-
-
-Case Studies
-
-
-      Customer Stories
-
-    
-
-
-
-      Resources
-
-    
-
-
-
-
-
-
-
-
-      Open Source
-      
-
-
-
-
-
-
-
-
-GitHub Sponsors
-        Fund open source developers
-      
-
-
-
-
-
-
-The ReadME Project
-        GitHub community articles
-      
-
-
-
-Repositories
-
-
-      Topics
-
-    
-
-
-
-      Trending
-
-    
-
-
-
-      Collections
-
-    
-
-
-
-
-
-Pricing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-No suggested jump to results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this organization
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
- 
-
-
-
-
-              Sign in
-            
-
-
-              Sign up
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-serilog
-
-/
-
-serilog
-
-Public
-
-
-
-
- 
-
-Notifications
-
-
-
- 
-
-Fork
-    713
-
-
-
-
- 
-
-
-          Star
- 5.8k
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Code
-
-
-
-
-
-
-
-Issues
-32
-
-
-
-
-
-
-Pull requests
-1
-
-
-
-
-
-
-Actions
-
-
-
-
-
-
-
-Wiki
-
-
-
-
-
-
-
-Security
-
-
-
-
-
-
-
-Insights
-
-
-
- 
- 
-
-
-
-More
-
-
- 
-
-
-                  Code
- 
-
-
-                  Issues
- 
-
-
-                  Pull requests
- 
-
-
-                  Actions
- 
-
-
-                  Wiki
- 
-
-
-                  Security
- 
-
-
-                  Insights
- 
-
-
-
-
-
-
-
-
-
-Permalink
-
-
-
-
-
-
-
-dev
-
-
-
-
-
-Switch branches/tags
-
-
-
-
-
-
-
-
-
-
-Branches
-Tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all branches
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-Name already in use
-
-
-
-
-
-
-
-
-
-      A tag already exists with the provided branch name. Many Git commands accept both tag and branch names, so creating this branch may cause unexpected behavior. Are you sure you want to create this branch?
-
-
-
-    Cancel
-
-    Create
-
-
-
-
-serilog/LICENSE
-
-    Go to file
-
-
- 
-
-
-
- 
-
-
-Go to file
-T
- 
-
- 
-Go to line
-L
-
- 
-
-
-
-    
-            Copy path
-
- 
-
-
-
-Copy permalink
-
- 
-
-
-
-
-
-
-
-
-
-
-        serilog/serilog
-        is licensed under  the
-      
-Apache License 2.0
-A permissive license whose main conditions require preservation of copyright and license notices. Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
-
-
-
-Permissions
-
-
-
-
-                  Commercial use
-                
-
-
-
-
-                  Modification
-                
-
-
-
-
-                  Distribution
-                
-
-
-
-
-                  Patent use
-                
-
-
-
-
-                  Private use
-                
-
-
-
-
-Limitations
-
-
-
-
-                  Trademark use
-                
-
-
-
-
-                  Liability
-                
-
-
-
-
-                  Warranty
-                
-
-
-
-
-Conditions
-
-
-
-
-                  License and copyright notice
-                
-
-
-
-
-                  State changes
-                
-
-
-
-
-
-
-    This is not legal advice.
-    Learn more about repository licenses.
-  
-
-
-
-
-
-
-This commit does not belong to any branch on this repository, and may belong to a fork outside of the repository.
-
-
-
-
-
-
-
-
-
-
-tvjames
-
-GitHub Apache 2 licence template
-
-
-
-
-
-
-
-
-Latest commit
-5eb8e10
-Oct 11, 2013
-
-
-
-
-
-
-History
-
-
-
-
-
-
-
-
-
-
-
-1
-        
-        contributor
-      
-
-
-
-
-
-
-
-
-            Users who have contributed to this file
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      191 lines (155 sloc)
-      
-    10 KB
-  
-
-
-    Raw
-     Blame
- 
-
-
-
- 
-
-
-
-
-
- 
-
-
-
- Edit this file
-E
-
-
-              Open in GitHub Desktop
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  Open with Desktop
-                
-
-
-
-              View raw
-            
-
-
-
-
-
-                View blame
-              
-
-
-
-
-
-
-
-
-
-
-
-
 Apache License
-
-
-
 Version 2.0, January 2004
-
-
-
 http://www.apache.org/licenses/
-
-
-
-
-
-
-
 
 TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-
-
-
-
-
-
-
 1. Definitions.
 
-
-
-
-
-
-
-
 "License" shall mean the terms and conditions for use, reproduction, and
-
-
-
 distribution as defined by Sections 1 through 9 of this document.
 
-
-
-
-
-
-
-
 "Licensor" shall mean the copyright owner or entity authorized by the copyright
-
-
-
 owner that is granting the License.
 
-
-
-
-
-
-
-
 "Legal Entity" shall mean the union of the acting entity and all other entities
-
-
-
 that control, are controlled by, or are under common control with that entity.
-
-
-
 For the purposes of this definition, "control" means (i) the power, direct or
-
-
-
 indirect, to cause the direction or management of such entity, whether by
-
-
-
 contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the
-
-
-
 outstanding shares, or (iii) beneficial ownership of such entity.
 
-
-
-
-
-
-
-
 "You" (or "Your") shall mean an individual or Legal Entity exercising
-
-
-
 permissions granted by this License.
 
-
-
-
-
-
-
-
 "Source" form shall mean the preferred form for making modifications, including
-
-
-
 but not limited to software source code, documentation source, and configuration
-
-
-
 files.
 
-
-
-
-
-
-
-
 "Object" form shall mean any form resulting from mechanical transformation or
-
-
-
 translation of a Source form, including but not limited to compiled object code,
-
-
-
 generated documentation, and conversions to other media types.
 
-
-
-
-
-
-
-
 "Work" shall mean the work of authorship, whether in Source or Object form, made
-
-
-
 available under the License, as indicated by a copyright notice that is included
-
-
-
 in or attached to the work (an example is provided in the Appendix below).
 
-
-
-
-
-
-
-
 "Derivative Works" shall mean any work, whether in Source or Object form, that
-
-
-
 is based on (or derived from) the Work and for which the editorial revisions,
-
-
-
 annotations, elaborations, or other modifications represent, as a whole, an
-
-
-
 original work of authorship. For the purposes of this License, Derivative Works
-
-
-
 shall not include works that remain separable from, or merely link (or bind by
-
-
-
 name) to the interfaces of, the Work and Derivative Works thereof.
 
-
-
-
-
-
-
-
 "Contribution" shall mean any work of authorship, including the original version
-
-
-
 of the Work and any modifications or additions to that Work or Derivative Works
-
-
-
 thereof, that is intentionally submitted to Licensor for inclusion in the Work
-
-
-
 by the copyright owner or by an individual or Legal Entity authorized to submit
-
-
-
 on behalf of the copyright owner. For the purposes of this definition,
-
-
-
 "submitted" means any form of electronic, verbal, or written communication sent
-
-
-
 to the Licensor or its representatives, including but not limited to
-
-
-
 communication on electronic mailing lists, source code control systems, and
-
-
-
 issue tracking systems that are managed by, or on behalf of, the Licensor for
-
-
-
 the purpose of discussing and improving the Work, but excluding communication
-
-
-
 that is conspicuously marked or otherwise designated in writing by the copyright
-
-
-
 owner as "Not a Contribution."
 
-
-
-
-
-
-
-
 "Contributor" shall mean Licensor and any individual or Legal Entity on behalf
-
-
-
 of whom a Contribution has been received by Licensor and subsequently
-
-
-
 incorporated within the Work.
-
-
-
-
-
-
-
 
 2. Grant of Copyright License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable copyright license to reproduce, prepare Derivative Works of,
-
-
-
 publicly display, publicly perform, sublicense, and distribute the Work and such
-
-
-
 Derivative Works in Source or Object form.
-
-
-
-
-
-
-
 
 3. Grant of Patent License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable (except as stated in this section) patent license to make, have
-
-
-
 made, use, offer to sell, sell, import, and otherwise transfer the Work, where
-
-
-
 such license applies only to those patent claims licensable by such Contributor
-
-
-
 that are necessarily infringed by their Contribution(s) alone or by combination
-
-
-
 of their Contribution(s) with the Work to which such Contribution(s) was
-
-
-
 submitted. If You institute patent litigation against any entity (including a
-
-
-
 cross-claim or counterclaim in a lawsuit) alleging that the Work or a
-
-
-
 Contribution incorporated within the Work constitutes direct or contributory
-
-
-
 patent infringement, then any patent licenses granted to You under this License
-
-
-
 for that Work shall terminate as of the date such litigation is filed.
-
-
-
-
-
-
-
 
 4. Redistribution.
 
-
-
-
-
-
-
-
 You may reproduce and distribute copies of the Work or Derivative Works thereof
-
-
-
 in any medium, with or without modifications, and in Source or Object form,
-
-
-
 provided that You meet the following conditions:
 
-
-
-
-
-
-
-
 You must give any other recipients of the Work or Derivative Works a copy of
-
-
-
 this License; and
-
-
-
 You must cause any modified files to carry prominent notices stating that You
-
-
-
 changed the files; and
-
-
-
 You must retain, in the Source form of any Derivative Works that You distribute,
-
-
-
 all copyright, patent, trademark, and attribution notices from the Source form
-
-
-
 of the Work, excluding those notices that do not pertain to any part of the
-
-
-
 Derivative Works; and
-
-
-
 If the Work includes a "NOTICE" text file as part of its distribution, then any
-
-
-
 Derivative Works that You distribute must include a readable copy of the
-
-
-
 attribution notices contained within such NOTICE file, excluding those notices
-
-
-
 that do not pertain to any part of the Derivative Works, in at least one of the
-
-
-
 following places: within a NOTICE text file distributed as part of the
-
-
-
 Derivative Works; within the Source form or documentation, if provided along
-
-
-
 with the Derivative Works; or, within a display generated by the Derivative
-
-
-
 Works, if and wherever such third-party notices normally appear. The contents of
-
-
-
 the NOTICE file are for informational purposes only and do not modify the
-
-
-
 License. You may add Your own attribution notices within Derivative Works that
-
-
-
 You distribute, alongside or as an addendum to the NOTICE text from the Work,
-
-
-
 provided that such additional attribution notices cannot be construed as
-
-
-
 modifying the License.
-
-
-
 You may add Your own copyright statement to Your modifications and may provide
-
-
-
 additional or different license terms and conditions for use, reproduction, or
-
-
-
 distribution of Your modifications, or for any such Derivative Works as a whole,
-
-
-
 provided Your use, reproduction, and distribution of the Work otherwise complies
-
-
-
 with the conditions stated in this License.
-
-
-
-
-
-
-
 
 5. Submission of Contributions.
 
-
-
-
-
-
-
-
 Unless You explicitly state otherwise, any Contribution intentionally submitted
-
-
-
 for inclusion in the Work by You to the Licensor shall be under the terms and
-
-
-
 conditions of this License, without any additional terms or conditions.
-
-
-
 Notwithstanding the above, nothing herein shall supersede or modify the terms of
-
-
-
 any separate license agreement you may have executed with Licensor regarding
-
-
-
 such Contributions.
-
-
-
-
-
-
-
 
 6. Trademarks.
 
-
-
-
-
-
-
-
 This License does not grant permission to use the trade names, trademarks,
-
-
-
 service marks, or product names of the Licensor, except as required for
-
-
-
 reasonable and customary use in describing the origin of the Work and
-
-
-
 reproducing the content of the NOTICE file.
-
-
-
-
-
-
-
 
 7. Disclaimer of Warranty.
 
-
-
-
-
-
-
-
 Unless required by applicable law or agreed to in writing, Licensor provides the
-
-
-
 Work (and each Contributor provides its Contributions) on an "AS IS" BASIS,
-
-
-
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
-
-
-
 including, without limitation, any warranties or conditions of TITLE,
-
-
-
 NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are
-
-
-
 solely responsible for determining the appropriateness of using or
-
-
-
 redistributing the Work and assume any risks associated with Your exercise of
-
-
-
 permissions under this License.
-
-
-
-
-
-
-
 
 8. Limitation of Liability.
 
-
-
-
-
-
-
-
 In no event and under no legal theory, whether in tort (including negligence),
-
-
-
 contract, or otherwise, unless required by applicable law (such as deliberate
-
-
-
 and grossly negligent acts) or agreed to in writing, shall any Contributor be
-
-
-
 liable to You for damages, including any direct, indirect, special, incidental,
-
-
-
 or consequential damages of any character arising as a result of this License or
-
-
-
 out of the use or inability to use the Work (including but not limited to
-
-
-
 damages for loss of goodwill, work stoppage, computer failure or malfunction, or
-
-
-
 any and all other commercial damages or losses), even if such Contributor has
-
-
-
 been advised of the possibility of such damages.
-
-
-
-
-
-
-
 
 9. Accepting Warranty or Additional Liability.
 
-
-
-
-
-
-
-
 While redistributing the Work or Derivative Works thereof, You may choose to
-
-
-
 offer, and charge a fee for, acceptance of support, warranty, indemnity, or
-
-
-
 other liability obligations and/or rights consistent with this License. However,
-
-
-
 in accepting such obligations, You may act only on Your own behalf and on Your
-
-
-
 sole responsibility, not on behalf of any other Contributor, and only if You
-
-
-
 agree to indemnify, defend, and hold each Contributor harmless for any liability
-
-
-
 incurred by, or claims asserted against, such Contributor by reason of your
-
-
-
 accepting any such warranty or additional liability.
-
-
-
-
-
-
-
 
 END OF TERMS AND CONDITIONS
 
-
-
-
-
-
-
-
 APPENDIX: How to apply the Apache License to your work
 
-
-
-
-
-
-
-
 To apply the Apache License to your work, attach the following boilerplate
-
-
-
 notice, with the fields enclosed by brackets "[]" replaced with your own
-
-
-
 identifying information. (Don't include the brackets!) The text should be
-
-
-
 enclosed in the appropriate comment syntax for the file format. We also
-
-
-
 recommend that a file or class name and description of purpose be included on
-
-
-
 the same "printed page" as the copyright notice for easier identification within
-
-
-
 third-party archives.
-
-
-
-
-
-
-
 
    Copyright [yyyy] [name of copyright owner]
 
-
-
-
-
-
-
-
    Licensed under the Apache License, Version 2.0 (the "License");
-
-
-
    you may not use this file except in compliance with the License.
-
-
-
    You may obtain a copy of the License at
-
-
-
-
-
-
-
 
      http://www.apache.org/licenses/LICENSE-2.0
 
-
-
-
-
-
-
-
    Unless required by applicable law or agreed to in writing, software
-
-
-
    distributed under the License is distributed on an "AS IS" BASIS,
-
-
-
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-
-
    See the License for the specific language governing permissions and
-
-
-
    limitations under the License.
-
-
-
-
-
-
-
-
-
-
-
-
-
-            Copy lines
-          
-
-
-
-            Copy permalink
-          
-
-View git blame
-Reference in new issue
-
-
-
-
-
-
-
-
-
-
-    Go
-
- 
-
-
-
-
-
-
-
-
-
-Footer
-
-
-
-
-
-
-
- 
-        © 2022 GitHub, Inc.
-        
-
-
-
-Footer navigation
-
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    You can’t perform that action at this time.
-  
-
-
-
-
-You signed in with another tab or window. Reload to refresh your session.
-You signed out in another tab or window. Reload to refresh your session.
 ```
 
 </details>
@@ -31119,1941 +12141,201 @@ You signed out in another tab or window. Reload to refresh your session.
 - Authors: Mattias Kindborg
 - Project URL: https://github.com/FantasticFiasco/serilog-sinks-http
 - Source: [NuGet](https://www.nuget.org/packages/Serilog.Sinks.Http/8.0.0)
-- License: [Apache-2.0](https://github.com/serilog/serilog/blob/dev/LICENSE)
+- License: [Apache-2.0](https://github.com/serilog/serilog/raw/dev/LICENSE)
 
 
 ```
-serilog/LICENSE at dev · serilog/serilog · GitHub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Skip to content
-
-
-
-
-
-
-
-Toggle navigation
-
-
-
-
-
-
-
-
-
-
-            Sign up
-          
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-      Product
-      
-
-
-
-
-
-
-
-
-
-
-
-Actions
-        Automate any workflow
-      
-
-
-
-
-
-
-
-Packages
-        Host and manage packages
-      
-
-
-
-
-
-
-
-Security
-        Find and fix vulnerabilities
-      
-
-
-
-
-
-
-
-Codespaces
-        Instant dev environments
-      
-
-
-
-
-
-
-
-Copilot
-        Write better code with AI
-      
-
-
-
-
-
-
-
-Code review
-        Manage code changes
-      
-
-
-
-
-
-
-
-Issues
-        Plan and track work
-      
-
-
-
-
-
-
-
-Discussions
-        Collaborate outside of code
-      
-
-
-
-Explore
-
-
-      All features
-
-    
-
-
-
-      Documentation
-
-    
-
-
-
-
-
-      GitHub Skills
-
-    
-
-
-
-
-
-      Blog
-
-    
-
-
-
-
-
-
-
-
-      Solutions
-      
-
-
-
-
-
-By Plan
-
-
-      Enterprise
-
-    
-
-
-
-      Teams
-
-    
-
-
-
-      Compare all
-
-    
-
-
-
-By Solution
-
-
-      CI/CD & Automation
-
-    
-
-
-
-
-
-      DevOps
-
-    
-
-
-
-
-
-      DevSecOps
-
-    
-
-
-
-
-
-Case Studies
-
-
-      Customer Stories
-
-    
-
-
-
-      Resources
-
-    
-
-
-
-
-
-
-
-
-      Open Source
-      
-
-
-
-
-
-
-
-
-GitHub Sponsors
-        Fund open source developers
-      
-
-
-
-
-
-
-The ReadME Project
-        GitHub community articles
-      
-
-
-
-Repositories
-
-
-      Topics
-
-    
-
-
-
-      Trending
-
-    
-
-
-
-      Collections
-
-    
-
-
-
-
-
-Pricing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-No suggested jump to results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this organization
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        In this repository
-      
-
-        All GitHub
-      
-↵
-
-
-      Jump to
-      ↵
-
-
-
-
-
-
- 
-
-
-
-
-              Sign in
-            
-
-
-              Sign up
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-serilog
-
-/
-
-serilog
-
-Public
-
-
-
-
- 
-
-Notifications
-
-
-
- 
-
-Fork
-    713
-
-
-
-
- 
-
-
-          Star
- 5.8k
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Code
-
-
-
-
-
-
-
-Issues
-32
-
-
-
-
-
-
-Pull requests
-1
-
-
-
-
-
-
-Actions
-
-
-
-
-
-
-
-Wiki
-
-
-
-
-
-
-
-Security
-
-
-
-
-
-
-
-Insights
-
-
-
- 
- 
-
-
-
-More
-
-
- 
-
-
-                  Code
- 
-
-
-                  Issues
- 
-
-
-                  Pull requests
- 
-
-
-                  Actions
- 
-
-
-                  Wiki
- 
-
-
-                  Security
- 
-
-
-                  Insights
- 
-
-
-
-
-
-
-
-
-
-Permalink
-
-
-
-
-
-
-
-dev
-
-
-
-
-
-Switch branches/tags
-
-
-
-
-
-
-
-
-
-
-Branches
-Tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all branches
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-View all tags
-
-
-
-
-
-
-
-
-
-
-
-
-
-Name already in use
-
-
-
-
-
-
-
-
-
-      A tag already exists with the provided branch name. Many Git commands accept both tag and branch names, so creating this branch may cause unexpected behavior. Are you sure you want to create this branch?
-
-
-
-    Cancel
-
-    Create
-
-
-
-
-serilog/LICENSE
-
-    Go to file
-
-
- 
-
-
-
- 
-
-
-Go to file
-T
- 
-
- 
-Go to line
-L
-
- 
-
-
-
-    
-            Copy path
-
- 
-
-
-
-Copy permalink
-
- 
-
-
-
-
-
-
-
-
-
-
-        serilog/serilog
-        is licensed under  the
-      
-Apache License 2.0
-A permissive license whose main conditions require preservation of copyright and license notices. Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
-
-
-
-Permissions
-
-
-
-
-                  Commercial use
-                
-
-
-
-
-                  Modification
-                
-
-
-
-
-                  Distribution
-                
-
-
-
-
-                  Patent use
-                
-
-
-
-
-                  Private use
-                
-
-
-
-
-Limitations
-
-
-
-
-                  Trademark use
-                
-
-
-
-
-                  Liability
-                
-
-
-
-
-                  Warranty
-                
-
-
-
-
-Conditions
-
-
-
-
-                  License and copyright notice
-                
-
-
-
-
-                  State changes
-                
-
-
-
-
-
-
-    This is not legal advice.
-    Learn more about repository licenses.
-  
-
-
-
-
-
-
-This commit does not belong to any branch on this repository, and may belong to a fork outside of the repository.
-
-
-
-
-
-
-
-
-
-
-tvjames
-
-GitHub Apache 2 licence template
-
-
-
-
-
-
-
-
-Latest commit
-5eb8e10
-Oct 11, 2013
-
-
-
-
-
-
-History
-
-
-
-
-
-
-
-
-
-
-
-1
-        
-        contributor
-      
-
-
-
-
-
-
-
-
-            Users who have contributed to this file
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      191 lines (155 sloc)
-      
-    10 KB
-  
-
-
-    Raw
-     Blame
- 
-
-
-
- 
-
-
-
-
-
- 
-
-
-
- Edit this file
-E
-
-
-              Open in GitHub Desktop
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  Open with Desktop
-                
-
-
-
-              View raw
-            
-
-
-
-
-
-                View blame
-              
-
-
-
-
-
-
-
-
-
-
-
-
 Apache License
-
-
-
 Version 2.0, January 2004
-
-
-
 http://www.apache.org/licenses/
-
-
-
-
-
-
-
 
 TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
-
-
-
-
-
-
-
 1. Definitions.
 
-
-
-
-
-
-
-
 "License" shall mean the terms and conditions for use, reproduction, and
-
-
-
 distribution as defined by Sections 1 through 9 of this document.
 
-
-
-
-
-
-
-
 "Licensor" shall mean the copyright owner or entity authorized by the copyright
-
-
-
 owner that is granting the License.
 
-
-
-
-
-
-
-
 "Legal Entity" shall mean the union of the acting entity and all other entities
-
-
-
 that control, are controlled by, or are under common control with that entity.
-
-
-
 For the purposes of this definition, "control" means (i) the power, direct or
-
-
-
 indirect, to cause the direction or management of such entity, whether by
-
-
-
 contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the
-
-
-
 outstanding shares, or (iii) beneficial ownership of such entity.
 
-
-
-
-
-
-
-
 "You" (or "Your") shall mean an individual or Legal Entity exercising
-
-
-
 permissions granted by this License.
 
-
-
-
-
-
-
-
 "Source" form shall mean the preferred form for making modifications, including
-
-
-
 but not limited to software source code, documentation source, and configuration
-
-
-
 files.
 
-
-
-
-
-
-
-
 "Object" form shall mean any form resulting from mechanical transformation or
-
-
-
 translation of a Source form, including but not limited to compiled object code,
-
-
-
 generated documentation, and conversions to other media types.
 
-
-
-
-
-
-
-
 "Work" shall mean the work of authorship, whether in Source or Object form, made
-
-
-
 available under the License, as indicated by a copyright notice that is included
-
-
-
 in or attached to the work (an example is provided in the Appendix below).
 
-
-
-
-
-
-
-
 "Derivative Works" shall mean any work, whether in Source or Object form, that
-
-
-
 is based on (or derived from) the Work and for which the editorial revisions,
-
-
-
 annotations, elaborations, or other modifications represent, as a whole, an
-
-
-
 original work of authorship. For the purposes of this License, Derivative Works
-
-
-
 shall not include works that remain separable from, or merely link (or bind by
-
-
-
 name) to the interfaces of, the Work and Derivative Works thereof.
 
-
-
-
-
-
-
-
 "Contribution" shall mean any work of authorship, including the original version
-
-
-
 of the Work and any modifications or additions to that Work or Derivative Works
-
-
-
 thereof, that is intentionally submitted to Licensor for inclusion in the Work
-
-
-
 by the copyright owner or by an individual or Legal Entity authorized to submit
-
-
-
 on behalf of the copyright owner. For the purposes of this definition,
-
-
-
 "submitted" means any form of electronic, verbal, or written communication sent
-
-
-
 to the Licensor or its representatives, including but not limited to
-
-
-
 communication on electronic mailing lists, source code control systems, and
-
-
-
 issue tracking systems that are managed by, or on behalf of, the Licensor for
-
-
-
 the purpose of discussing and improving the Work, but excluding communication
-
-
-
 that is conspicuously marked or otherwise designated in writing by the copyright
-
-
-
 owner as "Not a Contribution."
 
-
-
-
-
-
-
-
 "Contributor" shall mean Licensor and any individual or Legal Entity on behalf
-
-
-
 of whom a Contribution has been received by Licensor and subsequently
-
-
-
 incorporated within the Work.
-
-
-
-
-
-
-
 
 2. Grant of Copyright License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable copyright license to reproduce, prepare Derivative Works of,
-
-
-
 publicly display, publicly perform, sublicense, and distribute the Work and such
-
-
-
 Derivative Works in Source or Object form.
-
-
-
-
-
-
-
 
 3. Grant of Patent License.
 
-
-
-
-
-
-
-
 Subject to the terms and conditions of this License, each Contributor hereby
-
-
-
 grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
-
-
-
 irrevocable (except as stated in this section) patent license to make, have
-
-
-
 made, use, offer to sell, sell, import, and otherwise transfer the Work, where
-
-
-
 such license applies only to those patent claims licensable by such Contributor
-
-
-
 that are necessarily infringed by their Contribution(s) alone or by combination
-
-
-
 of their Contribution(s) with the Work to which such Contribution(s) was
-
-
-
 submitted. If You institute patent litigation against any entity (including a
-
-
-
 cross-claim or counterclaim in a lawsuit) alleging that the Work or a
-
-
-
 Contribution incorporated within the Work constitutes direct or contributory
-
-
-
 patent infringement, then any patent licenses granted to You under this License
-
-
-
 for that Work shall terminate as of the date such litigation is filed.
-
-
-
-
-
-
-
 
 4. Redistribution.
 
-
-
-
-
-
-
-
 You may reproduce and distribute copies of the Work or Derivative Works thereof
-
-
-
 in any medium, with or without modifications, and in Source or Object form,
-
-
-
 provided that You meet the following conditions:
 
-
-
-
-
-
-
-
 You must give any other recipients of the Work or Derivative Works a copy of
-
-
-
 this License; and
-
-
-
 You must cause any modified files to carry prominent notices stating that You
-
-
-
 changed the files; and
-
-
-
 You must retain, in the Source form of any Derivative Works that You distribute,
-
-
-
 all copyright, patent, trademark, and attribution notices from the Source form
-
-
-
 of the Work, excluding those notices that do not pertain to any part of the
-
-
-
 Derivative Works; and
-
-
-
 If the Work includes a "NOTICE" text file as part of its distribution, then any
-
-
-
 Derivative Works that You distribute must include a readable copy of the
-
-
-
 attribution notices contained within such NOTICE file, excluding those notices
-
-
-
 that do not pertain to any part of the Derivative Works, in at least one of the
-
-
-
 following places: within a NOTICE text file distributed as part of the
-
-
-
 Derivative Works; within the Source form or documentation, if provided along
-
-
-
 with the Derivative Works; or, within a display generated by the Derivative
-
-
-
 Works, if and wherever such third-party notices normally appear. The contents of
-
-
-
 the NOTICE file are for informational purposes only and do not modify the
-
-
-
 License. You may add Your own attribution notices within Derivative Works that
-
-
-
 You distribute, alongside or as an addendum to the NOTICE text from the Work,
-
-
-
 provided that such additional attribution notices cannot be construed as
-
-
-
 modifying the License.
-
-
-
 You may add Your own copyright statement to Your modifications and may provide
-
-
-
 additional or different license terms and conditions for use, reproduction, or
-
-
-
 distribution of Your modifications, or for any such Derivative Works as a whole,
-
-
-
 provided Your use, reproduction, and distribution of the Work otherwise complies
-
-
-
 with the conditions stated in this License.
-
-
-
-
-
-
-
 
 5. Submission of Contributions.
 
-
-
-
-
-
-
-
 Unless You explicitly state otherwise, any Contribution intentionally submitted
-
-
-
 for inclusion in the Work by You to the Licensor shall be under the terms and
-
-
-
 conditions of this License, without any additional terms or conditions.
-
-
-
 Notwithstanding the above, nothing herein shall supersede or modify the terms of
-
-
-
 any separate license agreement you may have executed with Licensor regarding
-
-
-
 such Contributions.
-
-
-
-
-
-
-
 
 6. Trademarks.
 
-
-
-
-
-
-
-
 This License does not grant permission to use the trade names, trademarks,
-
-
-
 service marks, or product names of the Licensor, except as required for
-
-
-
 reasonable and customary use in describing the origin of the Work and
-
-
-
 reproducing the content of the NOTICE file.
-
-
-
-
-
-
-
 
 7. Disclaimer of Warranty.
 
-
-
-
-
-
-
-
 Unless required by applicable law or agreed to in writing, Licensor provides the
-
-
-
 Work (and each Contributor provides its Contributions) on an "AS IS" BASIS,
-
-
-
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
-
-
-
 including, without limitation, any warranties or conditions of TITLE,
-
-
-
 NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are
-
-
-
 solely responsible for determining the appropriateness of using or
-
-
-
 redistributing the Work and assume any risks associated with Your exercise of
-
-
-
 permissions under this License.
-
-
-
-
-
-
-
 
 8. Limitation of Liability.
 
-
-
-
-
-
-
-
 In no event and under no legal theory, whether in tort (including negligence),
-
-
-
 contract, or otherwise, unless required by applicable law (such as deliberate
-
-
-
 and grossly negligent acts) or agreed to in writing, shall any Contributor be
-
-
-
 liable to You for damages, including any direct, indirect, special, incidental,
-
-
-
 or consequential damages of any character arising as a result of this License or
-
-
-
 out of the use or inability to use the Work (including but not limited to
-
-
-
 damages for loss of goodwill, work stoppage, computer failure or malfunction, or
-
-
-
 any and all other commercial damages or losses), even if such Contributor has
-
-
-
 been advised of the possibility of such damages.
-
-
-
-
-
-
-
 
 9. Accepting Warranty or Additional Liability.
 
-
-
-
-
-
-
-
 While redistributing the Work or Derivative Works thereof, You may choose to
-
-
-
 offer, and charge a fee for, acceptance of support, warranty, indemnity, or
-
-
-
 other liability obligations and/or rights consistent with this License. However,
-
-
-
 in accepting such obligations, You may act only on Your own behalf and on Your
-
-
-
 sole responsibility, not on behalf of any other Contributor, and only if You
-
-
-
 agree to indemnify, defend, and hold each Contributor harmless for any liability
-
-
-
 incurred by, or claims asserted against, such Contributor by reason of your
-
-
-
 accepting any such warranty or additional liability.
-
-
-
-
-
-
-
 
 END OF TERMS AND CONDITIONS
 
-
-
-
-
-
-
-
 APPENDIX: How to apply the Apache License to your work
 
-
-
-
-
-
-
-
 To apply the Apache License to your work, attach the following boilerplate
-
-
-
 notice, with the fields enclosed by brackets "[]" replaced with your own
-
-
-
 identifying information. (Don't include the brackets!) The text should be
-
-
-
 enclosed in the appropriate comment syntax for the file format. We also
-
-
-
 recommend that a file or class name and description of purpose be included on
-
-
-
 the same "printed page" as the copyright notice for easier identification within
-
-
-
 third-party archives.
-
-
-
-
-
-
-
 
    Copyright [yyyy] [name of copyright owner]
 
-
-
-
-
-
-
-
    Licensed under the Apache License, Version 2.0 (the "License");
-
-
-
    you may not use this file except in compliance with the License.
-
-
-
    You may obtain a copy of the License at
-
-
-
-
-
-
-
 
      http://www.apache.org/licenses/LICENSE-2.0
 
-
-
-
-
-
-
-
    Unless required by applicable law or agreed to in writing, software
-
-
-
    distributed under the License is distributed on an "AS IS" BASIS,
-
-
-
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-
-
    See the License for the specific language governing permissions and
-
-
-
    limitations under the License.
-
-
-
-
-
-
-
-
-
-
-
-
-
-            Copy lines
-          
-
-
-
-            Copy permalink
-          
-
-View git blame
-Reference in new issue
-
-
-
-
-
-
-
-
-
-
-    Go
-
- 
-
-
-
-
-
-
-
-
-
-Footer
-
-
-
-
-
-
-
- 
-        © 2022 GitHub, Inc.
-        
-
-
-
-Footer navigation
-
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    You can’t perform that action at this time.
-  
-
-
-
-
-You signed in with another tab or window. Reload to refresh your session.
-You signed out in another tab or window. Reload to refresh your session.
 ```
 
 </details>
@@ -37646,6 +16928,206 @@ consequential or other damages.
 - Owners: microsoft,dotnetframework
 - Project URL: https://dot.net/
 - Source: [NuGet](https://www.nuget.org/packages/System.Diagnostics.Debug/4.3.0)
+- License: [MICROSOFT .NET LIBRARY License](http://go.microsoft.com/fwlink/?LinkId=329770)
+
+
+```
+MICROSOFT SOFTWARE LICENSE
+TERMS
+
+MICROSOFT .NET
+LIBRARY
+
+These
+license terms are an agreement between you and Microsoft Corporation (or based
+on where you live, one of its affiliates). They apply to the software named
+above. The terms also apply to any Microsoft services or updates for the
+software, except to the extent those have different terms.
+
+If
+you comply with these license terms, you have the rights below.
+
+1.    INSTALLATION AND USE RIGHTS. 
+You may
+install and use any number of copies of the software to develop and test your applications. 
+
+2.   
+THIRD PARTY COMPONENTS. The software may include third party components with
+separate legal notices or governed by other agreements, as may be described in
+the ThirdPartyNotices file(s) accompanying the software.
+3.   
+ADDITIONAL LICENSING
+REQUIREMENTS AND/OR USE RIGHTS.
+a.    
+DISTRIBUTABLE
+CODE.  The software is
+comprised of Distributable Code. ï¿½Distributable Codeï¿½ is code that you are
+permitted to distribute in applications you develop if you comply with the
+terms below.
+i.      Right to Use and Distribute. 
+ï¿½       
+You may copy and distribute the object code form of the software.
+ï¿½       
+Third Party Distribution. You may permit distributors of your applications
+to copy and distribute the Distributable Code as part of those applications.
+ii.     Distribution Requirements. For any
+Distributable Code you distribute, you must
+ï¿½       
+use the Distributable Code in your applications and not as a
+standalone distribution;
+ï¿½       
+require distributors and external end users to agree to terms that
+protect it at least as much as this agreement; and
+ï¿½       
+indemnify, defend, and hold harmless Microsoft from any claims,
+including attorneysï¿½ fees, related to the distribution or use of your applications,
+except to the extent that any claim is based solely on the unmodified Distributable
+Code.
+iii.   Distribution Restrictions. You may not
+ï¿½       
+use Microsoftï¿½s trademarks in your applicationsï¿½ names or in a way
+that suggests your applications come from or are endorsed by Microsoft; or
+ï¿½       
+modify or distribute the source code of any Distributable Code so
+that any part of it becomes subject to an Excluded License. An ï¿½Excluded
+Licenseï¿½ is one that requires, as a condition of use, modification or
+distribution of code, that (i) it be disclosed or distributed in source code
+form; or (ii) others have the right to modify it.
+4.   
+DATA.
+a.    
+Data Collection. The software may collect
+information about you and your use of the software, and send that to Microsoft.
+Microsoft may use this information to provide services and improve our products
+and services.ï¿½ You may opt-out of many of these scenarios, but not all, as
+described in the software documentation.ï¿½ There are also some features in the software that may enable you and
+Microsoft to collect data from users of your applications. If you use
+these features, you must comply with applicable law, including providing
+appropriate notices to users of your applications together with Microsoftï¿½s
+privacy statement. Our privacy statement is located at https://go.microsoft.com/fwlink/?LinkID=824704. You can learn more about data
+collection and its use from the software documentation and our privacy
+statement. Your use of the software operates as your consent to these
+practices.
+b.   
+Processing of Personal Data. To the extent Microsoft is a
+processor or subprocessor of personal data in connection with the software,
+Microsoft makes the commitments in the European Union General Data Protection
+Regulation Terms of the Online Services Terms to all customers effective May
+25, 2018, at https://learn.microsoft.com/en-us/legal/gdpr.
+5.   
+Scope of
+License. The software is licensed, not sold. This agreement
+only gives you some rights to use the software. Microsoft reserves all other
+rights. Unless applicable law gives you more rights despite this limitation,
+you may use the software only as expressly permitted in this agreement. In
+doing so, you must comply with any technical limitations in the software that
+only allow you to use it in certain ways. You may not
+ï¿½       
+work around any technical
+limitations in the software;
+ï¿½       
+reverse engineer, decompile or
+disassemble the software, or otherwise attempt to derive the source code for
+the software, except and to the extent required by third party licensing terms
+governing use of certain open source components that may be included in the
+software;
+ï¿½       
+remove, minimize, block or modify
+any notices of Microsoft or its suppliers in the software; 
+ï¿½       
+use the software in any way that
+is against the law; or
+ï¿½       
+share, publish, rent or lease the
+software, provide the software as a stand-alone offering for others to use, or
+transfer the software or this agreement to any third party.
+6.   
+Export
+Restrictions. You must comply with all domestic and international
+export laws and regulations that apply to the software, which include
+restrictions on destinations, end users, and end use. For further information
+on export restrictions, visit www.microsoft.com/exporting. ï¿½
+7.   
+SUPPORT
+SERVICES. Because this software is ï¿½as is,ï¿½ we may not provide
+support services for it.
+8.   
+Entire
+Agreement. This
+agreement, and the terms for supplements, updates, Internet-based services and
+support services that you use, are the entire agreement for the software and
+support services.
+9.    Applicable Law.ï¿½ If you acquired the software in the United States, Washington law
+applies to interpretation of and claims for breach of this agreement, and the
+laws of the state where you live apply to all other claims. If you acquired the
+software in any other country, its laws apply.
+10. CONSUMER RIGHTS; REGIONAL VARIATIONS. This agreement describes certain legal rights. You
+may have other rights, including consumer rights, under the laws of your state
+or country. Separate and apart from your relationship with Microsoft, you may
+also have rights with respect to the party from which you acquired the
+software. This agreement does not change those other rights if the laws of your
+state or country do not permit it to do so. For example, if you acquired the
+software in one of the below regions, or mandatory country law applies, then
+the following provisions apply to you:
+a)    Australia. You have statutory guarantees under the Australian Consumer
+Law and nothing in this agreement is intended to affect those rights.
+b)    Canada. If you acquired this software in Canada, you may stop
+receiving updates by turning off the automatic update feature, disconnecting
+your device from the Internet (if and when you re-connect to the Internet,
+however, the software will resume checking for and installing updates), or uninstalling
+the software. The product documentation, if any, may also specify how to turn
+off updates for your specific device or software.
+c)    Germany and Austria.
+(i)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Warranty. The software will perform
+substantially as described in any Microsoft materials that accompany it.
+However, Microsoft gives no contractual guarantee in relation to the software.
+(ii)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Limitation of Liability. In case of
+intentional conduct, gross negligence, claims based on the Product Liability
+Act, as well as in case of death or personal or physical injury, Microsoft is
+liable according to the statutory law.
+Subject to the foregoing clause (ii), Microsoft will only
+be liable for slight negligence if Microsoft is in breach of such material
+contractual obligations, the fulfillment of which facilitate the due
+performance of this agreement, the breach of which would endanger the purpose
+of this agreement and the compliance with which a party may constantly trust in
+(so-called "cardinal obligations"). In other cases of slight negligence,
+Microsoft will not be liable for slight negligence
+11. Disclaimer of Warranty. THE SOFTWARE IS LICENSED ï¿½AS-IS.ï¿½ YOU BEAR THE RISK
+OF USING IT. MICROSOFT GIVES NO EXPRESS WARRANTIES, GUARANTEES OR CONDITIONS.
+TO THE EXTENT PERMITTED UNDER YOUR LOCAL LAWS, MICROSOFT EXCLUDES THE IMPLIED
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NON-INFRINGEMENT. 
+12.
+Limitation
+on and Exclusion of Remedies and Damages. YOU
+CAN RECOVER FROM MICROSOFT AND ITS SUPPLIERS ONLY DIRECT DAMAGES UP TO U.S.
+$5.00. YOU CANNOT RECOVER ANY OTHER DAMAGES, INCLUDING CONSEQUENTIAL, LOST
+PROFITS, SPECIAL, INDIRECT OR INCIDENTAL DAMAGES.
+This limitation applies to (a)
+anything related to the software, services, content (including code) on third
+party Internet sites, or third party applications; and (b) claims for breach of
+contract, breach of warranty, guarantee or condition, strict liability,
+negligence, or other tort to the extent permitted by applicable law.
+It
+also applies even if Microsoft knew or should have known about the possibility
+of the damages. The above limitation or exclusion may not apply to you because
+your state or country may not allow the exclusion or limitation of incidental,
+consequential or other damages.
+```
+
+</details>
+
+
+<details>
+<summary>System.Diagnostics.DiagnosticSource 4.3.0</summary>
+
+## System.Diagnostics.DiagnosticSource
+
+- Version: 4.3.0
+- Authors: Microsoft
+- Owners: microsoft,dotnetframework
+- Project URL: https://dot.net/
+- Source: [NuGet](https://www.nuget.org/packages/System.Diagnostics.DiagnosticSource/4.3.0)
 - License: [MICROSOFT .NET LIBRARY License](http://go.microsoft.com/fwlink/?LinkId=329770)
 
 
