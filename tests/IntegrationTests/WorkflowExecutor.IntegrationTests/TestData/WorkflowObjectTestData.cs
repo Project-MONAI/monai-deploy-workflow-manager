@@ -730,6 +730,326 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 Name = "Empty_Workflow_Body",
                 Workflow = new Workflow()
             },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_Missing_QueueName",
+                Workflow = new Workflow()
+                {
+                    Name = "Basic update",
+                    Description = "Basic workflow update",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "Argo_Task",
+                            Type = "argo",
+                            Description = "Argo task missing QueueName",
+                            Args = new Dictionary<string, string> {
+                                { "WorkflowName", "Workflow Name" },
+                                { "ReviewedTaskId", "Task ID" }
+                            },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        DataOrigins = new string[]{"test"},
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_Missing_WorkflowName",
+                Workflow = new Workflow()
+                {
+                    Name = "Basic update",
+                    Description = "Basic workflow update",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "Argo_Task",
+                            Type = "argo",
+                            Description = "Argo task missing QueueName",
+                            Args = new Dictionary<string, string> {
+                                { "QueueName", "Queue Name" },
+                                { "ReviewedTaskId", "Task ID" }
+                            },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        DataOrigins = new string[]{"test"},
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_Missing_ReviewedTaskId",
+                Workflow = new Workflow()
+                {
+                    Name = "Basic update",
+                    Description = "Basic workflow update",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "Argo_Task",
+                            Type = "argo",
+                            Description = "Argo task missing QueueName",
+                            Args = new Dictionary<string, string> {
+                                { "WorkflowName", "Workflow Name" },
+                                { "QueueName", "Queue Name" }
+                            },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        DataOrigins = new string[]{"test"},
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_Missing_All_Argo_Args",
+                Workflow = new Workflow()
+                {
+                    Name = "Basic update",
+                    Description = "Basic workflow update",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "Argo_Task",
+                            Type = "argo",
+                            Description = "Argo task missing QueueName",
+                            Args = new Dictionary<string, string> {},
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        DataOrigins = new string[]{"test"},
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_Missing_2_Argo_Args_1",
+                Workflow = new Workflow()
+                {
+                    Name = "Basic update",
+                    Description = "Basic workflow update",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "Argo_Task",
+                            Type = "argo",
+                            Description = "Argo task missing QueueName",
+                            Args = new Dictionary<string, string> {
+                                { "WorkflowName", "Workflow Name" }
+                            },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        DataOrigins = new string[]{"test"},
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_Missing_2_Argo_Args_2",
+                Workflow = new Workflow()
+                {
+                    Name = "Basic update",
+                    Description = "Basic workflow update",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "Argo_Task",
+                            Type = "argo",
+                            Description = "Argo task missing QueueName",
+                            Args = new Dictionary<string, string> {
+                                { "QueueName", "Queue Name" }
+                            },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        DataOrigins = new string[]{"test"},
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_Missing_2_Argo_Args_3",
+                Workflow = new Workflow()
+                {
+                    Name = "Basic update",
+                    Description = "Basic workflow update",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "Argo_Task",
+                            Type = "argo",
+                            Description = "Argo task missing QueueName",
+                            Args = new Dictionary<string, string> {
+                                { "ReviewedTaskId", "Task ID" }
+                            },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        DataOrigins = new string[]{"test"},
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_Incorrect_Clinical_Review_Artifact",
+                Workflow = new Workflow()
+                {
+                    Name = "Basic update",
+                    Description = "Basic workflow update",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "Argo_Task",
+                            Type = "argo",
+                            Description = "Argo task missing QueueName",
+                            Args = new Dictionary<string, string> {
+                                { "WorkflowName", "Workflow Name" },
+                                { "QueueName", "Queue Name" },
+                                { "ReviewedTaskId", "Task ID" }
+                            },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        },
+                        new TaskObject
+                        {
+                            Id = "Clinical_Review_Task",
+                            Type = "clinical-review",
+                            Description = "Clinical Review incorrect Input",
+                            Args = new Dictionary<string, string> {},
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] { new Artifact { Name = "test", Value = "{{ context.executions.mean-pixel-calc.artifacts.report }}" } },
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        DataOrigins = new string[]{"test"},
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Workflow_Dup_Workflow_Name",
+                Workflow = new Workflow()
+                {
+                    Name = "Basic workflow",
+                    Description = "Basic workflow update",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "basic_id_with-legal-chars",
+                            Type = "Basic_task",
+                            Description = "Basic Workflow update Task update",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        DataOrigins = new string[]{"test"},
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
         };
     }
 }
