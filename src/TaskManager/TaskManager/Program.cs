@@ -43,12 +43,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
         private static void Main(string[] args)
         {
-            var logger = ConfigureNLog();
-            logger.Info("init main");
+            var version = typeof(Program).Assembly;
+            var assemblyVersionNumber = version.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0.1";
+
+            var logger = ConfigureNLog(assemblyVersionNumber);
+            logger.Info($"Initializing MONAI Deploy Task Manager v{assemblyVersionNumber}");
 
             var host = CreateHostBuilder(args).Build();
-
             host.Run();
+            logger.Info("MONAI Deploy Deploy Task Manager shutting down.");
 
             NLog.LogManager.Shutdown();
         }
@@ -101,18 +104,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             services.AddTaskManager(hostContext);
         }
 
-        private static Logger ConfigureNLog()
+        private static Logger ConfigureNLog(string assemblyVersionNumber)
         {
-            var version = typeof(Program).Assembly;
-            var assemblyVersionNumber = version.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0.1";
-
-            LayoutRenderer.Register("servicename", logEvent => Assembly.GetEntryAssembly()?.GetName().Name);
+            LayoutRenderer.Register("servicename", logEvent => typeof(Program).Namespace);
             LayoutRenderer.Register("serviceversion", logEvent => assemblyVersionNumber);
             LayoutRenderer.Register("machinename", logEvent => Environment.MachineName);
 
-            var nLog = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
-
-            return nLog;
+            return LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
         }
     }
 }
