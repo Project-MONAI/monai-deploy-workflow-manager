@@ -382,7 +382,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/core-setup/raw/release/2.1/LICENSE.TXT)
     :versions:
-    - 1.3.0
+    - 1.0.3
     - 2.1.0
     :when: 2022-10-14 23:36:59.424849648 Z
 - - :approve
@@ -481,7 +481,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
-    - 1.3.0
+    - 1.0.3
     - 2.1.0
     :when: 2022-10-14 23:37:04.818759747 Z
 - - :approve
