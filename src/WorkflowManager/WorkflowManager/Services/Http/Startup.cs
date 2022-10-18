@@ -26,7 +26,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Monai.Deploy.WorkflowManager.Authentication.Extensions;
-using Monai.Deploy.WorkflowManager.Logging.Attributes;
 using Monai.Deploy.WorkflowManager.Shared;
 using Newtonsoft.Json.Converters;
 
@@ -77,7 +76,8 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
                     options.SubstituteApiVersionInUrl = true;
                 });
 
-            services.AddControllers(options => options.Filters.Add(typeof(LogActionFilterAttribute))).AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()));
+            services.AddControllers().AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MONAI Workflow Manager", Version = "v1" });
@@ -121,6 +121,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
         /// <param name="app">Application Builder.</param>
         /// <param name="env">Web Host Environment.</param>
 #pragma warning disable SA1204 // Static elements should appear before instance elements
+
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 #pragma warning restore SA1204 // Static elements should appear before instance elements
         {

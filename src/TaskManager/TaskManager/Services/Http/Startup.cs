@@ -25,7 +25,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Monai.Deploy.WorkflowManager.Authentication.Extensions;
-using Monai.Deploy.WorkflowManager.Logging.Attributes;
 using Monai.Deploy.WorkflowManager.Shared;
 using Newtonsoft.Json.Converters;
 
@@ -76,7 +75,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services.Http
                     options.SubstituteApiVersionInUrl = true;
                 });
 
-            services.AddControllers(options => options.Filters.Add(typeof(LogActionFilterAttribute))).AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()));
+            services.AddControllers().AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
             services.AddSwaggerGen(c =>
             {
@@ -88,6 +87,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services.Http
             var logger = serviceProvider.GetService<ILogger<Startup>>();
 
             services.AddMonaiAuthentication(Configuration, logger);
+
+            services.AddHttpLogging(options =>
+            {
+                options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestQuery |
+                                        Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
+            });
 
             services.AddHttpLogging(options =>
             {

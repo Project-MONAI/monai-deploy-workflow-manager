@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Newtonsoft.Json;
@@ -121,34 +119,6 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
         {
             logger.LogInformation("TaskFailed, Task {task}, workflowInstance {workflowInstance}, patientDetails {patientDetails}, correlationId {correlationId}, taskStatus {taskStatus}",
               JsonConvert.SerializeObject(task), JsonConvert.SerializeObject(workflowInstance), JsonConvert.SerializeObject(patientDetails), correlationId, taskStatus);
-        }
-
-        public static void LogControllerStartTime(this ILogger logger, ActionExecutingContext context)
-        {
-            var request = context.HttpContext.Request;
-            var body = JsonConvert.SerializeObject(context.ActionArguments.FirstOrDefault());
-            logger.LogInformation(29, "ControllerActionStart data  HttpType {httptype}, Path {path}, QueryString {querystring}, Body {body}",
-            request.Method, request.Path, request.QueryString.Value.ToString(), body);
-        }
-
-        public static void LogControllerEndTime(this ILogger logger, ResultExecutedContext context)
-        {
-            var request = context.HttpContext.Request;
-            var response = context.HttpContext.Response;
-
-            var startTime = context.HttpContext.Items["startTime"] as DateTime? ?? DateTime.UtcNow;
-            var endtime = DateTime.UtcNow;
-
-            var objResult = new ObjectResult("");
-
-            if (context.Result is ObjectResult)
-            {
-                objResult = (ObjectResult)context.Result;
-            }
-
-            logger.LogInformation(30, "ControllerActionEnd data  EndTime {endtime}, Duration {duration}, HttpType {httptype}, Path {path}, QueryString {querystring}, StatusCode {statuscode}, Result {result}",
-                endtime, (endtime - startTime).TotalMilliseconds, request.Method, request.Path,
-                request.QueryString.Value.ToString(), response.StatusCode, JsonConvert.SerializeObject(objResult));
         }
 
         [LoggerMessage(EventId = 31, Level = LogLevel.Warning, Message = "Unable to locate a matching workflow for the given workflow request.")]
