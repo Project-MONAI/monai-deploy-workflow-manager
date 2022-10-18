@@ -12,13 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Health API
-  href: health.md
-- name: Payload API
-  href: payload.md
-- name: Task API
-  href: task.md
-- name: Workflow API
-  href: workflow.md
-- name: Workflow Instance API
-  href: workflow-instance.md
+- name: Task Manager
+  items:
+  - name: Health API
+    href: health.md
+- name: Workflow Manager
+  items:
+  - name: Health API
+    href: health.md
+  - name: Payload API
+    href: payload.md
+  - name: Task API
+    href: task.md
+  - name: Workflow API
+    href: workflow.md
+  - name: Workflow Instance API
+    href: workflow-instance.md

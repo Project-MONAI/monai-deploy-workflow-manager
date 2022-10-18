@@ -16,6 +16,7 @@
 
 using System.IO.Abstractions;
 using System.Reflection;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -80,6 +81,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 .ConfigureServices((hostContext, services) =>
                 {
                     ConfigureServices(hostContext, services);
+                })
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.CaptureStartupErrors(true);
+                    webBuilder.UseStartup<Startup>();
                 })
                 .UseNLog();
 

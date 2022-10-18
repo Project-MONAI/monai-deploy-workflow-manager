@@ -17,7 +17,7 @@
 # Health APIs
 
 The _health_ endpoint provides the following APIs to get the status of the internal services & dependent services of 
-the Workflow Manager and the Task Manager.
+the Workflow Manager.
 
 
 ## GET /health/
@@ -51,72 +51,32 @@ curl --location --request GET 'http://localhost:5000/health'
 
 ```json
 {
-  "status": "Healthy",
-  "checks": [
-    {
-      "check": "Workflow Manager Services",
-      "result": "Healthy"
-    },
-    {
-      "check": "InformaticsGatewayContext",
-      "result": "Healthy"
-    },
-    {
-      "check": "minio",
-      "result": "Healthy"
-    },
-    {
-      "check": "Rabbit MQ Subscriber",
-      "result": "Healthy"
-    },
-    {
-      "check": "Rabbit MQ Publisher",
-      "result": "Healthy"
-    }
-  ]
-}
-```
-
----
-
-## GET /health/status
-
-Returns the MONAI Workflow Manager service status:
-
-- Active DICOM DIMSE associations
-- Internal service status
-
-### Parameters
-
-N/A
-
-### Responses
-
-Response Content Type: JSON - [HealthStatusResponse](xref:Monai.Deploy.InformaticsGateway.Api.Rest.HealthStatusResponse).
-
-| Code | Description                                                                                                                             |
-| ---- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| 200  | Status is available.                                                                                                                    |
-| 500  | Server error. The response will be a [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details. |
-
-### Example Request
-
-```bash
-curl --location --request GET 'http://localhost:5000/health/status'
-```
-
-### Example Response
-
-```json
-{
-  "activeDimseConnections": 8,
-  "services": {
-    "Space Reclaimer Service": "Running",
-    "DICOM SCP Service": "Running",
-    "DICOMweb Export Service": "Running",
-    "DICOM Export Service": "Running",
-    "Data Retrieval Service": "Running",
-    "Workload Manager Notification Service": "Running"
-  }
+    "status": "Healthy",
+    "checks": [
+        {
+            "check": "minio",
+            "result": "Healthy"
+        },
+        {
+            "check": "minio-admin",
+            "result": "Healthy"
+        },
+        {
+            "check": "Rabbit MQ Publisher",
+            "result": "Healthy"
+        },
+        {
+            "check": "Rabbit MQ Subscriber",
+            "result": "Healthy"
+        },
+        {
+            "check": "Workflow Manager Services",
+            "result": "Healthy"
+        },
+        {
+            "check": "mongodb",
+            "result": "Healthy"
+        }
+    ]
 }
 ```
