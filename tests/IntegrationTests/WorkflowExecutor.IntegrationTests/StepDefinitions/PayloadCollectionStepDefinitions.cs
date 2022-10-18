@@ -16,11 +16,9 @@
 
 using BoDi;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using TechTalk.SpecFlow.Infrastructure;
 using Polly;
 using Polly.Retry;
-using NUnit.Framework;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
@@ -36,6 +34,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private RetryPolicy RetryPolicy { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
         public PayloadCollectionStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
@@ -70,6 +69,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 }
             }
         }
+
         [Then(@"A payload collection is created with (.*) workflow instance id")]
         public void ThenAPayloadCollectionIsCreatedWithWorkflowInstanceId(int count)
         {
@@ -83,7 +83,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 {
                     foreach (var payloadCollection in payloadCollections)
                     {
-
                         var workflowInstances = DataHelper.GetWorkflowInstances(count, DataHelper.WorkflowRequestMessage.PayloadId.ToString());
                         if (count != 0)
                         {

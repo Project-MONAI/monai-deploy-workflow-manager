@@ -56,7 +56,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             Assertions.AssertPagination(count, request, deserializedResult);
         }
 
-
         [Then(@"the Workflow Id (.*) is returned in the response body")]
         public void ThenTheWorkflowIdIsReturned(string id)
         {

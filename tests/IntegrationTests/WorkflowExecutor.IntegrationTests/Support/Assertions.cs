@@ -16,7 +16,6 @@
 
 using System.Collections;
 using BoDi;
-using Microsoft.Extensions.Configuration;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
@@ -183,7 +182,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
             if (taskDispatchEvent.Inputs.Count > 0)
             {
-
                 if (taskUpdateEvent != null)
                 {
                     AssertInputArtifactsForTaskDispatch(workflowRevisionTask,
@@ -291,6 +289,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             payloadCollection.Timestamp.Should().BeCloseTo(DateTime.UtcNow, precision: TimeSpan.FromMinutes(1));
             payloadCollection.PatientDetails.Should().BeEquivalentTo(patientDetails);
         }
+
         public void AssertPayloadWorkflowInstanceId(Payload payloadCollection, List<WorkflowInstance> workflowInstances)
         {
             foreach (var workflowInstance in workflowInstances)

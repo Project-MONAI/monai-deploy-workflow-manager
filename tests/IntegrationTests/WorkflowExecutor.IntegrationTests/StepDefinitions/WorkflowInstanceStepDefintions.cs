@@ -93,7 +93,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
                 throw new Exception("Bad date time provided in generating data.");
             }
 
-
             foreach (var index in Enumerable.Range(0, count))
             {
                 _outputHelper.WriteLine($"Retrieving workflow instances with index={index}");
@@ -131,7 +130,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
                 if (workflowRevision != null)
                 {
                     Assertions.AssertWorkflowInstanceMatchesExpectedWorkflow(workflowInstance, workflowRevision, DataHelper.WorkflowRequestMessage);
-
                 }
                 else
                 {

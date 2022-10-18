@@ -159,7 +159,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         }
 
         [BeforeTestRun(Order = 3)]
-        public async static Task CreateBucket()
+        public static async Task CreateBucket()
         {
             await MinioClient.CreateBucket(TestExecutionConfig.MinioConfig.Bucket);
         }

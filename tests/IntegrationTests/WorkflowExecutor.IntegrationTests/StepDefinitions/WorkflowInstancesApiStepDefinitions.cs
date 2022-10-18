@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-using System.Threading.Tasks;
 using BoDi;
-using FluentAssertions.Extensions;
-using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using Monai.Deploy.WorkflowManager.MonaiBackgroundService;
-using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
 using Monai.Deploy.WorkflowManager.Wrappers;
 using MongoDB.Driver;
 using Newtonsoft.Json;
@@ -46,8 +41,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private DataHelper DataHelper { get; }
         private readonly ISpecFlowOutputHelper _outputHelper;
         private MongoClientUtil MongoClient { get; set; }
-
-
 
         [Then(@"I can see expected workflow instances are returned")]
         public void ThenICanSeeExpectedWorkflowInstancesAreReturned()
@@ -246,6 +239,5 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             _outputHelper.WriteLine("Retrieved workflow instance");
             updatedWorkflowInstance.AcknowledgedWorkflowErrors.Should().Be(null);
         }
-
     }
 }

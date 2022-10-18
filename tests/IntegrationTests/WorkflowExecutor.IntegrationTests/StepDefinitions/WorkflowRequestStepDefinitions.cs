@@ -15,14 +15,13 @@
  */
 
 using BoDi;
-using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using TechTalk.SpecFlow.Infrastructure;
+using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support;
 using Polly;
 using Polly.Retry;
-using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {

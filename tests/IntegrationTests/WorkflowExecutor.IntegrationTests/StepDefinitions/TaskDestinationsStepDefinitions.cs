@@ -31,7 +31,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private Assertions Assertions { get; set; }
         private readonly ISpecFlowOutputHelper _outputHelper;
 
-
         public TaskDestinationsStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
@@ -105,6 +104,5 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .ToList();
         }
-
     }
 }
