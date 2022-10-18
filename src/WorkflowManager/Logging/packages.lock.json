@@ -25,12 +25,6 @@
           "System.Threading.Tasks.Extensions": "4.5.1"
         }
       },
-      "Serilog": {
-        "type": "Direct",
-        "requested": "[2.12.0, )",
-        "resolved": "2.12.0",
-        "contentHash": "xaiJLIdu6rYMKfQMYUZgTy8YK7SMZjB4Yk50C/u//Z4OsvxkUfSPJy4nknfvwAC34yr13q7kcyh4grbwhSxyZg=="
-      },
       "Ardalis.GuardClauses": {
         "type": "Transitive",
         "resolved": "4.0.1",

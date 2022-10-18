@@ -221,6 +221,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             ITaskPlugin? taskRunner = null;
 
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["durationSoFar"] = (DateTime.UtcNow - taskExecution.Started).TotalMilliseconds
+            });
+
             try
             {
                 string? pluginAssembly;

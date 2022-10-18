@@ -413,11 +413,6 @@
           "Microsoft.NETCore.Targets": "1.0.1"
         }
       },
-      "Serilog": {
-        "type": "Transitive",
-        "resolved": "2.12.0",
-        "contentHash": "xaiJLIdu6rYMKfQMYUZgTy8YK7SMZjB4Yk50C/u//Z4OsvxkUfSPJy4nknfvwAC34yr13q7kcyh4grbwhSxyZg=="
-      },
       "System.AppContext": {
         "type": "Transitive",
         "resolved": "4.1.0",
@@ -792,8 +787,7 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.AspNetCore.Mvc.Core": "[2.2.5, )",
-          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
-          "Serilog": "[2.12.0, )"
+          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )"
         }
       }
     }

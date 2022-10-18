@@ -382,6 +382,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/core-setup/raw/release/2.1/LICENSE.TXT)
     :versions:
+    - 1.0.3
     - 2.1.0
     :when: 2022-10-14 23:36:59.424849648 Z
 - - :approve
@@ -480,6 +481,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
+    - 1.0.3
     - 2.1.0
     :when: 2022-10-14 23:37:04.818759747 Z
 - - :approve
@@ -2054,7 +2056,8 @@
     :why: MIT (https://github.com/aaubry/YamlDotNet/raw/master/LICENSE.txt)
     :versions:
     - 11.2.1
-    :when: 2022-10-14 23:38:32.231504801 Z
+    - 12.0.2
+    :when: 2022-10-18 19:24:00.795702526 Z
 - - :approve
   - ZstdSharp.Port
   - :who: mocsharp
@@ -2328,3 +2331,24 @@
     :versions:
     - 2.4.5
     :when: 2022-10-14 23:38:48.802854287 Z
+- - :approve
+  - NLog
+  - :who: mocsharp
+    :why: BSD 3-Clause License (https://github.com/NLog/NLog/raw/dev/LICENSE.txt)
+    :versions:
+    - 5.0.4
+    :when: 2022-10-12 03:14:06.538744982 Z
+- - :approve
+  - NLog.Extensions.Logging
+  - :who: mocsharp
+    :why: BSD 2-Clause Simplified License (https://github.com/NLog/NLog.Extensions.Logging/raw/master/LICENSE)
+    :versions:
+    - 5.0.4
+    :when: 2022-10-12 03:14:06.964203977 Z
+- - :approve
+  - NLog.Web.AspNetCore
+  - :who: mocsharp
+    :why: BSD 3-Clause License (https://github.com/NLog/NLog.Web/raw/master/LICENSE)
+    :versions:
+    - 5.1.4
+    :when: 2022-10-12 03:14:07.396706995 Z
