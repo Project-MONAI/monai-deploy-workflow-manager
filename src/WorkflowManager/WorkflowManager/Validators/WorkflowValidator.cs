@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -22,6 +23,7 @@ using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
+using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview;
 
 namespace Monai.Deploy.WorkflowManager.Validators
 {
@@ -222,6 +224,11 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 }
             }
 
+            if (string.Compare(currentTask.Type, "argo", StringComparison.OrdinalIgnoreCase) is true)
+            {
+                ValidateArgoTask(currentTask);
+            }
+
             if (currentTask.TaskDestinations.IsNullOrEmpty())
             {
                 paths.Add(currentTask.Id);
@@ -250,6 +257,17 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 ValidateTask(tasks, nextTask, iterationCount++, paths);
 
                 paths = new List<string>();
+            }
+        }
+
+        private void ValidateArgoTask(TaskObject currentTask)
+        {
+            foreach (var key in Keys.RequiredParameters)
+            {
+                if (!currentTask.Args.ContainsKey(key))
+                {
+                    Errors.Add($"Required parameter to execute Argo workflow is missing: {key}");
+                }
             }
         }
     }

@@ -48,7 +48,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         {
             _options = Options.Create(new WorkflowManagerOptions());
             _workflowService = new Mock<IWorkflowService>();
-            _workflowValidator = new Mock<WorkflowValidator>();
+            _workflowValidator = new Mock<WorkflowValidator>(_workflowService.Object);
 
             _logger = new Mock<ILogger<WorkflowsController>>();
             _uriService = new Mock<IUriService>();
