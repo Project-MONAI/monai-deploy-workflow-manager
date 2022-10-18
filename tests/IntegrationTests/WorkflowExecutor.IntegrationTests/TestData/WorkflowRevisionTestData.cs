@@ -684,7 +684,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Description = "Basic Workflow 1 Task 1",
                                 Artifacts = new ArtifactMap(),
                                 Args = new Dictionary<string, string> { { "test", "test" } }
-
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()
@@ -735,7 +734,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 Description = "Basic Workflow 1 Task 2",
                                 Artifacts = new ArtifactMap(),
                                 Args = new Dictionary<string, string> { { "test", "test" } }
-
                             }
                         },
                         InformaticsGateway = new InformaticsGateway()

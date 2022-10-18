@@ -44,6 +44,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         }
 
         #region WorkflowRevision
+
         public void CreateWorkflowRevisionDocument(WorkflowRevision workflowRevision)
         {
             RetryMongo.Execute(() =>
@@ -95,9 +96,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             return WorkflowRevisionCollection.Find(x => x.WorkflowId == workflowId).ToList();
         }
-        #endregion
+
+        #endregion WorkflowRevision
 
         #region WorkflowInstances
+
         public void CreateWorkflowInstanceDocument(WorkflowInstance workflowInstance)
         {
             RetryMongo.Execute(() =>
@@ -115,6 +118,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             return WorkflowInstanceCollection.Find(x => x.Id == Id).FirstOrDefault();
         }
+
         public WorkflowInstance GetWorkflowInstanceByWorkflowId(string Id)
         {
             return WorkflowInstanceCollection.Find(x => x.WorkflowId == Id).FirstOrDefault();
@@ -147,9 +151,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 WorkflowInstanceCollection.DeleteOne(x => x.Id.Equals(id));
             });
         }
-        #endregion
+
+        #endregion WorkflowInstances
 
         #region Payload
+
         public void CreatePayloadDocument(Payload payload)
         {
             RetryMongo.Execute(() =>
@@ -157,6 +163,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 PayloadCollection.InsertOne(payload);
             });
         }
+
         public List<Payload> GetPayloadCollectionByPayloadId(string payloadId)
         {
             var res = RetryPayload.Execute(() =>
@@ -204,7 +211,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 }
             });
         }
-        #endregion
+
+        #endregion Payload
 
         public void DropDatabase(string dbName)
         {

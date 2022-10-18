@@ -34,6 +34,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
         private ISpecFlowOutputHelper OutputHelper { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
         public DataHelper(IObjectContainer objectContainer)
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {

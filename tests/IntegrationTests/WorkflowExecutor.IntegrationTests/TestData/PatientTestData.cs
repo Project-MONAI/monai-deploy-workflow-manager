@@ -29,7 +29,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
     {
         public static List<PatientTestData> TestData = new List<PatientTestData>()
         {
-
             new PatientTestData()
             {
                 Name = "Full_Patient",

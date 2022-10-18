@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Threading.Tasks;
 using BoDi;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;

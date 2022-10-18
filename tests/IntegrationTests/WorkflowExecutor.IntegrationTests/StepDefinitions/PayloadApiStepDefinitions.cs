@@ -86,7 +86,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             var deserializedResult = JsonConvert.DeserializeObject<PagedResponse<List<Payload>>>(result);
             deserializedResult.Should().NotBeNull();
             Assertions.AssertPagination(count, request, deserializedResult);
-
         }
 
         [Then(@"I can see expected Payload is returned")]
@@ -105,7 +104,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
 
             payloads.Should().NotBeNull();
             payloads?.Data.Should().BeNullOrEmpty();
-
         }
     }
 }

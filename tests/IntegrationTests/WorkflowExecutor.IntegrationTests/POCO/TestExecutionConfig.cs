@@ -16,7 +16,7 @@
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.POCO
 {
-    static class TestExecutionConfig
+    internal static class TestExecutionConfig
     {
         public static class RabbitConfig
         {

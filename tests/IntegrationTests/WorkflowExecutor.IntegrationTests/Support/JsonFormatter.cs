@@ -19,7 +19,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
-    static class JsonFormatter
+    internal static class JsonFormatter
     {
         public static string FormatJson(string json)
         {
