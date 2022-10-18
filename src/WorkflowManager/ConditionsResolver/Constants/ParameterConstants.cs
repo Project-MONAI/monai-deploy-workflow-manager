@@ -26,7 +26,9 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Constants
         public const string PreviousTaskId = "previous_task_id";
         public const string ErrorMessage = "error_msg";
         public const string Result = "result";
+        public const string ExecutionStats = "execution_stats";
         public const string StartTime = "start_time";
+        public const string EndTime = "end_time";
 
         public const string Name = "name";
         public const string Description = "description";
