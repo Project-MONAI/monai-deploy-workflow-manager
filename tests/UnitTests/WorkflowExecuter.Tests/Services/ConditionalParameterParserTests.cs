@@ -56,6 +56,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             "{{ context.executions.other_task.result.'Fred' }} >= '32' OR " +
             "{{ context.executions.other_task.result.'Sandra' }} == 'other YassQueen' OR " +
             "{{ context.executions.other_task.result.'Derick' }} == 'lordge'" }, true)]
+        [InlineData(
+            new string[] {"{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_stats.'stat1' }} == 'completed in 1 hour' AND " +
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_stats.'stat2' }} ==  'ran successfully'"}, true)]
         public void ConditionalParameterParser_WhenGivenCorrectResultMetadataString_MultiConditionShouldEvaluate(string[] input, bool expectedResult, string? expectedDicomReturn = null)
         {
             if (expectedDicomReturn is not null)
@@ -107,6 +110,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.output_dir }} == 'output/dir' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.status }} == 'Succeeded' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.start_time }} == '25/12/2022 00:00:00' AND " +
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.end_time }} == '25/12/2022 01:00:00' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_id }} == '3c4484bd-e1a4-4347-902e-31a6503edd5f'", true)]
         public void ConditionalParameterParser_WhenGivenCorrectExecutionString_ShouldEvaluate(string input, bool expectedResult)
         {
@@ -129,6 +133,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         [InlineData("{{ context.input.patient_details.age }}", "'32'")]
         [InlineData("{{ context.input.patient_details.hospital_id }}", "'patienthospitalid'")]
         [InlineData("{{ context.workflow.name }}", "'workflowname'")]
+        [InlineData("{{ context.workflow.description }}", "'workflow description'")]
         public void ResolveParametersWhenGivenPatientDetailsString_ShouldReturnValue(string input, string expectedResult)
         {
             var testData = CreateTestData();
@@ -152,7 +157,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             {
                 Workflow = new Workflow
                 {
-                    Name = "workflowname"
+                    Name = "workflowname",
+                    Description = "workflow description"
                 }
             };
 
@@ -192,12 +198,18 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                             TaskType = "Multi_task",
                             OutputDirectory = "output/dir",
                             TaskStartTime = new DateTime(2022, 12, 25),
+                            TaskEndTime = new DateTime(2022, 12, 25, 1, 0, 0),
                             Status = TaskExecutionStatus.Succeeded,
                             ResultMetadata = new Dictionary<string, object>()
                             {
                                 { "Fred", "Bob" },
                                 { "fred", "lowercasefred" },
                                 { "Sandra", "YassQueen" },
+                            },
+                            ExecutionStats = new Dictionary<string, string>()
+                            {
+                                { "stat1", "completed in 1 hour" },
+                                { "stat2", "ran successfully" }
                             }
                         },
                         new TaskExecution()
