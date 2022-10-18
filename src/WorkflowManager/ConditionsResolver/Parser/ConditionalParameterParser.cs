@@ -359,10 +359,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 
             if (dictionary.TryGetValue(key, out var value))
             {
-                if (value is string valueStr)
-                {
-                    return valueStr;
-                }
+                return value;
             }
 
             return null;
