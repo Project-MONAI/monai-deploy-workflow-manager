@@ -74,8 +74,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 })
                 .ConfigureLogging((builderContext, configureLogging) =>
                 {
-                    configureLogging.AddConfiguration(builderContext.Configuration.GetSection("Logging"));
-                    configureLogging.AddFile(o => o.RootPath = AppContext.BaseDirectory);
+                    configureLogging.ClearProviders();
+                    configureLogging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
