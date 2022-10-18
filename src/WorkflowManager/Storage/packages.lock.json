@@ -779,7 +779,6 @@
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.Extensions.Configuration": "[6.0.1, )",
           "Monai.Deploy.Messaging": "[0.1.8, )",
           "MongoDB.Bson": "[2.18.0, )"
         }
@@ -788,7 +787,6 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.AspNetCore.Mvc.Core": "[2.2.5, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[6.0.2, )",
           "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )"
         }
       }

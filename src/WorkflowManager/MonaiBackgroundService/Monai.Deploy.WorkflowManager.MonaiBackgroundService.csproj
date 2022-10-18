@@ -34,10 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Common\Monai.Deploy.WorkflowManager.Common.csproj" />
     <ProjectReference Include="..\WorkflowExecuter\Monai.Deploy.WorkloadManager.WorkfowExecuter.csproj" />
   </ItemGroup>
