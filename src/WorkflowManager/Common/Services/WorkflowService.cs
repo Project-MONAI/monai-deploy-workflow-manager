@@ -39,6 +39,13 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             return workflow;
         }
 
+        public async Task<WorkflowRevision> GetByNameAsync(string name)
+        {
+            Guard.Against.NullOrWhiteSpace(name);
+
+            return await _workflowRepository.GetByWorkflowNameAsync(name);
+        }
+
         public async Task<string> CreateAsync(Workflow workflow)
         {
             Guard.Against.Null(workflow);

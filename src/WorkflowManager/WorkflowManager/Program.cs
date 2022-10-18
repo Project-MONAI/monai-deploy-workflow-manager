@@ -39,6 +39,7 @@ using Monai.Deploy.WorkflowManager.MonaiBackgroundService;
 using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
+using Monai.Deploy.WorkflowManager.Validators;
 using MongoDB.Driver;
 using Serilog;
 using Serilog.Events;
@@ -123,6 +124,7 @@ namespace Monai.Deploy.WorkflowManager
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkflowManagerOptions>, ConfigurationValidator>());
 
             services.AddSingleton<ConfigurationValidator>();
+            services.AddSingleton<WorkflowValidator>();
 
             services.AddSingleton<DataRetentionService>();
 

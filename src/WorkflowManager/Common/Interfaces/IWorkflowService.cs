@@ -27,6 +27,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         Task<WorkflowRevision> GetAsync(string id);
 
         /// <summary>
+        /// Gets a workflow from the workflow repository using the name.
+        /// </summary>
+        /// <param name="name">The name used to retrieve a worklfow.</param>
+        Task<WorkflowRevision> GetByNameAsync(string name);
+
+        /// <summary>
         /// Creates a workflow within the workflow repository.
         /// </summary>
         /// <param name="workflow">Workflow to create.</param>

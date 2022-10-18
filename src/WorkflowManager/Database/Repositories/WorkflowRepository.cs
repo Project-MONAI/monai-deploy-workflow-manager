@@ -99,6 +99,17 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             return workflows;
         }
 
+        public async Task<WorkflowRevision> GetByWorkflowNameAsync(string name)
+        {
+            Guard.Against.NullOrWhiteSpace(name, nameof(name));
+
+            var workflow = await _workflowCollection
+                .Find(x => string.Equals(x.Workflow!.Name, name, StringComparison.OrdinalIgnoreCase) && x.Deleted == null)
+                .FirstOrDefaultAsync();
+
+            return workflow;
+        }
+
         public async Task<WorkflowRevision> GetByAeTitleAsync(string aeTitle)
         {
             Guard.Against.NullOrWhiteSpace(aeTitle, nameof(aeTitle));
