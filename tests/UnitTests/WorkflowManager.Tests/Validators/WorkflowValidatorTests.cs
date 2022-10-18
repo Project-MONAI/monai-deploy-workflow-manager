@@ -305,12 +305,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                                     Name = "non_unique_artifact",
                                     Mandatory = true,
                                     Value = "Example Value"
-                                },
-                                new Artifact
-                                {
-                                    Name = "non_unique_artifact",
-                                    Mandatory = true,
-                                    Value = "Example Value"
                                 }
                             }
                         }
@@ -354,13 +348,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                         Id = "taskdesc2",
                         Type = "type",
                         Description = "TestDesc",
-                        TaskDestinations = new TaskDestination[]
-                        {
-                            new TaskDestination
-                            {
-                                Name = "taskdesc2"
-                            }
-                        }
+                        TaskDestinations = new TaskDestination[] { }
                     }
                 }
             };
