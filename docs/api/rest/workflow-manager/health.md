@@ -14,7 +14,7 @@
   ~ limitations under the License.
 -->
 
-# Health APIs
+# Workflow Manager - Health APIs
 
 The _health_ endpoint provides the following APIs to get the status of the internal services & dependent services of 
 the Workflow Manager.
@@ -35,11 +35,10 @@ Response Content Type: JSON
 - `Healthy`: All services are running.
 - `Unhealthy`: One or more services have stopped or crashed.
 
-| Code | Description                                                                                                                             |
-| ---- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| 200  | Service is healthy.                                                                                                                     |
-| 503  | Service is unhealthy.                                                                                                                   |
-| 500  | Server error. The response will be a [Problem details](https://datatracker.ietf.org/doc/html/rfc7807) object with server error details. |
+| Code | Description                     |
+| ---- | ------------------------------- |
+| 200  | Service is healthy or degraded. |
+| 503  | Service is unhealthy.           |
 
 ### Example Request
 

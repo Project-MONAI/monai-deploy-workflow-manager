@@ -154,13 +154,6 @@
     - 2021.3.0
     :when: 2022-10-14 23:36:46.653419042 Z
 - - :approve
-  - Karambolo.Extensions.Logging.File
-  - :who: mocsharp
-    :why: MIT (https://github.com/adams85/filelogger/raw/master/LICENSE)
-    :versions:
-    - 3.3.1
-    :when: 2022-10-14 23:36:47.046012615 Z
-- - :approve
   - KubernetesClient
   - :who: mocsharp
     :why: Apache-2.0 (https://github.com/kubernetes-client/csharp/raw/master/LICENSE)

@@ -15,16 +15,16 @@
 - name: Task Manager
   items:
   - name: Health API
-    href: health.md
+    href: task-manager/health.md
 - name: Workflow Manager
   items:
   - name: Health API
-    href: health.md
+    href: workflow-manager/health.md
   - name: Payload API
-    href: payload.md
+    href: workflow-manager/payload.md
   - name: Task API
-    href: task.md
+    href: workflow-manager/task.md
   - name: Workflow API
-    href: workflow.md
+    href: workflow-manager/workflow.md
   - name: Workflow Instance API
-    href: workflow-instance.md
+    href: workflow-manager/workflow-instance.md
