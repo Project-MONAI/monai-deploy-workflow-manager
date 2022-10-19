@@ -36,6 +36,7 @@ using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.TaskManager.Services.Http;
 using MongoDB.Driver;
 using NLog.Web;
+using Monai.Deploy.WorkflowManager.Validators;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 {
@@ -73,6 +74,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                     services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkflowManagerOptions>, ConfigurationValidator>());
 
                     services.AddSingleton<ConfigurationValidator>();
+                    services.AddSingleton<WorkflowValidator>();
 
                     // Services
                     services.AddTransient<IFileSystem, FileSystem>();
