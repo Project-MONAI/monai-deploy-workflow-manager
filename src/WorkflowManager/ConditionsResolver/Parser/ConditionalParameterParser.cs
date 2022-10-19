@@ -352,12 +352,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 
         private static string? GetValueFromDictionary(Dictionary<string, string> dictionary, string? key)
         {
-            if (key is null)
-            {
-                return null;
-            }
-
-            if (dictionary.TryGetValue(key, out var value))
+            if (key is not null && dictionary.TryGetValue(key, out var value))
             {
                 return value;
             }
