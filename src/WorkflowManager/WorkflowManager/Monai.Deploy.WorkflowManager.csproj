@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   ~ Copyright 2022 MONAI Consortium
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,7 +59,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj" />
-    <ProjectReference Include="..\..\Shared\Http\Monai.Deploy.WorkflowManager.Shared.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared\Monai.Deploy.WorkflowManager.Shared.csproj" />
     <ProjectReference Include="..\Authentication\Monai.Deploy.WorkflowManager.Authentication.csproj" />
     <ProjectReference Include="..\Common\Monai.Deploy.WorkflowManager.Common.csproj" />
     <ProjectReference Include="..\Contracts\Monai.Deploy.WorkflowManager.Contracts.csproj" />
