@@ -187,7 +187,6 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             WorkflowInstance = null;
         }
 
-
         /// <summary>
         /// Parses regex match collection for brackets
         /// </summary>
@@ -295,30 +294,39 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 case ParameterConstants.TaskId:
                     resultStr = task.TaskId;
                     break;
+
                 case ParameterConstants.Status:
                     resultStr = task.Status.ToString();
                     break;
+
                 case ParameterConstants.ExecutionId:
                     resultStr = task.ExecutionId;
                     break;
+
                 case ParameterConstants.OutputDirectory:
                     resultStr = task.OutputDirectory;
                     break;
+
                 case ParameterConstants.TaskType:
                     resultStr = task.TaskType;
                     break;
+
                 case ParameterConstants.PreviousTaskId:
                     resultStr = task.PreviousTaskId;
                     break;
+
                 case ParameterConstants.ErrorMessage:
                     resultStr = task.Reason.ToString();
                     break;
+
                 case ParameterConstants.Result:
                     resultStr = GetValueFromDictionary(task.ResultMetadata, keyValue);
                     break;
+
                 case ParameterConstants.StartTime:
                     resultStr = task.TaskStartTime.ToString("dd/MM/yyyy HH:mm:ss");
                     break;
+
                 default:
                     break;
             }
@@ -367,9 +375,11 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                     case ParameterConstants.Name:
                         resultStr = workflowSpecValue.Name;
                         break;
+
                     case ParameterConstants.Description:
                         resultStr = workflowSpecValue.Description;
                         break;
+
                     default:
                         break;
                 }
@@ -403,21 +413,27 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                     case ParameterConstants.PatientId:
                         resultStr = patientValue.PatientId;
                         break;
+
                     case ParameterConstants.PatientName:
                         resultStr = patientValue.PatientName;
                         break;
+
                     case ParameterConstants.PatientSex:
                         resultStr = patientValue.PatientSex;
                         break;
+
                     case ParameterConstants.PatientDob:
                         resultStr = patientValue.PatientDob?.ToString("dd/MM/yyyy");
                         break;
+
                     case ParameterConstants.PatientAge:
                         resultStr = patientValue.PatientAge;
                         break;
+
                     case ParameterConstants.PatientHospitalId:
                         resultStr = patientValue.PatientHospitalId;
                         break;
+
                     default:
                         break;
                 }
@@ -427,7 +443,5 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 
             return (Result: null, Context: ParameterContext.PatientDetails);
         }
-
-
     }
 }

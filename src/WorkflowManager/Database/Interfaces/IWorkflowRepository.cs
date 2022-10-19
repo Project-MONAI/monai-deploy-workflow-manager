@@ -64,7 +64,9 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <param name="workflow"></param>
         /// <returns></returns>
         Task<DateTime> SoftDeleteWorkflow(WorkflowRevision workflow);
+
         Task<long> CountAsync();
+
         Task<IList<WorkflowRevision>> GetAllAsync(int? skip, int? limit);
 
         /// <summary>

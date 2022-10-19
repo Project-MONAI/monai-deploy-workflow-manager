@@ -17,7 +17,6 @@
 using System;
 using System.IO;
 using System.IO.Abstractions;
-using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -176,6 +175,7 @@ namespace Monai.Deploy.WorkflowManager
 
             return LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
         }
+
 #pragma warning restore SA1600 // Elements should be documented
     }
 }

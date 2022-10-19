@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.Messaging.API;
 using Microsoft.Extensions.Logging;
+using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
+using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Logging.Logging;
 using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
-using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 {
@@ -91,7 +91,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 }
 
                 _messageSubscriber.Acknowledge(message.Message);
-
             }
             catch (Exception e)
             {
@@ -134,7 +133,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 }
 
                 _messageSubscriber.Acknowledge(message.Message);
-
             }
             catch (Exception e)
             {
@@ -152,7 +150,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 var payload = message.Message.ConvertTo<ExportCompleteEvent>();
 
                 using var loggerScope = Logger.BeginScope(new Dictionary<string, object> { ["workflowInstanceId"] = payload.WorkflowInstanceId });
-
 
                 if (!PayloadValidator.ValidateExportComplete(payload))
                 {
@@ -172,7 +169,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                 }
 
                 _messageSubscriber.Acknowledge(message.Message);
-
             }
             catch (Exception e)
             {

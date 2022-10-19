@@ -91,6 +91,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
         /// <param name="app">Application Builder.</param>
         /// <param name="env">Web Host Environment.</param>
 #pragma warning disable SA1204 // Static elements should appear before instance elements
+
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 #pragma warning restore SA1204 // Static elements should appear before instance elements
         {

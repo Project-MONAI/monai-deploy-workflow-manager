@@ -180,7 +180,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 WorkflowInstanceId = expectedExecutionId
             };
 
-
             _tasksService.Setup(w => w.GetTaskAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(() => null);
 
             var result = await TasksController.GetAsync(invalidRequest);

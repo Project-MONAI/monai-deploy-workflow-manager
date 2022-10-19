@@ -167,6 +167,5 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             const string expectedInstance = "/payload";
             Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
-
     }
 }

@@ -126,7 +126,6 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
             try
             {
-
                 var update = Builders<WorkflowInstance>.Update
                     .Set(w => w.Tasks[-1].Status, status);
 

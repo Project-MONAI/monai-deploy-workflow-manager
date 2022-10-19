@@ -39,7 +39,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
         public Dictionary<string, string> Stats { get; set; }
 
         public string Errors { get; set; }
-
     }
 
     public static class EventMapper

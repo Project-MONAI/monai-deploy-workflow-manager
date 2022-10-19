@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
+using System.Text;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Monai.Deploy.WorkflowManager.Common.Extensions;
-using System.Text;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication;
-using Monai.Deploy.WorkflowManager.Authentication.Middleware;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using Monai.Deploy.WorkflowManager.Authentication.Middleware;
+using Monai.Deploy.WorkflowManager.Common.Extensions;
 
 namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
 {

@@ -162,7 +162,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         AeTitle = "aetitle",
                         DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
-
                     },
                     Tasks = new TaskObject[]
                         {
@@ -183,7 +182,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             const string expectedInstance = "/workflows";
             Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
-
         }
 
         [Fact]
@@ -229,7 +227,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         AeTitle = "aetitle",
                         DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
-
                     },
                     Tasks = new TaskObject[]
                         {
@@ -295,7 +292,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         AeTitle = "aetitle",
                         DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
-
                     },
                     Tasks = new TaskObject[]
                         {
@@ -364,7 +360,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         AeTitle = "aetitle",
                         DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
-
                     },
                     Tasks = new TaskObject[]
                     {
@@ -437,7 +432,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         AeTitle = "aetitle",
                         DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
-
                     },
                     Tasks = new TaskObject[]
                     {
@@ -565,7 +559,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                                     }
                                 }
                             },
+
                             #region LoopingTasks
+
                             new TaskObject {
                                 Id = "taskLoopdesc4",
                                 Type = "type",
@@ -616,8 +612,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                                     }
                                 }
                             },
-                            #endregion
+
+                            #endregion LoopingTasks
+
                             #region SuccessfulTasksPath
+
                             new TaskObject {
                                 Id = "taskSucessdesc1",
                                 Type = "type",
@@ -633,8 +632,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                                 Id = "taskSucessdesc2",
                                 Type = "type",
                             },
-                            #endregion
+
+                            #endregion SuccessfulTasksPath
+
                             #region SelfReferencingTasks
+
                             new TaskObject {
                                 Id = "taskdesc1",
                                 Type = "type",
@@ -657,8 +659,10 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                                     }
                                 }
                             },
-                            #endregion
-                            // Unreferenced task 
+
+                            #endregion SelfReferencingTasks
+
+                            // Unreferenced task
                             new TaskObject {
                                 Id = "taskdesc3",
                                 Type = "type",

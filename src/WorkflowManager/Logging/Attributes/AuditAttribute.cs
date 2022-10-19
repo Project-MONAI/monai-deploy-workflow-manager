@@ -24,19 +24,19 @@ namespace Monai.Deploy.WorkflowManager.Logging.Attributes
     {
         private readonly ILogger _logger;
 
-        /// <summary>  
-        /// Initializes a new instance of the <see cref="LogActionFilterAttribute" /> class.  
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LogActionFilterAttribute" /> class.
         /// </summary>
-        /// <param name="logger">The logger.</param> 
+        /// <param name="logger">The logger.</param>
         public LogActionFilterAttribute(ILogger<LogActionFilterAttribute> logger)
         {
             _logger = logger;
         }
 
-        /// <summary>  
-        /// Called when [action executing].  
+        /// <summary>
+        /// Called when [action executing].
         /// </summary>
-        /// <param name="context">The current executing context.</param>  
+        /// <param name="context">The current executing context.</param>
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             var request = context.HttpContext.Request;
@@ -56,10 +56,10 @@ namespace Monai.Deploy.WorkflowManager.Logging.Attributes
             }
         }
 
-        /// <summary>  
-        /// Called when [result executed].  
+        /// <summary>
+        /// Called when [result executed].
         /// </summary>
-        /// <param name="context">The current executing context.</param>  
+        /// <param name="context">The current executing context.</param>
         public override void OnResultExecuted(ResultExecutedContext context)
         {
             var startTime = context.HttpContext.Items["startTime"];

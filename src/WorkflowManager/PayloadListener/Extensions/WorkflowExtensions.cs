@@ -26,6 +26,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
         private const int TaskIdLengthLimit = 50;
         private const int TaskDescriptionLengthLimit = 2000;
         private const int TaskTypeLengthLimit = 2000;
+
         #region Workflow
 
         public static bool IsValid(this Workflow workflow, out IList<string> validationErrors)
@@ -72,7 +73,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             return false;
         }
 
-        #endregion
+        #endregion Workflow
 
         #region InformaticsGateway
 
@@ -99,7 +100,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             return false;
         }
 
-        #endregion
+        #endregion InformaticsGateway
 
         #region TaskObject
 
@@ -149,6 +150,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             return false;
         }
 
-        #endregion
+        #endregion TaskObject
     }
 }
