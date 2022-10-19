@@ -100,8 +100,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 services.AddTransient<IPayloadRepsitory, PayloadRepository>();
                 services.AddTransient<ITasksRepository, TasksRepository>();
 
-                // StorageService
-                services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
+                // StorageService - Since mc.exe is unavailable during e2e, skip admin check
+                services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value, HealthCheckOptions.ServiceHealthCheck);
 
                 // MessageBroker
                 services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);

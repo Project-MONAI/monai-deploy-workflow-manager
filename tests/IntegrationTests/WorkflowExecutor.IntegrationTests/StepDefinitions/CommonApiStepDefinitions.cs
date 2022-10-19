@@ -71,5 +71,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().ContainAll("type", "title", "status", "traceId");
             ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Contain(message);
         }
+
+        [Then(@"I will get a health check response status message (.*)")]
+        public void ThenIWillGetAHealthCheckResponseMessage(string expectedMessage)
+        {
+            var contentMessage = ApiHelper.Response?.Content.ReadAsStringAsync().Result;
+
+            contentMessage.Should().NotBeNull();
+            contentMessage.Should().Contain(expectedMessage);
+        }
     }
 }

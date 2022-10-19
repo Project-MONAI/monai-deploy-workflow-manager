@@ -45,6 +45,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO
             public static string ClinicalReviewQueue { get; set; }
         }
 
+        public static class ApiConfig
+        {
+            public static string TaskManagerBaseUrl { get; set; }
+        }
+
         public static class MongoConfig
         {
             public static string ConnectionString { get; set; }
