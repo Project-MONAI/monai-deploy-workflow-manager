@@ -25,7 +25,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
     public class MongoClientUtil
     {
         private MongoClient Client { get; set; }
-        private IMongoDatabase Database { get; set; }
+        internal IMongoDatabase Database { get; set; }
         private IMongoCollection<WorkflowRevision> WorkflowRevisionCollection { get; set; }
         private IMongoCollection<WorkflowInstance> WorkflowInstanceCollection { get; set; }
         private IMongoCollection<Payload> PayloadCollection { get; set; }
