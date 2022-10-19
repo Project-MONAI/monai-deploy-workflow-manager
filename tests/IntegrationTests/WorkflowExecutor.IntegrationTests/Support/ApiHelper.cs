@@ -47,7 +47,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             var request = Request.Clone();
 
-            return Response = await Client.SendAsync(request);
+            Response = await Client.SendAsync(request);
+            Console.WriteLine(await Response.Content.ReadAsStringAsync());
+            return Response;
         }
 
         public void SetUrl(Uri url) =>
