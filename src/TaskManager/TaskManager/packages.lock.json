@@ -290,46 +290,12 @@
           "YamlDotNet": "11.2.1"
         }
       },
-      "Microsoft.AspNet.WebApi.Client": {
-        "type": "Transitive",
-        "resolved": "5.2.9",
-        "contentHash": "cuVhPjjNMSEFpKXweMNBbsG4RUFuuZpFBm8tSyw309U9JEjcnbB6n3EPb4xwgcy9bJ38ctIbv5G8zXUBhlrPWw==",
-        "dependencies": {
-          "Newtonsoft.Json": "10.0.1",
-          "Newtonsoft.Json.Bson": "1.0.1"
-        }
-      },
-      "Microsoft.AspNet.WebApi.Core": {
-        "type": "Transitive",
-        "resolved": "5.2.9",
-        "contentHash": "9C0/gBUeMBjorRFSmR5Z2j5wznf9BP5SddN+OZE7X0BpXgivBZTZ42d0h8tIjJzSLHYVCU4HZBf51+cidCY4fQ==",
-        "dependencies": {
-          "Microsoft.AspNet.WebApi.Client": "5.2.9"
-        }
-      },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "Transitive",
         "resolved": "6.0.10",
         "contentHash": "4SBTyAuYHSiFi/AiqlKiKpl2+EkKaS/q1zeDI4L88cMmy5P01pse25gOAyzfWycI8voz+d1FwTIuqhWCH87IJQ==",
         "dependencies": {
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.10.0"
-        }
-      },
-      "Microsoft.AspNetCore.Http.Abstractions": {
-        "type": "Transitive",
-        "resolved": "2.2.0",
-        "contentHash": "Nxs7Z1q3f1STfLYKJSVXCs1iBl+Ya6E8o4Oy1bCxJ/rNI44E/0f6tbsrVqAWfB7jlnJfyaAtIalBVxPKUPQb4Q==",
-        "dependencies": {
-          "Microsoft.AspNetCore.Http.Features": "2.2.0",
-          "System.Text.Encodings.Web": "4.5.0"
-        }
-      },
-      "Microsoft.AspNetCore.Http.Features": {
-        "type": "Transitive",
-        "resolved": "2.2.0",
-        "contentHash": "ziFz5zH8f33En4dX81LW84I6XrYXKf9jg6aM39cM+LffN9KJahViKZ61dGMSO2gd3e+qe5yBRwsesvyqlZaSMg==",
-        "dependencies": {
-          "Microsoft.Extensions.Primitives": "2.2.0"
         }
       },
       "Microsoft.AspNetCore.JsonPatch": {
@@ -1487,12 +1453,7 @@
         "type": "Project",
         "dependencies": {
           "Ardalis.GuardClauses": "[4.0.1, )",
-          "Microsoft.AspNet.WebApi.Core": "[5.2.9, )",
-          "Microsoft.AspNetCore.Http.Abstractions": "[2.2.0, )",
-          "Microsoft.Extensions.Configuration.Abstractions": "[6.0.0, )",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "[6.0.0, )",
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.10, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[6.0.2, )"
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.10, )"
         }
       },
       "monai.deploy.workflowmanager.storage": {
