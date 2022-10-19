@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Reflection;
 using Ardalis.GuardClauses;
 
 namespace Monai.Deploy.WorkflowManager.Shared
@@ -52,12 +51,14 @@ namespace Monai.Deploy.WorkflowManager.Shared
         private static List<Type> LocateTypes()
         {
             var serviceType = typeof(IMonaiService);
-            var services = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(p =>
-                    serviceType.IsAssignableFrom(p) &&
-                    p != serviceType &&
-                    !p.IsAbstract &&
-                    p.FullName.StartsWith("Monai", StringComparison.InvariantCulture));
+            var services = AppDomain.CurrentDomain.GetAssemblies()
+                                .Where(a => !a.IsDynamic)
+                                .SelectMany(p => p.GetTypes())
+                                .Where(p =>
+                                            serviceType.IsAssignableFrom(p) &&
+                                            p != serviceType &&
+                                            !p.IsAbstract &&
+                                            p.FullName.StartsWith("Monai", StringComparison.InvariantCulture));
             return services.Distinct().ToList();
         }
 

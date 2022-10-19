@@ -88,16 +88,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services.Http
 
             services.AddMonaiAuthentication(Configuration, logger);
 
-            services.AddHttpLogging(options =>
-            {
-                options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestQuery |
-                                        Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
-            });
-
-            services.AddHttpLogging(options =>
-            {
-                options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.Request | Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.Response;
-            });
+            services.AddHttpLoggingForMonai(Configuration);
 
             services.Configure<ApiBehaviorOptions>(options =>
             {

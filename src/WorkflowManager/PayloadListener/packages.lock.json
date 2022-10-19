@@ -1329,6 +1329,8 @@
           "Ardalis.GuardClauses": "[4.0.1, )",
           "Microsoft.AspNet.WebApi.Core": "[5.2.9, )",
           "Microsoft.AspNetCore.Http.Abstractions": "[2.2.0, )",
+          "Microsoft.Extensions.Configuration.Abstractions": "[6.0.0, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[6.0.0, )",
           "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.10, )",
           "Microsoft.Extensions.Logging.Abstractions": "[6.0.2, )"
         }
