@@ -316,8 +316,14 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 case ParameterConstants.Result:
                     resultStr = GetValueFromDictionary(task.ResultMetadata, keyValue);
                     break;
+                case ParameterConstants.ExecutionStats:
+                    resultStr = GetValueFromDictionary(task.ExecutionStats, keyValue);
+                    break;
                 case ParameterConstants.StartTime:
                     resultStr = task.TaskStartTime.ToString("dd/MM/yyyy HH:mm:ss");
+                    break;
+                case ParameterConstants.EndTime:
+                    resultStr = task.TaskEndTime?.ToString("dd/MM/yyyy HH:mm:ss");
                     break;
                 default:
                     break;
@@ -339,6 +345,16 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 {
                     return valueStr;
                 }
+            }
+
+            return null;
+        }
+
+        private static string? GetValueFromDictionary(Dictionary<string, string> dictionary, string? key)
+        {
+            if (key is not null && dictionary.TryGetValue(key, out var value))
+            {
+                return value;
             }
 
             return null;
