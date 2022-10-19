@@ -213,12 +213,12 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 paths = new List<string>();
             }
 
-            if (currentTask.Artifacts != null && !currentTask.Artifacts.Output.IsNullOrEmpty())
+            if (currentTask.Artifacts != null && currentTask.Artifacts.Output.IsNullOrEmpty() is false)
             {
                 var uniqueOutputNames = new HashSet<string>();
                 var allOutputsUnique = currentTask.Artifacts.Output.All(x => uniqueOutputNames.Add(x.Name));
 
-                if (!allOutputsUnique)
+                if (allOutputsUnique is false)
                 {
                     Errors.Add($"Task: \"{currentTask.Id}\" has multiple output names with the same value.\n");
                 }

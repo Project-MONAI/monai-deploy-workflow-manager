@@ -103,8 +103,9 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
         {
             Guard.Against.NullOrWhiteSpace(name, nameof(name));
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var workflow = await _workflowCollection
-                .Find(x => string.Equals(x.Workflow!.Name, name, StringComparison.OrdinalIgnoreCase) && x.Deleted == null)
+                .Find(x => x.Workflow.Name.ToLower() == name.ToLower() && x.Deleted == null)
                 .FirstOrDefaultAsync();
 
             return workflow;
