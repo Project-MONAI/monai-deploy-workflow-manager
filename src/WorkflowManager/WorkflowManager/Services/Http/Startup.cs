@@ -57,25 +57,6 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
         {
             services.AddSingleton(Configuration);
             services.AddHttpContextAccessor();
-            services.AddApiVersioning(
-                options =>
-                {
-                    options.ReportApiVersions = true;
-                    options.AssumeDefaultVersionWhenUnspecified = true;
-                });
-
-            services.AddVersionedApiExplorer(
-                options =>
-                {
-                    // Add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
-                    // NOTE: the specified format code will format the version as "'v'major[.minor][-status]"
-                    options.GroupNameFormat = "'v'VVV";
-
-                    // NOTE: this option is only necessary when versioning by url segment. the SubstitutionFormat
-                    // can also be used to control the format of the API version in route templates
-                    options.SubstituteApiVersionInUrl = true;
-                });
-
             services.AddControllers().AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
             services.AddSwaggerGen(c =>
@@ -88,24 +69,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
             var logger = serviceProvider.GetService<ILogger<Startup>>();
 
             services.AddMonaiAuthentication(Configuration, logger);
-
             services.AddHttpLoggingForMonai(Configuration);
-
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.InvalidModelStateResponseFactory = context =>
-                {
-                    var problemDetails = new ValidationProblemDetails(context.ModelState);
-
-                    var result = new BadRequestObjectResult(problemDetails);
-
-                    result.ContentTypes.Add("application/problem+json");
-                    result.ContentTypes.Add("application/problem+xml");
-
-                    return result;
-                };
-            });
-
             services.AddHealthChecks()
                 .AddCheck<MonaiHealthCheck>("Workflow Manager Services")
                 .AddMongoDb(mongodbConnectionString: Configuration["WorkloadManagerDatabase:ConnectionString"], mongoDatabaseName: Configuration["WorkloadManagerDatabase:DatabaseName"]);
