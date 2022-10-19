@@ -224,9 +224,14 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 }
             }
 
-            if (string.Compare(currentTask.Type, "argo", StringComparison.OrdinalIgnoreCase) is true)
+            if (currentTask.Type.Equals("argo", StringComparison.OrdinalIgnoreCase) is true)
             {
                 ValidateArgoTask(currentTask);
+            }
+
+            if (currentTask.Type.Equals("clinical-review", StringComparison.OrdinalIgnoreCase) is true)
+            {
+                ValidateClinicalReviewTask(tasks, currentTask);
             }
 
             if (currentTask.TaskDestinations.IsNullOrEmpty())
@@ -267,6 +272,41 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 if (!currentTask.Args.ContainsKey(key))
                 {
                     Errors.Add($"Required parameter to execute Argo workflow is missing: {key}");
+                }
+            }
+        }
+
+        private void ValidateClinicalReviewTask(TaskObject[] tasks, TaskObject currentTask)
+        {
+            var inputs = currentTask?.Artifacts?.Input;
+
+            if (inputs.IsNullOrEmpty())
+            {
+                Errors.Add($"Missing inputs for clinical review task: {currentTask.Id}");
+                return;
+            }
+
+            foreach (var inputArtifact in inputs)
+            {
+                var valueStringSplit = inputArtifact.Value.Split('.');
+
+                if (valueStringSplit.Length < 3)
+                {
+                    Errors.Add($"Invalid Value property on input artifact {inputArtifact.Name} in task: {currentTask.Id}. Incorrect format.");
+                    continue;
+                }
+
+                var referencedId = valueStringSplit[2];
+
+                if (referencedId == currentTask.Id)
+                {
+                    Errors.Add($"Invalid Value property on input artifact {inputArtifact.Name} in task: {currentTask.Id}. Self referencing task ID.");
+                    continue;
+                }
+
+                if (tasks.Select(t => t.Id == referencedId) == null)
+                {
+                    Errors.Add($"Invalid Value property on input artifact {inputArtifact.Name} in task: {currentTask.Id}. No matching task for ID: {referencedId}");
                 }
             }
         }
