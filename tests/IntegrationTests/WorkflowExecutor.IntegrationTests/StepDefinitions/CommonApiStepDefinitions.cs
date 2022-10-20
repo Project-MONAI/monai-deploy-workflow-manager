@@ -46,10 +46,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Given(@"I have an endpoint (.*)")]
         public void GivenIHaveAnEndpoint(string endpoint)
         {
-            var name = "Payload_Full_Patient";
-            MongoClient.CreatePayloadDocument(DataHelper.GetPayloadTestData(name));
-            var apiUri = new Uri(TestExecutionConfig.ApiConfig.BaseUrl + endpoint);
-            
+            var apiUri = new Uri(TestExecutionConfig.ApiConfig.BaseUrl + endpoint);            
             ApiHelper.SetUrl(apiUri);
             _outputHelper.WriteLine($"API Url set to {apiUri}");
         }
