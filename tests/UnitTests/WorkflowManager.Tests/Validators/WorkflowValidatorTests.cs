@@ -236,7 +236,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
                 Assert.True(results.Errors.Count > 0);
 
-                Assert.Equal(8, results.Errors.Count);
+                Assert.Equal(7, results.Errors.Count);
 
                 var error1 = "'' is not a valid Workflow Description (source: Unnamed workflow).";
                 Assert.Contains(error1, results.Errors);
@@ -258,9 +258,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
                 var error7 = "Missing Workflow Tasks.";
                 Assert.Contains(error7, results.Errors);
-
-                var error8 = "A Workflow with the name:  already exists.";
-                Assert.Contains(error8, results.Errors);
 
                 WorkflowValidator.Reset();
             }
