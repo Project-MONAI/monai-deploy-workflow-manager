@@ -90,7 +90,7 @@ jobs:
 
       - name: Scan Image with Azure Container Scan
         uses: Azure/container-scan@v0.1
-        if: always()
+        if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         env:
           TRIVY_TIMEOUT_SEC: 360s
         with:
@@ -99,7 +99,7 @@ jobs:
       - name: Anchore Container Scan
         id: anchore-scan
         uses: anchore/scan-action@v3.2.5
-        if: always()
+        if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           fail-build: true
@@ -108,7 +108,7 @@ jobs:
 
       - name: Upload Anchore Scan SARIF Report
         uses: github/codeql-action/upload-sarif@v2
-        if: always()
+        if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           sarif_file: ${{ steps.anchore-scan.outputs.sarif }}
           token: ${{ secrets.GITHUB_TOKEN }}
