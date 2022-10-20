@@ -138,6 +138,18 @@ If your package is on the Amber list please make a maintainer aware and let them
 
 If your package is on the Red list you will have to look for another package that achieves the same aim with a more permissive license.
 
+
+##### Vulnerability Scanning
+
+The [Build](.github/workflows/build.yml) CI worklfow builds & publishes container images to [GitHub Packages](https://github.com/orgs/Project-MONAI/packages?repo_name=monai-deploy-workflow-manager).
+The CI workflow also performs container scanning using [Trivy](https://github.com/marketplace/actions/aqua-security-trivy#using-trivy-with-github-code-scanning), [Dockle](https://github.com/marketplace/actions/dockle-action), and [Anchore](https://github.com/marketplace/actions/anchore-container-scan) for the `main` branch and the `release/*` branches.
+
+If any vulnerability is discovered without any mitigation or is false positive, please open a new GitHub issue to track the vulnerability before adding to the allowlists:
+
+- Trivy: `.trivyignore`, include URL to the GitHub issue as comment
+
+Once a vulnerability is mitigated or fixed, update the allowlists to remove it.
+
 #### Test Projects
 
 All C# projects reside in their directory, including a `Tests/` subdirectory.
