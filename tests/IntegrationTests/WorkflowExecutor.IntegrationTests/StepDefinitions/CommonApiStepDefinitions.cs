@@ -42,11 +42,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private MongoClientUtil MongoClient { get; }
 
         private readonly ISpecFlowOutputHelper _outputHelper;
-        
+
         [Given(@"I have an endpoint (.*)")]
         public void GivenIHaveAnEndpoint(string endpoint)
         {
-            var apiUri = new Uri(TestExecutionConfig.ApiConfig.BaseUrl + endpoint);            
+            var apiUri = new Uri(TestExecutionConfig.ApiConfig.BaseUrl + endpoint);
             ApiHelper.SetUrl(apiUri);
             _outputHelper.WriteLine($"API Url set to {apiUri}");
         }
@@ -86,14 +86,19 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Contain(message);
         }
 
-        [Then(@"I will get a health check response status message")]
-        public async Task ThenIWillGetAHealthCheckResponseMessage()
+        [Then(@"I will get a health check response status message (.*)")]
+        public async Task ThenIWillGetAHealthCheckResponseMessage(string expectedMessage)
         {
             var contentMessage = await ApiHelper.Response?.Content.ReadAsStringAsync();
             contentMessage.Should().NotBeNull();
             var response = JsonConvert.DeserializeObject<HealthCheckResponse>(contentMessage);
             response.Should().NotBeNull();
-            response!.Checks.Select(p => p.Check).Should().Contain("minio", "Rabbit MQ Publisher", "Rabbit MQ Subscriber", "Workflow Manager Services", "mongodb");
+            response!.Status.Should().Be(expectedMessage);
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "minio", Result = expectedMessage });
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "Rabbit MQ Publisher", Result = expectedMessage });
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "Rabbit MQ Subscriber", Result = expectedMessage });
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "Workflow Manager Services", Result = expectedMessage });
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "mongodb", Result = expectedMessage });
         }
     }
 }

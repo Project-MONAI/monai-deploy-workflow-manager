@@ -60,12 +60,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         }
 
         [Then(@"I will get a health check response status message (.*)")]
-        public void ThenIWillGetAHealthCheckResponseMessage(string expectedMessage)
+        public async Task ThenIWillGetAHealthCheckResponseMessage(string expectedMessage)
         {
-            var contentMessage = ApiHelper.Response?.Content.ReadAsStringAsync().Result;
-
+            var contentMessage = await ApiHelper.Response?.Content.ReadAsStringAsync();
             contentMessage.Should().NotBeNull();
-            contentMessage.Should().Contain(expectedMessage);
+            var response = JsonConvert.DeserializeObject<HealthCheckResponse>(contentMessage);
+            response.Should().NotBeNull();
+            response!.Status.Should().Be(expectedMessage);
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "minio", Result = expectedMessage });
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "Rabbit MQ Publisher", Result = expectedMessage });
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "Rabbit MQ Subscriber", Result = expectedMessage });
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "Task Manager Services", Result = expectedMessage });
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "mongodb", Result = expectedMessage });
         }
     }
 }

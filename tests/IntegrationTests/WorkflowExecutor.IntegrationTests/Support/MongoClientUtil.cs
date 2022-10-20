@@ -232,7 +232,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             RetryMongo.Execute(() =>
             {
-                Database.CreateCollection(collectionName);
+                if (!Database.ListCollectionNames().ToList().Contains(collectionName))
+                {
+                    Database.CreateCollection(collectionName);
+                }
             });
         }
     }
