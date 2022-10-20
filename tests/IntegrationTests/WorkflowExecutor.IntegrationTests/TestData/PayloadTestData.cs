@@ -45,7 +45,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     FileCount = 50,
                     PatientDetails = new PatientDetails()
                     {
-                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
                         PatientId = Guid.NewGuid().ToString(),
                         PatientName = "Steve Jobs",
                         PatientSex = "male"
@@ -114,7 +114,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     FileCount = 50,
                     PatientDetails = new PatientDetails()
                     {
-                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
                         PatientId = Guid.NewGuid().ToString(),
                         PatientName = "Jan Jones",
                         PatientSex = "f"
@@ -137,7 +137,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     FileCount = 50,
                     PatientDetails = new PatientDetails()
                     {
-                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
                         PatientId = Guid.NewGuid().ToString(),
                         PatientName = "Tim Apple",
                         PatientSex = "m"
@@ -160,7 +160,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     FileCount = 50,
                     PatientDetails = new PatientDetails()
                     {
-                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
                         PatientId = Guid.NewGuid().ToString(),
                         PatientName = "Foo Bar",
                         PatientSex = "N/A"
@@ -183,7 +183,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     FileCount = 50,
                     PatientDetails = new PatientDetails()
                     {
-                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
                         PatientId = Guid.NewGuid().ToString(),
                         PatientName = "Jamie",
                         PatientSex = "male"
@@ -206,7 +206,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     FileCount = 50,
                     PatientDetails = new PatientDetails()
                     {
-                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
                         PatientId = Guid.NewGuid().ToString(),
                         PatientName = "Jack Johnson",
                         PatientSex = "non-binary"
@@ -229,7 +229,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     FileCount = 50,
                     PatientDetails = new PatientDetails()
                     {
-                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
                         PatientId = Guid.NewGuid().ToString(),
                         PatientName = "Linda Croft",
                         PatientSex = "f"
@@ -252,7 +252,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     FileCount = 50,
                     PatientDetails = new PatientDetails()
                     {
-                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
                         PatientId = Guid.NewGuid().ToString(),
                         PatientName = "Donald Jefferson",
                         PatientSex = "male"
@@ -275,7 +275,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     FileCount = 50,
                     PatientDetails = new PatientDetails()
                     {
-                        PatientDob = new DateTime(1996, 02, 05),
+                        PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
                         PatientId = Guid.NewGuid().ToString(),
                         PatientName = "Mike Mcgee",
                         PatientSex = "male"
