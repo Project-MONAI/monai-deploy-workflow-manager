@@ -88,6 +88,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             HttpClient = new HttpClient();
             MinioClient = new MinioClientUtil();
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+
+            TestExecutionConfig.ApiConfig.TaskManagerBaseUrl = "http://localhost:5000";
         }
 
         [BeforeTestRun(Order = 2)]
@@ -133,7 +135,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         /// Adds Rabbit and Mongo clients to Specflow IoC container for test scenario being executed.
         /// </summary>
         [BeforeScenario]
-        public void SetUp()
+        public void SetUp(ScenarioContext scenarioContext, ISpecFlowOutputHelper outputHelper)
         {
             ObjectContainer.RegisterInstanceAs(TaskDispatchPublisher, "TaskDispatchPublisher");
             ObjectContainer.RegisterInstanceAs(TaskCallbackPublisher, "TaskCallbackPublisher");
@@ -142,6 +144,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             ObjectContainer.RegisterInstanceAs(MinioClient);
             var dataHelper = new DataHelper(ObjectContainer);
             ObjectContainer.RegisterInstanceAs(dataHelper);
+
+            var apiHelper = new ApiHelper(HttpClient ?? throw new ArgumentException("No HttpClient"));
+            ObjectContainer.RegisterInstanceAs(apiHelper);
+
+            MongoClient!.ListAllCollections(outputHelper, scenarioContext.ScenarioInfo.Title);
         }
 
         /// <summary>

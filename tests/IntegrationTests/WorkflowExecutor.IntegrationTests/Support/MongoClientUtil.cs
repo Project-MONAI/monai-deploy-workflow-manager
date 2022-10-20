@@ -19,6 +19,7 @@ using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using MongoDB.Driver;
 using Polly;
 using Polly.Retry;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
@@ -41,6 +42,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             PayloadCollection = Database.GetCollection<Payload>($"{TestExecutionConfig.MongoConfig.PayloadCollection}");
             RetryMongo = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
             RetryPayload = Policy<List<Payload>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
+            CreateCollection("dummy");
         }
 
         #region WorkflowRevision
@@ -217,6 +219,24 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public void DropDatabase(string dbName)
         {
             Client.DropDatabase(dbName);
+        }
+
+        internal void ListAllCollections(ISpecFlowOutputHelper outputHelper, string testFeature)
+        {
+            var collections = Database.ListCollectionNames().ToList();
+            outputHelper.WriteLine($"MongoDB collections found in test feature '{testFeature}': {collections.Count}");
+            collections.ForEach(p => outputHelper.WriteLine($"- Collection: {p}"));
+        }
+
+        private void CreateCollection(string collectionName)
+        {
+            RetryMongo.Execute(() =>
+            {
+                if (!Database.ListCollectionNames().ToList().Contains(collectionName))
+                {
+                    Database.CreateCollection(collectionName);
+                }
+            });
         }
     }
 }

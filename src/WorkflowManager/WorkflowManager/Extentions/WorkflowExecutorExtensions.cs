@@ -23,6 +23,7 @@ using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.PayloadListener.Services;
 using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
+using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
@@ -44,6 +45,7 @@ namespace Monai.Deploy.WorkflowManager.Services
         {
             Guard.Against.Null(hostContext, nameof(hostContext));
 
+            services.AddTransient<IMonaiServiceLocator, MonaiServiceLocator>();
             services.AddTransient<IWorkflowService, WorkflowService>();
             services.AddTransient<IWorkflowInstanceService, WorkflowInstanceService>();
             services.AddTransient<IPayloadService, PayloadService>();

@@ -154,13 +154,6 @@
     - 2021.3.0
     :when: 2022-10-14 23:36:46.653419042 Z
 - - :approve
-  - Karambolo.Extensions.Logging.File
-  - :who: mocsharp
-    :why: MIT (https://github.com/adams85/filelogger/raw/master/LICENSE)
-    :versions:
-    - 3.3.1
-    :when: 2022-10-14 23:36:47.046012615 Z
-- - :approve
   - KubernetesClient
   - :who: mocsharp
     :why: Apache-2.0 (https://github.com/kubernetes-client/csharp/raw/master/LICENSE)
@@ -468,6 +461,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 6.0.1
     :when: 2022-10-14 23:37:03.975202345 Z
 - - :approve
   - Microsoft.Extensions.DependencyInjection.Abstractions
@@ -504,6 +498,7 @@
     :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
     :versions:
     - 6.0.9
+    - 6.0.10
     :when: 2022-10-14 23:37:05.963687838 Z
 - - :approve
   - Microsoft.Extensions.FileProviders.Abstractions
@@ -2351,4 +2346,11 @@
     :why: BSD 3-Clause License (https://github.com/NLog/NLog.Web/raw/master/LICENSE)
     :versions:
     - 5.1.4
+    :when: 2022-10-12 03:14:07.396706995 Z
+- - :approve
+  - AspNetCore.HealthChecks.MongoDb
+  - :who: mocsharp
+    :why: Apache-2.0 (https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks/raw/master/LICENSE)
+    :versions:
+    - 6.0.2
     :when: 2022-10-12 03:14:07.396706995 Z

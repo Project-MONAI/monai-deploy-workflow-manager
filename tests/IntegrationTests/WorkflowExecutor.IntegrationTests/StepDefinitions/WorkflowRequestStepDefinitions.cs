@@ -19,6 +19,7 @@ using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support;
+using MongoDB.Driver;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;

@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2022 MONAI Consortium
+  ~ Copyright 2021-2022 MONAI Consortium
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -14,11 +14,12 @@
   ~ limitations under the License.
 -->
 
-# Task APIs
+# Workflow Manager - Workflow Instance APIs
+
 
 **TEMPLATE**
 
-## GET/POST/PUT/DELETE /tasks/
+## GET/POST/PUT/DELETE /workflows/
 
 *description*
 

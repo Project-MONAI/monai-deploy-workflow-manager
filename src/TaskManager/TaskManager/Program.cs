@@ -16,6 +16,7 @@
 
 using System.IO.Abstractions;
 using System.Reflection;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,7 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.Database;
 using Monai.Deploy.WorkflowManager.TaskManager.Database.Options;
 using Monai.Deploy.WorkflowManager.TaskManager.Extensions;
+using Monai.Deploy.WorkflowManager.TaskManager.Services.Http;
 using MongoDB.Driver;
 using NLog;
 using NLog.LayoutRenderers;
@@ -73,12 +75,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 })
                 .ConfigureLogging((builderContext, configureLogging) =>
                 {
-                    configureLogging.AddConfiguration(builderContext.Configuration.GetSection("Logging"));
-                    configureLogging.AddFile(o => o.RootPath = AppContext.BaseDirectory);
+                    configureLogging.ClearProviders();
+                    configureLogging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
                     ConfigureServices(hostContext, services);
+                })
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.CaptureStartupErrors(true);
+                    webBuilder.UseStartup<Startup>();
                 })
                 .UseNLog();
 
@@ -89,9 +96,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             services.AddOptions<MessageBrokerServiceConfiguration>().Bind(hostContext.Configuration.GetSection("WorkflowManager:messaging"));
             services.AddHttpClient();
 
-            services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
-            services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
-            services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
+            // StorageService
+            services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value, HealthCheckOptions.ServiceHealthCheck | HealthCheckOptions.AdminServiceHealthCheck);
+
+            // MessageBroker
+            services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value, true);
+            services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value, true);
 
             // Mongo DB (Workflow Manager)
             services.Configure<TaskManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));

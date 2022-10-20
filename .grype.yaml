@@ -19,3 +19,4 @@ ignore:
   - vulnerability: CVE-2017-11164 # negligible https://ubuntu.com/security/CVE-2017-11164
   - vulnerability: CVE-2020-16156 # medium https://ubuntu.com/security/CVE-2020-16156
   - vulnerability: CVE-2022-29458 # negligible https://ubuntu.com/security/CVE-2022-29458
+    

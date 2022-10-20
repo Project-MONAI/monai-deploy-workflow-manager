@@ -14,12 +14,11 @@
   ~ limitations under the License.
 -->
 
-# Workflow Instance APIs
-
+# Workflow Manager - Payload APIs
 
 **TEMPLATE**
 
-## GET/POST/PUT/DELETE /workflows/
+## GET/POST/PUT/DELETE /payloads/
 
 *description*
 

@@ -262,8 +262,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public void AssertPayload(Payload payload, Payload? actualPayload)
         {
             actualPayload.Should().NotBeNull();
-            actualPayload?.Should().BeEquivalentTo(payload, options => options.Excluding(x => x.Timestamp));
-            actualPayload?.Timestamp.ToString(format: "yyyy-MM-dd hh:mm:ss").Should().Be(payload.Timestamp.ToString(format: "yyyy-MM-dd hh:mm:ss"));
+            actualPayload?.Should().BeEquivalentTo(payload, options => options.Excluding(x => x.Timestamp).Excluding(x => x.PatientDetails.PatientDob));
+            actualPayload?.Timestamp.ToString("u").Should().Be(payload.Timestamp.ToString("u"));
+            actualPayload?.PatientDetails.PatientDob?.ToString("u").Should().Be(payload.PatientDetails.PatientDob?.ToString("u"));
         }
 
         public void AssertPayloadList(List<Payload> payload, List<Payload>? actualPayloads)

@@ -33,7 +33,9 @@ using Monai.Deploy.WorkflowManager.TaskManager.Database;
 using Monai.Deploy.WorkflowManager.TaskManager.Database.Options;
 using Monai.Deploy.WorkflowManager.TaskManager.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.TaskManager.Services.Http;
 using MongoDB.Driver;
+using NLog.Web;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 {
@@ -48,8 +50,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             })
             .ConfigureLogging((builderContext, configureLogging) =>
             {
-                configureLogging.AddConfiguration(builderContext.Configuration.GetSection("Logging"));
-                configureLogging.AddFile(o => o.RootPath = AppContext.BaseDirectory);
+                configureLogging.ClearProviders();
+                configureLogging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
             })
                 .ConfigureServices((hostContext, services) =>
                 {
@@ -81,15 +83,21 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                     services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
                     services.AddTransient<ITaskDispatchEventRepository, TaskDispatchEventRepository>();
 
-                    // StorageService
-                    services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
+                    // StorageService - Since mc.exe is unavailable during e2e, skip admin check
+                    services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value, HealthCheckOptions.ServiceHealthCheck);
 
                     // MessageBroker
                     services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
                     services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
 
                     services.AddTaskManager(hostContext);
-                });
+                })
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.CaptureStartupErrors(true);
+                    webBuilder.UseStartup<Startup>();
+                })
+                .UseNLog();
 
         public static IHost StartTaskManager()
         {

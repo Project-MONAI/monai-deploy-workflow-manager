@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.API
+namespace Monai.Deploy.WorkflowManager.Shared
 {
     public interface IMonaiService
     {

@@ -14,5 +14,5 @@
 
 - name: REST API
   href: rest/toc.yml
-# - name: .NET
-#   href: ../obj/api/dotnet/toc.yml
+- name: .NET
+  href: ../obj/api/dotnet/toc.yml

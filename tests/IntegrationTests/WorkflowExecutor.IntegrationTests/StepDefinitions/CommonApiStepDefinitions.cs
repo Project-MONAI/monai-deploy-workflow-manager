@@ -18,24 +18,38 @@ using System.Net;
 using BoDi;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using MongoDB.Driver;
+using Newtonsoft.Json;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class CommonStepDefinitions
     {
-        public CommonStepDefinitions(ObjectContainer objectContainer)
+        public CommonStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             ApiHelper = objectContainer.Resolve<ApiHelper>();
             DataHelper = objectContainer.Resolve<DataHelper>();
+            MongoClient = objectContainer.Resolve<MongoClientUtil>();
+            _outputHelper = outputHelper;
         }
 
         private ApiHelper ApiHelper { get; }
 
         private DataHelper DataHelper { get; }
 
+        private MongoClientUtil MongoClient { get; }
+
+        private readonly ISpecFlowOutputHelper _outputHelper;
+
         [Given(@"I have an endpoint (.*)")]
-        public void GivenIHaveAnEndpoint(string endpoint) => ApiHelper.SetUrl(new Uri(TestExecutionConfig.ApiConfig.BaseUrl + endpoint));
+        public void GivenIHaveAnEndpoint(string endpoint)
+        {
+            var apiUri = new Uri(TestExecutionConfig.ApiConfig.BaseUrl + endpoint);
+            ApiHelper.SetUrl(apiUri);
+            _outputHelper.WriteLine($"API Url set to {apiUri}");
+        }
 
         [Given(@"I send a (.*) request")]
         [When(@"I send a (.*) request")]
@@ -70,6 +84,21 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().ContainAll("type", "title", "status", "traceId");
             ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Contain(message);
+        }
+
+        [Then(@"I will get a health check response status message (.*)")]
+        public async Task ThenIWillGetAHealthCheckResponseMessage(string expectedMessage)
+        {
+            var contentMessage = await ApiHelper.Response?.Content.ReadAsStringAsync();
+            contentMessage.Should().NotBeNull();
+            var response = JsonConvert.DeserializeObject<HealthCheckResponse>(contentMessage);
+            response.Should().NotBeNull();
+            response!.Status.Should().Be(expectedMessage);
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "minio", Result = expectedMessage });
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "Rabbit MQ Publisher", Result = expectedMessage });
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "Rabbit MQ Subscriber", Result = expectedMessage });
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "Workflow Manager Services", Result = expectedMessage });
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "mongodb", Result = expectedMessage });
         }
     }
 }

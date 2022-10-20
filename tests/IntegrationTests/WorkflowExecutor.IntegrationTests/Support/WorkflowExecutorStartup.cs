@@ -38,6 +38,7 @@ using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
 using MongoDB.Driver;
+using NLog.Web;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
@@ -52,78 +53,79 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             })
             .ConfigureLogging((builderContext, configureLogging) =>
             {
-                configureLogging.AddConfiguration(builderContext.Configuration.GetSection("Logging"));
-                configureLogging.AddFile(o => o.RootPath = AppContext.BaseDirectory);
+                configureLogging.ClearProviders();
+                configureLogging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
             })
-                .ConfigureServices((hostContext, services) =>
-                {
-                    services.AddOptions<WorkflowManagerOptions>()
-                        .Bind(hostContext.Configuration.GetSection("WorkflowManager"))
-                        .PostConfigure(options =>
-                        {
-                        });
-                    services.AddOptions<MessageBrokerServiceConfiguration>()
-                        .Bind(hostContext.Configuration.GetSection("WorkflowManager:messaging"))
-                        .PostConfigure(options =>
-                        {
-                        });
-                    services.AddOptions<StorageServiceConfiguration>()
-                        .Bind(hostContext.Configuration.GetSection("WorkflowManager:storage"))
-                        .PostConfigure(options =>
-                        {
-                        });
-                    services.AddOptions<EndpointSettings>()
-                        .Bind(hostContext.Configuration.GetSection("WorkflowManager:endpointSettings"))
-                        .PostConfigure(options =>
-                        {
-                        });
-                    services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkflowManagerOptions>, ConfigurationValidator>());
+            .ConfigureServices((hostContext, services) =>
+            {
+                services.AddOptions<WorkflowManagerOptions>()
+                    .Bind(hostContext.Configuration.GetSection("WorkflowManager"))
+                    .PostConfigure(options =>
+                    {
+                    });
+                services.AddOptions<MessageBrokerServiceConfiguration>()
+                    .Bind(hostContext.Configuration.GetSection("WorkflowManager:messaging"))
+                    .PostConfigure(options =>
+                    {
+                    });
+                services.AddOptions<StorageServiceConfiguration>()
+                    .Bind(hostContext.Configuration.GetSection("WorkflowManager:storage"))
+                    .PostConfigure(options =>
+                    {
+                    });
+                services.AddOptions<EndpointSettings>()
+                    .Bind(hostContext.Configuration.GetSection("WorkflowManager:endpointSettings"))
+                    .PostConfigure(options =>
+                    {
+                    });
+                services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkflowManagerOptions>, ConfigurationValidator>());
 
-                    services.AddSingleton<ConfigurationValidator>();
+                services.AddSingleton<ConfigurationValidator>();
 
-                    services.AddSingleton<DataRetentionService>();
+                services.AddSingleton<DataRetentionService>();
 
 #pragma warning disable CS8603 // Possible null reference return.
-                    services.AddHostedService<DataRetentionService>(p => p.GetService<DataRetentionService>());
+                services.AddHostedService<DataRetentionService>(p => p.GetService<DataRetentionService>());
 #pragma warning restore CS8603 // Possible null reference return.
 
-                    // Services
-                    services.AddTransient<IFileSystem, FileSystem>();
-                    services.AddHttpClient();
+                // Services
+                services.AddTransient<IFileSystem, FileSystem>();
+                services.AddHttpClient();
 
-                    // Mongo DB
-                    services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
-                    services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
-                    services.AddTransient<IWorkflowRepository, WorkflowRepository>();
-                    services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
-                    services.AddTransient<IPayloadRepsitory, PayloadRepository>();
-                    services.AddTransient<ITasksRepository, TasksRepository>();
+                // Mongo DB
+                services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
+                services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
+                services.AddTransient<IWorkflowRepository, WorkflowRepository>();
+                services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
+                services.AddTransient<IPayloadRepsitory, PayloadRepository>();
+                services.AddTransient<ITasksRepository, TasksRepository>();
 
-                    // StorageService
-                    services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
+                // StorageService - Since mc.exe is unavailable during e2e, skip admin check
+                services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value, HealthCheckOptions.ServiceHealthCheck);
 
-                    // MessageBroker
-                    services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
-                    services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
+                // MessageBroker
+                services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
+                services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
 
-                    services.AddHostedService(p => p.GetService<DataRetentionService>());
+                services.AddHostedService(p => p.GetService<DataRetentionService>());
 
-                    services.AddWorkflowExecutor(hostContext);
-                    services.AddHttpContextAccessor();
-                    services.AddSingleton<IUriService>(p =>
-                    {
-                        var accessor = p.GetRequiredService<IHttpContextAccessor>();
-                        var request = accessor?.HttpContext?.Request;
-                        var uri = string.Concat(request?.Scheme, "://", request?.Host.ToUriComponent());
-                        var newUri = new Uri(uri);
-                        return new UriService(newUri);
-                    });
-                })
+                services.AddWorkflowExecutor(hostContext);
+                services.AddHttpContextAccessor();
+                services.AddSingleton<IUriService>(p =>
+                {
+                    var accessor = p.GetRequiredService<IHttpContextAccessor>();
+                    var request = accessor?.HttpContext?.Request;
+                    var uri = string.Concat(request?.Scheme, "://", request?.Host.ToUriComponent());
+                    var newUri = new Uri(uri);
+                    return new UriService(newUri);
+                });
+            })
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.CaptureStartupErrors(true);
                 webBuilder.UseStartup<Startup>();
-            });
+            })
+            .UseNLog();
 
         public static IHost StartWorkflowExecutor()
         {
