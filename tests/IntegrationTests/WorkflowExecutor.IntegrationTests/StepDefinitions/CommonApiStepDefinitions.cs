@@ -19,6 +19,7 @@ using BoDi;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
@@ -88,13 +89,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Contain(message);
         }
 
-        [Then(@"I will get a health check response status message (.*)")]
-        public void ThenIWillGetAHealthCheckResponseMessage(string expectedMessage)
+        [Then(@"I will get a health check response status message")]
+        public async Task ThenIWillGetAHealthCheckResponseMessage()
         {
-            var contentMessage = ApiHelper.Response?.Content.ReadAsStringAsync().Result;
-
+            var contentMessage = await ApiHelper.Response?.Content.ReadAsStringAsync();
             contentMessage.Should().NotBeNull();
-            contentMessage.Should().Contain(expectedMessage);
+            var response = JsonConvert.DeserializeObject<HealthCheckResponse>(contentMessage);
+            response.Should().NotBeNull();
+            response!.Checks.Select(p => p.Check).Should().Contain("minio", "Rabbit MQ Publisher", "Rabbit MQ Subscriber", "Workflow Manager Services", "mongodb");
         }
     }
 }

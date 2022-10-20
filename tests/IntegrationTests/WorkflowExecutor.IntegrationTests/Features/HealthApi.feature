@@ -21,5 +21,4 @@ Health check API for Workflow Manager.
 Scenario: Get Health status of Workflow Manager
 	Given I have an endpoint /health
 	When I send a GET request
-	Then I will get a 200 response
-    And I will get a health check response status message Healthy
+	Then I will get a health check response status message

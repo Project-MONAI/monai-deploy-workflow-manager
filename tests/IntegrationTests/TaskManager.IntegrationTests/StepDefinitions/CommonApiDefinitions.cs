@@ -50,9 +50,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         [Then(@"I will get a (.*) response")]
         public void ThenIWillGetAResponse(string expectedCode)
         {
-            var names = MongoClient.Database.ListCollectionNames().ToList();
-            Console.WriteLine("Mongo Collections={0}", names.Count);
-            names.ForEach(p => Console.WriteLine("Mong Collection={0}", p));
             ApiHelper.Response?.StatusCode.Should().Be((HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), expectedCode));
         }
 
