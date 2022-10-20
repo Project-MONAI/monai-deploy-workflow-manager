@@ -21,6 +21,7 @@ using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Polly;
 using Polly.Retry;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManagerIntegrationTests
 {
@@ -132,7 +133,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         /// Adds Rabbit and Mongo clients to Specflow IoC container for test scenario being executed.
         /// </summary>
         [BeforeScenario]
-        public void SetUp()
+        public void SetUp(ScenarioContext scenarioContext, ISpecFlowOutputHelper outputHelper)
         {
             ObjectContainer.RegisterInstanceAs(WorkflowPublisher, "WorkflowPublisher");
             ObjectContainer.RegisterInstanceAs(TaskDispatchConsumer, "TaskDispatchConsumer");
@@ -145,6 +146,8 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             ObjectContainer.RegisterInstanceAs(dataHelper);
             var apiHelper = new ApiHelper(HttpClient);
             ObjectContainer.RegisterInstanceAs(apiHelper);
+
+            MongoClient.ListAllCollections(outputHelper, scenarioContext.ScenarioInfo.Title);
         }
 
         [BeforeTestRun(Order = 2)]

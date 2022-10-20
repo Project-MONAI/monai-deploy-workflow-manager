@@ -19,13 +19,14 @@ using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using MongoDB.Driver;
 using Polly;
 using Polly.Retry;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
     public class MongoClientUtil
     {
         private MongoClient Client { get; set; }
-        internal IMongoDatabase Database { get; set; }
+        private IMongoDatabase Database { get; set; }
         private IMongoCollection<WorkflowRevision> WorkflowRevisionCollection { get; set; }
         private IMongoCollection<WorkflowInstance> WorkflowInstanceCollection { get; set; }
         private IMongoCollection<Payload> PayloadCollection { get; set; }
@@ -217,6 +218,13 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public void DropDatabase(string dbName)
         {
             Client.DropDatabase(dbName);
+        }
+
+        internal void ListAllCollections(ISpecFlowOutputHelper outputHelper, string testFeature)
+        {
+            var collections = Database.ListCollectionNames().ToList();
+            outputHelper.WriteLine($"MongoDB collections found in test feature '{testFeature}': {collections.Count}");
+            collections.ForEach(p => outputHelper.WriteLine($"- Collection: {p}"));
         }
     }
 }

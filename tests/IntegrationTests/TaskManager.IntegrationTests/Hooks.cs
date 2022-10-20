@@ -135,7 +135,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         /// Adds Rabbit and Mongo clients to Specflow IoC container for test scenario being executed.
         /// </summary>
         [BeforeScenario]
-        public void SetUp()
+        public void SetUp(ScenarioContext scenarioContext, ISpecFlowOutputHelper outputHelper)
         {
             ObjectContainer.RegisterInstanceAs(TaskDispatchPublisher, "TaskDispatchPublisher");
             ObjectContainer.RegisterInstanceAs(TaskCallbackPublisher, "TaskCallbackPublisher");
@@ -147,6 +147,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 
             var apiHelper = new ApiHelper(HttpClient ?? throw new ArgumentException("No HttpClient"));
             ObjectContainer.RegisterInstanceAs(apiHelper);
+
+            MongoClient!.ListAllCollections(outputHelper, scenarioContext.ScenarioInfo.Title);
         }
 
         /// <summary>
