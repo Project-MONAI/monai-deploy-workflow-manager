@@ -72,7 +72,7 @@ jobs:
       - name: Extract metadata (tags, labels) for Docker
         if: ${{ !contains(github.ref, 'refs/heads/main') }}
         id: meta
-        uses: docker/metadata-action@v4.0.1
+        uses: docker/metadata-action@v4.1.1
         with:
           images: ${{ matrix.image }}
           tags: |
@@ -80,7 +80,7 @@ jobs:
             type=raw,value=${{ steps.gitversion.outputs.semVer }}
 
       - name: Build and Push Container Image for ${{ matrix.dockerfile }}
-        uses: docker/build-push-action@v3.1.1
+        uses: docker/build-push-action@v3.2.0
         with:
           context: .
           push: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/develop') ||contains(github.head_ref, 'release/') || contains(github.head_ref, 'feature/') || contains(github.head_ref, 'develop') }}
@@ -88,13 +88,35 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ matrix.dockerfile }}
 
-      - name: Scan Image with Azure Container Scan
-        uses: Azure/container-scan@v0.1
+      - name: Dockle Container Scanner
+        uses: erzz/dockle-action@v1
         if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
-        env:
-          TRIVY_TIMEOUT_SEC: 360s
         with:
-          image-name: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          report-format: sarif
+          report-name: dockle-report
+          failure-threshold: fatal
+
+      # Disable upload due to bug https://github.com/erzz/dockle-action/issues/18
+      # - name: Upload Dockle SARIF Report
+      #   uses: github/codeql-action/upload-sarif@v2
+      #   if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
+      #   with:
+      #     sarif_file: dockle-report.sarif
+
+      - name: Trivy Vulnerability Scanner
+        uses: aquasecurity/trivy-action@master
+       if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
+        with:
+          image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy SARIF Report
+        uses: github/codeql-action/upload-sarif@v2
+       if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
+        with:
+          sarif_file: 'trivy-results.sarif'
 
       - name: Anchore Container Scan
         id: anchore-scan
