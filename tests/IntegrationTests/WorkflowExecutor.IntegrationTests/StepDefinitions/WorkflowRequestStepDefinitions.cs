@@ -19,6 +19,7 @@ using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support;
+using MongoDB.Driver;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;
@@ -161,6 +162,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"No workflow instances will be created")]
         public void ThenTheWorkflowWillNotTriggerAnyNewWorkflowInstances()
         {
+            var names = MongoClient.Database.ListCollectionNames().ToList();
+            Console.WriteLine("Mongo Collections={0}", names.Count);
+            names.ForEach(p => Console.WriteLine("Mong Collection={0}", p));
+            
             foreach (var workflowRevision in DataHelper.WorkflowRevisions)
             {
                 for (int i = 0; i < 5; i++)

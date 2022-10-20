@@ -18,6 +18,7 @@ using BoDi;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.Wrappers;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 using TechTalk.SpecFlow.Infrastructure;
 
@@ -99,6 +100,10 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
         [Then(@"I can see no Payloads are returned")]
         public void ThenICanSeeNoPayloadsAreReturned()
         {
+            var names = MongoClient.Database.ListCollectionNames().ToList();
+            Console.WriteLine("Mongo Collections={0}", names.Count);
+            names.ForEach(p => Console.WriteLine("Mong Collection={0}", p));
+            
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var payloads = JsonConvert.DeserializeObject<PagedResponse<List<Payload>>>(result);
 
