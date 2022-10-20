@@ -164,12 +164,12 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
         private async Task ValidateWorkflowSpec(Workflow workflow)
         {
-            if (string.IsNullOrWhiteSpace(workflow.Name))
+            if (string.IsNullOrWhiteSpace(workflow.Name) is true)
             {
                 Errors.Add("Missing Workflow Name.");
             }
 
-            if (await WorkflowService.GetByNameAsync(workflow.Name) != null)
+            if (string.IsNullOrWhiteSpace(workflow.Name) is false && await WorkflowService.GetByNameAsync(workflow.Name) != null)
             {
                 Errors.Add($"A Workflow with the name: {workflow.Name} already exists.");
             }
@@ -267,12 +267,19 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
         private void ValidateArgoTask(TaskObject currentTask)
         {
+            var missingKeys = new List<string>();
+
             foreach (var key in Keys.RequiredParameters)
             {
                 if (!currentTask.Args.ContainsKey(key))
                 {
-                    Errors.Add($"Required parameter to execute Argo workflow is missing: {key}");
+                    missingKeys.Add(key);
                 }
+            }
+
+            if (missingKeys.Count > 0)
+            {
+                Errors.Add($"Required parameter to execute Argo workflow is missing: {string.Join(", ", missingKeys)}");
             }
         }
 
@@ -304,9 +311,9 @@ namespace Monai.Deploy.WorkflowManager.Validators
                     continue;
                 }
 
-                if (tasks.Select(t => t.Id == referencedId) == null)
+                if (tasks.FirstOrDefault(t => t.Id == referencedId) == null)
                 {
-                    Errors.Add($"Invalid Value property on input artifact {inputArtifact.Name} in task: {currentTask.Id}. No matching task for ID: {referencedId}");
+                    Errors.Add($"Invalid input artifact '{inputArtifact.Name}' in task '{currentTask.Id}': No matching task for ID '{referencedId}'");
                 }
             }
         }

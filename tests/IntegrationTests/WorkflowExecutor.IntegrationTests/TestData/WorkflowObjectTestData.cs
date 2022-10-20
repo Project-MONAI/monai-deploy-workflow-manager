@@ -746,8 +746,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             Type = "argo",
                             Description = "Argo task missing QueueName",
                             Args = new Dictionary<string, string> {
-                                { "WorkflowName", "Workflow Name" },
-                                { "ReviewedTaskId", "Task ID" }
+                                { "workflow_name", "Workflow Name" },
+                                { "reviewed_task_id", "Task ID" }
                             },
                             Artifacts = new ArtifactMap()
                             {
@@ -781,8 +781,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             Type = "argo",
                             Description = "Argo task missing QueueName",
                             Args = new Dictionary<string, string> {
-                                { "QueueName", "Queue Name" },
-                                { "ReviewedTaskId", "Task ID" }
+                                { "queue_name", "Queue Name" },
+                                { "reviewed_task_id", "Task ID" }
                             },
                             Artifacts = new ArtifactMap()
                             {
@@ -816,8 +816,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             Type = "argo",
                             Description = "Argo task missing QueueName",
                             Args = new Dictionary<string, string> {
-                                { "WorkflowName", "Workflow Name" },
-                                { "QueueName", "Queue Name" }
+                                { "workflow_name", "Workflow Name" },
+                                { "queue_name", "Queue Name" },
                             },
                             Artifacts = new ArtifactMap()
                             {
@@ -883,7 +883,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             Type = "argo",
                             Description = "Argo task missing QueueName",
                             Args = new Dictionary<string, string> {
-                                { "WorkflowName", "Workflow Name" }
+                                { "workflow_name", "Workflow Name" },
                             },
                             Artifacts = new ArtifactMap()
                             {
@@ -917,7 +917,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             Type = "argo",
                             Description = "Argo task missing QueueName",
                             Args = new Dictionary<string, string> {
-                                { "QueueName", "Queue Name" }
+                                { "queue_name", "Queue Name" },
                             },
                             Artifacts = new ArtifactMap()
                             {
@@ -951,7 +951,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             Type = "argo",
                             Description = "Argo task missing QueueName",
                             Args = new Dictionary<string, string> {
-                                { "ReviewedTaskId", "Task ID" }
+                                { "reviewed_task_id", "Task ID" }
                             },
                             Artifacts = new ArtifactMap()
                             {
@@ -985,16 +985,21 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                             Type = "argo",
                             Description = "Argo task missing QueueName",
                             Args = new Dictionary<string, string> {
-                                { "WorkflowName", "Workflow Name" },
-                                { "QueueName", "Queue Name" },
-                                { "ReviewedTaskId", "Task ID" }
+                                { "workflow_name", "Workflow Name" },
+                                { "queue_name", "Queue Name" },
+                                { "reviewed_task_id", "Task ID" }
                             },
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
                                 Output = new Artifact[] {}
                             },
-                            TaskDestinations = new TaskDestination[] {}
+                            TaskDestinations = new TaskDestination[] {
+                                new TaskDestination
+                                {
+                                    Name = "Clinical_Review_Task"
+                                }
+                            }
                         },
                         new TaskObject
                         {
