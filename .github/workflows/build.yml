@@ -101,7 +101,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/develop') }}
         with:
-          sarif_file: super-report.sarif
+          sarif_file: dockle-report.sarif
 
       - name: Trivy Vulnerability Scanner
         uses: aquasecurity/trivy-action@master
