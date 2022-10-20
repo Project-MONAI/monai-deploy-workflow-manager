@@ -154,11 +154,21 @@ MONAI Deploy Workflow Manager functionality has plenty of unit tests from which 
 
 Documentation for MONAI Deploy Workflow Manager is located at `docs/` and requires [DocFX](https://dotnet.github.io/docfx/) to build.
 
+- *docs/index.md*: documentation landing page
+- *docs/setup/*: component installation & configuration pages
+- *docs/api/rest*: RESTful APIs
+
+Note: *docfx* generated C# APIs based on [XML documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/) written in the source code. 
+To configure which C# projects to include in the documentation, edit the **metadata>src>files** section in the *docs/docfx.json* file.
+
 Please follow the [instructions](https://dotnet.github.io/docfx/tutorial/docfx_getting_started.html#2-use-docfx-as-a-command-line-tool) to install Mono and download the DocFX command-line tool to build the documentation.
 
 ```bash
 [path-to]/docfx.exe docs/docfx.json
 ```
+##### Updating Changelog
+
+The changelog is located in `docs/changelog.md` and should be updated for every release to include new features, bug fixes and breaking changes.
 
 #### Automatic code formatting
 
