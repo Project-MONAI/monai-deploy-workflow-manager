@@ -88,6 +88,22 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ matrix.dockerfile }}
 
+      - uses: hands-lab/dockle-action@v1
+        with:
+          image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+
+      - name: Trivy Vulnerability Scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+
       - name: Scan Image with Azure Container Scan
         uses: Azure/container-scan@v0.1
         if: always()
