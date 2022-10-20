@@ -19,17 +19,19 @@ using BoDi;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using MongoDB.Driver;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class CommonStepDefinitions
     {
-        public CommonStepDefinitions(ObjectContainer objectContainer)
+        public CommonStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             ApiHelper = objectContainer.Resolve<ApiHelper>();
             DataHelper = objectContainer.Resolve<DataHelper>();
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
+            _outputHelper = outputHelper;
         }
 
         private ApiHelper ApiHelper { get; }
@@ -38,8 +40,18 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
         private MongoClientUtil MongoClient { get; }
 
+        private readonly ISpecFlowOutputHelper _outputHelper;
+        
         [Given(@"I have an endpoint (.*)")]
-        public void GivenIHaveAnEndpoint(string endpoint) => ApiHelper.SetUrl(new Uri(TestExecutionConfig.ApiConfig.BaseUrl + endpoint));
+        public void GivenIHaveAnEndpoint(string endpoint)
+        {
+            var name = "Payload_Full_Patient";
+            MongoClient.CreatePayloadDocument(DataHelper.GetPayloadTestData(name));
+            var apiUri = new Uri(TestExecutionConfig.ApiConfig.BaseUrl + endpoint);
+            
+            ApiHelper.SetUrl(apiUri);
+            _outputHelper.WriteLine($"API Url set to {apiUri}");
+        }
 
         [Given(@"I send a (.*) request")]
         [When(@"I send a (.*) request")]
