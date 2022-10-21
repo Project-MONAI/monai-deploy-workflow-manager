@@ -13,6 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
 -->
+
 # Third-Party Licenses
 
 
@@ -2584,14 +2585,14 @@ third-party archives.
 
 
 <details>
-<summary>Fractions 7.0.0</summary>
+<summary>Fractions 7.1.0</summary>
 
 ## Fractions
 
-- Version: 7.0.0
+- Version: 7.1.0
 - Authors: Daniel Mueller
 - Project URL: https://github.com/danm-de/Fractions
-- Source: [NuGet](https://www.nuget.org/packages/Fractions/7.0.0)
+- Source: [NuGet](https://www.nuget.org/packages/Fractions/7.1.0)
 - License: [BSD-2](https://github.com/danm-de/Fractions/raw/master/license.txt)
 
 
@@ -2663,14 +2664,14 @@ SOFTWARE.
 
 
 <details>
-<summary>IdentityModel 5.1.0</summary>
+<summary>IdentityModel 5.2.0</summary>
 
 ## IdentityModel
 
-- Version: 5.1.0
+- Version: 5.2.0
 - Authors: Dominick Baier,Brock Allen
 - Project URL: https://github.com/IdentityModel/IdentityModel
-- Source: [NuGet](https://www.nuget.org/packages/IdentityModel/5.1.0)
+- Source: [NuGet](https://www.nuget.org/packages/IdentityModel/5.2.0)
 - License: [Apache-2.0](https://github.com/IdentityModel/IdentityModel/raw/main/LICENSE)
 
 
@@ -2882,13 +2883,13 @@ Apache License
 
 
 <details>
-<summary>IdentityModel.OidcClient 4.0.0</summary>
+<summary>IdentityModel.OidcClient 5.0.2</summary>
 
 ## IdentityModel.OidcClient
 
-- Version: 4.0.0
+- Version: 5.0.2
 - Authors: Dominick Baier,Brock Allen
-- Source: [NuGet](https://www.nuget.org/packages/IdentityModel.OidcClient/4.0.0)
+- Source: [NuGet](https://www.nuget.org/packages/IdentityModel.OidcClient/5.0.2)
 - License: [Apache-2.0](https://github.com/IdentityModel/IdentityModel.OidcClient/raw/main/LICENSE)
 
 
@@ -3138,15 +3139,16 @@ SOFTWARE.
 
 </details>
 
+
 <details>
-<summary>KubernetesClient 7.2.19</summary>
+<summary>KubernetesClient 9.0.28</summary>
 
 ## KubernetesClient
 
-- Version: 7.2.19
+- Version: 9.0.28
 - Authors: The Kubernetes Project Authors
 - Project URL: https://github.com/kubernetes-client/csharp
-- Source: [NuGet](https://www.nuget.org/packages/KubernetesClient/7.2.19)
+- Source: [NuGet](https://www.nuget.org/packages/KubernetesClient/9.0.28)
 - License: [Apache-2.0](https://github.com/kubernetes-client/csharp/raw/master/LICENSE)
 
 
@@ -3358,14 +3360,14 @@ Apache License
 
 
 <details>
-<summary>KubernetesClient.Basic 7.2.19</summary>
+<summary>KubernetesClient.Basic 9.0.28</summary>
 
 ## KubernetesClient.Basic
 
-- Version: 7.2.19
+- Version: 9.0.28
 - Authors: The Kubernetes Project Authors
 - Project URL: https://github.com/kubernetes-client/csharp
-- Source: [NuGet](https://www.nuget.org/packages/KubernetesClient.Basic/7.2.19)
+- Source: [NuGet](https://www.nuget.org/packages/KubernetesClient.Basic/9.0.28)
 - License: [Apache-2.0](https://github.com/kubernetes-client/csharp/raw/master/LICENSE)
 
 
@@ -3577,14 +3579,14 @@ Apache License
 
 
 <details>
-<summary>KubernetesClient.Models 7.2.19</summary>
+<summary>KubernetesClient.Models 9.0.28</summary>
 
 ## KubernetesClient.Models
 
-- Version: 7.2.19
+- Version: 9.0.28
 - Authors: The Kubernetes Project Authors
 - Project URL: https://github.com/kubernetes-client/csharp
-- Source: [NuGet](https://www.nuget.org/packages/KubernetesClient.Models/7.2.19)
+- Source: [NuGet](https://www.nuget.org/packages/KubernetesClient.Models/9.0.28)
 - License: [Apache-2.0](https://github.com/kubernetes-client/csharp/raw/master/LICENSE)
 
 
@@ -7358,6 +7360,45 @@ SOFTWARE.
 
 
 <details>
+<summary>Microsoft.IdentityModel.Abstractions 6.23.1</summary>
+
+## Microsoft.IdentityModel.Abstractions
+
+- Version: 6.23.1
+- Authors: Microsoft
+- Project URL: https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.IdentityModel.Abstractions/6.23.1)
+- License: [MIT](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/raw/dev/LICENSE.txt)
+
+
+```
+The MIT License (MIT)
+
+Copyright (c) Microsoft Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+</details>
+
+
+<details>
 <summary>Microsoft.IdentityModel.JsonWebTokens 6.10.0</summary>
 
 ## Microsoft.IdentityModel.JsonWebTokens
@@ -7436,6 +7477,45 @@ SOFTWARE.
 
 
 <details>
+<summary>Microsoft.IdentityModel.JsonWebTokens 6.23.1</summary>
+
+## Microsoft.IdentityModel.JsonWebTokens
+
+- Version: 6.23.1
+- Authors: Microsoft
+- Project URL: https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.IdentityModel.JsonWebTokens/6.23.1)
+- License: [MIT](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/raw/dev/LICENSE.txt)
+
+
+```
+The MIT License (MIT)
+
+Copyright (c) Microsoft Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+</details>
+
+
+<details>
 <summary>Microsoft.IdentityModel.Logging 6.10.0</summary>
 
 ## Microsoft.IdentityModel.Logging
@@ -7483,6 +7563,45 @@ SOFTWARE.
 - Authors: Microsoft
 - Project URL: https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet
 - Source: [NuGet](https://www.nuget.org/packages/Microsoft.IdentityModel.Logging/6.13.1)
+- License: [MIT](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/raw/dev/LICENSE.txt)
+
+
+```
+The MIT License (MIT)
+
+Copyright (c) Microsoft Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+</details>
+
+
+<details>
+<summary>Microsoft.IdentityModel.Logging 6.23.1</summary>
+
+## Microsoft.IdentityModel.Logging
+
+- Version: 6.23.1
+- Authors: Microsoft
+- Project URL: https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.IdentityModel.Logging/6.23.1)
 - License: [MIT](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/raw/dev/LICENSE.txt)
 
 
@@ -7639,6 +7758,45 @@ SOFTWARE.
 - Authors: Microsoft
 - Project URL: https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet
 - Source: [NuGet](https://www.nuget.org/packages/Microsoft.IdentityModel.Tokens/6.13.1)
+- License: [MIT](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/raw/dev/LICENSE.txt)
+
+
+```
+The MIT License (MIT)
+
+Copyright (c) Microsoft Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+</details>
+
+
+<details>
+<summary>Microsoft.IdentityModel.Tokens 6.23.1</summary>
+
+## Microsoft.IdentityModel.Tokens
+
+- Version: 6.23.1
+- Authors: Microsoft
+- Project URL: https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.IdentityModel.Tokens/6.23.1)
 - License: [MIT](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/raw/dev/LICENSE.txt)
 
 
@@ -14619,7 +14777,7 @@ Code
 
 
 Pull requests
-3
+4
 
 
 
@@ -14830,7 +14988,7 @@ Rename LICENSE to LICENSE.TXT (#42000)
 
 Latest commit
 23f5ecd
-Oct 22, 2019
+Oct 23, 2019
 
 
 
@@ -15736,7 +15894,7 @@ Code
 
 
 Pull requests
-3
+4
 
 
 
@@ -15947,7 +16105,7 @@ Rename LICENSE to LICENSE.TXT (#42000)
 
 Latest commit
 23f5ecd
-Oct 22, 2019
+Oct 23, 2019
 
 
 
@@ -21199,14 +21357,14 @@ SOFTWARE.
 
 
 <details>
-<summary>System.IdentityModel.Tokens.Jwt 6.13.1</summary>
+<summary>System.IdentityModel.Tokens.Jwt 6.23.1</summary>
 
 ## System.IdentityModel.Tokens.Jwt
 
-- Version: 6.13.1
+- Version: 6.23.1
 - Authors: Microsoft
 - Project URL: https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet
-- Source: [NuGet](https://www.nuget.org/packages/System.IdentityModel.Tokens.Jwt/6.13.1)
+- Source: [NuGet](https://www.nuget.org/packages/System.IdentityModel.Tokens.Jwt/6.23.1)
 - License: [MIT](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/raw/dev/LICENSE.txt)
 
 
@@ -32463,14 +32621,14 @@ SOFTWARE.
 
 
 <details>
-<summary>System.Text.Json 6.0.2</summary>
+<summary>System.Text.Json 6.0.6</summary>
 
 ## System.Text.Json
 
-- Version: 6.0.2
+- Version: 6.0.6
 - Authors: Microsoft
 - Project URL: https://dot.net/
-- Source: [NuGet](https://www.nuget.org/packages/System.Text.Json/6.0.2)
+- Source: [NuGet](https://www.nuget.org/packages/System.Text.Json/6.0.6)
 - License: [MIT](https://github.com/dotnet/corefx/raw/master/LICENSE.TXT)
 
 
@@ -35114,14 +35272,14 @@ consequential or other damages.
 
 
 <details>
-<summary>YamlDotNet 11.2.1</summary>
+<summary>YamlDotNet 12.0.1</summary>
 
 ## YamlDotNet
 
-- Version: 11.2.1
+- Version: 12.0.1
 - Authors: Antoine Aubry
 - Project URL: https://github.com/aaubry/YamlDotNet/wiki
-- Source: [NuGet](https://www.nuget.org/packages/YamlDotNet/11.2.1)
+- Source: [NuGet](https://www.nuget.org/packages/YamlDotNet/12.0.1)
 - License: [MIT](https://github.com/aaubry/YamlDotNet/raw/master/LICENSE.txt)
 
 
@@ -35266,14 +35424,14 @@ SOFTWARE.
 
 
 <details>
-<summary>prometheus-net 5.0.1</summary>
+<summary>prometheus-net 6.0.0</summary>
 
 ## prometheus-net
 
-- Version: 5.0.1
+- Version: 6.0.0
 - Authors: andrasm,qed-,lakario,sandersaares
 - Project URL: https://github.com/prometheus-net/prometheus-net
-- Source: [NuGet](https://www.nuget.org/packages/prometheus-net/5.0.1)
+- Source: [NuGet](https://www.nuget.org/packages/prometheus-net/6.0.0)
 - License: [MIT](https://github.com/prometheus-net/prometheus-net/raw/master/LICENSE)
 
 
@@ -41391,4 +41549,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ```
 
 </details>
+
+
 
