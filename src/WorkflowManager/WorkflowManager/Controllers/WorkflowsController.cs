@@ -40,6 +40,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
     {
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IWorkflowService _workflowService;
+        private readonly WorkflowValidator _workflowValidator;
         private readonly ILogger<WorkflowsController> _logger;
         private readonly IUriService _uriService;
 
@@ -47,12 +48,14 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// Initializes a new instance of the <see cref="WorkflowsController"/> class.
         /// </summary>
         /// <param name="workflowService">IWorkflowService.</param>
+        /// <param name="workflowValidator">WorkflowValidator.</param>
         /// <param name="logger">ILogger.WorkflowsController.</param>
         /// <param name="uriService">Uri Service.</param>
         /// <param name="options">Workflow Manager options.</param>
         /// <exception cref="ArgumentNullException">ArgumentNullException.</exception>
         public WorkflowsController(
             IWorkflowService workflowService,
+            WorkflowValidator workflowValidator,
             ILogger<WorkflowsController> logger,
             IUriService uriService,
             IOptions<WorkflowManagerOptions> options)
@@ -60,6 +63,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _workflowService = workflowService ?? throw new ArgumentNullException(nameof(workflowService));
+            _workflowValidator = workflowValidator ?? throw new ArgumentNullException(nameof(workflowValidator));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _uriService = uriService ?? throw new ArgumentNullException(nameof(uriService));
         }
@@ -133,7 +137,9 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] Workflow workflow)
         {
-            if (WorkflowValidator.ValidateWorkflow(workflow, out var results))
+            var results = await _workflowValidator.ValidateWorkflow(workflow);
+
+            if (results.Errors.Count > 0)
             {
                 var validationErrors = string.Join(", ", results.Errors);
                 _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
@@ -172,7 +178,9 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", BadRequest);
             }
 
-            if (WorkflowValidator.ValidateWorkflow(workflow, out var results))
+            var results = await _workflowValidator.ValidateWorkflow(workflow);
+
+            if (results.Errors.Count > 0)
             {
                 var validationErrors = string.Join(", ", results.Errors);
                 _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");

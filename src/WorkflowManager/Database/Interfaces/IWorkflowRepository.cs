@@ -40,6 +40,12 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <param name="workflowIds">The workflow Ids.</param>
         Task<IList<WorkflowRevision>> GetByWorkflowsIdsAsync(IEnumerable<string> workflowIds);
 
+        // <summary>
+        // Retrieves a workflow based on a name.
+        // </summary>
+        /// <param name="name">The workflow name</param>
+        Task<WorkflowRevision> GetByWorkflowNameAsync(string name);
+
         /// <summary>
         /// Retrieves a workflow based on an aeTitle.
         /// </summary>

@@ -14,20 +14,33 @@
  * limitations under the License.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Monai.Deploy.WorkflowManager.Common.Extensions;
+using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
+using Monai.Deploy.WorkflowManager.Shared;
 
 namespace Monai.Deploy.WorkflowManager.Validators
 {
     /// <summary>
     /// Workflow Validator used for validating workflows.
     /// </summary>
-    public static class WorkflowValidator
+    public class WorkflowValidator
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WorkflowValidator"/> class.
+        /// </summary>
+        /// <param name="workflowService">The workflow service.</param>
+        public WorkflowValidator(IWorkflowService workflowService)
+        {
+            WorkflowService = workflowService;
+        }
+
         /// <summary>
         /// Gets or sets errors from workflow validation.
         /// </summary>
@@ -37,6 +50,8 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// Gets or sets successful task paths. (not accounting for conditons).
         /// </summary>
         private static List<string> SuccessfulPaths { get; set; } = new List<string>();
+
+        private IWorkflowService WorkflowService { get; }
 
         /// <summary>
         /// Resets the validator.
@@ -58,27 +73,26 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// - Unreferenced tasks other than root task.
         /// </summary>
         /// <param name="workflow">Workflow to validate.</param>
-        /// <param name="results">Workflow validation results.</param>
         /// <returns>if any validation errors are produced while validating workflow.</returns>
-        public static bool ValidateWorkflow(Workflow workflow, out (List<string> Errors, List<string> SuccessfulPaths) results)
+        public async Task<(List<string> Errors, List<string> SuccessfulPaths)> ValidateWorkflow(Workflow workflow)
         {
             workflow.IsValid(out var validationErrors);
             Errors.AddRange(validationErrors);
             var tasks = workflow.Tasks;
             var firstTask = tasks.FirstOrDefault();
 
-            ValidateWorkflowSpec(workflow);
+            await ValidateWorkflowSpec(workflow);
             DetectUnreferencedTasks(tasks, firstTask);
             ValidateTask(tasks, firstTask, 0);
             ValidateTaskDestinations(workflow);
             ValidateExportDestinations(workflow);
 
-            results = (Errors.ToList(), SuccessfulPaths.ToList());
+            var results = (Errors.ToList(), SuccessfulPaths.ToList());
             Reset();
-            return results.Errors.Any();
+            return results;
         }
 
-        private static void ValidateExportDestinations(Workflow workflow)
+        private void ValidateExportDestinations(Workflow workflow)
         {
             if (workflow.Tasks.Any() is false)
             {
@@ -109,7 +123,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// Make sure all task destinations reference existings tasks.
         /// </summary>
         /// <param name="workflow">workflow.</param>
-        private static void ValidateTaskDestinations(Workflow workflow)
+        private void ValidateTaskDestinations(Workflow workflow)
         {
             if (workflow.Tasks.Any() is false)
             {
@@ -129,7 +143,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private static void DetectUnreferencedTasks(TaskObject[] tasks, TaskObject firstTask)
+        private void DetectUnreferencedTasks(TaskObject[] tasks, TaskObject firstTask)
         {
             if (tasks.Any() is false || firstTask is null)
             {
@@ -148,11 +162,16 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private static void ValidateWorkflowSpec(Workflow workflow)
+        private async Task ValidateWorkflowSpec(Workflow workflow)
         {
-            if (string.IsNullOrWhiteSpace(workflow.Name))
+            if (string.IsNullOrWhiteSpace(workflow.Name) is true)
             {
                 Errors.Add("Missing Workflow Name.");
+            }
+
+            if (string.IsNullOrWhiteSpace(workflow.Name) is false && await WorkflowService.GetByNameAsync(workflow.Name) != null)
+            {
+                Errors.Add($"A Workflow with the name: {workflow.Name} already exists.");
             }
 
             if (string.IsNullOrWhiteSpace(workflow.Version))
@@ -176,7 +195,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private static void ValidateTask(TaskObject[] tasks, TaskObject currentTask, int iterationCount, List<string> paths = null)
+        private void ValidateTask(TaskObject[] tasks, TaskObject currentTask, int iterationCount, List<string> paths = null)
         {
             if (tasks.Any() is false || currentTask is null)
             {
@@ -194,15 +213,25 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 paths = new List<string>();
             }
 
-            if (currentTask.Artifacts != null && !currentTask.Artifacts.Output.IsNullOrEmpty())
+            if (currentTask.Artifacts != null && currentTask.Artifacts.Output.IsNullOrEmpty() is false)
             {
                 var uniqueOutputNames = new HashSet<string>();
                 var allOutputsUnique = currentTask.Artifacts.Output.All(x => uniqueOutputNames.Add(x.Name));
 
-                if (!allOutputsUnique)
+                if (allOutputsUnique is false)
                 {
                     Errors.Add($"Task: \"{currentTask.Id}\" has multiple output names with the same value.\n");
                 }
+            }
+
+            if (currentTask.Type.Equals("argo", StringComparison.OrdinalIgnoreCase) is true)
+            {
+                ValidateArgoTask(currentTask);
+            }
+
+            if (currentTask.Type.Equals("clinical-review", StringComparison.OrdinalIgnoreCase) is true)
+            {
+                ValidateClinicalReviewTask(tasks, currentTask);
             }
 
             if (currentTask.TaskDestinations.IsNullOrEmpty())
@@ -230,9 +259,62 @@ namespace Monai.Deploy.WorkflowManager.Validators
                     continue;
                 }
 
-                ValidateTask(tasks, nextTask, iterationCount++, paths);
+                ValidateTask(tasks, nextTask, iterationCount += 1, paths);
 
                 paths = new List<string>();
+            }
+        }
+
+        private void ValidateArgoTask(TaskObject currentTask)
+        {
+            var missingKeys = new List<string>();
+
+            foreach (var key in ValidationConstants.ArgoRequiredParameters)
+            {
+                if (!currentTask.Args.ContainsKey(key))
+                {
+                    missingKeys.Add(key);
+                }
+            }
+
+            if (missingKeys.Count > 0)
+            {
+                Errors.Add($"Required parameter to execute Argo workflow is missing: {string.Join(", ", missingKeys)}");
+            }
+        }
+
+        private void ValidateClinicalReviewTask(TaskObject[] tasks, TaskObject currentTask)
+        {
+            var inputs = currentTask?.Artifacts?.Input;
+
+            if (inputs.IsNullOrEmpty())
+            {
+                Errors.Add($"Missing inputs for clinical review task: {currentTask.Id}");
+                return;
+            }
+
+            foreach (var inputArtifact in inputs)
+            {
+                var valueStringSplit = inputArtifact.Value.Split('.');
+
+                if (valueStringSplit.Length < 3)
+                {
+                    Errors.Add($"Invalid Value property on input artifact {inputArtifact.Name} in task: {currentTask.Id}. Incorrect format.");
+                    continue;
+                }
+
+                var referencedId = valueStringSplit[2];
+
+                if (referencedId == currentTask.Id)
+                {
+                    Errors.Add($"Invalid Value property on input artifact {inputArtifact.Name} in task: {currentTask.Id}. Self referencing task ID.");
+                    continue;
+                }
+
+                if (tasks.FirstOrDefault(t => t.Id == referencedId) == null)
+                {
+                    Errors.Add($"Invalid input artifact '{inputArtifact.Name}' in task '{currentTask.Id}': No matching task for ID '{referencedId}'");
+                }
             }
         }
     }
