@@ -1494,25 +1494,25 @@
       "monai.deploy.workflowmanager.authentication": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "[6.0.10, )",
-          "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )"
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.10",
+          "Monai.Deploy.WorkflowManager.Common": "1.0.0"
         }
       },
       "monai.deploy.workflowmanager.common": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Database": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Storage": "[1.0.0, )"
+          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Database": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Storage": "1.0.0"
         }
       },
       "monai.deploy.workflowmanager.conditionsresolver": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Database": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Storage": "[1.0.0, )"
+          "Monai.Deploy.WorkflowManager.Common": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Database": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Storage": "1.0.0"
         }
       },
       "monai.deploy.workflowmanager.configuration": {
@@ -1525,16 +1525,16 @@
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.8, )",
-          "MongoDB.Bson": "[2.18.0, )"
+          "Monai.Deploy.Messaging": "0.1.8",
+          "MongoDB.Bson": "2.18.0"
         }
       },
       "monai.deploy.workflowmanager.database": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Logging": "[1.0.0, )",
-          "MongoDB.Driver": "[2.18.0, )"
+          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
+          "MongoDB.Driver": "2.18.0"
         }
       },
       "monai.deploy.workflowmanager.logging": {
@@ -1564,21 +1564,34 @@
       "monai.deploy.workflowmanager.storage": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Storage": "[0.2.7, )",
-          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Logging": "[1.0.0, )"
+          "Monai.Deploy.Storage": "0.2.7",
+          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Logging": "1.0.0"
+        }
+      },
+      "monai.deploy.workflowmanager.taskmanager.aideclinicalreview": {
+        "type": "Project",
+        "dependencies": {
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0"
+        }
+      },
+      "monai.deploy.workflowmanager.taskmanager.api": {
+        "type": "Project",
+        "dependencies": {
+          "Monai.Deploy.Messaging": "0.1.8",
+          "MongoDB.Bson": "2.18.0"
         }
       },
       "monai.deploy.workloadmanager.workfowexecuter": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.ConditionsResolver": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Database": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Logging": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Storage": "[1.0.0, )"
+          "Monai.Deploy.WorkflowManager.Common": "1.0.0",
+          "Monai.Deploy.WorkflowManager.ConditionsResolver": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Contracts": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Database": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Logging": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Storage": "1.0.0"
         }
       }
     }

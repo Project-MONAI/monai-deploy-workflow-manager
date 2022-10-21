@@ -105,7 +105,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                             }
                         }
                     },
-                        new TaskObject {
+                    new TaskObject {
                         Id = "taskLoopdesc2",
                         Type = "type",
                         TaskDestinations = new TaskDestination[]
@@ -164,7 +164,83 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                         {
                             new TaskDestination
                             {
-                                Name = "taskdesc2"
+                                Name = "test-argo-task"
+                            },
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "test-argo-task",
+                        Type = "argo",
+                        Description = "Test Argo Task",
+                        Args = {
+                            { "example", "value" }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination
+                            {
+                                Name = "test-clinical-review"
+                            }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "test-clinical-review",
+                        Type = "clinical-review",
+                        Description = "Test Clinical Review Task",
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]
+                            {
+                                new Artifact
+                                {
+                                    Name = "Invalid Value Format",
+                                    Value = "{{ wrong.format }}"
+                                },
+                                new Artifact
+                                {
+                                    Name = "Self Referencing Task Id",
+                                    Value = "{{ context.value.test-clinical-review.artifact.test }}"
+                                },
+                                new Artifact
+                                {
+                                    Name = "No Matching Task Id",
+                                    Value = "{{ context.value.a-random-string.artifact.test }}"
+                                }
+                            }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination
+                            {
+                                Name = "test-clinical-review-2"
+                            }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "test-clinical-review-2",
+                        Type = "clinical-review",
+                        Description = "Test Clinical Review Task 2",
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination
+                            {
+                                Name = "example-task"
+                            }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "example-task",
+                        Type = "type",
+                        Description = "taskdesc",
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination
+                            {
+                                Name = "example-task"
                             }
                         }
                     },
@@ -186,40 +262,49 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new WorkflowRevision());
 
-            for (var i = 0; i < 15; i++)
-            {
-                var workflowValidationResult = await this.WorkflowValidator.ValidateWorkflow(workflow);
+            var workflowValidationResult = await this.WorkflowValidator.ValidateWorkflow(workflow);
 
-                Assert.True(workflowValidationResult.Errors.Count > 0);
+            Assert.True(workflowValidationResult.Errors.Count > 0);
 
-                Assert.Equal(16, workflowValidationResult.Errors.Count);
+            Assert.Equal(21, workflowValidationResult.Errors.Count);
 
-                var successPath = "rootTask => taskSucessdesc1 => taskSucessdesc2";
-                Assert.Contains(successPath, workflowValidationResult.SuccessfulPaths);
+            var successPath = "rootTask => taskSucessdesc1 => taskSucessdesc2";
+            Assert.Contains(successPath, workflowValidationResult.SuccessfulPaths);
 
-                var expectedConvergenceError = "Detected task convergence on path: rootTask => taskdesc1 => taskdesc2 => ∞";
-                Assert.Contains(expectedConvergenceError, workflowValidationResult.Errors);
+            var expectedConvergenceError = "Detected task convergence on path: rootTask => taskdesc1 => taskdesc2 => test-argo-task => test-clinical-review => test-clinical-review-2 => example-task => ∞";
+            Assert.Contains(expectedConvergenceError, workflowValidationResult.Errors);
 
-                var unreferencedTaskError = "Found Task(s) without any task destinations to it: taskdesc3,task_de.sc3?";
-                Assert.Contains(unreferencedTaskError, workflowValidationResult.Errors);
+            var unreferencedTaskError = "Found Task(s) without any task destinations to it: taskdesc3,task_de.sc3?";
+            Assert.Contains(unreferencedTaskError, workflowValidationResult.Errors);
 
-                var loopingTasksError = "Detected task convergence on path: rootTask => taskLoopdesc1 => taskLoopdesc2 => taskLoopdesc3 => taskLoopdesc4 => ∞";
-                Assert.Contains(loopingTasksError, workflowValidationResult.Errors);
+            var loopingTasksError = "Detected task convergence on path: rootTask => taskLoopdesc1 => taskLoopdesc2 => taskLoopdesc3 => taskLoopdesc4 => ∞";
+            Assert.Contains(loopingTasksError, workflowValidationResult.Errors);
 
-                var missingDestinationError = "Missing destination DoesNotExistDestination in task taskLoopdesc4";
-                Assert.Contains(missingDestinationError, workflowValidationResult.Errors);
+            var missingDestinationError = "Missing destination DoesNotExistDestination in task taskLoopdesc4";
+            Assert.Contains(missingDestinationError, workflowValidationResult.Errors);
 
-                var invalidTaskId = "TaskId: task_de.sc3? Contains Invalid Characters.";
-                Assert.Contains(invalidTaskId, workflowValidationResult.Errors);
+            var invalidTaskId = "TaskId: task_de.sc3? Contains Invalid Characters.";
+            Assert.Contains(invalidTaskId, workflowValidationResult.Errors);
 
-                var duplicateOutputArtifactName = "Task: \"rootTask\" has multiple output names with the same value.\n";
-                Assert.Contains(duplicateOutputArtifactName, workflowValidationResult.Errors);
+            var duplicateOutputArtifactName = "Task: \"rootTask\" has multiple output names with the same value.\n";
+            Assert.Contains(duplicateOutputArtifactName, workflowValidationResult.Errors);
 
-                var duplicateWorkflowName = $"A Workflow with the name: {workflow.Name} already exists.";
-                Assert.Contains(duplicateWorkflowName, workflowValidationResult.Errors);
+            var duplicateWorkflowName = $"A Workflow with the name: {workflow.Name} already exists.";
+            Assert.Contains(duplicateWorkflowName, workflowValidationResult.Errors);
 
-                WorkflowValidator.Reset();
-            }
+            var missingArgoArgs = "Required parameter to execute Argo workflow is missing: queue_name, workflow_name, reviewed_task_id";
+            Assert.Contains(missingArgoArgs, workflowValidationResult.Errors);
+
+            var incorrectClinicalReviewValueFormat = $"Invalid Value property on input artifact Invalid Value Format in task: test-clinical-review. Incorrect format.";
+            Assert.Contains(incorrectClinicalReviewValueFormat, workflowValidationResult.Errors);
+
+            var selfReferencingClinicalReviewValue = $"Invalid Value property on input artifact Self Referencing Task Id in task: test-clinical-review. Self referencing task ID.";
+            Assert.Contains(selfReferencingClinicalReviewValue, workflowValidationResult.Errors);
+
+            var nonExistingClinicalReviewValueId = $"Invalid input artifact 'No Matching Task Id' in task 'test-clinical-review': No matching task for ID 'a-random-string'";
+            Assert.Contains(nonExistingClinicalReviewValueId, workflowValidationResult.Errors);
+
+            WorkflowValidator.Reset();
         }
 
         [Fact]

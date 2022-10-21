@@ -259,7 +259,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                     continue;
                 }
 
-                ValidateTask(tasks, nextTask, iterationCount++, paths);
+                ValidateTask(tasks, nextTask, iterationCount += 1, paths);
 
                 paths = new List<string>();
             }
