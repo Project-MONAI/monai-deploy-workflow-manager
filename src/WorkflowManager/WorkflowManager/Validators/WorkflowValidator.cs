@@ -23,7 +23,7 @@ using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
-using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview;
+using Monai.Deploy.WorkflowManager.Shared;
 
 namespace Monai.Deploy.WorkflowManager.Validators
 {
@@ -269,7 +269,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         {
             var missingKeys = new List<string>();
 
-            foreach (var key in Keys.RequiredParameters)
+            foreach (var key in ValidationConstants.ArgoRequiredParameters)
             {
                 if (!currentTask.Args.ContainsKey(key))
                 {
