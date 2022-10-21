@@ -52,6 +52,7 @@ public class ArgoPluginTest
     private readonly Mock<IArgoProvider> _argoProvider;
     private readonly Mock<IArgoClient> _argoClient;
     private readonly Mock<IKubernetes> _kubernetesClient;
+    private readonly Mock<ICoreV1Operations> _k8sCoreOperations;
     private readonly IOptions<WorkflowManagerOptions> _options;
     private Workflow? _submittedArgoTemplate;
     private readonly int _argoTtlStatergySeconds = 360;
@@ -66,6 +67,7 @@ public class ArgoPluginTest
         _argoProvider = new Mock<IArgoProvider>();
         _argoClient = new Mock<IArgoClient>();
         _kubernetesClient = new Mock<IKubernetes>();
+        _k8sCoreOperations = new Mock<ICoreV1Operations>();
 
         _options = Options.Create(new WorkflowManagerOptions());
         _options.Value.Messaging.PublisherSettings.Add("endpoint", "1.2.2.3/virtualhost");
@@ -92,6 +94,7 @@ public class ArgoPluginTest
         _logger.Setup(p => p.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _argoProvider.Setup(p => p.CreateClient(It.IsAny<string>(), It.IsAny<string?>(), true)).Returns(_argoClient.Object);
         _kubernetesProvider.Setup(p => p.CreateClient()).Returns(_kubernetesClient.Object);
+        _kubernetesClient.SetupGet<ICoreV1Operations>(p => p.CoreV1).Returns(_k8sCoreOperations.Object);
     }
 
     [Fact(DisplayName = "Throws when missing required plug-in arguments")]
@@ -163,7 +166,7 @@ public class ArgoPluginTest
         Assert.Equal("error", result.Errors);
 
         _argoClient.Verify(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Once());
-        _kubernetesClient.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
+        _k8sCoreOperations.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<V1Secret>(),
             It.IsAny<string>(),
             It.IsAny<string>(),
@@ -174,7 +177,7 @@ public class ArgoPluginTest
             It.IsAny<CancellationToken>()), Times.Exactly(3));
 
         await runner.DisposeAsync().ConfigureAwait(false);
-        _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
+        _k8sCoreOperations.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<V1DeleteOptions>(),
@@ -207,7 +210,7 @@ public class ArgoPluginTest
         Assert.Equal("error", result.Errors);
 
         _argoClient.Verify(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
-        _kubernetesClient.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
+        _k8sCoreOperations.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<V1Secret>(),
             It.IsAny<string>(),
             It.IsAny<string>(),
@@ -218,7 +221,7 @@ public class ArgoPluginTest
             It.IsAny<CancellationToken>()), Times.Once());
 
         await runner.DisposeAsync().ConfigureAwait(false);
-        _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
+        _k8sCoreOperations.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<V1DeleteOptions>(),
@@ -247,7 +250,7 @@ public class ArgoPluginTest
         Assert.Equal("error", result.Errors);
 
         _argoClient.Verify(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
-        _kubernetesClient.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
+        _k8sCoreOperations.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<V1Secret>(),
             It.IsAny<string>(),
             It.IsAny<string>(),
@@ -258,7 +261,7 @@ public class ArgoPluginTest
             It.IsAny<CancellationToken>()), Times.Never());
 
         await runner.DisposeAsync().ConfigureAwait(false);
-        _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
+        _k8sCoreOperations.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<V1DeleteOptions>(),
@@ -292,7 +295,7 @@ public class ArgoPluginTest
         Assert.Equal($"Template '{argoTemplate.Spec.Entrypoint}' cannot be found in the referenced WorkflowTmplate '{message.TaskPluginArguments[Keys.WorkflowTemplateName]}'.", result.Errors);
 
         _argoClient.Verify(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
-        _kubernetesClient.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
+        _k8sCoreOperations.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<V1Secret>(),
             It.IsAny<string>(),
             It.IsAny<string>(),
@@ -303,7 +306,7 @@ public class ArgoPluginTest
             It.IsAny<CancellationToken>()), Times.Never());
 
         await runner.DisposeAsync().ConfigureAwait(false);
-        _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
+        _k8sCoreOperations.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<V1DeleteOptions>(),
@@ -356,7 +359,7 @@ public class ArgoPluginTest
         Assert.Empty(result.Errors);
 
         _argoClient.Verify(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Once());
-        _kubernetesClient.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
+        _k8sCoreOperations.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<V1Secret>(),
             It.IsAny<string>(),
             It.IsAny<string>(),
@@ -367,7 +370,7 @@ public class ArgoPluginTest
             It.IsAny<CancellationToken>()), Times.Exactly(secretsCreated));
 
         await runner.DisposeAsync().ConfigureAwait(false);
-        _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
+        _k8sCoreOperations.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<V1DeleteOptions>(),
@@ -1025,7 +1028,7 @@ public class ArgoPluginTest
         return deserializer.Deserialize<WorkflowTemplate>(templateString);
     }
 
-    private ISetup<IKubernetes, Task<HttpOperationResponse<V1Secret>>> SetupKubbernetesSecrets() => _kubernetesClient.Setup(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
+    private ISetup<ICoreV1Operations, Task<HttpOperationResponse<V1Secret>>> SetupKubbernetesSecrets() => _k8sCoreOperations.Setup(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
                            It.IsAny<V1Secret>(),
                            It.IsAny<string>(),
                            It.IsAny<string>(),
@@ -1035,7 +1038,7 @@ public class ArgoPluginTest
                            It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
                            It.IsAny<CancellationToken>()));
 
-    private void SetupKubernetesDeleteSecret() => _kubernetesClient.Setup(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
+    private void SetupKubernetesDeleteSecret() => _k8sCoreOperations.Setup(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
                        It.IsAny<string>(),
                        It.IsAny<string>(),
                        It.IsAny<V1DeleteOptions>(),
