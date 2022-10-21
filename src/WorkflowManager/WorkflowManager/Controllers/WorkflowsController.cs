@@ -48,7 +48,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// Initializes a new instance of the <see cref="WorkflowsController"/> class.
         /// </summary>
         /// <param name="workflowService">IWorkflowService.</param>
-        /// <param name="workflowValidator">IWorkflowValidator.</param>
+        /// <param name="workflowValidator">WorkflowValidator.</param>
         /// <param name="logger">ILogger.WorkflowsController.</param>
         /// <param name="uriService">Uri Service.</param>
         /// <param name="options">Workflow Manager options.</param>
