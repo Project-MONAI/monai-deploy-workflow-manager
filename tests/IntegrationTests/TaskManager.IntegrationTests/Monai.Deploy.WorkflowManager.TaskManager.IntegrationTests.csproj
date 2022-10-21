@@ -40,7 +40,6 @@
     <ProjectReference Include="..\..\..\src\TaskManager\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />
     <ProjectReference Include="..\..\..\src\TaskManager\Plug-ins\AideClinicalReview\Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.csproj" />
     <ProjectReference Include="..\..\..\src\TaskManager\TaskManager\Monai.Deploy.WorkflowManager.TaskManager.csproj" />
-    <ProjectReference Include="..\..\..\src\WorkflowManager\WorkflowManager\Monai.Deploy.WorkflowManager.csproj" />
   </ItemGroup>
 
   <ItemGroup>
