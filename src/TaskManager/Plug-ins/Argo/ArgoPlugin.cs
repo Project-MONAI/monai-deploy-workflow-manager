@@ -812,7 +812,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             };
 
             _logger.GeneratingArtifactSecret(storage.Name);
-            var result = await client.CreateNamespacedSecretWithHttpMessagesAsync(secret, _namespace, cancellationToken: cancellationToken).ConfigureAwait(false);
+            var result = await client.CoreV1.CreateNamespacedSecretWithHttpMessagesAsync(secret, _namespace, cancellationToken: cancellationToken).ConfigureAwait(false);
             result.Response.EnsureSuccessStatusCode();
             _secretStores.Add(storage.Name, result.Body.Metadata.Name);
             return result.Body.Metadata.Name;
@@ -828,7 +828,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 {
                     try
                     {
-                        await client.DeleteNamespacedSecretWithHttpMessagesAsync(secret, _namespace).ConfigureAwait(false);
+                        await client.CoreV1.DeleteNamespacedSecretWithHttpMessagesAsync(secret, _namespace).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {

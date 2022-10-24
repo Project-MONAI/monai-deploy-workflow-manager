@@ -4,16 +4,16 @@
     "net6.0": {
       "KubernetesClient": {
         "type": "Direct",
-        "requested": "[7.2.19, )",
-        "resolved": "7.2.19",
-        "contentHash": "wycP/ApzjNToo6N0is0cDVK6m282MOXSlJDaZPmMibpdgZf2MKjS289MRUIXz3+Syftu4zsqlinDMGbmi5Xjog==",
+        "requested": "[9.0.38, )",
+        "resolved": "9.0.38",
+        "contentHash": "hTQleQRPv4ISabbvHVf3Q2e4qKgYX0kpZj+nXxS/zh/fuU/1wKj7kaNe0bm8+aA7+XodQUwIRhmy91qz3GFTCQ==",
         "dependencies": {
-          "IdentityModel.OidcClient": "4.0.0",
-          "KubernetesClient.Basic": "7.2.19",
-          "KubernetesClient.Models": "7.2.19",
-          "System.IO.Abstractions": "13.2.47",
-          "System.IdentityModel.Tokens.Jwt": "6.13.1",
-          "prometheus-net": "5.0.1"
+          "IdentityModel.OidcClient": "5.1.0",
+          "KubernetesClient.Basic": "9.0.38",
+          "KubernetesClient.Models": "9.0.38",
+          "System.IO.Abstractions": "17.2.3",
+          "System.IdentityModel.Tokens.Jwt": "6.23.1",
+          "prometheus-net": "6.0.0"
         }
       },
       "Microsoft.Extensions.ApiDescription.Client": {
@@ -54,28 +54,24 @@
       },
       "Fractions": {
         "type": "Transitive",
-        "resolved": "7.0.0",
-        "contentHash": "1uv2IqQ6AsLtrcsibOTEyyHLQpxgjONssPrI0Ug84AIuSVqVDcotaNkTaJTprFvxbCNi7Kp/3WAAtnytuQP3qQ==",
+        "resolved": "7.1.0",
+        "contentHash": "+fX5yXv3LkRDusIvq3T7LJt9InKYapbi3R5U3IH6O6cIFVWZKpjKTPRP+gBaaKU9o1VSo3sB4ug5XV+LHaP9LQ==",
         "dependencies": {
           "System.Runtime.Numerics": "4.3.0"
         }
       },
       "IdentityModel": {
         "type": "Transitive",
-        "resolved": "5.1.0",
-        "contentHash": "Gcv4YYXncvUvTNLF8lDJyItZzaEDFcEi3geMDtylGcl/Rx90vcV7Kv3yAofktJBW7GvmIjQgC8LtUq0s9XQT2w==",
-        "dependencies": {
-          "System.Text.Encodings.Web": "5.0.1",
-          "System.Text.Json": "5.0.1"
-        }
+        "resolved": "5.2.0",
+        "contentHash": "nuhkbaDH9l5QzNJp2MtP3qio57MPtiRneUN8Ocr7od0JvSYaIe3gBj/vxllr11S/Qvu1AG4GZXoyv5469ewYDA=="
       },
       "IdentityModel.OidcClient": {
         "type": "Transitive",
-        "resolved": "4.0.0",
-        "contentHash": "qAWbsg8dihy4UlTCW89Vc9LPKwx12lCR4JlM+ilZX/Jwk1h1++GmgXUV0Rs9lZ/4DivU1hkcfYGBBUzlW088Ug==",
+        "resolved": "5.1.0",
+        "contentHash": "hTyT7TRhG1+/6xcIh69YlWhyKtQa0eN3PrfraxxP1zMDhDFqKiGoNjMGwXsDMITUOLNhjJYJpq8C53sUJ7ipnQ==",
         "dependencies": {
-          "IdentityModel": "5.1.0",
-          "Microsoft.Extensions.Logging": "5.0.0"
+          "IdentityModel": "5.2.0",
+          "Microsoft.Extensions.Logging": "6.0.0"
         }
       },
       "JetBrains.Annotations": {
@@ -85,21 +81,21 @@
       },
       "KubernetesClient.Basic": {
         "type": "Transitive",
-        "resolved": "7.2.19",
-        "contentHash": "1LboFwnEg9gxB8gF9BqaS8gnNVetqRGS9XWyVMlzAxpeYaTF5mNCoj4OCZyLj8Ogo0kdrASjG9qOjozpQDWZlg==",
+        "resolved": "9.0.38",
+        "contentHash": "RSMtvvSHgNRIL65vS46ZlNknh0mh5SlTgoC47frrqNEmioPOXK+AkW5rZd0fTGL5HxYyr81ZFD4SCa1GuvOfGQ==",
         "dependencies": {
-          "KubernetesClient.Models": "7.2.19"
+          "KubernetesClient.Models": "9.0.38"
         }
       },
       "KubernetesClient.Models": {
         "type": "Transitive",
-        "resolved": "7.2.19",
-        "contentHash": "ekEK90+eJTKN1KzW7kFcJofSjv3X+Q4MhLxAZdgn7pTCJg0qk4/FhV8sYJ/ZMw20Ue5Rob3vAw9WROHZaLNIdQ==",
+        "resolved": "9.0.38",
+        "contentHash": "smDNvW092QCSA1JCch/MGh+++65HkwS/4yICvyV+K92ZSDD44Jn56qzM6TS2QD+Amh9/2wpdxOzDTECywx3TlA==",
         "dependencies": {
           "AutoMapper": "10.1.1",
-          "Fractions": "7.0.0",
-          "System.Text.Json": "6.0.2",
-          "YamlDotNet": "11.2.1"
+          "Fractions": "7.1.0",
+          "System.Text.Json": "6.0.6",
+          "YamlDotNet": "12.0.2"
         }
       },
       "Microsoft.CSharp": {
@@ -216,26 +212,36 @@
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
+      "Microsoft.IdentityModel.Abstractions": {
+        "type": "Transitive",
+        "resolved": "6.23.1",
+        "contentHash": "LTUhLFzhzCEWUwhIgiYFAFAf8xxOg9VOZQgldiCiAHIejVfEiyG4a4sq00QVmwv9Wdig2uCHVQudaTSA3t+/7A=="
+      },
       "Microsoft.IdentityModel.JsonWebTokens": {
         "type": "Transitive",
-        "resolved": "6.13.1",
-        "contentHash": "seLGCIo8bDz93PGgKY9vV4PAHpu1iXwH4Xm6O+HOJbIcnpiJz4f4C/MVFKfOb+yKGMtix2qyFkQMKOdVmArn0Q==",
+        "resolved": "6.23.1",
+        "contentHash": "Tfa2g1b6wE9Ds3MG/LivoRjk9+FAiPE24kMpTK0vbUt03t44zfVNz9O1QU/yf6Ic5hfk+DrY9huPxg7EeTYBGg==",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "6.13.1"
+          "Microsoft.IdentityModel.Tokens": "6.23.1",
+          "System.Text.Encoding": "4.3.0",
+          "System.Text.Json": "4.7.2"
         }
       },
       "Microsoft.IdentityModel.Logging": {
         "type": "Transitive",
-        "resolved": "6.13.1",
-        "contentHash": "pUr0kicIy3cNgrapB7old+N+OithDcowO/uqOg/z9dMC8u25/1YS7QirJWKi/0z31fBOE/uEFBHfSfnRCKRxsA=="
+        "resolved": "6.23.1",
+        "contentHash": "SF+1itC0kQDMvfo8jzWYfQ1mkt5CZsC8/KYMjt6N9LAP7sCCKdZkkJHgvat+DxTfZATBtcvJ6tGyEaiVR1ASUg==",
+        "dependencies": {
+          "Microsoft.IdentityModel.Abstractions": "6.23.1"
+        }
       },
       "Microsoft.IdentityModel.Tokens": {
         "type": "Transitive",
-        "resolved": "6.13.1",
-        "contentHash": "tUTbP9/wMuOGDiTBPXEN24M9rVAEJ8EOvk4pwoo5UKRNUK3bAZYqkzFpcgNOAY3PHHjwZJ2stk4Gf5jvspz0yg==",
+        "resolved": "6.23.1",
+        "contentHash": "hPPOGGIZRFl8QxZfc4Saa56Q4RrpBoT7E+VgW9qdHoiRm/ieh1aSaeXhp3uNh8EBkO92skiav2I4AUxwtBDHgA==",
         "dependencies": {
           "Microsoft.CSharp": "4.5.0",
-          "Microsoft.IdentityModel.Logging": "6.13.1",
+          "Microsoft.IdentityModel.Logging": "6.23.1",
           "System.Security.Cryptography.Cng": "4.5.0"
         }
       },
@@ -302,8 +308,8 @@
       },
       "prometheus-net": {
         "type": "Transitive",
-        "resolved": "5.0.1",
-        "contentHash": "tg+vGeKCUqaWPzHAuKI87/rqQD4RKjb/jlRqSPaAdGRFd/SFDFRHPE8Rcy5Rx2f4xqdR+s3qTQ/0Y/IHbI3D1Q==",
+        "resolved": "6.0.0",
+        "contentHash": "rD6iXx1mKx6uy5E7YkktLxvBQKFTbNfe3qc43s+9ZuYWgEm41QMTlw/a+R+Hs86NkfHG3oHYAJuP7c7HQ+oj9Q==",
         "dependencies": {
           "Microsoft.Extensions.Http": "3.1.9"
         }
@@ -342,11 +348,11 @@
       },
       "System.IdentityModel.Tokens.Jwt": {
         "type": "Transitive",
-        "resolved": "6.13.1",
-        "contentHash": "BTVPnmvqpKxv+ucl3Ii7HnRVvXvfm/P5iq3rnTnJ0YuneZUS7zGtE+DRrVQWSd431ntjZuHBGPbjaB+nCSq9Uw==",
+        "resolved": "6.23.1",
+        "contentHash": "f/bzIDc2ie8jIMprqM6icfy0JGZqaFxhiENjoDS1lQur/jjanrfzwo2xTcod0ADoILPi9RywfE8hI6Wg8BHxkw==",
         "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "6.13.1",
-          "Microsoft.IdentityModel.Tokens": "6.13.1"
+          "Microsoft.IdentityModel.JsonWebTokens": "6.23.1",
+          "Microsoft.IdentityModel.Tokens": "6.23.1"
         }
       },
       "System.IO": {
@@ -470,8 +476,8 @@
       },
       "System.Text.Json": {
         "type": "Transitive",
-        "resolved": "6.0.2",
-        "contentHash": "0nE2gwXLn3PTBOPwORLqwuYvWB+Beomt9ZBX+6LmogMNKUvfD1SoDb/ycB1vBntT94rGaB/SvxEyeLu14H6aEg==",
+        "resolved": "6.0.6",
+        "contentHash": "GZ+62pLOr544jwSvyXv5ezSfzlFBTjLuPhgOS2dnKuknAA8dPNUGXLKTHf9XdsudU9JpbtweXnE4oEiKEB2T1Q==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0",
           "System.Text.Encodings.Web": "6.0.0"
@@ -494,21 +500,21 @@
       },
       "YamlDotNet": {
         "type": "Transitive",
-        "resolved": "11.2.1",
-        "contentHash": "tBt8K+korVfrjH9wyDEhiLKxbs8qoLCLIFwvYgkSUuMC9//w3z0cFQ8LQAI/5MCKq+BMil0cfRTRvPeE7eXhQw=="
+        "resolved": "12.0.2",
+        "contentHash": "IFj2oDZYJIv5sM8mqaj5edVrpgUyoXk/wCGqZQJrgys/0tBajajpjRSgFM+iA/9ILOfTsPYKtcDcwvqBnBcNIg=="
       },
       "monai.deploy.workflowmanager.configuration": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.8, )",
-          "Monai.Deploy.Storage": "[0.2.7, )"
+          "Monai.Deploy.Messaging": "0.1.8",
+          "Monai.Deploy.Storage": "0.2.7"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.8, )",
-          "MongoDB.Bson": "[2.18.0, )"
+          "Monai.Deploy.Messaging": "0.1.8",
+          "MongoDB.Bson": "2.18.0"
         }
       }
     }
