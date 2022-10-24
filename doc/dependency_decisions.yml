@@ -144,7 +144,7 @@
   - :who: mocsharp
     :why: Apache-2.0 (https://github.com/IdentityModel/IdentityModel.OidcClient/raw/main/LICENSE)
     :versions:
-    - 5.0.2
+    - 5.1.0
     :when: 2022-10-14 23:36:46.266913084 Z
 - - :approve
   - JetBrains.Annotations
@@ -158,21 +158,21 @@
   - :who: mocsharp
     :why: Apache-2.0 (https://github.com/kubernetes-client/csharp/raw/master/LICENSE)
     :versions:
-    - 9.0.28
+    - 9.0.38
     :when: 2022-10-14 23:36:47.426563919 Z
 - - :approve
   - KubernetesClient.Basic
   - :who: mocsharp
     :why: Apache-2.0 (https://github.com/kubernetes-client/csharp/raw/master/LICENSE)
     :versions:
-    - 9.0.28
+    - 9.0.38
     :when: 2022-10-14 23:36:47.841963923 Z
 - - :approve
   - KubernetesClient.Models
   - :who: mocsharp
     :why: Apache-2.0 (https://github.com/kubernetes-client/csharp/raw/master/LICENSE)
     :versions:
-    - 9.0.28
+    - 9.0.38
     :when: 2022-10-14 23:36:48.248893280 Z
 - - :approve
   - Microsoft.AspNet.WebApi.Client

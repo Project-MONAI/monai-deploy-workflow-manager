@@ -4,13 +4,13 @@
     "net6.0": {
       "KubernetesClient": {
         "type": "Direct",
-        "requested": "[9.0.28, )",
-        "resolved": "9.0.28",
-        "contentHash": "nTdQAggtLuNSsTf/Z5rkC8sjO8UMT5ywVevlE90glJsCOzvOLjz9TD1CrAE7vfSg4TdpDP+K7M6Au7hz3JsfHw==",
+        "requested": "[9.0.38, )",
+        "resolved": "9.0.38",
+        "contentHash": "hTQleQRPv4ISabbvHVf3Q2e4qKgYX0kpZj+nXxS/zh/fuU/1wKj7kaNe0bm8+aA7+XodQUwIRhmy91qz3GFTCQ==",
         "dependencies": {
-          "IdentityModel.OidcClient": "5.0.2",
-          "KubernetesClient.Basic": "9.0.28",
-          "KubernetesClient.Models": "9.0.28",
+          "IdentityModel.OidcClient": "5.1.0",
+          "KubernetesClient.Basic": "9.0.38",
+          "KubernetesClient.Models": "9.0.38",
           "System.IO.Abstractions": "17.2.3",
           "System.IdentityModel.Tokens.Jwt": "6.23.1",
           "prometheus-net": "6.0.0"
@@ -67,8 +67,8 @@
       },
       "IdentityModel.OidcClient": {
         "type": "Transitive",
-        "resolved": "5.0.2",
-        "contentHash": "oOB0ZqNHkXOWqKYR9Wi9rT3owfcXaQLCVckZW3xWHahOhL9wAFdlxZhdZszYQyFVgo6pXfRy5LAdaeeTHEp/GQ==",
+        "resolved": "5.1.0",
+        "contentHash": "hTyT7TRhG1+/6xcIh69YlWhyKtQa0eN3PrfraxxP1zMDhDFqKiGoNjMGwXsDMITUOLNhjJYJpq8C53sUJ7ipnQ==",
         "dependencies": {
           "IdentityModel": "5.2.0",
           "Microsoft.Extensions.Logging": "6.0.0"
@@ -81,21 +81,21 @@
       },
       "KubernetesClient.Basic": {
         "type": "Transitive",
-        "resolved": "9.0.28",
-        "contentHash": "MmfnMavM+nWwpbQYipfQYXgHh9qapbqoOr4K3VFLZQghz97q3iAMV2NdoxF7uQ/i4U/KqQMxouJ9WoCcjOrCCw==",
+        "resolved": "9.0.38",
+        "contentHash": "RSMtvvSHgNRIL65vS46ZlNknh0mh5SlTgoC47frrqNEmioPOXK+AkW5rZd0fTGL5HxYyr81ZFD4SCa1GuvOfGQ==",
         "dependencies": {
-          "KubernetesClient.Models": "9.0.28"
+          "KubernetesClient.Models": "9.0.38"
         }
       },
       "KubernetesClient.Models": {
         "type": "Transitive",
-        "resolved": "9.0.28",
-        "contentHash": "6sV+y91XE4PlXG6napGCA9Z4/dtGUUtbiJscrhap0YsknkmEJUgSaBeu9gmBZHgDMo60aLIJiAtumlRg88TICQ==",
+        "resolved": "9.0.38",
+        "contentHash": "smDNvW092QCSA1JCch/MGh+++65HkwS/4yICvyV+K92ZSDD44Jn56qzM6TS2QD+Amh9/2wpdxOzDTECywx3TlA==",
         "dependencies": {
           "AutoMapper": "10.1.1",
           "Fractions": "7.1.0",
           "System.Text.Json": "6.0.6",
-          "YamlDotNet": "12.0.1"
+          "YamlDotNet": "12.0.2"
         }
       },
       "Microsoft.CSharp": {
@@ -500,21 +500,21 @@
       },
       "YamlDotNet": {
         "type": "Transitive",
-        "resolved": "12.0.1",
-        "contentHash": "MltVIOIX817Uz/TFkPSaZImdzB86X/k8QY0kFBQx6KI6GsKOk3rIlrptOhb28O0RD2WnibMoYLnCQnqfYduvaw=="
+        "resolved": "12.0.2",
+        "contentHash": "IFj2oDZYJIv5sM8mqaj5edVrpgUyoXk/wCGqZQJrgys/0tBajajpjRSgFM+iA/9ILOfTsPYKtcDcwvqBnBcNIg=="
       },
       "monai.deploy.workflowmanager.configuration": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.8, )",
-          "Monai.Deploy.Storage": "[0.2.7, )"
+          "Monai.Deploy.Messaging": "0.1.8",
+          "Monai.Deploy.Storage": "0.2.7"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.8, )",
-          "MongoDB.Bson": "[2.18.0, )"
+          "Monai.Deploy.Messaging": "0.1.8",
+          "MongoDB.Bson": "2.18.0"
         }
       }
     }
