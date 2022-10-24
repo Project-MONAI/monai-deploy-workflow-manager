@@ -120,7 +120,7 @@ jobs:
 
       - name: Anchore Container Scan
         id: anchore-scan
-        uses: anchore/scan-action@v3.2.5
+        uses: anchore/scan-action@v3.3.0
         if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/develop') }}
         with:
           image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
