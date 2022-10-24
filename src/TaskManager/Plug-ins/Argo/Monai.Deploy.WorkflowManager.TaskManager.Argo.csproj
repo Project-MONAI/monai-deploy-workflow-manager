@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="KubernetesClient" Version="7.2.19" />
+    <PackageReference Include="KubernetesClient" Version="9.0.38" />
     <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="6.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
