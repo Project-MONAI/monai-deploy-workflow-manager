@@ -25,6 +25,7 @@ issue-labels-exclude:
   - testing
   - good first issue
   - demo
+  - dependencies
 issue-labels-alias:
   - name: breaking
     header: Breaking Change
