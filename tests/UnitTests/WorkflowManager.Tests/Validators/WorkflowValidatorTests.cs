@@ -15,10 +15,13 @@
  */
 
 using System;
+using Minio;
+using System.Reflection;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Validators;
 using Moq;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Test.Validators
@@ -282,7 +285,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             Assert.True(workflowValidationResult.Errors.Count > 0);
 
-            Assert.Equal(21, workflowValidationResult.Errors.Count);
+            Assert.Equal(22, workflowValidationResult.Errors.Count);
 
             var successPath = "rootTask => taskSucessdesc1 => taskSucessdesc2";
             Assert.Contains(successPath, workflowValidationResult.SuccessfulPaths);
@@ -308,7 +311,10 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
             var duplicateWorkflowName = $"A Workflow with the name: {workflow.Name} already exists.";
             Assert.Contains(duplicateWorkflowName, workflowValidationResult.Errors);
 
-            var missingArgoArgs = "Required parameter to execute Argo workflow is missing: queue_name, workflow_name, reviewed_task_id";
+            var missingClinicalReviewArgs = "Required parameter for clinical review args are missing: queue_name, workflow_name, reviewed_task_id";
+            Assert.Contains(missingClinicalReviewArgs, workflowValidationResult.Errors);
+
+            var missingArgoArgs = "Required parameter to execute Argo workflow is missing: server_url, workflow_template_name";
             Assert.Contains(missingArgoArgs, workflowValidationResult.Errors);
 
             var incorrectClinicalReviewValueFormat = $"Invalid Value property on input artifact Invalid Value Format in task: test-clinical-review. Incorrect format.";

@@ -117,13 +117,13 @@ Scenario Outline: Update workflow with invalid details
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Body_Object                        | 'informaticsGateway' cannot be null                                                                     |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Empty_Workflow_Body                                 | '' is not a valid Workflow Description                                                                  |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Dup_Output                         | has multiple output names with the same value                                                           |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_QueueName                  | Required parameter to execute Argo workflow is missing: queue_name                                      |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_WorkflowName               | Required parameter to execute Argo workflow is missing: workflow_name                                   |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_ReviewedTaskId             | Required parameter to execute Argo workflow is missing: reviewed_task_id                                |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_All_Argo_Args              | Required parameter to execute Argo workflow is missing: queue_name, workflow_name, reviewed_task_id     |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_1              | Required parameter to execute Argo workflow is missing: queue_name, reviewed_task_id                    |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_2              | Required parameter to execute Argo workflow is missing: workflow_name, reviewed_task_id                 |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_3              | Required parameter to execute Argo workflow is missing: queue_name, workflow_name                       |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_QueueName                  | Required parameter to execute Argo workflow is missing:                                                 |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_WorkflowName               | Required parameter to execute Argo workflow is missing:                                                 |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_ReviewedTaskId             | Required parameter to execute Argo workflow is missing:                                                 |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_All_Argo_Args              | Required parameter to execute Argo workflow is missing:                                                 |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_1              | Required parameter to execute Argo workflow is missing:                                                 |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_2              | Required parameter to execute Argo workflow is missing:                                                 |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_3              | Required parameter to execute Argo workflow is missing:                                                 |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc' |
 
 @UpdateWorkflows
@@ -183,13 +183,13 @@ Scenario Outline: Add workflow with invalid details
     | Invalid_Workflow_Body_Object                        | 'informaticsGateway' cannot be null                                                                     |
     | Empty_Workflow_Body                                 | '' is not a valid Workflow Description                                                                  |
     | Invalid_Workflow_Dup_Output                         | has multiple output names with the same value                                                           |
-    | Invalid_Workflow_Missing_QueueName                  | Required parameter to execute Argo workflow is missing: queue_name                                      |
-    | Invalid_Workflow_Missing_WorkflowName               | Required parameter to execute Argo workflow is missing: workflow_name                                   |
-    | Invalid_Workflow_Missing_ReviewedTaskId             | Required parameter to execute Argo workflow is missing: reviewed_task_id                                |
-    | Invalid_Workflow_Missing_All_Argo_Args              | Required parameter to execute Argo workflow is missing: queue_name, workflow_name, reviewed_task_id     |
-    | Invalid_Workflow_Missing_2_Argo_Args_1              | Required parameter to execute Argo workflow is missing: queue_name, reviewed_task_id                    |
-    | Invalid_Workflow_Missing_2_Argo_Args_2              | Required parameter to execute Argo workflow is missing: workflow_name, reviewed_task_id                 |
-    | Invalid_Workflow_Missing_2_Argo_Args_3              | Required parameter to execute Argo workflow is missing: queue_name, workflow_name                       |
+    | Invalid_Workflow_Missing_QueueName                  | Required parameter to execute Argo workflow is missing:                                                 |
+    | Invalid_Workflow_Missing_WorkflowName               | Required parameter to execute Argo workflow is missing:                                                 |
+    | Invalid_Workflow_Missing_ReviewedTaskId             | Required parameter to execute Argo workflow is missing:                                                 |
+    | Invalid_Workflow_Missing_All_Argo_Args              | Required parameter to execute Argo workflow is missing:                                                 |
+    | Invalid_Workflow_Missing_2_Argo_Args_1              | Required parameter to execute Argo workflow is missing:                                                 |
+    | Invalid_Workflow_Missing_2_Argo_Args_2              | Required parameter to execute Argo workflow is missing:                                                 |
+    | Invalid_Workflow_Missing_2_Argo_Args_3              | Required parameter to execute Argo workflow is missing:                                                 |
     | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc' |
 
 @AddWorkflows
