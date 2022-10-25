@@ -293,6 +293,21 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 return;
             }
 
+            var missingKeys = new List<string>();
+
+            foreach (var key in ValidationConstants.ClinicalReviewRequiredParameters)
+            {
+                if (!currentTask.Args.ContainsKey(key))
+                {
+                    missingKeys.Add(key);
+                }
+            }
+
+            if (missingKeys.Count > 0)
+            {
+                Errors.Add($"Required parameter for clinical review args are missing: {string.Join(", ", missingKeys)}");
+            }
+
             foreach (var inputArtifact in inputs)
             {
                 var valueStringSplit = inputArtifact.Value.Split('.');
