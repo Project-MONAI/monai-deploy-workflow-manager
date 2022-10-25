@@ -15,15 +15,11 @@
  */
 
 using System;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Minio;
-using System.Reflection;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Validators;
 using Moq;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Test.Validators
@@ -345,7 +341,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
                 Assert.True(errors.Count > 0);
 
-                Assert.Equal(8, errors.Count);
+                Assert.Equal(7, errors.Count);
 
                 var error1 = "'' is not a valid Workflow Description (source: Unnamed workflow).";
                 Assert.Contains(error1, errors);
@@ -367,9 +363,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
                 var error7 = "Missing Workflow Tasks.";
                 Assert.Contains(error7, errors);
-
-                var error8 = "A Workflow with the name:  already exists.";
-                Assert.Contains(error8, errors);
 
                 WorkflowValidator.Reset();
             }
