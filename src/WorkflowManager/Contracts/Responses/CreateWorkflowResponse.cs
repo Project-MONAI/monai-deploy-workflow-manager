@@ -16,7 +16,6 @@
 
 using Newtonsoft.Json;
 
-
 namespace Monai.Deploy.WorkflowManager.Contracts.Responses
 {
     public class CreateWorkflowResponse

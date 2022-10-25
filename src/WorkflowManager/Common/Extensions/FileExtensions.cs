@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 using Monai.Deploy.Storage.API;
 
 namespace Monai.Deploy.WorkflowManager.Common.Extensions

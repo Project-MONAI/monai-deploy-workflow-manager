@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Monai.Deploy.WorkflowManager.Authentication.Middleware
 {

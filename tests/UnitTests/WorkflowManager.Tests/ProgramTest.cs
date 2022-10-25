@@ -23,7 +23,8 @@ namespace Monai.Deploy.WorkflowManager.Tests
 {
     public class ProgramTest
     {
-        const string PlugInDirectoryName = "plug-ins";
+        private const string PlugInDirectoryName = "plug-ins";
+
         [Fact(DisplayName = "Program - runs properly")]
         public void Startup_RunsProperly()
         {

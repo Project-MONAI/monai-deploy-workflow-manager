@@ -16,19 +16,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Monai.Deploy.Storage.API;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.WorkflowManager.Storage.Services;
-using Moq;
-using Xunit;
-using System.Text;
+using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Storage.Constants;
+using Monai.Deploy.WorkflowManager.Storage.Services;
+using Moq;
 using Newtonsoft.Json;
-using System.IO;
+using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
 {

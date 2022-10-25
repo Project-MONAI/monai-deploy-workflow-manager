@@ -25,6 +25,7 @@ namespace Monai.Deploy.InformaticsGateway.Test.Repositories
 
         public string ServiceName => nameof(TestServiceA);
     }
+
     public class TestServiceB : IMonaiService
     {
         public ServiceStatus Status { get; set; } = ServiceStatus.Running;

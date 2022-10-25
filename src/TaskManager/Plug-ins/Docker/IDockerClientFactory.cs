@@ -27,7 +27,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
     {
         public IDockerClient CreateClient(Uri dockerEndpoint)
         {
-           return new DockerClientConfiguration(dockerEndpoint).CreateClient();
+            return new DockerClientConfiguration(dockerEndpoint).CreateClient();
         }
     }
 }

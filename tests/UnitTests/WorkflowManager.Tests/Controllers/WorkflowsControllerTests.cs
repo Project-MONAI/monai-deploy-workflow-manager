@@ -165,7 +165,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         AeTitle = "aetitle",
                         DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
-
                     },
                     Tasks = new TaskObject[]
                         {
@@ -186,7 +185,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             const string expectedInstance = "/workflows";
             Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
-
         }
 
         [Fact]
@@ -232,7 +230,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         AeTitle = "aetitle",
                         DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
-
                     },
                     Tasks = new TaskObject[]
                         {
@@ -298,7 +295,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         AeTitle = "aetitle",
                         DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
-
                     },
                     Tasks = new TaskObject[]
                         {
@@ -367,7 +363,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         AeTitle = "aetitle",
                         DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
-
                     },
                     Tasks = new TaskObject[]
                     {
@@ -440,7 +435,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         AeTitle = "aetitle",
                         DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
-
                     },
                     Tasks = new TaskObject[]
                     {

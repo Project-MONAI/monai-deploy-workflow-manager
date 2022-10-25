@@ -56,7 +56,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             WorkflowInstanceController = new WorkflowInstanceController(_workflowInstanceService.Object, _logger.Object, _uriService.Object, _options);
         }
 
-
         [Fact]
         public async Task GetListAsync_WorkflowInstancesExist_ReturnsList()
         {
@@ -469,7 +468,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);
-
         }
     }
 }

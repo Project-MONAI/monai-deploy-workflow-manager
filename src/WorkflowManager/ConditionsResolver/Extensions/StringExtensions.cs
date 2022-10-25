@@ -43,6 +43,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions
                         input = input.TrimStart().Substring(prefixToRemove.Length, input.Length - prefixToRemove.Length);
                     }
                     return input?.TrimStart() ?? string.Empty;
+
                 case StringComparison.CurrentCultureIgnoreCase:
                 case StringComparison.InvariantCultureIgnoreCase:
                 case StringComparison.OrdinalIgnoreCase:

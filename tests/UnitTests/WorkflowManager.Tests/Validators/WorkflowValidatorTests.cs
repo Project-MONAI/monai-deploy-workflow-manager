@@ -15,13 +15,10 @@
  */
 
 using System;
-using Minio;
-using System.Reflection;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Validators;
 using Moq;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Test.Validators
@@ -95,7 +92,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                             }
                         }
                     },
+
                     #region LoopingTasks
+
                     new TaskObject {
                         Id = "taskLoopdesc4",
                         Type = "type",
@@ -146,8 +145,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                             }
                         }
                     },
-                    #endregion
+
+                    #endregion LoopingTasks
+
                     #region SuccessfulTasksPath
+
                     new TaskObject {
                         Id = "taskSucessdesc1",
                         Type = "type",
@@ -163,8 +165,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                         Id = "taskSucessdesc2",
                         Type = "type",
                     },
-                    #endregion
+
+                    #endregion SuccessfulTasksPath
+
                     #region SelfReferencingTasks
+
                     new TaskObject {
                         Id = "taskdesc1",
                         Type = "type",
@@ -263,8 +268,10 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                             }
                         }
                     },
-                    #endregion
-                    // Unreferenced task 
+
+                    #endregion SelfReferencingTasks
+
+                    // Unreferenced task
                     new TaskObject {
                         Id = "taskdesc3",
                         Type = "type",
@@ -419,7 +426,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                             }
                         }
                     },
+
                     #region SuccessfulTasksPath
+
                     new TaskObject
                     {
                         Id = "taskSucessdesc1",
@@ -439,7 +448,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                         Type = "type",
                         Description = "TestDesc",
                     },
-                    #endregion
+
+                    #endregion SuccessfulTasksPath
+
                     new TaskObject
                     {
                         Id = "taskdesc1",

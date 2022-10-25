@@ -15,11 +15,11 @@
  */
 
 using Ardalis.GuardClauses;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Exceptions;
+using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Database.Interfaces;
 
 namespace Monai.Deploy.WorkflowManager.Common.Services
 {

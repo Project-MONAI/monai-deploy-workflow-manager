@@ -15,18 +15,22 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Exceptions;
+using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Contracts.Responses;
 using Monai.Deploy.WorkflowManager.Filter;
+using Monai.Deploy.WorkflowManager.Logging.Logging;
 using Monai.Deploy.WorkflowManager.Services;
 
 namespace Monai.Deploy.WorkflowManager.Controllers
@@ -74,6 +78,9 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <param name="disablePagination">Disabled pagination.</param>
         /// <returns>A list of workflow instances.</returns>
         [HttpGet]
+        [ProducesResponseType(typeof(IList<WorkflowInstance>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetListAsync([FromQuery] PaginationFilter filter, [FromQuery] string status = null, [FromQuery] string? payloadId = null, [FromQuery] bool disablePagination = false)
         {
             try
@@ -82,7 +89,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 {
                     _logger.LogDebug($"{nameof(GetListAsync)} - Failed to validate {nameof(payloadId)}");
 
-                    return Problem($"Failed to validate {nameof(payloadId)}, not a valid guid", $"{ENDPOINT}{payloadId}", BadRequest);
+                    return Problem($"Failed to validate {nameof(payloadId)}, not a valid GUID", $"{ENDPOINT}{payloadId}", BadRequest);
                 }
 
                 Status? parsedStatus = status == null ? null : Enum.Parse<Status>(status, true);
@@ -112,8 +119,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"{nameof(GetListAsync)} - Failed to get workflowInstances", e);
-
+                _logger.WorkflowinstancesGetListAsyncError(e);
                 return Problem($"Unexpected error occurred: {e.Message}", $"{ENDPOINT}", InternalServerError);
             }
         }
@@ -125,13 +131,17 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <returns>A list of workflow instances.</returns>
         [Route("{id}")]
         [HttpGet]
+        [ProducesResponseType(typeof(WorkflowInstance), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByIdAsync([FromRoute] string id)
         {
             if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
             {
                 _logger.LogDebug($"{nameof(GetByIdAsync)} - Failed to validate {nameof(id)}");
 
-                return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"{ENDPOINT}{id}", BadRequest);
+                return Problem($"Failed to validate {nameof(id)}, not a valid GUID", $"{ENDPOINT}{id}", BadRequest);
             }
 
             try
@@ -149,6 +159,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
+                _logger.WorkflowinstancesGetByIdAsyncError(id, e);
                 return Problem($"Unexpected error occurred: {e.Message}", $"{ENDPOINT}{nameof(id)}", InternalServerError);
             }
         }
@@ -160,6 +171,10 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <returns>This should be a new endpoint to return failed workflow's instances, that have an empty value of.</returns>
         [Route("failed")]
         [HttpGet]
+        [ProducesResponseType(typeof(IList<WorkflowInstance>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetFailedAsync([FromQuery] DateTime? acknowledged)
         {
             if (acknowledged is null)
@@ -186,8 +201,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"{nameof(GetFailedAsync)} - Failed to get failed workflowInstances", e);
-
+                _logger.WorkflowinstancesGetFailedAsyncError(e);
                 return Problem($"Unexpected error occurred.", $"{ENDPOINT}failed", InternalServerError);
             }
         }
@@ -200,20 +214,24 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <returns>An updated workflow.</returns>
         [Route("{id}/executions/{executionId}/acknowledge")]
         [HttpPut]
+        [ProducesResponseType(typeof(WorkflowInstance), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AcknowledgeTaskError([FromRoute] string id, [FromRoute] string executionId)
         {
             if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
             {
                 _logger.LogDebug($"{nameof(AcknowledgeTaskError)} - Failed to validate {nameof(id)}");
 
-                return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}/executions/{executionId}/acknowledge", BadRequest);
+                return Problem($"Failed to validate {nameof(id)}, not a valid GUID", $"/workflows/{id}/executions/{executionId}/acknowledge", BadRequest);
             }
 
             if (string.IsNullOrWhiteSpace(executionId) || !Guid.TryParse(executionId, out _))
             {
                 _logger.LogDebug($"{nameof(AcknowledgeTaskError)} - Failed to validate {nameof(executionId)}");
 
-                return Problem($"Failed to validate {nameof(executionId)}, not a valid guid", $"/workflows/{id}/executions/{executionId}/acknowledge", BadRequest);
+                return Problem($"Failed to validate {nameof(executionId)}, not a valid GUID", $"/workflows/{id}/executions/{executionId}/acknowledge", BadRequest);
             }
 
             try
@@ -224,21 +242,18 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (MonaiBadRequestException e)
             {
-                _logger.LogDebug($"{nameof(AcknowledgeTaskError)} - {e.Message}");
-
+                _logger.WorkflowinstancesAcknowledgeTaskError(id, executionId, e);
                 return Problem(e.Message, $"/workflows/{id}/executions/{executionId}/acknowledge", BadRequest);
             }
             catch (MonaiNotFoundException e)
             {
-                _logger.LogDebug($"{nameof(AcknowledgeTaskError)} - {e.Message}");
-
+                _logger.WorkflowinstancesAcknowledgeTaskError(id, executionId, e);
                 return Problem(e.Message, $"/workflows/{id}/executions/{executionId}/acknowledge", NotFound);
             }
             catch (Exception e)
             {
-                _logger.LogDebug($"{nameof(AcknowledgeTaskError)} - Unexpected error occured: {e.Message}");
-
-                return Problem($"Unexpected error occured: {e.Message}", $"/workflows/{id}/executions/{executionId}/acknowledge", InternalServerError);
+                _logger.WorkflowinstancesAcknowledgeTaskError(id, executionId, e);
+                return Problem($"Unexpected error occurred: {e.Message}", $"/workflows/{id}/executions/{executionId}/acknowledge", InternalServerError);
             }
         }
     }

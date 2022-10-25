@@ -15,16 +15,23 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Contracts.Responses;
 using Monai.Deploy.WorkflowManager.Filter;
+using Monai.Deploy.WorkflowManager.Logging.Logging;
 using Monai.Deploy.WorkflowManager.Models;
 using Monai.Deploy.WorkflowManager.Services;
+using Monai.Deploy.WorkflowManager.Wrappers;
 
 namespace Monai.Deploy.WorkflowManager.Controllers
 {
@@ -68,6 +75,8 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <param name="filter">Pagination Filters.</param>
         /// <returns>All running tasks.</returns>
         [HttpGet("running")]
+        [ProducesResponseType(typeof(PagedResponse<List<TaskExecution>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetListAsync([FromQuery] PaginationFilter filter)
         {
             try
@@ -86,6 +95,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
+                _logger.TasksGetRunningListAsyncError(e);
                 return Problem($"Unexpected error occurred: {e.Message}", $"/tasks/running", InternalServerError);
             }
         }
@@ -96,6 +106,10 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <param name="request">TasksRequest model.</param>
         /// <returns>Task Information.</returns>
         [HttpGet]
+        [ProducesResponseType(typeof(TaskExecution), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAsync([FromBody] TasksRequest request)
         {
             var workflowInstanceId = request.WorkflowInstanceId;
@@ -125,6 +139,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
+                _logger.TasksGetAsyncError(e);
                 return Problem($"Unexpected error occurred: {e.Message}", $"/tasks/", InternalServerError);
             }
         }

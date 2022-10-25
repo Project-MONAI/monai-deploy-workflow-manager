@@ -228,6 +228,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                         }
                     }
                 }
+
                 #region Extra Test Data
 
                 //new WorkflowInstance()
@@ -558,10 +559,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 //        }
                 //    }
                 //}
-                #endregion
+
+                #endregion Extra Test Data
             };
         }
-
     }
-
 }

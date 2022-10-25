@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Xml.Linq;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -714,6 +713,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+
         public async Task<TaskExecution> CreateTaskExecutionAsync(TaskObject task,
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
                                                   WorkflowInstance workflowInstance,

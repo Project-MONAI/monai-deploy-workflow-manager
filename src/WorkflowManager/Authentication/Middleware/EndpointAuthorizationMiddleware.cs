@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Routing;
 using System.Net;
 using Microsoft.AspNetCore.Http;
-using Monai.Deploy.WorkflowManager.Authentication.Extensions;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Monai.Deploy.WorkflowManager.Authentication.Extensions;
 
 namespace Monai.Deploy.WorkflowManager.Authentication.Middleware
 {
