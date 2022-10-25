@@ -90,7 +90,7 @@ jobs:
 
       - name: Dockle Container Scanner
         uses: erzz/dockle-action@v1
-        if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release') }}
+        if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           report-format: sarif
@@ -100,13 +100,13 @@ jobs:
       # Disable upload due to bug https://github.com/erzz/dockle-action/issues/18
       # - name: Upload Dockle SARIF Report
       #   uses: github/codeql-action/upload-sarif@v2
-      #   if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release') }}
+      #   if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
       #   with:
       #     sarif_file: dockle-report.sarif
 
       - name: Trivy Vulnerability Scanner
         uses: aquasecurity/trivy-action@master
-        if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release') }}
+       if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           format: 'sarif'
@@ -114,14 +114,14 @@ jobs:
 
       - name: Upload Trivy SARIF Report
         uses: github/codeql-action/upload-sarif@v2
-        if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release') }}
+       if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           sarif_file: 'trivy-results.sarif'
 
       - name: Anchore Container Scan
         id: anchore-scan
         uses: anchore/scan-action@v3.3.0
-        if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release') }}
+        if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           fail-build: true
@@ -130,7 +130,7 @@ jobs:
 
       - name: Upload Anchore Scan SARIF Report
         uses: github/codeql-action/upload-sarif@v2
-        if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release') }}
+        if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           sarif_file: ${{ steps.anchore-scan.outputs.sarif }}
           token: ${{ secrets.GITHUB_TOKEN }}

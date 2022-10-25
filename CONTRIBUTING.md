@@ -138,6 +138,18 @@ If your package is on the Amber list please make a maintainer aware and let them
 
 If your package is on the Red list you will have to look for another package that achieves the same aim with a more permissive license.
 
+
+##### Vulnerability Scanning
+
+The [Build](.github/workflows/build.yml) CI worklfow builds & publishes container images to [GitHub Packages](https://github.com/orgs/Project-MONAI/packages?repo_name=monai-deploy-workflow-manager).
+The CI workflow also performs container scanning using [Trivy](https://github.com/marketplace/actions/aqua-security-trivy#using-trivy-with-github-code-scanning), [Dockle](https://github.com/marketplace/actions/dockle-action), and [Anchore](https://github.com/marketplace/actions/anchore-container-scan) for the `main` branch and the `release/*` branches.
+
+If any vulnerability is discovered without any mitigation or is false positive, please open a new GitHub issue to track the vulnerability before adding to the allowlists:
+
+- Trivy: `.trivyignore`, include URL to the GitHub issue as comment
+
+Once a vulnerability is mitigated or fixed, update the allowlists to remove it.
+
 #### Test Projects
 
 All C# projects reside in their directory, including a `Tests/` subdirectory.
@@ -154,11 +166,21 @@ MONAI Deploy Workflow Manager functionality has plenty of unit tests from which 
 
 Documentation for MONAI Deploy Workflow Manager is located at `docs/` and requires [DocFX](https://dotnet.github.io/docfx/) to build.
 
+- *docs/index.md*: documentation landing page
+- *docs/setup/*: component installation & configuration pages
+- *docs/api/rest*: RESTful APIs
+
+Note: *docfx* generated C# APIs based on [XML documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/) written in the source code. 
+To configure which C# projects to include in the documentation, edit the **metadata>src>files** section in the *docs/docfx.json* file.
+
 Please follow the [instructions](https://dotnet.github.io/docfx/tutorial/docfx_getting_started.html#2-use-docfx-as-a-command-line-tool) to install Mono and download the DocFX command-line tool to build the documentation.
 
 ```bash
 [path-to]/docfx.exe docs/docfx.json
 ```
+##### Updating Changelog
+
+The changelog is located in `docs/changelog.md` and should be updated for every release to include new features, bug fixes and breaking changes.
 
 #### Automatic code formatting
 
