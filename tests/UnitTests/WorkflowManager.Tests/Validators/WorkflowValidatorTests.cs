@@ -293,50 +293,50 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new WorkflowRevision());
 
-            var workflowValidationResult = await this.WorkflowValidator.ValidateWorkflow(workflow);
+            var (errors, successfulPaths) = await this.WorkflowValidator.ValidateWorkflow(workflow);
 
-            Assert.True(workflowValidationResult.Errors.Count > 0);
+            Assert.True(errors.Count > 0);
 
-            Assert.Equal(22, workflowValidationResult.Errors.Count);
+            Assert.Equal(22, errors.Count);
 
             var successPath = "rootTask => taskSucessdesc1 => taskSucessdesc2";
-            Assert.Contains(successPath, workflowValidationResult.SuccessfulPaths);
+            Assert.Contains(successPath, successfulPaths);
 
             var expectedConvergenceError = "Detected task convergence on path: rootTask => taskdesc1 => taskdesc2 => test-argo-task => test-clinical-review => test-clinical-review-2 => example-task => ∞";
-            Assert.Contains(expectedConvergenceError, workflowValidationResult.Errors);
+            Assert.Contains(expectedConvergenceError, errors);
 
             var unreferencedTaskError = "Found Task(s) without any task destinations to it: taskdesc3,task_de.sc3?";
-            Assert.Contains(unreferencedTaskError, workflowValidationResult.Errors);
+            Assert.Contains(unreferencedTaskError, errors);
 
             var loopingTasksError = "Detected task convergence on path: rootTask => taskLoopdesc1 => taskLoopdesc2 => taskLoopdesc3 => taskLoopdesc4 => ∞";
-            Assert.Contains(loopingTasksError, workflowValidationResult.Errors);
+            Assert.Contains(loopingTasksError, errors);
 
             var missingDestinationError = "Missing destination DoesNotExistDestination in task taskLoopdesc4";
-            Assert.Contains(missingDestinationError, workflowValidationResult.Errors);
+            Assert.Contains(missingDestinationError, errors);
 
             var invalidTaskId = "TaskId: task_de.sc3? Contains Invalid Characters.";
-            Assert.Contains(invalidTaskId, workflowValidationResult.Errors);
+            Assert.Contains(invalidTaskId, errors);
 
             var duplicateOutputArtifactName = "Task: \"rootTask\" has multiple output names with the same value.\n";
-            Assert.Contains(duplicateOutputArtifactName, workflowValidationResult.Errors);
+            Assert.Contains(duplicateOutputArtifactName, errors);
 
             var duplicateWorkflowName = $"A Workflow with the name: {workflow.Name} already exists.";
-            Assert.Contains(duplicateWorkflowName, workflowValidationResult.Errors);
+            Assert.Contains(duplicateWorkflowName, errors);
 
             var missingClinicalReviewArgs = "Required parameter for clinical review args are missing: queue_name, workflow_name, reviewed_task_id";
-            Assert.Contains(missingClinicalReviewArgs, workflowValidationResult.Errors);
+            Assert.Contains(missingClinicalReviewArgs, errors);
 
             var missingArgoArgs = "Required parameter to execute Argo workflow is missing: server_url, workflow_template_name";
-            Assert.Contains(missingArgoArgs, workflowValidationResult.Errors);
+            Assert.Contains(missingArgoArgs, errors);
 
             var incorrectClinicalReviewValueFormat = $"Invalid Value property on input artifact Invalid Value Format in task: test-clinical-review. Incorrect format.";
-            Assert.Contains(incorrectClinicalReviewValueFormat, workflowValidationResult.Errors);
+            Assert.Contains(incorrectClinicalReviewValueFormat, errors);
 
             var selfReferencingClinicalReviewValue = $"Invalid Value property on input artifact Self Referencing Task Id in task: test-clinical-review. Self referencing task ID.";
-            Assert.Contains(selfReferencingClinicalReviewValue, workflowValidationResult.Errors);
+            Assert.Contains(selfReferencingClinicalReviewValue, errors);
 
             var nonExistingClinicalReviewValueId = $"Invalid input artifact 'No Matching Task Id' in task 'test-clinical-review': No matching task for ID 'a-random-string'";
-            Assert.Contains(nonExistingClinicalReviewValueId, workflowValidationResult.Errors);
+            Assert.Contains(nonExistingClinicalReviewValueId, errors);
 
             WorkflowValidator.Reset();
         }
@@ -351,32 +351,32 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                 _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                     .ReturnsAsync(new WorkflowRevision());
 
-                var results = await this.WorkflowValidator.ValidateWorkflow(workflow);
+                var (errors, _) = await this.WorkflowValidator.ValidateWorkflow(workflow);
 
-                Assert.True(results.Errors.Count > 0);
+                Assert.True(errors.Count > 0);
 
-                Assert.Equal(7, results.Errors.Count);
+                Assert.Equal(7, errors.Count);
 
                 var error1 = "'' is not a valid Workflow Description (source: Unnamed workflow).";
-                Assert.Contains(error1, results.Errors);
+                Assert.Contains(error1, errors);
 
                 var error2 = "'informaticsGateway' cannot be null (source: Unnamed workflow).";
-                Assert.Contains(error2, results.Errors);
+                Assert.Contains(error2, errors);
 
                 var error3 = "'' is not a valid AE Title (source: informaticsGateway).";
-                Assert.Contains(error3, results.Errors);
+                Assert.Contains(error3, errors);
 
                 var error4 = "'' is not a valid Informatics Gateway - exportDestinations (source: informaticsGateway).";
-                Assert.Contains(error4, results.Errors);
+                Assert.Contains(error4, errors);
 
                 var error5 = "Missing Workflow Name.";
-                Assert.Contains(error5, results.Errors);
+                Assert.Contains(error5, errors);
 
                 var error6 = "Missing Workflow Version.";
-                Assert.Contains(error6, results.Errors);
+                Assert.Contains(error6, errors);
 
                 var error7 = "Missing Workflow Tasks.";
-                Assert.Contains(error7, results.Errors);
+                Assert.Contains(error7, errors);
 
                 WorkflowValidator.Reset();
             }
