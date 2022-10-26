@@ -80,7 +80,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManage
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Shared", "Shared\Shared\Monai.Deploy.WorkflowManager.Shared.csproj", "{81E3F943-B992-4C81-AA09-A17C05081236}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monai.Deploy.WorkflowManager.Shared.Tests", "..\tests\UnitTests\Monai.Deploy.WorkflowManager.Shared.Tests\Monai.Deploy.WorkflowManager.Shared.Tests.csproj", "{C853A9E3-C53D-4B1A-BFDA-228689A8C94C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Shared.Tests", "..\tests\UnitTests\Monai.Deploy.WorkflowManager.Shared.Tests\Monai.Deploy.WorkflowManager.Shared.Tests.csproj", "{C853A9E3-C53D-4B1A-BFDA-228689A8C94C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Common.Tests", "..\tests\UnitTests\Common.Tests\Monai.Deploy.WorkflowManager.Common.Tests.csproj", "{75A4AEDA-0386-4B2D-9DBA-BC9AE733660E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -228,6 +230,10 @@ Global
 		{C853A9E3-C53D-4B1A-BFDA-228689A8C94C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C853A9E3-C53D-4B1A-BFDA-228689A8C94C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C853A9E3-C53D-4B1A-BFDA-228689A8C94C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75A4AEDA-0386-4B2D-9DBA-BC9AE733660E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75A4AEDA-0386-4B2D-9DBA-BC9AE733660E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75A4AEDA-0386-4B2D-9DBA-BC9AE733660E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75A4AEDA-0386-4B2D-9DBA-BC9AE733660E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -269,6 +275,7 @@ Global
 		{BF6569A1-1A5A-4358-9C02-1A6A5F0FBFD9} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{81E3F943-B992-4C81-AA09-A17C05081236} = {37A19144-CEA5-47A2-9FFD-22C522E8B895}
 		{C853A9E3-C53D-4B1A-BFDA-228689A8C94C} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
+		{75A4AEDA-0386-4B2D-9DBA-BC9AE733660E} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC0D56C8-D8CB-45CE-B528-F3DCF86D63ED}
