@@ -178,11 +178,11 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", BadRequest);
             }
 
-            var results = await _workflowValidator.ValidateWorkflow(workflow);
+            var (errors, _) = await _workflowValidator.ValidateWorkflow(workflow, false);
 
-            if (results.Errors.Count > 0)
+            if (errors.Count > 0)
             {
-                var validationErrors = string.Join(", ", results.Errors);
+                var validationErrors = string.Join(", ", errors);
                 _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
 
                 return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/{id}", BadRequest);

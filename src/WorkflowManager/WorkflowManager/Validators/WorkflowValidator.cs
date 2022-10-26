@@ -74,14 +74,14 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// </summary>
         /// <param name="workflow">Workflow to validate.</param>
         /// <returns>if any validation errors are produced while validating workflow.</returns>
-        public async Task<(List<string> Errors, List<string> SuccessfulPaths)> ValidateWorkflow(Workflow workflow)
+        public async Task<(List<string> Errors, List<string> SuccessfulPaths)> ValidateWorkflow(Workflow workflow, bool checkForDuplicates = true)
         {
             workflow.IsValid(out var validationErrors);
             Errors.AddRange(validationErrors);
             var tasks = workflow.Tasks;
             var firstTask = tasks.FirstOrDefault();
 
-            await ValidateWorkflowSpec(workflow);
+            await ValidateWorkflowSpec(workflow, checkForDuplicates);
             DetectUnreferencedTasks(tasks, firstTask);
             ValidateTask(tasks, firstTask, 0);
             ValidateTaskDestinations(workflow);
@@ -162,14 +162,16 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private async Task ValidateWorkflowSpec(Workflow workflow)
+        private async Task ValidateWorkflowSpec(Workflow workflow, bool checkForDuplicates)
         {
             if (string.IsNullOrWhiteSpace(workflow.Name) is true)
             {
                 Errors.Add("Missing Workflow Name.");
             }
 
-            if (string.IsNullOrWhiteSpace(workflow.Name) is false && await WorkflowService.GetByNameAsync(workflow.Name) != null)
+            if (checkForDuplicates
+                && string.IsNullOrWhiteSpace(workflow.Name) is false
+                && await WorkflowService.GetByNameAsync(workflow.Name) != null)
             {
                 Errors.Add($"A Workflow with the name: {workflow.Name} already exists.");
             }
