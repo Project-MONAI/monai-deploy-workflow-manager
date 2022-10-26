@@ -381,45 +381,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Fact]
-        public async Task TaskGetFailedAsync_GivenInvalidInTheFutureDateString_ReturnsProblem()
-        {
-            var workflowsInstance = new WorkflowInstance
-            {
-                Id = Guid.NewGuid().ToString(),
-                WorkflowId = Guid.NewGuid().ToString(),
-                PayloadId = Guid.NewGuid().ToString(),
-                Status = Status.Created,
-                BucketId = "bucket",
-                Tasks = new List<TaskExecution>
-                    {
-                        new TaskExecution
-                        {
-                            TaskId = Guid.NewGuid().ToString(),
-                            Status = TaskExecutionStatus.Dispatched
-                        }
-                    }
-            };
-
-            _workflowInstanceService.Setup(w => w.GetAllFailedAsync())
-                .ReturnsAsync(new List<WorkflowInstance>() { workflowsInstance });
-
-            var result = await WorkflowInstanceController.GetFailedAsync();
-
-            var objectResult = Assert.IsType<ObjectResult>(result);
-            objectResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
-            var responseValue = (ProblemDetails)objectResult.Value;
-            responseValue.Status.Should().Be((int)HttpStatusCode.BadRequest);
-
-            var startsWithException = "Failed to validate acknowledged value:";
-            var endsWithException = "provided time is in the future.";
-            Assert.StartsWith(startsWithException, responseValue.Detail);
-            Assert.EndsWith(endsWithException, responseValue.Detail);
-
-            const string expectedInstance = "/workflowinstances";
-            Assert.StartsWith(expectedInstance, responseValue.Instance);
-        }
-
-        [Fact]
         public async Task TaskGetFailedAsync_GivenGetAllFailedAsyncReturnsNoResults_ReturnsProblem()
         {
             _workflowInstanceService.Setup(w => w.GetAllFailedAsync())
@@ -432,7 +393,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             var responseValue = (ProblemDetails)objectResult.Value;
             responseValue.Status.Should().Be((int)HttpStatusCode.NotFound);
 
-            var problemMessage = "Request failed, no workflow instances found since 2022-02-21";
+            var problemMessage = "Request failed, no workflow instances found";
             responseValue.Detail.Should().Be(problemMessage);
 
             const string expectedInstance = "/workflowinstances";
