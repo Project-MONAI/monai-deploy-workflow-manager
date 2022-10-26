@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -29,11 +28,9 @@ using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Contracts.Responses;
 using Monai.Deploy.WorkflowManager.Filter;
 using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.Services;
-using MongoDB.Driver.Core.Clusters;
 
 namespace Monai.Deploy.WorkflowManager.Controllers
 {
@@ -150,7 +147,6 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             {
                 ["workflowId"] = id,
             });
-
 
             try
             {

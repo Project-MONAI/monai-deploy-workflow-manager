@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-using System.Xml.Linq;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
-using MongoDB.Driver.Core.Clusters;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
 {
@@ -102,7 +100,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
                 ["workflowInstanceId"] = payload.WorkflowInstanceId,
                 ["exportTaskId"] = payload.ExportTaskId,
             });
-
 
             try
             {

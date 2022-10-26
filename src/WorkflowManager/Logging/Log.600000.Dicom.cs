@@ -21,6 +21,6 @@ namespace Monai.Deploy.WorkflowManager.Logging
     public static partial class Log
     {
         [LoggerMessage(EventId = 600000, Level = LogLevel.Error, Message = "Failed to get DICOM tag {dicomTag} in bucket {bucketId}. Payload: {payloadId}")]
-        public static partial void FailedToGetDicomTag(this ILogger logger, string payloadId, string dicomTag, string bucketId, Exception ex);
+        public static partial void FailedToGetDicomTagFromPayload(this ILogger logger, string payloadId, string dicomTag, string bucketId, Exception ex);
     }
 }

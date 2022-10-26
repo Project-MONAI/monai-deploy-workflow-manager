@@ -26,7 +26,7 @@ namespace Monai.Deploy.WorkflowManager.Logging
         public static partial void DbPayloadCreationError(this ILogger logger, Exception ex);
 
         [LoggerMessage(EventId = 800001, Level = LogLevel.Error, Message = "Failed to associate workflow instances to payload.")]
-        public static partial void DbUpdateWorkflowInstancesError(this ILogger logger, Exception ex);
+        public static partial void DbUpdateWorkflowInstanceError(this ILogger logger, Exception ex);
 
         [LoggerMessage(EventId = 800002, Level = LogLevel.Error, Message = "Failed to load tasks from the database.")]
         public static partial void DbGetAllTasksError(this ILogger logger, Exception ex);

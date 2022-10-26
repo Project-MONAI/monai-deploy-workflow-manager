@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Monai.Deploy.Messaging.Events;
 using Newtonsoft.Json;
 

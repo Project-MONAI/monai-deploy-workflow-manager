@@ -100,7 +100,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             }
             catch (Exception e)
             {
-                _logger.FailedToGetDicomTag(payloadId, keyId, bucketId, e);
+                _logger.FailedToGetDicomTagFromPayload(payloadId, keyId, bucketId, e);
             }
 
             return null;

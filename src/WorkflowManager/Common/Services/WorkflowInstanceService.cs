@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using Amazon.Runtime.Internal.Util;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;

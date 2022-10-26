@@ -114,7 +114,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
             catch (Exception ex)
             {
-                _logger.DbUpdateWorkflowInstancesError(ex);
+                _logger.DbUpdateWorkflowInstanceError(ex);
                 return false;
             }
         }
