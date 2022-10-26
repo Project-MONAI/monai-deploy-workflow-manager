@@ -113,7 +113,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
                 PatientName = "Jack",
                 PatientId = "patientid",
                 PatientSex = "Male",
-                PatientDob = new DateTime(1996, 01, 20),
+                PatientDob = new DateTime(1996, 01, 20, 0, 0, 0, kind: DateTimeKind.Utc),
                 PatientAge = "25",
                 PatientHospitalId = "hospitalid"
             };

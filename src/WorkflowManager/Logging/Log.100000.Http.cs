@@ -41,7 +41,7 @@ namespace Monai.Deploy.WorkflowManager.Logging
         [LoggerMessage(EventId = 100006, Level = LogLevel.Error, Message = "Unexpected error occurred in GET /workflowinstances/failed API.")]
         public static partial void WorkflowinstancesGetFailedAsyncError(this ILogger logger, Exception ex);
 
-        [LoggerMessage(EventId = 100007, Level = LogLevel.Error, Message = "Unexpected error occurred in GET /workflowinstances/{id}/executions/{executionId}/acknowledge} API.")]
+        [LoggerMessage(EventId = 100007, Level = LogLevel.Error, Message = "Unexpected error occurred in GET /workflowinstances/{id}/executions/{executionId}/acknowledge API.")]
         public static partial void WorkflowinstancesAcknowledgeTaskError(this ILogger logger, string id, string executionId, Exception ex);
 
         [LoggerMessage(EventId = 100008, Level = LogLevel.Error, Message = "Unexpected error occurred in GET /workflows/ API.")]

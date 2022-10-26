@@ -288,7 +288,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             payloadCollection.CalledAeTitle.Should().Be(workflowRequestMessage.CalledAeTitle);
             payloadCollection.CorrelationId.Should().Be(workflowRequestMessage.CorrelationId);
             payloadCollection.Timestamp.Should().BeCloseTo(DateTime.UtcNow, precision: TimeSpan.FromMinutes(1));
-            payloadCollection.PatientDetails.Should().BeEquivalentTo(patientDetails);
+            payloadCollection.PatientDetails.Should().BeEquivalentTo(patientDetails, options => options.Excluding(x => x.PatientDob));
+            payloadCollection.PatientDetails.PatientDob?.ToUniversalTime().Should().Be(patientDetails.PatientDob?.ToUniversalTime());
         }
 
         public void AssertPayloadWorkflowInstanceId(Payload payloadCollection, List<WorkflowInstance> workflowInstances)
@@ -409,10 +410,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             foreach (var actualWorkflowInstance in actualWorkflowInstances)
             {
                 var expectedWorkflowInstance = expectedWorkflowInstances.FirstOrDefault(x => x.Id.Equals(actualWorkflowInstance.Id));
-                actualWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss").Should().Be(expectedWorkflowInstance?.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss"));
+                actualWorkflowInstance.StartTime.ToString("u").Should().Be(expectedWorkflowInstance?.StartTime.ToString("u"));
+                actualWorkflowInstance.AcknowledgedWorkflowErrors?.ToString("u").Should().Be(expectedWorkflowInstance?.AcknowledgedWorkflowErrors?.ToString("u"));
             }
             actualWorkflowInstances.OrderBy(x => x.Id).Should().BeEquivalentTo(expectedWorkflowInstances.OrderBy(x => x.Id),
-                options => options.Excluding(x => x.StartTime));
+                options => options.Excluding(x => x.StartTime).Excluding(x => x.AcknowledgedWorkflowErrors));
         }
 
         public void AssertWorkflowInstance(List<WorkflowInstance> expectedWorkflowInstances, WorkflowInstance? actualWorkflowInstance)

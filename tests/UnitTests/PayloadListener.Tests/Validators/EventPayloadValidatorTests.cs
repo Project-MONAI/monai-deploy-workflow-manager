@@ -246,7 +246,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
                 Workflows = new List<string>(),
                 FileCount = 2,
                 CorrelationId = Guid.NewGuid().ToString(),
-                Timestamp = DateTime.Now,
+                Timestamp = DateTime.UtcNow,
                 CalledAeTitle = "AeTitle",
                 CallingAeTitle = "CallingAeTitle",
             };

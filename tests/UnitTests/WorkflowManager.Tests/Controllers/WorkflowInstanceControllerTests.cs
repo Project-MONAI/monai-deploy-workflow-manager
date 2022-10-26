@@ -53,6 +53,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             _logger = new Mock<ILogger<WorkflowInstanceController>>();
             _uriService = new Mock<IUriService>();
 
+            _logger.Setup(p => p.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
             WorkflowInstanceController = new WorkflowInstanceController(_workflowInstanceService.Object, _logger.Object, _uriService.Object, _options);
         }
 
@@ -457,14 +458,14 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             responseValue.Detail.Should().Be(problemMessage);
 
             const string expectedInstance = "/workflowinstances";
-            var expectedErrorMessage = "GetFailedAsync - Failed to get failed workflowInstances";
+            var expectedErrorMessage = "Unexpected error occurred in GET /workflowinstances/failed API.";
 
             Assert.StartsWith(expectedInstance, responseValue.Instance);
 
             _logger.Verify(logger => logger.Log(
                 It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
-                It.Is<EventId>(eventId => eventId.Id == 0),
-                It.Is<It.IsAnyType>((@object, @type) => @object.ToString() == expectedErrorMessage && @type.Name == "FormattedLogValues"),
+                It.Is<EventId>(eventId => eventId.Id == 100006),
+                It.Is<It.IsAnyType>((@object, @type) => @object.ToString() == expectedErrorMessage),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);
