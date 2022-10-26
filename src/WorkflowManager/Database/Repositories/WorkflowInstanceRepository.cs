@@ -25,7 +25,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
 using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Database.Repositories
@@ -72,8 +72,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(GetByWorkflowsIdsAsync), e);
-
+                _logger.DbGetWorkflowInstancesError(e);
                 return new List<WorkflowInstance>();
             }
         }
@@ -90,7 +89,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(CreateAsync), e);
+                _logger.DbCreateWorkflowInstancesError(e);
 
                 return false;
             }
@@ -112,7 +111,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(UpdateTaskAsync), e);
+                _logger.DbUpdateWorkflowInstancesError(workflowInstanceId, e);
 
                 return false;
             }
@@ -145,7 +144,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(UpdateTaskStatusAsync), e);
+                _logger.DbUpdateTaskStatusError(taskId, status, e);
 
                 return false;
             }
@@ -167,7 +166,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(UpdateTaskOutputArtifactsAsync), e);
+                _logger.DbUpdateTaskOutputArtifactError(taskId, e);
 
                 return false;
             }
@@ -188,7 +187,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(UpdateWorkflowInstanceStatusAsync), e);
+                _logger.DbUpdateWorkflowInstanceStatusError(workflowInstanceId, status, e);
                 return false;
             }
         }
@@ -235,7 +234,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(GetTaskByIdAsync), e);
+                _logger.DbGetTaskByIdError(taskId, e);
 
                 return null;
             }
@@ -256,7 +255,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(UpdateTasksAsync), e);
+                _logger.DbUpdateTasksError(workflowInstanceId, e);
                 return false;
             }
         }

@@ -24,7 +24,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
 using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Database.Repositories
@@ -101,8 +101,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(GetAllAsync), e);
-
+                _logger.DbGetAllTasksError(e);
                 return (new List<TaskExecution>(), 0);
             }
         }
@@ -123,8 +122,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(GetAllAsync), e);
-
+                _logger.DbGetTasksError(taskId, e);
                 return default;
             }
         }

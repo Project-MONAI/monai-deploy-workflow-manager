@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Monai.Deploy.Messaging.Events;
 using Newtonsoft.Json;
 
@@ -79,5 +80,10 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         [JsonProperty(PropertyName = "acknowledged_task_errors")]
         public DateTime? AcknowledgedTaskErrors { get; set; } = null;
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

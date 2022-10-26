@@ -16,7 +16,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace Monai.Deploy.WorkflowManager.Logging.Logging
+namespace Monai.Deploy.WorkflowManager.Logging
 {
     public static partial class Log
     {
@@ -58,5 +58,8 @@ namespace Monai.Deploy.WorkflowManager.Logging.Logging
 
         [LoggerMessage(EventId = 100012, Level = LogLevel.Error, Message = "Unexpected error occurred in DELETE /workflows/{id} API.")]
         public static partial void WorkflowDeleteAsyncError(this ILogger logger, string id, Exception ex);
+
+        [LoggerMessage(EventId = 100013, Level = LogLevel.Information, Message = "BYpass authentication.")]
+        public static partial void BypassAuthentication(this ILogger logger);
     }
 }

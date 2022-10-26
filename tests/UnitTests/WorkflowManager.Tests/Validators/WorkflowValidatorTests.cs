@@ -15,6 +15,8 @@
  */
 
 using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Validators;
@@ -28,15 +30,18 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
         public WorkflowValidator WorkflowValidator { get; set; }
 
         private readonly Mock<IWorkflowService> _workflowService;
+        private readonly Mock<ILogger<WorkflowValidator>> _logger;
 
         public WorkflowValidatorTests()
         {
             _workflowService = new Mock<IWorkflowService>();
-            this.WorkflowValidator = new WorkflowValidator(_workflowService.Object);
+            _logger = new Mock<ILogger<WorkflowValidator>>();
+
+            WorkflowValidator = new WorkflowValidator(_workflowService.Object, _logger.Object);
         }
 
         [Fact]
-        public async void ValidateWorkflow_ValidatesAWorkflow_ReturnsErrorsAndHasCorrectValidationResultsAsync()
+        public async Task ValidateWorkflow_ValidatesAWorkflow_ReturnsErrorsAndHasCorrectValidationResultsAsync()
         {
             var workflow = new Workflow
             {
@@ -337,7 +342,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
         }
 
         [Fact]
-        public async void ValidateWorkflow_ValidatesEmptyWorkflow_ReturnsErrorsAndHasCorrectValidationResultsAsync()
+        public async Task ValidateWorkflow_ValidatesEmptyWorkflow_ReturnsErrorsAndHasCorrectValidationResultsAsync()
         {
             for (var i = 0; i < 15; i++)
             {
@@ -378,7 +383,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
         }
 
         [Fact]
-        public async void ValidateWorkflow_ValidateWorkflow_ReturnsNoErrors()
+        public async Task ValidateWorkflow_ValidateWorkflow_ReturnsNoErrors()
         {
             var workflow = new Workflow
             {

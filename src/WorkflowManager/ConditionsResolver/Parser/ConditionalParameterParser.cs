@@ -22,6 +22,7 @@ using Monai.Deploy.WorkflowManager.ConditionsResolver.Constants;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.Storage.Services;
 
 namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
@@ -106,7 +107,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             }
             catch (Exception ex)
             {
-                _logger.LogWarning($"Failure attemping to parse condition - {conditions}", ex);
+                _logger.FailedToParseCondition(string.Join(Environment.NewLine, conditions), ex);
                 return false;
             }
         }
@@ -123,7 +124,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             }
             catch (Exception ex)
             {
-                _logger.LogWarning($"Failure attemping to parse condition - {conditions}", ex);
+                _logger.FailedToParseCondition(string.Join(Environment.NewLine, conditions), ex);
                 return false;
             }
         }
@@ -167,7 +168,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             }
             catch (Exception e)
             {
-                _logger.LogError(e.Message);
+                _logger.FailedToParseCondition(conditions, e);
                 ClearWorkflowParser();
                 throw;
             }
@@ -220,6 +221,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             Guard.Against.NullOrWhiteSpace(value);
 
             value = value.Substring(2, value.Length - 4).Trim();
+            _logger.ResolveValue(value);
             var context = ParameterContext.Undefined;
             if (value.StartsWith(ExecutionsTask))
             {
@@ -250,6 +252,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             var valueArr = subValue.Split('\'');
             var keyId = $"{valueArr[1]}{valueArr[3]}";
 
+            _logger.ResolveDicomValue(subValue, keyId);
             if (subValue.StartsWith(".any"))
             {
                 var task = Task.Run(async () => await _dicom.GetAnyValueAsync(keyId, WorkflowInstance.PayloadId, WorkflowInstance.BucketId));
@@ -288,6 +291,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 keyValue = subValues[3]?.Split('\'')[1];
             }
 
+            _logger.ResolveExecutionTask(subValueKey);
             var resultStr = null as string;
             switch (subValueKey.ToLower())
             {
@@ -387,6 +391,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 
             if (workflowSpecValue is not null)
             {
+                _logger.ResolveWorkflow(keyValue);
                 var resultStr = null as string;
                 switch (keyValue)
                 {

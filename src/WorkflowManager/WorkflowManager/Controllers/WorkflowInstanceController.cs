@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -30,8 +31,9 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Contracts.Responses;
 using Monai.Deploy.WorkflowManager.Filter;
-using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.Services;
+using MongoDB.Driver.Core.Clusters;
 
 namespace Monai.Deploy.WorkflowManager.Controllers
 {
@@ -144,6 +146,12 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 return Problem($"Failed to validate {nameof(id)}, not a valid GUID", $"{ENDPOINT}{id}", BadRequest);
             }
 
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["workflowId"] = id,
+            });
+
+
             try
             {
                 var workflowInstance = await _workflowInstanceService.GetByIdAsync(id);
@@ -233,6 +241,12 @@ namespace Monai.Deploy.WorkflowManager.Controllers
 
                 return Problem($"Failed to validate {nameof(executionId)}, not a valid GUID", $"/workflows/{id}/executions/{executionId}/acknowledge", BadRequest);
             }
+
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["workflowId"] = id,
+                ["executionId"] = executionId,
+            });
 
             try
             {

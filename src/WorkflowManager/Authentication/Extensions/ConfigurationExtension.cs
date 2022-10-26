@@ -17,6 +17,7 @@
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
 
 namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
 {
@@ -32,7 +33,7 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
 
             if (authenticationSettings[AuthKeys.OpenId] is null)
             {
-                logger.LogInformation("Bypass Authentication");
+                logger.BypassAuthentication();
                 return true;
             }
 

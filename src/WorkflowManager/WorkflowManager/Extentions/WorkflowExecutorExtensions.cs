@@ -39,7 +39,7 @@ namespace Monai.Deploy.WorkflowManager.Services
         /// Adds workflow executor and dependencies to service collection.
         /// </summary>
         /// <param name="services">Service collection to add workflow executor to.</param>
-        /// <param name="hostContext">Hostcontext object.</param>
+        /// <param name="hostContext"><see cref="HostBuilderContext"/> object.</param>
         /// <returns>Updated IServiceCollection.</returns>
         public static IServiceCollection AddWorkflowExecutor(this IServiceCollection services, HostBuilderContext hostContext)
         {

@@ -20,7 +20,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.Storage.Services;
 
 namespace Monai.Deploy.WorkflowManager.Common.Services
@@ -51,7 +51,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
                 if (exists is not null)
                 {
                     _logger.PayloadAlreadyExists(eventPayload.PayloadId.ToString());
-
                     return exists;
                 }
 
@@ -73,7 +72,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
 
                 if (await _payloadRepsitory.CreateAsync(payload))
                 {
+                    _logger.PayloadCreated(payload.Id);
                     return payload;
+                }
+                else
+                {
+                    _logger.FailedToCreatedPayload();
                 }
             }
             catch (Exception e)
@@ -103,6 +107,17 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
         public async Task<long> CountAsync() => await _payloadRepsitory.CountAsync();
 
         public async Task<bool> UpdateWorkflowInstanceIdsAsync(string payloadId, IEnumerable<string> workflowInstances)
-            => await _payloadRepsitory.UpdateAssociatedWorkflowInstancesAsync(payloadId, workflowInstances);
+        {
+            if (await _payloadRepsitory.UpdateAssociatedWorkflowInstancesAsync(payloadId, workflowInstances))
+            {
+                _logger.PayloadUpdated(payloadId);
+                return true;
+            }
+            else
+            {
+                _logger.PayloadUpdateFailed(payloadId);
+                return false;
+            }
+        }
     }
 }

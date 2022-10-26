@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Models
+namespace Monai.Deploy.WorkflowManager.Logging
 {
-    public class Artifact
+    public static partial class Log
     {
-        [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; } = string.Empty;
-
-        [JsonProperty(PropertyName = "value")]
-        public string Value { get; set; } = string.Empty;
-
-        [JsonProperty(PropertyName = "mandatory")]
-        public bool Mandatory { get; set; } = true;
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
+        [LoggerMessage(EventId = 600000, Level = LogLevel.Error, Message = "Failed to get DICOM tag {dicomTag} in bucket {bucketId}. Payload: {payloadId}")]
+        public static partial void FailedToGetDicomTag(this ILogger logger, string payloadId, string dicomTag, string bucketId, Exception ex);
     }
 }

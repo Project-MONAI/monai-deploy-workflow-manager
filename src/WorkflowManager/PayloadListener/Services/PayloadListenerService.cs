@@ -21,7 +21,8 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.Shared;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
@@ -105,6 +106,15 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         {
             Task.Run(async () =>
             {
+                using var loggerScope = _logger.BeginScope(new Dictionary<string, object>
+                {
+                    ["correlationId"] = eventArgs.Message.CorrelationId,
+                    ["source"] = eventArgs.Message.ApplicationId,
+                    ["messageId"] = eventArgs.Message.MessageId,
+                    ["messageDescription"] = eventArgs.Message.MessageDescription,
+                });
+
+                _logger.WorkflowRequestReceived();
                 await _eventPayloadListenerService.ReceiveWorkflowPayload(eventArgs);
             }).ConfigureAwait(false);
         }
@@ -113,6 +123,15 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         {
             Task.Run(async () =>
             {
+                using var loggerScope = _logger.BeginScope(new Dictionary<string, object>
+                {
+                    ["correlationId"] = eventArgs.Message.CorrelationId,
+                    ["source"] = eventArgs.Message.ApplicationId,
+                    ["messageId"] = eventArgs.Message.MessageId,
+                    ["messageDescription"] = eventArgs.Message.MessageDescription,
+                });
+
+                _logger.TaskUpdateReceived();
                 await _eventPayloadListenerService.TaskUpdatePayload(eventArgs);
             }).ConfigureAwait(false);
         }
@@ -121,6 +140,15 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         {
             Task.Run(async () =>
             {
+                using var loggerScope = _logger.BeginScope(new Dictionary<string, object>
+                {
+                    ["correlationId"] = eventArgs.Message.CorrelationId,
+                    ["source"] = eventArgs.Message.ApplicationId,
+                    ["messageId"] = eventArgs.Message.MessageId,
+                    ["messageDescription"] = eventArgs.Message.MessageDescription,
+                });
+
+                _logger.ExportCompleteReceived();
                 await _eventPayloadListenerService.ExportCompletePayload(eventArgs);
             }).ConfigureAwait(false);
         }

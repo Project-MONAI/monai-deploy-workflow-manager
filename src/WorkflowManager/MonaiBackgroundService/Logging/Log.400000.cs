@@ -18,13 +18,13 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService.Logging
 {
     public static partial class Log
     {
-        [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "Task {taskId} started at {startTime} and been running for {duration}, Timing out task. ExecutionId: {executionId}, CorrelationId: {correlationId}")]
+        [LoggerMessage(EventId = 400000, Level = LogLevel.Warning, Message = "Task {taskId} started at {startTime} and been running for {duration}, Timing out task. ExecutionId: {executionId}, CorrelationId: {correlationId}")]
         public static partial void TimingOutTask(this ILogger logger, string taskId, string startTime, string duration, string executionId, string correlationId);
 
-        [LoggerMessage(EventId = 2, Level = LogLevel.Warning, Message = "CancellationEvent triggered, Identity: {identity}, WorkflowInstanceId: {workflowInstanceId}")]
+        [LoggerMessage(EventId = 400002, Level = LogLevel.Warning, Message = "CancellationEvent triggered, Identity: {identity}, WorkflowInstanceId: {workflowInstanceId}")]
         public static partial void TimingOutTaskCancellationEvent(this ILogger logger, string identity, string workflowInstanceId);
 
-        [LoggerMessage(EventId = 3, Level = LogLevel.Error, Message = "Worker encountered and error when running: {errorMessage}")]
+        [LoggerMessage(EventId = 400003, Level = LogLevel.Error, Message = "Worker encountered and error when running: {errorMessage}")]
         public static partial void WorkerException(this ILogger logger, string errorMessage);
     }
 }
