@@ -316,7 +316,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
                                 skip,
                                 limit);
 
-        public async Task<IList<WorkflowInstance>> GetAllFailedAsync(DateTime startDate)
+        public async Task<IList<WorkflowInstance>> GetAllFailedAsync()
         {
             return await GetAllAsync(_workflowInstanceCollection,
                                   wfInstance => wfInstance.Status == Status.Failed

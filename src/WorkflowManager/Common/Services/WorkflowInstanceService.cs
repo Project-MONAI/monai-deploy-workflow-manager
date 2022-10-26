@@ -85,7 +85,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
         public async Task<long> FilteredCountAsync(Status? status = null, string? payloadId = null)
             => await _workflowInstanceRepository.FilteredCountAsync(status, payloadId);
 
-        public async Task<IList<WorkflowInstance>> GetAllFailedAsync(DateTime dateTime)
-            => await _workflowInstanceRepository.GetAllFailedAsync(dateTime);
+        public async Task<IList<WorkflowInstance>> GetAllFailedAsync()
+            => await _workflowInstanceRepository.GetAllFailedAsync();
     }
 }
