@@ -16,7 +16,6 @@
 
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Controllers;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8601 // Possible null reference assignment.

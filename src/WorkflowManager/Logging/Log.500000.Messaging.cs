@@ -68,7 +68,7 @@ namespace Monai.Deploy.WorkflowManager.Logging
         [LoggerMessage(EventId = 200015, Level = LogLevel.Debug, Message = "Task update message received.")]
         public static partial void TaskUpdateReceived(this ILogger logger);
 
-        [LoggerMessage(EventId = 200015, Level = LogLevel.Debug, Message = "Export complete message received.")]
+        [LoggerMessage(EventId = 200016, Level = LogLevel.Debug, Message = "Export complete message received.")]
         public static partial void ExportCompleteReceived(this ILogger logger);
     }
 }

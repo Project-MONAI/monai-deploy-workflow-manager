@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   ~ Copyright 2021-2022 MONAI Consortium
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,12 +22,14 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
-  </ItemGroup>
 
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
 
   <ItemGroup>
