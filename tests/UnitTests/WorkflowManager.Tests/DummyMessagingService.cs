@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -39,6 +40,7 @@ namespace Monai.Deploy.WorkflowManager.Tests
     {
         public override IServiceCollection Configure(IServiceCollection services) => services;
     }
+
     internal class DummyMessageSubscriberRegistrar : SubscriberServiceRegistrationBase
     {
         public override IServiceCollection Configure(IServiceCollection services) => services;
@@ -49,13 +51,21 @@ namespace Monai.Deploy.WorkflowManager.Tests
         public string Name => "Dummy Messaging Service";
 
         public void Acknowledge(MessageBase message) => throw new NotImplementedException();
+
         public void Dispose() => throw new NotImplementedException();
+
         public Task Publish(string topic, Message message) => throw new NotImplementedException();
+
         public void Reject(MessageBase message, bool requeue = true) => throw new NotImplementedException();
+
         public Task RequeueWithDelay(MessageBase message) => throw new NotImplementedException();
+
         public void Subscribe(string topic, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0) => throw new NotImplementedException();
+
         public void Subscribe(string[] topics, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0) => throw new NotImplementedException();
+
         public void SubscribeAsync(string topic, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0) => throw new NotImplementedException();
+
         public void SubscribeAsync(string[] topics, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0) => throw new NotImplementedException();
     }
 }

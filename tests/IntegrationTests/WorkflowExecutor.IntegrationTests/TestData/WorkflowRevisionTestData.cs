@@ -2796,7 +2796,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Id = "66678af8-e8ac-4b77-a431-9d1a289d6c3b",
                     WorkflowId = "c86a437d-d026-4bdf-b1df-c7a6372b89e3",
                     Revision = 1,
-                    Deleted = new DateTime(2000, 01, 01),
+                    Deleted = new DateTime(2000, 01, 01, 0, 0, 0, kind: DateTimeKind.Utc),
                     Workflow = new Workflow()
                     {
                         Name = "Basic workflow",
@@ -2830,7 +2830,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Id = Guid.NewGuid().ToString(),
                     WorkflowId = "85c48175-f4db-4d3c-bf3a-14f736edaccd",
                     Revision = 1,
-                    Deleted = new DateTime(2000, 01, 01),
+                    Deleted = new DateTime(2000, 01, 01, 0, 0, 0, kind: DateTimeKind.Utc),
                     Workflow = new Workflow()
                     {
                         Name = "Basic workflow multiple revisions 1",
@@ -2861,7 +2861,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Id = Guid.NewGuid().ToString(),
                     WorkflowId = "85c48175-f4db-4d3c-bf3a-14f736edaccd",
                     Revision = 2,
-                    Deleted = new DateTime(2000, 01, 01),
+                    Deleted = new DateTime(2000, 01, 01, 0, 0, 0, kind: DateTimeKind.Utc),
                     Workflow = new Workflow()
                     {
                         Name = "Basic workflow multiple revisions 2",
@@ -2892,7 +2892,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Id = Guid.NewGuid().ToString(),
                     WorkflowId = "85c48175-f4db-4d3c-bf3a-14f736edaccd",
                     Revision = 1,
-                    Deleted = new DateTime(2000, 01, 01, 12, 00, 00),
+                    Deleted = new DateTime(2000, 01, 01, 12, 00, 00, DateTimeKind.Utc),
                     Workflow = new Workflow()
                     {
                         Name = "Basic workflow multiple revisions 1",

@@ -17,13 +17,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.API;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
-using Monai.Deploy.Messaging.Common;
 using Moq;
 using Xunit;
-using Monai.Deploy.Messaging.Messages;
 
 namespace TaskManager.AideClinicalReview.Tests
 {

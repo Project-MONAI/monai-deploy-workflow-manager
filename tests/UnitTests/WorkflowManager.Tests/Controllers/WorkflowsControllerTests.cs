@@ -41,6 +41,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         private readonly Mock<IWorkflowService> _workflowService;
         private readonly Mock<WorkflowValidator> _workflowValidator;
         private readonly Mock<ILogger<WorkflowsController>> _logger;
+        private readonly Mock<ILogger<WorkflowValidator>> _loggerWorkflowValidator;
         private readonly Mock<IUriService> _uriService;
         private readonly IOptions<WorkflowManagerOptions> _options;
 
@@ -48,11 +49,13 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         {
             _options = Options.Create(new WorkflowManagerOptions());
             _workflowService = new Mock<IWorkflowService>();
-            _workflowValidator = new Mock<WorkflowValidator>(_workflowService.Object);
 
             _logger = new Mock<ILogger<WorkflowsController>>();
+            _loggerWorkflowValidator = new Mock<ILogger<WorkflowValidator>>();
+            _workflowValidator = new Mock<WorkflowValidator>(_workflowService.Object, _loggerWorkflowValidator.Object);
             _uriService = new Mock<IUriService>();
 
+            _logger.Setup(p => p.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
             WorkflowsController = new WorkflowsController(_workflowService.Object, _workflowValidator.Object, _logger.Object, _uriService.Object, _options);
         }
 
@@ -165,7 +168,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         AeTitle = "aetitle",
                         DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
-
                     },
                     Tasks = new TaskObject[]
                         {
@@ -186,7 +188,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             const string expectedInstance = "/workflows";
             Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
-
         }
 
         [Fact]
@@ -232,7 +233,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         AeTitle = "aetitle",
                         DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
-
                     },
                     Tasks = new TaskObject[]
                         {
@@ -298,7 +298,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         AeTitle = "aetitle",
                         DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
-
                     },
                     Tasks = new TaskObject[]
                         {
@@ -367,7 +366,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         AeTitle = "aetitle",
                         DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
-
                     },
                     Tasks = new TaskObject[]
                     {
@@ -440,7 +438,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         AeTitle = "aetitle",
                         DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
-
                     },
                     Tasks = new TaskObject[]
                     {

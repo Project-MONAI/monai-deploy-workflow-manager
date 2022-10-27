@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Globalization;
 using BoDi;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
@@ -86,8 +87,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             _outputHelper.WriteLine($"Retrieving {count} workflow instances");
             var listOfWorkflowInstance = new List<WorkflowInstance>();
 
-            var parseResult = DateTime.TryParse(midDate, out var dateTimeParsed);
-
+            var parseResult = DateTime.TryParse(midDate, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var dateTimeParsed);
             if (parseResult is false)
             {
                 throw new Exception("Bad date time provided in generating data.");
@@ -116,7 +116,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
         }
 
         [Then(@"I can see ([1-9]*) Workflow Instances are created")]
-        [Then(@"I can see ([1-9]*) Workflow Instance is created")]
+        [Then(@"I can see ([0-9]*) Workflow Instance is created")]
         public void ThenICanSeeAWorkflowInstanceIsCreated(int count)
         {
             _outputHelper.WriteLine($"Retrieving {count} workflow instance/s using the payloadid={DataHelper.WorkflowRequestMessage.PayloadId.ToString()}");

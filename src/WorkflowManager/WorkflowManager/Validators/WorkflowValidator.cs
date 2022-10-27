@@ -19,9 +19,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
 using Monai.Deploy.WorkflowManager.Shared;
 
@@ -32,13 +34,16 @@ namespace Monai.Deploy.WorkflowManager.Validators
     /// </summary>
     public class WorkflowValidator
     {
+        private readonly ILogger<WorkflowValidator> _logger;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowValidator"/> class.
         /// </summary>
         /// <param name="workflowService">The workflow service.</param>
-        public WorkflowValidator(IWorkflowService workflowService)
+        public WorkflowValidator(IWorkflowService workflowService, ILogger<WorkflowValidator> logger)
         {
-            WorkflowService = workflowService;
+            WorkflowService = workflowService ?? throw new ArgumentNullException(nameof(workflowService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -86,6 +91,11 @@ namespace Monai.Deploy.WorkflowManager.Validators
             ValidateTask(tasks, firstTask, 0);
             ValidateTaskDestinations(workflow);
             ValidateExportDestinations(workflow);
+
+            if (Errors.Any())
+            {
+                _logger.WorkflowValidationErrors(string.Join(Environment.NewLine, Errors));
+            }
 
             var results = (Errors.ToList(), SuccessfulPaths.ToList());
             Reset();

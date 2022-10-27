@@ -88,6 +88,5 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService.Tests
 
             Assert.False(_service.IsRunning);
         }
-
     }
 }

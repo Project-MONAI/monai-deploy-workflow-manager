@@ -37,7 +37,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     PatientId = "1",
                     PatientName = "Patient_Full_Patient",
                     PatientSex = "male",
-                    PatientDob = new DateTime(2000, 01, 01),
+                    PatientDob = new DateTime(2000, 01, 01, 0, 0, 0, kind: DateTimeKind.Local),
                     PatientAge = "21",
                     PatientHospitalId = "123"
                 }

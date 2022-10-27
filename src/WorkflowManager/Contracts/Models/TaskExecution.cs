@@ -79,5 +79,10 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         [JsonProperty(PropertyName = "acknowledged_task_errors")]
         public DateTime? AcknowledgedTaskErrors { get; set; } = null;
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

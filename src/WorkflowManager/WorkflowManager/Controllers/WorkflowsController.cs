@@ -15,6 +15,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -26,8 +27,10 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Contracts.Responses;
 using Monai.Deploy.WorkflowManager.Filter;
+using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Validators;
+using Monai.Deploy.WorkflowManager.Wrappers;
 
 namespace Monai.Deploy.WorkflowManager.Controllers
 {
@@ -74,6 +77,8 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <param name="filter">Pagination filter.</param>
         /// <returns>The ID of the created Workflow.</returns>
         [HttpGet]
+        [ProducesResponseType(typeof(PagedResponse<List<WorkflowRevision>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetList([FromQuery] PaginationFilter filter)
         {
             try
@@ -93,6 +98,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
+                _logger.WorkflowGetListError(e);
                 return Problem($"Unexpected error occurred: {e.Message}", $"/workflows", InternalServerError);
             }
         }
@@ -104,6 +110,10 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <returns>The specified workflow for a given Id.</returns>
         [Route("{id}")]
         [HttpGet]
+        [ProducesResponseType(typeof(WorkflowRevision), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAsync([FromRoute] string id)
         {
             if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
@@ -125,6 +135,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
+                _logger.WorkflowGetAsyncError(id, e);
                 return Problem($"Unexpected error occurred: {e.Message}", $"/workflows/{nameof(id)}", InternalServerError);
             }
         }
@@ -135,6 +146,9 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <param name="workflow">The Workflow.</param>
         /// <returns>The ID of the created Workflow.</returns>
         [HttpPost]
+        [ProducesResponseType(typeof(CreateWorkflowResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateAsync([FromBody] Workflow workflow)
         {
             var results = await _workflowValidator.ValidateWorkflow(workflow);
@@ -155,6 +169,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
+                _logger.WorkflowCreateAsyncError(e);
                 return Problem($"Unexpected error occurred: {e.Message}", $"/workflows", InternalServerError);
             }
         }
@@ -166,9 +181,10 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <param name="id">The id of the workflow.</param>
         /// <returns>The ID of the created Workflow.</returns>
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateWorkflowResponse))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(CreateWorkflowResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateAsync([FromBody] Workflow workflow, [FromRoute] string id)
         {
             if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
@@ -203,6 +219,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
+                _logger.WorkflowUpdateAsyncError(id, e);
                 return Problem($"Unexpected error occurred: {e.Message}", $"/workflows", InternalServerError);
             }
         }
@@ -214,6 +231,10 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <returns>The specified workflow for a given Id.</returns>
         [Route("{id}")]
         [HttpDelete]
+        [ProducesResponseType(typeof(WorkflowRevision), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteAsync([FromRoute] string id)
         {
             if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
@@ -239,6 +260,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
             catch (Exception e)
             {
+                _logger.WorkflowDeleteAsyncError(id, e);
                 return Problem(
                     $"Unexpected error occurred: {e.Message}",
                     $"/workflows/{nameof(id)}",

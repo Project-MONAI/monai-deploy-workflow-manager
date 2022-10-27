@@ -19,7 +19,7 @@ using Microsoft.Extensions.Logging;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
 
 namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 {
@@ -41,6 +41,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
         public bool TryConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet, out Dictionary<string, string> artifactPaths)
         {
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["payloadId"] = payloadId,
+                ["workflowInstanceId"] = workflowInstanceId,
+                ["bucketId"] = bucketId,
+            });
+
             try
             {
                 var task = ConvertArtifactVariablesToPath(artifacts, payloadId, workflowInstanceId, bucketId, shouldExistYet);
@@ -48,13 +55,15 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 artifactPaths = task.Result;
                 return true;
             }
-            catch (FileNotFoundException)
+            catch (FileNotFoundException ex)
             {
+                _logger.ConvertArtifactVariablesToPathError(ex);
                 artifactPaths = new Dictionary<string, string>();
                 return false;
             }
             catch (AggregateException ex)
             {
+                _logger.ConvertArtifactVariablesToPathError(ex);
                 if (ex.InnerException is FileNotFoundException)
                 {
                     artifactPaths = new Dictionary<string, string>();
@@ -141,6 +150,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
         private async Task<KeyValuePair<string, string>> ConvertVariableStringToPath(Artifact artifact, string variableString, string workflowInstanceId, string payloadId, string bucketId, bool shouldExistYet, string suffix = "")
         {
+            _logger.ConvertingVariableStringToPath(variableString);
             if (variableString.StartsWith("context.input.dicom", StringComparison.InvariantCultureIgnoreCase))
             {
                 return await VerifyExists(new KeyValuePair<string, string>(artifact.Name, $"{payloadId}/dcm{suffix}"), bucketId, shouldExistYet);

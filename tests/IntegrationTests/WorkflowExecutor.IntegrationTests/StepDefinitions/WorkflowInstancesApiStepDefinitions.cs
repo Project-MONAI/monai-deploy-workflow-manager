@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Globalization;
 using BoDi;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
@@ -141,8 +142,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         public void ThenICanSeeFailedWorkflowInstancesSince(int count, string dateTime)
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
-            var parseResult = DateTime.TryParse(dateTime, out var dateTimeParsed);
-
+            var parseResult = DateTime.TryParse(dateTime, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var dateTimeParsed);
             if (parseResult is false)
             {
                 throw new Exception("Bad date time provided");
