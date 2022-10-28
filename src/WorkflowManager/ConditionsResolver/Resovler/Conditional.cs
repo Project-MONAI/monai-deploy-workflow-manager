@@ -73,7 +73,6 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 LeftParameterIsArray = isArrayValue;
                 return;
             }
-
             else if (string.IsNullOrEmpty(RightParameter))
             {
                 RightParameter = value;
@@ -200,6 +199,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                         LogicalOperator = currentChar.ToString();
                     }
                     break;
+
                 default:
                     break;
             }

@@ -19,9 +19,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
 using Monai.Deploy.WorkflowManager.Shared;
 
@@ -32,13 +34,16 @@ namespace Monai.Deploy.WorkflowManager.Validators
     /// </summary>
     public class WorkflowValidator
     {
+        private readonly ILogger<WorkflowValidator> _logger;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowValidator"/> class.
         /// </summary>
         /// <param name="workflowService">The workflow service.</param>
-        public WorkflowValidator(IWorkflowService workflowService)
+        public WorkflowValidator(IWorkflowService workflowService, ILogger<WorkflowValidator> logger)
         {
-            WorkflowService = workflowService;
+            WorkflowService = workflowService ?? throw new ArgumentNullException(nameof(workflowService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -66,7 +71,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// Validates workflow against...
         /// - Make sure that Json Format is correct.
         /// - Check schema against spec
-        /// - Make sure all task destinations reference existings tasks
+        /// - Make sure all task destinations reference existing tasks
         /// - Make sure all export destinations reference existing destination
         /// - Check against circular references
         /// - Ensure branches don't converge
@@ -74,18 +79,23 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// </summary>
         /// <param name="workflow">Workflow to validate.</param>
         /// <returns>if any validation errors are produced while validating workflow.</returns>
-        public async Task<(List<string> Errors, List<string> SuccessfulPaths)> ValidateWorkflow(Workflow workflow)
+        public async Task<(List<string> Errors, List<string> SuccessfulPaths)> ValidateWorkflow(Workflow workflow, bool checkForDuplicates = true)
         {
             workflow.IsValid(out var validationErrors);
             Errors.AddRange(validationErrors);
             var tasks = workflow.Tasks;
             var firstTask = tasks.FirstOrDefault();
 
-            await ValidateWorkflowSpec(workflow);
+            await ValidateWorkflowSpec(workflow, checkForDuplicates);
             DetectUnreferencedTasks(tasks, firstTask);
             ValidateTask(tasks, firstTask, 0);
             ValidateTaskDestinations(workflow);
             ValidateExportDestinations(workflow);
+
+            if (Errors.Any())
+            {
+                _logger.WorkflowValidationErrors(string.Join(Environment.NewLine, Errors));
+            }
 
             var results = (Errors.ToList(), SuccessfulPaths.ToList());
             Reset();
@@ -120,7 +130,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         }
 
         /// <summary>
-        /// Make sure all task destinations reference existings tasks.
+        /// Make sure all task destinations reference existing tasks.
         /// </summary>
         /// <param name="workflow">workflow.</param>
         private void ValidateTaskDestinations(Workflow workflow)
@@ -162,14 +172,16 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private async Task ValidateWorkflowSpec(Workflow workflow)
+        private async Task ValidateWorkflowSpec(Workflow workflow, bool checkForDuplicates)
         {
             if (string.IsNullOrWhiteSpace(workflow.Name) is true)
             {
                 Errors.Add("Missing Workflow Name.");
             }
 
-            if (string.IsNullOrWhiteSpace(workflow.Name) is false && await WorkflowService.GetByNameAsync(workflow.Name) != null)
+            if (checkForDuplicates
+                && string.IsNullOrWhiteSpace(workflow.Name) is false
+                && await WorkflowService.GetByNameAsync(workflow.Name) != null)
             {
                 Errors.Add($"A Workflow with the name: {workflow.Name} already exists.");
             }

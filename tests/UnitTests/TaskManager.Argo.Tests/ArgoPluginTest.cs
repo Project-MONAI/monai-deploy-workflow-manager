@@ -547,7 +547,6 @@ public class ArgoPluginTest
 #pragma warning restore CS8603 // Possible null reference return.
     }
 
-
     [Theory(DisplayName = "GetStatus - returns ExecutionStatus on success")]
     [InlineData(Strings.ArgoPhaseSucceeded)]
     [InlineData(Strings.ArgoPhaseFailed)]
@@ -746,8 +745,8 @@ public class ArgoPluginTest
 
         Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
         Assert.Null(_submittedArgoTemplate?.Spec.PodGC);
-
     }
+
     private void SetUpSimpleArgoWorkFlow(WorkflowTemplate argoTemplate)
     {
         Assert.NotNull(argoTemplate);

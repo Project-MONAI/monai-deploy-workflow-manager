@@ -18,7 +18,6 @@ using System.Net;
 using BoDi;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using MongoDB.Driver;
 using Newtonsoft.Json;
 using TechTalk.SpecFlow.Infrastructure;
 

@@ -17,10 +17,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using Moq;
-using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
-using NUnit.Framework;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
+using Moq;
+using NUnit.Framework;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
 {
@@ -246,7 +246,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
                 Workflows = new List<string>(),
                 FileCount = 2,
                 CorrelationId = Guid.NewGuid().ToString(),
-                Timestamp = DateTime.Now,
+                Timestamp = DateTime.UtcNow,
                 CalledAeTitle = "AeTitle",
                 CallingAeTitle = "CallingAeTitle",
             };

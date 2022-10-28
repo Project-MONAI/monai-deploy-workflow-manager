@@ -16,6 +16,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Validators;
@@ -28,16 +29,20 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
     {
         private readonly Mock<IWorkflowService> _workflowService;
         private readonly WorkflowValidator _workflowValidator;
+        private readonly Mock<ILogger<WorkflowValidator>> _logger;
 
         public WorkflowValidatorTests()
         {
+            _logger = new Mock<ILogger<WorkflowValidator>>();
+
             _workflowService = new Mock<IWorkflowService>();
 
-            _workflowValidator = new WorkflowValidator(_workflowService.Object);
+            _workflowValidator = new WorkflowValidator(_workflowService.Object, _logger.Object);
+            _logger = new Mock<ILogger<WorkflowValidator>>();
         }
 
         [Fact]
-        public async void ValidateWorkflow_ValidatesAWorkflow_ReturnsErrorsAndHasCorrectValidationResultsAsync()
+        public async Task ValidateWorkflow_ValidatesAWorkflow_ReturnsErrorsAndHasCorrectValidationResultsAsync()
         {
             var workflow = new Workflow
             {
@@ -93,7 +98,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                             }
                         }
                     },
+
                     #region LoopingTasks
+
                     new TaskObject {
                         Id = "taskLoopdesc4",
                         Type = "type",
@@ -144,8 +151,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                             }
                         }
                     },
-                    #endregion
+
+                    #endregion LoopingTasks
+
                     #region SuccessfulTasksPath
+
                     new TaskObject {
                         Id = "taskSucessdesc1",
                         Type = "type",
@@ -161,8 +171,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                         Id = "taskSucessdesc2",
                         Type = "type",
                     },
-                    #endregion
+
+                    #endregion SuccessfulTasksPath
+
                     #region SelfReferencingTasks
+
                     new TaskObject {
                         Id = "taskdesc1",
                         Type = "type",
@@ -261,8 +274,10 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                             }
                         }
                     },
-                    #endregion
-                    // Unreferenced task 
+
+                    #endregion SelfReferencingTasks
+
+                    // Unreferenced task
                     new TaskObject {
                         Id = "taskdesc3",
                         Type = "type",
@@ -335,32 +350,32 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                 _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                     .ReturnsAsync(new WorkflowRevision());
 
-                var results = await _workflowValidator.ValidateWorkflow(workflow);
+                var (errors, _) = await _workflowValidator.ValidateWorkflow(workflow);
 
-                Assert.True(results.Errors.Count > 0);
+                Assert.True(errors.Count > 0);
 
-                Assert.Equal(7, results.Errors.Count);
+                Assert.Equal(7, errors.Count);
 
                 var error1 = "'' is not a valid Workflow Description (source: Unnamed workflow).";
-                Assert.Contains(error1, results.Errors);
+                Assert.Contains(error1, errors);
 
                 var error2 = "'informaticsGateway' cannot be null (source: Unnamed workflow).";
-                Assert.Contains(error2, results.Errors);
+                Assert.Contains(error2, errors);
 
                 var error3 = "'' is not a valid AE Title (source: informaticsGateway).";
-                Assert.Contains(error3, results.Errors);
+                Assert.Contains(error3, errors);
 
                 var error4 = "'' is not a valid Informatics Gateway - exportDestinations (source: informaticsGateway).";
-                Assert.Contains(error4, results.Errors);
+                Assert.Contains(error4, errors);
 
                 var error5 = "Missing Workflow Name.";
-                Assert.Contains(error5, results.Errors);
+                Assert.Contains(error5, errors);
 
                 var error6 = "Missing Workflow Version.";
-                Assert.Contains(error6, results.Errors);
+                Assert.Contains(error6, errors);
 
                 var error7 = "Missing Workflow Tasks.";
-                Assert.Contains(error7, results.Errors);
+                Assert.Contains(error7, errors);
             }
         }
 
@@ -413,7 +428,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                             }
                         }
                     },
+
                     #region SuccessfulTasksPath
+
                     new TaskObject
                     {
                         Id = "taskSucessdesc1",
@@ -433,7 +450,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                         Type = "type",
                         Description = "TestDesc",
                     },
-                    #endregion
+
+                    #endregion SuccessfulTasksPath
+
                     new TaskObject
                     {
                         Id = "taskdesc1",
@@ -462,9 +481,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             for (var i = 0; i < 15; i++)
             {
-                var results = await _workflowValidator.ValidateWorkflow(workflow);
+                var (errors, _) = await _workflowValidator.ValidateWorkflow(workflow);
 
-                Assert.True(results.Errors.Count == 0);
+                Assert.True(errors.Count == 0);
             }
         }
     }

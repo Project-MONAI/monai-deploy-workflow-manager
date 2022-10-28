@@ -15,21 +15,25 @@
  */
 
 using Ardalis.GuardClauses;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Exceptions;
+using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Logging;
 
 namespace Monai.Deploy.WorkflowManager.Common.Services
 {
     public class WorkflowInstanceService : IWorkflowInstanceService, IPaginatedApi<WorkflowInstance>
     {
         private readonly IWorkflowInstanceRepository _workflowInstanceRepository;
+        private readonly ILogger<WorkflowInstanceService> _logger;
 
-        public WorkflowInstanceService(IWorkflowInstanceRepository workflowInstanceRepository)
+        public WorkflowInstanceService(IWorkflowInstanceRepository workflowInstanceRepository, ILogger<WorkflowInstanceService> logger)
         {
             _workflowInstanceRepository = workflowInstanceRepository ?? throw new ArgumentNullException(nameof(workflowInstanceRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<WorkflowInstance> GetByIdAsync(string id)
@@ -57,12 +61,14 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             }
 
             var updatedInstance = await _workflowInstanceRepository.AcknowledgeTaskError(workflowInstanceId, executionId);
-
+            _logger.AckowledgedTaskError();
             var failedTasks = updatedInstance.Tasks.Where(t => t.Status == TaskExecutionStatus.Failed);
 
             if (failedTasks.Any() && failedTasks.All(t => t.AcknowledgedTaskErrors != null))
             {
-                return await _workflowInstanceRepository.AcknowledgeWorkflowInstanceErrors(workflowInstanceId);
+                var results = await _workflowInstanceRepository.AcknowledgeWorkflowInstanceErrors(workflowInstanceId);
+                _logger.AckowledgedWorkflowInstanceErrors();
+                return results;
             }
 
             return updatedInstance;

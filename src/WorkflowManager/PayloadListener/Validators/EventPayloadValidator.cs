@@ -18,7 +18,7 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
@@ -36,12 +36,18 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
         {
             Guard.Against.Null(payload, nameof(payload));
 
+            using var loggingScope = Logger.BeginScope(new Dictionary<string, object>
+            {
+                ["correlationId"] = payload.CorrelationId,
+                ["payloadId"] = payload.PayloadId,
+            });
+
             var valid = true;
             var payloadValid = payload.IsValid(out var validationErrors);
 
             if (!payloadValid)
             {
-                Logger.ValidationErrors(string.Join(Environment.NewLine, validationErrors));
+                Logger.FailedToValidateWorkflowRequestEvent(string.Join(Environment.NewLine, validationErrors));
             }
 
             valid &= payloadValid;
@@ -52,7 +58,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
 
                 if (!workflowValid)
                 {
-                    Logger.ValidationErrors("Workflow id is empty string");
+                    Logger.FailedToValidateWorkflowRequestEvent("Workflow id is empty string");
                 }
 
                 valid &= workflowValid;
@@ -65,14 +71,20 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
         {
             Guard.Against.Null(payload, nameof(payload));
 
+            using var loggingScope = Logger.BeginScope(new Dictionary<string, object>
+            {
+                ["correlationId"] = payload.CorrelationId,
+                ["executionId"] = payload.ExecutionId,
+                ["taskId"] = payload.TaskId,
+            });
+
             try
             {
                 payload.Validate();
             }
             catch (MessageValidationException e)
             {
-                Logger.Exception($"Failed to validate {nameof(TaskUpdateEvent)}", e);
-
+                Logger.FailedToValidateTaskUpdateEvent(e);
                 return false;
             }
 
@@ -83,13 +95,19 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
         {
             Guard.Against.Null(payload, nameof(payload));
 
+            using var loggingScope = Logger.BeginScope(new Dictionary<string, object>
+            {
+                ["workflowInstanceId"] = payload.WorkflowInstanceId,
+                ["exportTaskId"] = payload.ExportTaskId,
+            });
+
             try
             {
                 payload.Validate();
             }
             catch (MessageValidationException e)
             {
-                Logger.Exception($"Failed to validate {nameof(ExportCompleteEvent)}", e);
+                Logger.FailedToValidateExportCompleteEvent(e);
 
                 return false;
             }

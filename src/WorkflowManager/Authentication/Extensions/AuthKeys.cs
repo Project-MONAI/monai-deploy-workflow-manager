@@ -25,6 +25,7 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
 
         // Configuration Keys
         public const string ServerRealm = "ServerRealm";
+
         public const string ServerRealmKey = "ServerRealmKey";
         public const string Claims = "Claims";
         public const string OpenId = "OpenId";

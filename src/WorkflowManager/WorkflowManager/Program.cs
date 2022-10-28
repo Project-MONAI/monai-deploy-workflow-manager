@@ -177,6 +177,7 @@ namespace Monai.Deploy.WorkflowManager
 
             return LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
         }
+
 #pragma warning restore SA1600 // Elements should be documented
     }
 }

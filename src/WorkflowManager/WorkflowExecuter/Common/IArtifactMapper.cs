@@ -41,6 +41,5 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
         /// <param name="artifactPaths"></param>
         /// <returns>bool if ConvertArtifactVariablesToPath runs successfully</returns>
         bool TryConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet, out Dictionary<string, string> artifactPaths);
-
     }
 }

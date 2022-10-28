@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-using NUnit.Framework;
-using Moq;
-using Monai.Deploy.WorkflowManager.PayloadListener.Services;
 using System;
-using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
-using Monai.Deploy.Messaging.Messages;
 using System.Threading;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.Messaging.Common;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.API;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
+using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.PayloadListener.Services;
+using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
+using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
+using Moq;
+using NUnit.Framework;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 {
@@ -66,7 +66,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         {
             var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
 
-
             _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(false);
 
             _eventPayloadReceiverService.ReceiveWorkflowPayload(message);
@@ -78,7 +77,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         public void ReceiveWorkflowPayload_CreatePayloadFails_MessageSubscriberRejectsTheMessage()
         {
             var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
-
 
             _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(true);
 
@@ -95,7 +93,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
         public void ReceiveWorkflowPayload_WorkFlowRequestIsValid_MessageSubscriberAcknowledgeTheMessage()
         {
             var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
-
 
             _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(true);
 

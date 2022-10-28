@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.Configuration;
 using Ardalis.GuardClauses;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
 
 namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
 {
@@ -32,7 +33,7 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
 
             if (authenticationSettings[AuthKeys.OpenId] is null)
             {
-                logger.LogInformation("Bypass Authentication");
+                logger.BypassAuthentication();
                 return true;
             }
 
@@ -42,7 +43,7 @@ namespace Monai.Deploy.WorkflowManager.Authentication.Extensions
         /// <summary>
         /// Gets configuration values from the IConfiguration provider.
         /// under "WorkflowManagerAuthentication" key you are able to
-        /// have any label of configuration for example could have 
+        /// have any label of configuration for example could have
         /// </summary>
         /// <param name="configuration"></param>
         /// <param name="serverRealm"></param>

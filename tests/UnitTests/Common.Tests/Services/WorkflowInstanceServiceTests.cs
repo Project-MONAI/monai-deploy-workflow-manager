@@ -15,6 +15,7 @@
  */
 
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Exceptions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
@@ -31,12 +32,14 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
         private IWorkflowInstanceService WorkflowInstanceService { get; set; }
 
         private readonly Mock<IWorkflowInstanceRepository> _workflowInstanceRepository;
+        private readonly Mock<ILogger<WorkflowInstanceService>> _logger;
 
         public WorkflowInstanceServiceTests()
         {
             _workflowInstanceRepository = new Mock<IWorkflowInstanceRepository>();
+            _logger = new Mock<ILogger<WorkflowInstanceService>>();
 
-            WorkflowInstanceService = new WorkflowInstanceService(_workflowInstanceRepository.Object);
+            WorkflowInstanceService = new WorkflowInstanceService(_workflowInstanceRepository.Object, _logger.Object);
         }
 
         [Fact]

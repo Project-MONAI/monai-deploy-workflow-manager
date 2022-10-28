@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -28,12 +29,14 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
         private IWorkflowService WorkflowService { get; set; }
 
         private readonly Mock<IWorkflowRepository> _workflowRepository;
+        private readonly Mock<ILogger<WorkflowService>> _logger;
 
         public WorkflowServiceTests()
         {
             _workflowRepository = new Mock<IWorkflowRepository>();
+            _logger = new Mock<ILogger<WorkflowService>>();
 
-            WorkflowService = new WorkflowService(_workflowRepository.Object);
+            WorkflowService = new WorkflowService(_workflowRepository.Object, _logger.Object);
         }
 
         [Fact]

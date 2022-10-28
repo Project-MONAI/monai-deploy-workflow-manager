@@ -147,7 +147,7 @@ Scenario: Get all workflows instances by Id. Id Bad Request
     And I have a Workflow Instance WFI_Static_1 with no artifacts
     When I send a GET request
     Then I will get a 400 response
-    And I will receive the error message Failed to validate id, not a valid guid
+    And I will receive the error message Failed to validate id, not a valid GUID
 
 
 @GetWorkflowInstances
@@ -156,7 +156,7 @@ Scenario: Get workflow instances by payloadId. Id Bad Request
     And I have a Workflow Instance WFI_Static_1 with no artifacts
     When I send a GET request
     Then I will get a 400 response
-    And I will receive the error message Failed to validate payloadId, not a valid guid
+    And I will receive the error message Failed to validate payloadId, not a valid GUID
 
 @UpdateWorkflowInstances
 Scenario Outline: Acknowledge 1 task error in a single task workflow instance
@@ -189,8 +189,8 @@ Scenario Outline: Acknowledge task error in a workflow instance - invalid endpoi
     And I will receive the error message <errorMessage>
     Examples:
     | endpoint                                                                                 | errorMessage                                     |
-    | /workflowinstances/invalidID/executions/d32d5769-4ecf-4639-a048-6ecf2cced04a/acknowledge | Failed to validate id, not a valid guid          |
-    | /workflowinstances/25dff711-efc5-4eeb-bccc-2bb996400a20/executions/invalidID/acknowledge | Failed to validate executionId, not a valid guid |
+    | /workflowinstances/invalidID/executions/d32d5769-4ecf-4639-a048-6ecf2cced04a/acknowledge | Failed to validate id, not a valid GUID          |
+    | /workflowinstances/25dff711-efc5-4eeb-bccc-2bb996400a20/executions/invalidID/acknowledge | Failed to validate executionId, not a valid GUID |
 
 @UpdateWorkflowInstances
 Scenario Outline: Acknowledge task error in a workflow instance - workflow instance/task not failed

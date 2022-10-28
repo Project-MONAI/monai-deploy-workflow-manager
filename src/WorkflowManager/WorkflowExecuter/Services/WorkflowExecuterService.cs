@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Xml.Linq;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -31,7 +30,7 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Constants;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 
 namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
@@ -93,7 +92,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         {
             Guard.Against.Null(message, nameof(message));
 
-            using var loggerScope = _logger.BeginScope($"Correlation ID={message.CorrelationId}, Payload ID={payload.PayloadId}");
+            using var loggerScope = _logger.BeginScope($"correlationId={message.CorrelationId}, payloadId={payload.PayloadId}");
             var processed = true;
             List<WorkflowRevision>? workflows;
 
@@ -141,7 +140,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (!processed)
             {
-                _logger.LogWarning("!processed");
+                _logger.FailedToCreateWorkflowInstances();
                 return false;
             }
 
@@ -157,7 +156,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         {
             if (workflowInstance.Status == Status.Failed)
             {
-                _logger.WorkflowBadStatus(workflowInstance.WorkflowId, workflowInstance.Status.ToString());
+                _logger.WorkflowBadStatus(workflowInstance.WorkflowId, workflowInstance.Status);
                 return;
             }
 
@@ -203,7 +202,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (workflowInstance is null)
             {
-                _logger.TypeNotFound(nameof(workflowInstance));
+                _logger.WorkflowInstanceNotFound(message.WorkflowInstanceId);
 
                 return false;
             }
@@ -211,6 +210,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
             {
                 ["workflowInstanceId"] = workflowInstance.Id,
+                ["taskStatus"] = message.Status,
                 ["durationSoFar"] = (DateTime.UtcNow - workflowInstance.StartTime).TotalMilliseconds
             });
 
@@ -234,7 +234,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (workflow is null)
             {
-                _logger.TypeNotFound(nameof(workflow));
+                _logger.WorkflowNotFound(workflowInstance.WorkflowId);
 
                 return false;
             }
@@ -317,7 +317,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
                 if (workflow is null)
                 {
-                    _logger.TypeNotFound(nameof(workflow));
+                    _logger.WorkflowNotFound(workflowInstance.WorkflowId);
 
                     return false;
                 }
@@ -714,6 +714,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+
         public async Task<TaskExecution> CreateTaskExecutionAsync(TaskObject task,
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
                                                   WorkflowInstance workflowInstance,
