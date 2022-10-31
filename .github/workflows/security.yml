@@ -65,8 +65,8 @@ jobs:
 
     - name: Dependency Scan
       run: |
-        dotnet list package --vulnerable 2>&1 | tee build.log
-        echo "Analyze dotnet list package command log output..."
-        grep -q -i "critical\|high\|moderate" build.log; [ $? -eq 0 ] && echo "Security Vulnerabilities found on the log output" && exit 1
+        dotnet list package --vulnerable 2>&1 | tee vulnerable.txt
+        echo "Analyzing dotnet list package command log output..."
+        sh -c "! grep 'has the following vulnerable packages' vulnerable.txt"
       working-directory: ./src
 
