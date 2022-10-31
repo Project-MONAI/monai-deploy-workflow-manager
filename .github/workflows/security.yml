@@ -65,11 +65,8 @@ jobs:
 
     - name: Dependency Scan
       run: |
-        dotnet list package --vulnerable --include-transitive 2>&1
-        | tee build.log
+        dotnet list package --vulnerable --include-transitive 2>&1 | tee build.log
+        echo "Analyze dotnet list package command log output..."
+        grep -q -i "critical\|high\|moderate" build.log; [ $? -eq 0 ] && echo "Security Vulnerabilities found on the log output" && exit 1
+      working-directory: ./src
 
-    - name: Dependency Report
-      run: |
-        grep -q -i "critical\|high\|moderate" build.log; [ $? -eq 0 ] 
-        && echo "Security Vulnerabilities found on the log output" 
-        && exit 1
