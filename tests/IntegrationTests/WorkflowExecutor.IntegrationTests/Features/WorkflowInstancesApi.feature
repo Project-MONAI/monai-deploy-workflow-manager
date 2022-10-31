@@ -219,42 +219,18 @@ Scenario: Acknowledge task error in a workflow instance - non-existent task
     Then I will get a 404 response
     And I will receive the error message WorkflowInstance or task execution not found for workflowInstanceId: 25dff711-efc5-4eeb-bccc-2bb996400a20
 
-@GetFailedWorkflowInstances
-Scenario: Get workflow failed instances with invalid parameter. Bad Request
-	Given I have an endpoint /workflowinstances/failed?acknowledged=donkey
-    When I send a GET request
-    Then I will get a 400 response
-    And I will receive the error message The value 'donkey' is not valid.
-
-@GetFailedWorkflowInstances
-Scenario: Get workflow failed instances with invalid date. Bad Request
-	Given I have an endpoint /workflowinstances/failed?acknowledged=0000-00-00
-    When I send a GET request
-    Then I will get a 400 response
-    And I will receive the error message The value '0000-00-00' is not valid.
-    
-@GetFailedWorkflowInstances
-Scenario: Get workflow failed instances in future. Bad Request
-	Given I have an endpoint /workflowinstances/failed?acknowledged=2199-12-15
-    When I send a GET request
-    Then I will get a 400 response
-    And I will receive the error message Failed to validate acknowledged value: 2199-12-15, provided time is in the future.
     
 @GetFailedWorkflowInstances
 Scenario: Get workflow failed instances returns no values. Not Found
-	Given I have an endpoint /workflowinstances/failed?acknowledged=2021-12-15
+	Given I have an endpoint /workflowinstances/failed
     When I send a GET request
     Then I will get a 404 response
-    And I will receive the error message Request failed, no workflow instances found since 2021-12-15
+    And I will receive the error message Request failed, no workflow instances found
         
 @GetFailedWorkflowInstances
 Scenario: Get workflow failed instances returns values. Ok Request
-	Given I have an endpoint /workflowinstances/failed?acknowledged=<date_query>
-    And I have 10 failed workflow Instances with acknowledged workflow errors with mid date as <date_query>
+	Given I have an endpoint /workflowinstances/failed
+    And I have 10 failed workflow Instances
     When I send a GET request
     Then I will get a 200 response
-    And I can see 5 failed workflow instances since <date_query>
-    Examples:
-    | date_query | 
-    | 2021-12-15 | 
-    | 2021-02-02 | 
+    And I can see 10 failed workflow instances
