@@ -55,6 +55,33 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
         }
 
         [Fact]
+        public async Task GetAllFailedAsync_ReturnsExpected()
+        {
+            var workflowInstances = new List<WorkflowInstance> {
+                new WorkflowInstance
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Status = Status.Failed,
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            Status = TaskExecutionStatus.Failed
+                        }
+                    }
+                }
+            };
+
+            _workflowInstanceRepository.Setup(w => w.GetAllFailedAsync()).ReturnsAsync(workflowInstances);
+
+            var result = await WorkflowInstanceService.GetAllFailedAsync();
+
+            result.Should().BeEquivalentTo(workflowInstances);
+        }
+
+        [Fact]
         public async Task AcknowledgeTaskError_WorkflowDoesNotExist_ThrowsNotFoundException()
         {
             var workflowInstance = new WorkflowInstance
