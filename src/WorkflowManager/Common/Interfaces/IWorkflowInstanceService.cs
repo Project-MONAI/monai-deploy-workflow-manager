@@ -52,9 +52,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         public Task<long> FilteredCountAsync(Status? status = null, string? payloadId = null);
 
         /// <summary>
-        /// Get all failed workflow instance's within a time span.
+        /// Get all failed workflow instance's.
         /// </summary>
-        /// <param name="timeSpan">length of period to check.</param>
-        Task<IList<WorkflowInstance>> GetAllFailedAsync(DateTime dateTime);
+        Task<IList<WorkflowInstance>> GetAllFailedAsync();
     }
 }

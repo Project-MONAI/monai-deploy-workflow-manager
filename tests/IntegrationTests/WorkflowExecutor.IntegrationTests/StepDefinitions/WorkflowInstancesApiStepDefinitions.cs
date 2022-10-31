@@ -138,19 +138,12 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             }
         }
 
-        [Then(@"I can see (.*) failed workflow instances since (.*)")]
-        public void ThenICanSeeFailedWorkflowInstancesSince(int count, string dateTime)
+        [Then(@"I can see (.*) failed workflow instances")]
+        public void ThenICanSeeFailedWorkflowInstancesSince(int count)
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
-            var parseResult = DateTime.TryParse(dateTime, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var dateTimeParsed);
-            if (parseResult is false)
-            {
-                throw new Exception("Bad date time provided");
-            }
 
-            var expectedData = DataHelper.SeededWorkflowInstances.Where(wfInstance => wfInstance.Status == Status.Failed
-                                      && wfInstance.AcknowledgedWorkflowErrors.HasValue
-                                      && wfInstance.AcknowledgedWorkflowErrors.Value > dateTimeParsed).ToList();
+            var expectedData = DataHelper.SeededWorkflowInstances.Where(wfInstance => wfInstance.Status == Status.Failed).ToList();
             expectedData.Count.Should().Be(count);
 
             var actualWorkflowInstances = JsonConvert.DeserializeObject<List<WorkflowInstance>>(result);

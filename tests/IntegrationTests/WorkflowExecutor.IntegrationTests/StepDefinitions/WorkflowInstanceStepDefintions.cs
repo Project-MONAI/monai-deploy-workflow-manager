@@ -81,32 +81,18 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             }
         }
 
-        [Given(@"I have (.*) failed workflow Instances with acknowledged workflow errors with mid date as (.*)")]
-        public void GivenIHaveWorkflowInstancesWithAcknowledgedWorkflowErrors(int count, string midDate)
+        [Given(@"I have (.*) failed workflow Instances")]
+        public void GivenIHaveWorkflowInstancesWithAcknowledgedWorkflowErrors(int count)
         {
             _outputHelper.WriteLine($"Retrieving {count} workflow instances");
             var listOfWorkflowInstance = new List<WorkflowInstance>();
-
-            var parseResult = DateTime.TryParse(midDate, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var dateTimeParsed);
-            if (parseResult is false)
-            {
-                throw new Exception("Bad date time provided in generating data.");
-            }
 
             foreach (var index in Enumerable.Range(0, count))
             {
                 _outputHelper.WriteLine($"Retrieving workflow instances with index={index}");
                 var wi = DataHelper.GetWorkflowInstanceTestDataByIndex(index);
                 wi.Status = Status.Failed;
-
-                if (index % 2 == 0)
-                {
-                    wi.AcknowledgedWorkflowErrors = dateTimeParsed.AddDays(-index);
-                }
-                else
-                {
-                    wi.AcknowledgedWorkflowErrors = dateTimeParsed.AddDays(index);
-                }
+                wi.AcknowledgedWorkflowErrors = null;
 
                 listOfWorkflowInstance.Add(wi);
                 MongoClient.CreateWorkflowInstanceDocument(wi);

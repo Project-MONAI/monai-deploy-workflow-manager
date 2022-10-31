@@ -113,10 +113,9 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         Task<bool> UpdateWorkflowInstanceStatusAsync(string workflowInstanceId, Status status);
 
         /// <summary>
-        /// Get all failed workflow instance's within a time span.
+        /// Get all failed workflow instance's.
         /// </summary>
-        /// <param name="timeSpan">length of period to check.</param>
-        Task<IList<WorkflowInstance>> GetAllFailedAsync(DateTime startDate);
+        Task<IList<WorkflowInstance>> GetAllFailedAsync();
 
         /// <summary>
         /// Acknowledges a workflowinstance error.
