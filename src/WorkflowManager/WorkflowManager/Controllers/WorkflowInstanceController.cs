@@ -182,26 +182,14 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetFailedAsync([FromQuery] DateTime? acknowledged)
+        public async Task<IActionResult> GetFailedAsync()
         {
-            if (acknowledged is null)
-            {
-                return Problem($"Failed to validate, no {nameof(acknowledged)} parameter provided", $"{ENDPOINT}failed", BadRequest);
-            }
-
-            var acknowledgedDateTime = acknowledged.Value;
-
-            if (acknowledgedDateTime > DateTime.UtcNow)
-            {
-                return Problem($"Failed to validate {nameof(acknowledged)} value: {acknowledgedDateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}, provided time is in the future.", $"{ENDPOINT}failed", BadRequest);
-            }
-
             try
             {
-                var workflowInstances = await _workflowInstanceService.GetAllFailedAsync(acknowledgedDateTime);
+                var workflowInstances = await _workflowInstanceService.GetAllFailedAsync();
                 if (workflowInstances.IsNullOrEmpty())
                 {
-                    return Problem($"Request failed, no workflow instances found since {acknowledgedDateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}", $"{ENDPOINT}failed", NotFound);
+                    return Problem($"Request failed, no workflow instances found", $"{ENDPOINT}failed", NotFound);
                 }
 
                 return Ok(workflowInstances);

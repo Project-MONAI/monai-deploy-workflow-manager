@@ -368,11 +368,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             };
 
             var expectedResponse = new List<WorkflowInstance>() { workflowsInstance };
-            _workflowInstanceService.Setup(w => w.GetAllFailedAsync(It.IsAny<DateTime>()))
+            _workflowInstanceService.Setup(w => w.GetAllFailedAsync())
                 .ReturnsAsync(expectedResponse);
 
             Thread.CurrentThread.CurrentCulture = new CultureInfo(controlerCulture);
-            var result = await WorkflowInstanceController.GetFailedAsync(input);
+            var result = await WorkflowInstanceController.GetFailedAsync();
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal((int)HttpStatusCode.OK, objectResult.StatusCode);
@@ -381,60 +381,19 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Fact]
-        public async Task TaskGetFailedAsync_GivenInvalidInTheFutureDateString_ReturnsProblem()
-        {
-            var workflowsInstance = new WorkflowInstance
-            {
-                Id = Guid.NewGuid().ToString(),
-                WorkflowId = Guid.NewGuid().ToString(),
-                PayloadId = Guid.NewGuid().ToString(),
-                Status = Status.Created,
-                BucketId = "bucket",
-                Tasks = new List<TaskExecution>
-                    {
-                        new TaskExecution
-                        {
-                            TaskId = Guid.NewGuid().ToString(),
-                            Status = TaskExecutionStatus.Dispatched
-                        }
-                    }
-            };
-
-            _workflowInstanceService.Setup(w => w.GetAllFailedAsync(It.IsAny<DateTime>()))
-                .ReturnsAsync(new List<WorkflowInstance>() { workflowsInstance });
-
-            var result = await WorkflowInstanceController.GetFailedAsync(DateTime.UtcNow.AddDays(5));
-
-            var objectResult = Assert.IsType<ObjectResult>(result);
-            objectResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
-            var responseValue = (ProblemDetails)objectResult.Value;
-            responseValue.Status.Should().Be((int)HttpStatusCode.BadRequest);
-
-            var startsWithException = "Failed to validate acknowledged value:";
-            var endsWithException = "provided time is in the future.";
-            Assert.StartsWith(startsWithException, responseValue.Detail);
-            Assert.EndsWith(endsWithException, responseValue.Detail);
-
-            const string expectedInstance = "/workflowinstances";
-            Assert.StartsWith(expectedInstance, responseValue.Instance);
-        }
-
-        [Fact]
         public async Task TaskGetFailedAsync_GivenGetAllFailedAsyncReturnsNoResults_ReturnsProblem()
         {
-            _workflowInstanceService.Setup(w => w.GetAllFailedAsync(It.IsAny<DateTime>()))
+            _workflowInstanceService.Setup(w => w.GetAllFailedAsync())
                 .ReturnsAsync(new List<WorkflowInstance>() { });
-            var inputString = "2022-02-21";
-            var input = DateTime.Parse(inputString, CultureInfo.InvariantCulture);
 
-            var result = await WorkflowInstanceController.GetFailedAsync(input);
+            var result = await WorkflowInstanceController.GetFailedAsync();
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             objectResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
             var responseValue = (ProblemDetails)objectResult.Value;
             responseValue.Status.Should().Be((int)HttpStatusCode.NotFound);
 
-            var problemMessage = "Request failed, no workflow instances found since 2022-02-21";
+            var problemMessage = "Request failed, no workflow instances found";
             responseValue.Detail.Should().Be(problemMessage);
 
             const string expectedInstance = "/workflowinstances";
@@ -444,10 +403,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         [Fact]
         public async Task TaskGetFailedAsync_GivenGetAllFailedAsyncReturnsThrowsException_ReturnsInternalServiceError()
         {
-            _workflowInstanceService.Setup(w => w.GetAllFailedAsync(It.IsAny<DateTime>())).ThrowsAsync(new Exception());
-            var inputString = "2022-02-21";
-            var input = DateTime.Parse(inputString, CultureInfo.InvariantCulture);
-            var result = await WorkflowInstanceController.GetFailedAsync(input);
+            _workflowInstanceService.Setup(w => w.GetAllFailedAsync()).ThrowsAsync(new Exception());
+;
+            var result = await WorkflowInstanceController.GetFailedAsync();
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             objectResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
