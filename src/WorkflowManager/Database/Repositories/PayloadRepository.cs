@@ -24,6 +24,7 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
 using Monai.Deploy.WorkflowManager.Logging;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Database.Repositories
@@ -74,11 +75,11 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             var filter = builder.Empty;
             if (!string.IsNullOrEmpty(patientId))
             {
-                filter &= builder.Eq(p => p.PatientDetails.PatientId, patientId);
+                filter &= builder.Regex(p => p.PatientDetails.PatientId, new BsonRegularExpression($"/{patientId}/i"));
             }
             if (!string.IsNullOrEmpty(patientName))
             {
-                filter &= builder.Eq(p => p.PatientDetails.PatientName, patientName);
+                filter &= builder.Regex(p => p.PatientDetails.PatientName, new BsonRegularExpression($"/{patientName}/i"));
             }
 
             return await GetAllAsync(_payloadCollection,
