@@ -59,15 +59,17 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-nuget
 
-    - name: Install NuGetDefense tool
-      run: dotnet tool install --global NuGetDefense.Tool
-
     - name: Restore Solution
       run: dotnet restore Monai.Deploy.WorkflowManager.sln
       working-directory: ./src
 
-    - name: Dependency Scanning
+    - name: Dependency Scan
       run: |
-        sed -i "s/OSSINDEXAPI_TOKEN/$OSSINDEXAPI_TOKEN/g" NuGetDefense.json
-        sed -i "s/OSSINDEXAPI_USERNAME/$OSSINDEXAPI_USERNAME/g" NuGetDefense.json
-        nugetdefense -p src/Monai.Deploy.WorkflowManager.sln --settings-file NuGetDefense.json
+        dotnet list package --vulnerable --include-transitive 2>&1
+        | tee build.log
+
+    - name: Dependency Report
+      run: |
+        grep -q -i "critical\|high\|moderate" build.log; [ $? -eq 0 ] 
+        && echo "Security Vulnerabilities found on the log output" 
+        && exit 1
