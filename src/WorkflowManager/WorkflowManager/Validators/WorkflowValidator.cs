@@ -49,19 +49,19 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// <summary>
         /// Gets or sets errors from workflow validation.
         /// </summary>
-        private static List<string> Errors { get; set; } = new List<string>();
+        private List<string> Errors { get; set; } = new List<string>();
 
         /// <summary>
         /// Gets or sets successful task paths. (not accounting for conditons).
         /// </summary>
-        private static List<string> SuccessfulPaths { get; set; } = new List<string>();
+        private List<string> SuccessfulPaths { get; set; } = new List<string>();
 
         private IWorkflowService WorkflowService { get; }
 
         /// <summary>
         /// Resets the validator.
         /// </summary>
-        public static void Reset()
+        public void Reset()
         {
             Errors.Clear();
             SuccessfulPaths.Clear();
@@ -71,7 +71,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// Validates workflow against...
         /// - Make sure that Json Format is correct.
         /// - Check schema against spec
-        /// - Make sure all task destinations reference existings tasks
+        /// - Make sure all task destinations reference existing tasks
         /// - Make sure all export destinations reference existing destination
         /// - Check against circular references
         /// - Ensure branches don't converge
@@ -130,7 +130,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         }
 
         /// <summary>
-        /// Make sure all task destinations reference existings tasks.
+        /// Make sure all task destinations reference existing tasks.
         /// </summary>
         /// <param name="workflow">workflow.</param>
         private void ValidateTaskDestinations(Workflow workflow)
@@ -147,7 +147,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 var destinationCount = workflow.Tasks.Count(t => t.Id == taskDestination);
                 if (destinationCount == 0)
                 {
-                    // Make sure all task destinations reference existings tasks
+                    // Make sure all task destinations reference existing tasks
                     Errors.Add($"ERROR: Task destination {taskDestination} not found.\n");
                 }
             }
@@ -220,11 +220,17 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 return;
             }
 
-            if (paths == null)
-            {
-                paths = new List<string>();
-            }
+            paths ??= new List<string>();
 
+            ValidateTaskArtifacts(currentTask);
+
+            TaskTypeSpecificValidation(tasks, currentTask);
+
+            ValidateTaskDestinations(tasks, currentTask, ref iterationCount, ref paths);
+        }
+
+        private void ValidateTaskArtifacts(TaskObject currentTask)
+        {
             if (currentTask.Artifacts != null && currentTask.Artifacts.Output.IsNullOrEmpty() is false)
             {
                 var uniqueOutputNames = new HashSet<string>();
@@ -235,17 +241,10 @@ namespace Monai.Deploy.WorkflowManager.Validators
                     Errors.Add($"Task: \"{currentTask.Id}\" has multiple output names with the same value.\n");
                 }
             }
+        }
 
-            if (currentTask.Type.Equals("argo", StringComparison.OrdinalIgnoreCase) is true)
-            {
-                ValidateArgoTask(currentTask);
-            }
-
-            if (currentTask.Type.Equals("clinical-review", StringComparison.OrdinalIgnoreCase) is true)
-            {
-                ValidateClinicalReviewTask(tasks, currentTask);
-            }
-
+        private void ValidateTaskDestinations(TaskObject[] tasks, TaskObject currentTask, ref int iterationCount, ref List<string> paths)
+        {
             if (currentTask.TaskDestinations.IsNullOrEmpty())
             {
                 paths.Add(currentTask.Id);
@@ -274,6 +273,19 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 ValidateTask(tasks, nextTask, iterationCount += 1, paths);
 
                 paths = new List<string>();
+            }
+        }
+
+        private void TaskTypeSpecificValidation(TaskObject[] tasks, TaskObject currentTask)
+        {
+            if (currentTask.Type.Equals("argo", StringComparison.OrdinalIgnoreCase) is true)
+            {
+                ValidateArgoTask(currentTask);
+            }
+
+            if (currentTask.Type.Equals("clinical-review", StringComparison.OrdinalIgnoreCase) is true)
+            {
+                ValidateClinicalReviewTask(tasks, currentTask);
             }
         }
 

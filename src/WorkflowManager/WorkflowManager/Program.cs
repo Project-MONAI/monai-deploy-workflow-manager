@@ -110,7 +110,7 @@ namespace Monai.Deploy.WorkflowManager
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkflowManagerOptions>, ConfigurationValidator>());
 
             services.AddSingleton<ConfigurationValidator>();
-            services.AddSingleton<WorkflowValidator>();
+            services.AddTransient<WorkflowValidator>();
 
             services.AddSingleton<DataRetentionService>();
 

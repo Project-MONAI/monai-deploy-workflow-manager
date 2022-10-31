@@ -27,17 +27,18 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 {
     public class WorkflowValidatorTests
     {
-        public WorkflowValidator WorkflowValidator { get; set; }
-
         private readonly Mock<IWorkflowService> _workflowService;
+        private readonly WorkflowValidator _workflowValidator;
         private readonly Mock<ILogger<WorkflowValidator>> _logger;
 
         public WorkflowValidatorTests()
         {
-            _workflowService = new Mock<IWorkflowService>();
             _logger = new Mock<ILogger<WorkflowValidator>>();
 
-            WorkflowValidator = new WorkflowValidator(_workflowService.Object, _logger.Object);
+            _workflowService = new Mock<IWorkflowService>();
+
+            _workflowValidator = new WorkflowValidator(_workflowService.Object, _logger.Object);
+            _logger = new Mock<ILogger<WorkflowValidator>>();
         }
 
         [Fact]
@@ -293,7 +294,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new WorkflowRevision());
 
-            var (errors, successfulPaths) = await this.WorkflowValidator.ValidateWorkflow(workflow);
+            var (errors, successfulPaths) = await _workflowValidator.ValidateWorkflow(workflow);
 
             Assert.True(errors.Count > 0);
 
@@ -337,8 +338,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             var nonExistingClinicalReviewValueId = $"Invalid input artifact 'No Matching Task Id' in task 'test-clinical-review': No matching task for ID 'a-random-string'";
             Assert.Contains(nonExistingClinicalReviewValueId, errors);
-
-            WorkflowValidator.Reset();
         }
 
         [Fact]
@@ -351,7 +350,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                 _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                     .ReturnsAsync(new WorkflowRevision());
 
-                var (errors, _) = await this.WorkflowValidator.ValidateWorkflow(workflow);
+                var (errors, _) = await _workflowValidator.ValidateWorkflow(workflow);
 
                 Assert.True(errors.Count > 0);
 
@@ -377,8 +376,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
                 var error7 = "Missing Workflow Tasks.";
                 Assert.Contains(error7, errors);
-
-                WorkflowValidator.Reset();
             }
         }
 
@@ -484,11 +481,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             for (var i = 0; i < 15; i++)
             {
-                var results = await this.WorkflowValidator.ValidateWorkflow(workflow);
+                var (errors, _) = await _workflowValidator.ValidateWorkflow(workflow);
 
-                Assert.True(results.Errors.Count == 0);
-
-                WorkflowValidator.Reset();
+                Assert.True(errors.Count == 0);
             }
         }
     }
