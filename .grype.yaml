@@ -17,3 +17,8 @@ ignore:
   - vulnerability: CVE-2016-20013 # https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/516 CLOSED
   - vulnerability: CVE-2017-11164 # https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/517 CLOSED
   - vulnerability: CVE-2022-29458 # https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/519 CLOSED
+  - vulnerability: CVE-2018-1000538 # https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/552 CLOSED
+  - vulnerability: CVE-2020-11012 # https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/553 CLOSED
+  - vulnerability: CVE-2021-21287 # https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/554 CLOSED
+  - vulnerability: CVE-2021-43858 # https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/555 CLOSED
+  - vulnerability: CVE-1999-1278 # https://github.com/Project-MONAI/monai-deploy-workflow-manager/issues/556 CLOSED
