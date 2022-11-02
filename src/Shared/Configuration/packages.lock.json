@@ -4,13 +4,13 @@
     "net6.0": {
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.8, )",
-        "resolved": "0.1.8",
-        "contentHash": "4hwBHpbynEUulEAT0vEb0VlZ7vsxbpRsnZR39bO/vY9EoEMTbk2GPiPbn58YX9VUItqe7uYxlyVhLFvKUzx+YQ==",
+        "requested": "[0.1.9, )",
+        "resolved": "0.1.9",
+        "contentHash": "m4wCVstDA5xjurfPQIZwETz36jawdOLmwTD0U5ctdj40U3pM1+mPCUcUqMnrHgf2O6D6Irbrn18CtUhlfgP2yw==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.9",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.10",
           "Microsoft.Extensions.Logging": "6.0.0",
           "Newtonsoft.Json": "13.0.1",
           "RabbitMQ.Client": "6.4.0",
@@ -20,16 +20,16 @@
       },
       "Monai.Deploy.Storage": {
         "type": "Direct",
-        "requested": "[0.2.8, )",
-        "resolved": "0.2.8",
-        "contentHash": "pFZppr1Vou7Ab0GljvRMSMEkSZ5xBNQ+mnd7JfqCUz1Mo8HYF0WH0LrOLtFOXlCBZkee/ZaibJQJyuNmPAs7ag==",
+        "requested": "[0.2.9, )",
+        "resolved": "0.2.9",
+        "contentHash": "yZRLVsq6AjM5bzELZ3hcuzfLMXlRJq6mMRyFFd+K1CdO49G+jvF+xrmq9498KUtCiA9euMpAxkvBQ3tkT8Y/Tw==",
         "dependencies": {
-          "AWSSDK.SecurityToken": "3.7.100.1",
+          "AWSSDK.SecurityToken": "3.7.100.6",
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.10",
           "Microsoft.Extensions.Logging": "6.0.0",
-          "Monai.Deploy.Storage.S3Policy": "0.2.8",
+          "Monai.Deploy.Storage.S3Policy": "0.2.9",
           "System.IO.Abstractions": "17.2.3"
         }
       },
@@ -43,15 +43,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.100.1",
-        "contentHash": "CM0X7120vueC+Ebtf4GLY2VXSN3XvIlsiN3I0cIWgwzNR5EpkB+O44GAdwqt9Yqk8oYmEP9oCSiqxDHgf58VqA=="
+        "resolved": "3.7.100.6",
+        "contentHash": "TABd2IP9MUPtoLJ3EouOsZ1RfNqFPz0w7pblWcaXMw8BgaLSH4xWD7uX+0oIhRVs0GalIl3RHZEjOibEGezDUA=="
       },
       "AWSSDK.SecurityToken": {
         "type": "Transitive",
-        "resolved": "3.7.100.1",
-        "contentHash": "zzUIi2aF2fh3O6Ng3M7xte3O6KpiuSAR7X7ksPJ90/4N0kE9SaTNx0cmX8y+sp+PwO4khe35aDxEyrP6Xqu0Ng==",
+        "resolved": "3.7.100.6",
+        "contentHash": "8aTiY7DxAkq6kqdipWBJ7O7XDMABPMevJSFYtOxhjjllW8hkwOY3f5R1ff2ZFSRA5H96xsBLLj/66gc+hmVweQ==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.100.1, 4.0.0)"
+          "AWSSDK.Core": "[3.7.100.6, 4.0.0)"
         }
       },
       "JetBrains.Annotations": {
@@ -160,8 +160,8 @@
       },
       "Monai.Deploy.Storage.S3Policy": {
         "type": "Transitive",
-        "resolved": "0.2.8",
-        "contentHash": "bVCCbIqv46yOkAZx7wqFctJXMKocR8LnL5/aeZXopnuSc6bHSoDqeBbiC1AL7CVyyNjZvnKXCmXx+dzpK9o1yQ==",
+        "resolved": "0.2.9",
+        "contentHash": "NZdOoGG+fJTVEoC3Ahnn0YmMRQ3q8od65CCAXg2WMMady3EVBAzbFpLJV9+gKTRGFfrVfFHKeAdWUBrBZt1k+Q==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Newtonsoft.Json": "13.0.1"

@@ -60,15 +60,15 @@ SOFTWARE.
 
 
 <details>
-<summary>AWSSDK.Core 3.7.13.8</summary>
+<summary>AWSSDK.Core 3.7.100.6</summary>
 
 ## AWSSDK.Core
 
-- Version: 3.7.13.8
+- Version: 3.7.100.6
 - Authors: Amazon Web Services
 - Owners: Amazon Web Services
 - Project URL: https://github.com/aws/aws-sdk-net/
-- Source: [NuGet](https://www.nuget.org/packages/AWSSDK.Core/3.7.13.8)
+- Source: [NuGet](https://www.nuget.org/packages/AWSSDK.Core/3.7.100.6)
 - License: [Apache-2.0](http://aws.amazon.com/apache2.0/)
 
 
@@ -555,15 +555,15 @@ Got it
 
 
 <details>
-<summary>AWSSDK.SecurityToken 3.7.1.203</summary>
+<summary>AWSSDK.SecurityToken 3.7.100.6</summary>
 
 ## AWSSDK.SecurityToken
 
-- Version: 3.7.1.203
+- Version: 3.7.100.6
 - Authors: Amazon Web Services
 - Owners: Amazon Web Services
 - Project URL: https://github.com/aws/aws-sdk-net/
-- Source: [NuGet](https://www.nuget.org/packages/AWSSDK.SecurityToken/3.7.1.203)
+- Source: [NuGet](https://www.nuget.org/packages/AWSSDK.SecurityToken/3.7.100.6)
 - License: [Apache-2.0](http://aws.amazon.com/apache2.0/)
 
 
@@ -2376,14 +2376,14 @@ SOFTWARE.
 
 
 <details>
-<summary>FluentAssertions 6.7.0</summary>
+<summary>FluentAssertions 6.8.0</summary>
 
 ## FluentAssertions
 
-- Version: 6.7.0
+- Version: 6.8.0
 - Authors: Dennis Doomen,Jonas Nyrup
 - Project URL: https://www.fluentassertions.com/
-- Source: [NuGet](https://www.nuget.org/packages/FluentAssertions/6.7.0)
+- Source: [NuGet](https://www.nuget.org/packages/FluentAssertions/6.8.0)
 - License: [Apache-2.0](https://github.com/fluentassertions/fluentassertions/raw/develop/LICENSE)
 
 
@@ -6379,14 +6379,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.Extensions.Diagnostics.HealthChecks 6.0.9</summary>
+<summary>Microsoft.Extensions.Diagnostics.HealthChecks 6.0.10</summary>
 
 ## Microsoft.Extensions.Diagnostics.HealthChecks
 
-- Version: 6.0.9
+- Version: 6.0.10
 - Authors: Microsoft
 - Project URL: https://asp.net/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Diagnostics.HealthChecks/6.0.9)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Diagnostics.HealthChecks/6.0.10)
 - License: [MIT](https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
 
 
@@ -9978,14 +9978,14 @@ THE SOFTWARE.
 
 
 <details>
-<summary>NUnit3TestAdapter 4.2.1</summary>
+<summary>NUnit3TestAdapter 4.3.0</summary>
 
 ## NUnit3TestAdapter
 
-- Version: 4.2.1
+- Version: 4.3.0
 - Authors: Charlie Poole, Terje Sandstrom
 - Project URL: https://docs.nunit.org/articles/vs-test-adapter/Index.html
-- Source: [NuGet](https://www.nuget.org/packages/NUnit3TestAdapter/4.2.1)
+- Source: [NuGet](https://www.nuget.org/packages/NUnit3TestAdapter/4.3.0)
 - License: [MIT](https://github.com/nunit/nunit3-vs-adapter/raw/master/LICENSE)
 
 
@@ -35385,14 +35385,14 @@ SOFTWARE.
 
 
 <details>
-<summary>coverlet.collector 3.1.2</summary>
+<summary>coverlet.collector 3.2.0</summary>
 
 ## coverlet.collector
 
-- Version: 3.1.2
+- Version: 3.2.0
 - Authors: tonerdo
 - Project URL: https://github.com/coverlet-coverage/coverlet
-- Source: [NuGet](https://www.nuget.org/packages/coverlet.collector/3.1.2)
+- Source: [NuGet](https://www.nuget.org/packages/coverlet.collector/3.2.0)
 - License: [MIT](https://github.com/coverlet-coverage/coverlet/raw/master/LICENSE)
 
 
