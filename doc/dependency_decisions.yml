@@ -2370,3 +2370,10 @@
     :versions:
     - 6.23.1
     :when: 2022-10-21 05:32:02.785856125 Z
+- - :approve
+  - FluentAssertions
+  - :who: RemakingEden
+    :why: Apache-2.0 (https://github.com/fluentassertions/fluentassertions/raw/develop/LICENSE)
+    :versions:
+    - 6.8.0
+    :when: 2022-11-02 09:51:44.688882343 Z
