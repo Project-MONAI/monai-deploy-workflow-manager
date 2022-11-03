@@ -1,31 +1,17 @@
-# Copyright 2022 MONAI Consortium
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 ---
 - - :approve
   - AWSSDK.Core
   - :who: mocsharp
     :why: Apache-2.0 (http://aws.amazon.com/apache2.0/)
     :versions:
-    - 3.7.13.8
+    - 3.7.100.6
     :when: 2022-10-14 23:36:39.233755632 Z
 - - :approve
   - AWSSDK.SecurityToken
   - :who: mocsharp
     :why: Apache-2.0 (http://aws.amazon.com/apache2.0/)
     :versions:
-    - 3.7.1.203
+    - 3.7.100.6
     :when: 2022-10-14 23:36:39.628260680 Z
 - - :approve
   - Ardalis.GuardClauses
@@ -116,7 +102,7 @@
   - :who: mocsharp
     :why: Apache-2.0 (https://github.com/fluentassertions/fluentassertions/raw/develop/LICENSE)
     :versions:
-    - 6.7.0
+    - 6.8.0
     :when: 2022-10-14 23:36:44.688882343 Z
 - - :approve
   - Fractions
@@ -490,14 +476,13 @@
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
     :versions:
-    - 6.0.9
+    - 6.0.10
     :when: 2022-10-14 23:37:05.589288760 Z
 - - :approve
   - Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
     :versions:
-    - 6.0.9
     - 6.0.10
     :when: 2022-10-14 23:37:05.963687838 Z
 - - :approve
@@ -799,125 +784,8 @@
   - :who: mocsharp
     :why: Apache-2.0 (https://github.com/minio/minio-dotnet/raw/master/LICENSE)
     :versions:
-    - 4.0.5
+    - 4.0.6
     :when: 2022-10-14 23:37:22.726827733 Z
-- - :approve
-  - Monai.Deploy.Messaging
-  - &1
-    :who: mocsharp
-    :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
-    :versions: []
-    :when: 2022-10-14 23:37:23.125681503 Z
-- - :approve
-  - version
-  - *1
-- - :approve
-  - 0.1.8
-  - *1
-- - :approve
-  - Monai.Deploy.Messaging.RabbitMQ
-  - &2
-    :who: mocsharp
-    :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
-    :versions: []
-    :when: 2022-10-14 23:37:23.497395535 Z
-- - :approve
-  - version
-  - *2
-- - :approve
-  - 0.1.8
-  - *2
-- - :approve
-  - Monai.Deploy.Storage
-  - &3
-    :who: mocsharp
-    :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-storage/raw/main/LICENSE)
-    :versions: []
-    :when: 2022-10-14 23:37:23.855408783 Z
-- - :approve
-  - version
-  - *3
-- - :approve
-  - 0.2.7
-  - *3
-- - :approve
-  - Monai.Deploy.Storage.MinIO
-  - &4
-    :who: mocsharp
-    :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-storage/raw/main/LICENSE)
-    :versions: []
-    :when: 2022-10-14 23:37:24.258418409 Z
-- - :approve
-  - version
-  - *4
-- - :approve
-  - 0.2.7
-  - *4
-- - :approve
-  - Monai.Deploy.Storage.S3Policy
-  - &5
-    :who: mocsharp
-    :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-storage/raw/main/LICENSE)
-    :versions: []
-    :when: 2022-10-14 23:37:24.629387041 Z
-- - :approve
-  - version
-  - *5
-- - :approve
-  - 0.2.7
-  - *5
-- - :approve
-  - MongoDB.Bson
-  - &6
-    :who: mocsharp
-    :why: Apache-2.0 (https://github.com/mongodb/mongo-csharp-driver/raw/master/License.txt)
-    :versions: []
-    :when: 2022-10-14 23:37:25.061513979 Z
-- - :approve
-  - version
-  - *6
-- - :approve
-  - 2.18.0
-  - *6
-- - :approve
-  - MongoDB.Driver
-  - &7
-    :who: mocsharp
-    :why: Apache-2.0 (https://github.com/mongodb/mongo-csharp-driver/raw/master/License.txt)
-    :versions: []
-    :when: 2022-10-14 23:37:25.441147058 Z
-- - :approve
-  - version
-  - *7
-- - :approve
-  - 2.18.0
-  - *7
-- - :approve
-  - MongoDB.Driver.Core
-  - &8
-    :who: mocsharp
-    :why: Apache-2.0 (https://github.com/mongodb/mongo-csharp-driver/raw/master/License.txt)
-    :versions: []
-    :when: 2022-10-14 23:37:25.846975394 Z
-- - :approve
-  - version
-  - *8
-- - :approve
-  - 2.18.0
-  - *8
-- - :approve
-  - MongoDB.Libmongocrypt
-  - &9
-    :who: mocsharp
-    :why: Apache-2.0 (https://github.com/mongodb/mongo-csharp-driver/raw/master/License.txt)
-    :versions: []
-    :when: 2022-10-14 23:37:26.232580356 Z
-- - :approve
-  - version
-  - *9
-- - :approve
-  - 1.6.0
-  - *9
 - - :approve
   - Moq
   - :who: mocsharp
@@ -951,7 +819,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/nunit/nunit3-vs-adapter/raw/master/LICENSE)
     :versions:
-    - 4.2.1
+    - 4.3.0
     :when: 2022-10-14 23:37:28.273089349 Z
 - - :approve
   - Newtonsoft.Json
@@ -2053,7 +1921,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/coverlet-coverage/coverlet/raw/master/LICENSE)
     :versions:
-    - 3.1.2
+    - 3.2.0
     :when: 2022-10-14 23:38:33.099118125 Z
 - - :approve
   - prometheus-net
@@ -2319,21 +2187,21 @@
   - :who: mocsharp
     :why: BSD 3-Clause License (https://github.com/NLog/NLog/raw/dev/LICENSE.txt)
     :versions:
-    - 5.0.4
+    - 5.0.5
     :when: 2022-10-12 03:14:06.538744982 Z
 - - :approve
   - NLog.Extensions.Logging
   - :who: mocsharp
     :why: BSD 2-Clause Simplified License (https://github.com/NLog/NLog.Extensions.Logging/raw/master/LICENSE)
     :versions:
-    - 5.0.4
+    - 5.1.0
     :when: 2022-10-12 03:14:06.964203977 Z
 - - :approve
   - NLog.Web.AspNetCore
   - :who: mocsharp
     :why: BSD 3-Clause License (https://github.com/NLog/NLog.Web/raw/master/LICENSE)
     :versions:
-    - 5.1.4
+    - 5.1.5
     :when: 2022-10-12 03:14:07.396706995 Z
 - - :approve
   - AspNetCore.HealthChecks.MongoDb
@@ -2371,9 +2239,65 @@
     - 6.23.1
     :when: 2022-10-21 05:32:02.785856125 Z
 - - :approve
-  - FluentAssertions
-  - :who: RemakingEden
-    :why: Apache-2.0 (https://github.com/fluentassertions/fluentassertions/raw/develop/LICENSE)
+  - Monai.Deploy.Messaging
+  - :who: mocsharp
+    :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
-    - 6.8.0
-    :when: 2022-11-02 09:51:44.688882343 Z
+    - 0.1.9
+    :when: 2022-11-02 21:43:10.781625468 Z
+- - :approve
+  - Monai.Deploy.Messaging.RabbitMQ
+  - :who: mocsharp
+    :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
+    :versions:
+    - 0.1.9
+    :when: 2022-11-02 21:43:20.975488411 Z
+- - :approve
+  - Monai.Deploy.Storage
+  - :who: mocsharp
+    :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
+    :versions:
+    - 0.2.9
+    :when: 2022-11-02 21:43:46.964761113 Z
+- - :approve
+  - Monai.Deploy.Storage.MinIO
+  - :who: mocsharp
+    :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
+    :versions:
+    - 0.2.9
+    :when: 2022-11-02 21:43:57.620687413 Z
+- - :approve
+  - Monai.Deploy.Storage.S3Policy
+  - :who: mocsharp
+    :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
+    :versions:
+    - 0.2.9
+    :when: 2022-11-02 21:44:06.994266372 Z
+- - :approve
+  - MongoDB.Bson
+  - :who: mocsharp
+    :why: Apache-2.0 (https://github.com/mongodb/mongo-csharp-driver/raw/master/License.txt)
+    :versions:
+    - 2.18.0
+    :when: 2022-11-02 21:44:41.801284907 Z
+- - :approve
+  - MongoDB.Driver
+  - :who: mocsharp
+    :why: Apache-2.0 (https://github.com/mongodb/mongo-csharp-driver/raw/master/License.txt)
+    :versions:
+    - 2.18.0
+    :when: 2022-11-02 21:45:01.214220067 Z
+- - :approve
+  - MongoDB.Driver.Core
+  - :who: mocsharp
+    :why: Apache-2.0 (https://github.com/mongodb/mongo-csharp-driver/raw/master/License.txt)
+    :versions:
+    - 2.18.0
+    :when: 2022-11-02 21:45:23.777282609 Z
+- - :approve
+  - MongoDB.Libmongocrypt
+  - :who: mocsharp
+    :why: Apache-2.0 (https://github.com/mongodb/mongo-csharp-driver/raw/master/License.txt)
+    :versions:
+    - 1.6.0
+    :when: 2022-11-02 21:45:54.431951720 Z

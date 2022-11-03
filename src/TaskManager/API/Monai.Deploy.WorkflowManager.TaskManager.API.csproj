@@ -28,18 +28,18 @@
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     <CodeAnalysisRuleSet>..\..\.sonarlint\project-monai_monai-deploy-workflow-managercsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <AdditionalFiles Include="..\..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
 
 
   <ItemGroup>
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.8" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.9" />
     <PackageReference Include="MongoDB.Bson" Version="2.18.0" />
   </ItemGroup>
 

@@ -90,6 +90,7 @@ jobs:
 
       - name: Dockle Container Scanner
         uses: erzz/dockle-action@v1
+        continue-on-error: true
         if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
@@ -100,12 +101,14 @@ jobs:
       # Disable upload due to bug https://github.com/erzz/dockle-action/issues/18
       # - name: Upload Dockle SARIF Report
       #   uses: github/codeql-action/upload-sarif@v2
+      #   continue-on-error: true
       #   if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
       #   with:
       #     sarif_file: dockle-report.sarif
 
       - name: Trivy Vulnerability Scanner
         uses: aquasecurity/trivy-action@master
+        continue-on-error: true
         if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
@@ -114,6 +117,7 @@ jobs:
 
       - name: Upload Trivy SARIF Report
         uses: github/codeql-action/upload-sarif@v2
+        continue-on-error: true
         if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           sarif_file: 'trivy-results.sarif'
@@ -121,6 +125,7 @@ jobs:
       - name: Anchore Container Scan
         id: anchore-scan
         uses: anchore/scan-action@v3.3.0
+        continue-on-error: true
         if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
@@ -130,6 +135,7 @@ jobs:
 
       - name: Upload Anchore Scan SARIF Report
         uses: github/codeql-action/upload-sarif@v2
+        continue-on-error: true
         if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           sarif_file: ${{ steps.anchore-scan.outputs.sarif }}
