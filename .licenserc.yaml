@@ -32,6 +32,7 @@ header:
     - 'src/.sonarlint/**'
     - 'src/coverlet.runsettings'
     - 'src/.vs'
+    - 'doc/dependency_decisions.yml'
     - 'docs/templates/**'
 
   comment: never
