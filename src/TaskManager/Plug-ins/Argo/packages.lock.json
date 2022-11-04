@@ -272,22 +272,22 @@
       },
       "Monai.Deploy.Storage": {
         "type": "Transitive",
-        "resolved": "0.2.9",
-        "contentHash": "yZRLVsq6AjM5bzELZ3hcuzfLMXlRJq6mMRyFFd+K1CdO49G+jvF+xrmq9498KUtCiA9euMpAxkvBQ3tkT8Y/Tw==",
+        "resolved": "0.2.10",
+        "contentHash": "mOcsdPjUVKnBXUfkgEg10xVgD5u8un9xoIgXuVWYxVtlbTkpIq1hVq98qk8t0aavur3xfcy7C3Nk1UTA6azm4Q==",
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.100.6",
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.10",
           "Microsoft.Extensions.Logging": "6.0.0",
-          "Monai.Deploy.Storage.S3Policy": "0.2.9",
+          "Monai.Deploy.Storage.S3Policy": "0.2.10",
           "System.IO.Abstractions": "17.2.3"
         }
       },
       "Monai.Deploy.Storage.S3Policy": {
         "type": "Transitive",
-        "resolved": "0.2.9",
-        "contentHash": "NZdOoGG+fJTVEoC3Ahnn0YmMRQ3q8od65CCAXg2WMMady3EVBAzbFpLJV9+gKTRGFfrVfFHKeAdWUBrBZt1k+Q==",
+        "resolved": "0.2.10",
+        "contentHash": "X808gnOE1yHyhNvCByBfPyL1AC8nuKB9WiSaPsjp6r1Z/+9KN31s/W7Gnq8k7tdFR+tyl0dusAiyNe8F3kRsBQ==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Newtonsoft.Json": "13.0.1"
@@ -507,7 +507,7 @@
         "type": "Project",
         "dependencies": {
           "Monai.Deploy.Messaging": "[0.1.9, )",
-          "Monai.Deploy.Storage": "[0.2.9, )"
+          "Monai.Deploy.Storage": "[0.2.10, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.api": {
