@@ -167,7 +167,7 @@
       "Monai.Deploy.Storage": {
         "type": "Transitive",
         "resolved": "0.2.10",
-        "contentHash": "mOcsdPjUVKnBXUfkgEg10xVgD5u8un9xoIgXuVWYxVtlbTkpIq1hVq98qk8t0aavur3xfcy7C3Nk1UTA6azm4Q==",
+        "contentHash": "qTk/hYUIA1XCohRxG2XcFqoI3gzZTgPyB/DbRyeY4nVZ7lmuzni+KrbHuewTqsmBKt00+2d9YI6gms5oMcTxsQ==",
         "dependencies": {
           "AWSSDK.SecurityToken": "3.7.100.6",
           "Ardalis.GuardClauses": "4.0.1",
@@ -181,7 +181,7 @@
       "Monai.Deploy.Storage.S3Policy": {
         "type": "Transitive",
         "resolved": "0.2.10",
-        "contentHash": "X808gnOE1yHyhNvCByBfPyL1AC8nuKB9WiSaPsjp6r1Z/+9KN31s/W7Gnq8k7tdFR+tyl0dusAiyNe8F3kRsBQ==",
+        "contentHash": "uCv90cT8z0qxlLo2Y/biem6vY9+nrD0EJBHTYETYooXp1tnAAt77pvvLx4ygFFzoabUTjdMr9ptYSJOXQ4dAFQ==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Newtonsoft.Json": "13.0.1"
