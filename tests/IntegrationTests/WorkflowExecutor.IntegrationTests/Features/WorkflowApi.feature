@@ -201,6 +201,47 @@ Scenario Outline: Add workflow with duplicate workflow name
     Then I will get a 400 response
     And I will receive the error message A Workflow with the name: Basic workflow already exists.
 
+@ValidateWorkflows
+Scenario: Validate workflow with valid details
+    Given I have an endpoint /validate
+    And I have a body Basic_Workflow_1
+    When I send a POST request
+    Then I will get a 204 response
+
+@ValidateWorkflows
+Scenario Outline: Validate workflow with invalid details
+    Given I have an endpoint /workflows/validate
+    And I have a body <post_body>
+    When I send a POST request
+    Then I will get a 400 response
+    And I will receive the error message <message>
+    Examples:
+    | post_body                                           | message                                                                                                 |
+    | Invalid_Workflow_Name_Length                        | is not a valid Workflow Name                                                                            |
+    | Invalid_Workflow_Desc_Length                        | is not a valid Workflow Description                                                                     |
+    | Invalid_Workflow_AETitle_Length                     | is not a valid AE Title                                                                                 |
+    | Invalid_Workflow_ExportDest                         | is not a valid Informatics Gateway - exportDestinations                                                 |
+    | Invalid_Workflow_TaskDesc_Length                    | is not a valid taskDescription                                                                          |
+    | Invalid_Workflow_TaskType_Length                    | is not a valid taskType                                                                                 |
+    | Invalid_Workflow_TaskID_Length                      | is not a valid taskId                                                                                   |
+    | Invalid_Workflow_TaskID_Content                     | Contains Invalid Characters.                                                                            |
+    | Invalid_Workflow_Unreferenced_Task                  | Found Task(s) without any task destinations to it                                                       |
+    | Invalid_Workflow_Loopback_Task                      | Detected task convergence on path                                                                       |
+    | Invalid_Workflow_0_Tasks                            | Missing Workflow Tasks                                                                                  |
+    | Invalid_Workflow_Version_Null                       | Missing Workflow Version                                                                                |
+    | Invalid_Workflow_Version_Blank                      | Missing Workflow Version                                                                                |
+    | Invalid_Workflow_Body_Object                        | 'informaticsGateway' cannot be null                                                                     |
+    | Empty_Workflow_Body                                 | '' is not a valid Workflow Description                                                                  |
+    | Invalid_Workflow_Dup_Output                         | has multiple output names with the same value                                                           |
+    | Invalid_Workflow_Missing_QueueName                  | Required parameter to execute Argo workflow is missing:                                                 |
+    | Invalid_Workflow_Missing_WorkflowName               | Required parameter to execute Argo workflow is missing:                                                 |
+    | Invalid_Workflow_Missing_ReviewedTaskId             | Required parameter to execute Argo workflow is missing:                                                 |
+    | Invalid_Workflow_Missing_All_Argo_Args              | Required parameter to execute Argo workflow is missing:                                                 |
+    | Invalid_Workflow_Missing_2_Argo_Args_1              | Required parameter to execute Argo workflow is missing:                                                 |
+    | Invalid_Workflow_Missing_2_Argo_Args_2              | Required parameter to execute Argo workflow is missing:                                                 |
+    | Invalid_Workflow_Missing_2_Argo_Args_3              | Required parameter to execute Argo workflow is missing:                                                 |
+    | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc' |
+
 @DeleteWorkflows
 Scenario: Delete a workflow with one revision
     Given I have a clinical workflow Basic_Workflow_1_static

@@ -128,6 +128,77 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Fact]
+        public async Task ValidateAsync_InvalidWorkflow_ReturnsBadRequest()
+        {
+            var newWorkflow = new Workflow
+            {
+                Name = "Workflowname",
+                Description = "Workflowdesc",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle"
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject {
+                        Id = Guid.NewGuid().ToString(),
+                        Type = "type",
+                        Description = "taskdesc",
+                        Args = new Dictionary<string, string>
+                        {
+                            { "test", "test" }
+                        }
+                    }
+                }
+            };
+
+            var result = await WorkflowsController.ValidateAsync(newWorkflow);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal(400, objectResult.StatusCode);
+
+            const string expectedInstance = "/workflows";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
+
+        [Fact]
+        public async Task ValidateAsync_WorkflowValid_Returns204()
+        {
+            var newWorkflow = new Workflow
+            {
+                Name = "Workflowname",
+                Description = "Workflowdesc",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    DataOrigins = new[] { "test" },
+                    ExportDestinations = new[] { "test" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject {
+                        Id = Guid.NewGuid().ToString(),
+                        Type = "type",
+                        Description = "taskdesc",
+                        Args = new Dictionary<string, string>
+                        {
+                            { "test", "test" }
+                        }
+                    }
+                }
+            };
+
+            var result = await WorkflowsController.ValidateAsync(newWorkflow);
+
+            var objectResult = Assert.IsType<StatusCodeResult>(result);
+
+            Assert.Equal(204, objectResult.StatusCode);
+        }
+
+        [Fact]
         public async Task UpdateAsync_InvalidWorkflow_ReturnsBadRequest()
         {
             var newWorkflow = new Workflow

@@ -142,6 +142,29 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         }
 
         /// <summary>
+        /// Validates a workflow.
+        /// </summary>
+        /// <param name="workflow">The Workflow.</param>
+        /// <returns>A 204 when the workflow is valid.</returns>
+        [HttpPost]
+        [ProducesResponseType(typeof(CreateWorkflowResponse), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ValidateAsync([FromBody] Workflow workflow)
+        {
+            var results = await _workflowValidator.ValidateWorkflow(workflow);
+
+            if (results.Errors.Count > 0)
+            {
+                var validationErrors = string.Join(", ", results.Errors);
+                _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+
+                return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", BadRequest);
+            }
+
+            return StatusCode(StatusCodes.Status204NoContent);
+        }
+
+        /// <summary>
         /// Create a workflow.
         /// </summary>
         /// <param name="workflow">The Workflow.</param>
