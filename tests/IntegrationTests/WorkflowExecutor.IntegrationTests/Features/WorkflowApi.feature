@@ -203,7 +203,7 @@ Scenario Outline: Add workflow with duplicate workflow name
 
 @ValidateWorkflows
 Scenario: Validate workflow with valid details
-    Given I have an endpoint /validate
+    Given I have an endpoint /workflows/validate
     And I have a body Basic_Workflow_1
     When I send a POST request
     Then I will get a 204 response

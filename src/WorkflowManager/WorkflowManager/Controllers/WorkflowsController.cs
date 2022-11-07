@@ -146,7 +146,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// </summary>
         /// <param name="workflow">The Workflow.</param>
         /// <returns>A 204 when the workflow is valid.</returns>
-        [HttpPost]
+        [HttpPost("validate")]
         [ProducesResponseType(typeof(CreateWorkflowResponse), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ValidateAsync([FromBody] Workflow workflow)
