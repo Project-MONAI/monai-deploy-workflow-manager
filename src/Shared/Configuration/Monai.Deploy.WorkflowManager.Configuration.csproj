@@ -21,7 +21,7 @@
     <RootNamespace>Monai.Deploy.WorkflowManager.Configuration</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <AdditionalFiles Include="..\..\..\stylecop.json" />
   </ItemGroup>
@@ -31,8 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.10-rc0006" />
-    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.7" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.10" />
+    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.10" />
   </ItemGroup>
 
   <ItemGroup>

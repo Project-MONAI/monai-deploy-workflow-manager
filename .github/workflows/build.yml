@@ -52,7 +52,7 @@ jobs:
 
       - name: Determine Version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.9.14
+        uses: gittools/actions/gitversion/execute@v0.9.15
         with:
           useConfigFile: true
           updateAssemblyInfo: true
@@ -90,6 +90,7 @@ jobs:
 
       - name: Dockle Container Scanner
         uses: erzz/dockle-action@v1
+        continue-on-error: true
         if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
@@ -100,12 +101,14 @@ jobs:
       # Disable upload due to bug https://github.com/erzz/dockle-action/issues/18
       # - name: Upload Dockle SARIF Report
       #   uses: github/codeql-action/upload-sarif@v2
+      #   continue-on-error: true
       #   if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
       #   with:
       #     sarif_file: dockle-report.sarif
 
       - name: Trivy Vulnerability Scanner
         uses: aquasecurity/trivy-action@master
+        continue-on-error: true
         if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
@@ -114,6 +117,7 @@ jobs:
 
       - name: Upload Trivy SARIF Report
         uses: github/codeql-action/upload-sarif@v2
+        continue-on-error: true
         if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           sarif_file: 'trivy-results.sarif'
@@ -121,6 +125,7 @@ jobs:
       - name: Anchore Container Scan
         id: anchore-scan
         uses: anchore/scan-action@v3.3.0
+        continue-on-error: true
         if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
@@ -130,6 +135,7 @@ jobs:
 
       - name: Upload Anchore Scan SARIF Report
         uses: github/codeql-action/upload-sarif@v2
+        continue-on-error: true
         if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
           sarif_file: ${{ steps.anchore-scan.outputs.sarif }}
@@ -220,12 +226,12 @@ jobs:
           msg: ${{ github.repository }}
 
       - name: Install GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/setup@v0.9.13
+        uses: gittools/actions/gitreleasemanager/setup@v0.9.15
         with:
           versionSpec: "0.13.x"
 
       - name: Create release with GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/create@v0.9.13
+        uses: gittools/actions/gitreleasemanager/create@v0.9.15
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           owner: ${{ steps.repo.outputs._0 }}
@@ -236,7 +242,7 @@ jobs:
             artifacts/mwm-docs-${{ env.SEMVER }}.zip
 
       - name: Publish release with GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/publish@v0.9.13
+        uses: gittools/actions/gitreleasemanager/publish@v0.9.15
         if: ${{ contains(github.ref, 'refs/heads/main') }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -245,7 +251,7 @@ jobs:
           tagName: ${{ env.MAJORMINORPATCH }}
 
       - name: Close release with GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/close@v0.9.13
+        uses: gittools/actions/gitreleasemanager/close@v0.9.15
         if: ${{ contains(github.ref, 'refs/heads/main') }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
