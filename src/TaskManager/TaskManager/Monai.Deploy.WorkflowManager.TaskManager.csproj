@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   ~ Copyright 2022 MONAI Consortium
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -66,7 +66,7 @@
     <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.10" />
     <PackageReference Include="Monai.Deploy.Storage" Version="0.2.10" />
     <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.10" />
-    <PackageReference Include="NLog" Version="5.0.4" />
+    <PackageReference Include="NLog" Version="5.0.5" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="5.1.4" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
