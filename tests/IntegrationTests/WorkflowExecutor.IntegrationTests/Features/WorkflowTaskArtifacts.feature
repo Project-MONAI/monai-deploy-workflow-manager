@@ -41,7 +41,7 @@ Scenario Outline: Workflow is triggered when mandatory artifacts are missing res
     | OneTask_Context.Dicom.Input_ArtifactMandatory=Null |
     | OneTask_Context.Dicom.Input_ArtifactMandatory=True |
 
-@TaskArtifacts_WorkflowRequest
+@TaskArtifacts_WorkflowRequest @ignore
 Scenario Outline: Workflow with context.input.dicom is triggered when non-mandatory files are missing resulting in a successful Task dispatch
     Given I have a clinical workflow OneTask_Context.Dicom.Input_ArtifactMandatory=False
     When I publish a Workflow Request Message Artifact_AeTitle_Request_1 with no artifacts
