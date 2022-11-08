@@ -41,7 +41,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             ClinicalReviewConsumer = objectContainer.Resolve<RabbitConsumer>("ClinicalReviewConsumer") ?? throw new ArgumentNullException(nameof(RabbitConsumer));
             TaskUpdateConsumer = objectContainer.Resolve<RabbitConsumer>("TaskUpdateConsumer") ?? throw new ArgumentNullException(nameof(RabbitConsumer));
             RetryClinincalReview = Policy<ClinicalReviewRequestEvent>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
-            RetryTaskUpdate = Policy<TaskUpdateEvent>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+            RetryTaskUpdate = Policy<TaskUpdateEvent>.Handle<Exception>().WaitAndRetry(retryCount: 30, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             OutputHelper = objectContainer.Resolve<ISpecFlowOutputHelper>();
         }
 

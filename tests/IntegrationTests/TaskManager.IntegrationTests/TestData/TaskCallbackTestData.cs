@@ -34,11 +34,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                 Name = "Task_Callback_Basic",
                 TaskCallbackEvent = new TaskCallbackEvent()
                 {
-                    CorrelationId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic").TaskDispatchEvent.CorrelationId,
-                    ExecutionId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic").TaskDispatchEvent.ExecutionId,
+                    CorrelationId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic_Clinical_Review").TaskDispatchEvent.CorrelationId,
+                    ExecutionId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic_Clinical_Review").TaskDispatchEvent.ExecutionId,
                     Identity = "Identity_1",
-                    TaskId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic").TaskDispatchEvent.TaskId,
-                    WorkflowInstanceId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic").TaskDispatchEvent.WorkflowInstanceId,
+                    TaskId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic_Clinical_Review").TaskDispatchEvent.TaskId,
+                    WorkflowInstanceId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic_Clinical_Review").TaskDispatchEvent.WorkflowInstanceId,
                     Metadata = new Dictionary<string, object>()
                     {
                         { "metadata_1", "test_1" },

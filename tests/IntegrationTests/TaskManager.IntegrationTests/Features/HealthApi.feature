@@ -17,7 +17,7 @@ Feature: HealthApi
 
 Health check API for Task Manager.
 
-@HealthChecksTaskManager
+@HealthChecksTaskManager @ignore
 Scenario: Get Health status of Task Manager
 	Given I have a TaskManager endpoint /health
 	When I send a GET request
