@@ -74,15 +74,9 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-<<<<<<< HEAD
-        "requested": "[0.1.10-rc0006, )",
-        "resolved": "0.1.10-rc0006",
-        "contentHash": "ojNlShoLM72ng9t85+kqlRsxqn0A44XkiGBnKXwZ9tLgh4xbh2FyUk5q56Ogp0+exV5GVjVnXek7X6KGEANWBA==",
-=======
-        "requested": "[0.1.9, )",
-        "resolved": "0.1.9",
-        "contentHash": "m4wCVstDA5xjurfPQIZwETz36jawdOLmwTD0U5ctdj40U3pM1+mPCUcUqMnrHgf2O6D6Irbrn18CtUhlfgP2yw==",
->>>>>>> ca6b3f735baba1638f0e13e231b52c91bd8a55c1
+        "requested": "[0.1.10, )",
+        "resolved": "0.1.10",
+        "contentHash": "ePgpqqJfS73Pe/FSEruvnidjg/itSmSuPsWqtYbjwg6TYSJuAB6vDSEyaSbZlAx/vxx4ZB3ppUAKeZKKewy1Pw==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -96,20 +90,12 @@
       },
       "Monai.Deploy.Messaging.RabbitMQ": {
         "type": "Direct",
-<<<<<<< HEAD
-        "requested": "[0.1.10-rc0006, )",
-        "resolved": "0.1.10-rc0006",
-        "contentHash": "X0mfGwgGyga3L2xORJRjVPdUGRfVDDm6H6T+4bQafkhJVZ7SHK8d4m5AyQQmbkkWbBQzs51CP7b98NncoC5ONQ==",
+        "requested": "[0.1.10, )",
+        "resolved": "0.1.10",
+        "contentHash": "9Qkjmabq0ooXqgCglokXv7pJ6E00ZN4z8uxtXJ5q3ZP3hLyU0HT3m1PKoj1f/zYkYn26MagoyY/Ng+kW5X240A==",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.10-rc0006",
+          "Monai.Deploy.Messaging": "0.1.10",
           "System.Collections.Concurrent": "4.3.0"
-=======
-        "requested": "[0.1.9, )",
-        "resolved": "0.1.9",
-        "contentHash": "GdUHla7zikjxTtDDlQ82pjjgK5f3obqnHcbZ3PMaUek1G+/eZNunzGoWOT6WSXbai8/YB5OvBnKxnMnfMt5jUA==",
-        "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.9"
->>>>>>> ca6b3f735baba1638f0e13e231b52c91bd8a55c1
         }
       },
       "Monai.Deploy.Storage": {
@@ -144,17 +130,17 @@
       },
       "NLog": {
         "type": "Direct",
-        "requested": "[5.0.5, )",
-        "resolved": "5.0.5",
-        "contentHash": "NOTWSyUEljmjMq7OqZ1X9iu4bJ+rW/o6pt79Jq8j2Q7s8DyoMMCJwe0HoCKcNjhYRJ++b+E8erH6E6WwaCTshQ=="
+        "requested": "[5.0.4, )",
+        "resolved": "5.0.4",
+        "contentHash": "hMyC7jq1m7c339DZXTRz96b+0YsIYSwAUB8sAWMtqXd2uwJjYe+y1k74fbItODPqDuE/krd6A4mxew9gLMS+PQ=="
       },
       "NLog.Web.AspNetCore": {
         "type": "Direct",
-        "requested": "[5.1.5, )",
-        "resolved": "5.1.5",
-        "contentHash": "a7Pe6KdwIxPxcFYy6M7wLseU++tx1bBf/ROVNlcZPLfp40DPLA0KGOk1K9kvbcwPYKKLMikdSwiOyTRZZFlaXg==",
+        "requested": "[5.1.4, )",
+        "resolved": "5.1.4",
+        "contentHash": "LxKgX/vvjk8dHe5EcHTrSBrgu5G+I8KLtU2if9x83CEK2bwFNvb5oudtH/ZtjzLALFM8uN/URHznBMocQi30Ng==",
         "dependencies": {
-          "NLog.Extensions.Logging": "5.1.0"
+          "NLog.Extensions.Logging": "5.0.4"
         }
       },
       "StyleCop.Analyzers": {
@@ -720,12 +706,12 @@
       },
       "NLog.Extensions.Logging": {
         "type": "Transitive",
-        "resolved": "5.1.0",
-        "contentHash": "cQCKF2/iYjZUkn0d2o6VD1xkTUhIFHPYmZEm29KlTthLEzMht5aY80SwWlHZCKy0w19kaSq1jgLJSGrKsapUfg==",
+        "resolved": "5.0.4",
+        "contentHash": "43f4l7pY5cEjU/m2Xj4kDZhBmwS1xYP1kOzCQiXwv3PWpziGLfF8kA22idk+yRhMfNVExQ/OFnBaoxk6JB3JeA==",
         "dependencies": {
-          "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
-          "Microsoft.Extensions.Logging": "6.0.0",
-          "NLog": "5.0.5"
+          "Microsoft.Extensions.Configuration.Abstractions": "5.0.0",
+          "Microsoft.Extensions.Logging": "5.0.0",
+          "NLog": "5.0.4"
         }
       },
       "prometheus-net": {
@@ -1433,23 +1419,14 @@
       "monai.deploy.workflowmanager.configuration": {
         "type": "Project",
         "dependencies": {
-<<<<<<< HEAD
-          "Monai.Deploy.Messaging": "[0.1.10-rc0006, )",
-          "Monai.Deploy.Storage": "[0.2.7, )"
-=======
-          "Monai.Deploy.Messaging": "[0.1.9, )",
+          "Monai.Deploy.Messaging": "[0.1.10, )",
           "Monai.Deploy.Storage": "[0.2.10, )"
->>>>>>> ca6b3f735baba1638f0e13e231b52c91bd8a55c1
         }
       },
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-<<<<<<< HEAD
-          "Monai.Deploy.Messaging": "[0.1.10-rc0006, )",
-=======
-          "Monai.Deploy.Messaging": "[0.1.9, )",
->>>>>>> ca6b3f735baba1638f0e13e231b52c91bd8a55c1
+          "Monai.Deploy.Messaging": "[0.1.10, )",
           "MongoDB.Bson": "[2.18.0, )"
         }
       },
@@ -1477,11 +1454,7 @@
       "monai.deploy.workflowmanager.storage": {
         "type": "Project",
         "dependencies": {
-<<<<<<< HEAD
-          "Monai.Deploy.Storage": "[0.2.7, )",
-=======
           "Monai.Deploy.Storage": "[0.2.10, )",
->>>>>>> ca6b3f735baba1638f0e13e231b52c91bd8a55c1
           "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Logging": "[1.0.0, )"
         }
@@ -1489,11 +1462,7 @@
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-<<<<<<< HEAD
-          "Monai.Deploy.Messaging": "[0.1.10-rc0006, )",
-=======
-          "Monai.Deploy.Messaging": "[0.1.9, )",
->>>>>>> ca6b3f735baba1638f0e13e231b52c91bd8a55c1
+          "Monai.Deploy.Messaging": "[0.1.10, )",
           "MongoDB.Bson": "[2.18.0, )"
         }
       },
