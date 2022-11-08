@@ -69,7 +69,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     PatientDetails = new PatientDetails()
                     {
                         PatientDob = null,
-                        PatientId = Guid.NewGuid().ToString(),
+                        PatientId = "dae4a6d1-573d-4a3f-978f-ed056f628de6",
                         PatientName = "Jane Doe",
                         PatientSex = "female"
                     }
@@ -115,7 +115,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     PatientDetails = new PatientDetails()
                     {
                         PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
-                        PatientId = Guid.NewGuid().ToString(),
+                        PatientId = "09da8f2c-c0ae-4de6-9b66-28a2bed6c2f6",
                         PatientName = "Jan Jones",
                         PatientSex = "f"
                     }
@@ -138,7 +138,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     PatientDetails = new PatientDetails()
                     {
                         PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
-                        PatientId = Guid.NewGuid().ToString(),
+                        PatientId = "09da8f2c-c0ae-4de6-9b66-28a2bed6c2f6",
                         PatientName = "Tim Apple",
                         PatientSex = "m"
                     }
@@ -161,7 +161,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     PatientDetails = new PatientDetails()
                     {
                         PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
-                        PatientId = Guid.NewGuid().ToString(),
+                        PatientId = "09da8f2c-c0ae-4de6-9b66-28a2bed6c2f6",
                         PatientName = "Foo Bar",
                         PatientSex = "N/A"
                     }
