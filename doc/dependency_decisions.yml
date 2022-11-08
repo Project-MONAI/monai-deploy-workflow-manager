@@ -2301,3 +2301,59 @@
     :versions:
     - 1.6.0
     :when: 2022-11-02 21:45:54.431951720 Z
+- - :approve
+  - Monai.Deploy.Messaging.RabbitMQ
+  - :who: lillie-dae
+    :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
+    :versions:
+    - 0.1.10
+    :when: 2022-10-08 10:16:20.975488411 Z
+- - :approve
+  - Monai.Deploy.Messaging
+  - :who: lillie-dae
+    :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
+    :versions:
+    - 0.1.10
+    :when: 2022-10-08 10:16:20.975488411 Z
+- - :approve
+  - Monai.Deploy.Storage
+  - :who: lillie-dae
+    :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-storage/blob/develop/LICENSE)
+    :versions:
+    - 0.2.10
+    :when: 2022-10-08 10:16:20.975488411 Z
+- - :approve
+  - Monai.Deploy.Storage.MinIO
+  - :who: lillie-dae
+    :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-storage/blob/develop/LICENSE)
+    :versions:
+    - 0.2.10
+    :when: 2022-10-08 10:16:20.975488411 Z
+- - :approve
+  - Monai.Deploy.Storage.S3Policy
+  - :who: lillie-dae
+    :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-storage/blob/develop/LICENSE)
+    :versions:
+    - 0.2.10
+    :when: 2022-10-08 10:16:20.975488411 Z
+- - :approve
+  - NLog
+  - :who: lillie-dae
+    :why: BSD 3-Clause "New" or "Revised" License (https://github.com/NLog/NLog/blob/master/LICENSE.txt)
+    :versions:
+    - 5.0.4
+    :when: 2022-10-08 10:16:20.975488411 Z
+- - :approve
+  - NLog.Extensions.Logging
+  - :who: lillie-dae
+    :why: BSD 2-Clause "Simplified" License (https://github.com/NLog/NLog.Extensions.Logging/blob/master/LICENSE)
+    :versions:
+    - 5.0.4
+    :when: 2022-10-08 10:16:20.975488411 Z
+- - :approve
+  - NLog.Web.AspNetCore
+  - :who: lillie-dae
+    :why: BSD 3-Clause "New" or "Revised" License (https://github.com/NLog/NLog.Web/blob/master/LICENSE)
+    :versions:
+    - 5.0.4
+    :when: 2022-10-08 10:16:20.975488411 Z
