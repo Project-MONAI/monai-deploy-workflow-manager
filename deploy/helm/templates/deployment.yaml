@@ -83,8 +83,8 @@ spec:
           {{- if  .Values.image.command }}
           command: {{.Values.image.command}}
           {{- end}}
-          {{- if  .Values.image.args }}
-          args: {{.Values.image.args}}
+          {{- if  .Values.image.args }}       
+          args: {{- toYaml .Values.image.args | nindent 12 }}
           {{- end}}
           {{- with .Values.probes }}
           livenessProbe:
