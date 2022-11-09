@@ -55,7 +55,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 
             if (!string.IsNullOrWhiteSpace(aeTitle) && aeTitle.Length <= 15) return true;
 
-            validationErrors?.Add($"'{aeTitle}' is not a valid AE Title (source: {source}).");
+            validationErrors?.Add($"AeTitle is required in the InformaticsGateaway section.");
             return false;
         }
 

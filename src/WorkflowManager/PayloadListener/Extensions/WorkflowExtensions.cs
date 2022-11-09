@@ -39,13 +39,12 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 
             var workflowName = string.IsNullOrWhiteSpace(workflow.Name) ? "Unnamed workflow" : workflow.Name;
 
-            valid &= IsNameValid(workflowName, workflow.Name, validationErrors);
-            valid &= IsDescriptionValid(workflowName, workflow.Description, validationErrors);
-            valid &= IsInformaticsGatewayValid(workflowName, workflow.InformaticsGateway, validationErrors);
+            //valid &= IsNameValid(workflowName, workflow.Name, validationErrors);
+            //valid &= IsInformaticsGatewayValid(workflowName, workflow.InformaticsGateway, validationErrors);
 
             foreach (var task in workflow?.Tasks)
             {
-                valid &= IsTaskObjectValid(workflowName, task, validationErrors);
+                //valid &= IsTaskObjectValid(workflowName, task, validationErrors);
             }
 
             return valid;
@@ -82,9 +81,9 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             Guard.Against.NullOrWhiteSpace(source, nameof(source));
 
             var valid = true;
-            valid &= ValidationExtensions.IsInformaticsGatewayNotNull(source, informaticsGateway, validationErrors);
-            valid &= ValidationExtensions.IsAeTitleValid(nameof(informaticsGateway), informaticsGateway?.AeTitle, validationErrors);
-            valid &= IsExportDestinationsValid(nameof(informaticsGateway), informaticsGateway?.ExportDestinations, validationErrors);
+            //valid &= ValidationExtensions.IsInformaticsGatewayNotNull(source, informaticsGateway, validationErrors);
+            //valid &= ValidationExtensions.IsAeTitleValid(nameof(informaticsGateway), informaticsGateway?.AeTitle, validationErrors);
+            ///valid &= IsExportDestinationsValid(nameof(informaticsGateway), informaticsGateway?.ExportDestinations, validationErrors);
 
             return valid;
         }
