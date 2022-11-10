@@ -287,41 +287,6 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void ValidateConditional(TaskObject[] tasks, TaskObject currentTask)
-        {
-            var inputs = currentTask?.Artifacts?.Input;
-
-            //foreach (var inputArtifact in inputs)
-            //{
-            //    var valueStringValue = inputArtifact.Value.Split(' ');
-            //    var valueStringSplit = valueStringValue[1].Split('.');
-
-            //    if (valueStringSplit.Length < 3)
-            //    {
-            //        Errors.Add($"Invalid Value property on input artifact '{inputArtifact.Name}' in task: '{currentTask.Id}'. Incorrect format.");
-            //        continue;
-            //    }
-
-            //    if (valueStringValue[1].ToLower() == "context.input.dicom")
-            //    {
-            //        return;
-            //    }
-
-            //    var referencedId = valueStringSplit[2];
-
-            //    if (referencedId == currentTask.Id)
-            //    {
-            //        Errors.Add($"Invalid Value property on input artifact '{inputArtifact.Name}' in task: '{currentTask.Id}'. Self referencing task ID.");
-            //        continue;
-            //    }
-
-            //    if (tasks.FirstOrDefault(t => t.Id == referencedId) == null)
-            //    {
-            //        Errors.Add($"Invalid input artifact '{inputArtifact.Name}' in task '{currentTask.Id}': No matching task for ID '{referencedId}'");
-            //    }
-            //}
-        }
-
         private void ValidateInputs(TaskObject[] tasks, TaskObject currentTask)
         {
             if (currentTask.Type.ToLower() == RouterTaskType)
@@ -346,8 +311,6 @@ namespace Monai.Deploy.WorkflowManager.Validators
             {
                 Errors.Add($"Task: '{currentTask.Id}' Input Artifacts must have a Value.");
             }
-
-            ValidateConditional(tasks, currentTask);
         }
 
         private void ValidateArgoTask(TaskObject currentTask)
