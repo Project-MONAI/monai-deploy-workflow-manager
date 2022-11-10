@@ -135,6 +135,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 ["correlationId"] = Event.CorrelationId,
                 ["workflowInstanceId"] = Event.WorkflowInstanceId,
                 ["taskId"] = Event.TaskId,
+                ["executionId"] = Event.ExecutionId,
                 ["argoNamespace"] = _namespace
             });
 
