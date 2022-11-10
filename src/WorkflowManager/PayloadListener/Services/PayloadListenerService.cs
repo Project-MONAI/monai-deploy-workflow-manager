@@ -70,6 +70,11 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             _eventPayloadListenerService = eventPayloadListenerService ?? throw new ArgumentNullException(nameof(eventPayloadListenerService));
 
             _messageSubscriber = _scope.ServiceProvider.GetRequiredService<IMessageBrokerSubscriberService>();
+            _messageSubscriber.OnConnectionError += (sender, args) =>
+            {
+                _logger.MessagingServiceErrorRecover(args.ShutdownEventArguments.ToString());
+                SetupPolling();
+            };
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
