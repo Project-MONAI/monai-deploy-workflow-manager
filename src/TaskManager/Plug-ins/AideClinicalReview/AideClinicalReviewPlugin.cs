@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Xml.Linq;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

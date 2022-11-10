@@ -15,7 +15,6 @@
  */
 
 using System.Globalization;
-using System.Xml.Linq;
 using Ardalis.GuardClauses;
 using Docker.DotNet;
 using Docker.DotNet.Models;
