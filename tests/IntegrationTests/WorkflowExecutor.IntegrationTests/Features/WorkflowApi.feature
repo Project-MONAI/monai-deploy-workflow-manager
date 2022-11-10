@@ -199,7 +199,7 @@ Scenario Outline: Add workflow with duplicate workflow name
     And I have a body Workflow_Dup_Workflow_Name
     When I send a POST request
     Then I will get a 400 response
-    And I will receive the error message A Workflow with the name: Basic workflow already exists.
+    And I will receive the error message Failed to validate workflow: Workflow with name 'Basic workflow' already exists, please review.
 
 @ValidateWorkflows
 Scenario: Validate workflow with valid details

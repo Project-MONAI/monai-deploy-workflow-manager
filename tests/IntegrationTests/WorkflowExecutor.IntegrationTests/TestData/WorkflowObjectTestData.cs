@@ -42,7 +42,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskObject
                         {
                             Id = "basic_id_with-legal-chars",
-                            Type = "Basic_task",
+                            Type = "router",
                             Description = "Basic Workflow update Task update",
                             Args = new Dictionary<string, string> { { "test", "test" } },
                             Artifacts = new ArtifactMap()
@@ -74,7 +74,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskObject
                         {
                             Id = "basic_id_with-legal-chars",
-                            Type = "Basic_task",
+                            Type = "router",
                             Description = "Basic Workflow update Task update",
                             Artifacts = new ArtifactMap()
                             {
@@ -102,7 +102,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskObject
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Type = "Basic_task",
+                            Type = "router",
                             Description = "Basic Workflow 1 Task 1",
                             Artifacts = new ArtifactMap()
                             {
@@ -133,7 +133,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskObject
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Type = "Basic_task",
+                            Type = "router",
                             Description = "Basic Workflow 1 Task 1",
                             Artifacts = new ArtifactMap()
                             {
@@ -164,7 +164,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskObject
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Type = "Basic_task",
+                            Type = "router",
                             Description = "Basic Workflow 1 Task 1",
                             Artifacts = new ArtifactMap()
                             {
@@ -195,7 +195,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskObject
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Type = "Basic_task",
+                            Type = "router",
                             Description = "Basic Workflow 1 Task 1",
                             Artifacts = new ArtifactMap()
                             {
@@ -226,7 +226,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskObject
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Type = "Basic_task",
+                            Type = "router",
                             Description = "Basic Workflow 1 Task 1",
                             Artifacts = new ArtifactMap()
                             {
@@ -257,7 +257,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskObject
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Type = "Basic_task",
+                            Type = "router",
                             Description = "Basic Workflow 1 Task 1",
                             Artifacts = new ArtifactMap()
                             {
@@ -288,7 +288,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskObject
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Type = "Basic_task",
+                            Type = "router",
                             Description = "Over 2000 chars dolor sit amet, consectetur adipiscing elit. Praesent eget consequat ante. Vivamus convallis porttitor vehicula. Proin turpis ante, fringilla nec sem sit amet, commodo tristique magna. Cras quam est, vehicula vitae tellus et, faucibus hendrerit lacus. Curabitur at ligula urna. Nam pretium felis et orci consectetur suscipit. In finibus arcu erat, quis congue libero finibus quis. Praesent mollis viverra arcu, vel finibus ligula auctor et. Phasellus ac lacus id tellus tempor porta. Sed quis nibh malesuada, consectetur sem sed, aliquam sapien. Mauris vehicula massa elit, vel varius massa fringilla non. Proin hendrerit dui nibh, ultrices egestas lacus ultrices ut. Vestibulum vitae nunc eget nunc hendrerit blandit. Nunc ut erat nisl. Sed condimentum gravida augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Curabitur vel mi congue, vehicula arcu quis, placerat ligula. In dapibus quam eget aliquam euismod. Praesent eget augue lacus. Aenean malesuada rhoncus fringilla. Sed non lectus nulla. Morbi maximus mi nec vulputate rhoncus. In sit amet ultrices massa. Duis a nunc congue, blandit purus non, dignissim nisl. In risus neque, fringilla sit amet laoreet vitae, aliquam et risus. In nec sem nulla. Aenean rutrum urna odio, et ornare diam pharetra nec. Cras suscipit diam vitae condimentum rutrum. Proin lacinia augue leo, et consectetur eros accumsan eget. Donec nec lacinia dui. Aenean imperdiet finibus volutpat. Proin scelerisque ante ligula, at faucibus odio bibendum vitae. Duis luctus arcu nibh, ac elementum libero ullamcorper id. Curabitur fermentum neque dui, ut suscipit ipsum pellentesque eu. Curabitur dapibus, magna egestas semper volutpat, ligula urna eleifend nunc, eget tristique lacus sapien in nisi. Etiam id bibendum purus. Proin dictum, orci in egestas faucibus, ipsum felis ullamcorper lectus, ac bibendum arcu arcu eu tellus. Aliquam a posuere nibh. Duis euismod magna a faucibus tempor. Vestibulum et lacus molestie.",
                             Artifacts = new ArtifactMap()
                             {
@@ -350,7 +350,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskObject
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Type = "Basic_task",
+                            Type = "router",
                             Description = "Basic Workflow 1 Task 1",
                             Artifacts = new ArtifactMap()
                             {
@@ -380,7 +380,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskObject
                         {
                             Id = "Over 50 chars Lorem ipsum dolor sit amet consectetur adipiscing elit ligula",
-                            Type = "Basic_task",
+                            Type = "router",
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
@@ -411,7 +411,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskObject
                         {
                             Id = "Invalid chars ./'#;][",
-                            Type = "Basic_task",
+                            Type = "router",
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
@@ -682,7 +682,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskObject
                         {
                             Id = "basic_id_with-legal-chars",
-                            Type = "Basic_task",
+                            Type = "router",
                             Description = "Basic Workflow update Task update",
                             Args = new Dictionary<string, string> { { "test", "test" } },
                             Artifacts = new ArtifactMap()
@@ -1036,7 +1036,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskObject
                         {
                             Id = "basic_id_with-legal-chars",
-                            Type = "Basic_task",
+                            Type = "router",
                             Description = "Basic Workflow update Task update",
                             Args = new Dictionary<string, string> { { "test", "test" } },
                             Artifacts = new ArtifactMap()

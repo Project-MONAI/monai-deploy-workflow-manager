@@ -143,7 +143,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 {
                     new TaskObject {
                         Id = Guid.NewGuid().ToString(),
-                        Type = "type",
+                        Type = "export",
                         Description = "taskdesc",
                         Args = new Dictionary<string, string>
                         {
@@ -181,11 +181,28 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 {
                     new TaskObject {
                         Id = Guid.NewGuid().ToString(),
-                        Type = "type",
+                        Type = "export",
                         Description = "taskdesc",
                         Args = new Dictionary<string, string>
                         {
                             { "test", "test" }
+                        },
+                        Artifacts = new ArtifactMap
+                        {
+                           Input = new Artifact[]
+                           {
+                               new Artifact
+                               {
+                                   Name = "test",
+                                   Value = "{{ context.input.dicom }}"
+                               }
+                            }
+                        },
+                        ExportDestinations = new ExportDestination[] {
+                            new ExportDestination
+                            {
+                                Name = "test"
+                            }
                         }
                     }
                 }
@@ -279,11 +296,28 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 {
                     new TaskObject {
                         Id = Guid.NewGuid().ToString(),
-                        Type = "type",
+                        Type = "export",
                         Description = "taskdesc",
                         Args = new Dictionary<string, string>
                         {
                             { "test", "test" }
+                        },
+                        Artifacts = new ArtifactMap
+                        {
+                           Input = new Artifact[]
+                           {
+                               new Artifact
+                               {
+                                   Name = "test",
+                                   Value = "{{ context.input.dicom }}"
+                               }
+                            }
+                        },
+                        ExportDestinations = new ExportDestination[] {
+                            new ExportDestination
+                            {
+                                Name = "test"
+                            }
                         }
                     }
                 }
@@ -344,11 +378,28 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 {
                     new TaskObject {
                         Id = Guid.NewGuid().ToString(),
-                        Type = "type",
+                        Type = "export",
                         Description = "taskdesc",
                         Args = new Dictionary<string, string>
                         {
                             { "test", "test" }
+                        },
+                        Artifacts = new ArtifactMap
+                        {
+                           Input = new Artifact[]
+                           {
+                               new Artifact
+                               {
+                                   Name = "test",
+                                   Value = "{{ context.input.dicom }}"
+                               }
+                            }
+                        },
+                        ExportDestinations = new ExportDestination[] {
+                            new ExportDestination
+                            {
+                                Name = "test"
+                            }
                         }
                     }
                 }
