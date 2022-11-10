@@ -123,9 +123,9 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
 
         private async Task PublishTimeoutUpdateEvent(TaskExecution task, string correlationId, string workflowInstanceId)
         {
-            var timeoutString = $"{task.TaskStartTime.ToShortDateString()} {task.TaskStartTime.ToShortTimeString}";
+            var timeoutString = $"{task.TaskStartTime.ToShortDateString()} {task.TaskStartTime.ToShortTimeString()}";
             var duration = DateTime.UtcNow - task.TaskStartTime;
-            var durationString = $"{duration.Seconds} Seconds";
+            var durationString = $"{duration.TotalSeconds} Seconds";
 
             _logger.TimingOutTask(task.TaskId, timeoutString, durationString, task.ExecutionId, correlationId);
 
