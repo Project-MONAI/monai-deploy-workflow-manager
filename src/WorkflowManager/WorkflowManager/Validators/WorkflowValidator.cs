@@ -24,8 +24,8 @@ using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
 using Monai.Deploy.WorkflowManager.Shared;
+using static Monai.Deploy.WorkflowManager.Shared.ValidationConstants;
 
 namespace Monai.Deploy.WorkflowManager.Validators
 {
@@ -268,66 +268,99 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
         private void TaskTypeSpecificValidation(TaskObject[] tasks, TaskObject currentTask)
         {
-            if (ValidationConstants.ValidTaskTypes.Contains(currentTask.Type.ToLower()) is false)
+            if (ValidTaskTypes.Contains(currentTask.Type.ToLower()) is false)
             {
                 Errors.Add($"Task: '{currentTask.Id}' has an invalid type, please specify: {string.Join(", ", ValidationConstants.ValidTaskTypes)}");
                 return;
             }
 
-            if ((currentTask.Type.ToLower() == ValidationConstants.RouterTaskType) is false)
-            {
-                var inputs = currentTask?.Artifacts?.Input;
+            ValidateInputs(tasks, currentTask);
 
-                if (inputs.IsNullOrEmpty())
-                {
-                    Errors.Add($"Task: '{currentTask.Id}' must have Input Artifacts specified.");
-                }
-                else
-                {
-                    if (inputs.Any((input) => string.IsNullOrWhiteSpace(input.Name)))
-                    {
-                        Errors.Add($"Task: '{currentTask.Id}' Input Artifacts must have a Name.");
-                    }
-
-                    if (inputs.Any((input) => string.IsNullOrWhiteSpace(input.Value)))
-                    {
-                        Errors.Add($"Task: '{currentTask.Id}' Input Artifacts must have a Value.");
-                    }
-                }
-            }
-
-            if (currentTask.Type.Equals(ValidationConstants.ArgoTaskType, StringComparison.OrdinalIgnoreCase) is true)
+            if (currentTask.Type.Equals(ArgoTaskType, StringComparison.OrdinalIgnoreCase) is true)
             {
                 ValidateArgoTask(currentTask);
             }
 
-            if (currentTask.Type.Equals(ValidationConstants.ClinicalReviewTaskType, StringComparison.OrdinalIgnoreCase) is true)
+            if (currentTask.Type.Equals(ClinicalReviewTaskType, StringComparison.OrdinalIgnoreCase) is true)
             {
                 ValidateClinicalReviewTask(tasks, currentTask);
             }
         }
 
-        private void ValidateArgoTask(TaskObject currentTask)
+        private void ValidateConditional(TaskObject[] tasks, TaskObject currentTask)
         {
-            var missingKeys = new List<string>();
+            var inputs = currentTask?.Artifacts?.Input;
 
-            foreach (var key in ValidationConstants.ArgoRequiredParameters)
+            //foreach (var inputArtifact in inputs)
+            //{
+            //    var valueStringValue = inputArtifact.Value.Split(' ');
+            //    var valueStringSplit = valueStringValue[1].Split('.');
+
+            //    if (valueStringSplit.Length < 3)
+            //    {
+            //        Errors.Add($"Invalid Value property on input artifact '{inputArtifact.Name}' in task: '{currentTask.Id}'. Incorrect format.");
+            //        continue;
+            //    }
+
+            //    if (valueStringValue[1].ToLower() == "context.input.dicom")
+            //    {
+            //        return;
+            //    }
+
+            //    var referencedId = valueStringSplit[2];
+
+            //    if (referencedId == currentTask.Id)
+            //    {
+            //        Errors.Add($"Invalid Value property on input artifact '{inputArtifact.Name}' in task: '{currentTask.Id}'. Self referencing task ID.");
+            //        continue;
+            //    }
+
+            //    if (tasks.FirstOrDefault(t => t.Id == referencedId) == null)
+            //    {
+            //        Errors.Add($"Invalid input artifact '{inputArtifact.Name}' in task '{currentTask.Id}': No matching task for ID '{referencedId}'");
+            //    }
+            //}
+        }
+
+        private void ValidateInputs(TaskObject[] tasks, TaskObject currentTask)
+        {
+            if (currentTask.Type.ToLower() == RouterTaskType)
             {
-                if (!currentTask.Args.ContainsKey(key))
-                {
-                    missingKeys.Add(key);
-                }
+                return;
             }
 
-            if (missingKeys.Count > 0)
+            var inputs = currentTask?.Artifacts?.Input;
+
+            if (inputs.IsNullOrEmpty())
             {
-                Errors.Add($"Required parameter to execute Argo workflow is missing: {string.Join(", ", missingKeys)}");
+                Errors.Add($"Task: '{currentTask.Id}' must have Input Artifacts specified.");
+                return;
+            }
+
+            if (inputs.Any((input) => string.IsNullOrWhiteSpace(input.Name)))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' Input Artifacts must have a Name.");
+            }
+
+            if (inputs.Any((input) => string.IsNullOrWhiteSpace(input.Value)))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' Input Artifacts must have a Value.");
+            }
+
+            ValidateConditional(tasks, currentTask);
+        }
+
+        private void ValidateArgoTask(TaskObject currentTask)
+        {
+            if (!currentTask.Args.ContainsKey(WorkflowTemplateName))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' workflow_template_name must be specified, this corresponds to an Argo template name.");
             }
         }
 
         private void ValidateClinicalReviewTask(TaskObject[] tasks, TaskObject currentTask)
         {
-            ValidateClinicalReviewRequiredFields(currentTask);
+            ValidateClinicalReviewRequiredFields(tasks, currentTask);
 
             var inputs = currentTask?.Artifacts?.Input;
 
@@ -361,21 +394,30 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void ValidateClinicalReviewRequiredFields(TaskObject currentTask)
+        private void ValidateClinicalReviewRequiredFields(TaskObject[] tasks, TaskObject currentTask)
         {
-            var missingKeys = new List<string>();
-
-            foreach (var key in ValidationConstants.ClinicalReviewRequiredParameters)
+            if (!currentTask.Args.ContainsKey(ApplicationName))
             {
-                if (!currentTask.Args.ContainsKey(key))
-                {
-                    missingKeys.Add(key);
-                }
+                Errors.Add($"Task: '{currentTask.Id}' application_name must be specified.");
             }
 
-            if (missingKeys.Count > 0)
+            if (!currentTask.Args.ContainsKey(ApplicationVersion))
             {
-                Errors.Add($"Required parameter for clinical review args are missing: {string.Join(", ", missingKeys)}");
+                Errors.Add($"Task: '{currentTask.Id}' application_version must be specified.");
+            }
+
+            if (!currentTask.Args.ContainsKey(Mode) || !Enum.TryParse(typeof(ModeValues), currentTask.Args[Mode], true, out var _))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' mode is incorrectly specified, please specify 'QA', 'Research' or 'Clinical'");
+            }
+
+            if (!currentTask.Args.ContainsKey(ReviewedTaskId))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id must be specified.");
+            }
+            else if (tasks.Any(t => t.Id.ToLower() == currentTask.Args[ReviewedTaskId].ToLower()) is false)
+            {
+                Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id: '{currentTask.Args[ReviewedTaskId]}' could not be found in the workflow.");
             }
         }
     }

@@ -48,6 +48,13 @@ namespace Monai.Deploy.WorkflowManager.Shared
         /// </summary>
         public static readonly string Mode = "mode";
 
+        public enum ModeValues
+        {
+            QA,
+            Research,
+            Clinical
+        }
+
         /// <summary>
         /// Required arguments to run the clinical review task workflow args.
         /// </summary>
