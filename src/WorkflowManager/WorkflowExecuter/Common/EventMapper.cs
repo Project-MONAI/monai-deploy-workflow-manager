@@ -74,7 +74,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             FailureReason failureReason,
             string message)
         {
-            Guard.Against.Null(identity, nameof(identity));
+            //Guard.Against.Null(identity, nameof(identity));
             Guard.Against.Null(workflowInstanceId, nameof(workflowInstanceId));
 
             return new TaskCancellationEvent

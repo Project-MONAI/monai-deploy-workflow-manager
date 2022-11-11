@@ -163,6 +163,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
         private async Task HandleCancellationTask(JsonMessage<TaskCancellationEvent> message)
         {
+            _logger.PrecessingTaskCancellationEvent();
             Guard.Against.Null(message, nameof(message));
 
             try

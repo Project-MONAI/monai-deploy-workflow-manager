@@ -134,6 +134,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 
         public override async Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken = default)
         {
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["correlationId"] = Event.CorrelationId,
+                ["workflowInstanceId"] = Event.WorkflowInstanceId,
+                ["taskId"] = Event.TaskId,
+                ["executionId"] = Event.ExecutionId
+            });
+
             try
             {
                 var reviewEvent = GenerateClinicalReviewRequestEventMessage();
