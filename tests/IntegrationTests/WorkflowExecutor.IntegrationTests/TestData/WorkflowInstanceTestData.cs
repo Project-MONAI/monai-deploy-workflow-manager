@@ -1459,11 +1459,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 {"key_1", "value_1" },
                                 {"key_2", 1 }
                             },
-                            InputParameters = new Dictionary<string, object>()
-                            {
-                                {"key_1", "value_1" },
-                                {"key_2", 1 }
-                            },
                             TaskPluginArguments = new Dictionary<string, string>()
                             {
                                 {"key_1", "value_1" }
@@ -1571,11 +1566,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 {"key_1", "value_1" },
                                 {"key_2", 1 }
                             },
-                            InputParameters = new Dictionary<string, object>()
-                            {
-                                {"key_1", "value_1" },
-                                {"key_2", 1 }
-                            },
                             TaskPluginArguments = new Dictionary<string, string>()
                             {
                                 {"key_1", "value_1" }
@@ -1679,11 +1669,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 {"key_1", "value_1" }
                             },
                             ResultMetadata = new Dictionary<string, object>()
-                            {
-                                {"key_1", "value_1" },
-                                {"key_2", 1 }
-                            },
-                            InputParameters = new Dictionary<string, object>()
                             {
                                 {"key_1", "value_1" },
                                 {"key_2", 1 }

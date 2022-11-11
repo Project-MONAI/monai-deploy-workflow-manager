@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Amazon.Runtime;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -139,6 +138,29 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 _logger.WorkflowGetAsyncError(id, e);
                 return Problem($"Unexpected error occurred: {e.Message}", $"/workflows/{nameof(id)}", InternalServerError);
             }
+        }
+
+        /// <summary>
+        /// Validates a workflow.
+        /// </summary>
+        /// <param name="workflow">The Workflow.</param>
+        /// <returns>A 204 when the workflow is valid.</returns>
+        [HttpPost("validate")]
+        [ProducesResponseType(typeof(CreateWorkflowResponse), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ValidateAsync([FromBody] Workflow workflow)
+        {
+            var results = await _workflowValidator.ValidateWorkflow(workflow);
+
+            if (results.Errors.Count > 0)
+            {
+                var validationErrors = string.Join(", ", results.Errors);
+                _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+
+                return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", BadRequest);
+            }
+
+            return StatusCode(StatusCodes.Status204NoContent);
         }
 
         /// <summary>

@@ -34,12 +34,37 @@ namespace Monai.Deploy.WorkflowManager.Shared
         public static readonly string QueueName = "queue_name";
 
         /// <summary>
+        /// Key for the application name.
+        /// </summary>
+        public static readonly string ApplicationName = "application_name";
+
+        /// <summary>
+        /// Key for the application version.
+        /// </summary>
+        public static readonly string ApplicationVersion = "application_version";
+
+        /// <summary>
+        /// Key for the mode.
+        /// </summary>
+        public static readonly string Mode = "mode";
+
+        public enum ModeValues
+        {
+            QA,
+            Research,
+            Clinical
+        }
+
+        /// <summary>
         /// Required arguments to run the clinical review task workflow args.
         /// </summary>
         public static readonly IReadOnlyList<string> ClinicalReviewRequiredParameters = new List<string> {
             QueueName,
             WorkflowName,
-            ReviewedTaskId
+            ReviewedTaskId,
+            ApplicationVersion,
+            ApplicationName,
+            Mode
         };
 
         /// <summary>
@@ -59,6 +84,44 @@ namespace Monai.Deploy.WorkflowManager.Shared
             new List<string> {
                 BaseUrl,
                 WorkflowTemplateName
+            };
+
+
+        /// <summary>
+        /// Key for the argo task type.
+        /// </summary>
+        public static readonly string ArgoTaskType = "argo";
+
+        /// <summary>
+        /// Key for the clinical review task type.
+        /// </summary>
+        public static readonly string ClinicalReviewTaskType = "aide_clinical_review";
+
+        /// <summary>
+        /// Key for the router task type.
+        /// </summary>
+        public static readonly string RouterTaskType = "router";
+
+        /// <summary>
+        /// Key for the export task type.
+        /// </summary>
+        public static readonly string ExportTaskType = "export";
+
+        /// <summary>
+        /// Key for the export task type.
+        /// </summary>
+        public static readonly string DockerTaskType = "docker";
+
+        /// <summary>
+        /// Valid task types.
+        /// </summary>
+        public static readonly IReadOnlyList<string> ValidTaskTypes =
+            new List<string> {
+                ArgoTaskType,
+                ClinicalReviewTaskType,
+                RouterTaskType,
+                ExportTaskType,
+                DockerTaskType
             };
     }
 }

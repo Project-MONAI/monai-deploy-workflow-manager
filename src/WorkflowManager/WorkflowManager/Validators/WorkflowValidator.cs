@@ -24,8 +24,8 @@ using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
 using Monai.Deploy.WorkflowManager.Shared;
+using static Monai.Deploy.WorkflowManager.Shared.ValidationConstants;
 
 namespace Monai.Deploy.WorkflowManager.Validators
 {
@@ -81,15 +81,12 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// <returns>if any validation errors are produced while validating workflow.</returns>
         public async Task<(List<string> Errors, List<string> SuccessfulPaths)> ValidateWorkflow(Workflow workflow, bool checkForDuplicates = true)
         {
-            workflow.IsValid(out var validationErrors);
-            Errors.AddRange(validationErrors);
             var tasks = workflow.Tasks;
             var firstTask = tasks.FirstOrDefault();
 
             await ValidateWorkflowSpec(workflow, checkForDuplicates);
             DetectUnreferencedTasks(tasks, firstTask);
             ValidateTask(tasks, firstTask, 0);
-            ValidateTaskDestinations(workflow);
             ValidateExportDestinations(workflow);
 
             if (Errors.Any())
@@ -112,43 +109,19 @@ namespace Monai.Deploy.WorkflowManager.Validators
             foreach (var task in workflow.Tasks.Where(task => task.ExportDestinations.IsNullOrEmpty() is false))
             {
                 var taskExportDestinationNames = task.ExportDestinations.Select(td => td.Name);
-                if (taskExportDestinationNames.Any() && workflow.InformaticsGateway.ExportDestinations.IsNullOrEmpty())
+                if (taskExportDestinationNames.Any() && (workflow.InformaticsGateway?.ExportDestinations?.IsNullOrEmpty() ?? true))
                 {
-                    Errors.Add("InformaticsGateway ExportDestinations destinations can not be null");
+                    Errors.Add("InformaticsGateway ExportDestinations destinations can not be null with an Export Task.");
                     return;
                 }
 
-                var diff = taskExportDestinationNames.Except(workflow.InformaticsGateway.ExportDestinations).ToList();
+                var diff = taskExportDestinationNames.Except(workflow.InformaticsGateway?.ExportDestinations).ToList();
                 if (!diff.IsNullOrEmpty())
                 {
                     foreach (var missingDestination in diff)
                     {
-                        Errors.Add($"Missing destination {missingDestination} in task {task.Id}");
+                        Errors.Add($"Task: '{task.Id}' export_destination: '{missingDestination}' must be registered in the informatics_gateway object.");
                     }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Make sure all task destinations reference existing tasks.
-        /// </summary>
-        /// <param name="workflow">workflow.</param>
-        private void ValidateTaskDestinations(Workflow workflow)
-        {
-            if (workflow.Tasks.Any() is false)
-            {
-                return;
-            }
-
-            var tasksDestinations = workflow.Tasks.Where(task => task.TaskDestinations is not null)
-                .SelectMany(task => task.TaskDestinations.Select(td => td.Name));
-            foreach (var taskDestination in tasksDestinations)
-            {
-                var destinationCount = workflow.Tasks.Count(t => t.Id == taskDestination);
-                if (destinationCount == 0)
-                {
-                    // Make sure all task destinations reference existing tasks
-                    Errors.Add($"ERROR: Task destination {taskDestination} not found.\n");
                 }
             }
         }
@@ -183,7 +156,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 && string.IsNullOrWhiteSpace(workflow.Name) is false
                 && await WorkflowService.GetByNameAsync(workflow.Name) != null)
             {
-                Errors.Add($"A Workflow with the name: {workflow.Name} already exists.");
+                Errors.Add($"Workflow with name '{workflow.Name}' already exists, please review.");
             }
 
             if (string.IsNullOrWhiteSpace(workflow.Version))
@@ -191,9 +164,11 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 Errors.Add("Missing Workflow Version.");
             }
 
+            ValidateInformaticsGateaway(workflow.InformaticsGateway);
+
             if (workflow.Tasks is null || workflow.Tasks.Any() is false)
             {
-                Errors.Add("Missing Workflow Tasks.");
+                Errors.Add("Workflow does not contain Tasks, please review Workflow.");
             }
 
             var taskIds = workflow.Tasks.Select(t => t.Id);
@@ -202,8 +177,23 @@ namespace Monai.Deploy.WorkflowManager.Validators
             {
                 if (pattern.IsMatch(taskId) is false)
                 {
-                    Errors.Add($"TaskId: {taskId} Contains Invalid Characters.");
+                    Errors.Add($"TaskId: '{taskId}' Contains Invalid Characters.");
                 }
+            }
+        }
+
+        private void ValidateInformaticsGateaway(InformaticsGateway informaticsGateway)
+        {
+            if (informaticsGateway is null)
+            {
+                Errors.Add("Missing InformaticsGateway section.");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(informaticsGateway.AeTitle) || informaticsGateway.AeTitle.Length > 15)
+            {
+                Errors.Add("AeTitle is required in the InformaticsGateaway section and must be under 16 charachters.");
+                return;
             }
         }
 
@@ -216,7 +206,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
             if (iterationCount > 100)
             {
-                Errors.Add($"Detected infinite task loop on path: {string.Join(" => ", paths.Take(5))} => ∞");
+                Errors.Add($"Detected task convergence on path: {string.Join(" => ", paths.Take(5))} => ∞");
                 return;
             }
 
@@ -238,7 +228,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
                 if (allOutputsUnique is false)
                 {
-                    Errors.Add($"Task: \"{currentTask.Id}\" has multiple output names with the same value.\n");
+                    Errors.Add($"Task: '{currentTask.Id}' has multiple output names with the same value.");
                 }
             }
         }
@@ -265,7 +255,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 var nextTask = tasks.FirstOrDefault(t => t.Id == tasksDestinationName);
                 if (nextTask == null)
                 {
-                    Errors.Add($"Task: \"{currentTask.Id}\" has task destination: \"{tasksDestinationName}\" that could not be found.\n");
+                    Errors.Add($"Task: '{currentTask.Id}' has task destination: '{tasksDestinationName}' that could not be found.");
                     paths = new List<string>();
                     continue;
                 }
@@ -278,59 +268,64 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
         private void TaskTypeSpecificValidation(TaskObject[] tasks, TaskObject currentTask)
         {
-            if (currentTask.Type.Equals("argo", StringComparison.OrdinalIgnoreCase) is true)
+            if (ValidTaskTypes.Contains(currentTask.Type.ToLower()) is false)
+            {
+                Errors.Add($"Task: '{currentTask.Id}' has an invalid type, please specify: {string.Join(", ", ValidationConstants.ValidTaskTypes)}");
+                return;
+            }
+
+            ValidateInputs(tasks, currentTask);
+
+            if (currentTask.Type.Equals(ArgoTaskType, StringComparison.OrdinalIgnoreCase) is true)
             {
                 ValidateArgoTask(currentTask);
             }
 
-            if (currentTask.Type.Equals("clinical-review", StringComparison.OrdinalIgnoreCase) is true)
+            if (currentTask.Type.Equals(ClinicalReviewTaskType, StringComparison.OrdinalIgnoreCase) is true)
             {
                 ValidateClinicalReviewTask(tasks, currentTask);
             }
         }
 
-        private void ValidateArgoTask(TaskObject currentTask)
+        private void ValidateInputs(TaskObject[] tasks, TaskObject currentTask)
         {
-            var missingKeys = new List<string>();
-
-            foreach (var key in ValidationConstants.ArgoRequiredParameters)
+            if (currentTask.Type.ToLower() == RouterTaskType)
             {
-                if (!currentTask.Args.ContainsKey(key))
-                {
-                    missingKeys.Add(key);
-                }
+                return;
             }
 
-            if (missingKeys.Count > 0)
+            var inputs = currentTask?.Artifacts?.Input;
+
+            if (inputs.IsNullOrEmpty())
             {
-                Errors.Add($"Required parameter to execute Argo workflow is missing: {string.Join(", ", missingKeys)}");
+                Errors.Add($"Task: '{currentTask.Id}' must have Input Artifacts specified.");
+                return;
+            }
+
+            if (inputs.Any((input) => string.IsNullOrWhiteSpace(input.Name)))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' Input Artifacts must have a Name.");
+            }
+
+            if (inputs.Any((input) => string.IsNullOrWhiteSpace(input.Value)))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' Input Artifacts must have a Value.");
+            }
+        }
+
+        private void ValidateArgoTask(TaskObject currentTask)
+        {
+            if (!currentTask.Args.ContainsKey(WorkflowTemplateName))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' workflow_template_name must be specified, this corresponds to an Argo template name.");
             }
         }
 
         private void ValidateClinicalReviewTask(TaskObject[] tasks, TaskObject currentTask)
         {
+            ValidateClinicalReviewRequiredFields(tasks, currentTask);
+
             var inputs = currentTask?.Artifacts?.Input;
-
-            if (inputs.IsNullOrEmpty())
-            {
-                Errors.Add($"Missing inputs for clinical review task: {currentTask.Id}");
-                return;
-            }
-
-            var missingKeys = new List<string>();
-
-            foreach (var key in ValidationConstants.ClinicalReviewRequiredParameters)
-            {
-                if (!currentTask.Args.ContainsKey(key))
-                {
-                    missingKeys.Add(key);
-                }
-            }
-
-            if (missingKeys.Count > 0)
-            {
-                Errors.Add($"Required parameter for clinical review args are missing: {string.Join(", ", missingKeys)}");
-            }
 
             foreach (var inputArtifact in inputs)
             {
@@ -343,7 +338,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
                 if (valueStringSplit.Length < 3)
                 {
-                    Errors.Add($"Invalid Value property on input artifact {inputArtifact.Name} in task: {currentTask.Id}. Incorrect format.");
+                    Errors.Add($"Invalid Value property on input artifact '{inputArtifact.Name}' in task: '{currentTask.Id}'. Incorrect format.");
                     continue;
                 }
 
@@ -351,7 +346,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
                 if (referencedId == currentTask.Id)
                 {
-                    Errors.Add($"Invalid Value property on input artifact {inputArtifact.Name} in task: {currentTask.Id}. Self referencing task ID.");
+                    Errors.Add($"Invalid Value property on input artifact '{inputArtifact.Name}' in task: '{currentTask.Id}'. Self referencing task ID.");
                     continue;
                 }
 
@@ -359,6 +354,33 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 {
                     Errors.Add($"Invalid input artifact '{inputArtifact.Name}' in task '{currentTask.Id}': No matching task for ID '{referencedId}'");
                 }
+            }
+        }
+
+        private void ValidateClinicalReviewRequiredFields(TaskObject[] tasks, TaskObject currentTask)
+        {
+            if (!currentTask.Args.ContainsKey(ApplicationName))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' application_name must be specified.");
+            }
+
+            if (!currentTask.Args.ContainsKey(ApplicationVersion))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' application_version must be specified.");
+            }
+
+            if (!currentTask.Args.ContainsKey(Mode) || !Enum.TryParse(typeof(ModeValues), currentTask.Args[Mode], true, out var _))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' mode is incorrectly specified, please specify 'QA', 'Research' or 'Clinical'");
+            }
+
+            if (!currentTask.Args.ContainsKey(ReviewedTaskId))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id must be specified.");
+            }
+            else if (tasks.Any(t => t.Id.ToLower() == currentTask.Args[ReviewedTaskId].ToLower()) is false)
+            {
+                Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id: '{currentTask.Args[ReviewedTaskId]}' could not be found in the workflow.");
             }
         }
     }

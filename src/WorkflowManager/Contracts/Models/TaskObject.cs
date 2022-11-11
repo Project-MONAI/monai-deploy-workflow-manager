@@ -34,9 +34,6 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "args")]
         public Dictionary<string, string> Args { get; set; } = new Dictionary<string, string>();
 
-        [JsonProperty(PropertyName = "ref")]
-        public string Ref { get; set; } = string.Empty;
-
         [JsonProperty(PropertyName = "task_destinations")]
         public TaskDestination[] TaskDestinations { get; set; } = Array.Empty<TaskDestination>();
 
@@ -45,9 +42,6 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         [JsonProperty(PropertyName = "artifacts")]
         public ArtifactMap Artifacts { get; set; } = new ArtifactMap();
-
-        [JsonProperty(PropertyName = "input_parameters")]
-        public Dictionary<string, object>? InputParameters { get; set; }
 
         [JsonProperty(PropertyName = "timeout_minutes")]
         public double TimeoutMinutes { get; set; } = -1;
