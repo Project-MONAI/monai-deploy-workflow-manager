@@ -2301,3 +2301,24 @@
     :versions:
     - 1.6.0
     :when: 2022-11-02 21:45:54.431951720 Z
+- - :approve
+  - Monai.Deploy.Storage
+  - :who: RemakingEden
+    :why: Apache-2.0 (https://raw.githubusercontent.com/Project-MONAI/monai-deploy-storage/main/LICENSE)
+    :versions:
+    - 0.2.10
+    :when: 2022-11-08 14:49:46.964761113 Z
+- - :approve
+  - Monai.Deploy.Storage.MinIO
+  - :who: RemakingEden
+    :why: Apache-2.0 (https://raw.githubusercontent.com/Project-MONAI/monai-deploy-storage/main/LICENSE)
+    :versions:
+    - 0.2.10
+    :when: 2022-11-08 14:49:46.964761113 Z
+- - :approve
+  - Monai.Deploy.Storage.S3Policy
+  - :who: RemakingEden
+    :why: Apache-2.0 (https://raw.githubusercontent.com/Project-MONAI/monai-deploy-storage/main/LICENSE)
+    :versions:
+    - 0.2.10
+    :when: 2022-11-08 14:49:46.964761113 Z

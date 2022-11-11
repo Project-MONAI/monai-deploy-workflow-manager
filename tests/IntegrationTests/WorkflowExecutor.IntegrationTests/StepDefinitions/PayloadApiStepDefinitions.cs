@@ -75,9 +75,22 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             Assertions.AssertPayloadList(DataHelper.Payload, actualPayloads?.Data);
         }
 
+        [Then(@"Search is working correctly for the (.*) payload")]
+        [Then(@"Search is working correctly for the (.*) payloads")]
+        public void ThenSearchIsWorkingCorrectlyForThepayloads(int count)
+        {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            var request = ApiHelper.Request.RequestUri.Query;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            var deserializedResult = JsonConvert.DeserializeObject<PagedResponse<List<Payload>>>(result);
+            deserializedResult.Should().NotBeNull();
+            Assertions.AssertSearch(count, request, deserializedResult);
+        }
+
         [Then(@"Pagination is working correctly for the (.*) payload")]
         [Then(@"Pagination is working correctly for the (.*) payloads")]
-        public void ThenPaginationIsWorkingCorrectlyForTheWorkflow(int count)
+        public void ThenPaginationIsWorkingCorrectlyForThepayloads(int count)
         {
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             var request = ApiHelper.Request.RequestUri.Query;

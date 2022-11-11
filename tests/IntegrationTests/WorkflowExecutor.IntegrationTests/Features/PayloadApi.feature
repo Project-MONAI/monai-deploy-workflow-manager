@@ -42,6 +42,24 @@ Scenario: Get all payloads from API - no payloads
     Then I will get a 200 response
     And I can see no Payloads are returned
 
+@PayloadSearch
+Scenario Outline: Get all payloads from API - Test search query parameters
+    Given I have an endpoint /payload/<search_query>
+    And I have 10 Payloads
+    When I send a GET request
+    Then I will get a 200 response
+    And Search is working correctly for the <search_count> payloads
+    Examples:
+    | search_query                                                           | search_count |
+    | ?patientName=Steve%20Jobs                                              | 1            |
+    | ?patientName=Steve                                                     | 1            |
+    | ?patientId=dae4a6d1-573d-4a3f-978f-ed056f628de6                        | 1            |
+    | ?patientId=dae4a6d1-573d-4a3f-978f-ed056                               | 1            |
+    | ?patientName=Jane%20Doe&patientId=dae4a6d1-573d-4a3f-978f-ed056f628de6 | 1            |
+    | ?patientName=Jane&patientId=dae4a6d1-573d-4a3f-978f-ed056f628de6       | 1            |
+    | ?patientId=09da8f2c-c0ae-4de6-9b66-28a2bed6c2f6                        | 3            |
+
+
 @PayloadPagination
 Scenario Outline: Get all payloads from API - Test pagination
     Given I have an endpoint /payload/<pagination_query>

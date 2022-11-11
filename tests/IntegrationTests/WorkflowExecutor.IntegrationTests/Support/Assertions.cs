@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-using System.Collections;
+using System.Web;
 using BoDi;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -305,6 +305,46 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             updatedWorkflowInstance.Tasks[0].Status.Should().Be(taskExecutionStatus);
         }
 
+        public static void AssertSearch<T>(int count, string? queries, T? Response)
+        {
+            var responseType = Response?.GetType();
+            GetPropertyValues(Response, responseType, out var data, out var totalPages, out var pageSize, out var totalRecords, out var pageNumber);
+            if (string.IsNullOrWhiteSpace(queries) is false)
+            {
+                var splitQuery = queries?.Split("&") ?? Array.Empty<string>();
+                foreach (var query in splitQuery)
+                {
+                    if (query.Contains("status=") || query.Contains("payloadId=") || query.Contains("pageNumber=") || query.Contains("pageSize="))
+                    {
+                        continue;
+                    }
+                    else if (query.Contains("patientName"))
+                    {
+                        var patientName = query.Split("=")[1];
+                        var decodePatientName = HttpUtility.UrlDecode(patientName);
+                        foreach (var payload in data)
+                        {
+                            payload.PatientDetails.PatientName.Should().Contain(decodePatientName);
+                        }
+                    }
+                    else if (query.Contains("patientId"))
+                    {
+                        var patientId = query.Split("=")[1];
+                        var decodePatientId = HttpUtility.UrlDecode(patientId);
+                        foreach (var payload in data)
+                        {
+                            payload.PatientDetails.PatientId.Should().Contain(decodePatientId);
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception($"Search query {query} is not valid");
+                    }
+                }
+            }
+            data.Count.Should().Be(count);
+        }
+
         public static void AssertPagination<T>(int count, string? queries, T? Response)
         {
             var responseType = Response?.GetType();
@@ -343,9 +383,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             pageSize.Should().Be(pageSizeQuery);
         }
 
-        private static void GetPropertyValues<T>(T? Response, Type? responseType, out ICollection? data, out object? totalPages, out object? pageSize, out object? totalRecords, out object? pageNumber)
+        private static void GetPropertyValues<T>(T? Response, Type? responseType, out ICollection<Payload> data, out object? totalPages, out object? pageSize, out object? totalRecords, out object? pageNumber)
         {
-            data = responseType?.GetProperty("Data")?.GetValue(Response, null) as ICollection;
+            data = responseType?.GetProperty("Data")?.GetValue(Response, null) as ICollection<Payload>;
             totalPages = responseType?.GetProperty("TotalPages")?.GetValue(Response, null);
             pageSize = responseType?.GetProperty("PageSize")?.GetValue(Response, null);
             totalRecords = responseType?.GetProperty("TotalRecords")?.GetValue(Response, null);
@@ -426,7 +466,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
 
-        private static void AssertDataCount(ICollection? Data, int pageNumberQuery, int pageSizeQuery, int count)
+        private static void AssertDataCount(ICollection<Payload> Data, int pageNumberQuery, int pageSizeQuery, int count)
         {
             if ((pageNumberQuery * pageSizeQuery) > count)
             {
