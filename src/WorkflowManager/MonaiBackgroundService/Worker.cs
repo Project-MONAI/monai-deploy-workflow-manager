@@ -59,7 +59,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
 
                 await DoWork();
 
-                _logger.LogDebug("Worker completed in: {elapsed_millis} milliseconds", (int)(DateTime.UtcNow - time).TotalMilliseconds);
+                _logger.ServiceCompleted(ServiceName, (int)(DateTime.UtcNow - time).TotalMilliseconds);
                 await Task.Delay(_options.Value.BackgroundServiceSettings.BackgroundServiceDelay, stoppingToken);
             }
 
