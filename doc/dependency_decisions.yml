@@ -2257,21 +2257,21 @@
   - :who: mocsharp
     :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
-    - 0.2.9
+    - 0.2.10
     :when: 2022-11-02 21:43:46.964761113 Z
 - - :approve
   - Monai.Deploy.Storage.MinIO
   - :who: mocsharp
     :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
-    - 0.2.9
+    - 0.2.10
     :when: 2022-11-02 21:43:57.620687413 Z
 - - :approve
   - Monai.Deploy.Storage.S3Policy
   - :who: mocsharp
     :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
-    - 0.2.9
+    - 0.2.10
     :when: 2022-11-02 21:44:06.994266372 Z
 - - :approve
   - MongoDB.Bson
