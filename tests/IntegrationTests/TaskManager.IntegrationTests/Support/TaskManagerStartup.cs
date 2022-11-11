@@ -112,7 +112,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", svcCredentials);
 
-            return await httpClient.GetAsync($"http://{TestExecutionConfig.RabbitConfig.Host}:{TestExecutionConfig.RabbitConfig.Port}/api/queues/{vhost}/{queue}");
+            return await httpClient.GetAsync($"http://{TestExecutionConfig.RabbitConfig.Host}:{TestExecutionConfig.RabbitConfig.WebPort}/api/queues/{vhost}/{queue}");
         }
     }
 }
