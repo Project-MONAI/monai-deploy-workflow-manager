@@ -68,9 +68,6 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "result")]
         public Dictionary<string, object> ResultMetadata { get; set; } = new Dictionary<string, object>();
 
-        [JsonProperty(PropertyName = "input_parameters")]
-        public Dictionary<string, object> InputParameters { get; set; } = new Dictionary<string, object>();
-
         [JsonProperty(PropertyName = "next_timeout")]
         public DateTime Timeout { get => TaskStartTime.AddMinutes(TimeoutInterval); }
 

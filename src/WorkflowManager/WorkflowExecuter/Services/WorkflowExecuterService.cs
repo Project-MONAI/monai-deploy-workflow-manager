@@ -738,7 +738,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             Guard.Against.NullOrWhiteSpace(payloadId);
 
             var executionId = Guid.NewGuid().ToString();
-            var newInputParameters = GetInputParameters(task, workflowInstance);
             var newTaskArgs = GetTaskArgs(task, workflowInstance);
 
             if (task.TimeoutMinutes == -1)
@@ -767,35 +766,9 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 InputArtifacts = inputArtifacts,
                 OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}",
                 ResultMetadata = { },
-                InputParameters = newInputParameters,
                 PreviousTaskId = previousTaskId ?? string.Empty,
                 TimeoutInterval = task?.TimeoutMinutes ?? _defaultTaskTimeoutMinutes,
             };
-        }
-
-        /// <summary>
-        /// Gets and resolves input parameters
-        /// </summary>
-        /// <param name="task"></param>
-        /// <param name="workflowInstance"></param>
-        /// <returns></returns>
-        private Dictionary<string, object> GetInputParameters(TaskObject task,
-                                                              WorkflowInstance workflowInstance)
-        {
-            var newInputParameters = new Dictionary<string, object>();
-            if (task.InputParameters is not null)
-            {
-                foreach (var item in task.InputParameters)
-                {
-                    var newValue = item.Value;
-                    if (item.Value is string itemValueString)
-                    {
-                        newValue = _conditionalParameterParser.ResolveParameters(itemValueString, workflowInstance);
-                    }
-                    newInputParameters.Add(item.Key, newValue);
-                }
-            }
-            return newInputParameters;
         }
 
         /// <summary>
