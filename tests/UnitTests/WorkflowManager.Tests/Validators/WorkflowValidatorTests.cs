@@ -217,7 +217,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                     new TaskObject
                     {
                         Id = "test-clinical-review",
-                        Type = "clinical-review",
+                        Type = "aide_clinical_review",
                         Description = "Test Clinical Review Task",
                         Artifacts = new ArtifactMap
                         {
@@ -251,7 +251,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                     new TaskObject
                     {
                         Id = "test-clinical-review-2",
-                        Type = "clinical-review",
+                        Type = "aide_clinical_review",
                         Description = "Test Clinical Review Task 2",
                         TaskDestinations = new TaskDestination[]
                         {
@@ -298,7 +298,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             Assert.True(errors.Count > 0);
 
-            Assert.Equal(22, errors.Count);
+            Assert.Equal(33, errors.Count);
 
             var successPath = "rootTask => taskSucessdesc1 => taskSucessdesc2";
             Assert.Contains(successPath, successfulPaths);
@@ -312,71 +312,71 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
             var loopingTasksError = "Detected task convergence on path: rootTask => taskLoopdesc1 => taskLoopdesc2 => taskLoopdesc3 => taskLoopdesc4 => ∞";
             Assert.Contains(loopingTasksError, errors);
 
-            var missingDestinationError = "Missing destination DoesNotExistDestination in task taskLoopdesc4";
+            var missingDestinationError = "Task: 'taskLoopdesc4' export_destination: 'DoesNotExistDestination' must be registered in the informatics_gateway object.";
             Assert.Contains(missingDestinationError, errors);
 
-            var invalidTaskId = "TaskId: task_de.sc3? Contains Invalid Characters.";
+            var invalidTaskId = "TaskId: 'task_de.sc3?' Contains Invalid Characters.";
             Assert.Contains(invalidTaskId, errors);
 
-            var duplicateOutputArtifactName = "Task: \"rootTask\" has multiple output names with the same value.\n";
+            var duplicateOutputArtifactName = "Task: 'rootTask' has multiple output names with the same value.";
             Assert.Contains(duplicateOutputArtifactName, errors);
 
-            var duplicateWorkflowName = $"A Workflow with the name: {workflow.Name} already exists.";
+            var duplicateWorkflowName = $"Workflow with name 'Workflowname1' already exists, please review.";
             Assert.Contains(duplicateWorkflowName, errors);
 
-            var missingClinicalReviewArgs = "Required parameter for clinical review args are missing: queue_name, workflow_name, reviewed_task_id";
-            Assert.Contains(missingClinicalReviewArgs, errors);
+            var missingClinicalReviewArgs1 = "Task: 'test-clinical-review' application_name must be specified.";
+            Assert.Contains(missingClinicalReviewArgs1, errors);
 
-            var missingArgoArgs = "Required parameter to execute Argo workflow is missing: server_url, workflow_template_name";
+            var missingClinicalReviewArgs2 = "Task: 'test-clinical-review' reviewed_task_id must be specified.";
+            Assert.Contains(missingClinicalReviewArgs2, errors);
+
+            var missingClinicalReviewArgs3 = "Task: 'test-clinical-review' application_version must be specified.";
+            Assert.Contains(missingClinicalReviewArgs3, errors);
+
+            var missingClinicalReviewArgs4 = "Task: 'test-clinical-review' mode is incorrectly specified, please specify 'QA', 'Research' or 'Clinical'";
+            Assert.Contains(missingClinicalReviewArgs4, errors);
+
+            var missingArgoArgs = "Task: 'test-argo-task' workflow_template_name must be specified, this corresponds to an Argo template name.";
             Assert.Contains(missingArgoArgs, errors);
 
-            var incorrectClinicalReviewValueFormat = $"Invalid Value property on input artifact Invalid Value Format in task: test-clinical-review. Incorrect format.";
+            var incorrectClinicalReviewValueFormat = $"Invalid Value property on input artifact 'Invalid Value Format' in task: 'test-clinical-review'. Incorrect format.";
             Assert.Contains(incorrectClinicalReviewValueFormat, errors);
 
-            var selfReferencingClinicalReviewValue = $"Invalid Value property on input artifact Self Referencing Task Id in task: test-clinical-review. Self referencing task ID.";
+            var selfReferencingClinicalReviewValue = $"Invalid Value property on input artifact 'Self Referencing Task Id' in task: 'test-clinical-review'. Self referencing task ID.";
             Assert.Contains(selfReferencingClinicalReviewValue, errors);
 
             var nonExistingClinicalReviewValueId = $"Invalid input artifact 'No Matching Task Id' in task 'test-clinical-review': No matching task for ID 'a-random-string'";
             Assert.Contains(nonExistingClinicalReviewValueId, errors);
+
+            var missingArtifactsClinicalReview = $"Task: 'test-clinical-review-2' must have Input Artifacts specified.";
+            Assert.Contains(missingArtifactsClinicalReview, errors);
         }
 
         [Fact]
         public async Task ValidateWorkflow_ValidatesEmptyWorkflow_ReturnsErrorsAndHasCorrectValidationResultsAsync()
         {
-            for (var i = 0; i < 15; i++)
-            {
-                var workflow = new Workflow();
+            var workflow = new Workflow();
 
-                _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
-                    .ReturnsAsync(new WorkflowRevision());
+            _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(new WorkflowRevision());
 
-                var (errors, _) = await _workflowValidator.ValidateWorkflow(workflow);
+            var (errors, _) = await _workflowValidator.ValidateWorkflow(workflow);
 
-                Assert.True(errors.Count > 0);
+            Assert.True(errors.Count > 0);
 
-                Assert.Equal(7, errors.Count);
+            Assert.Equal(4, errors.Count);
 
-                var error1 = "'' is not a valid Workflow Description (source: Unnamed workflow).";
-                Assert.Contains(error1, errors);
+            var error1 = "Missing InformaticsGateway section.";
+            Assert.Contains(error1, errors);
 
-                var error2 = "'informaticsGateway' cannot be null (source: Unnamed workflow).";
-                Assert.Contains(error2, errors);
+            var error2 = "Missing Workflow Name.";
+            Assert.Contains(error2, errors);
 
-                var error3 = "'' is not a valid AE Title (source: informaticsGateway).";
-                Assert.Contains(error3, errors);
+            var error3 = "Missing Workflow Version.";
+            Assert.Contains(error3, errors);
 
-                var error4 = "'' is not a valid Informatics Gateway - exportDestinations (source: informaticsGateway).";
-                Assert.Contains(error4, errors);
-
-                var error5 = "Missing Workflow Name.";
-                Assert.Contains(error5, errors);
-
-                var error6 = "Missing Workflow Version.";
-                Assert.Contains(error6, errors);
-
-                var error7 = "Missing Workflow Tasks.";
-                Assert.Contains(error7, errors);
-            }
+            var error4 = "Workflow does not contain Tasks, please review Workflow.";
+            Assert.Contains(error4, errors);
         }
 
         [Fact]
@@ -397,7 +397,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                     new TaskObject
                     {
                         Id = "rootTask",
-                        Type = "type",
+                        Type = "router",
                         Description = "TestDesc",
                         TaskDestinations = new TaskDestination[]
                         {
@@ -434,7 +434,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                     new TaskObject
                     {
                         Id = "taskSucessdesc1",
-                        Type = "type",
+                        Type = "router",
                         Description = "TestDesc",
                         TaskDestinations = new TaskDestination[]
                         {
@@ -447,7 +447,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                     new TaskObject
                     {
                         Id = "taskSucessdesc2",
-                        Type = "type",
+                        Type = "router",
                         Description = "TestDesc",
                     },
 
@@ -456,7 +456,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                     new TaskObject
                     {
                         Id = "taskdesc1",
-                        Type = "type",
+                        Type = "router",
                         Description = "TestDesc",
                         TaskDestinations = new TaskDestination[]
                         {
@@ -469,7 +469,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                     new TaskObject
                     {
                         Id = "taskdesc2",
-                        Type = "type",
+                        Type = "router",
                         Description = "TestDesc",
                         TaskDestinations = new TaskDestination[] { }
                     }

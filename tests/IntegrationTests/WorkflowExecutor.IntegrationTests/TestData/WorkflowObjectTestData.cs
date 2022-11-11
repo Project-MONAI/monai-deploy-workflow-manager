@@ -91,10 +91,10 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowObjectTestData()
             {
-                Name = "Invalid_Workflow_Name_Length",
+                Name = "Invalid_Workflow_Missing_Name",
                 Workflow = new Workflow()
                 {
-                    Name = "Over 15 characters",
+                    Name = "",
                     Description = "Basic workflow 1",
                     Version = "1",
                     Tasks = new TaskObject[]
@@ -308,7 +308,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowObjectTestData()
             {
-                Name = "Invalid_Workflow_TaskType_Length",
+                Name = "Invalid_Workflow_TaskType",
                 Workflow = new Workflow()
                 {
                     Name = "Inv_TaskType",
@@ -812,12 +812,13 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     {
                         new TaskObject
                         {
-                            Id = "Argo_Task",
-                            Type = "argo",
-                            Description = "Argo task missing QueueName",
+                            Id = "clinical_review",
+                            Type = "aide_clinical_review",
+                            Description = "Clinical Review task missing ReviewedTaskId",
                             Args = new Dictionary<string, string> {
-                                { "workflow_name", "Workflow Name" },
-                                { "queue_name", "Queue Name" },
+                                { "mode", "qa" },
+                                { "application_name", "Name" },
+                                { "application_version", "Version" },
                             },
                             Artifacts = new ArtifactMap()
                             {
@@ -1004,7 +1005,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         new TaskObject
                         {
                             Id = "Clinical_Review_Task",
-                            Type = "clinical-review",
+                            Type = "aide_clinical_review",
                             Description = "Clinical Review incorrect Input",
                             Args = new Dictionary<string, string> {},
                             Artifacts = new ArtifactMap()
