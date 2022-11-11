@@ -29,7 +29,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService.Tests
 {
     public class WorkerTests
     {
-        private const string IdentityKey = "IdentityKey";
+        private const string JobIdentity = "JobIdentity";
         private readonly Worker _service;
         private readonly Mock<IMessageBrokerPublisherService> _pubService;
         private readonly IOptions<WorkflowManagerOptions> _options;
@@ -68,9 +68,9 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService.Tests
                     Status = TaskExecutionStatus.Dispatched,
                     TimeoutInterval = -2,
                     TaskStartTime = DateTime.UtcNow,
-                    ExecutionStats = new Dictionary<string, string>()
+                    ResultMetadata = new Dictionary<string, object>()
                     {
-                        { IdentityKey, Guid.NewGuid().ToString() }
+                        { JobIdentity, Guid.NewGuid().ToString() }
                     }
                 }
             };
