@@ -30,7 +30,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                 HostName = TestExecutionConfig.RabbitConfig.Host,
                 UserName = TestExecutionConfig.RabbitConfig.User,
                 Password = TestExecutionConfig.RabbitConfig.Password,
-                VirtualHost = TestExecutionConfig.RabbitConfig.VirtualHost
+                VirtualHost = TestExecutionConfig.RabbitConfig.VirtualHost,
+                Port = TestExecutionConfig.RabbitConfig.Port
             };
 
             Channel = connectionFactory.CreateConnection().CreateModel();

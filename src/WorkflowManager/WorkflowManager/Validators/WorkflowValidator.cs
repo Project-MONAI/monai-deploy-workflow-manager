@@ -334,6 +334,11 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
             foreach (var inputArtifact in inputs)
             {
+                if (inputArtifact.Value.Contains("context.input.dicom"))
+                {
+                    continue;
+                }
+
                 var valueStringSplit = inputArtifact.Value.Split('.');
 
                 if (valueStringSplit.Length < 3)

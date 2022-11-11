@@ -61,7 +61,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                 .Build();
 
             TestExecutionConfig.RabbitConfig.Host = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:endpoint");
-            TestExecutionConfig.RabbitConfig.Port = 15672;
+            TestExecutionConfig.RabbitConfig.WebPort = 15672;
             TestExecutionConfig.RabbitConfig.User = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:username");
             TestExecutionConfig.RabbitConfig.Password = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:password");
             TestExecutionConfig.RabbitConfig.VirtualHost = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:virtualHost");

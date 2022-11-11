@@ -22,7 +22,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.POCO
         {
             public static string Host { get; set; } = string.Empty;
 
-            public static int Port { get; set; }
+            public static int WebPort { get; set; } = 15672;
+
+            public static int Port { get; set; } = 5672;
 
             public static string User { get; set; } = string.Empty;
 
