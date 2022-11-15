@@ -179,7 +179,6 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         [Route("failed")]
         [HttpGet]
         [ProducesResponseType(typeof(IList<WorkflowInstance>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetFailedAsync()
@@ -187,10 +186,6 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             try
             {
                 var workflowInstances = await _workflowInstanceService.GetAllFailedAsync();
-                if (workflowInstances.IsNullOrEmpty())
-                {
-                    return Problem($"Request failed, no workflow instances found", $"{ENDPOINT}failed", NotFound);
-                }
 
                 return Ok(workflowInstances);
             }
