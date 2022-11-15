@@ -150,8 +150,8 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Transitive",
-        "resolved": "0.1.15",
-        "contentHash": "EeXSxhQQjJALqaG3SIo+QGTC4XWKiEy/Q49xA11ArugWohol4Tdj1mzwMHgv2U5YFYqNYXGQHuo2+goQ5nT4aw==",
+        "resolved": "0.1.17-rc0019",
+        "contentHash": "Eo+raJRm/WDY+3czpMunE8ByiqCEkhA3X5XEwnN6JNm36c6VGKqpPFwD8GTlCd6zOTJLAcuCON55b/3PEkr4Yw==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -255,7 +255,7 @@
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.15, )",
+          "Monai.Deploy.Messaging": "[0.1.17-rc0019, )",
           "MongoDB.Bson": "[2.18.0, )"
         }
       },

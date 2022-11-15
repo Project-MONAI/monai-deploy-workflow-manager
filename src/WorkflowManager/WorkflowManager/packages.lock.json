@@ -70,11 +70,11 @@
       },
       "Monai.Deploy.Messaging.RabbitMQ": {
         "type": "Direct",
-        "requested": "[0.1.15, )",
-        "resolved": "0.1.15",
-        "contentHash": "PsTHePsl8VbPNQom2XXDJc6lh83pBTLqdOSFpF4gFkoWRQb5i3JJzIQuucAv9ldOHDvBDlAFwBm56twwzJuD0Q==",
+        "requested": "[0.1.17-rc0019, )",
+        "resolved": "0.1.17-rc0019",
+        "contentHash": "HP1DwkL6jEfSIH8M8e7BgAbMQYHrwVFRRdJb9Imkm6842wN7BAU49w+FGuvdfNkhTSm9tAzOsqxu7tRQQa6DQA==",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.15",
+          "Monai.Deploy.Messaging": "0.1.17-rc0019",
           "Polly": "7.2.3",
           "RabbitMQ.Client": "6.4.0",
           "System.Collections.Concurrent": "4.3.0"
@@ -521,8 +521,8 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Transitive",
-        "resolved": "0.1.15",
-        "contentHash": "EeXSxhQQjJALqaG3SIo+QGTC4XWKiEy/Q49xA11ArugWohol4Tdj1mzwMHgv2U5YFYqNYXGQHuo2+goQ5nT4aw==",
+        "resolved": "0.1.17-rc0019",
+        "contentHash": "Eo+raJRm/WDY+3czpMunE8ByiqCEkhA3X5XEwnN6JNm36c6VGKqpPFwD8GTlCd6zOTJLAcuCON55b/3PEkr4Yw==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -1322,14 +1322,14 @@
       "monai.deploy.workflowmanager.configuration": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.15, )",
+          "Monai.Deploy.Messaging": "[0.1.17-rc0019, )",
           "Monai.Deploy.Storage": "[0.2.10, )"
         }
       },
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.15, )",
+          "Monai.Deploy.Messaging": "[0.1.17-rc0019, )",
           "MongoDB.Bson": "[2.18.0, )"
         }
       },
