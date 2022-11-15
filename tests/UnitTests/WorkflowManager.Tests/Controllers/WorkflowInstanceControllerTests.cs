@@ -381,23 +381,16 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Fact]
-        public async Task TaskGetFailedAsync_GivenGetAllFailedAsyncReturnsNoResults_ReturnsProblem()
+        public async Task TaskGetFailedAsync_GivenGetAllFailedAsyncReturnsNoResults_ReturnsEmptyList()
         {
             _workflowInstanceService.Setup(w => w.GetAllFailedAsync())
                 .ReturnsAsync(new List<WorkflowInstance>() { });
 
             var result = await WorkflowInstanceController.GetFailedAsync();
 
-            var objectResult = Assert.IsType<ObjectResult>(result);
-            objectResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
-            var responseValue = (ProblemDetails)objectResult.Value;
-            responseValue.Status.Should().Be((int)HttpStatusCode.NotFound);
-
-            var problemMessage = "Request failed, no workflow instances found";
-            responseValue.Detail.Should().Be(problemMessage);
-
-            const string expectedInstance = "/workflowinstances";
-            Assert.StartsWith(expectedInstance, responseValue.Instance);
+            var objectResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal((int)HttpStatusCode.OK, objectResult.StatusCode);
+            objectResult.Value.Should().BeEquivalentTo(new List<WorkflowInstance>() { });
         }
 
         [Fact]
