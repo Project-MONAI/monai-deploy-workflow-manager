@@ -143,7 +143,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
 
-            var expectedData = DataHelper.SeededWorkflowInstances.Where(wfInstance => wfInstance.Status == Status.Failed).ToList();
+            var expectedData = DataHelper.SeededWorkflowInstances?.Where(wfInstance => wfInstance.Status == Status.Failed).ToList() ?? new List<WorkflowInstance>();
             expectedData.Count.Should().Be(count);
 
             var actualWorkflowInstances = JsonConvert.DeserializeObject<List<WorkflowInstance>>(result);

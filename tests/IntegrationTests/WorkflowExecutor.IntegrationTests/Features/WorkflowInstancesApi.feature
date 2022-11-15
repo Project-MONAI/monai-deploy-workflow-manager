@@ -221,11 +221,11 @@ Scenario: Acknowledge task error in a workflow instance - non-existent task
 
     
 @GetFailedWorkflowInstances
-Scenario: Get workflow failed instances returns no values. Not Found
+Scenario: Get workflow failed instances returns no values. Ok Request
 	Given I have an endpoint /workflowinstances/failed
     When I send a GET request
-    Then I will get a 404 response
-    And I will receive the error message Request failed, no workflow instances found
+    Then I will get a 200 response
+    And I can see 0 failed workflow instances
         
 @GetFailedWorkflowInstances
 Scenario: Get workflow failed instances returns values. Ok Request
