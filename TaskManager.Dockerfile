@@ -27,7 +27,7 @@ RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc
 RUN chmod +x mc
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0-jammy
+FROM mcr.microsoft.com/dotnet/aspnet:7.0.0-jammy
 
 ENV DEBIAN_FRONTEND=noninteractive
 

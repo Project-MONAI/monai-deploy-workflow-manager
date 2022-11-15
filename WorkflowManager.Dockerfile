@@ -26,7 +26,7 @@ RUN echo "Building MONAI Workflow Manager..."
 RUN dotnet publish -c Release -o out --nologo src/WorkflowManager/WorkflowManager/Monai.Deploy.WorkflowManager.csproj
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0-jammy
+FROM mcr.microsoft.com/dotnet/aspnet:7.0.0-jammy
 
 ENV DEBIAN_FRONTEND=noninteractive
 
