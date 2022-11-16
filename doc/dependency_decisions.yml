@@ -2322,17 +2322,4 @@
     :versions:
     - 0.2.10
     :when: 2022-11-08 14:49:46.964761113 Z
-- - :approve
-  - Monai.Deploy.Messaging.RabbitMQ
-  - :who:
-    :why:
-    :versions:
-    - 0.1.17-rc0019
-    :when: 2022-11-15 17:38:53.352746980 Z
-- - :approve
-  - Monai.Deploy.Messaging.RabbitMQ
-  - :who: neilsouth
-    :why:
-    :versions:
-    - 0.1.17-rc0019
-    :when: 2022-11-15 17:39:20.973015878 Z
+
