@@ -2243,14 +2243,14 @@
   - :who: mocsharp
     :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
-    - 0.1.17-rc0019
+    - 0.1.17-rc0020
     :when: 2022-11-02 21:43:10.781625468 Z
 - - :approve
   - Monai.Deploy.Messaging.RabbitMQ
   - :who: mocsharp
     :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
-    - 0.1.17-rc0019
+    - 0.1.17-rc0020
     :when: 2022-11-02 21:43:20.975488411 Z
 - - :approve
   - Monai.Deploy.Storage
@@ -2322,3 +2322,4 @@
     :versions:
     - 0.2.10
     :when: 2022-11-08 14:49:46.964761113 Z
+
