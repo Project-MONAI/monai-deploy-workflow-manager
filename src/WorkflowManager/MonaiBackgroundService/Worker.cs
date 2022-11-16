@@ -28,7 +28,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
 {
     public class Worker : BackgroundService
     {
-        private const string IdentityKey = "IdentityKey";
+        private const string JobIdentity = "JobIdentity";
         private readonly ILogger<Worker> _logger;
         private readonly ITasksService _tasksService;
         private readonly IMessageBrokerPublisherService _publisherService;
@@ -74,13 +74,13 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
                 var (Tasks, _) = await _tasksService.GetAllAsync();
                 foreach (var task in Tasks.Where(t => t.TimeoutInterval != 0 && t.Timeout < DateTime.UtcNow))
                 {
-                    task.ExecutionStats.TryGetValue(IdentityKey, out var identity);
+                    task.ResultMetadata.TryGetValue(JobIdentity, out var identity);
 
                     var correlationId = Guid.NewGuid().ToString();
 
                     await PublishTimeoutUpdateEvent(task, correlationId, task.WorkflowInstanceId).ConfigureAwait(false); // -> task manager
 
-                    await PublishCancellationEvent(task, correlationId, identity ?? string.Empty, task.WorkflowInstanceId).ConfigureAwait(false); // -> workflow executor
+                    await PublishCancellationEvent(task, correlationId, (string)identity ?? string.Empty, task.WorkflowInstanceId).ConfigureAwait(false); // -> workflow executor
                 }
             }
             catch (Exception e)
