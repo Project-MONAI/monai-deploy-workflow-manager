@@ -75,6 +75,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -124,6 +127,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "AllowInsecureUrl", "false" },
                         { "BaseUrl", "https://test.com" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -189,7 +195,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "patient_name", "John Doe" },
                         { "patient_sex", "Male" },
                         { "patient_dob", "01/01/1990" },
-                        { "queue_name", "aide.clinical_review.request" }
+                        { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" }
                     }
                 }
             },
@@ -239,6 +248,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -287,6 +299,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_task_id", "some_task" },
                         { "reviewed_execution_id", "some_execution" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -348,6 +363,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -385,6 +403,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -433,6 +454,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -481,6 +505,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -529,6 +556,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -577,6 +607,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -624,6 +657,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_task_id", "some_task" },
                         { "reviewed_execution_id", "some_execution" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -671,6 +707,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "workflow_name", "Workflow_1" },
                         { "reviewed_task_id", "some_task" },
                         { "reviewed_execution_id", "some_execution" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -720,6 +759,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },

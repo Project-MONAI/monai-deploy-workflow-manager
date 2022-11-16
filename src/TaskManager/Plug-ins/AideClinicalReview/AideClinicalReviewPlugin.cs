@@ -17,9 +17,11 @@
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
+using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Logging;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Models;
@@ -32,6 +34,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         private const string TaskManagerApplicationId = "4c9072a1-35f5-4d85-847d-dafca22244a8";
         private readonly IServiceScope _scope;
         private readonly ILogger<AideClinicalReviewPlugin> _logger;
+        private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IMessageBrokerPublisherService _messageBrokerPublisherService;
 
         private string _patientId;
@@ -52,6 +55,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         public AideClinicalReviewPlugin(
             IServiceScopeFactory serviceScopeFactory,
             IMessageBrokerPublisherService messageBrokerPublisherService,
+            IOptions<WorkflowManagerOptions> options,
             ILogger<AideClinicalReviewPlugin> logger,
             TaskDispatchEvent taskDispatchEvent)
             : base(taskDispatchEvent)
@@ -61,6 +65,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             _scope = serviceScopeFactory.CreateScope();
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _options = options ?? throw new ArgumentNullException(nameof(options));
             _messageBrokerPublisherService = messageBrokerPublisherService ?? throw new ArgumentNullException(nameof(messageBrokerPublisherService));
 
             ValidateEventAndInit();
@@ -225,9 +230,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         {
             Guard.Against.Null(message, nameof(message));
 
-            _logger.SendClinicalReviewRequestMessage(_queueName, _workflowName);
-            await _messageBrokerPublisherService.Publish(_queueName, message.ToMessage()).ConfigureAwait(false);
-            _logger.SendClinicalReviewRequestMessageSent(_queueName);
+            var queue = _queueName ?? _options.Value.Messaging.Topics.AideClinicalReviewRequest;
+            _logger.SendClinicalReviewRequestMessage(queue, _workflowName);
+            await _messageBrokerPublisherService.Publish(queue, message.ToMessage()).ConfigureAwait(false);
+            _logger.SendClinicalReviewRequestMessageSent(queue);
         }
 
         public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
