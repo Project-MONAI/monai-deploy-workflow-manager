@@ -135,6 +135,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 }
             }
 
+            var pluginArgs = task.TaskPluginArguments;
+            if (pluginArgs.ContainsKey("reviewed_task_id"))
+            {
+                var reviewedTask = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId.ToLower() == pluginArgs["reviewed_task_id"]);
+                pluginArgs.Add("reviewed_execution_id", reviewedTask.ExecutionId);
+            }
+
             return new TaskDispatchEvent
             {
                 WorkflowInstanceId = workflowInstance.Id,
@@ -142,7 +149,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 ExecutionId = task.ExecutionId.ToString(),
                 CorrelationId = correlationId,
                 Status = TaskExecutionStatus.Created,
-                TaskPluginArguments = task.TaskPluginArguments,
+                TaskPluginArguments = pluginArgs,
                 Inputs = inputs,
                 Outputs = outputs,
                 TaskPluginType = task.TaskType,
