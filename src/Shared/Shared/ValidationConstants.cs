@@ -59,7 +59,6 @@ namespace Monai.Deploy.WorkflowManager.Shared
         /// Required arguments to run the clinical review task workflow args.
         /// </summary>
         public static readonly IReadOnlyList<string> ClinicalReviewRequiredParameters = new List<string> {
-            QueueName,
             WorkflowName,
             ReviewedTaskId,
             ApplicationVersion,

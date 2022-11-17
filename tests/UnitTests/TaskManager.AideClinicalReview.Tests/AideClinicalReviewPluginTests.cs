@@ -100,6 +100,22 @@ namespace TaskManager.AideClinicalReview.Tests
             _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.AideClinicalReviewRequest), It.IsAny<Message>()), Times.Once());
         }
 
+        [Fact(DisplayName = "ExecuteTask - returns ExecutionStatus on success - Missing ReviewerRoles")]
+        public async Task AideClinicalReviewPlugin_ExecuteTask_ReturnsExecutionStatusOnSuccessMissingReviewerRoles()
+        {
+            var message = GenerateTaskDispatchEventWithValidArguments();
+            message.TaskPluginArguments.Remove("reviewer_roles");
+
+            var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message);
+            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+            Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+            Assert.Equal(FailureReason.None, result.FailureReason);
+            Assert.Equal("", result.Errors);
+
+            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.AideClinicalReviewRequest), It.IsAny<Message>()), Times.Once());
+        }
+
         private static TaskDispatchEvent GenerateTaskDispatchEventWithValidArguments()
         {
             var message = GenerateTaskDispatchEvent();
@@ -113,6 +129,7 @@ namespace TaskManager.AideClinicalReview.Tests
             message.TaskPluginArguments[Keys.ApplicationVersion] = "applicationversion";
             message.TaskPluginArguments[Keys.ApplicationName] = "applicationname";
             message.TaskPluginArguments[Keys.Mode] = "mode";
+            message.TaskPluginArguments[Keys.ReviewerRoles] = "admin,clinician";
             return message;
         }
 
