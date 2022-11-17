@@ -16,10 +16,12 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
+using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Moq;
@@ -32,14 +34,18 @@ namespace TaskManager.AideClinicalReview.Tests
         private readonly Mock<ILogger<AideClinicalReviewPlugin>> _logger;
         private readonly Mock<IMessageBrokerPublisherService> _messageBrokerPublisherService;
         private readonly Mock<IServiceScopeFactory> _serviceScopeFactory;
+        private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly Mock<IServiceScope> _serviceScope;
 
         public AideClinicalReviewPluginTests()
         {
             _logger = new Mock<ILogger<AideClinicalReviewPlugin>>();
             _messageBrokerPublisherService = new Mock<IMessageBrokerPublisherService>();
+
             _serviceScopeFactory = new Mock<IServiceScopeFactory>();
             _serviceScope = new Mock<IServiceScope>();
+            _options = Options.Create(new WorkflowManagerOptions());
+            _options.Value.Messaging.Topics.AideClinicalReviewRequest = "aide.clinical_review.request";
 
             _serviceScopeFactory.Setup(p => p.CreateScope()).Returns(_serviceScope.Object);
 
@@ -54,12 +60,12 @@ namespace TaskManager.AideClinicalReview.Tests
         public void AideClinicalReviewPlugin_ThrowsWhenMissingPluginArguments()
         {
             var message = GenerateTaskDispatchEvent();
-            Assert.Throws<InvalidTaskException>(() => new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _logger.Object, message));
+            Assert.Throws<InvalidTaskException>(() => new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message));
 
             foreach (var key in Keys.RequiredParameters.Take(Keys.RequiredParameters.Count - 1))
             {
                 message.TaskPluginArguments.Add(key, Guid.NewGuid().ToString());
-                Assert.Throws<InvalidTaskException>(() => new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _logger.Object, message));
+                Assert.Throws<InvalidTaskException>(() => new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message));
             }
         }
 
@@ -71,7 +77,7 @@ namespace TaskManager.AideClinicalReview.Tests
             _messageBrokerPublisherService.Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
                 .ThrowsAsync(new Exception());
 
-            var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _logger.Object, message);
+            var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message);
             var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
 
             Assert.Equal(TaskExecutionStatus.Failed, result.Status);
@@ -84,20 +90,35 @@ namespace TaskManager.AideClinicalReview.Tests
         {
             var message = GenerateTaskDispatchEventWithValidArguments();
 
-            var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _logger.Object, message);
+            var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message);
             var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
 
             Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
             Assert.Equal(FailureReason.None, result.FailureReason);
             Assert.Equal("", result.Errors);
 
-            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == message.TaskPluginArguments[Keys.QueueName]), It.IsAny<Message>()), Times.Once());
+            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.AideClinicalReviewRequest), It.IsAny<Message>()), Times.Once());
+        }
+
+        [Fact(DisplayName = "ExecuteTask - returns ExecutionStatus on success - Missing ReviewerRoles")]
+        public async Task AideClinicalReviewPlugin_ExecuteTask_ReturnsExecutionStatusOnSuccessMissingReviewerRoles()
+        {
+            var message = GenerateTaskDispatchEventWithValidArguments();
+            message.TaskPluginArguments.Remove("reviewer_roles");
+
+            var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message);
+            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+            Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+            Assert.Equal(FailureReason.None, result.FailureReason);
+            Assert.Equal("", result.Errors);
+
+            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.AideClinicalReviewRequest), It.IsAny<Message>()), Times.Once());
         }
 
         private static TaskDispatchEvent GenerateTaskDispatchEventWithValidArguments()
         {
             var message = GenerateTaskDispatchEvent();
-            message.TaskPluginArguments[Keys.QueueName] = "queue-name";
             message.TaskPluginArguments[Keys.WorkflowName] = "workflowName";
             message.TaskPluginArguments[Keys.PatientName] = "patientname";
             message.TaskPluginArguments[Keys.PatientId] = "patientid";
@@ -105,6 +126,10 @@ namespace TaskManager.AideClinicalReview.Tests
             message.TaskPluginArguments[Keys.PatientSex] = "patientsex";
             message.TaskPluginArguments[Keys.ReviewedTaskId] = "reviewedtaskid";
             message.TaskPluginArguments[Keys.ReviewedExecutionId] = "reviewedexecutionid";
+            message.TaskPluginArguments[Keys.ApplicationVersion] = "applicationversion";
+            message.TaskPluginArguments[Keys.ApplicationName] = "applicationname";
+            message.TaskPluginArguments[Keys.Mode] = "mode";
+            message.TaskPluginArguments[Keys.ReviewerRoles] = "admin,clinician";
             return message;
         }
 

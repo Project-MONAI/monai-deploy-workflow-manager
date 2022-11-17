@@ -442,8 +442,12 @@ The Task's "args" object should contain the following fields:
 
 | Property | Type | Required | Description |
 |------|------|------|------|
-|reviewed_task_id|str|Yes|The task id of a previous task that is to be reviewed.|
-|reviewer_roles|Optional[list[[string]]|No|The list of reviewer roles allowed to approve/reject. (If not provided the default `clinician` role will be set)|
+|reviewed_task_id|string|Yes|The task id of a previous task that is to be reviewed.|
+|reviewer_roles|Optional[string]|No|A comma seperated list of reviewer roles allowed to approve/reject. e.g `clinician, admin, testrole` (If not provided the default `clinician` role will be set)|
+|application_name|string|Yes|The application name that is being reviewed.|
+|application_version|string|Yes|The application version that is being reviewed.|
+|mode|string|Yes|The application mode. (must be: `QA`, `Research`, `Clinical`)|
+|workflow_name|string|Yes|Workflow Name.|
 
 ### Router
 None required.

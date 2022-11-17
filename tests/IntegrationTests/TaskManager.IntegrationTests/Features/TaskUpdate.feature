@@ -36,7 +36,6 @@ Scenario Outline: TaskUpdateEvent is published with status Failed after receivin
     | Task_Dispatch_Invalid_TaskId_Missing               |
     | Task_Dispatch_Invalid_TaskPluginType_NotSupported  |
     | Task_Dispatch_Clinical_Review_WorkflowName_Missing |
-    | Task_Dispatch_Clinical_Review_QueueName_Missing    |
 
 @TaskCallback_TaskUpdate
 Scenario: TaskUpdateEvent is published with status Successful after receiving a valid TaskCallbackEvent

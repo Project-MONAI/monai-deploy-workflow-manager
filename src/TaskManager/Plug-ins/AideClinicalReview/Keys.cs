@@ -64,6 +64,26 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         public static readonly string ReviewedExecutionId = "reviewed_execution_id";
 
         /// <summary>
+        /// Key for the application name.
+        /// </summary>
+        public static readonly string ApplicationName = "application_name";
+
+        /// <summary>
+        /// Key for the application version.
+        /// </summary>
+        public static readonly string ApplicationVersion = "application_version";
+
+        /// <summary>
+        /// Key for the mode.
+        /// </summary>
+        public static readonly string Mode = "mode";
+
+        /// <summary>
+        /// Key for the reviewer roles.
+        /// </summary>
+        public static readonly string ReviewerRoles = "reviewer_roles";
+
+        /// <summary>
         /// Key for the queue name to send the clinical review message.
         /// </summary>
         public static readonly string QueueName = "queue_name";
@@ -73,9 +93,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         /// </summary>
         public static readonly IReadOnlyList<string> RequiredParameters =
             new List<string> {
-                QueueName,
                 WorkflowName,
-                ReviewedTaskId
+                ReviewedTaskId,
+                ApplicationName,
+                ApplicationVersion,
+                Mode
             };
     }
 }

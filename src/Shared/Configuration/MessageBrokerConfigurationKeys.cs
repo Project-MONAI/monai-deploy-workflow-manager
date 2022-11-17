@@ -68,5 +68,12 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         /// </summary>
         [ConfigurationKeyName("taskCancellation")]
         public string TaskCancellationRequest { get; set; } = "md.tasks.cancellation";
+
+        /// <summary>
+        /// Gets or sets the topic for publishing clinical review request events.
+        /// Defaults to `md.tasks.update`.
+        /// </summary>
+        [ConfigurationKeyName("aideClinicalReviewRequest")]
+        public string AideClinicalReviewRequest { get; set; } = "aide.clinical_review.request";
     }
 }

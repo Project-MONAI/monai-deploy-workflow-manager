@@ -40,3 +40,45 @@ Scenario: Clincial review task dispatch event triggers a clinical review request
 	Given I have a bucket in MinIO bucket1
 	When A Task Dispatch event is published Task_Dispatch_Clinical_Review_Multi_File
     Then A Clincial Review Request event is published
+
+@ClinicalReviewPlugin
+Scenario: Clincial review task dispatch event triggers clincial review event with single reviewer role
+    Given I have a bucket in MinIO bucket1
+    When A Task Dispatch event is published Task_Dispatch_Clinical_Reviewer_Role_Single_Role
+    Then A Clincial Review Request event is published
+
+@ClinicalReviewPlugin
+Scenario: Clincial review task dispatch event triggers clincial review event with default reviewer role
+    Given I have a bucket in MinIO bucket1
+    When A Task Dispatch event is published Task_Dispatch_Clinical_Reviewer_Role_Mutiple_Roles
+    Then A Clincial Review Request event is published
+
+@ClinicalReviewPlugin
+Scenario: Clincial review task dispatch event triggers clincial review event with mutiple reviewer roles
+    Given I have a bucket in MinIO bucket1
+    When A Task Dispatch event is published Task_Dispatch_Clinical_Reviewer_Role_Default_Role
+    Then A Clincial Review Request event is published
+
+@ClinicalReviewPlugin
+Scenario: Clincial review task dispatch event triggers clincial review event with application name
+    Given I have a bucket in MinIO bucket1
+    When A Task Dispatch event is published Task_Dispatch_Clinical_Review_Application_Name
+    Then A Clincial Review Request event is published
+
+@ClinicalReviewPlugin
+Scenario: Clincial review task dispatch event triggers clincial review event with application version
+    Given I have a bucket in MinIO bucket1
+    When A Task Dispatch event is published Task_Dispatch_Clinical_Review_Application_Version
+    Then A Clincial Review Request event is published
+
+@ClinicalReviewPlugin
+Scenario: Clincial review task dispatch event triggers clincial review event with QA mode
+    Given I have a bucket in MinIO bucket1
+    When A Task Dispatch event is published Task_Dispatch_Clinical_Review_QA_Mode
+    Then A Clincial Review Request event is published
+
+@ClinicalReviewPlugin
+Scenario: Clincial review task dispatch event triggers clincial review event with reviewed execution Id
+    Given I have a bucket in MinIO bucket1
+    When A Task Dispatch event is published Task_Dispatch_Clinical_Review_Reviewed_Execution_Id
+    Then A Clincial Review Request event is published

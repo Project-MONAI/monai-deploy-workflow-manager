@@ -17,9 +17,11 @@
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
+using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Logging;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Models;
@@ -32,6 +34,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         private const string TaskManagerApplicationId = "4c9072a1-35f5-4d85-847d-dafca22244a8";
         private readonly IServiceScope _scope;
         private readonly ILogger<AideClinicalReviewPlugin> _logger;
+        private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IMessageBrokerPublisherService _messageBrokerPublisherService;
 
         private string _patientId;
@@ -43,11 +46,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         private string _queueName;
         private string _workflowName;
         private string _reviewedTaskId;
+        private string _applicationName;
+        private string _mode;
+        private string _applicationVersion;
         private string _reviewedExecutionId;
+        private string[] _reviewerRoles;
 
         public AideClinicalReviewPlugin(
             IServiceScopeFactory serviceScopeFactory,
             IMessageBrokerPublisherService messageBrokerPublisherService,
+            IOptions<WorkflowManagerOptions> options,
             ILogger<AideClinicalReviewPlugin> logger,
             TaskDispatchEvent taskDispatchEvent)
             : base(taskDispatchEvent)
@@ -57,6 +65,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             _scope = serviceScopeFactory.CreateScope();
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _options = options ?? throw new ArgumentNullException(nameof(options));
             _messageBrokerPublisherService = messageBrokerPublisherService ?? throw new ArgumentNullException(nameof(messageBrokerPublisherService));
 
             ValidateEventAndInit();
@@ -114,6 +123,36 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             {
                 _reviewedTaskId = Event.TaskPluginArguments[Keys.ReviewedTaskId];
             }
+
+            if (Event.TaskPluginArguments.ContainsKey(Keys.ApplicationName))
+            {
+                _applicationName = Event.TaskPluginArguments[Keys.ApplicationName];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(Keys.ApplicationVersion))
+            {
+                _applicationVersion = Event.TaskPluginArguments[Keys.ApplicationVersion];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(Keys.Mode))
+            {
+                _mode = Event.TaskPluginArguments[Keys.Mode];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(Keys.ReviewerRoles))
+            {
+                var reviewerRoles = Event.TaskPluginArguments[Keys.ReviewerRoles];
+                var reviewerRolesSplit = Array.ConvertAll(reviewerRoles.Split(','), p => p.Trim());
+
+                if (reviewerRolesSplit.Any() && reviewerRolesSplit.Any(r => string.IsNullOrWhiteSpace(r)) is false)
+                {
+                    _reviewerRoles = reviewerRolesSplit;
+
+                    return;
+                }
+            }
+
+            _reviewerRoles = new string[] { "clinician" };
         }
 
         private void ValidateEventAndInit()
@@ -168,6 +207,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
                 ReviewedExecutionId = _reviewedExecutionId,
                 WorkflowName = _workflowName,
                 Files = Event.Inputs,
+                ReviewerRoles = _reviewerRoles,
                 PatientMetadata = new PatientMetadata
                 {
                     PatientId = _patientId,
@@ -176,6 +216,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
                     PatientDob = _patientDob,
                     PatientAge = _patientAge,
                     PatientHospitalId = _patientHospitalId
+                },
+                ApplicationMetadata = new Dictionary<string, string>
+                {
+                    { Keys.ApplicationName, _applicationName },
+                    { Keys.ApplicationVersion, _applicationVersion },
+                    { Keys.Mode, _mode },
                 }
             }, TaskManagerApplicationId, Event.CorrelationId);
         }
@@ -184,9 +230,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         {
             Guard.Against.Null(message, nameof(message));
 
-            _logger.SendClinicalReviewRequestMessage(_queueName, _workflowName);
-            await _messageBrokerPublisherService.Publish(_queueName, message.ToMessage()).ConfigureAwait(false);
-            _logger.SendClinicalReviewRequestMessageSent(_queueName);
+            var queue = _queueName ?? _options.Value.Messaging.Topics.AideClinicalReviewRequest;
+            _logger.SendClinicalReviewRequestMessage(queue, _workflowName);
+            await _messageBrokerPublisherService.Publish(queue, message.ToMessage()).ConfigureAwait(false);
+            _logger.SendClinicalReviewRequestMessageSent(queue);
         }
 
         public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
