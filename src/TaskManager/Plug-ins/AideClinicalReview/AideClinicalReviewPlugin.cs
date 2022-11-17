@@ -147,12 +147,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
                 if (reviewerRolesSplit.Any() && reviewerRolesSplit.Any(r => string.IsNullOrWhiteSpace(r)) is false)
                 {
                     _reviewerRoles = reviewerRolesSplit;
-                }
-                else
-                {
-                    _reviewerRoles = new string[] { "clinician" };
+
+                    return;
                 }
             }
+
+            _reviewerRoles = new string[] { "clinician" };
         }
 
         private void ValidateEventAndInit()
