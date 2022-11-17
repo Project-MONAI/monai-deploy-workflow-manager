@@ -139,7 +139,11 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             if (pluginArgs.ContainsKey("reviewed_task_id"))
             {
                 var reviewedTask = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId.ToLower() == pluginArgs["reviewed_task_id"]);
-                pluginArgs.Add("reviewed_execution_id", reviewedTask.ExecutionId);
+
+                if (reviewedTask is not null)
+                {
+                    pluginArgs.Add("reviewed_execution_id", reviewedTask.ExecutionId);
+                }
             }
 
             return new TaskDispatchEvent
