@@ -15,6 +15,7 @@
  */
 
 using Ardalis.GuardClauses;
+using Argo;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -225,7 +226,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
             {
-                ["durationSoFar"] = (DateTime.UtcNow - taskExecution.Started).TotalMilliseconds
+                ["durationSoFar"] = (DateTime.UtcNow - taskExecution.Started).TotalMilliseconds,
+                ["correlationId"] = taskExecution.Event.CorrelationId,
+                ["workflowInstanceId"] = taskExecution.Event.WorkflowInstanceId,
+                ["taskId"] = taskExecution.Event.TaskId,
+                ["executionId"] = taskExecution.Event.ExecutionId,
             });
 
             try
