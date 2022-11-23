@@ -121,14 +121,13 @@ Scenario Outline: Update workflow with invalid details
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_3              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc'                                          |
 
-#@UpdateWorkflows
-#Scenario Outline: Update workflow with duplicate workflow name
-#    Given I have a clinical workflow Basic_Workflow_1_static
-#    And  I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
-#    And I have a body Workflow_Dup_Workflow_Name
-#    When I send a PUT request
-#    Then I will get a 400 response
-#    And I will receive the error message A Workflow with the name: Basic workflow already exists.
+@UpdateWorkflows
+Scenario Outline: Update workflow with duplicate workflow name
+    Given I have a clinical workflow Basic_Workflow_1_static
+    And  I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
+    And I have a body Workflow_Dup_Workflow_Name
+    When I send a PUT request
+    Then I will get a 201 response
 
 @UpdateWorkflows
 Scenario: Update workflow where workflow ID does not exist
