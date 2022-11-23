@@ -78,13 +78,15 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// - Unreferenced tasks other than root task.
         /// </summary>
         /// <param name="workflow">Workflow to validate.</param>
+        /// <param name="checkForDuplicates">Check for duplicates.</param>
+        /// <param name="isUpdate">Used to check for duplicate name if it is a new workflow.</param>
         /// <returns>if any validation errors are produced while validating workflow.</returns>
-        public async Task<(List<string> Errors, List<string> SuccessfulPaths)> ValidateWorkflow(Workflow workflow, bool checkForDuplicates = true)
+        public async Task<(List<string> Errors, List<string> SuccessfulPaths)> ValidateWorkflow(Workflow workflow, bool checkForDuplicates = true, bool isUpdate = false)
         {
             var tasks = workflow.Tasks;
             var firstTask = tasks.FirstOrDefault();
 
-            await ValidateWorkflowSpec(workflow, checkForDuplicates);
+            await ValidateWorkflowSpec(workflow, checkForDuplicates, isUpdate);
             DetectUnreferencedTasks(tasks, firstTask);
             ValidateTask(tasks, firstTask, 0);
             ValidateExportDestinations(workflow);
@@ -145,7 +147,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private async Task ValidateWorkflowSpec(Workflow workflow, bool checkForDuplicates)
+        private async Task ValidateWorkflowSpec(Workflow workflow, bool checkForDuplicates, bool isUpdate)
         {
             if (string.IsNullOrWhiteSpace(workflow.Name) is true)
             {
@@ -154,7 +156,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
             if (checkForDuplicates
                 && string.IsNullOrWhiteSpace(workflow.Name) is false
-                && await WorkflowService.GetByNameAsync(workflow.Name) != null)
+                && (await WorkflowService.GetByNameAsync(workflow.Name) != null && isUpdate is false))
             {
                 Errors.Add($"Workflow with name '{workflow.Name}' already exists, please review.");
             }
