@@ -203,7 +203,7 @@
       "monai.deploy.workflowmanager.configuration": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.15, )",
+          "Monai.Deploy.Messaging": "[0.1.17-rc0020, )",
           "Monai.Deploy.Storage": "[0.2.10, )"
         }
       },
