@@ -93,7 +93,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
         /// </summary>
         public static readonly IReadOnlyList<string> RequiredParameters =
             new List<string> {
-                BaseUrl,
                 WorkflowTemplateName
             };
 

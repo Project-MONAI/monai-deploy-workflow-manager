@@ -102,17 +102,6 @@ public class ArgoPluginTest
     {
         var message = GenerateTaskDispatchEvent();
         Assert.Throws<InvalidTaskException>(() => new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message));
-
-        foreach (var key in Keys.RequiredParameters.Take(Keys.RequiredParameters.Count - 1))
-        {
-            message.TaskPluginArguments.Add(key, Guid.NewGuid().ToString());
-            Assert.Throws<InvalidTaskException>(() => new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message));
-        }
-        message.TaskPluginArguments[Keys.RequiredParameters[Keys.RequiredParameters.Count - 1]] = Guid.NewGuid().ToString();
-        Assert.Throws<InvalidTaskException>(() => new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message));
-
-        message.TaskPluginArguments[Keys.BaseUrl] = "/api";
-        Assert.Throws<InvalidTaskException>(() => new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message));
     }
 
     [Fact(DisplayName = "Throws when missing required settings")]
