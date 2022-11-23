@@ -148,9 +148,9 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         [HttpPost("validate")]
         [ProducesResponseType(typeof(CreateWorkflowResponse), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ValidateAsync([FromBody] Workflow workflow)
+        public async Task<IActionResult> ValidateAsync([FromBody] Workflow workflow, [FromQuery] bool isUpdate = false)
         {
-            var results = await _workflowValidator.ValidateWorkflow(workflow);
+            var results = await _workflowValidator.ValidateWorkflow(workflow, true, isUpdate);
 
             if (results.Errors.Count > 0)
             {
@@ -219,7 +219,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
 
             // if the user has updated the workflow name check the new name doesn't already exist.
             var checkForDuplicates = id != workflow.Name;
-            var (errors, _) = await _workflowValidator.ValidateWorkflow(workflow, checkForDuplicates);
+            var (errors, _) = await _workflowValidator.ValidateWorkflow(workflow, checkForDuplicates, true);
 
             if (errors.Count > 0)
             {
