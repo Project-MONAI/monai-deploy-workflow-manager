@@ -202,6 +202,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             {
                 CorrelationId = Event.CorrelationId,
                 ExecutionId = Event.ExecutionId,
+                WorkflowInstanceId = Event.WorkflowInstanceId,
                 TaskId = Event.TaskId,
                 ReviewedTaskId = _reviewedTaskId,
                 ReviewedExecutionId = _reviewedExecutionId,
