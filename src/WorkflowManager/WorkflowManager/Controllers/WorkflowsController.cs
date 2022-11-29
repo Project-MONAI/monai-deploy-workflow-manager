@@ -143,7 +143,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <summary>
         /// Validates a workflow.
         /// </summary>
-        /// <param name="workflow">The Workflow.</param>
+        /// <param name="request">The validate request object.</param>
         /// <returns>A 204 when the workflow is valid.</returns>
         [HttpPost("validate")]
         [ProducesResponseType(typeof(CreateWorkflowResponse), StatusCodes.Status204NoContent)]
