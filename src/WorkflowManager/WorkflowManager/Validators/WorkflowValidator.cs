@@ -164,7 +164,10 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 Errors.Add("Missing Workflow Name.");
             }
 
-            if (string.IsNullOrWhiteSpace(OrignalName) || OrignalName != workflow.Name)
+            // if original name is null or whitespace we assume it must be a create request.
+            if (string.IsNullOrWhiteSpace(workflow.Name) is false
+                && (string.IsNullOrWhiteSpace(OrignalName)
+                || OrignalName != workflow.Name))
             {
                 var checkForDuplicates = await WorkflowService.GetByNameAsync(workflow.Name);
                 if (checkForDuplicates != null)

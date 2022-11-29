@@ -16,6 +16,7 @@
 
 using System.Net;
 using BoDi;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Newtonsoft.Json;
@@ -64,11 +65,22 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             ApiHelper.Response.StatusCode.Should().Be((HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), expectedCode));
         }
 
+        [When(@"I have a workflow body (.*)")]
+        [Given(@"I have a workflow body (.*)")]
+        public void GivenIHaveAWorkflowBody(string name)
+        {
+            var body = DataHelper.GetWorkflowObjectTestData(name);
+            Support.HttpRequestMessageExtensions.AddJsonBody(ApiHelper.Request, body);
+        }
+
         [When(@"I have a body (.*)")]
         [Given(@"I have a body (.*)")]
         public void GivenIHaveABody(string name)
         {
-            Support.HttpRequestMessageExtensions.AddJsonBody(ApiHelper.Request, DataHelper.GetWorkflowObjectTestData(name));
+            WorkflowUpdateRequest body = new();
+            body.Workflow = DataHelper.GetWorkflowObjectTestData(name);
+            body.OriginalWorkflowName = body.Workflow.Name;
+            Support.HttpRequestMessageExtensions.AddJsonBody(ApiHelper.Request, body);
         }
 
         [When(@"I have a Task Request body (.*)")]
@@ -81,8 +93,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"I will receive the error message (.*)")]
         public void ThenIWillReceiveTheCorrectErrorMessage(string message)
         {
-            ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().ContainAll("type", "title", "status", "traceId");
-            ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Contain(message);
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            result.Should().ContainAll("type", "title", "status", "traceId");
+            result.Should().Contain(message);
         }
 
         [Then(@"I will get a health check response status message (.*)")]

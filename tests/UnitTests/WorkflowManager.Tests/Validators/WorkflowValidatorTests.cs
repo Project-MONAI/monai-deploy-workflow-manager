@@ -360,6 +360,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new WorkflowRevision());
 
+            _workflowValidator.OrignalName = "pizza";
             var (errors, _) = await _workflowValidator.ValidateWorkflow(workflow);
 
             Assert.True(errors.Count > 0);

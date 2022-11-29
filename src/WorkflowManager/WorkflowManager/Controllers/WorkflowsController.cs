@@ -148,8 +148,10 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         [HttpPost("validate")]
         [ProducesResponseType(typeof(CreateWorkflowResponse), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ValidateAsync([FromBody] Workflow workflow)
+        public async Task<IActionResult> ValidateAsync([FromBody] WorkflowUpdateRequest request)
         {
+            var workflow = request.Workflow;
+            _workflowValidator.OrignalName = request.OriginalWorkflowName;
             var results = await _workflowValidator.ValidateWorkflow(workflow);
 
             if (results.Errors.Count > 0)
