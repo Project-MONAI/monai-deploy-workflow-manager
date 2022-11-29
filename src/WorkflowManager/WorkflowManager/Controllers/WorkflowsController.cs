@@ -221,7 +221,6 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/workflows/{id}", BadRequest);
             }
 
-            // if the user has updated the workflow name check the new name doesn't already exist.
             _workflowValidator.OrignalName = originalName;
             var (errors, _) = await _workflowValidator.ValidateWorkflow(workflow);
 
