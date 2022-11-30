@@ -59,12 +59,22 @@ namespace Monai.Deploy.WorkflowManager.Validators
         private IWorkflowService WorkflowService { get; }
 
         /// <summary>
+        /// used for checking for duplicates, if OrignalName is empty it will be determined as a create
+        /// workflow attempt and check for duplicates or if this is not equal to workflow template it will
+        /// check for duplicates.
+        /// if workflow name is same as original name then we response user is updating workflow some other way
+        /// will have duplicate.
+        /// </summary>
+        public string OrignalName { get; internal set; } = string.Empty;
+
+        /// <summary>
         /// Resets the validator.
         /// </summary>
         public void Reset()
         {
             Errors.Clear();
             SuccessfulPaths.Clear();
+            OrignalName = string.Empty;
         }
 
         /// <summary>
@@ -78,13 +88,15 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// - Unreferenced tasks other than root task.
         /// </summary>
         /// <param name="workflow">Workflow to validate.</param>
+        /// <param name="checkForDuplicates">Check for duplicates.</param>
+        /// <param name="isUpdate">Used to check for duplicate name if it is a new workflow.</param>
         /// <returns>if any validation errors are produced while validating workflow.</returns>
-        public async Task<(List<string> Errors, List<string> SuccessfulPaths)> ValidateWorkflow(Workflow workflow, bool checkForDuplicates = true)
+        public async Task<(List<string> Errors, List<string> SuccessfulPaths)> ValidateWorkflow(Workflow workflow)
         {
             var tasks = workflow.Tasks;
             var firstTask = tasks.FirstOrDefault();
 
-            await ValidateWorkflowSpec(workflow, checkForDuplicates);
+            await ValidateWorkflowSpec(workflow);
             DetectUnreferencedTasks(tasks, firstTask);
             ValidateTask(tasks, firstTask, 0);
             ValidateExportDestinations(workflow);
@@ -145,18 +157,23 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private async Task ValidateWorkflowSpec(Workflow workflow, bool checkForDuplicates)
+        private async Task ValidateWorkflowSpec(Workflow workflow)
         {
             if (string.IsNullOrWhiteSpace(workflow.Name) is true)
             {
                 Errors.Add("Missing Workflow Name.");
             }
 
-            if (checkForDuplicates
-                && string.IsNullOrWhiteSpace(workflow.Name) is false
-                && await WorkflowService.GetByNameAsync(workflow.Name) != null)
+            // if original name is null or whitespace we assume it must be a create request.
+            if (string.IsNullOrWhiteSpace(workflow.Name) is false
+                && (string.IsNullOrWhiteSpace(OrignalName)
+                || OrignalName != workflow.Name))
             {
-                Errors.Add($"Workflow with name '{workflow.Name}' already exists, please review.");
+                var checkForDuplicates = await WorkflowService.GetByNameAsync(workflow.Name);
+                if (checkForDuplicates != null)
+                {
+                    Errors.Add($"Workflow with name '{workflow.Name}' already exists, please review.");
+                }
             }
 
             if (string.IsNullOrWhiteSpace(workflow.Version))

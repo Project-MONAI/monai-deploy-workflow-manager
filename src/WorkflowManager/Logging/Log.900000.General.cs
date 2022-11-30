@@ -40,5 +40,8 @@ namespace Monai.Deploy.WorkflowManager.Logging
 
         [LoggerMessage(EventId = 900006, Level = LogLevel.Trace, Message = "{ServiceName} Worker completed in: {Elapsed_millis} milliseconds.")]
         public static partial void ServiceCompleted(this ILogger logger, string serviceName, int elapsed_millis);
+
+        [LoggerMessage(EventId = 900007, Level = LogLevel.Error, Message = "Recovering connection to storage service:  {reason}.")]
+        public static partial void MessagingServiceErrorRecover(this ILogger logger, string reason);
     }
 }

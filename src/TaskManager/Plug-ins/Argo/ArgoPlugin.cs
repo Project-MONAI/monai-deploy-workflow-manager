@@ -289,9 +289,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 #pragma warning disable CA2254 // Template should be a static expression
             var logs = await client.WorkflowService_WorkflowLogsAsync(_namespace, identity, null, "init", null, null, null, null, null, null, null, null, null, null, null);
             _logger.ArgoLog(logs);
-            logs = await client.WorkflowService_WorkflowLogsAsync(_namespace, identity, null, "main", null, null, null, null, null, null, null, null, null, null, null);
-            _logger.ArgoLog(logs);
             logs = await client.WorkflowService_WorkflowLogsAsync(_namespace, identity, null, "wait", null, null, null, null, null, null, null, null, null, null, null);
+            _logger.ArgoLog(logs);
+            logs = await client.WorkflowService_WorkflowLogsAsync(_namespace, identity, null, "main", null, null, null, null, null, null, null, null, null, null, null);
             _logger.ArgoLog(logs);
 #pragma warning restore CA2254 // Template should be a static expression
         }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -169,6 +170,14 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return;
             }
 
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["workflowInstanceId"] = workflowInstance.Id,
+                ["durationSoFar"] = (DateTime.UtcNow - workflowInstance.StartTime).TotalMilliseconds,
+                ["executionId"] = task.ExecutionId
+            });
+
+
             if (string.Equals(task.TaskType, TaskTypeConstants.RouterTask, StringComparison.InvariantCultureIgnoreCase))
             {
                 await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
@@ -207,14 +216,15 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return false;
             }
 
+            var currentTask = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId == message.TaskId);
+
             using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
             {
                 ["workflowInstanceId"] = workflowInstance.Id,
                 ["taskStatus"] = message.Status,
-                ["durationSoFar"] = (DateTime.UtcNow - workflowInstance.StartTime).TotalMilliseconds
+                ["durationSoFar"] = (DateTime.UtcNow - workflowInstance.StartTime).TotalMilliseconds,
+                ["executionId"] = currentTask?.ExecutionId ?? ""
             });
-
-            var currentTask = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId == message.TaskId);
 
             if (currentTask is null)
             {
@@ -307,7 +317,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
             {
                 ["workflowInstanceId"] = workflowInstance.Id,
-                ["durationSoFar"] = (DateTime.UtcNow - workflowInstance.StartTime).TotalMilliseconds
+                ["durationSoFar"] = (DateTime.UtcNow - workflowInstance.StartTime).TotalMilliseconds,
+                ["executionId"] = task.ExecutionId
             });
 
             if (message.Status.Equals(ExportStatus.Success)
@@ -516,6 +527,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             foreach (var taskExec in taskExecutions)
             {
+                using var loggingScope = _logger.BeginScope(new Dictionary<string, object> { ["executionId"] = taskExec?.ExecutionId ?? "" });
+
                 if (string.Equals(taskExec.TaskType, TaskTypeConstants.RouterTask, StringComparison.InvariantCultureIgnoreCase))
                 {
                     await HandleTaskDestinations(workflowInstance, workflow, taskExec, correlationId);
@@ -621,7 +634,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return false;
             }
 
-            using (_logger.BeginScope(new Dictionary<string, object> { ["correlationId"] = correlationId, ["taskId"] = task.Id }))
+            using (_logger.BeginScope(new Dictionary<string, object> { ["correlationId"] = correlationId, ["taskId"] = task.Id, ["executionId"] = taskExec.ExecutionId }))
             {
                 var outputArtifacts = task.Artifacts?.Output;
 
