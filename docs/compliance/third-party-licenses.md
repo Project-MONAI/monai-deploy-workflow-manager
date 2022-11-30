@@ -9804,14 +9804,14 @@ SOFTWARE.
 
 
 <details>
-<summary>NLog 5.0.5</summary>
+<summary>NLog 5.1.0</summary>
 
 ## NLog
 
-- Version: 5.0.5
+- Version: 5.1.0
 - Authors: Jarek Kowalski,Kim Christensen,Julian Verdurmen
 - Project URL: https://nlog-project.org/
-- Source: [NuGet](https://www.nuget.org/packages/NLog/5.0.5)
+- Source: [NuGet](https://www.nuget.org/packages/NLog/5.1.0)
 - License: [BSD 3-Clause License](https://github.com/NLog/NLog/raw/dev/LICENSE.txt)
 
 
@@ -9852,14 +9852,14 @@ THE POSSIBILITY OF SUCH DAMAGE.
 
 
 <details>
-<summary>NLog.Extensions.Logging 5.1.0</summary>
+<summary>NLog.Extensions.Logging 5.2.0</summary>
 
 ## NLog.Extensions.Logging
 
-- Version: 5.1.0
+- Version: 5.2.0
 - Authors: Microsoft,Julian Verdurmen
 - Project URL: https://github.com/NLog/NLog.Extensions.Logging
-- Source: [NuGet](https://www.nuget.org/packages/NLog.Extensions.Logging/5.1.0)
+- Source: [NuGet](https://www.nuget.org/packages/NLog.Extensions.Logging/5.2.0)
 - License: [BSD 2-Clause Simplified License](https://github.com/NLog/NLog.Extensions.Logging/raw/master/LICENSE)
 
 
@@ -9893,14 +9893,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 <details>
-<summary>NLog.Web.AspNetCore 5.1.4</summary>
+<summary>NLog.Web.AspNetCore 5.2.0</summary>
 
 ## NLog.Web.AspNetCore
 
-- Version: 5.1.4
+- Version: 5.2.0
 - Authors: Julian Verdurmen
 - Project URL: https://github.com/NLog/NLog.Web
-- Source: [NuGet](https://www.nuget.org/packages/NLog.Web.AspNetCore/5.1.4)
+- Source: [NuGet](https://www.nuget.org/packages/NLog.Web.AspNetCore/5.2.0)
 - License: [BSD 3-Clause License](https://github.com/NLog/NLog.Web/raw/master/LICENSE)
 
 
@@ -9978,14 +9978,14 @@ THE SOFTWARE.
 
 
 <details>
-<summary>NUnit3TestAdapter 4.3.0</summary>
+<summary>NUnit3TestAdapter 4.3.1</summary>
 
 ## NUnit3TestAdapter
 
-- Version: 4.3.0
+- Version: 4.3.1
 - Authors: Charlie Poole, Terje Sandstrom
 - Project URL: https://docs.nunit.org/articles/vs-test-adapter/Index.html
-- Source: [NuGet](https://www.nuget.org/packages/NUnit3TestAdapter/4.3.0)
+- Source: [NuGet](https://www.nuget.org/packages/NUnit3TestAdapter/4.3.1)
 - License: [MIT](https://github.com/nunit/nunit3-vs-adapter/raw/master/LICENSE)
 
 
@@ -10017,14 +10017,14 @@ THE SOFTWARE.
 
 
 <details>
-<summary>Newtonsoft.Json 13.0.1</summary>
+<summary>Newtonsoft.Json 13.0.2</summary>
 
 ## Newtonsoft.Json
 
-- Version: 13.0.1
+- Version: 13.0.2
 - Authors: James Newton-King
 - Project URL: https://www.newtonsoft.com/json
-- Source: [NuGet](https://www.nuget.org/packages/Newtonsoft.Json/13.0.1)
+- Source: [NuGet](https://www.nuget.org/packages/Newtonsoft.Json/13.0.2)
 - License: [MIT](https://github.com/JamesNK/Newtonsoft.Json/raw/master/LICENSE.md)
 
 
@@ -13087,15 +13087,15 @@ Some of the benchmark data in testdata/ is licensed differently:
 
 
 <details>
-<summary>Snapshooter 0.7.1</summary>
+<summary>Snapshooter 0.12.0</summary>
 
 ## Snapshooter
 
-- Version: 0.7.1
+- Version: 0.12.0
 - Authors: Swiss Life authors and contributors
 - Owners: Swiss Life authors and contributors
 - Project URL: https://github.com/SwissLife-OSS/Snapshooter
-- Source: [NuGet](https://www.nuget.org/packages/Snapshooter/0.7.1)
+- Source: [NuGet](https://www.nuget.org/packages/Snapshooter/0.12.0)
 - License: [MIT](https://github.com/SwissLife-OSS/snapshooter/raw/master/LICENSE)
 
 
@@ -13127,15 +13127,15 @@ SOFTWARE.
 
 
 <details>
-<summary>Snapshooter.NUnit 0.7.1</summary>
+<summary>Snapshooter.NUnit 0.12.0</summary>
 
 ## Snapshooter.NUnit
 
-- Version: 0.7.1
+- Version: 0.12.0
 - Authors: Swiss Life authors and contributors
 - Owners: Swiss Life authors and contributors
 - Project URL: https://github.com/SwissLife-OSS/Snapshooter
-- Source: [NuGet](https://www.nuget.org/packages/Snapshooter.NUnit/0.7.1)
+- Source: [NuGet](https://www.nuget.org/packages/Snapshooter.NUnit/0.12.0)
 - License: [MIT](https://github.com/SwissLife-OSS/snapshooter/raw/master/LICENSE)
 
 
