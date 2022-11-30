@@ -80,7 +80,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Repositories
 
             try
             {
-                var filesList = await _storageService.ListObjectsAsync(bucketName, outputDir);
+                var filesList = await _storageService.ListObjectsAsync(bucketName, outputDir, true);
 
                 var metadataFile = filesList?.FirstOrDefault((file) => file.Filename.ToLower() == "metadata.json");
 
