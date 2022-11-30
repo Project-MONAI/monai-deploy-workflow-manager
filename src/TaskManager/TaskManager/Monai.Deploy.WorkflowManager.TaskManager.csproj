@@ -66,8 +66,8 @@
     <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.17-rc0020" />
     <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.10" />
     <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.17-rc0020" />
-    <PackageReference Include="NLog" Version="5.0.5" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="5.1.5" />
+    <PackageReference Include="NLog" Version="5.1.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.2.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

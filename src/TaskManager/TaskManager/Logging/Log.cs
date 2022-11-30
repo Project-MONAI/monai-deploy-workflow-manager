@@ -119,5 +119,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Logging
 
         [LoggerMessage(EventId = 119, Level = LogLevel.Debug, Message = "Processing task cancellation event")]
         public static partial void PrecessingTaskCancellationEvent(this ILogger logger);
+
+        [LoggerMessage(EventId = 120, Level = LogLevel.Error, Message = "Recovering connection to storage service:  {reason}.")]
+        public static partial void MessagingServiceErrorRecover(this ILogger logger, string reason);
     }
 }
