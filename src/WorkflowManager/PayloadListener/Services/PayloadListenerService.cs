@@ -72,7 +72,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             _messageSubscriber = _scope.ServiceProvider.GetRequiredService<IMessageBrokerSubscriberService>();
             _messageSubscriber.OnConnectionError += (sender, args) =>
             {
-                _logger.MessagingServiceErrorRecover(args.ShutdownEventArguments.ToString());
+                _logger.MessagingServiceErrorRecover(args.ErrorMessage);
                 SetupPolling();
             };
         }
