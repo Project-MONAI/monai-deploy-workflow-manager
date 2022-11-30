@@ -24,6 +24,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events
     public class ClinicalReviewRequestEvent : EventBase
     {
         /// <summary>
+        /// Gets or sets the workflow instance ID.
+        /// </summary>
+        [JsonProperty(PropertyName = "workflow_instance_id")]
+        [Required]
+        public string WorkflowInstanceId { get; set; }
+        /// <summary>
         /// Gets or sets the execution ID representing the instance of the task.
         /// </summary>
         [JsonProperty(PropertyName = "execution_id")]
