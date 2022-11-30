@@ -152,8 +152,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                     }
                 }
             };
+            var request = new WorkflowUpdateRequest();
+            request.Workflow = newWorkflow;
+            request.OriginalWorkflowName = newWorkflow.Name + "1";
 
-            var result = await WorkflowsController.ValidateAsync(newWorkflow);
+            var result = await WorkflowsController.ValidateAsync(request);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
 
@@ -207,8 +210,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                     }
                 }
             };
+            var request = new WorkflowUpdateRequest();
+            request.Workflow = newWorkflow;
+            request.OriginalWorkflowName = newWorkflow.Name + "1";
 
-            var result = await WorkflowsController.ValidateAsync(newWorkflow);
+            var result = await WorkflowsController.ValidateAsync(request);
 
             var objectResult = Assert.IsType<StatusCodeResult>(result);
 
@@ -267,8 +273,10 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                         }
                 }
             };
-
-            var result = await WorkflowsController.UpdateAsync(newWorkflow, workflowRevision.WorkflowId);
+            var request = new WorkflowUpdateRequest();
+            request.Workflow = newWorkflow;
+            request.OriginalWorkflowName = newWorkflow.Name + "1";
+            var result = await WorkflowsController.UpdateAsync(request, workflowRevision.WorkflowId);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
 
@@ -350,7 +358,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 }
             };
 
-            var result = await WorkflowsController.UpdateAsync(newWorkflow, workflowRevision.WorkflowId);
+            var request = new WorkflowUpdateRequest();
+            request.Workflow = newWorkflow;
+            request.OriginalWorkflowName = newWorkflow.Name + "1";
+
+            var result = await WorkflowsController.UpdateAsync(request, workflowRevision.WorkflowId);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
 
@@ -434,9 +446,13 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             var response = new CreateWorkflowResponse(workflowRevision.WorkflowId);
 
+            var request = new WorkflowUpdateRequest();
+            request.Workflow = newWorkflow;
+            request.OriginalWorkflowName = newWorkflow.Name + "1";
+
             _workflowService.Setup(w => w.UpdateAsync(newWorkflow, workflowRevision.WorkflowId)).ReturnsAsync(workflowRevision.WorkflowId);
 
-            var result = await WorkflowsController.UpdateAsync(newWorkflow, workflowRevision.WorkflowId);
+            var result = await WorkflowsController.UpdateAsync(request, workflowRevision.WorkflowId);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
 

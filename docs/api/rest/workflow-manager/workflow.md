@@ -355,45 +355,48 @@ curl -X 'PUT' \
   -H 'accept: text/plain' \
   -H 'Content-Type: application/json-patch+json' \
   -d '{
-	"name": "pixel-workflow",
-	"version": "1.0.0",
-	"description": "Attempt at making a workflow",
-	"informatics_gateway": {
-		"ae_title": "MonaiSCU",
-		"data_origins": [
-			"MY_SCANNER"
-		],
-		"export_destinations": [
-			"PROD_PACS"
-		]
-	},
-	"tasks": [
-		{
-			"id": "aide-passing",
-			"description": "trigger simple argo workflow",
-			"type": "argo",
-			"args": {
-				"namespace":"argo",
-				"workflow_template_name": "aide-artifact-passing-j5ndx",
-				"server_url": "https://localhost:2746",
-				"allow_insecure": true
-			},
-			"artifacts": {
-				"input": [
-					{
-						"name": "input-dicom",
-						"value": "{{ context.input.dicom }}"
-					}
-				],
-				"output": [
-					{
-						"name": "report-pdf",
-						"Mandatory": true
-					}
-				]
-			}
-		}
-	]
+    "original_workflow_name": "pixel-workflow"
+    "workflow": {
+    "name": "pixel-workflow",
+    "version": "1.0.0",
+    "description": "Attempt at making a workflow",
+    "informatics_gateway": {
+      "ae_title": "MonaiSCU",
+      "data_origins": [
+        "MY_SCANNER"
+      ],
+      "export_destinations": [
+        "PROD_PACS"
+      ]
+    },
+    "tasks": [
+      {
+        "id": "aide-passing",
+        "description": "trigger simple argo workflow",
+        "type": "argo",
+        "args": {
+          "namespace":"argo",
+          "workflow_template_name": "aide-artifact-passing-j5ndx",
+          "server_url": "https://localhost:2746",
+          "allow_insecure": true
+        },
+        "artifacts": {
+          "input": [
+            {
+              "name": "input-dicom",
+              "value": "{{ context.input.dicom }}"
+            }
+          ],
+          "output": [
+            {
+              "name": "report-pdf",
+              "Mandatory": true
+            }
+          ]
+        }
+      }
+    ]
+  }
 }'
 ```
 
@@ -401,45 +404,48 @@ JSON Request Body:
 
 ```json
 {
-	"name": "pixel-workflow",
-	"version": "1.0.0",
-	"description": "Attempt at making a workflow",
-	"informatics_gateway": {
-		"ae_title": "MonaiSCU",
-		"data_origins": [
-			"MY_SCANNER"
-		],
-		"export_destinations": [
-			"PROD_PACS"
-		]
-	},
-	"tasks": [
-		{
-			"id": "aide-passing",
-			"description": "trigger simple argo workflow",
-			"type": "argo",
-			"args": {
-				"namespace":"argo",
-				"workflow_template_name": "aide-artifact-passing-j5ndx",
-				"server_url": "https://localhost:2746",
-				"allow_insecure": true
-			},
-			"artifacts": {
-				"input": [
-					{
-						"name": "input-dicom",
-						"value": "{{ context.input.dicom }}"
-					}
-				],
-				"output": [
-					{
-						"name": "report-pdf",
-						"Mandatory": true
-					}
-				]
-			}
-		}
-	]
+  "original_workflow_name": "pixel-workflow"
+  "workflow": {
+    "name": "pixel-workflow",
+    "version": "1.0.0",
+    "description": "Attempt at making a workflow",
+    "informatics_gateway": {
+      "ae_title": "MonaiSCU",
+      "data_origins": [
+        "MY_SCANNER"
+      ],
+      "export_destinations": [
+        "PROD_PACS"
+      ]
+    },
+    "tasks": [
+      {
+        "id": "aide-passing",
+        "description": "trigger simple argo workflow",
+        "type": "argo",
+        "args": {
+          "namespace":"argo",
+          "workflow_template_name": "aide-artifact-passing-j5ndx",
+          "server_url": "https://localhost:2746",
+          "allow_insecure": true
+        },
+        "artifacts": {
+          "input": [
+            {
+              "name": "input-dicom",
+              "value": "{{ context.input.dicom }}"
+            }
+          ],
+          "output": [
+            {
+              "name": "report-pdf",
+              "Mandatory": true
+            }
+          ]
+        }
+      }
+    ]
+  }
 }
 ```
 
