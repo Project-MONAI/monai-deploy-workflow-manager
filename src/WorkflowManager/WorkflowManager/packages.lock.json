@@ -97,23 +97,23 @@
       },
       "Newtonsoft.Json": {
         "type": "Direct",
-        "requested": "[13.0.1, )",
-        "resolved": "13.0.1",
-        "contentHash": "ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A=="
+        "requested": "[13.0.2, )",
+        "resolved": "13.0.2",
+        "contentHash": "R2pZ3B0UjeyHShm9vG+Tu0EBb2lC8b0dFzV9gVn50ofHXh9Smjk6kTn7A/FdAsC8B5cKib1OnGYOXxRBz5XQDg=="
       },
       "NLog": {
         "type": "Direct",
-        "requested": "[5.0.5, )",
-        "resolved": "5.0.5",
-        "contentHash": "NOTWSyUEljmjMq7OqZ1X9iu4bJ+rW/o6pt79Jq8j2Q7s8DyoMMCJwe0HoCKcNjhYRJ++b+E8erH6E6WwaCTshQ=="
+        "requested": "[5.1.0, )",
+        "resolved": "5.1.0",
+        "contentHash": "oW7ekrkRG9okpDMUcEglunWj8Qf2RY8qkgl+/chJoavzg3dbT13y32t19R54FKkmq80fKzw4ZekZkCrRGanKgQ=="
       },
       "NLog.Web.AspNetCore": {
         "type": "Direct",
-        "requested": "[5.1.5, )",
-        "resolved": "5.1.5",
-        "contentHash": "a7Pe6KdwIxPxcFYy6M7wLseU++tx1bBf/ROVNlcZPLfp40DPLA0KGOk1K9kvbcwPYKKLMikdSwiOyTRZZFlaXg==",
+        "requested": "[5.2.0, )",
+        "resolved": "5.2.0",
+        "contentHash": "DqFgdydAWW+pshPdzh0ydk2jJrrVaZmBNz5+p9K8N9q/4BOPJ94S2fD8t9erd7ZMhnigaqOq/HqZH4nGGOYTbA==",
         "dependencies": {
-          "NLog.Extensions.Logging": "5.1.0"
+          "NLog.Extensions.Logging": "5.2.0"
         }
       },
       "StyleCop.Analyzers": {
@@ -613,12 +613,12 @@
       },
       "NLog.Extensions.Logging": {
         "type": "Transitive",
-        "resolved": "5.1.0",
-        "contentHash": "cQCKF2/iYjZUkn0d2o6VD1xkTUhIFHPYmZEm29KlTthLEzMht5aY80SwWlHZCKy0w19kaSq1jgLJSGrKsapUfg==",
+        "resolved": "5.2.0",
+        "contentHash": "wzVFG5p8Nwbs1Ws29T8YJg+UbJfsh61h6U4xArnDSrtVvOoccwKtoFPZWwbym3ZTiTFmHIf7Ugu1j/WnT7z3vg==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
           "Microsoft.Extensions.Logging": "6.0.0",
-          "NLog": "5.0.5"
+          "NLog": "5.1.0"
         }
       },
       "Polly": {

@@ -141,21 +141,21 @@ Scenario: Update workflow where workflow ID does not exist
 @AddWorkflows
 Scenario: Add workflow with valid details
     Given I have an endpoint /workflows
-    And I have a body Basic_Workflow_1
+    And I have a workflow body Basic_Workflow_1
     When I send a POST request
     Then I will get a 201 response
 
 @AddWorkflows
 Scenario: Add workflow with valid empty details
     Given I have an endpoint /workflows
-    And I have a body Basic_Workflow_2
+    And I have a workflow body Basic_Workflow_2
     When I send a POST request
     Then I will get a 201 response
 
 @AddWorkflows
 Scenario Outline: Add workflow with invalid details
     Given I have an endpoint /workflows
-    And I have a body <post_body>
+    And I have a workflow body <post_body>
     When I send a POST request
     Then I will get a 400 response
     And I will receive the error message <message>
@@ -185,7 +185,7 @@ Scenario Outline: Add workflow with invalid details
 Scenario Outline: Add workflow with duplicate workflow name
     Given I have a clinical workflow Basic_Workflow_1_static
     And I have an endpoint /workflows
-    And I have a body Workflow_Dup_Workflow_Name
+    And I have a workflow body Workflow_Dup_Workflow_Name
     When I send a POST request
     Then I will get a 400 response
     And I will receive the error message Failed to validate workflow: Workflow with name 'Basic workflow' already exists, please review.
