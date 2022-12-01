@@ -86,8 +86,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Repositories
 
                 if (metadataFile is null)
                 {
-                    throw new Exception();
+                    throw new FileNotFoundException("File could not be found");
                 }
+
                 var stream = await _storageService.GetObjectAsync(bucketName, metadataFile.FilePath);
 
                 jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
