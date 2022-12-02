@@ -1465,6 +1465,13 @@
           "Monai.Deploy.WorkflowManager.Logging": "[1.0.0, )"
         }
       },
+      "monai.deploy.workflowmanager.taskmanager.aideclinicalreview": {
+        "type": "Project",
+        "dependencies": {
+          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )"
+        }
+      },
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
