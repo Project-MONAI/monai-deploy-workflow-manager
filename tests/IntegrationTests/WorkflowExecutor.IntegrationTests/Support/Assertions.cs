@@ -227,9 +227,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             var outputExtension = Path.GetExtension(taskUpdateEvent.Outputs[0].RelativeRootPath);
 
             var filesList = MinioClient.ListFilesFromDir(TestExecutionConfig.MinioConfig.Bucket, taskUpdateEvent.Outputs[0].RelativeRootPath).Result;
-            var filteredFileList = filesList.Where(f => f.FilePath.EndsWith(".dcm")
-            || f.FilePath.EndsWith(".DCM")
-            || (string.IsNullOrWhiteSpace(Path.GetExtension(f.FilePath)) && string.IsNullOrWhiteSpace(f.FilePath) is false));
+            var filteredFileList = filesList.Where(f => f.FilePath.ToLower().EndsWith(".dcm"));
             exportRequestEvent.Files.Count().Should().Be(filteredFileList.Count());
 
             exportRequestEvent.WorkflowInstanceId.Should().Match(workflowInstance.Id);

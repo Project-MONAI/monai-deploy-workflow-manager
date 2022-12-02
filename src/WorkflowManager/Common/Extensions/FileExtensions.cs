@@ -29,9 +29,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Extensions
 
             var extension = Path.GetExtension(file.FilePath);
 
-            return extension == ".dcm"
-                || extension == ".DCM"
-                || string.IsNullOrWhiteSpace(extension);
+            return extension.ToLower() == ".dcm";
         }
     }
 }
