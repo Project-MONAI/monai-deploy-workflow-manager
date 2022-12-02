@@ -2330,3 +2330,17 @@
     :versions:
     - [0.1.0, 0.2.0]
     :when: 2022-12-02 13:13:13.431951720 Z
+- - :approve
+  - Microsoft.AspNetCore.Authentication.JwtBearer
+  - :who: lillie-dae
+    :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
+    :versions:
+    - 6.0.11
+    :when: 2022-12-02 13:13:13.431951720 Z
+- - :approve
+  - Microsoft.Extensions.Logging.Abstractions
+  - :who: lillie-dae
+    :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
+    :versions:
+    - 6.0.3
+    :when: 2022-12-02 13:13:13.431951720 Z
