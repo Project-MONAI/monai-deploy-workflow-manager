@@ -2323,4 +2323,10 @@
     :versions:
     - 0.2.10
     :when: 2022-11-08 14:49:46.964761113 Z
-
+- - :approve
+  - Monai.Deploy.Security
+  - :who: lillie-dae
+    :why: Apache-2.0 (https://raw.githubusercontent.com/Project-MONAI/monai-deploy-security/main/LICENSE)
+    :versions:
+    - [0.1.0, 0.2.0]
+    :when: 2022-12-02 13:13:13.431951720 Z
