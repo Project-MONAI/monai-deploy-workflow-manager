@@ -44,31 +44,31 @@ This is an example of MonaiDeployAuthentication configuration:
 ```json
   "MonaiDeployAuthentication": {
     "BypassAuthentication": false,
-    "OpenId": {
-      "ServerRealm": "http://localhost:8080/realms/monai-test-realm",
-      "ServerRealmKey": "### Client App Secret Key ###",
-      "ClientId": "monai-service",
-      "Audiences": [ "monai-deploy", "account" ],
+    "openId": {
+      "realm": "http://localhost:8080/realms/monai-test-realm",
+      "realmKey": "realmKey",
+      "clientId": "monai-service",
+      "audiences": [ "monai-deploy", "account" ],
       "claimMappings": {
         "userClaims": [
           {
             "claimType": "user_roles",
             "claimValues": [ "monai-role-user" ],
-            "endpoints": [ "payloads", "workflows", "workflowinstances", "tasks" ],
-          },
+            "endpoints": [ "payloads", "workflows", "workflowinstances", "tasks" ]
+          }
         ],
         "adminClaims": [
-          { 
+          {
             "claimType": "user_roles",
             "claimValues": [ "monai-role-admin" ],
-            "endpoints": [ "payloads", "workflows", "workflowinstances", "tasks" ],
+            "endpoints": [ "all" ]
           }
         ]
       }
     }
   },
 ```
-(Client App Secret Key) can be found in Clients -> Credentials -> Secret
+realmKey can be found in Clients -> Credentials -> Secret
 
 and bare minimum for bypass is...
 
@@ -78,19 +78,17 @@ and bare minimum for bypass is...
   }
 ```
 
-- **ServerRealm**: link to you OpenId provider 
+- **realm**: link to you OpenId provider 
 
-- **ServerRealmKey**: OpenId provider key
+- **realmKey**: OpenId provider key
 
-- **ClientId**: name of you client in the client in openid provider
+- **clientId**: name of you client in the client in openid provider
 
-under **Claims** you have 2 sub objects
+there are 2 types of claims
 
-**RequiredUserClaims**
+**userClaims**
 
-**RequiredAdminClaims**
-
-this can take an array of objects which will be your users and endpoints they can access...
+**adminClaims**
 
 example here we use: 
 
@@ -99,9 +97,9 @@ example here we use:
 "claimValues": [ "monai-role-user" ],
 "endpoints": [ "payloads", "workflows", "workflowinstances", "tasks" ],
 ```
-**user_roles** maps back to setting above (JWT) Token Claim Name.
+claimType **user_roles** maps back to setting above (JWT) Token Claim Name.
 
-**monai-role-user** is role we have setup and expect to find for users.
+claimValues **monai-role-user** is role we have setup and expect to find for users.
 
 **endspoints** is a list of endpoints that authorised to access comma seperated string.
 
