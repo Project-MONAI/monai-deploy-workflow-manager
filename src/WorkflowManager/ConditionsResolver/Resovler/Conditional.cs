@@ -252,8 +252,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 case LE:
                 case EG:
                 case EL:
-                    if ((int.TryParse(conditionalGroup.LeftParameter, out _)
-                        || int.TryParse(conditionalGroup.RightParameter, out _)) is false)
+                    if ((decimal.TryParse(conditionalGroup.LeftParameter, out _)
+                        || decimal.TryParse(conditionalGroup.RightParameter, out _)) is false)
                     {
                         throw new ArgumentException($"Invalid numeric value in: {input}");
                     }
