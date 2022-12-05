@@ -252,8 +252,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 case LE:
                 case EG:
                 case EL:
-                    if ((int.TryParse(conditionalGroup.LeftParameter, out _)
-                        || int.TryParse(conditionalGroup.RightParameter, out _)) is false)
+                    if ((decimal.TryParse(conditionalGroup.LeftParameter, out _)
+                        || decimal.TryParse(conditionalGroup.RightParameter, out _)) is false)
                     {
                         throw new ArgumentException($"Invalid numeric value in: {input}");
                     }
@@ -273,12 +273,12 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 NOT_CONTAINS => !ContainsEvaluate(),
                 EQUAL_EQUALS => string.Equals(LeftParameter.Trim(), RightParameter.Trim(), StringComparison.InvariantCultureIgnoreCase),
                 NOT_EQUAL => !string.Equals(LeftParameter.Trim(), RightParameter.Trim(), StringComparison.InvariantCultureIgnoreCase),
-                GTstr => Convert.ToInt16(LeftParameter, culture) > Convert.ToInt16(RightParameter, culture),
-                LTstr => Convert.ToInt16(LeftParameter, culture) < Convert.ToInt16(RightParameter, culture),
-                GE => Convert.ToInt16(LeftParameter, culture) >= Convert.ToInt16(RightParameter, culture),
-                EG => Convert.ToInt16(LeftParameter, culture) >= Convert.ToInt16(RightParameter, culture),
-                LE => Convert.ToInt16(LeftParameter, culture) <= Convert.ToInt16(RightParameter, culture),
-                EL => Convert.ToInt16(LeftParameter, culture) <= Convert.ToInt16(RightParameter, culture),
+                GTstr => Convert.ToDecimal(LeftParameter, culture) > Convert.ToDecimal(RightParameter, culture),
+                LTstr => Convert.ToDecimal(LeftParameter, culture) < Convert.ToDecimal(RightParameter, culture),
+                GE => Convert.ToDecimal(LeftParameter, culture) >= Convert.ToDecimal(RightParameter, culture),
+                EG => Convert.ToDecimal(LeftParameter, culture) >= Convert.ToDecimal(RightParameter, culture),
+                LE => Convert.ToDecimal(LeftParameter, culture) <= Convert.ToDecimal(RightParameter, culture),
+                EL => Convert.ToDecimal(LeftParameter, culture) <= Convert.ToDecimal(RightParameter, culture),
                 _ => throw new InvalidOperationException("Invalid logical operator between parameters {} and"),
             };
         }

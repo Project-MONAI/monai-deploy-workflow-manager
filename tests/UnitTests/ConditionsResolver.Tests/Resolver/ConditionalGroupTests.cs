@@ -167,6 +167,17 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         }
 
         [Fact]
+        public void ConditionalGroup_GivenConditionalWithLargeInt_Evaluate()
+        {
+            var val1 = decimal.MaxValue;
+            var val2 = decimal.MinValue;
+            var leftEquation = $"'{val1}' >= '{val2}'";
+            var conditionalGroup = new ConditionalGroup();
+            conditionalGroup.Parse(leftEquation);
+            Assert.True(conditionalGroup.Evaluate());
+        }
+
+        [Fact]
         public void ConditionalGroup_GivenConditionalGroup_ShouldThrowException()
         {
             var expectedMessage = "Evaluation Error";

@@ -47,18 +47,22 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
         [Theory]
         [InlineData(new string[] {"{{ context.dicom.series.all('0010','0040') }} == 'lordge'",
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'Fred' }} == 'Bob'",
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'fred' }} == 'lowercasefred'" }, true, "lordge")]
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.Fred }} == 'Bob'",
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.fred }} == 'lowercasefred'" }, true, "lordge")]
         [InlineData(
-            new string[] {"{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'Fred' }} == 'Bob'",
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'fred' }} == 'lowercasefred'",
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.'Sandra' }} == 'YassQueen' OR " +
-            "{{ context.executions.other_task.result.'Fred' }} >= '32' OR " +
-            "{{ context.executions.other_task.result.'Sandra' }} == 'other YassQueen' OR " +
-            "{{ context.executions.other_task.result.'Derick' }} == 'lordge'" }, true)]
+            new string[] {"{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.Fred }} == 'Bob'",
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.fred }} == 'lowercasefred'",
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.Sandra }} == 'YassQueen' OR " +
+            "{{ context.executions.other_task.result.Fred }} >= '32' OR " +
+            "{{ context.executions.other_task.result.Sandra }} == 'other YassQueen' OR " +
+            "{{ context.executions.other_task.result.Derick }} == 'lordge'" }, true)]
         [InlineData(
-            new string[] {"{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_stats.'stat1' }} == 'completed in 1 hour' AND " +
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_stats.'stat2' }} ==  'ran successfully'"}, true)]
+            new string[] {"{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.inttest }} == '2.5'",
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.booltest }} == 'True'",
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.datetest }} == '2022-12-05T14:06:34'"}, true)]
+        [InlineData(
+            new string[] {"{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_stats.stat1 }} == 'completed in 1 hour' AND " +
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_stats.stat2 }} ==  'ran successfully'"}, true)]
         public void ConditionalParameterParser_WhenGivenCorrectResultMetadataString_MultiConditionShouldEvaluate(string[] input, bool expectedResult, string? expectedDicomReturn = null)
         {
             if (expectedDicomReturn is not null)
@@ -109,8 +113,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         [InlineData("{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.task_id }} == '2dbd1af7-b699-4467-8e99-05a0c22422b4' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.output_dir }} == 'output/dir' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.status }} == 'Succeeded' AND " +
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.start_time }} == '25/12/2022 00:00:00' AND " +
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.end_time }} == '25/12/2022 01:00:00' AND " +
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.start_time }} == '2022-12-25T00:00:00' AND " +
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.end_time }} == '2022-12-25T01:00:00' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_id }} == '3c4484bd-e1a4-4347-902e-31a6503edd5f'", true)]
         public void ConditionalParameterParser_WhenGivenCorrectExecutionString_ShouldEvaluate(string input, bool expectedResult)
         {
@@ -205,6 +209,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                                 { "Fred", "Bob" },
                                 { "fred", "lowercasefred" },
                                 { "Sandra", "YassQueen" },
+                                { "booltest", true },
+                                { "datetest", new DateTime(2022,12,05,14,06,34) },
+                                { "inttest", 2.5 },
                             },
                             ExecutionStats = new Dictionary<string, string>()
                             {
@@ -223,7 +230,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                                 { "Fred", "55" },
                                 { "fred", "other lowercasefred" },
                                 { "Sandra", "other YassQueen" },
-                                { "Derick", "lordge" },
+                                { "Derick", "lordge" }
                             }
                         }
                     }

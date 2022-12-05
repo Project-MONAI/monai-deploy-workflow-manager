@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
@@ -288,7 +289,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 
             if (subValues.Length > 3)
             {
-                keyValue = subValues[3]?.Split('\'')[1];
+                keyValue = subValues[3];
             }
 
             _logger.ResolveExecutionTask(subValueKey);
@@ -332,11 +333,11 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                     break;
 
                 case ParameterConstants.StartTime:
-                    resultStr = task.TaskStartTime.ToString("dd/MM/yyyy HH:mm:ss");
+                    resultStr = task.TaskStartTime.ToString("s", CultureInfo.InvariantCulture);
                     break;
 
                 case ParameterConstants.EndTime:
-                    resultStr = task.TaskEndTime?.ToString("dd/MM/yyyy HH:mm:ss");
+                    resultStr = task.TaskEndTime?.ToString("s", CultureInfo.InvariantCulture);
                     break;
 
                 default:
@@ -359,6 +360,13 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 {
                     return valueStr;
                 }
+
+                if (value is DateTime valueDate)
+                {
+                    return valueDate.ToString("s", CultureInfo.InvariantCulture);
+                }
+
+                return value.ToString();
             }
 
             return null;
