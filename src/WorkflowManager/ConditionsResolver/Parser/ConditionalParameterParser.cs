@@ -288,7 +288,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 
             if (subValues.Length > 3)
             {
-                keyValue = subValues[3]?.Split('\'')[1];
+                keyValue = subValues[3];
             }
 
             _logger.ResolveExecutionTask(subValueKey);
@@ -359,6 +359,12 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 {
                     return valueStr;
                 }
+
+                if (value is bool valueBool)
+                {
+                    return valueBool.ToString();
+                }
+
             }
 
             return null;
