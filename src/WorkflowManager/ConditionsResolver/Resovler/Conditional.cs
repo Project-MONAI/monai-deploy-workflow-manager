@@ -273,12 +273,12 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 NOT_CONTAINS => !ContainsEvaluate(),
                 EQUAL_EQUALS => string.Equals(LeftParameter.Trim(), RightParameter.Trim(), StringComparison.InvariantCultureIgnoreCase),
                 NOT_EQUAL => !string.Equals(LeftParameter.Trim(), RightParameter.Trim(), StringComparison.InvariantCultureIgnoreCase),
-                GTstr => Convert.ToInt16(LeftParameter, culture) > Convert.ToInt16(RightParameter, culture),
-                LTstr => Convert.ToInt16(LeftParameter, culture) < Convert.ToInt16(RightParameter, culture),
-                GE => Convert.ToInt16(LeftParameter, culture) >= Convert.ToInt16(RightParameter, culture),
-                EG => Convert.ToInt16(LeftParameter, culture) >= Convert.ToInt16(RightParameter, culture),
-                LE => Convert.ToInt16(LeftParameter, culture) <= Convert.ToInt16(RightParameter, culture),
-                EL => Convert.ToInt16(LeftParameter, culture) <= Convert.ToInt16(RightParameter, culture),
+                GTstr => Convert.ToInt64(LeftParameter, culture) > Convert.ToInt64(RightParameter, culture),
+                LTstr => Convert.ToInt64(LeftParameter, culture) < Convert.ToInt64(RightParameter, culture),
+                GE => Convert.ToInt64(LeftParameter, culture) >= Convert.ToInt64(RightParameter, culture),
+                EG => Convert.ToInt64(LeftParameter, culture) >= Convert.ToInt64(RightParameter, culture),
+                LE => Convert.ToInt64(LeftParameter, culture) <= Convert.ToInt64(RightParameter, culture),
+                EL => Convert.ToInt64(LeftParameter, culture) <= Convert.ToInt64(RightParameter, culture),
                 _ => throw new InvalidOperationException("Invalid logical operator between parameters {} and"),
             };
         }
