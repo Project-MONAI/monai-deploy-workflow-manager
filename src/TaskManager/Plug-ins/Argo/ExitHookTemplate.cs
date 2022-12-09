@@ -154,7 +154,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 },
                 Container = new Container2
                 {
-                    Image = Strings.ExitHookSendMessageContainerImage,
+                    Image = _options.TaskManager.ArgoExitHookSendMessageContainerImage,
                     Command = new List<string> { "/rabtap" },
                     Args = new List<string> {
                         "pub",

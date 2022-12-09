@@ -33,6 +33,9 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         [ConfigurationKeyName("storageCredentialDurationSeconds")]
         public int TemporaryStorageCredentialDurationSeconds { get; set; } = 3600;
 
+        [ConfigurationKeyName("argoExitHookSendMessageContainerImage")]
+        public string ArgoExitHookSendMessageContainerImage { get; set; } = "ghcr.io/jandelgado/rabtap:latest";
+
         public TaskManagerConfiguration()
         {
             PluginAssemblyMappings = new Dictionary<string, string>();
