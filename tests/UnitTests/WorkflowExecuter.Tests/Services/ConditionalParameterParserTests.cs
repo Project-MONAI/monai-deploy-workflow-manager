@@ -48,22 +48,34 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         [Theory]
         [InlineData(new string[] {"{{ context.dicom.series.all('0010','0040') }} == 'lordge'",
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.Fred }} == 'Bob'",
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.fred }} == 'lowercasefred'" }, true, "lordge")]
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.fred }} == 'lowercasefred'" },
+            true,
+            "lordge",
+            "('lordge' == 'lordge') AND ('Bob' == 'Bob') AND ('lowercasefred' == 'lowercasefred')")]
         [InlineData(
             new string[] {"{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.Fred }} == 'Bob'",
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.fred }} == 'lowercasefred'",
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.Sandra }} == 'YassQueen' OR " +
             "{{ context.executions.other_task.result.Fred }} >= '32' OR " +
             "{{ context.executions.other_task.result.Sandra }} == 'other YassQueen' OR " +
-            "{{ context.executions.other_task.result.Derick }} == 'lordge'" }, true)]
+            "{{ context.executions.other_task.result.Derick }} == 'lordge'" },
+            true,
+            null,
+            "('Bob' == 'Bob') AND ('lowercasefred' == 'lowercasefred') AND ('YassQueen' == 'YassQueen' OR '55' >= '32' OR 'other YassQueen' == 'other YassQueen' OR 'lordge' == 'lordge')")]
         [InlineData(
             new string[] {"{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.inttest }} == '2.5'",
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.booltest }} == 'True'",
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.datetest }} == '2022-12-05T14:06:34'"}, true)]
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.datetest }} == '2022-12-05T14:06:34'"},
+            true,
+            null,
+            "('2.5' == '2.5') AND ('True' == 'True') AND ('2022-12-05T14:06:34' == '2022-12-05T14:06:34')")]
         [InlineData(
             new string[] {"{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_stats.stat1 }} == 'completed in 1 hour' AND " +
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_stats.stat2 }} ==  'ran successfully'"}, true)]
-        public void ConditionalParameterParser_WhenGivenCorrectResultMetadataString_MultiConditionShouldEvaluate(string[] input, bool expectedResult, string? expectedDicomReturn = null)
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_stats.stat2 }} ==  'ran successfully'"},
+            true,
+            null,
+            "'completed in 1 hour' == 'completed in 1 hour' AND 'ran successfully' ==  'ran successfully'")]
+        public void ConditionalParameterParser_WhenGivenCorrectResultMetadataString_MultiConditionShouldEvaluate(string[] input, bool expectedResult, string? expectedDicomReturn, string expectedResolvedConditional)
         {
             if (expectedDicomReturn is not null)
             {
@@ -79,16 +91,17 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _dicom.Object, _workflowInstanceService.Object, _payloadService.Object, _workflowService.Object);
 
-            var actualResult = conditionalParameterParser.TryParse(input, workflow);
+            var actualResult = conditionalParameterParser.TryParse(input, workflow, out var resolvedConditional);
 
+            Assert.Equal(expectedResolvedConditional, resolvedConditional);
             Assert.Equal(expectedResult, actualResult);
         }
 
         [Theory]
-        [InlineData("{{ context.dicom.series.any('0010','0040') }} == 'lordge'", true, "lordge")]
-        [InlineData("{{ context.dicom.series.all('0010','0040') }} == 'lordge'", true, "lordge")]
-        [InlineData("'invalid' > 'false'", false)]
-        public void ConditionalParameterParser_WhenGivenCorrectDicomString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
+        [InlineData("{{ context.dicom.series.any('0010','0040') }} == 'lordge'", true, "lordge", "'lordge' == 'lordge'")]
+        [InlineData("{{ context.dicom.series.all('0010','0040') }} == 'lordge'", true, "lordge", "'lordge' == 'lordge'")]
+        [InlineData("'invalid' > 'false'", false, "lordge", "'invalid' > 'false'")]
+        public void ConditionalParameterParser_WhenGivenCorrectDicomString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn, string expectedResolvedConditional)
         {
             if (expectedDicomReturn is not null)
             {
@@ -104,19 +117,22 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _dicom.Object, _workflowInstanceService.Object, _payloadService.Object, _workflowService.Object);
 
-            var actualResult = conditionalParameterParser.TryParse(input, workflow);
+            var actualResult = conditionalParameterParser.TryParse(input, workflow, out var resolvedConditional);
 
+            Assert.Equal(expectedResolvedConditional, resolvedConditional);
             Assert.Equal(expectedResult, actualResult);
         }
 
         [Theory]
-        [InlineData("{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.task_id }} == '2dbd1af7-b699-4467-8e99-05a0c22422b4' AND " +
+        [InlineData(
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.task_id }} == '2dbd1af7-b699-4467-8e99-05a0c22422b4' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.output_dir }} == 'output/dir' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.status }} == 'Succeeded' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.start_time }} == '2022-12-25T00:00:00' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.end_time }} == '2022-12-25T01:00:00' AND " +
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_id }} == '3c4484bd-e1a4-4347-902e-31a6503edd5f'", true)]
-        public void ConditionalParameterParser_WhenGivenCorrectExecutionString_ShouldEvaluate(string input, bool expectedResult)
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_id }} == '3c4484bd-e1a4-4347-902e-31a6503edd5f'", true,
+            "'2dbd1af7-b699-4467-8e99-05a0c22422b4' == '2dbd1af7-b699-4467-8e99-05a0c22422b4' AND 'output/dir' == 'output/dir' AND 'Succeeded' == 'Succeeded' AND '2022-12-25T00:00:00' == '2022-12-25T00:00:00' AND '2022-12-25T01:00:00' == '2022-12-25T01:00:00' AND '3c4484bd-e1a4-4347-902e-31a6503edd5f' == '3c4484bd-e1a4-4347-902e-31a6503edd5f'")]
+        public void ConditionalParameterParser_WhenGivenCorrectExecutionString_ShouldEvaluate(string input, bool expectedResult, string expectedResolvedConditional)
         {
             var testData = CreateTestData();
             var workflow = testData.First();
@@ -124,8 +140,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _dicom.Object, _workflowInstanceService.Object, _payloadService.Object, _workflowService.Object);
 
-            var actualResult = conditionalParameterParser.TryParse(input, workflow);
-
+            var actualResult = conditionalParameterParser.TryParse(input, workflow, out var resolvedConditional);
+            Assert.Equal(expectedResolvedConditional, resolvedConditional);
             Assert.Equal(expectedResult, actualResult);
         }
 

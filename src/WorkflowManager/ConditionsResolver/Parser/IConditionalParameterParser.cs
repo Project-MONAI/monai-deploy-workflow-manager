@@ -41,13 +41,15 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
         /// </summary>
         /// <param name="conditions">An array of strings of conditions.</param>
         /// <param name="workflowInstance">The workflow instance of the task.</param>
-        bool TryParse(string[] conditions, WorkflowInstance workflowInstance);
+        /// <param name="resolvedConditional">outputs the resolved conditional.</param>
+        bool TryParse(string[] conditions, WorkflowInstance workflowInstance, out string? resolvedConditional);
 
         /// <summary>
         /// Verifies if a string of conditions evaluates to true.
         /// </summary>
         /// <param name="conditions">A string of conditions.</param>
         /// <param name="workflowInstance">The workflow instance of the task.</param>
-        bool TryParse(string conditions, WorkflowInstance workflowInstance);
+        /// <param name="resolvedConditional">outputs the resolved conditional.</param>
+        bool TryParse(string conditions, WorkflowInstance workflowInstance, out string resolvedConditional);
     }
 }

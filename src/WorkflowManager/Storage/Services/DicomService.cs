@@ -202,35 +202,198 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             return GetValue(dict, keyId);
         }
 
-        private static string GetValue(Dictionary<string, DicomValue> dict, string keyId)
+        public string GetValue(Dictionary<string, DicomValue> dict, string keyId)
         {
             if (dict.Any() is false)
             {
                 return string.Empty;
             }
-
             dict.TryGetValue(keyId, out var value);
+
+            var result = string.Empty;
+            if (string.Equals(keyId, DicomTagConstants.PatientNameTag))
+            {
+                result = GetPatientName(value.Value);
+                _logger.GetPatientName(result);
+                return result;
+            }
 
             if (value is not null && value.Value is not null)
             {
-                if (string.Equals(keyId, DicomTagConstants.PatientNameTag))
+#pragma warning disable S1479 // "switch" statements should not have too many "case" clauses - complicity of this switch statement will help future developers when implementing  support for  other data types in future hopefully.
+                switch (value.Vr.ToUpperInvariant())
                 {
-                    return GetPatientName(value.Value);
+                    case "CS":/* supported */
+                        result = TryGetValue(value);
+                        _logger.SupportedType(value.Vr, "Code String", DecodeComplexString(value), result);
+                        break;
+                    case "DA":/* supported */
+                        result = TryGetValue(value);
+                        _logger.SupportedType(value.Vr, "Date", DecodeComplexString(value), result);
+                        break;
+                    case "DS":/* supported */
+                        result = TryGetValue(value);
+                        _logger.SupportedType(value.Vr, "Decimal String", DecodeComplexString(value), result);
+                        break;
+                    case "IS":/* supported */
+                        result = TryGetValue(value);
+                        _logger.SupportedType(value.Vr, "Integer String", DecodeComplexString(value), result);
+                        break;
+                    case "LO":/* supported */
+                        result = TryGetValue(value);
+                        _logger.SupportedType(value.Vr, "Long String", DecodeComplexString(value), result);
+                        break;
+                    case "SH":/* supported */
+                        result = TryGetValue(value);
+                        _logger.SupportedType(value.Vr, "Short String", DecodeComplexString(value), result);
+                        break;
+                    case "UI": /* supported */
+                        result = TryGetValue(value);
+                        _logger.SupportedType(value.Vr, "Unique Identifier (UID)", DecodeComplexString(value), result);
+                        break;
+                    case "UL":/* supported */
+                        result = TryGetValue(value);
+                        _logger.SupportedType(value.Vr, "Unsigned Long", DecodeComplexString(value), result);
+                        break;
+                    case "US":/* supported */
+                        result = TryGetValue(value);
+                        _logger.SupportedType(value.Vr, "Unsigned Short", DecodeComplexString(value), result);
+                        break;
+                    case "PN":
+                        result = GetPatientName(value.Value);
+                        _logger.GetPatientName(result);
+                        break;
+                    case "AE":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Application Entity", DecodeComplexString(value), result);
+                        break;
+                    case "AS":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Age String", DecodeComplexString(value), result);
+                        break;
+                    case "AT":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Attribute Tag", DecodeComplexString(value), result);
+                        break;
+                    case "DT":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Date Time", DecodeComplexString(value), result);
+                        break;
+                    case "FL":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Floating Point Single", DecodeComplexString(value), result);
+                        break;
+                    case "FD":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Floating Point Double", DecodeComplexString(value), result);
+                        break;
+                    case "LT":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Long Text", DecodeComplexString(value), result);
+                        break;
+                    case "OB":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Other Byte", DecodeComplexString(value), result);
+                        break;
+                    case "OD":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Other Double", DecodeComplexString(value), result);
+                        break;
+                    case "OF":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Other Float", DecodeComplexString(value), result);
+                        break;
+                    case "OL":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Other Long", DecodeComplexString(value), result);
+                        break;
+                    case "OV":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Other 64-bit Very Long", DecodeComplexString(value), result);
+                        break;
+                    case "OW":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Other Word", DecodeComplexString(value), result);
+                        break;
+                    case "SL":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Signed Long", DecodeComplexString(value), result);
+                        break;
+                    case "SQ":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Sequence of Items", DecodeComplexString(value), result);
+                        break;
+                    case "SS":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Signed Short", DecodeComplexString(value), result);
+                        break;
+                    case "ST":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Short Text", DecodeComplexString(value), result);
+                        break;
+                    case "SV":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Signed 64-bit Very Long", DecodeComplexString(value), result);
+                        break;
+                    case "TM":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Time", DecodeComplexString(value), result);
+                        break;
+                    case "UC":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Unlimited Characters", DecodeComplexString(value), result);
+                        break;
+                    case "UN":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Unknown", DecodeComplexString(value), result);
+                        break;
+                    case "UR":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Universal Resource Identifier or Universal Resource Locator (URI/URL)", DecodeComplexString(value), result);
+                        break;
+                    case "UT":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Unlimited Text", DecodeComplexString(value), result);
+                        break;
+                    case "UV":
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Unsigned 64-bit Very Long", DecodeComplexString(value), result);
+                        break;
+                    default:
+                        result = TryGetValue(value);
+                        _logger.UnsupportedType(value.Vr, "Unknown Dicom Type", DecodeComplexString(value), result);
+                        break;
                 }
+#pragma warning restore S1479
+            }
+            return result;
+        }
 
-                var str = value?.Value.Cast<string>();
-
-                if (str is not null)
+        private string TryGetValue(DicomValue value)
+        {
+            try
+            {
+                var strs = value.Value.Cast<string>();
+                if (strs is not null)
                 {
-                    return string.Concat(str);
+                    return string.Concat(strs);
                 }
             }
-
+            catch (Exception ex)
+            {
+                _logger.UnableToCastDicomValueToString(DecodeComplexString(value), ex);
+            }
             return string.Empty;
+        }
+
+        private static string DecodeComplexString(DicomValue dicomValue)
+        {
+            return JsonConvert.SerializeObject(dicomValue.Value);
         }
 
         private static string GetPatientName(object[] values)
         {
+
             var resultStr = new List<string>();
 
             foreach (var value in values)
