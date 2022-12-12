@@ -38,6 +38,32 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        private static readonly Dictionary<string, string> SupportedTypes = new()
+        {
+            { "CS", "Code String" },
+            { "DA", "Date" },
+            { "DS", "Decimal String" },
+            { "IS", "Integer String" },
+            { "LO", "Long String" },
+            { "SH", "Short String" },
+            { "UI", "Unique Identifier (UID)" },
+            { "UL", "Unsigned Long" },
+            { "US", "Unsigned Short" },
+        };
+
+        private static readonly Dictionary<string, string> UnsupportedTypes = new()
+        {
+            { "CS", "Code String" },
+            { "DA", "Date" },
+            { "DS", "Decimal String" },
+            { "IS", "Integer String" },
+            { "LO", "Long String" },
+            { "SH", "Short String" },
+            { "UI", "Unique Identifier (UID)" },
+            { "UL", "Unsigned Long" },
+            { "US", "Unsigned Short" },
+        };
+
         public async Task<PatientDetails> GetPayloadPatientDetailsAsync(string payloadId, string bucketName)
         {
             Guard.Against.NullOrWhiteSpace(bucketName);
@@ -211,7 +237,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             dict.TryGetValue(keyId, out var value);
 
             var result = string.Empty;
-            if (string.Equals(keyId, DicomTagConstants.PatientNameTag))
+            if (string.Equals(keyId, DicomTagConstants.PatientNameTag) || value.Vr.ToUpperInvariant() == "PN")
             {
                 result = GetPatientName(value.Value);
                 _logger.GetPatientName(result);
@@ -221,117 +247,18 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             if (value is not null && value.Value is not null)
             {
                 var jsonString = DecodeComplexString(value);
-#pragma warning disable S1479 // "switch" statements should not have too many "case" clauses - complicity of this switch statement will help future developers when implementing  support for  other data types in future hopefully.
-                switch (value.Vr.ToUpperInvariant())
+                if (SupportedTypes.TryGetValue(value.Vr.ToUpperInvariant(), out var vrFullString))
                 {
-                    case "CS":/* supported */
-                        result = TryGetValueAndLogSupported("Code String", value, jsonString);
-                        break;
-                    case "DA":/* supported */
-                        result = TryGetValueAndLogSupported("Date", value, jsonString);
-                        break;
-                    case "DS":/* supported */
-                        result = TryGetValueAndLogSupported("Decimal String", value, jsonString);
-                        break;
-                    case "IS":/* supported */
-                        result = TryGetValueAndLogSupported("Integer String", value, jsonString);
-                        break;
-                    case "LO":/* supported */
-                        result = TryGetValueAndLogSupported("Long String", value, jsonString);
-                        break;
-                    case "SH":/* supported */
-                        result = TryGetValueAndLogSupported("Short String", value, jsonString);
-                        break;
-                    case "UI": /* supported */
-                        result = TryGetValueAndLogSupported("Unique Identifier (UID)", value, jsonString);
-                        break;
-                    case "UL":/* supported */
-                        result = TryGetValueAndLogSupported("Unsigned Long", value, jsonString);
-                        break;
-                    case "US":/* supported */
-                        result = TryGetValueAndLogSupported("Unsigned Short", value, jsonString);
-                        break;
-                    case "PN":
-                        result = GetPatientName(value.Value);
-                        _logger.GetPatientName(result);
-                        break;
-                    case "AE":
-                        result = TryGetValueAndLogUnSupported("Application Entity", value, jsonString);
-                        break;
-                    case "AS":
-                        result = TryGetValueAndLogUnSupported("Age String", value, jsonString);
-                        break;
-                    case "AT":
-                        result = TryGetValueAndLogUnSupported("Attribute Tag", value, jsonString);
-                        break;
-                    case "DT":
-                        result = TryGetValueAndLogUnSupported("Date Time", value, jsonString);
-                        break;
-                    case "FL":
-                        result = TryGetValueAndLogUnSupported("Floating Point Single", value, jsonString);
-                        break;
-                    case "FD":
-                        result = TryGetValueAndLogUnSupported("Floating Point Double", value, jsonString);
-                        break;
-                    case "LT":
-                        result = TryGetValueAndLogUnSupported("Long Text", value, jsonString);
-                        break;
-                    case "OB":
-                        result = TryGetValueAndLogUnSupported("Other Byte", value, jsonString);
-                        break;
-                    case "OD":
-                        result = TryGetValueAndLogUnSupported("Other Double", value, jsonString);
-                        break;
-                    case "OF":
-                        result = TryGetValueAndLogUnSupported("Other Float", value, jsonString);
-                        break;
-                    case "OL":
-                        result = TryGetValueAndLogUnSupported("Other Long", value, jsonString);
-                        break;
-                    case "OV":
-                        result = TryGetValueAndLogUnSupported("Other 64-bit Very Long", value, jsonString);
-                        break;
-                    case "OW":
-                        result = TryGetValueAndLogUnSupported("Other Word", value, jsonString);
-                        break;
-                    case "SL":
-                        result = TryGetValueAndLogUnSupported("Signed Long", value, jsonString);
-                        break;
-                    case "SQ":
-                        result = TryGetValueAndLogUnSupported("Sequence of Items", value, jsonString);
-                        break;
-                    case "SS":
-                        result = TryGetValueAndLogUnSupported("Signed Short", value, jsonString);
-                        break;
-                    case "ST":
-                        result = TryGetValueAndLogUnSupported("Short Text", value, jsonString);
-                        break;
-                    case "SV":
-                        result = TryGetValueAndLogUnSupported("Signed 64-bit Very Long", value, jsonString);
-                        break;
-                    case "TM":
-                        result = TryGetValueAndLogUnSupported("Time", value, jsonString);
-                        break;
-                    case "UC":
-                        result = TryGetValueAndLogUnSupported("Unlimited Characters", value, jsonString);
-                        break;
-                    case "UN":
-                        result = TryGetValueAndLogUnSupported("Unknown", value, jsonString);
-                        break;
-                    case "UR":
-                        result = TryGetValueAndLogUnSupported("Universal Resource Identifier or Universal Resource Locator (URI/URL)", value, jsonString);
-                        break;
-                    case "UT":
-                        result = TryGetValueAndLogUnSupported("Unlimited Text", value, jsonString);
-                        break;
-                    case "UV":
-                        result = TryGetValueAndLogUnSupported("Unsigned 64-bit Very Long", value, jsonString);
-                        break;
-                    default:
-                        result = TryGetValueAndLogUnSupported("Unknown Dicom Type", value, jsonString);
-                        break;
+                    result = TryGetValueAndLogSupported(vrFullString, value, jsonString);
                 }
-#pragma warning restore S1479
+                else if (UnsupportedTypes.TryGetValue(value.Vr.ToUpperInvariant(), out vrFullString))
+                {
+                    result = TryGetValueAndLogSupported(vrFullString, value, jsonString);
+                }
+                else
+                {
+                    result = TryGetValueAndLogUnSupported("Unknown Dicom Type", value, jsonString);
+                }
             }
             return result;
         }
