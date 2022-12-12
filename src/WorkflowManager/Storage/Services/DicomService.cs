@@ -224,7 +224,6 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
 
             var dict = new Dictionary<string, DicomValue>(StringComparer.OrdinalIgnoreCase);
             JsonConvert.PopulateObject(jsonStr, dict);
-
             return GetValue(dict, keyId);
         }
 
@@ -237,9 +236,9 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             dict.TryGetValue(keyId, out var value);
 
             var result = string.Empty;
-            if (string.Equals(keyId, DicomTagConstants.PatientNameTag) || value.Vr.ToUpperInvariant() == "PN")
+            if (string.Equals(keyId, DicomTagConstants.PatientNameTag) || value?.Vr.ToUpperInvariant() == "PN")
             {
-                result = GetPatientName(value.Value);
+                result = GetPatientName(value!.Value);
                 _logger.GetPatientName(result);
                 return result;
             }
