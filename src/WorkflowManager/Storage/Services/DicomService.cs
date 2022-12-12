@@ -220,152 +220,133 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
 
             if (value is not null && value.Value is not null)
             {
+                var jsonString = DecodeComplexString(value);
 #pragma warning disable S1479 // "switch" statements should not have too many "case" clauses - complicity of this switch statement will help future developers when implementing  support for  other data types in future hopefully.
                 switch (value.Vr.ToUpperInvariant())
                 {
                     case "CS":/* supported */
-                        result = TryGetValue(value);
-                        _logger.SupportedType(value.Vr, "Code String", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogSupported("Code String", value, jsonString);
                         break;
                     case "DA":/* supported */
-                        result = TryGetValue(value);
-                        _logger.SupportedType(value.Vr, "Date", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogSupported("Date", value, jsonString);
                         break;
                     case "DS":/* supported */
-                        result = TryGetValue(value);
-                        _logger.SupportedType(value.Vr, "Decimal String", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogSupported("Decimal String", value, jsonString);
                         break;
                     case "IS":/* supported */
-                        result = TryGetValue(value);
-                        _logger.SupportedType(value.Vr, "Integer String", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogSupported("Integer String", value, jsonString);
                         break;
                     case "LO":/* supported */
-                        result = TryGetValue(value);
-                        _logger.SupportedType(value.Vr, "Long String", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogSupported("Long String", value, jsonString);
                         break;
                     case "SH":/* supported */
-                        result = TryGetValue(value);
-                        _logger.SupportedType(value.Vr, "Short String", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogSupported("Short String", value, jsonString);
                         break;
                     case "UI": /* supported */
-                        result = TryGetValue(value);
-                        _logger.SupportedType(value.Vr, "Unique Identifier (UID)", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogSupported("Unique Identifier (UID)", value, jsonString);
                         break;
                     case "UL":/* supported */
-                        result = TryGetValue(value);
-                        _logger.SupportedType(value.Vr, "Unsigned Long", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogSupported("Unsigned Long", value, jsonString);
                         break;
                     case "US":/* supported */
-                        result = TryGetValue(value);
-                        _logger.SupportedType(value.Vr, "Unsigned Short", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogSupported("Unsigned Short", value, jsonString);
                         break;
                     case "PN":
                         result = GetPatientName(value.Value);
                         _logger.GetPatientName(result);
                         break;
                     case "AE":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Application Entity", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Application Entity", value, jsonString);
                         break;
                     case "AS":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Age String", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Age String", value, jsonString);
                         break;
                     case "AT":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Attribute Tag", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Attribute Tag", value, jsonString);
                         break;
                     case "DT":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Date Time", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Date Time", value, jsonString);
                         break;
                     case "FL":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Floating Point Single", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Floating Point Single", value, jsonString);
                         break;
                     case "FD":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Floating Point Double", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Floating Point Double", value, jsonString);
                         break;
                     case "LT":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Long Text", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Long Text", value, jsonString);
                         break;
                     case "OB":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Other Byte", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Other Byte", value, jsonString);
                         break;
                     case "OD":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Other Double", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Other Double", value, jsonString);
                         break;
                     case "OF":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Other Float", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Other Float", value, jsonString);
                         break;
                     case "OL":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Other Long", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Other Long", value, jsonString);
                         break;
                     case "OV":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Other 64-bit Very Long", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Other 64-bit Very Long", value, jsonString);
                         break;
                     case "OW":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Other Word", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Other Word", value, jsonString);
                         break;
                     case "SL":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Signed Long", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Signed Long", value, jsonString);
                         break;
                     case "SQ":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Sequence of Items", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Sequence of Items", value, jsonString);
                         break;
                     case "SS":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Signed Short", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Signed Short", value, jsonString);
                         break;
                     case "ST":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Short Text", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Short Text", value, jsonString);
                         break;
                     case "SV":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Signed 64-bit Very Long", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Signed 64-bit Very Long", value, jsonString);
                         break;
                     case "TM":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Time", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Time", value, jsonString);
                         break;
                     case "UC":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Unlimited Characters", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Unlimited Characters", value, jsonString);
                         break;
                     case "UN":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Unknown", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Unknown", value, jsonString);
                         break;
                     case "UR":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Universal Resource Identifier or Universal Resource Locator (URI/URL)", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Universal Resource Identifier or Universal Resource Locator (URI/URL)", value, jsonString);
                         break;
                     case "UT":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Unlimited Text", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Unlimited Text", value, jsonString);
                         break;
                     case "UV":
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Unsigned 64-bit Very Long", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Unsigned 64-bit Very Long", value, jsonString);
                         break;
                     default:
-                        result = TryGetValue(value);
-                        _logger.UnsupportedType(value.Vr, "Unknown Dicom Type", DecodeComplexString(value), result);
+                        result = TryGetValueAndLogUnSupported("Unknown Dicom Type", value, jsonString);
                         break;
                 }
 #pragma warning restore S1479
             }
+            return result;
+        }
+
+        private string TryGetValueAndLogSupported(string vrFullString, DicomValue value, string jsonString)
+        {
+            var result = TryGetValue(value);
+            _logger.SupportedType(value.Vr, vrFullString, jsonString, result);
+            return result;
+        }
+
+        private string TryGetValueAndLogUnSupported(string vrFullString, DicomValue value, string jsonString)
+        {
+            var result = TryGetValue(value);
+            _logger.UnsupportedType(value.Vr, vrFullString, jsonString, result);
             return result;
         }
 
