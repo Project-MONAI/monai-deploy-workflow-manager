@@ -32,7 +32,7 @@ namespace Monai.Deploy.WorkflowManager.Logging
         [LoggerMessage(EventId = 600003, Level = LogLevel.Information, Message = "Decoding supported type '{vr}' {vrFull} with value: {value} result: '{result}'")]
         public static partial void SupportedType(this ILogger logger, string vr, string vrFull, string value, string result);
 
-        [LoggerMessage(EventId = 600001, Level = LogLevel.Error, Message = "Failed trying to cast Dicom Value to string {value}")]
+        [LoggerMessage(EventId = 600004, Level = LogLevel.Error, Message = "Failed trying to cast Dicom Value to string {value}")]
         public static partial void UnableToCastDicomValueToString(this ILogger logger, string value, Exception ex);
     }
 }
