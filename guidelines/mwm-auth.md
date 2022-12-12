@@ -16,64 +16,90 @@
 
 # Authentication notes
 
-In the developement of the authentication we tested with Keycloak to note you need to flatten the roles for the authentication to be able to pick up the roles this can be done by going to 
+In the developement of the authentication we tested with Keycloak, in Keycloak it is required to flatten the roles for the authentication to be able to pick up the roles.
 
-Keycloak -> Admin dashboard -> your specific realm -> Clients -> Mappers -> Create
+I recommend changing your main admin console theme too "keycloak" theme before following these instructions, this can be done by going to 
 
-configure it how you see fit...
-The value you put in the Token Claim Name will be what you use in the configuration so in testing of the development i used "user_roles" and "user_realm_roles"
+> select Master realm -> Realm Settings -> Themes -> Admin Console Theme -> "keycloak" -> refresh page & change back to your app realm
 
-This is an example of WorkflowManagerAuthentication configuration:
+Now to create mapper to flatten the roles
 
-```
-"WorkflowManagerAuthentication": {
-    "OpenId": {
-      "ServerRealm": "http://localhost:8080/realms/monai-test/",
-      "ServerRealmKey": "19B34Q5xsRYf3oFki18ZtUuNybaujb72",
-      "ClientId": "monai-app-test",
-      "Claims": {
-        "RequiredUserClaims": [
+> Clients -> Mappers -> Create
+
+![| Option           | Value                 |
+|------------------|-----------------------|
+| Mapper Type      | User Client Role      |
+| Token Claim Name | user_roles            |
+| Client ID        | (Name of your client) |
+|                  |                       |](static/keycloak-dev-example1.png)
+
+Back on the client page navigate to roles tab and add a role (for example "monai-role-user")
+
+Then in users -> roles mappings
+
+select Client Roles, in the dropdown select your client from the list and should see in avaliable roles role your created above and move that into assigned roles. 
+
+This is an example of MonaiDeployAuthentication configuration:
+
+```json
+  "MonaiDeployAuthentication": {
+    "BypassAuthentication": false,
+    "openId": {
+      "realm": "http://localhost:8080/realms/monai-test-realm",
+      "realmKey": "realmKey",
+      "clientId": "monai-service",
+      "audiences": [ "monai-deploy", "account" ],
+      "claimMappings": {
+        "userClaims": [
           {
-            "user_roles": "monai-role-user",
-            "endpoints": "payloads,workflows,workflowinstances,tasks"
-          },
-          {
-            "user_realm_roles": "this_is_just_a_test",
-            "endpoints": "all"
+            "claimType": "user_roles",
+            "claimValues": [ "monai-role-user" ],
+            "endpoints": [ "payloads", "workflows", "workflowinstances", "tasks" ]
           }
         ],
-        "RequiredAdminClaims": [
-          { "user_roles": "monai-role-admin" },
-          { "user_roles": "monai-role-user" }
+        "adminClaims": [
+          {
+            "claimType": "user_roles",
+            "claimValues": [ "monai-role-admin" ],
+            "endpoints": [ "all" ]
+          }
         ]
       }
     }
   },
 ```
+realmKey can be found in Clients -> Credentials -> Secret
 
-- **ServerRealm**: link to you OpenId provider 
+and bare minimum for bypass is...
 
-- **ServerRealmKey**: OpenId provider key
+```json
+  "MonaiDeployAuthentication": {
+    "BypassAuthentication": false,
+  }
+```
 
-- **ClientId**: name of you client in the client in openid provider
+- **realm**: link to you OpenId provider 
 
-under **Claims** you have 2 sub objects
+- **realmKey**: OpenId provider key
 
-**RequiredUserClaims**
+- **clientId**: name of you client in the client in openid provider
 
-**RequiredAdminClaims**
+there are 2 types of claims
 
-this can take an array of objects which will be your users and endpoints they can access...
+**userClaims**
+
+**adminClaims**
 
 example here we use: 
 
+```json
+"claimType": "user_roles",
+"claimValues": [ "monai-role-user" ],
+"endpoints": [ "payloads", "workflows", "workflowinstances", "tasks" ],
 ```
-"user_roles": "monai-role-user",
-"endpoints": "payloads,workflows,workflowinstances,tasks"
-```
-**user_roles** maps back to setting above (JWT) Token Claim Name.
+claimType **user_roles** maps back to setting above (JWT) Token Claim Name.
 
-**monai-role-user** is role we have setup and expect to find for users.
+claimValues **monai-role-user** is role we have setup and expect to find for users.
 
 **endspoints** is a list of endpoints that authorised to access comma seperated string.
 
