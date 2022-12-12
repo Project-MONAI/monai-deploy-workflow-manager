@@ -78,15 +78,15 @@ namespace Monai.Deploy.WorkflowManager.Logging
         [LoggerMessage(EventId = 200018, Level = LogLevel.Error, Message = "The following task: {taskId} cannot be found in the workflow: {workflowId}. Payload: {payloadId}")]
         public static partial void TaskNotFoundInWorkfow(this ILogger logger, string payloadId, string taskId, string workflowId);
 
-        [LoggerMessage(EventId = 200019, Level = LogLevel.Debug, Message = "Task destination condition for task {taskId} with condition: {conditions} resolved to false.")]
-        public static partial void TaskDestinationConditionFalse(this ILogger logger, string conditions, string taskId);
+        [LoggerMessage(EventId = 200019, Level = LogLevel.Debug, Message = "Task destination condition for task {taskId} with resolved condition: {resolvedConditional} resolved to false. initial conditional: {conditions}")]
+        public static partial void TaskDestinationConditionFalse(this ILogger logger, string resolvedConditional, string conditions, string taskId);
 
         // Conditions Resolver
-        [LoggerMessage(EventId = 210000, Level = LogLevel.Warning, Message = "Failed to parse condition: {condition}.")]
-        public static partial void FailedToParseCondition(this ILogger logger, string condition, Exception ex);
+        [LoggerMessage(EventId = 210000, Level = LogLevel.Warning, Message = "Failed to parse condition: {condition}. resolvedConditional: {resolvedConditional}")]
+        public static partial void FailedToParseCondition(this ILogger logger, string resolvedConditional, string condition, Exception ex);
 
-        [LoggerMessage(EventId = 210001, Level = LogLevel.Debug, Message = "Resolving value: {value}.")]
-        public static partial void ResolveValue(this ILogger logger, string value);
+        [LoggerMessage(EventId = 210001, Level = LogLevel.Debug, Message = "Resolving value: {value}. resolved result: {result}")]
+        public static partial void ResolveValue(this ILogger logger, string value, string result);
 
         [LoggerMessage(EventId = 210002, Level = LogLevel.Debug, Message = "Resolving DICOM value: subValue={subValue}, keyId={keyId}.")]
         public static partial void ResolveDicomValue(this ILogger logger, string subValue, string keyId);
@@ -96,5 +96,8 @@ namespace Monai.Deploy.WorkflowManager.Logging
 
         [LoggerMessage(EventId = 210004, Level = LogLevel.Debug, Message = "Resolving workflow: keyValue={keyValue}.")]
         public static partial void ResolveWorkflow(this ILogger logger, string keyValue);
+
+        [LoggerMessage(EventId = 210005, Level = LogLevel.Information, Message = "Conditional resolver parsed {conditions} to {resolvedConditional} with result: {result}.")]
+        public static partial void ConditionalParserResult(this ILogger logger, string conditions, string resolvedConditional, string result);
     }
 }

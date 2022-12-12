@@ -95,37 +95,32 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             }
         }
 
-        public bool TryParse(string[] conditions, WorkflowInstance workflowInstance)
+        public bool TryParse(string[] conditions, WorkflowInstance workflowInstance, out string resolvedConditional)
         {
             Guard.Against.NullOrEmpty(conditions);
             Guard.Against.Null(workflowInstance);
-            try
-            {
-                var joinedConditions = conditions.CombineConditionString();
-                joinedConditions = ResolveParameters(joinedConditions, workflowInstance);
-                var conditionalGroup = ConditionalGroup.Create(joinedConditions);
-                return conditionalGroup.Evaluate();
-            }
-            catch (Exception ex)
-            {
-                _logger.FailedToParseCondition(string.Join(Environment.NewLine, conditions), ex);
-                return false;
-            }
+
+            var joinedConditions = conditions.CombineConditionString();
+            return TryParse(joinedConditions, workflowInstance, out resolvedConditional);
         }
 
-        public bool TryParse(string conditions, WorkflowInstance workflowInstance)
+        public bool TryParse(string conditions, WorkflowInstance workflowInstance, out string resolvedConditional)
         {
             Guard.Against.NullOrEmpty(conditions);
             Guard.Against.Null(workflowInstance);
+            resolvedConditional = string.Empty;
+
             try
             {
-                conditions = ResolveParameters(conditions, workflowInstance);
-                var conditionalGroup = ConditionalGroup.Create(conditions);
-                return conditionalGroup.Evaluate();
+                resolvedConditional = ResolveParameters(conditions, workflowInstance);
+                var conditionalGroup = ConditionalGroup.Create(resolvedConditional);
+                var result = conditionalGroup.Evaluate();
+                _logger.ConditionalParserResult(conditions, resolvedConditional, result.ToString());
+                return result;
             }
             catch (Exception ex)
             {
-                _logger.FailedToParseCondition(string.Join(Environment.NewLine, conditions), ex);
+                _logger.FailedToParseCondition(resolvedConditional, conditions, ex);
                 return false;
             }
         }
@@ -167,9 +162,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 ClearWorkflowParser();
                 return conditions;
             }
-            catch (Exception e)
+            catch
             {
-                _logger.FailedToParseCondition(conditions, e);
                 ClearWorkflowParser();
                 throw;
             }
@@ -222,26 +216,29 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             Guard.Against.NullOrWhiteSpace(value);
 
             value = value.Substring(2, value.Length - 4).Trim();
-            _logger.ResolveValue(value);
+
             var context = ParameterContext.Undefined;
+            (string? Result, ParameterContext Context) result = (Result: null, Context: context);
             if (value.StartsWith(ExecutionsTask))
             {
-                return ResolveExecutionTasks(value);
+                result = ResolveExecutionTasks(value);
             }
             if (value.StartsWith(ContextDicomSeries))
             {
-                return ResolveDicom(value);
+                result = ResolveDicom(value);
             }
             if (value.StartsWith(PatientDetails))
             {
-                return ResolvePatientDetails(value);
+                result = ResolvePatientDetails(value);
             }
             if (value.StartsWith(ContextWorkflow))
             {
-                return ResolveContextWorkflow(value);
+                result = ResolveContextWorkflow(value);
             }
 
-            return (Result: null, Context: context);
+            _logger.ResolveValue(value, result.Result);
+
+            return result;
         }
 
         private (string? Result, ParameterContext Context) ResolveDicom(string value)
@@ -253,7 +250,6 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             var valueArr = subValue.Split('\'');
             var keyId = $"{valueArr[1]}{valueArr[3]}";
 
-            _logger.ResolveDicomValue(subValue, keyId);
             if (subValue.StartsWith(".any"))
             {
                 var task = Task.Run(async () => await _dicom.GetAnyValueAsync(keyId, WorkflowInstance.PayloadId, WorkflowInstance.BucketId));
