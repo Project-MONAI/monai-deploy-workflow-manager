@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Globalization;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -204,7 +205,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             await DispatchTask(workflowInstance, workflow, task, correlationId);
         }
 
-        private void AttachPatientMetaData(TaskExecution task, PatientDetails patientDetails)
+        public void AttachPatientMetaData(TaskExecution task, PatientDetails patientDetails)
         {
             var attachedData = false;
             if (string.IsNullOrWhiteSpace(patientDetails.PatientId) is false)
@@ -219,10 +220,10 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientSex, patientDetails.PatientSex);
             }
-            var patientDob = patientDetails.PatientDob.ToString();
-            if (string.IsNullOrWhiteSpace(patientDob) is false)
+            var patientDob = patientDetails.PatientDob;
+            if (patientDob.HasValue)
             {
-                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientDob, patientDob);
+                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientDob, patientDob.Value.ToString("o", CultureInfo.InvariantCulture));
             }
             if (string.IsNullOrWhiteSpace(patientDetails.PatientHospitalId) is false)
             {

@@ -49,5 +49,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         /// <param name="previousTaskId">Previous Tasks Id.</param>
         /// <returns></returns>
         Task<TaskExecution> CreateTaskExecutionAsync(TaskObject task, WorkflowInstance workflowInstance, string? bucketName = null, string? payloadId = null, string? previousTaskId = null);
+
+        /// <summary>
+        /// Attaches patient metadata to task execution plugin arguments.
+        /// </summary>
+        /// <param name="task"></param>
+        /// <param name="patientDetails"></param>
+        void AttachPatientMetaData(TaskExecution task, PatientDetails patientDetails);
     }
 }
