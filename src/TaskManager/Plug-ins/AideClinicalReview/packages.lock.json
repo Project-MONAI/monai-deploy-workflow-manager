@@ -207,6 +207,13 @@
           "Monai.Deploy.Storage": "[0.2.10, )"
         }
       },
+      "monai.deploy.workflowmanager.shared": {
+        "type": "Project",
+        "dependencies": {
+          "Ardalis.GuardClauses": "[4.0.1, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.10, )"
+        }
+      },
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {

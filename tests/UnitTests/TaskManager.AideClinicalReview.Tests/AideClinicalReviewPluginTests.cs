@@ -22,6 +22,7 @@ using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Moq;
@@ -120,10 +121,10 @@ namespace TaskManager.AideClinicalReview.Tests
         {
             var message = GenerateTaskDispatchEvent();
             message.TaskPluginArguments[Keys.WorkflowName] = "workflowName";
-            message.TaskPluginArguments[Keys.PatientName] = "patientname";
-            message.TaskPluginArguments[Keys.PatientId] = "patientid";
-            message.TaskPluginArguments[Keys.PatientDob] = "patientdob";
-            message.TaskPluginArguments[Keys.PatientSex] = "patientsex";
+            message.TaskPluginArguments[PatientKeys.PatientName] = "patientname";
+            message.TaskPluginArguments[PatientKeys.PatientId] = "patientid";
+            message.TaskPluginArguments[PatientKeys.PatientDob] = "patientdob";
+            message.TaskPluginArguments[PatientKeys.PatientSex] = "patientsex";
             message.TaskPluginArguments[Keys.ReviewedTaskId] = "reviewedtaskid";
             message.TaskPluginArguments[Keys.ReviewedExecutionId] = "reviewedexecutionid";
             message.TaskPluginArguments[Keys.ApplicationVersion] = "applicationversion";

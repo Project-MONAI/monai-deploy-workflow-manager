@@ -99,5 +99,8 @@ namespace Monai.Deploy.WorkflowManager.Logging
 
         [LoggerMessage(EventId = 210005, Level = LogLevel.Information, Message = "Conditional resolver parsed {conditions} to {resolvedConditional} with result: {result}.")]
         public static partial void ConditionalParserResult(this ILogger logger, string conditions, string resolvedConditional, string result);
+
+        [LoggerMessage(EventId = 210006, Level = LogLevel.Information, Message = "Attached PatientMetadata {metadata}.")]
+        public static partial void AttachedPatientMetadataToTaskExec(this ILogger logger, string metadata);
     }
 }
