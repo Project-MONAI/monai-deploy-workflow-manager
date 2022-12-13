@@ -906,6 +906,46 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+            new TaskUpdateTestData()
+            {
+                Name = "Workflow_Task_Update_Clinical_Review_Rejected",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("Workflow_Task_Update_Clinical_Review_1").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("Workflow_Task_Update_Clinical_Review_1").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("Workflow_Task_Update_Clinical_Review_1").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                        { "acceptance", false },
+                        { "reason", "not correct" },
+                        { "message", "generic message" },
+                        { "user_id", "userid" },
+                        { "reviewer_roles", new string[] { "clinician" } }
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "Workflow_Task_Update_Clinical_Review_Accepted",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("Workflow_Task_Update_Clinical_Review_1").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("Workflow_Task_Update_Clinical_Review_1").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("Workflow_Task_Update_Clinical_Review_1").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                        { "acceptance", true },
+                        { "user_id", "userid" },
+                        { "reviewer_roles", new string[] { "clinician" } }
+                    }
+                }
+            },
         };
     }
 }

@@ -16,75 +16,81 @@
 
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
     public static class RabbitConnectionFactory
     {
-        private static IModel? Channel { get; set; }
+        public static IConnection? Connection { get; set; }
 
-        public static IModel GetRabbitConnection()
+        public static void SetRabbitConnection()
         {
             var connectionFactory = new ConnectionFactory
             {
                 HostName = TestExecutionConfig.RabbitConfig.Host,
                 UserName = TestExecutionConfig.RabbitConfig.User,
                 Password = TestExecutionConfig.RabbitConfig.Password,
-                VirtualHost = TestExecutionConfig.RabbitConfig.VirtualHost,
-                Port = TestExecutionConfig.RabbitConfig.Port
+                VirtualHost = TestExecutionConfig.RabbitConfig.VirtualHost
             };
 
-            Channel = connectionFactory.CreateConnection().CreateModel();
-
-            return Channel;
+            Connection = connectionFactory.CreateConnection();
         }
 
         public static void DeleteQueue(string queueName)
         {
-            if (Channel is null)
+            using (var channel = Connection?.CreateModel())
             {
-                GetRabbitConnection();
+                channel?.QueueDelete(queueName);
             }
-
-            Channel?.QueueDelete(queueName);
         }
 
         public static void PurgeQueue(string queueName)
         {
-            if (Channel is null)
+            using (var channel = Connection?.CreateModel())
             {
-                GetRabbitConnection();
+                channel?.QueuePurge(queueName);
             }
-
-            Channel?.QueuePurge(queueName);
         }
 
         public static void DeleteAllQueues()
         {
-            DeleteQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
-            DeleteQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-            DeleteQueue(TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
-            DeleteQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
-            DeleteQueue(TestExecutionConfig.RabbitConfig.ExportCompleteQueue);
-            DeleteQueue(TestExecutionConfig.RabbitConfig.ExportRequestQueue);
-            DeleteQueue($"{TestExecutionConfig.RabbitConfig.WorkflowRequestQueue}-dead-letter");
-            DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter");
-            DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter");
-            DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
-            DeleteQueue($"{TestExecutionConfig.RabbitConfig.ExportCompleteQueue}-dead-letter");
-            DeleteQueue($"{TestExecutionConfig.RabbitConfig.ExportRequestQueue}-dead-letter");
+            try
+            {
+                DeleteQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+                DeleteQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+                DeleteQueue(TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
+                DeleteQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+                DeleteQueue(TestExecutionConfig.RabbitConfig.ExportCompleteQueue);
+                DeleteQueue(TestExecutionConfig.RabbitConfig.ExportRequestQueue);
+                DeleteQueue($"{TestExecutionConfig.RabbitConfig.WorkflowRequestQueue}-dead-letter");
+                DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter");
+                DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter");
+                DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
+                DeleteQueue($"{TestExecutionConfig.RabbitConfig.ExportCompleteQueue}-dead-letter");
+                DeleteQueue($"{TestExecutionConfig.RabbitConfig.ExportRequestQueue}-dead-letter");
+            }
+            catch (OperationInterruptedException)
+            {
+            }
         }
 
         public static void PurgeAllQueues()
         {
-            PurgeQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
-            PurgeQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-            PurgeQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
-            PurgeQueue(TestExecutionConfig.RabbitConfig.ExportCompleteQueue);
-            PurgeQueue(TestExecutionConfig.RabbitConfig.ExportRequestQueue);
-            PurgeQueue($"{TestExecutionConfig.RabbitConfig.WorkflowRequestQueue}-dead-letter");
-            PurgeQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
-            PurgeQueue($"{TestExecutionConfig.RabbitConfig.ExportCompleteQueue}-dead-letter");
+            try
+            {
+                PurgeQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+                PurgeQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+                PurgeQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+                PurgeQueue(TestExecutionConfig.RabbitConfig.ExportCompleteQueue);
+                PurgeQueue(TestExecutionConfig.RabbitConfig.ExportRequestQueue);
+                PurgeQueue($"{TestExecutionConfig.RabbitConfig.WorkflowRequestQueue}-dead-letter");
+                PurgeQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
+                PurgeQueue($"{TestExecutionConfig.RabbitConfig.ExportCompleteQueue}-dead-letter");
+            }
+            catch (OperationInterruptedException)
+            {
+            }
         }
     }
 }
