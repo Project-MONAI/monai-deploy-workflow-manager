@@ -2327,7 +2327,7 @@
   - Monai.Deploy.Security
   - :who: lillie-dae
     :why: Apache-2.0 (https://raw.githubusercontent.com/Project-MONAI/monai-deploy-security/main/LICENSE)
-    :versions: [0.1.0, 0.1.2]
+    :versions: [0.1.0, 0.1.2, 0.1.3-rc0003]
     :when: 2022-12-02 13:13:13.431951720 Z
 - - :approve
   - Microsoft.AspNetCore.Authentication.JwtBearer
