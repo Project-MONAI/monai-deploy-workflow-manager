@@ -584,8 +584,8 @@
       },
       "Monai.Deploy.Security": {
         "type": "Transitive",
-        "resolved": "0.1.3-rc0003",
-        "contentHash": "0P3glrLcSSw4AKm5qbHk1/G1c6798Dnq5HZd09ceK5MumFWQ+gthtn11BiL+wEjVjnnuNArFyO8imODVcRxqIQ==",
+        "resolved": "0.1.3",
+        "contentHash": "9/E/UEK9Foo1cUHRRgNIR8uk+oTLiBbzR2vqBsxIo1EwbduDVuBGFcIh2lpAJZmFFwBNv0KtmTASdD3w5UWd+g==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.11",
@@ -1478,7 +1478,7 @@
           "Microsoft.Extensions.Hosting": "[6.0.1, )",
           "Microsoft.Extensions.Options": "[6.0.0, )",
           "Monai.Deploy.Messaging.RabbitMQ": "[0.1.17-rc0020, )",
-          "Monai.Deploy.Security": "[0.1.3-rc0003, )",
+          "Monai.Deploy.Security": "[0.1.3, )",
           "Monai.Deploy.Storage.MinIO": "[0.2.10, )",
           "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
