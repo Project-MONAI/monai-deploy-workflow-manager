@@ -179,8 +179,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 ["executionId"] = task.ExecutionId
             });
 
-            AttachPatientMetaData(task, payload.PatientDetails);
-
             if (string.Equals(task.TaskType, TaskTypeConstants.RouterTask, StringComparison.InvariantCultureIgnoreCase))
             {
                 await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
@@ -202,7 +200,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return;
             }
 
-            await DispatchTask(workflowInstance, workflow, task, correlationId);
+            await DispatchTask(workflowInstance, workflow, task, correlationId, payload);
         }
 
         public void AttachPatientMetaData(TaskExecution task, PatientDetails patientDetails)
@@ -667,7 +665,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return newTaskExecutions;
         }
 
-        private async Task<bool> DispatchTask(WorkflowInstance workflowInstance, WorkflowRevision workflow, TaskExecution taskExec, string correlationId)
+        private async Task<bool> DispatchTask(WorkflowInstance workflowInstance, WorkflowRevision workflow, TaskExecution taskExec, string correlationId, Payload? payload = null)
         {
             var task = workflow?.Workflow?.Tasks?.FirstOrDefault(t => t.Id == taskExec.TaskId);
 
@@ -708,6 +706,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                         _logger.LoadArtifactAndDBFailiure(workflowInstance.PayloadId, taskExec.TaskId, workflowInstance.Id, workflow?.Id);
                     }
                     throw;
+                }
+
+                payload ??= await _payloadService.GetByIdAsync(workflowInstance.PayloadId);
+                if (payload is not null)
+                {
+                    AttachPatientMetaData(taskExec, payload.PatientDetails);
                 }
 
                 _logger.LogGeneralTaskDispatchInformation(workflowInstance.PayloadId, taskExec.TaskId, workflowInstance.Id, workflow?.Id, JsonConvert.SerializeObject(pathOutputArtifacts));
