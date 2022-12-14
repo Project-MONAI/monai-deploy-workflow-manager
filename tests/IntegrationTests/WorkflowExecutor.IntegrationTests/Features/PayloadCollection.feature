@@ -48,6 +48,7 @@ Scenario: Patient details are added to the Task Dispatch Event from the payload 
     When I publish a Workflow Request Message Basic_AeTitle_Payload_Collection_Request_1 with artifacts full_patient_metadata in minio
     Then A payload collection is created with 1 workflow instance id
     And A payload collection is created with patient details Full_Patient
+    And Patient details Full_Patient have been added to task dispatch message
 
 @WorkflowInstanceDetails
 Scenario: Payload collection will be populated with workflow instance id after receiving a Workflow Request when workflow is matched
