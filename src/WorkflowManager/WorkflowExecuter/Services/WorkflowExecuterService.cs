@@ -709,7 +709,10 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 }
 
                 payload ??= await _payloadService.GetByIdAsync(workflowInstance.PayloadId);
-                AttachPatientMetaData(taskExec, payload.PatientDetails);
+                if (payload is not null)
+                {
+                    AttachPatientMetaData(taskExec, payload.PatientDetails);
+                }
 
                 _logger.LogGeneralTaskDispatchInformation(workflowInstance.PayloadId, taskExec.TaskId, workflowInstance.Id, workflow?.Id, JsonConvert.SerializeObject(pathOutputArtifacts));
                 var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(taskExec, workflowInstance, pathOutputArtifacts, correlationId, _storageConfiguration);
