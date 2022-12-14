@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Globalization;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -31,6 +32,7 @@ using Monai.Deploy.WorkflowManager.Contracts.Constants;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Logging;
+using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 using Newtonsoft.Json;
 
@@ -147,13 +149,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             foreach (var workflowInstance in workflowInstances)
             {
-                await ProcessFirstWorkflowTask(workflowInstance, message.CorrelationId);
+                await ProcessFirstWorkflowTask(workflowInstance, message.CorrelationId, payload);
             }
 
             return true;
         }
 
-        public async Task ProcessFirstWorkflowTask(WorkflowInstance workflowInstance, string correlationId)
+        public async Task ProcessFirstWorkflowTask(WorkflowInstance workflowInstance, string correlationId, Payload payload)
         {
             if (workflowInstance.Status == Status.Failed)
             {
@@ -177,6 +179,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 ["executionId"] = task.ExecutionId
             });
 
+            AttachPatientMetaData(task, payload.PatientDetails);
 
             if (string.Equals(task.TaskType, TaskTypeConstants.RouterTask, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -200,6 +203,40 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             }
 
             await DispatchTask(workflowInstance, workflow, task, correlationId);
+        }
+
+        public void AttachPatientMetaData(TaskExecution task, PatientDetails patientDetails)
+        {
+            var attachedData = false;
+            if (string.IsNullOrWhiteSpace(patientDetails.PatientId) is false)
+            {
+                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientId, patientDetails.PatientId);
+            }
+            if (string.IsNullOrWhiteSpace(patientDetails.PatientAge) is false)
+            {
+                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientAge, patientDetails.PatientAge);
+            }
+            if (string.IsNullOrWhiteSpace(patientDetails.PatientSex) is false)
+            {
+                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientSex, patientDetails.PatientSex);
+            }
+            var patientDob = patientDetails.PatientDob;
+            if (patientDob.HasValue)
+            {
+                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientDob, patientDob.Value.ToString("o", CultureInfo.InvariantCulture));
+            }
+            if (string.IsNullOrWhiteSpace(patientDetails.PatientHospitalId) is false)
+            {
+                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientHospitalId, patientDetails.PatientHospitalId);
+            }
+            if (string.IsNullOrWhiteSpace(patientDetails.PatientName) is false)
+            {
+                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientName, patientDetails.PatientName);
+            }
+            if (attachedData)
+            {
+                _logger.AttachedPatientMetadataToTaskExec(JsonConvert.SerializeObject(task.TaskPluginArguments));
+            }
         }
 
         public async Task<bool> ProcessTaskUpdate(TaskUpdateEvent message)

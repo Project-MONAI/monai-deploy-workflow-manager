@@ -22,6 +22,7 @@ using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Logging;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Models;
@@ -74,35 +75,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 
         private void Initialize()
         {
-            if (Event.TaskPluginArguments.ContainsKey(Keys.PatientId))
-            {
-                _patientId = Event.TaskPluginArguments[Keys.PatientId];
-            }
-
-            if (Event.TaskPluginArguments.ContainsKey(Keys.PatientName))
-            {
-                _patientName = Event.TaskPluginArguments[Keys.PatientName];
-            }
-
-            if (Event.TaskPluginArguments.ContainsKey(Keys.PatientSex))
-            {
-                _patientSex = Event.TaskPluginArguments[Keys.PatientSex];
-            }
-
-            if (Event.TaskPluginArguments.ContainsKey(Keys.PatientDob))
-            {
-                _patientDob = Event.TaskPluginArguments[Keys.PatientDob];
-            }
-
-            if (Event.TaskPluginArguments.ContainsKey(Keys.PatientAge))
-            {
-                _patientAge = Event.TaskPluginArguments[Keys.PatientAge];
-            }
-
-            if (Event.TaskPluginArguments.ContainsKey(Keys.PatientHospitalId))
-            {
-                _patientHospitalId = Event.TaskPluginArguments[Keys.PatientHospitalId];
-            }
+            InitializePatientDetails();
 
             if (Event.TaskPluginArguments.ContainsKey(Keys.QueueName))
             {
@@ -153,6 +126,39 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             }
 
             _reviewerRoles = new string[] { "clinician" };
+        }
+
+        private void InitializePatientDetails()
+        {
+            if (Event.TaskPluginArguments.ContainsKey(PatientKeys.PatientId))
+            {
+                _patientId = Event.TaskPluginArguments[PatientKeys.PatientId];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(PatientKeys.PatientName))
+            {
+                _patientName = Event.TaskPluginArguments[PatientKeys.PatientName];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(PatientKeys.PatientSex))
+            {
+                _patientSex = Event.TaskPluginArguments[PatientKeys.PatientSex];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(PatientKeys.PatientDob))
+            {
+                _patientDob = Event.TaskPluginArguments[PatientKeys.PatientDob];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(PatientKeys.PatientAge))
+            {
+                _patientAge = Event.TaskPluginArguments[PatientKeys.PatientAge];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(PatientKeys.PatientHospitalId))
+            {
+                _patientHospitalId = Event.TaskPluginArguments[PatientKeys.PatientHospitalId];
+            }
         }
 
         private void ValidateEventAndInit()

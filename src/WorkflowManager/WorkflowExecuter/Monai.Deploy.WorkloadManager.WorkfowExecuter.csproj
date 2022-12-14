@@ -37,6 +37,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Shared\Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj" />
+		<ProjectReference Include="..\..\Shared\Shared\Monai.Deploy.WorkflowManager.Shared.csproj" />
 		<ProjectReference Include="..\Common\Monai.Deploy.WorkflowManager.Common.csproj" />
 		<ProjectReference Include="..\ConditionsResolver\Monai.Deploy.WorkflowManager.ConditionsResolver.csproj" />
 		<ProjectReference Include="..\Contracts\Monai.Deploy.WorkflowManager.Contracts.csproj" />
