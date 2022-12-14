@@ -42,6 +42,14 @@ Scenario: Payload collection will be populated with null patient details after r
     Then A payload collection is created with patient details Null_Patient
     And I can see 1 Workflow Instance is created
 
+@PatientDetails
+Scenario: Patient details are added to the Task Dispatch Event from the payload collection
+    Given I have a clinical workflow Basic_Workflow_1
+    When I publish a Workflow Request Message Basic_AeTitle_Payload_Collection_Request_1 with artifacts full_patient_metadata in minio
+    Then A payload collection is created with patient details Full_Patient
+    And I can see 1 Workflow Instance is created
+    Then A payload collection is created with patient details Full_Patient
+
 @WorkflowInstanceDetails
 Scenario: Payload collection will be populated with workflow instance id after receiving a Workflow Request when workflow is matched
     Given I have a clinical workflow Basic_Workflow_1
