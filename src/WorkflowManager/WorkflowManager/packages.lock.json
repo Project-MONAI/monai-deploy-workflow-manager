@@ -80,6 +80,21 @@
           "System.Collections.Concurrent": "4.3.0"
         }
       },
+      "Monai.Deploy.Security": {
+        "type": "Direct",
+        "requested": "[0.1.2, )",
+        "resolved": "0.1.2",
+        "contentHash": "VZQEsv0/bMOcLdOVhGMcFI0KPWSVNhdJ+r3MxCByCxp018ov8rm/+3Hvemb+HMgOg9A//j1U8vI00xAWLJlKzw==",
+        "dependencies": {
+          "Ardalis.GuardClauses": "4.0.1",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.11",
+          "Microsoft.Extensions.Configuration": "6.0.1",
+          "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Logging": "6.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.3",
+          "Microsoft.Extensions.Logging.Configuration": "6.0.0"
+        }
+      },
       "Monai.Deploy.Storage.MinIO": {
         "type": "Direct",
         "requested": "[0.2.10, )",
@@ -178,8 +193,8 @@
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "Transitive",
-        "resolved": "6.0.10",
-        "contentHash": "4SBTyAuYHSiFi/AiqlKiKpl2+EkKaS/q1zeDI4L88cMmy5P01pse25gOAyzfWycI8voz+d1FwTIuqhWCH87IJQ==",
+        "resolved": "6.0.11",
+        "contentHash": "ivpWC8L84Y+l9VZOa0uJXPoUE+n3TiSRZpfKxMElRtLMYCeXmz5x3O7CuCJkZ65z1520RWuEZDmHefxiz5TqPg==",
         "dependencies": {
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.10.0"
         }
@@ -353,8 +368,8 @@
       },
       "Microsoft.Extensions.Logging.Abstractions": {
         "type": "Transitive",
-        "resolved": "6.0.2",
-        "contentHash": "pwXCZKaA7m5wgmCj49dW+H1RPSY7U62SKLTQYCcavf/k3Nyt/WnBgAjG4jMGnwy9rElfAZ2KvxvM5CJzJWG0hg=="
+        "resolved": "6.0.3",
+        "contentHash": "SUpStcdjeBbdKjPKe53hVVLkFjylX0yIXY8K+xWa47+o1d+REDyOMZjHZa+chsQI1K9qZeiHWk9jos0TFU7vGg=="
       },
       "Microsoft.Extensions.Logging.Configuration": {
         "type": "Transitive",
@@ -1295,13 +1310,6 @@
         "resolved": "0.6.2",
         "contentHash": "jPao/LdUNLUz8rn3H1D8W7wQbZsRZM0iayvWI4xGejJg3XJHT56gcmYdgmCGPdJF1UEBqUjucCRrFB+4HbJsbw=="
       },
-      "monai.deploy.workflowmanager.authentication": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "[6.0.10, )",
-          "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )"
-        }
-      },
       "monai.deploy.workflowmanager.common": {
         "type": "Project",
         "dependencies": {
@@ -1389,6 +1397,7 @@
           "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Database": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Logging": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Shared": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Storage": "[1.0.0, )"
         }
       }

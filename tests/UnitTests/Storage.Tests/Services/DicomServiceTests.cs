@@ -145,5 +145,49 @@ namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
 
             result.Should().BeEquivalentTo(expected);
         }
+
+        [Theory]
+        [InlineData("CS", new object[] { "data" }, "data")]
+        [InlineData("DA", new object[] { "data" }, "data")]
+        [InlineData("DS", new object[] { "data" }, "data")]
+        [InlineData("IS", new object[] { "data" }, "data")]
+        [InlineData("LO", new object[] { "data" }, "data")]
+        [InlineData("SH", new object[] { "data" }, "data")]
+        [InlineData("UI", new object[] { "data" }, "data")]
+        [InlineData("UL", new object[] { "data" }, "data")]
+        [InlineData("US", new object[] { "data" }, "data")]
+        public void GetValue_GivenValue_ReturnsResult(string vr, object[] data, string expectedResult)
+        {
+            var dicom = new DicomValue() { Vr = vr, Value = data };
+            var dict = new Dictionary<string, DicomValue>()
+            {
+                { "key", dicom }
+            };
+
+            var result = DicomService.GetValue(dict, "key");
+
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void GetValue_GivenUnsportedValue_ReturnsResult()
+        {
+            var unsportedTypes = new List<string>() { "AE", "AS", "AT", "DT", "FL", "FD", "LT", "OB", "OD", "OF", "OL", "OV", "OW", "SL", "SQ", "SS", "ST", "SV", "TM", "UC", "UN", "UR", "UT", "UV" };
+            var data = new object[] { "data" };
+            var expectedData = "data";
+            foreach (var vr in unsportedTypes)
+            {
+                var dicom = new DicomValue() { Vr = vr, Value = data };
+                var dict = new Dictionary<string, DicomValue>()
+                {
+                    { "key", dicom }
+                };
+
+                var result = DicomService.GetValue(dict, "key");
+
+                Assert.Equal(expectedData, result);
+
+            }
+        }
     }
 }

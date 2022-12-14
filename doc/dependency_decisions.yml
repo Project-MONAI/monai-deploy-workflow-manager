@@ -2323,4 +2323,23 @@
     :versions:
     - 0.2.10
     :when: 2022-11-08 14:49:46.964761113 Z
-
+- - :approve
+  - Monai.Deploy.Security
+  - :who: lillie-dae
+    :why: Apache-2.0 (https://raw.githubusercontent.com/Project-MONAI/monai-deploy-security/main/LICENSE)
+    :versions: [0.1.0, 0.1.2]
+    :when: 2022-12-02 13:13:13.431951720 Z
+- - :approve
+  - Microsoft.AspNetCore.Authentication.JwtBearer
+  - :who: lillie-dae
+    :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
+    :versions:
+    - 6.0.11
+    :when: 2022-12-02 13:13:13.431951720 Z
+- - :approve
+  - Microsoft.Extensions.Logging.Abstractions
+  - :who: lillie-dae
+    :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
+    :versions:
+    - 6.0.3
+    :when: 2022-12-02 13:13:13.431951720 Z

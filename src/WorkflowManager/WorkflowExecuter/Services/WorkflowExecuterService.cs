@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-using System.Threading.Tasks;
+using System.Globalization;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -32,7 +32,9 @@ using Monai.Deploy.WorkflowManager.Contracts.Constants;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Logging;
+using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
+using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 {
@@ -147,13 +149,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             foreach (var workflowInstance in workflowInstances)
             {
-                await ProcessFirstWorkflowTask(workflowInstance, message.CorrelationId);
+                await ProcessFirstWorkflowTask(workflowInstance, message.CorrelationId, payload);
             }
 
             return true;
         }
 
-        public async Task ProcessFirstWorkflowTask(WorkflowInstance workflowInstance, string correlationId)
+        public async Task ProcessFirstWorkflowTask(WorkflowInstance workflowInstance, string correlationId, Payload payload)
         {
             if (workflowInstance.Status == Status.Failed)
             {
@@ -177,7 +179,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 ["executionId"] = task.ExecutionId
             });
 
-
             if (string.Equals(task.TaskType, TaskTypeConstants.RouterTask, StringComparison.InvariantCultureIgnoreCase))
             {
                 await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
@@ -199,7 +200,41 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return;
             }
 
-            await DispatchTask(workflowInstance, workflow, task, correlationId);
+            await DispatchTask(workflowInstance, workflow, task, correlationId, payload);
+        }
+
+        public void AttachPatientMetaData(TaskExecution task, PatientDetails patientDetails)
+        {
+            var attachedData = false;
+            if (string.IsNullOrWhiteSpace(patientDetails.PatientId) is false)
+            {
+                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientId, patientDetails.PatientId);
+            }
+            if (string.IsNullOrWhiteSpace(patientDetails.PatientAge) is false)
+            {
+                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientAge, patientDetails.PatientAge);
+            }
+            if (string.IsNullOrWhiteSpace(patientDetails.PatientSex) is false)
+            {
+                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientSex, patientDetails.PatientSex);
+            }
+            var patientDob = patientDetails.PatientDob;
+            if (patientDob.HasValue)
+            {
+                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientDob, patientDob.Value.ToString("o", CultureInfo.InvariantCulture));
+            }
+            if (string.IsNullOrWhiteSpace(patientDetails.PatientHospitalId) is false)
+            {
+                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientHospitalId, patientDetails.PatientHospitalId);
+            }
+            if (string.IsNullOrWhiteSpace(patientDetails.PatientName) is false)
+            {
+                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientName, patientDetails.PatientName);
+            }
+            if (attachedData)
+            {
+                _logger.AttachedPatientMetadataToTaskExec(JsonConvert.SerializeObject(task.TaskPluginArguments));
+            }
         }
 
         public async Task<bool> ProcessTaskUpdate(TaskUpdateEvent message)
@@ -395,7 +430,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         {
             var exportList = workflow.Workflow?.Tasks?.FirstOrDefault(t => t.Id == task.TaskId)?.ExportDestinations.Select(e => e.Name).ToArray();
 
-            var artifactValues = GetDicomExports(workflow, workflowInstance, task, exportList);
+            var artifactValues = GetDicomExports(workflow, task, exportList);
 
             var files = new List<VirtualFileInfo>();
             foreach (var artifact in artifactValues)
@@ -430,7 +465,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             await DispatchDicomExport(workflowInstance, task, exportList, artifactValues, correlationId);
         }
 
-        private string[] GetDicomExports(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string[]? exportDestinations)
+        private string[] GetDicomExports(WorkflowRevision workflow, TaskExecution task, string[]? exportDestinations)
         {
             var validExportDestinations = workflow.Workflow?.InformaticsGateway?.ExportDestinations;
 
@@ -529,28 +564,33 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 using var loggingScope = _logger.BeginScope(new Dictionary<string, object> { ["executionId"] = taskExec?.ExecutionId ?? "" });
 
-                if (string.Equals(taskExec.TaskType, TaskTypeConstants.RouterTask, StringComparison.InvariantCultureIgnoreCase))
+                if (taskExec is null)
                 {
-                    await HandleTaskDestinations(workflowInstance, workflow, taskExec, correlationId);
+                    continue;
+                }
+
+                if (string.Equals(taskExec!.TaskType, TaskTypeConstants.RouterTask, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    await HandleTaskDestinations(workflowInstance, workflow, taskExec!, correlationId);
 
                     continue;
                 }
 
-                if (string.Equals(taskExec.TaskType, TaskTypeConstants.ExportTask, StringComparison.InvariantCultureIgnoreCase))
+                if (string.Equals(taskExec!.TaskType, TaskTypeConstants.ExportTask, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    await HandleDicomExportAsync(workflow, workflowInstance, taskExec, correlationId);
+                    await HandleDicomExportAsync(workflow, workflowInstance, taskExec!, correlationId);
 
                     continue;
                 }
 
-                processed &= await DispatchTask(workflowInstance, workflow, taskExec, correlationId);
+                processed &= await DispatchTask(workflowInstance, workflow, taskExec!, correlationId);
 
                 if (processed is false)
                 {
                     continue;
                 }
 
-                processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, taskExec.TaskId, TaskExecutionStatus.Dispatched);
+                processed &= await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, taskExec!.TaskId, TaskExecutionStatus.Dispatched);
             }
 
             return processed;
@@ -593,9 +633,9 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 //Evaluate Conditional
                 if (taskDest.Conditions.IsNullOrEmpty() is false
                     && taskDest.Conditions.Any(c => string.IsNullOrWhiteSpace(c) is false)
-                    && _conditionalParameterParser.TryParse(taskDest.Conditions, workflowInstance) is false)
+                    && _conditionalParameterParser.TryParse(taskDest.Conditions, workflowInstance, out var resolvedConditional) is false)
                 {
-                    _logger.TaskDestinationConditionFalse(taskDest.Conditions.CombineConditionString(), taskDest.Name);
+                    _logger.TaskDestinationConditionFalse(resolvedConditional, taskDest.Conditions.CombineConditionString(), taskDest.Name);
 
                     continue;
                 }
@@ -625,7 +665,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return newTaskExecutions;
         }
 
-        private async Task<bool> DispatchTask(WorkflowInstance workflowInstance, WorkflowRevision workflow, TaskExecution taskExec, string correlationId)
+        private async Task<bool> DispatchTask(WorkflowInstance workflowInstance, WorkflowRevision workflow, TaskExecution taskExec, string correlationId, Payload? payload = null)
         {
             var task = workflow?.Workflow?.Tasks?.FirstOrDefault(t => t.Id == taskExec.TaskId);
 
@@ -658,6 +698,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 }
                 catch (FileNotFoundException)
                 {
+                    _logger.LogTaskDispatchFailure(workflowInstance.PayloadId, taskExec.TaskId, workflowInstance.Id, workflow?.Id, JsonConvert.SerializeObject(pathOutputArtifacts));
                     workflowInstance.Tasks.Add(taskExec);
                     var updateResult = await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, taskExec.TaskId, TaskExecutionStatus.Failed);
                     if (updateResult is false)
@@ -667,6 +708,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                     throw;
                 }
 
+                payload ??= await _payloadService.GetByIdAsync(workflowInstance.PayloadId);
+                if (payload is not null)
+                {
+                    AttachPatientMetaData(taskExec, payload.PatientDetails);
+                }
+
+                _logger.LogGeneralTaskDispatchInformation(workflowInstance.PayloadId, taskExec.TaskId, workflowInstance.Id, workflow?.Id, JsonConvert.SerializeObject(pathOutputArtifacts));
                 var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(taskExec, workflowInstance, pathOutputArtifacts, correlationId, _storageConfiguration);
                 var jsonMesssage = new JsonMessage<TaskDispatchEvent>(taskDispatchEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, taskDispatchEvent.CorrelationId, Guid.NewGuid().ToString());
 

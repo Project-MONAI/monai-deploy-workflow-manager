@@ -33,6 +33,7 @@ using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
@@ -395,6 +396,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 }
             };
 
+            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Payload() { });
             _workflowRepository.Setup(w => w.GetByWorkflowsIdsAsync(new List<string> { workflowId1.ToString() })).ReturnsAsync(workflows);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowId1.ToString())).ReturnsAsync(workflows[0]);
             _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
@@ -2225,6 +2227,35 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             Assert.Equal(expectedTaskTimeoutLength, newPizza.TimeoutInterval);
             newPizza.Timeout.Should().BeCloseTo(expectedTaskTimeoutLengthDT, TimeSpan.FromSeconds(2));
             Assert.Equal(expectedDict, newPizza.InputArtifacts);
+        }
+
+        [Fact]
+        public void AttachPatientMetaData_AtachesDataToTaskExec_TaskExecShouldHavePatientData()
+        {
+            var taskExec = new TaskExecution
+            {
+                TaskId = Guid.NewGuid().ToString(),
+            };
+
+            var patientDetails = new PatientDetails()
+            {
+                PatientAge = "39",
+                PatientDob = DateTime.Now,
+                PatientHospitalId = Guid.NewGuid().ToString(),
+                PatientId = Guid.NewGuid().ToString(),
+                PatientName = "Daphne the alpaca",
+                PatientSex = "Unknown",
+            };
+
+            WorkflowExecuterService.AttachPatientMetaData(taskExec, patientDetails);
+
+            taskExec.TaskPluginArguments.Should().NotBeNull();
+            taskExec.TaskPluginArguments[PatientKeys.PatientId].Should().BeSameAs(patientDetails.PatientId);
+            taskExec.TaskPluginArguments[PatientKeys.PatientAge].Should().BeSameAs(patientDetails.PatientAge);
+            taskExec.TaskPluginArguments[PatientKeys.PatientSex].Should().BeSameAs(patientDetails.PatientSex);
+            taskExec.TaskPluginArguments[PatientKeys.PatientDob].Should().NotBeNull();
+            taskExec.TaskPluginArguments[PatientKeys.PatientHospitalId].Should().BeSameAs(patientDetails.PatientHospitalId);
+            taskExec.TaskPluginArguments[PatientKeys.PatientName].Should().BeSameAs(patientDetails.PatientName);
         }
     }
 }

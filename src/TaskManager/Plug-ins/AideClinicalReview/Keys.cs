@@ -18,35 +18,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 {
     public class Keys
     {
-        /// <summary>
-        /// Key for the patient id.
-        /// </summary>
-        public static readonly string PatientId = "patient_id";
-
-        /// <summary>
-        /// Key for the patient name.
-        /// </summary>
-        public static readonly string PatientName = "patient_name";
-
-        /// <summary>
-        /// Key for the patient sex.
-        /// </summary>
-        public static readonly string PatientSex = "patient_sex";
-
-        /// <summary>
-        /// Key for the patient dob.
-        /// </summary>
-        public static readonly string PatientDob = "patient_dob";
-
-        /// <summary>
-        /// Key for the patient age.
-        /// </summary>
-        public static readonly string PatientAge = "patient_age";
-
-        /// <summary>
-        /// Key for the patient hospital id.
-        /// </summary>
-        public static readonly string PatientHospitalId = "patient_hospital_id";
 
         /// <summary>
         /// Key for the workflow name.

@@ -38,6 +38,32 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        private static readonly Dictionary<string, string> SupportedTypes = new()
+        {
+            { "CS", "Code String" },
+            { "DA", "Date" },
+            { "DS", "Decimal String" },
+            { "IS", "Integer String" },
+            { "LO", "Long String" },
+            { "SH", "Short String" },
+            { "UI", "Unique Identifier (UID)" },
+            { "UL", "Unsigned Long" },
+            { "US", "Unsigned Short" },
+        };
+
+        private static readonly Dictionary<string, string> UnsupportedTypes = new()
+        {
+            { "CS", "Code String" },
+            { "DA", "Date" },
+            { "DS", "Decimal String" },
+            { "IS", "Integer String" },
+            { "LO", "Long String" },
+            { "SH", "Short String" },
+            { "UI", "Unique Identifier (UID)" },
+            { "UL", "Unsigned Long" },
+            { "US", "Unsigned Short" },
+        };
+
         public async Task<PatientDetails> GetPayloadPatientDetailsAsync(string payloadId, string bucketName)
         {
             Guard.Against.NullOrWhiteSpace(bucketName);
@@ -198,39 +224,82 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
 
             var dict = new Dictionary<string, DicomValue>(StringComparer.OrdinalIgnoreCase);
             JsonConvert.PopulateObject(jsonStr, dict);
-
             return GetValue(dict, keyId);
         }
 
-        private static string GetValue(Dictionary<string, DicomValue> dict, string keyId)
+        public string GetValue(Dictionary<string, DicomValue> dict, string keyId)
         {
             if (dict.Any() is false)
             {
                 return string.Empty;
             }
 
-            dict.TryGetValue(keyId, out var value);
+            var result = string.Empty;
 
-            if (value is not null && value.Value is not null)
+            if (dict.TryGetValue(keyId, out var value))
             {
-                if (string.Equals(keyId, DicomTagConstants.PatientNameTag))
+                if (string.Equals(keyId, DicomTagConstants.PatientNameTag) || value.Vr.ToUpperInvariant() == "PN")
                 {
-                    return GetPatientName(value.Value);
+                    result = GetPatientName(value.Value);
+                    _logger.GetPatientName(result);
+                    return result;
                 }
-
-                var str = value?.Value.Cast<string>();
-
-                if (str is not null)
+                var jsonString = DecodeComplexString(value);
+                if (SupportedTypes.TryGetValue(value.Vr.ToUpperInvariant(), out var vrFullString))
                 {
-                    return string.Concat(str);
+                    result = TryGetValueAndLogSupported(vrFullString, value, jsonString);
+                }
+                else if (UnsupportedTypes.TryGetValue(value.Vr.ToUpperInvariant(), out vrFullString))
+                {
+                    result = TryGetValueAndLogSupported(vrFullString, value, jsonString);
+                }
+                else
+                {
+                    result = TryGetValueAndLogUnSupported("Unknown Dicom Type", value, jsonString);
                 }
             }
+            return result;
+        }
 
+        private string TryGetValueAndLogSupported(string vrFullString, DicomValue value, string jsonString)
+        {
+            var result = TryGetValue(value);
+            _logger.SupportedType(value.Vr, vrFullString, jsonString, result);
+            return result;
+        }
+
+        private string TryGetValueAndLogUnSupported(string vrFullString, DicomValue value, string jsonString)
+        {
+            var result = TryGetValue(value);
+            _logger.UnsupportedType(value.Vr, vrFullString, jsonString, result);
+            return result;
+        }
+
+        private string TryGetValue(DicomValue value)
+        {
+            try
+            {
+                var strs = value.Value.Cast<string>();
+                if (strs is not null)
+                {
+                    return string.Concat(strs);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.UnableToCastDicomValueToString(DecodeComplexString(value), ex);
+            }
             return string.Empty;
+        }
+
+        private static string DecodeComplexString(DicomValue dicomValue)
+        {
+            return JsonConvert.SerializeObject(dicomValue.Value);
         }
 
         private static string GetPatientName(object[] values)
         {
+
             var resultStr = new List<string>();
 
             foreach (var value in values)

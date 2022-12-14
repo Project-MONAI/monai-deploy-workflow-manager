@@ -55,5 +55,13 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
         /// <param name="bucketId"></param>
         /// <returns></returns>
         Task<string> GetAnyValueAsync(string keyId, string payloadId, string bucketId);
+
+        /// <summary>
+        /// Gets value given DicomValue.
+        /// </summary>
+        /// <param name="dict"></param>
+        /// <param name="keyId"></param>
+        /// <returns></returns>
+        string GetValue(Dictionary<string, DicomValue> dict, string keyId);
     }
 }

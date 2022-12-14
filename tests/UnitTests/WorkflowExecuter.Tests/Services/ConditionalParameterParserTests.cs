@@ -48,22 +48,34 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         [Theory]
         [InlineData(new string[] {"{{ context.dicom.series.all('0010','0040') }} == 'lordge'",
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.Fred }} == 'Bob'",
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.fred }} == 'lowercasefred'" }, true, "lordge")]
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.fred }} == 'lowercasefred'" },
+            true,
+            "lordge",
+            "('lordge' == 'lordge') AND ('Bob' == 'Bob') AND ('lowercasefred' == 'lowercasefred')")]
         [InlineData(
             new string[] {"{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.Fred }} == 'Bob'",
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.fred }} == 'lowercasefred'",
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.Sandra }} == 'YassQueen' OR " +
             "{{ context.executions.other_task.result.Fred }} >= '32' OR " +
             "{{ context.executions.other_task.result.Sandra }} == 'other YassQueen' OR " +
-            "{{ context.executions.other_task.result.Derick }} == 'lordge'" }, true)]
+            "{{ context.executions.other_task.result.Derick }} == 'lordge'" },
+            true,
+            null,
+            "('Bob' == 'Bob') AND ('lowercasefred' == 'lowercasefred') AND ('YassQueen' == 'YassQueen' OR '55' >= '32' OR 'other YassQueen' == 'other YassQueen' OR 'lordge' == 'lordge')")]
         [InlineData(
             new string[] {"{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.inttest }} == '2.5'",
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.booltest }} == 'True'",
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.datetest }} == '2022-12-05T14:06:34'"}, true)]
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.result.datetest }} == '2022-12-05T14:06:34'"},
+            true,
+            null,
+            "('2.5' == '2.5') AND ('True' == 'True') AND ('2022-12-05T14:06:34' == '2022-12-05T14:06:34')")]
         [InlineData(
             new string[] {"{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_stats.stat1 }} == 'completed in 1 hour' AND " +
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_stats.stat2 }} ==  'ran successfully'"}, true)]
-        public void ConditionalParameterParser_WhenGivenCorrectResultMetadataString_MultiConditionShouldEvaluate(string[] input, bool expectedResult, string? expectedDicomReturn = null)
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_stats.stat2 }} ==  'ran successfully'"},
+            true,
+            null,
+            "'completed in 1 hour' == 'completed in 1 hour' AND 'ran successfully' ==  'ran successfully'")]
+        public void ConditionalParameterParser_WhenGivenCorrectResultMetadataString_MultiConditionShouldEvaluate(string[] input, bool expectedResult, string? expectedDicomReturn, string expectedResolvedConditional)
         {
             if (expectedDicomReturn is not null)
             {
@@ -79,16 +91,23 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _dicom.Object, _workflowInstanceService.Object, _payloadService.Object, _workflowService.Object);
 
-            var actualResult = conditionalParameterParser.TryParse(input, workflow);
+            var actualResult = conditionalParameterParser.TryParse(input, workflow, out var resolvedConditional);
 
+            Assert.Equal(expectedResolvedConditional, resolvedConditional);
             Assert.Equal(expectedResult, actualResult);
         }
 
         [Theory]
-        [InlineData("{{ context.dicom.series.any('0010','0040') }} == 'lordge'", true, "lordge")]
-        [InlineData("{{ context.dicom.series.all('0010','0040') }} == 'lordge'", true, "lordge")]
-        [InlineData("'invalid' > 'false'", false)]
-        public void ConditionalParameterParser_WhenGivenCorrectDicomString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn = null)
+        [InlineData("{{ context.dicom.series.any('0010','0040') }} == 'lordge'", true, "lordge", "'lordge' == 'lordge'")]
+        [InlineData("{{ context.dicom.series.all('0010','0040') }} == 'lordge'", true, "lordge", "'lordge' == 'lordge'")]
+        [InlineData("'invalid' > 'false'", false, "lordge", "'invalid' > 'false'")]
+        [InlineData("{{ context.dicom.series.any('0018','0050') }} >= '1.25000'", true, "2.25000", "'2.25000' >= '1.25000'")]
+        [InlineData("{{ context.dicom.series.any('0018','0050') }} == '1.25000'", true, "1.25000", "'1.25000' == '1.25000'")]
+        [InlineData("{{ context.dicom.series.any('0018','0050') }} <= '0.25000'", false, "1.25000", "'1.25000' <= '0.25000'")]
+        [InlineData("{{ context.dicom.series.any('0018','0050') }} <= '1.25000'", true, "0.25000", "'0.25000' <= '1.25000'")]
+        [InlineData("{{ context.dicom.series.any('0018','0050') }} <= '0.25000'", true, "0.24000", "'0.24000' <= '0.25000'")]
+        [InlineData("{{ context.dicom.series.any('0018','0050') }} < '0.25000'", true, "0.24000", "'0.24000' < '0.25000'")]
+        public void ConditionalParameterParser_WhenGivenCorrectDicomString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn, string expectedResolvedConditional)
         {
             if (expectedDicomReturn is not null)
             {
@@ -104,19 +123,22 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _dicom.Object, _workflowInstanceService.Object, _payloadService.Object, _workflowService.Object);
 
-            var actualResult = conditionalParameterParser.TryParse(input, workflow);
+            var actualResult = conditionalParameterParser.TryParse(input, workflow, out var resolvedConditional);
 
+            Assert.Equal(expectedResolvedConditional, resolvedConditional);
             Assert.Equal(expectedResult, actualResult);
         }
 
         [Theory]
-        [InlineData("{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.task_id }} == '2dbd1af7-b699-4467-8e99-05a0c22422b4' AND " +
+        [InlineData(
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.task_id }} == '2dbd1af7-b699-4467-8e99-05a0c22422b4' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.output_dir }} == 'output/dir' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.status }} == 'Succeeded' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.start_time }} == '2022-12-25T00:00:00' AND " +
             "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.end_time }} == '2022-12-25T01:00:00' AND " +
-            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_id }} == '3c4484bd-e1a4-4347-902e-31a6503edd5f'", true)]
-        public void ConditionalParameterParser_WhenGivenCorrectExecutionString_ShouldEvaluate(string input, bool expectedResult)
+            "{{ context.executions.2dbd1af7-b699-4467-8e99-05a0c22422b4.execution_id }} == '3c4484bd-e1a4-4347-902e-31a6503edd5f'", true,
+            "'2dbd1af7-b699-4467-8e99-05a0c22422b4' == '2dbd1af7-b699-4467-8e99-05a0c22422b4' AND 'output/dir' == 'output/dir' AND 'Succeeded' == 'Succeeded' AND '2022-12-25T00:00:00' == '2022-12-25T00:00:00' AND '2022-12-25T01:00:00' == '2022-12-25T01:00:00' AND '3c4484bd-e1a4-4347-902e-31a6503edd5f' == '3c4484bd-e1a4-4347-902e-31a6503edd5f'")]
+        public void ConditionalParameterParser_WhenGivenCorrectExecutionString_ShouldEvaluate(string input, bool expectedResult, string expectedResolvedConditional)
         {
             var testData = CreateTestData();
             var workflow = testData.First();
@@ -124,8 +146,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             var conditionalParameterParser = new ConditionalParameterParser(_logger.Object, _dicom.Object, _workflowInstanceService.Object, _payloadService.Object, _workflowService.Object);
 
-            var actualResult = conditionalParameterParser.TryParse(input, workflow);
-
+            var actualResult = conditionalParameterParser.TryParse(input, workflow, out var resolvedConditional);
+            Assert.Equal(expectedResolvedConditional, resolvedConditional);
             Assert.Equal(expectedResult, actualResult);
         }
 
@@ -235,339 +257,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                         }
                     }
                 }
-
-                #region Extra Test Data
-
-                //new WorkflowInstance()
-                //{
-                //    Id = Guid.NewGuid().ToString(),
-                //    AeTitle = "Multi_Req",
-                //    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Dispatched").WorkflowRevision.WorkflowId,
-                //    PayloadId = Helper.GetWorkflowRequestByName("Multi_WF_Dispatched").WorkflowRequestMessage.PayloadId.ToString(),
-                //    StartTime = DateTime.UtcNow,
-                //    Status = Status.Created,
-                //    InputMetaData = new Dictionary<string, string>()
-                //    {
-                //        { "", "" }
-                //    },
-                //    Tasks = new List<TaskExecution>
-                //    {
-                //        new TaskExecution()
-                //        {
-                //            ExecutionId = Guid.NewGuid().ToString(),
-                //            TaskId = "7d7c8b83-6628-413c-9912-a89314e5e2d5",
-                //            TaskType = "Multi_task",
-                //            Status = TaskExecutionStatus.Dispatched
-                //        }
-                //    }
-                //},
-                //new WorkflowInstance()
-                //{
-                //    Id = Guid.NewGuid().ToString(),
-                //    AeTitle = Helper.GetWorkflowByName("Task_Status_Update_Workflow").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                //    WorkflowId = Helper.GetWorkflowByName("Task_Status_Update_Workflow").WorkflowRevision.WorkflowId,
-                //    PayloadId = Guid.NewGuid().ToString(),
-                //    StartTime = DateTime.UtcNow,
-                //    Status = Status.Created,
-                //    InputMetaData = new Dictionary<string, string>()
-                //    {
-                //        { "", "" }
-                //    },
-                //    Tasks = new List<TaskExecution>
-                //    {
-                //        new TaskExecution()
-                //        {
-                //            ExecutionId = Guid.NewGuid().ToString(),
-                //            TaskId = Helper.GetWorkflowByName("Task_Status_Update_Workflow").WorkflowRevision.Workflow.Tasks[0].Id,
-                //            TaskType = Helper.GetWorkflowByName("Task_Status_Update_Workflow").WorkflowRevision.Workflow.Tasks[0].Type,
-                //            Status = TaskExecutionStatus.Dispatched
-                //        }
-                //    }
-                //},
-                //new WorkflowInstance()
-                //{
-                //    Id = Guid.NewGuid().ToString(),
-                //    AeTitle = "Task_Update_9",
-                //    WorkflowId = Guid.NewGuid().ToString(),
-                //    PayloadId = Guid.NewGuid().ToString(),
-                //    StartTime = DateTime.UtcNow,
-                //    Status = Status.Created,
-                //    InputMetaData = new Dictionary<string, string>()
-                //    {
-                //        { "", "" }
-                //    },
-                //    Tasks = new List<TaskExecution>
-                //    {
-                //        new TaskExecution()
-                //        {
-                //            ExecutionId = Guid.NewGuid().ToString(),
-                //            TaskId = Guid.NewGuid().ToString(),
-                //            TaskType = "Multi_task_5",
-                //            Status = TaskExecutionStatus.Succeeded
-                //        }
-                //    }
-                //},
-                //new WorkflowInstance()
-                //{
-                //    Id = Guid.NewGuid().ToString(),
-                //    AeTitle = "Task_Update_10",
-                //    WorkflowId = Guid.NewGuid().ToString(),
-                //    PayloadId = Guid.NewGuid().ToString(),
-                //    StartTime = DateTime.UtcNow,
-                //    Status = Status.Created,
-                //    InputMetaData = new Dictionary<string, string>()
-                //    {
-                //        { "", "" }
-                //    },
-                //    Tasks = new List<TaskExecution>
-                //    {
-                //        new TaskExecution()
-                //        {
-                //            ExecutionId = Guid.NewGuid().ToString(),
-                //            TaskId = Guid.NewGuid().ToString(),
-                //            TaskType = "Multi_task_6",
-                //            Status = TaskExecutionStatus.Failed
-                //        }
-                //    }
-                //},
-                //new WorkflowInstance()
-                //{
-                //    Id = Guid.NewGuid().ToString(),
-                //    AeTitle = "Task_Update_11",
-                //    WorkflowId = Guid.NewGuid().ToString(),
-                //    PayloadId = Guid.NewGuid().ToString(),
-                //    StartTime = DateTime.UtcNow,
-                //    Status = Status.Created,
-                //    InputMetaData = new Dictionary<string, string>()
-                //    {
-                //        { "", "" }
-                //    },
-                //    Tasks = new List<TaskExecution>
-                //    {
-                //        new TaskExecution()
-                //        {
-                //            ExecutionId = Guid.NewGuid().ToString(),
-                //            TaskId = Guid.NewGuid().ToString(),
-                //            TaskType = "Multi_task_7",
-                //            Status = TaskExecutionStatus.Canceled
-                //        }
-                //    }
-                //},
-                //new WorkflowInstance()
-                //{
-                //    Id = Guid.NewGuid().ToString(),
-                //    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                //    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.WorkflowId,
-                //    PayloadId = Guid.NewGuid().ToString(),
-                //    StartTime = DateTime.UtcNow,
-                //    Status = Status.Created,
-                //    BucketId = "bucket_1",
-                //    InputMetaData = new Dictionary<string, string>()
-                //    {
-                //        { "", "" }
-                //    },
-                //    Tasks = new List<TaskExecution>
-                //    {
-                //        new TaskExecution()
-                //        {
-                //            ExecutionId = Guid.NewGuid().ToString(),
-                //            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Id,
-                //            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Type,
-                //            Status = TaskExecutionStatus.Dispatched
-                //        }
-                //    }
-                //},
-                //new WorkflowInstance()
-                //{
-                //    Id = Guid.NewGuid().ToString(),
-                //    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_2").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                //    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_2").WorkflowRevision.WorkflowId,
-                //    PayloadId = Guid.NewGuid().ToString(),
-                //    StartTime = DateTime.UtcNow,
-                //    Status = Status.Created,
-                //    BucketId = "bucket_1",
-                //    InputMetaData = new Dictionary<string, string>()
-                //    {
-                //        { "", "" }
-                //    },
-                //    Tasks = new List<TaskExecution>
-                //    {
-                //        new TaskExecution()
-                //        {
-                //            ExecutionId = Guid.NewGuid().ToString(),
-                //            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_2").WorkflowRevision.Workflow.Tasks[0].Id,
-                //            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_2").WorkflowRevision.Workflow.Tasks[0].Type,
-                //            Status = TaskExecutionStatus.Dispatched
-                //        }
-                //    }
-                //},
-                //new WorkflowInstance()
-                //{
-                //    Id = Guid.NewGuid().ToString(),
-                //    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_3").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                //    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_3").WorkflowRevision.WorkflowId,
-                //    PayloadId = Guid.NewGuid().ToString(),
-                //    StartTime = DateTime.UtcNow,
-                //    Status = Status.Created,
-                //    BucketId = "bucket_1",
-                //    InputMetaData = new Dictionary<string, string>()
-                //    {
-                //        { "", "" }
-                //    },
-                //    Tasks = new List<TaskExecution>
-                //    {
-                //        new TaskExecution()
-                //        {
-                //            ExecutionId = Guid.NewGuid().ToString(),
-                //            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_3").WorkflowRevision.Workflow.Tasks[0].Id,
-                //            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_3").WorkflowRevision.Workflow.Tasks[0].Type,
-                //            Status = TaskExecutionStatus.Dispatched
-                //        }
-                //    }
-                //},
-                //new WorkflowInstance()
-                //{
-                //    Id = Guid.NewGuid().ToString(),
-                //    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                //    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.WorkflowId,
-                //    PayloadId = Guid.NewGuid().ToString(),
-                //    StartTime = DateTime.UtcNow,
-                //    Status = Status.Created,
-                //    BucketId = "bucket_1",
-                //    InputMetaData = new Dictionary<string, string>()
-                //    {
-                //        { "", "" }
-                //    },
-                //    Tasks = new List<TaskExecution>
-                //    {
-                //        new TaskExecution()
-                //        {
-                //            ExecutionId = Guid.NewGuid().ToString(),
-                //            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Id,
-                //            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Type,
-                //            Status = TaskExecutionStatus.Dispatched
-                //        },
-                //        new TaskExecution()
-                //        {
-                //            ExecutionId = Guid.NewGuid().ToString(),
-                //            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Id,
-                //            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Type,
-                //            Status = TaskExecutionStatus.Dispatched
-                //        }
-                //    }
-                //},
-                //new WorkflowInstance()
-                //{
-                //    Id = Guid.NewGuid().ToString(),
-                //    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                //    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.WorkflowId,
-                //    PayloadId = Guid.NewGuid().ToString(),
-                //    StartTime = DateTime.UtcNow,
-                //    Status = Status.Created,
-                //    BucketId = "bucket_1",
-                //    InputMetaData = new Dictionary<string, string>()
-                //    {
-                //        { "", "" }
-                //    },
-                //    Tasks = new List<TaskExecution>
-                //    {
-                //        new TaskExecution()
-                //        {
-                //            ExecutionId = Guid.NewGuid().ToString(),
-                //            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Id,
-                //            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Type,
-                //            Status = TaskExecutionStatus.Dispatched
-                //        },
-                //        new TaskExecution()
-                //        {
-                //            ExecutionId = Guid.NewGuid().ToString(),
-                //            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Id,
-                //            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Type,
-                //            Status = TaskExecutionStatus.Accepted
-                //        }
-                //    }
-                //},
-                //new WorkflowInstance()
-                //{
-                //    Id = Guid.NewGuid().ToString(),
-                //    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                //    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.WorkflowId,
-                //    PayloadId = Guid.NewGuid().ToString(),
-                //    StartTime = DateTime.UtcNow,
-                //    Status = Status.Created,
-                //    BucketId = "bucket_1",
-                //    InputMetaData = new Dictionary<string, string>()
-                //    {
-                //        { "", "" }
-                //    },
-                //    Tasks = new List<TaskExecution>
-                //    {
-                //        new TaskExecution()
-                //        {
-                //            ExecutionId = Guid.NewGuid().ToString(),
-                //            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Id,
-                //            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[0].Type,
-                //            Status = TaskExecutionStatus.Dispatched
-                //        },
-                //        new TaskExecution()
-                //        {
-                //            ExecutionId = Guid.NewGuid().ToString(),
-                //            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Id,
-                //            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_1").WorkflowRevision.Workflow.Tasks[1].Type,
-                //            Status = TaskExecutionStatus.Succeeded
-                //        }
-                //    }
-                //},
-                //new WorkflowInstance()
-                //{
-                //    Id = Guid.NewGuid().ToString(),
-                //    AeTitle = Helper.GetWorkflowByName("Multi_Independent_Task_Workflow").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                //    WorkflowId = Helper.GetWorkflowByName("Multi_Independent_Task_Workflow").WorkflowRevision.WorkflowId,
-                //    PayloadId = Guid.NewGuid().ToString(),
-                //    StartTime = DateTime.UtcNow,
-                //    Status = Status.Created,
-                //    BucketId = "bucket_1",
-                //    InputMetaData = new Dictionary<string, string>()
-                //    {
-                //        { "", "" }
-                //    },
-                //    Tasks = new List<TaskExecution>
-                //    {
-                //        new TaskExecution()
-                //        {
-                //            ExecutionId = Guid.NewGuid().ToString(),
-                //            TaskId = Helper.GetWorkflowByName("Multi_Independent_Task_Workflow").WorkflowRevision.Workflow.Tasks[0].Id,
-                //            TaskType = Helper.GetWorkflowByName("Multi_Independent_Task_Workflow").WorkflowRevision.Workflow.Tasks[0].Type,
-                //            Status = TaskExecutionStatus.Dispatched
-                //        }
-                //    }
-                //},
-                //new WorkflowInstance()
-                //{
-                //    Id = Guid.NewGuid().ToString(),
-                //    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.InformaticsGateway.AeTitle,
-                //    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.WorkflowId,
-                //    PayloadId = Guid.NewGuid().ToString(),
-                //    StartTime = DateTime.UtcNow,
-                //    Status = Status.Created,
-                //    BucketId = "bucket_1",
-                //    InputMetaData = new Dictionary<string, string>()
-                //    {
-                //        { "", "" }
-                //    },
-                //    Tasks = new List<TaskExecution>
-                //    {
-                //        new TaskExecution()
-                //        {
-                //            ExecutionId = Guid.NewGuid().ToString(),
-                //            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Id,
-                //            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Type,
-                //            Status = TaskExecutionStatus.Dispatched
-                //        }
-                //    }
-                //}
-
-                #endregion Extra Test Data
             };
         }
     }
