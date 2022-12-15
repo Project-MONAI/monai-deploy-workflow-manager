@@ -317,16 +317,17 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
         private static string CleanString(string p) => p.Trim().Trim('\"').Trim('\'').Trim('“').Trim('”');
 
+        private static bool EqualsNullOrDefined(string str) =>
+            str.Trim().Equals(NULL, StringComparison.InvariantCultureIgnoreCase)
+            || str.Trim().Equals(UNDEFINED, StringComparison.InvariantCultureIgnoreCase);
+
         private static void MakeNullsUpperCase(string[] arr)
         {
-            if (arr.Any(p =>
-                            p.Trim().Equals(NULL, StringComparison.InvariantCultureIgnoreCase)
-                            || p.Trim().Equals(UNDEFINED, StringComparison.InvariantCultureIgnoreCase)))
+            if (arr.Any(p => EqualsNullOrDefined(p)))
             {
                 for (var i = 0; i < arr.Length; i++)
                 {
-                    if (arr[i].Trim().Equals(NULL, StringComparison.InvariantCultureIgnoreCase)
-                        || arr[i].Equals(UNDEFINED, StringComparison.InvariantCultureIgnoreCase))
+                    if (EqualsNullOrDefined(arr[i]))
                     {
                         arr[i] = NULL;
                     }
