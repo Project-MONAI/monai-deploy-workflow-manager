@@ -239,7 +239,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 
         public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
         {
-            var status = TaskExecutionStatus.Accepted;
+            var status = TaskExecutionStatus.Succeeded;
             var reason = FailureReason.None;
             var message = string.Empty;
             var userId = string.Empty;
@@ -251,14 +251,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
                         TaskExecutionStatus.PartialFail;
             }
 
-            if (status == TaskExecutionStatus.PartialFail)
-            {
-                if (Event.Metadata.TryGetValue(Keys.MetadataRejectReason, out var failureReason))
-                {
-                    reason = (FailureReason)failureReason;
-                }
-            }
-
             if (Event.Metadata.TryGetValue(Keys.MetadataMessage, out var metadataMessage))
             {
                 message = (string)metadataMessage;
@@ -267,6 +259,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             if (Event.Metadata.TryGetValue(Keys.MetadataUserId, out var metadataUserId))
             {
                 userId = (string)metadataUserId;
+            }
+
+            if (status != TaskExecutionStatus.Succeeded)
+            {
+                reason = FailureReason.PluginError;
             }
 
             _logger.RecordTaskDecision(
