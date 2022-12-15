@@ -15,6 +15,7 @@
  */
 
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
@@ -277,19 +278,44 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
 
         private string TryGetValue(DicomValue value)
         {
-            try
+            var result = string.Empty;
+            foreach (var val in value.Value)
             {
-                var strs = value.Value.Cast<string>();
-                if (strs is not null)
+                try
                 {
-                    return string.Concat(strs);
+                    if (double.TryParse(val.ToString(), out var dbl))
+                    {
+                        result = ConcatResult(result, dbl);
+                    }
+                    else
+                    {
+                        result = ConcatResult(result, val);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.UnableToCastDicomValueToString(DecodeComplexString(value), ex);
                 }
             }
-            catch (Exception ex)
+            if (value.Value.Length > 1)
             {
-                _logger.UnableToCastDicomValueToString(DecodeComplexString(value), ex);
+                return $"[{result}]";
             }
-            return string.Empty;
+            return result;
+        }
+
+        private static string ConcatResult(string result, dynamic str)
+        {
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                result = string.Concat(result, $"{str}");
+            }
+            else
+            {
+                result = string.Concat(result, $", {str}");
+            }
+
+            return result;
         }
 
         private static string DecodeComplexString(DicomValue dicomValue)
