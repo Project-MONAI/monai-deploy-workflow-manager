@@ -32,7 +32,7 @@ Workflows can be created or updated via the [Workflow API](https://github.com/Pr
   - [Overview](#overview)
 - [Contents](#contents)
 - [Workflow](#workflow)
-  - [workflow Revision](#workflow-revision)
+  - [Workflow Revision](#workflow-revision)
   - [Workflow Object](#workflow-object)
       - [Examples](#examples)
     - [Informatics Gateway](#informatics-gateway)
@@ -75,7 +75,7 @@ Workflows can be created or updated via the [Workflow API](https://github.com/Pr
 
 # Workflow
 
-## workflow Revision
+## Workflow Revision
 
 A workflow revision is a wrapper object that is automatically generated when a workflow is created. This object contains the auto-generated workflow Id and the workflow revision number that is used to keep track of updates.
 
