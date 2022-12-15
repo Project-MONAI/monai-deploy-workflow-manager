@@ -239,16 +239,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 
         public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
         {
-            var status = TaskExecutionStatus.Succeeded;
-            var reason = FailureReason.None;
-            var message = string.Empty;
+            var executionStatus = TaskExecutionStatus.Succeeded;
+            var executionFailureReason = FailureReason.None;
+
+            // metadata properties
             var userId = string.Empty;
+            var message = "N/A";
+            var reason = "N/A";
 
             if (Event.Metadata.TryGetValue(Keys.MetadataAcceptance, out var acceptance))
             {
-                status = (bool)acceptance ?
+                executionStatus = (bool)acceptance ?
                         TaskExecutionStatus.Succeeded :
                         TaskExecutionStatus.PartialFail;
+            }
+
+            if (executionStatus != TaskExecutionStatus.Succeeded)
+            {
+                executionFailureReason = FailureReason.PluginError;
             }
 
             if (Event.Metadata.TryGetValue(Keys.MetadataMessage, out var metadataMessage))
@@ -261,24 +269,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
                 userId = (string)metadataUserId;
             }
 
-            if (status != TaskExecutionStatus.Succeeded)
+            if (Event.Metadata.TryGetValue(Keys.MetadataReason, out var metadataReason))
             {
-                reason = FailureReason.PluginError;
+                reason = (string)metadataReason;
             }
 
             _logger.RecordTaskDecision(
                 Event.TaskId,
-                status == TaskExecutionStatus.Succeeded ? "Accepted" : "Rejected",
+                executionStatus == TaskExecutionStatus.Succeeded ? "Accepted" : "Rejected",
                 DateTime.UtcNow.ToLongDateString(),
                 userId,
                 _applicationName,
-                reason.ToString(),
-                !string.IsNullOrWhiteSpace(message) ? message : "N/A");
+                reason,
+                message);
 
             return await Task.Run(() => new ExecutionStatus
             {
-                Status = status,
-                FailureReason = reason,
+                Status = executionStatus,
+                FailureReason = executionFailureReason,
             });
         }
 

@@ -96,7 +96,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         /// <summary>
         /// Key for the reject reason.
         /// </summary>
-        public static readonly string MetadataRejectReason = "reason";
+        public static readonly string MetadataReason = "reason";
 
         /// <summary>
         /// Key for the message.
