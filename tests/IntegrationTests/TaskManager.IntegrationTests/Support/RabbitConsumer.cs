@@ -28,8 +28,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             RoutingKey = routingKey;
         }
 
-        private QueueDeclareOk Queue { get; set; }
-
         private string Exchange { get; set; }
 
         private string RoutingKey { get; set; }
@@ -42,7 +40,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                 channel.QueueBind(queue.QueueName, Exchange, RoutingKey);
                 channel.ExchangeDeclare(Exchange, ExchangeType.Topic, durable: true);
 
-                var basicGetResult = channel.BasicGet(Queue.QueueName, true);
+                var basicGetResult = channel.BasicGet(queue.QueueName, true);
 
                 if (basicGetResult != null)
                 {

@@ -41,9 +41,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                     WorkflowInstanceId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic").TaskDispatchEvent.WorkflowInstanceId,
                     Metadata = new Dictionary<string, object>()
                     {
-                        { "metadata_1", "test_1" },
-                        { "metadata_2", "test_2" },
-                        { "metadata_3", "test_3" },
+                        { "acceptance", true },
+                        { "user_id", "example_user_id" }
                     },
                     Outputs = new List<Messaging.Common.Storage> {
                         new Messaging.Common.Storage()
