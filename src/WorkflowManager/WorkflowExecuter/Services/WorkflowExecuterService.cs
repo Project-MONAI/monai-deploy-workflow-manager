@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

@@ -527,7 +527,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 TaskId = taskId,
                 Message = executionStatus.Errors,
                 Outputs = outputs ?? new List<Messaging.Common.Storage>(),
-                Metadata = executionStatus.Metadata,
             };
             return new JsonMessage<TaskUpdateEvent>(body, TaskManagerApplicationId, message.CorrelationId);
         }

@@ -33,6 +33,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 TaskExecutionStatus.Accepted => newStatus.AcceptedValidStatuses(oldStatus),
                 TaskExecutionStatus.Succeeded => newStatus.SucceededValidStatuses(oldStatus),
                 TaskExecutionStatus.Failed => newStatus.FailedValidStatuses(oldStatus),
+                TaskExecutionStatus.PartialFail => newStatus.PartialFailValisStatuses(oldStatus),
                 TaskExecutionStatus.Canceled => newStatus.CanceledValidStatuses(oldStatus),
                 _ => false,
             };
@@ -69,6 +70,11 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
         private static bool FailedValidStatuses(this TaskExecutionStatus newStatus, TaskExecutionStatus oldStatus) =>
             newStatus == TaskExecutionStatus.Failed &&
+                oldStatus != TaskExecutionStatus.Succeeded &&
+                oldStatus != TaskExecutionStatus.Failed;
+
+        private static bool PartialFailValisStatuses(this TaskExecutionStatus newStatus, TaskExecutionStatus oldStatus) =>
+            newStatus == TaskExecutionStatus.PartialFail &&
                 oldStatus != TaskExecutionStatus.Succeeded &&
                 oldStatus != TaskExecutionStatus.Failed;
 

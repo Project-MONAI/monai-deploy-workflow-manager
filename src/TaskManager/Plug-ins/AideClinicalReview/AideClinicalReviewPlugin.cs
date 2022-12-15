@@ -183,68 +183,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 
             try
             {
-                // default values?
-                // Or add these paramaters to validation?
-                var status = TaskExecutionStatus.Accepted;
-                var reason = FailureReason.None;
-                var message = string.Empty;
-                var userId = string.Empty;
-
-                if (Event.Metadata.TryGetValue(Keys.MetadataAcceptance, out var acceptance))
-                {
-                    status = (bool)acceptance ?
-                            TaskExecutionStatus.Accepted :
-                            TaskExecutionStatus.PartialFail;
-                }
-
-                if (status == TaskExecutionStatus.PartialFail)
-                {
-                    if (Event.Metadata.TryGetValue(Keys.MetadataRejectReason, out var failureReason))
-                    {
-                        reason = (FailureReason)failureReason;
-                    }
-                }
-
-                if (Event.Metadata.TryGetValue(Keys.MetadataMessage, out var metadataMessage))
-                {
-                    message = (string)metadataMessage;
-                }
-
-                if (Event.Metadata.TryGetValue(Keys.MetadataUserId, out var metadataUserId))
-                {
-                    userId = (string)metadataUserId;
-                }
-
                 var reviewEvent = GenerateClinicalReviewRequestEventMessage();
                 await SendClinicalReviewRequestEvent(reviewEvent).ConfigureAwait(false);
 
-                _logger.RecordTaskDecision(
-                    Event.TaskId,
-                    status == TaskExecutionStatus.Accepted ? "Accepted" : "Rejected",
-                    DateTime.UtcNow.ToLongDateString(),
-                    userId,
-                    _applicationName,
-                    reason.ToString(),
-                    !string.IsNullOrWhiteSpace(message) ? message : "N/A");
-
-#pragma warning disable CS8601 // Possible null reference assignment.
-                return new ExecutionStatus
-                {
-                    Status = status,
-                    FailureReason = reason,
-                    Errors = status == TaskExecutionStatus.PartialFail ? // not sure if this message should be added to the erros or not
-                        message :
-                        null,
-                    Stats = new Dictionary<string, string>
-                    {
-                        {
-                            Strings.IdentityKey,
-                            reviewEvent.Body.ExecutionId
-                        }
-                    },
-                    Metadata = Event.Metadata
-                };
-#pragma warning restore CS8601 // Possible null reference assignment.
+                return new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None, Stats = new Dictionary<string, string> { { Strings.IdentityKey, reviewEvent.Body.ExecutionId } } };
             }
             catch (Exception ex)
             {
@@ -297,7 +239,50 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 
         public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
         {
-            return await Task.Run(() => new ExecutionStatus { Status = TaskExecutionStatus.Succeeded });
+            var status = TaskExecutionStatus.Accepted;
+            var reason = FailureReason.None;
+            var message = string.Empty;
+            var userId = string.Empty;
+
+            if (Event.Metadata.TryGetValue(Keys.MetadataAcceptance, out var acceptance))
+            {
+                status = (bool)acceptance ?
+                        TaskExecutionStatus.Succeeded :
+                        TaskExecutionStatus.PartialFail;
+            }
+
+            if (status == TaskExecutionStatus.PartialFail)
+            {
+                if (Event.Metadata.TryGetValue(Keys.MetadataRejectReason, out var failureReason))
+                {
+                    reason = (FailureReason)failureReason;
+                }
+            }
+
+            if (Event.Metadata.TryGetValue(Keys.MetadataMessage, out var metadataMessage))
+            {
+                message = (string)metadataMessage;
+            }
+
+            if (Event.Metadata.TryGetValue(Keys.MetadataUserId, out var metadataUserId))
+            {
+                userId = (string)metadataUserId;
+            }
+
+            _logger.RecordTaskDecision(
+                Event.TaskId,
+                status == TaskExecutionStatus.Succeeded ? "Accepted" : "Rejected",
+                DateTime.UtcNow.ToLongDateString(),
+                userId,
+                _applicationName,
+                reason.ToString(),
+                !string.IsNullOrWhiteSpace(message) ? message : "N/A");
+
+            return await Task.Run(() => new ExecutionStatus
+            {
+                Status = status,
+                FailureReason = reason,
+            });
         }
 
         ~AideClinicalReviewPlugin() => Dispose(disposing: false);
