@@ -834,6 +834,16 @@ In order to check a certain tag across _all_ series, use the study level tags. F
 {{context.dicom.series.all('0010','0040')}} == 'F'
 ```
 
+When parsing decimals from dicoms trailing 0's will be trimmed
+for example say the data in '0018','0050' contains '1.6000' the 0's will be trimmed to 1.6
+```python
+{{context.dicom.series.any('0018','0050')}} == '1.6000'
+```
+so in this example expression will fail, you would have to do following expression to pass
+```python
+{{context.dicom.series.any('0018','0050')}} == '1.6'
+```
+
 if you Dicom Metadata contains array of items for example
 ```python
   "00200037": {
