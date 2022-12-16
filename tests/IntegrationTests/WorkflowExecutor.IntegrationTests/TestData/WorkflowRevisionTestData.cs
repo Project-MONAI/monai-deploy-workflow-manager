@@ -2112,7 +2112,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
-                        new WorkflowRevisionTestData()
+            new WorkflowRevisionTestData()
             {
                 Name = "Workflow_Revision_for_publish_an_invalid_task_update",
                 WorkflowRevision = new WorkflowRevision()
