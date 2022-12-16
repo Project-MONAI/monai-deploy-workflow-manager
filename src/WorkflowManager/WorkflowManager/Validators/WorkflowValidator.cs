@@ -394,10 +394,19 @@ namespace Monai.Deploy.WorkflowManager.Validators
             if (!currentTask.Args.ContainsKey(ReviewedTaskId))
             {
                 Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id must be specified.");
+                return;
             }
             else if (tasks.Any(t => t.Id.ToLower() == currentTask.Args[ReviewedTaskId].ToLower()) is false)
             {
                 Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id: '{currentTask.Args[ReviewedTaskId]}' could not be found in the workflow.");
+                return;
+            }
+
+            var reviewedTask = tasks.First(t => t.Id.ToLower() == currentTask.Args[ReviewedTaskId].ToLower());
+
+            if (reviewedTask.Type.Equals(ArgoTaskType, StringComparison.OrdinalIgnoreCase) is false)
+            {
+                Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id: '{currentTask.Args[ReviewedTaskId]}' does not reference an Argo task.");
             }
         }
     }
