@@ -361,6 +361,7 @@
     :why: MIT (https://github.com/microsoft/vstest/raw/main/LICENSE)
     :versions:
     - 17.1.0
+    - 17.3.2
     :when: 2022-10-14 23:36:59.038758007 Z
 - - :approve
   - Microsoft.DotNet.PlatformAbstractions
@@ -489,7 +490,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
     :versions:
-    - 6.0.11
+    - 6.0.10
     :when: 2022-10-14 23:37:05.963687838 Z
 - - :approve
   - Microsoft.Extensions.FileProviders.Abstractions
@@ -545,7 +546,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
-    - 3.1.9
+    - 6.0.0
     :when: 2022-10-14 23:37:09.069264115 Z
 - - :approve
   - Microsoft.Extensions.Logging
@@ -2236,6 +2237,7 @@
     :why: MIT (https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/raw/dev/LICENSE.txt)
     :versions:
     - 6.23.1
+    - 6.25.1
     :when: 2022-10-21 05:31:10.785578919 Z
 - - :approve
   - Microsoft.IdentityModel.JsonWebTokens
