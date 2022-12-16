@@ -16,6 +16,7 @@
 
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 {
@@ -285,6 +286,16 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
         private bool ContainsEvaluate()
         {
+            if (LeftParameterIsArray && RightParameterIsArray)
+            {
+                var arr1 = LeftParameter.Split(',').Select(i => CleanString(i)).ToArray();
+                var arr2 = RightParameter.Split(',').Select(i => CleanString(i)).ToArray();
+                MakeNullsUpperCase(arr1);
+                MakeNullsUpperCase(arr2);
+                var result = arr1.Any(item => arr2.Any(p => p.Equals(item)));
+                return result;
+            }
+
             string[] arr;
             var compare = string.Empty;
 
@@ -299,20 +310,29 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 compare = LeftParameter;
             }
 
-            if (arr.Any(p =>
-                p.Trim().Equals(NULL, StringComparison.InvariantCultureIgnoreCase)
-                || p.Trim().Equals(UNDEFINED, StringComparison.InvariantCultureIgnoreCase)))
+            MakeNullsUpperCase(arr);
+
+            return arr.Any(p => CleanString(p).Equals(compare));
+        }
+
+        private static string CleanString(string p) => p.Trim().Trim('\"').Trim('\'').Trim('“').Trim('”');
+
+        private static bool EqualsNullOrDefined(string str) =>
+            str.Trim().Equals(NULL, StringComparison.InvariantCultureIgnoreCase)
+            || str.Trim().Equals(UNDEFINED, StringComparison.InvariantCultureIgnoreCase);
+
+        private static void MakeNullsUpperCase(string[] arr)
+        {
+            if (arr.Any(p => EqualsNullOrDefined(p)))
             {
                 for (var i = 0; i < arr.Length; i++)
                 {
-                    if (arr[i].Trim().Equals(NULL, StringComparison.InvariantCultureIgnoreCase) || arr[i].Equals(UNDEFINED, StringComparison.InvariantCultureIgnoreCase))
+                    if (EqualsNullOrDefined(arr[i]))
                     {
                         arr[i] = NULL;
                     }
                 }
             }
-
-            return arr.Any(p => p.Trim().Trim('\"').Trim('\'').Trim('“').Trim('”').Equals(compare));
         }
     }
 }

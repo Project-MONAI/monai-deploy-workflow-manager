@@ -107,6 +107,10 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         [InlineData("{{ context.dicom.series.any('0018','0050') }} <= '1.25000'", true, "0.25000", "'0.25000' <= '1.25000'")]
         [InlineData("{{ context.dicom.series.any('0018','0050') }} <= '0.25000'", true, "0.24000", "'0.24000' <= '0.25000'")]
         [InlineData("{{ context.dicom.series.any('0018','0050') }} < '0.25000'", true, "0.24000", "'0.24000' < '0.25000'")]
+        [InlineData("{{ context.dicom.series.any('0018','0050') }} CONTAINS '5'", true, "['2','5','3']", "['2','5','3'] CONTAINS '5'")]
+        [InlineData("{{ context.dicom.series.any('0018','0050') }} CONTAINS '6'", false, "['2','5','3']", "['2','5','3'] CONTAINS '6'")]
+        [InlineData("{{ context.dicom.series.any('0018','0050') }} CONTAINS '0.6'", true, "['2','5','3','0.6']", "['2','5','3','0.6'] CONTAINS '0.6'")]
+        [InlineData("{{ context.dicom.series.any('0018','0050') }} CONTAINS ['100','0.6']", true, "['2','5','3','0.6']", "['2','5','3','0.6'] CONTAINS ['100','0.6']")]
         public void ConditionalParameterParser_WhenGivenCorrectDicomString_ShouldEvaluate(string input, bool expectedResult, string? expectedDicomReturn, string expectedResolvedConditional)
         {
             if (expectedDicomReturn is not null)
