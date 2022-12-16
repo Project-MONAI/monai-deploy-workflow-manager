@@ -100,6 +100,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 
             foreach (var dict in taskCallbackEvent.Metadata)
             {
+                if (dict.Key == "reviewer_roles")
+                {
+                    continue;
+                }
+
                 taskUpdateEvent.Metadata.TryGetValue(dict.Key, out var updateMetadataValue);
                 updateMetadataValue.Should().Be(dict.Value);
             }
