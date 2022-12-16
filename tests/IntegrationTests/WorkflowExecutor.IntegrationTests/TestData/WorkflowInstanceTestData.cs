@@ -1883,6 +1883,35 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+            new WorkflowInstanceTestData()
+            {
+                Name = "Workflow_Task_Update_Clinical_Review_1",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("Workflow_Task_Update_Clinical_Review_1")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Workflow_Task_Update_Clinical_Review_1")?.WorkflowRevision?.WorkflowId ?? "",
+                    PayloadId = Helper.GetWorkflowRequestByName("Workflow_Task_Update_Clinical_Review_1").WorkflowRequestMessage.PayloadId.ToString(),
+                    BucketId = "bucket1",
+                    StartTime = DateTime.UtcNow,
+                    Status = Status.Created,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("Workflow_Task_Update_Clinical_Review_1")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Workflow_Task_Update_Clinical_Review_1")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
+                            Status = TaskExecutionStatus.Dispatched,
+                        }
+                    }
+                }
+            },
         };
     }
 }

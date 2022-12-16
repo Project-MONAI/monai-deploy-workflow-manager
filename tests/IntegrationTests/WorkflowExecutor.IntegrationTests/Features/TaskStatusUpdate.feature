@@ -129,3 +129,21 @@ Scenario: Export request complete message is sent as Partial Failed or Failed, w
     | exportCompleteMessage                                         |
     | Export_Complete_Message_for_export_multi_dest_2_PartialFailed |
     | Export_Complete_Message_for_export_multi_dest_2_Failed        |
+
+@TaskUpdate @ignore
+Scenario: Task update event with Partial Failed sets the workflow as Succeeded
+    Given I have a clinical workflow Workflow_Task_Update_Clinical_Review_1
+    And I have a Workflow Instance Workflow_Task_Update_Clinical_Review_1 with artifacts output_metadata in minio
+    When I publish a Task Update Message Workflow_Task_Update_Clinical_Review_Rejected with status Succeeded
+    Then I can see the status of the Task is updated
+    And I can see the Metadata is copied to the workflow instance
+    And Workflow Instance status is Succeeded
+
+@TaskUpdate
+Scenario: Task update event metadata is saved to Task Object in workflow instance
+    Given I have a clinical workflow Workflow_Task_Update_Clinical_Review_2
+    And I have a Workflow Instance Workflow_Task_Update_Clinical_Review_2 with artifacts output_metadata in minio
+    When I publish a Task Update Message Workflow_Task_Update_Clinical_Review_Accepted with status Succeeded
+    Then I can see the status of the Task is updated
+    And I can see the Metadata is copied to the workflow instance
+    And Workflow Instance status is Succeeded

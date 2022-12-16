@@ -2241,18 +2241,18 @@
     :when: 2022-10-21 05:32:02.785856125 Z
 - - :approve
   - Monai.Deploy.Messaging
-  - :who: mocsharp
+  - :who: samrooke
     :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
-    - 0.1.17-rc0020
-    :when: 2022-11-02 21:43:10.781625468 Z
+    - 0.1.19
+    :when: 2022-12-15 21:43:10.781625468 Z
 - - :approve
   - Monai.Deploy.Messaging.RabbitMQ
-  - :who: mocsharp
+  - :who: samrooke
     :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
-    - 0.1.17-rc0020
-    :when: 2022-11-02 21:43:20.975488411 Z
+    - 0.1.19
+    :when: 2022-12-15 21:43:20.975488411 Z
 - - :approve
   - Monai.Deploy.Storage
   - :who: neildsouth

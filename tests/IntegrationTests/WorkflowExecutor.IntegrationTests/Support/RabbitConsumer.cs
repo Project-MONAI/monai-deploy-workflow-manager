@@ -22,14 +22,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
     public class RabbitConsumer
     {
-        public RabbitConsumer(IModel channel, string exchange, string routingKey)
+        public RabbitConsumer(string exchange, string routingKey)
         {
             Exchange = exchange;
             RoutingKey = routingKey;
-            Channel = channel;
-            Queue = Channel.QueueDeclare(queue: routingKey, durable: true, exclusive: false, autoDelete: false);
-            Channel.QueueBind(Queue.QueueName, Exchange, RoutingKey);
-            Channel.ExchangeDeclare(Exchange, ExchangeType.Topic, durable: true);
         }
 
         private QueueDeclareOk Queue { get; set; }
@@ -38,27 +34,27 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         private string RoutingKey { get; set; }
 
-        private IModel Channel { get; set; }
-
         public T GetMessage<T>()
         {
-            var basicGetResult = Channel.BasicGet(Queue.QueueName, true);
-
-            if (basicGetResult != null)
+            using (var channel = RabbitConnectionFactory.Connection?.CreateModel())
             {
-                var byteArray = basicGetResult.Body.ToArray();
+                var queue = channel.QueueDeclare(queue: RoutingKey, durable: true, exclusive: false, autoDelete: false);
+                channel.QueueBind(queue.QueueName, Exchange, RoutingKey);
+                channel.ExchangeDeclare(Exchange, ExchangeType.Topic, durable: true);
 
-                var str = Encoding.Default.GetString(byteArray);
+                var basicGetResult = channel.BasicGet(Queue.QueueName, true);
 
-                return JsonConvert.DeserializeObject<T>(str);
+                if (basicGetResult != null)
+                {
+                    var byteArray = basicGetResult.Body.ToArray();
+
+                    var str = Encoding.Default.GetString(byteArray);
+
+                    return JsonConvert.DeserializeObject<T>(str);
+                }
             }
 
             return default;
-        }
-
-        public void CloseConnection()
-        {
-            Channel.Close();
         }
     }
 }
