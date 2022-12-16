@@ -126,24 +126,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
                 taskUpdated.Should().NotBeNull();
 
-                if (DataHelper.TaskUpdateEvent.Metadata.ContainsKey("acceptance"))
-                {
-                    var crValue = DataHelper.TaskUpdateEvent.Metadata.FirstOrDefault(x => x.Key.Equals("acceptance")).Value;
-
-                    if (crValue.Equals(true))
-                    {
-                        taskUpdated?.Status.Should().Be(TaskExecutionStatus.Succeeded);
-                    }
-                    else
-                    {
-                        taskUpdated?.Status.Should().Be(TaskExecutionStatus.PartialFail);
-                    }
-                }
-                else
-                {
-                    taskUpdated?.Status.Should().Be(DataHelper.TaskUpdateEvent.Status);
-                }
-
+                taskUpdated?.Status.Should().Be(DataHelper.TaskUpdateEvent.Status);
                 taskUpdated?.Reason.Should().Be(DataHelper.TaskUpdateEvent.Reason);
 
                 if (DataHelper.TaskDispatchEvents.Count > 0)

@@ -22,75 +22,70 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
     public static class RabbitConnectionFactory
     {
-        public static IConnection? Connection { get; set; }
+        private static IModel? Channel { get; set; }
 
-        public static void SetRabbitConnection()
+        public static IModel GetRabbitConnection()
         {
             var connectionFactory = new ConnectionFactory
             {
                 HostName = TestExecutionConfig.RabbitConfig.Host,
                 UserName = TestExecutionConfig.RabbitConfig.User,
                 Password = TestExecutionConfig.RabbitConfig.Password,
-                VirtualHost = TestExecutionConfig.RabbitConfig.VirtualHost
+                VirtualHost = TestExecutionConfig.RabbitConfig.VirtualHost,
+                Port = TestExecutionConfig.RabbitConfig.Port
             };
 
-            Connection = connectionFactory.CreateConnection();
+            Channel = connectionFactory.CreateConnection().CreateModel();
+
+            return Channel;
         }
 
         public static void DeleteQueue(string queueName)
         {
-            using (var channel = Connection?.CreateModel())
+            if (Channel is null)
             {
-                channel?.QueueDelete(queueName);
+                GetRabbitConnection();
             }
+
+            Channel?.QueueDelete(queueName);
         }
 
         public static void PurgeQueue(string queueName)
         {
-            using (var channel = Connection?.CreateModel())
+            if (Channel is null)
             {
-                channel?.QueuePurge(queueName);
+                GetRabbitConnection();
             }
+
+            Channel?.QueuePurge(queueName);
         }
 
         public static void DeleteAllQueues()
         {
-            try
-            {
-                DeleteQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
-                DeleteQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-                DeleteQueue(TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
-                DeleteQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
-                DeleteQueue(TestExecutionConfig.RabbitConfig.ExportCompleteQueue);
-                DeleteQueue(TestExecutionConfig.RabbitConfig.ExportRequestQueue);
-                DeleteQueue($"{TestExecutionConfig.RabbitConfig.WorkflowRequestQueue}-dead-letter");
-                DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter");
-                DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter");
-                DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
-                DeleteQueue($"{TestExecutionConfig.RabbitConfig.ExportCompleteQueue}-dead-letter");
-                DeleteQueue($"{TestExecutionConfig.RabbitConfig.ExportRequestQueue}-dead-letter");
-            }
-            catch (OperationInterruptedException)
-            {
-            }
+            DeleteQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+            DeleteQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            DeleteQueue(TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
+            DeleteQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            DeleteQueue(TestExecutionConfig.RabbitConfig.ExportCompleteQueue);
+            DeleteQueue(TestExecutionConfig.RabbitConfig.ExportRequestQueue);
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.WorkflowRequestQueue}-dead-letter");
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter");
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter");
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.ExportCompleteQueue}-dead-letter");
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.ExportRequestQueue}-dead-letter");
         }
 
         public static void PurgeAllQueues()
         {
-            try
-            {
-                PurgeQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
-                PurgeQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-                PurgeQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
-                PurgeQueue(TestExecutionConfig.RabbitConfig.ExportCompleteQueue);
-                PurgeQueue(TestExecutionConfig.RabbitConfig.ExportRequestQueue);
-                PurgeQueue($"{TestExecutionConfig.RabbitConfig.WorkflowRequestQueue}-dead-letter");
-                PurgeQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
-                PurgeQueue($"{TestExecutionConfig.RabbitConfig.ExportCompleteQueue}-dead-letter");
-            }
-            catch (OperationInterruptedException)
-            {
-            }
+            PurgeQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+            PurgeQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            PurgeQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            PurgeQueue(TestExecutionConfig.RabbitConfig.ExportCompleteQueue);
+            PurgeQueue(TestExecutionConfig.RabbitConfig.ExportRequestQueue);
+            PurgeQueue($"{TestExecutionConfig.RabbitConfig.WorkflowRequestQueue}-dead-letter");
+            PurgeQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
+            PurgeQueue($"{TestExecutionConfig.RabbitConfig.ExportCompleteQueue}-dead-letter");
         }
     }
 }

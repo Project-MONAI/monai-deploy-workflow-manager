@@ -2945,43 +2945,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
-            new WorkflowRevisionTestData()
-            {
-                Name = "Workflow_Task_Update_Clinical_Review_1",
-                WorkflowRevision = new WorkflowRevision()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    WorkflowId = Guid.NewGuid().ToString(),
-                    Revision = 1,
-                    Workflow = new Workflow()
-                    {
-                        Name = "Artifact 1",
-                        Description = "Artifact 1",
-                        Version = "1",
-                        Tasks = new TaskObject[]
-                        {
-                            new TaskObject
-                            {
-                                Id = "clinical_review",
-                                Type = "aide_clinical_review",
-                                Description = "clincial_review_task",
-                                Artifacts = new ArtifactMap()
-                                {
-                                    Input = new Artifact[]
-                                    {
-                                        new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
-                                    },
-                                },
-                                Args = new Dictionary<string, string> { { "test", "test" } }
-                            },
-                        },
-                        InformaticsGateway = new InformaticsGateway()
-                        {
-                            AeTitle = "AET"
-                        }
-                    }
-                }
-            },
         };
     }
 }
