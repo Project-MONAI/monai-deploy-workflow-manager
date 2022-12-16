@@ -154,9 +154,18 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                     {
                         result = "NULL";
                     }
-                    conditions = conditions
-                        .Remove(parameter.Key.Index, parameter.Key.Length)
-                        .Insert(parameter.Key.Index, $"'{result}'");
+                    if (result.StartsWith('[') && result.EndsWith(']'))
+                    {
+                        conditions = conditions
+                            .Remove(parameter.Key.Index, parameter.Key.Length)
+                            .Insert(parameter.Key.Index, $"{result}");
+                    }
+                    else
+                    {
+                        conditions = conditions
+                            .Remove(parameter.Key.Index, parameter.Key.Length)
+                            .Insert(parameter.Key.Index, $"'{result}'");
+                    }
                 }
 
                 ClearWorkflowParser();
