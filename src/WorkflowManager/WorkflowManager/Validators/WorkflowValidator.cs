@@ -373,8 +373,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                     continue;
                 }
 
-                var reviewedTaskId = currentTask.Args[ReviewedTaskId];
-                if (reviewedTaskId.Equals(referencedId, StringComparison.OrdinalIgnoreCase) is false)
+                if (currentTask.Args.ContainsKey(ReviewedTaskId) && currentTask.Args[ReviewedTaskId].Equals(referencedId, StringComparison.OrdinalIgnoreCase) is false)
                 {
                     Errors.Add($"Invalid input artifact '{inputArtifact.Name}' in task '{currentTask.Id}': Task cannot reference a non-reviewed task artifacts '{referencedId}'");
                 }
