@@ -106,7 +106,7 @@ Scenario Outline: Update workflow with invalid details
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskType                           | has an invalid type, please specify: argo, aide_clinical_review, router, export, docker                                                          |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskID_Content                     | Contains Invalid Characters.                                                                                                                     |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Unreferenced_Task                  | Found Task(s) without any task destinations to it                                                                                                |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Loopback_Task                      | Detected task convergence on path                                                                                                                |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Loopback_Task                      | Converging Tasks Destinations in task                                                                                                                |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_0_Tasks                            | Workflow does not contain Tasks, please review Workflow.                                                                                         |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Version_Null                       | Missing Workflow Version                                                                                                                         |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Version_Blank                      | Missing Workflow Version                                                                                                                         |
@@ -120,8 +120,8 @@ Scenario Outline: Update workflow with invalid details
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_2              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_3              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc'                                          |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Dup_Task_Id                        | Invalid                                                                                                                                          |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Coverging_Task_Dest                | Invalid                                                                                                                                          |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Dup_Task_Id                        | Found duplicate task id 'liver-seg'                                                                                                                                          |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Coverging_Task_Dest                | Converging Tasks Destinations in tasks                                                                                                                                          |
 
 @UpdateWorkflows
 Scenario Outline: Update workflow with duplicate workflow name
@@ -168,7 +168,7 @@ Scenario Outline: Add workflow with invalid details
     | Invalid_Workflow_AETitle_Length                     | AeTitle is required in the InformaticsGateaway section and must be under 16 charachters.                                                         |
     | Invalid_Workflow_TaskID_Content                     | Contains Invalid Characters.                                                                                                                     |
     | Invalid_Workflow_Unreferenced_Task                  | Found Task(s) without any task destinations to it                                                                                                |
-    | Invalid_Workflow_Loopback_Task                      | Detected task convergence on path                                                                                                                |
+    | Invalid_Workflow_Loopback_Task                      | Converging Tasks Destinations in task                                                                                                                |
     | Invalid_Workflow_0_Tasks                            | Workflow does not contain Tasks, please review Workflow.                                                                                         |
     | Invalid_Workflow_Version_Null                       | Missing Workflow Version                                                                                                                         |
     | Invalid_Workflow_Version_Blank                      | Missing Workflow Version                                                                                                                         |
@@ -182,8 +182,8 @@ Scenario Outline: Add workflow with invalid details
     | Invalid_Workflow_Missing_2_Argo_Args_2              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
     | Invalid_Workflow_Missing_2_Argo_Args_3              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
     | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc'                                          |
-    | Invalid_Workflow_Dup_Task_Id                        | Invalid                                                                                                                                          |
-    | Invalid_Workflow_Coverging_Task_Dest                | Invalid                                                                                                                                                 |
+    | Invalid_Workflow_Dup_Task_Id                        | Found duplicate task id 'liver-seg'                                                                                                                                          |
+    | Invalid_Workflow_Coverging_Task_Dest                | Converging Tasks Destinations in tasks                                                                                                                                                 |
 
 @AddWorkflows
 Scenario Outline: Add workflow with duplicate workflow name
@@ -213,7 +213,7 @@ Scenario Outline: Validate workflow with invalid details
     | Invalid_Workflow_TaskType                           | has an invalid type, please specify: argo, aide_clinical_review, router, export, docker                                                          |
     | Invalid_Workflow_TaskID_Content                     | Contains Invalid Characters.                                                                                                                     |
     | Invalid_Workflow_Unreferenced_Task                  | Found Task(s) without any task destinations to it                                                                                                |
-    | Invalid_Workflow_Loopback_Task                      | Detected task convergence on path                                                                                                                |
+    | Invalid_Workflow_Loopback_Task                      | Converging Tasks Destinations in task                                                                                                                |
     | Invalid_Workflow_0_Tasks                            | Workflow does not contain Tasks, please review Workflow.                                                                                         |
     | Invalid_Workflow_Version_Null                       | Missing Workflow Version                                                                                                                         |
     | Invalid_Workflow_Version_Blank                      | Missing Workflow Version                                                                                                                         |
@@ -227,8 +227,8 @@ Scenario Outline: Validate workflow with invalid details
     | Invalid_Workflow_Missing_2_Argo_Args_2              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
     | Invalid_Workflow_Missing_2_Argo_Args_3              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
     | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc'                                          |
-    | Invalid_Workflow_Dup_Task_Id                        | Invalid                                                                                                                                          |
-    | Invalid_Workflow_Coverging_Task_Dest                | Invalid                                                                                                                                          |
+    | Invalid_Workflow_Dup_Task_Id                        | Found duplicate task id 'liver-seg'                                                                                                                                          |
+    | Invalid_Workflow_Coverging_Task_Dest                | Converging Tasks Destinations in tasks                                                                                                                                          |
 
 @DeleteWorkflows
 Scenario: Delete a workflow with one revision

@@ -1207,7 +1207,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 },
                                 Output = new Artifact[] {}
                             },
-                            TaskDestinations = new TaskDestination[] {}
+                            TaskDestinations = new TaskDestination[] { }
                         }
                     },
                     InformaticsGateway = new InformaticsGateway()

@@ -152,11 +152,11 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         {
             var workflow = request.Workflow;
             _workflowValidator.OrignalName = request.OriginalWorkflowName;
-            var results = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
-            if (results.Errors.Count > 0)
+            if (errors.Count > 0)
             {
-                var validationErrors = string.Join(", ", results.Errors);
+                var validationErrors = string.Join(", ", errors);
                 _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
 
                 return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", BadRequest);
@@ -176,11 +176,11 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateAsync([FromBody] Workflow workflow)
         {
-            var results = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
-            if (results.Errors.Count > 0)
+            if (errors.Count > 0)
             {
-                var validationErrors = string.Join(", ", results.Errors);
+                var validationErrors = string.Join(", ", errors);
                 _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
 
                 return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", BadRequest);
@@ -222,7 +222,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
 
             _workflowValidator.OrignalName = originalName;
-            var (errors, _) = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
             if (errors.Count > 0)
             {

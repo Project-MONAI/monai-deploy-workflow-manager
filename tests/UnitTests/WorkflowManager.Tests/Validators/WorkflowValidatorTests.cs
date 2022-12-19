@@ -294,23 +294,20 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new WorkflowRevision());
 
-            var (errors, successfulPaths) = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
             Assert.True(errors.Count > 0);
 
             Assert.Equal(33, errors.Count);
 
-            var successPath = "rootTask => taskSucessdesc1 => taskSucessdesc2";
-            Assert.Contains(successPath, successfulPaths);
+            var convergingTasksDestinations = "Converging Tasks Destinations in tasks: (test-clinical-review-2, example-task) on task: example-task";
+            Assert.Contains(convergingTasksDestinations, errors);
 
-            var expectedConvergenceError = "Detected task convergence on path: rootTask => taskdesc1 => taskdesc2 => test-argo-task => test-clinical-review => test-clinical-review-2 => example-task => ∞";
-            Assert.Contains(expectedConvergenceError, errors);
+            var convergingTasksDestinations2 = "Converging Tasks Destinations in tasks: (taskLoopdesc4, taskLoopdesc1) on task: taskLoopdesc2";
+            Assert.Contains(convergingTasksDestinations2, errors);
 
             var unreferencedTaskError = "Found Task(s) without any task destinations to it: taskdesc3,task_de.sc3?";
             Assert.Contains(unreferencedTaskError, errors);
-
-            var loopingTasksError = "Detected task convergence on path: rootTask => taskLoopdesc1 => taskLoopdesc2 => taskLoopdesc3 => taskLoopdesc4 => ∞";
-            Assert.Contains(loopingTasksError, errors);
 
             var missingDestinationError = "Task: 'taskLoopdesc4' export_destination: 'DoesNotExistDestination' must be registered in the informatics_gateway object.";
             Assert.Contains(missingDestinationError, errors);
@@ -361,7 +358,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                 .ReturnsAsync(new WorkflowRevision());
 
             _workflowValidator.OrignalName = "pizza";
-            var (errors, _) = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
             Assert.True(errors.Count > 0);
 
@@ -472,7 +469,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                         Id = "taskdesc2",
                         Type = "router",
                         Description = "TestDesc",
-                        TaskDestinations = new TaskDestination[] { }
+                        TaskDestinations = Array.Empty<TaskDestination>()
                     }
                 }
             };
@@ -482,7 +479,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             for (var i = 0; i < 15; i++)
             {
-                var (errors, _) = await _workflowValidator.ValidateWorkflow(workflow);
+                var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
                 Assert.True(errors.Count == 0);
             }
