@@ -275,7 +275,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 return;
             }
 
-            ValidateInputs(tasks, currentTask);
+            ValidateInputs(currentTask);
 
             if (currentTask.Type.Equals(ArgoTaskType, StringComparison.OrdinalIgnoreCase) is true)
             {
@@ -288,7 +288,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void ValidateInputs(TaskObject[] tasks, TaskObject currentTask)
+        private void ValidateInputs(TaskObject currentTask)
         {
             if (currentTask.Type.ToLower() == RouterTaskType)
             {
