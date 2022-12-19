@@ -38,7 +38,7 @@ namespace Monai.Deploy.WorkflowManager.Logging
         [LoggerMessage(EventId = 600005, Level = LogLevel.Debug, Message = "Dicom export marked as succeeded with {fileStatusCount} files marked as exported.")]
         public static partial void DicomExportSucceeded(this ILogger logger, string fileStatusCount);
 
-        [LoggerMessage(EventId = 600005, Level = LogLevel.Debug, Message = "Dicom export marked as failed with {fileStatusCount} files marked as exported.")]
+        [LoggerMessage(EventId = 600006, Level = LogLevel.Debug, Message = "Dicom export marked as failed with {fileStatusCount} files marked as exported.")]
         public static partial void DicomExportFailed(this ILogger logger, string fileStatusCount);
     }
 }
