@@ -81,15 +81,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             TestExecutionConfig.MinioConfig.Bucket = config.GetValue<string>("WorkflowManager:storage:settings:bucket");
             TestExecutionConfig.MinioConfig.Region = config.GetValue<string>("WorkflowManager:storage:settings:region");
 
+            TestExecutionConfig.ApiConfig.TaskManagerBaseUrl = "http://localhost:5000";
+
             RabbitConnectionFactory.DeleteAllQueues();
 
-            Host = TaskManagerStartup.StartTaskManager();
+            RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             MongoClient = new MongoClientUtil();
             HttpClient = new HttpClient();
             MinioClient = new MinioClientUtil();
-            RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+            Host = TaskManagerStartup.StartTaskManager();
 
-            TestExecutionConfig.ApiConfig.TaskManagerBaseUrl = "http://localhost:5000";
+            RabbitConnectionFactory.SetRabbitConnection();
         }
 
         [BeforeTestRun(Order = 2)]
@@ -125,10 +127,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                 }
             });
 
-            TaskDispatchPublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-            TaskCallbackPublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
-            TaskUpdateConsumer = new RabbitConsumer(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
-            ClinicalReviewConsumer = new RabbitConsumer(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
+            TaskDispatchPublisher = new RabbitPublisher(TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            TaskCallbackPublisher = new RabbitPublisher(TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
+            TaskUpdateConsumer = new RabbitConsumer(TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            ClinicalReviewConsumer = new RabbitConsumer(TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
         }
 
         /// <summary>
@@ -157,10 +159,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         [AfterTestRun(Order = 1)]
         public static void TearDownRabbit()
         {
-            TaskDispatchPublisher?.CloseConnection();
-            TaskUpdateConsumer?.CloseConnection();
-            TaskCallbackPublisher?.CloseConnection();
-            ClinicalReviewConsumer?.CloseConnection();
             Host?.StopAsync();
         }
     }

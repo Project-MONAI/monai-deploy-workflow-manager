@@ -30,12 +30,13 @@ Workflows can be created or updated via the [Workflow API](https://github.com/Pr
 
 - [Clinical Workflow Specification Language](#clinical-workflow-specification-language)
   - [Overview](#overview)
+- [Contents](#contents)
 - [Workflow](#workflow)
   - [Workflow Revision](#workflow-revision)
   - [Workflow Object](#workflow-object)
-    - [Examples](#examples)
-  - [Informatics Gateway](#informatics-gateway)
-  - [Tasks](#tasks)
+      - [Examples](#examples)
+    - [Informatics Gateway](#informatics-gateway)
+    - [Tasks](#tasks)
 - [Task Object](#task-object)
     - [Task Types](#task-types)
     - [Example of Plugin Names](#example-of-plugin-names)
@@ -45,22 +46,36 @@ Workflows can be created or updated via the [Workflow API](https://github.com/Pr
       - [Router](#router)
       - [Export](#export)
       - [Plugin](#plugin)
-  - [Task Arguments](#task-arguments)
-    - [Argo](#argo)
+    - [Task Arguments](#task-arguments)
+      - [Argo](#argo)
+        - [Resource Request Object](#resource-request-object)
     - [Clinical Review](#clinical-review)
+    - [Router](#router-1)
+    - [Export](#export-1)
   - [Artifacts](#artifacts)
+      - [Artifact Map](#artifact-map)
+      - [Artifact](#artifact)
     - [Supported artifact variables](#supported-artifact-variables)
+      - [DICOM Input](#dicom-input)
+      - [Execution Output Artifacts](#execution-output-artifacts)
+      - [Execution Output Directory](#execution-output-directory)
     - [Artifact usage in Plugins](#artifact-usage-in-plugins)
+      - [Argo Artifacts](#argo-artifacts)
   - [Destinations](#destinations)
     - [Task Destinations](#task-destinations)
-    - [Export Destinations](#export-destinations)
   - [Evaluators](#evaluators)
-    - [Supported Evaluators](#supported-evaluators)
+    - [Supported Evaulators](#supported-evaulators)
     - [Context](#context)
+      - [Execution Context](#execution-context)
+      - [Result Metadata \& Execution Stats - Using Dictionary Values](#result-metadata--execution-stats---using-dictionary-values)
+      - [Argo Metadata](#argo-metadata)
+      - [DICOM Tags](#dicom-tags)
+      - [Patient Details Context](#patient-details-context)
+      - [Workflow Context](#workflow-context)
 
 # Workflow
 
-## workflow Revision
+## Workflow Revision
 
 A workflow revision is a wrapper object that is automatically generated when a workflow is created. This object contains the auto-generated workflow Id and the workflow revision number that is used to keep track of updates.
 
@@ -706,9 +721,11 @@ Conditional evaluators are logical statement strings that may be used to determi
 
     != (Valid for integers and strings)
 
-    IN (Valid for integers and strings compared to lists)
+    CONTAINS (Valid for integers and strings compared to lists)
 
-    NOT IN (Valid for integers and strings compared to lists)
+    NOT_CONTAINS (Valid for integers and strings compared to lists)
+
+more information on conditionals can be found  [Conditionals Docs](guidelines\mwm-conditionals.md)
 
 ### Context
 The workflow metadata is any data that can be used by Evaluators. This includes metadata added by previous tasks, but can also include metadata about the input files (most notably DICOM tags).
@@ -809,13 +826,43 @@ Each `Series` object contains the tags of that series. They can be accessed eith
 
 The DICOM tag matching engine allows evaluating conditions against all series and resulting in True if the condition matches _any one_ of them:
 ```python
-{{context.dicom.series.any('0018','0050')}} < 5
+{{context.dicom.series.any('0018','0050')}} < '5'
 ```
 
 In order to check a certain tag across _all_ series, use the study level tags. For example, to only evaluate True for Female patients:
 ```python
 {{context.dicom.series.all('0010','0040')}} == 'F'
 ```
+
+When parsing decimals from dicoms trailing 0's will be trimmed
+for example say the data in '0018','0050' contains '1.6000' the 0's will be trimmed to 1.6
+```python
+{{context.dicom.series.any('0018','0050')}} == '1.6000'
+```
+so in this example expression will fail, you would have to do following expression to pass
+```python
+{{context.dicom.series.any('0018','0050')}} == '1.6'
+```
+
+if you Dicom Metadata contains array of items for example
+```python
+  "00200037": {
+    "vr": "DS",
+    "Value": [
+      1,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]
+  },
+```
+this will be evaluated too an array of items and can be used with CONTAINS and NOT_CONTAINS so you could do for example...
+```python
+{{context.dicom.series.all('0020','0037')}} CONTAINS '1'
+```
+
 
 #### Patient Details Context
 When a workflow is triggered, some patient details are attempted to be retrieved from any input DICOM Images.

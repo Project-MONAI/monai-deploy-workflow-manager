@@ -16,6 +16,7 @@
 
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
