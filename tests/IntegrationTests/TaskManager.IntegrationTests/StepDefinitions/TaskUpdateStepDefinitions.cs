@@ -87,6 +87,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
                     Assertions.AssertTaskUpdateEventFromTaskCallback(taskUpdateEvent, DataHelper.TaskCallbackEvent, TaskExecutionStatus.Failed);
                     break;
 
+                case "partialfail":
+                    Assertions.AssertTaskUpdateEventFromTaskCallback(taskUpdateEvent, DataHelper.TaskCallbackEvent, TaskExecutionStatus.PartialFail);
+                    break;
+
                 default:
                     throw new Exception($"Status {status} is not supported! Please check and try again!");
             }
