@@ -34,5 +34,11 @@ namespace Monai.Deploy.WorkflowManager.Logging
 
         [LoggerMessage(EventId = 600004, Level = LogLevel.Error, Message = "Failed trying to cast Dicom Value to string {value}")]
         public static partial void UnableToCastDicomValueToString(this ILogger logger, string value, Exception ex);
+
+        [LoggerMessage(EventId = 600005, Level = LogLevel.Debug, Message = "Dicom export marked as succeeded with {fileStatusCount} files marked as exported.")]
+        public static partial void DicomExportSucceeded(this ILogger logger, string fileStatusCount);
+
+        [LoggerMessage(EventId = 600005, Level = LogLevel.Debug, Message = "Dicom export marked as failed with {fileStatusCount} files marked as exported.")]
+        public static partial void DicomExportFailed(this ILogger logger, string fileStatusCount);
     }
 }
