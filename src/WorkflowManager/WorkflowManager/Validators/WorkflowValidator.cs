@@ -370,6 +370,13 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 if (tasks.FirstOrDefault(t => t.Id == referencedId) == null)
                 {
                     Errors.Add($"Invalid input artifact '{inputArtifact.Name}' in task '{currentTask.Id}': No matching task for ID '{referencedId}'");
+                    continue;
+                }
+
+                var reviewedTaskId = currentTask.Args[ReviewedTaskId];
+                if (reviewedTaskId.Equals(referencedId, StringComparison.OrdinalIgnoreCase) is false)
+                {
+                    Errors.Add($"Invalid input artifact '{inputArtifact.Name}' in task '{currentTask.Id}': Task cannot reference a non-reviewed task artifacts '{referencedId}'");
                 }
             }
         }

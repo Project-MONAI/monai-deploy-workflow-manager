@@ -120,8 +120,8 @@ Scenario Outline: Update workflow with invalid details
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_2              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_3              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc'                                          |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Clinical_Review_Task_Id                     | Invalid                                                                                                                                          |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Clinical_Review_Multiple_Argo_Inputs        | Invalid                                                                                                                                          |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Clinical_Review_Task_Id                     | 'clinical-review' reviewed_task_id: 'router' does not reference an Argo task.                                                                    |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Clinical_Review_Multiple_Argo_Inputs        | Invalid input artifact 'Argo2' in task 'clinical-review': Task cannot reference a non-reviewed task artifacts 'argo-task-2'                      |
 
 
 @UpdateWorkflows
@@ -183,8 +183,8 @@ Scenario Outline: Add workflow with invalid details
     | Invalid_Workflow_Missing_2_Argo_Args_2              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
     | Invalid_Workflow_Missing_2_Argo_Args_3              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
     | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc'                                          |
-    | Invalid_Clinical_Review_Task_Id                     | Invalid                                                                                                                                                 |
-    | Invalid_Clinical_Review_Multiple_Argo_Inputs        | Invalid                                                                                                                                          |
+    | Invalid_Clinical_Review_Task_Id                     | 'clinical-review' reviewed_task_id: 'router' does not reference an Argo task.                                                                    |
+    | Invalid_Clinical_Review_Multiple_Argo_Inputs        | Invalid input artifact 'Argo2' in task 'clinical-review': Task cannot reference a non-reviewed task artifacts 'argo-task-2'                      |
 
 
 @AddWorkflows
