@@ -57,6 +57,13 @@ Scenario: Get all triggered workflows instances for payload
     | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&pageNumber=1&pageSize=10&disablePagination=true |
     | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&disablePagination=true                          |
 
+@GetWorkflowInstances
+Scenario: Verifying the number of successful exports
+    Given I have an endpoint /workflowinstances
+    And I have a Workflow Instance Existing_WFI_Dispatched with no artifacts
+    When I publish a Export Complete Message Export_Complete_Message_for_export_file_statuses
+    Then the number of successful exports for Export_Complete_Message_for_export_file_statuses is count 3
+
 @WorkflowInstancePagination
 Scenario Outline: Get all workflow instances from API - Test pagination
     Given I have an endpoint /workflowinstances<pagination_query>
