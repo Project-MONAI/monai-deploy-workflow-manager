@@ -672,7 +672,15 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                                 {
                                     new TaskDestination()
                                     {
-                                        Conditions = new string[] { "{{ context.dicom.series.any('0010','0040') }} == 'lordge'" },
+                                        Conditions = new string[] {
+                                            "{{ context.dicom.series.any('0028','0100') }} == '-16'",
+                                            "{{ context.dicom.series.any('0028','0101') }} == '-16.5'",
+                                            "{{ context.dicom.series.any('0028','0101') }} < '-16.1'",
+                                            "{{ context.dicom.series.any('0028','0102') }} CONTAINS '-16'",
+                                            "{{ context.dicom.series.any('0028','0102') }} NOT_CONTAINS '-160'",
+                                            "{{ context.dicom.series.any('0038','0101') }} == '-16.500'",
+                                            "{{ context.dicom.series.any('0028','0102') }} NOT_CONTAINS ['-160', '100', '15']",
+                                            "{{ context.dicom.series.any('0010','0040') }} == 'lordge'", },
                                         Name = "cake"
                                     }
                                 }
@@ -2104,7 +2112,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
-                        new WorkflowRevisionTestData()
+            new WorkflowRevisionTestData()
             {
                 Name = "Workflow_Revision_for_publish_an_invalid_task_update",
                 WorkflowRevision = new WorkflowRevision()

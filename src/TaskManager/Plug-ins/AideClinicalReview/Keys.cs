@@ -60,6 +60,26 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         public static readonly string QueueName = "queue_name";
 
         /// <summary>
+        /// Key for the acceptance.
+        /// </summary>
+        public static readonly string MetadataAcceptance = "acceptance";
+
+        /// <summary>
+        /// Key for the reject reason.
+        /// </summary>
+        public static readonly string MetadataReason = "reason";
+
+        /// <summary>
+        /// Key for the message.
+        /// </summary>
+        public static readonly string MetadataMessage = "message";
+
+        /// <summary>
+        /// Key for the user ID.
+        /// </summary>
+        public static readonly string MetadataUserId = "user_id";
+
+        /// <summary>
         /// Required arguments to run the Argo workflow.
         /// </summary>
         public static readonly IReadOnlyList<string> RequiredParameters =

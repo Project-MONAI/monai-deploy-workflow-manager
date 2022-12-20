@@ -130,6 +130,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
                 if (status is TaskExecutionStatus.Succeeded
                     || status is TaskExecutionStatus.Failed
+                    || status is TaskExecutionStatus.PartialFail
                     || status is TaskExecutionStatus.Canceled)
                 {
                     update = Builders<WorkflowInstance>.Update

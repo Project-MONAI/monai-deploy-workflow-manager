@@ -173,9 +173,6 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         [AfterTestRun(Order = 1)]
         public static void StopServices()
         {
-            WorkflowPublisher?.CloseConnection();
-            TaskDispatchConsumer?.CloseConnection();
-            TaskUpdatePublisher?.CloseConnection();
             Host?.StopAsync();
         }
     }

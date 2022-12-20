@@ -125,6 +125,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 var taskUpdated = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(DataHelper.TaskUpdateEvent.TaskId));
 
                 taskUpdated.Should().NotBeNull();
+
                 taskUpdated?.Status.Should().Be(DataHelper.TaskUpdateEvent.Status);
                 taskUpdated?.Reason.Should().Be(DataHelper.TaskUpdateEvent.Reason);
 

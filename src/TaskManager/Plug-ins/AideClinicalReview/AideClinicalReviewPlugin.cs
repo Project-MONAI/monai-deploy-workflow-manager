@@ -245,7 +245,49 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 
         public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
         {
-            return await Task.Run(() => new ExecutionStatus { Status = TaskExecutionStatus.Succeeded });
+            var executionStatus = TaskExecutionStatus.Succeeded;
+
+            // metadata properties
+            var userId = string.Empty;
+            var message = "N/A";
+            var reason = "N/A";
+
+            if (Event.Metadata.TryGetValue(Keys.MetadataAcceptance, out var acceptance))
+            {
+                executionStatus = (bool)acceptance ?
+                        TaskExecutionStatus.Succeeded :
+                        TaskExecutionStatus.PartialFail;
+            }
+
+            if (Event.Metadata.TryGetValue(Keys.MetadataMessage, out var metadataMessage))
+            {
+                message = (string)metadataMessage;
+            }
+
+            if (Event.Metadata.TryGetValue(Keys.MetadataUserId, out var metadataUserId))
+            {
+                userId = (string)metadataUserId;
+            }
+
+            if (Event.Metadata.TryGetValue(Keys.MetadataReason, out var metadataReason))
+            {
+                reason = (string)metadataReason;
+            }
+
+            _logger.RecordTaskDecision(
+                Event.TaskId,
+                executionStatus == TaskExecutionStatus.Succeeded ? "Accepted" : "Rejected",
+                DateTime.UtcNow.ToLongDateString(),
+                userId,
+                _applicationName,
+                reason,
+                message);
+
+            return await Task.Run(() => new ExecutionStatus
+            {
+                Status = executionStatus,
+                FailureReason = FailureReason.None,
+            });
         }
 
         ~AideClinicalReviewPlugin() => Dispose(disposing: false);
@@ -261,7 +303,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-
         public async ValueTask DisposeAsync()
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
