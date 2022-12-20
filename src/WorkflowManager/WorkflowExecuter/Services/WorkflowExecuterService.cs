@@ -43,6 +43,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         private readonly ILogger<WorkflowExecuterService> _logger;
         private readonly IWorkflowRepository _workflowRepository;
         private readonly IWorkflowInstanceRepository _workflowInstanceRepository;
+        private readonly IWorkflowInstanceService _workflowInstanceService;
         private readonly IMessageBrokerPublisherService _messageBrokerPublisherService;
         private readonly IConditionalParameterParser _conditionalParameterParser;
         private readonly IArtifactMapper _artifactMapper;
@@ -61,6 +62,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             IWorkflowRepository workflowRepository,
             IWorkflowInstanceRepository workflowInstanceRepository,
             IMessageBrokerPublisherService messageBrokerPublisherService,
+            IWorkflowInstanceService workflowInstanceService,
             IConditionalParameterParser conditionalParser,
             IArtifactMapper artifactMapper,
             IStorageService storageService,
@@ -84,6 +86,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _workflowRepository = workflowRepository ?? throw new ArgumentNullException(nameof(workflowRepository));
             _workflowInstanceRepository = workflowInstanceRepository ?? throw new ArgumentNullException(nameof(workflowInstanceRepository));
+            _workflowInstanceService = workflowInstanceService ?? throw new ArgumentNullException(nameof(workflowInstanceService));
             _messageBrokerPublisherService = messageBrokerPublisherService ?? throw new ArgumentNullException(nameof(messageBrokerPublisherService));
             _conditionalParameterParser = conditionalParser ?? throw new ArgumentNullException(nameof(artifactMapper));
             _artifactMapper = artifactMapper ?? throw new ArgumentNullException(nameof(artifactMapper));
@@ -357,6 +360,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 ["durationSoFar"] = (DateTime.UtcNow - workflowInstance.StartTime).TotalMilliseconds,
                 ["executionId"] = task.ExecutionId
             });
+
+            await _workflowInstanceService.UpdateExportCompleteMetadataAsync(task.WorkflowInstanceId, task.ExecutionId, message.FileStatuses);
 
             var succeededFileCount = message.FileStatuses.Count(f => f.Value == FileExportStatus.Success);
             var totalFileCount = message.FileStatuses.Count();
