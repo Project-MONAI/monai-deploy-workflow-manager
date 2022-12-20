@@ -15,6 +15,7 @@
  */
 
 using System;
+using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
@@ -219,6 +220,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                         Id = "test-clinical-review",
                         Type = "aide_clinical_review",
                         Description = "Test Clinical Review Task",
+                        Args = {
+                            { "reviewed_task_id", "taskLoopdesc4" }
+                        },
                         Artifacts = new ArtifactMap
                         {
                             Input = new Artifact[]
@@ -237,7 +241,12 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                                 {
                                     Name = "No Matching Task Id",
                                     Value = "{{ context.value.a-random-string.artifact.test }}"
-                                }
+                                },
+                                new Artifact
+                                {
+                                    Name = "Non Argo Artifact",
+                                    Value = "{{ context.value.rootTask.artifact.non_unique_artifact }}"
+                                },
                             }
                         },
                         TaskDestinations = new TaskDestination[]
@@ -250,6 +259,41 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                     },
                     new TaskObject
                     {
+                        Id = "test-clinical-review-3",
+                        Type = "aide_clinical_review",
+                        Description = "Test Clinical Review Task",
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]
+                            {
+                                new Artifact
+                                {
+                                    Name = "Invalid Value Format",
+                                    Value = "{{ wrong.format }}"
+                                },
+                                new Artifact
+                                {
+                                    Name = "Self Referencing Task Id",
+                                    Value = "{{ context.value.test-clinical-review.artifact.test }}"
+                                },
+                                new Artifact
+                                {
+                                    Name = "No Matching Task Id",
+                                    Value = "{{ context.value.a-random-string.artifact.test }}"
+                                },
+                                new Artifact
+                                {
+                                    Name = "Non Argo Artifact",
+                                    Value = "{{ context.value.rootTask.artifact.non_unique_artifact }}"
+                                },
+                            }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                        }
+                    },
+                    new TaskObject
+                    {
                         Id = "test-clinical-review-2",
                         Type = "aide_clinical_review",
                         Description = "Test Clinical Review Task 2",
@@ -258,6 +302,10 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                             new TaskDestination
                             {
                                 Name = "example-task"
+                            },
+                            new TaskDestination
+                            {
+                                Name = "test-clinical-review-3"
                             }
                         }
                     },
@@ -298,7 +346,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             Assert.True(errors.Count > 0);
 
-            Assert.Equal(33, errors.Count);
+            Assert.Equal(40, errors.Count);
 
             var successPath = "rootTask => taskSucessdesc1 => taskSucessdesc2";
             Assert.Contains(successPath, successfulPaths);
@@ -327,7 +375,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
             var missingClinicalReviewArgs1 = "Task: 'test-clinical-review' application_name must be specified.";
             Assert.Contains(missingClinicalReviewArgs1, errors);
 
-            var missingClinicalReviewArgs2 = "Task: 'test-clinical-review' reviewed_task_id must be specified.";
+            var missingClinicalReviewArgs2 = "Task: 'test-clinical-review-3' reviewed_task_id must be specified.";
             Assert.Contains(missingClinicalReviewArgs2, errors);
 
             var missingClinicalReviewArgs3 = "Task: 'test-clinical-review' application_version must be specified.";
@@ -350,6 +398,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             var missingArtifactsClinicalReview = $"Task: 'test-clinical-review-2' must have Input Artifacts specified.";
             Assert.Contains(missingArtifactsClinicalReview, errors);
+
+            var nonReviewedTask = "Invalid input artifact 'Non Argo Artifact' in task 'test-clinical-review': Task cannot reference a non-reviewed task artifacts 'rootTask'";
+            Assert.Contains(nonReviewedTask, errors);
         }
 
         [Fact]
