@@ -356,9 +356,14 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 ["executionId"] = task.ExecutionId
             });
 
+            var succeededFileCount = message.FileStatuses.Count(f => f.Value == FileExportStatus.Success);
+            var totalFileCount = message.FileStatuses.Count();
+
             if (message.Status.Equals(ExportStatus.Success)
                 && TaskExecutionStatus.Succeeded.IsTaskExecutionStatusUpdateValid(task.Status))
             {
+                _logger.DicomExportSucceeded($"{succeededFileCount}/{totalFileCount}");
+
                 var workflow = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId);
 
                 if (workflow is null)
@@ -374,6 +379,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             if ((message.Status.Equals(ExportStatus.Failure) || message.Status.Equals(ExportStatus.PartialFailure)) &&
                 TaskExecutionStatus.Failed.IsTaskExecutionStatusUpdateValid(task.Status))
             {
+                _logger.DicomExportFailed($"{succeededFileCount}/{totalFileCount}");
+
                 return await CompleteTask(task, workflowInstance, correlationId, TaskExecutionStatus.Failed);
             }
 
