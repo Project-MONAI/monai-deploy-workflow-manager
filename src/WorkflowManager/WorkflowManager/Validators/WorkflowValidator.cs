@@ -25,6 +25,7 @@ using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.Shared;
+using MongoDB.Driver.Linq;
 using static Monai.Deploy.WorkflowManager.Shared.ValidationConstants;
 
 namespace Monai.Deploy.WorkflowManager.Validators
@@ -51,11 +52,6 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// </summary>
         private List<string> Errors { get; set; } = new List<string>();
 
-        /// <summary>
-        /// Gets or sets successful task paths. (not accounting for conditons).
-        /// </summary>
-        private List<string> SuccessfulPaths { get; set; } = new List<string>();
-
         private IWorkflowService WorkflowService { get; }
 
         /// <summary>
@@ -73,7 +69,6 @@ namespace Monai.Deploy.WorkflowManager.Validators
         public void Reset()
         {
             Errors.Clear();
-            SuccessfulPaths.Clear();
             OrignalName = string.Empty;
         }
 
@@ -91,14 +86,18 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// <param name="checkForDuplicates">Check for duplicates.</param>
         /// <param name="isUpdate">Used to check for duplicate name if it is a new workflow.</param>
         /// <returns>if any validation errors are produced while validating workflow.</returns>
-        public async Task<(List<string> Errors, List<string> SuccessfulPaths)> ValidateWorkflow(Workflow workflow)
+        public async Task<List<string>> ValidateWorkflow(Workflow workflow)
         {
             var tasks = workflow.Tasks;
             var firstTask = tasks.FirstOrDefault();
 
             await ValidateWorkflowSpec(workflow);
+            if (tasks.Any())
+            {
+                ValidateTasks(workflow, firstTask!.Id);
+            }
+
             DetectUnreferencedTasks(tasks, firstTask);
-            ValidateTask(tasks, firstTask, 0);
             ValidateExportDestinations(workflow);
 
             if (Errors.Any())
@@ -106,9 +105,49 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 _logger.WorkflowValidationErrors(string.Join(Environment.NewLine, Errors));
             }
 
-            var results = (Errors.ToList(), SuccessfulPaths.ToList());
+            var errors = Errors.ToList();
             Reset();
-            return results;
+            return errors;
+        }
+
+        private void ValidateTasks(Workflow workflow, string firstTaskId)
+        {
+            var destinations = new List<string>();
+            foreach (var task in workflow.Tasks)
+            {
+                ValidateTaskArtifacts(task);
+
+                TaskTypeSpecificValidation(workflow.Tasks, task);
+
+                if (task.TaskDestinations.Any(td => td.Name == firstTaskId))
+                {
+                    Errors.Add($"Converging Tasks Destinations in task: {task.Id} on root task: {firstTaskId}");
+                }
+
+                if (workflow.Tasks.Count(t => t.Id == task.Id) > 1)
+                {
+                    Errors.Add($"Found duplicate task id '{task.Id}'");
+                }
+
+                destinations.AddRange(task.TaskDestinations.Select(td => td.Name));
+            }
+
+            if (destinations.Count != destinations.Distinct().Count())
+            {
+                // duplicate destinations
+                var duplicates = destinations
+                .GroupBy(i => i)
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Key);
+
+                foreach (var dupe in duplicates)
+                {
+                    var tasks = workflow.Tasks.Where(t => t.TaskDestinations.Any(td => dupe == td.Name));
+                    var taskIds = string.Join(", ", tasks.Select(t => t.Id));
+
+                    Errors.Add($"Converging Tasks Destinations in tasks: ({taskIds}) on task: {dupe}");
+                }
+            }
         }
 
         private void ValidateExportDestinations(Workflow workflow)
@@ -214,28 +253,6 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void ValidateTask(TaskObject[] tasks, TaskObject currentTask, int iterationCount, List<string> paths = null)
-        {
-            if (tasks.Any() is false || currentTask is null)
-            {
-                return;
-            }
-
-            if (iterationCount > 100)
-            {
-                Errors.Add($"Detected task convergence on path: {string.Join(" => ", paths.Take(5))} => ∞");
-                return;
-            }
-
-            paths ??= new List<string>();
-
-            ValidateTaskArtifacts(currentTask);
-
-            TaskTypeSpecificValidation(tasks, currentTask);
-
-            ValidateTaskDestinations(tasks, currentTask, ref iterationCount, ref paths);
-        }
-
         private void ValidateTaskArtifacts(TaskObject currentTask)
         {
             if (currentTask.Artifacts != null && currentTask.Artifacts.Output.IsNullOrEmpty() is false)
@@ -250,39 +267,6 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void ValidateTaskDestinations(TaskObject[] tasks, TaskObject currentTask, ref int iterationCount, ref List<string> paths)
-        {
-            if (currentTask.TaskDestinations.IsNullOrEmpty())
-            {
-                paths.Add(currentTask.Id);
-                SuccessfulPaths.Add(string.Join(" => ", paths));
-                return;
-            }
-
-            foreach (var tasksDestinationName in currentTask.TaskDestinations.Select(td => td.Name))
-            {
-                if (paths.Contains(currentTask.Id.ToString()))
-                {
-                    Errors.Add($"Detected task convergence on path: {string.Join(" => ", paths)} => ∞");
-                    paths = new List<string>();
-                    continue;
-                }
-
-                paths.Add(currentTask.Id.ToString());
-                var nextTask = tasks.FirstOrDefault(t => t.Id == tasksDestinationName);
-                if (nextTask == null)
-                {
-                    Errors.Add($"Task: '{currentTask.Id}' has task destination: '{tasksDestinationName}' that could not be found.");
-                    paths = new List<string>();
-                    continue;
-                }
-
-                ValidateTask(tasks, nextTask, iterationCount += 1, paths);
-
-                paths = new List<string>();
-            }
-        }
-
         private void TaskTypeSpecificValidation(TaskObject[] tasks, TaskObject currentTask)
         {
             if (ValidTaskTypes.Contains(currentTask.Type.ToLower()) is false)
@@ -291,7 +275,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 return;
             }
 
-            ValidateInputs(tasks, currentTask);
+            ValidateInputs(currentTask);
 
             if (currentTask.Type.Equals(ArgoTaskType, StringComparison.OrdinalIgnoreCase) is true)
             {
@@ -304,7 +288,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void ValidateInputs(TaskObject[] tasks, TaskObject currentTask)
+        private void ValidateInputs(TaskObject currentTask)
         {
             if (currentTask.Type.ToLower() == RouterTaskType)
             {
