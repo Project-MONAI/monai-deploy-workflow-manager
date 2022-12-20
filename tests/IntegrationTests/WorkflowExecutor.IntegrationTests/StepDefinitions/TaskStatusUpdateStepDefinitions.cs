@@ -19,6 +19,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;
@@ -72,6 +73,20 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
             ExportCompletePublisher.PublishMessage(message.ToMessage());
         }
+
+        [Then(@"the number of successful exports for (.*) is count (.*)")]
+        public void ThenTheNumberOfSuccessfulExportsAre(string completeExportData, string count)
+        {
+            var export = DataHelper.GetExportCompleteTestData(completeExportData);
+
+            var filestatues = export.FileStatuses.Count(f => f.Value == FileExportStatus.Success);
+
+            //Add Assertion to compare file statues in metadata
+
+            //exportEvents.Should().Equals(actual);
+
+        }
+
 
         [When(@"I publish a Task Update Message (.*) with artifacts (.*) in minio")]
         public async Task WhenIPublishATaskUpdateMessageWithArtifacts(string name, string folderName)
