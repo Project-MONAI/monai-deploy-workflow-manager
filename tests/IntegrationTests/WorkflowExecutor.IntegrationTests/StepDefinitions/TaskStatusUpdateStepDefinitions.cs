@@ -78,15 +78,21 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"Metadata is added to task (.*)")]
         public void ThenTheNumberOfSuccessfulExportsAre(string completeExportData)
         {
-            var exportCompleteExpected = DataHelper.GetExportCompleteTestData(completeExportData);
+            RetryPolicy.Execute(() =>
+            {
+                var exportCompleteExpected = DataHelper.GetExportCompleteTestData(completeExportData);
 
-            var workflow = DataHelper.GetAllWorkflowInstance(exportCompleteExpected.WorkflowInstanceId);
+                var workflow = DataHelper.GetAllWorkflowInstance(exportCompleteExpected.WorkflowInstanceId);
 
-            var task = workflow.Tasks.First(f => f.TaskId == exportCompleteExpected.ExportTaskId);
+                var task = workflow.Tasks.First(f => f.TaskId == exportCompleteExpected.ExportTaskId);
 
-            var resultMetadata = exportCompleteExpected.FileStatuses.ToDictionary(f => f.Key, f => f.Value.ToString() as object);
+                var resultMetadata = exportCompleteExpected.FileStatuses.ToDictionary(f => f.Key, f => f.Value.ToString() as object);
 
-            task.ResultMetadata.Should().BeEquivalentTo(resultMetadata);
+                if (task.ResultMetadata.Any())
+                {
+                    task.ResultMetadata.Should().BeEquivalentTo(resultMetadata);
+                }
+            });
         }
 
         [When(@"I publish a Task Update Message (.*) with artifacts (.*) in minio")]

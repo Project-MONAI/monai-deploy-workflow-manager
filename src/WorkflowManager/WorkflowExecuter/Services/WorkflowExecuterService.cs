@@ -361,7 +361,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 ["executionId"] = task.ExecutionId
             });
 
-            await _workflowInstanceService.UpdateExportCompleteMetadataAsync(task.WorkflowInstanceId, task.ExecutionId, message.FileStatuses);
+            await _workflowInstanceService.UpdateExportCompleteMetadataAsync(workflowInstance.Id, task.ExecutionId, message.FileStatuses);
 
             var succeededFileCount = message.FileStatuses.Count(f => f.Value == FileExportStatus.Success);
             var totalFileCount = message.FileStatuses.Count();
