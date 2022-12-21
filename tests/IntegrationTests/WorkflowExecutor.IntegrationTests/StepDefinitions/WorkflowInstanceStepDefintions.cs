@@ -106,8 +106,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
         public void GivenIHaveWorkflowInstancesWithAcknowledgedWorkflowErrors()
         {
             var listOfWorkflowInstance = new List<WorkflowInstance>();
-
-            var wi = DataHelper.GetWorkflowInstanceTestDataByIndex(0);
+            var wi = DataHelper.GetWorkflowInstanceTestData("Workflow_Instance_For_Failed_Partial");
             wi.Status = Status.Failed;
             wi.AcknowledgedWorkflowErrors = DateTime.UtcNow;
             listOfWorkflowInstance.Add(wi);
@@ -141,7 +140,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
         {
             var listOfWorkflowInstance = new List<WorkflowInstance>();
 
-            var wi = DataHelper.GetWorkflowInstanceTestDataByIndex(0);
+            var wi = DataHelper.GetWorkflowInstanceTestData("Workflow_Instance_For_Failed_Partial");
             wi.Status = Status.Succeeded;
             wi.AcknowledgedWorkflowErrors = DateTime.UtcNow;
             wi.Tasks[0].Status = TaskExecutionStatus.PartialFail;

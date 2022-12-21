@@ -1883,6 +1883,35 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+            new WorkflowInstanceTestData()
+            {
+                Name = "Workflow_Instance_For_Failed_Partial",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = "Multi_Req",
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    PayloadId = "C6EBA8CE-9707-4AB5-8D0A-3F88EAB24A80",
+                    BucketId = "bucket1",
+                    StartTime = DateTime.UtcNow,
+                    Status = Status.Created,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = "router",
+                            TaskType = "Multi_task",
+                            Status = TaskExecutionStatus.Accepted,
+                            OutputDirectory = "none"
+                        }
+                    }
+                }
+            },
         };
     }
 }
