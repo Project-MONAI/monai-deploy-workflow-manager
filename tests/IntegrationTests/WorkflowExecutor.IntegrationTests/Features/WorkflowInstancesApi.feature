@@ -149,7 +149,6 @@ Scenario: Get all workflows instances by Id. Id Bad Request
     Then I will get a 400 response
     And I will receive the error message Failed to validate id, not a valid GUID
 
-
 @GetWorkflowInstances
 Scenario: Get workflow instances by payloadId. Id Bad Request
 	Given I have an endpoint /workflowinstances?payloadid=invalidid
@@ -234,3 +233,11 @@ Scenario: Get workflow failed instances returns values. Ok Request
     When I send a GET request
     Then I will get a 200 response
     And I can see 10 failed workflow instances
+
+@GetPartialFailedWorkflowInstances
+Scenario: Get workflow failed and partial failed instances returns values. Ok Request
+	Given I have an endpoint /workflowinstances/failed
+    And I have 1 partial failed Workflow Instance 
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see 1 returned workflow instances
