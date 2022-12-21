@@ -29,6 +29,7 @@ Scenario Outline: Publish a valid Task Update event which updates the Task statu
     | Succeeded        |
     | Failed           |
     | Canceled         |
+    | Partialfail      |
 
 @TaskUpdate
 Scenario Outline: Publish a valid Task Update event with a failed status and failure reason

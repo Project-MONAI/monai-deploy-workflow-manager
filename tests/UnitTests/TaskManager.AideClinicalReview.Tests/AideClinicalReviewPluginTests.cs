@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Amazon.Runtime.Internal.Transform;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -125,8 +126,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Tests
         {
             var message = GenerateTaskDispatchEventWithValidArguments(false);
 
+
+            var callback = new TaskCallbackEvent
+            {
+                Metadata = new System.Collections.Generic.Dictionary<string, object>
+                {
+                    {"acceptance", false },
+                    {"reason", "Other" }
+                }
+            };
             var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message);
-            var result = await runner.GetStatus(string.Empty, CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.GetStatus(string.Empty, callback, CancellationToken.None).ConfigureAwait(false);
 
             Assert.Equal(TaskExecutionStatus.PartialFail, result.Status);
             Assert.Equal(FailureReason.None, result.FailureReason);
@@ -139,7 +149,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message);
-            var result = await runner.GetStatus(string.Empty, CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.GetStatus(string.Empty, new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
 
             Assert.Equal(TaskExecutionStatus.Succeeded, result.Status);
             Assert.Equal(FailureReason.None, result.FailureReason);
@@ -153,7 +163,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Tests
             message.TaskPluginArguments.Remove("reviewer_roles");
 
             var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message);
-            var result = await runner.GetStatus(string.Empty, CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.GetStatus(string.Empty, new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
 
             Assert.Equal(TaskExecutionStatus.Succeeded, result.Status);
             Assert.Equal(FailureReason.None, result.FailureReason);

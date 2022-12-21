@@ -243,7 +243,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             _logger.SendClinicalReviewRequestMessageSent(queue);
         }
 
-        public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
+        public override async Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent callbackEvent, CancellationToken cancellationToken = default)
         {
             var executionStatus = TaskExecutionStatus.Succeeded;
 
@@ -252,24 +252,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             var message = "N/A";
             var reason = "N/A";
 
-            if (Event.Metadata.TryGetValue(Keys.MetadataAcceptance, out var acceptance))
+            if (callbackEvent.Metadata.TryGetValue(Keys.MetadataAcceptance, out var acceptance))
             {
                 executionStatus = (bool)acceptance ?
                         TaskExecutionStatus.Succeeded :
                         TaskExecutionStatus.PartialFail;
             }
 
-            if (Event.Metadata.TryGetValue(Keys.MetadataMessage, out var metadataMessage))
+            if (callbackEvent.Metadata.TryGetValue(Keys.MetadataMessage, out var metadataMessage))
             {
                 message = (string)metadataMessage;
             }
 
-            if (Event.Metadata.TryGetValue(Keys.MetadataUserId, out var metadataUserId))
+            if (callbackEvent.Metadata.TryGetValue(Keys.MetadataUserId, out var metadataUserId))
             {
                 userId = (string)metadataUserId;
             }
 
-            if (Event.Metadata.TryGetValue(Keys.MetadataReason, out var metadataReason))
+            if (callbackEvent.Metadata.TryGetValue(Keys.MetadataReason, out var metadataReason))
             {
                 reason = (string)metadataReason;
             }

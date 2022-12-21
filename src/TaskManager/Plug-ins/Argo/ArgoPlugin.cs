@@ -170,7 +170,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             }
         }
 
-        public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
+        public override async Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent callbackEvent, CancellationToken cancellationToken = default)
         {
             Guard.Against.NullOrWhiteSpace(identity, nameof(identity));
             Task? logTask = null;

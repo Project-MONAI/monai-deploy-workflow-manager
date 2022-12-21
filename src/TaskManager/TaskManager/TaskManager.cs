@@ -270,7 +270,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 JsonMessage<TaskUpdateEvent>? updateMessage;
                 try
                 {
-                    var executionStatus = await taskRunner.GetStatus(message.Body.Identity, _cancellationTokenSource.Token).ConfigureAwait(false);
+                    var executionStatus = await taskRunner.GetStatus(message.Body.Identity, message.Body, _cancellationTokenSource.Token).ConfigureAwait(false);
                     updateMessage = GenerateUpdateEventMessage(message, message.Body.ExecutionId, message.Body.WorkflowInstanceId, message.Body.TaskId, executionStatus, taskExecution.Event.Outputs);
                     updateMessage.Body.Metadata.Add(Strings.JobIdentity, message.Body.Identity);
                     foreach (var item in message.Body.Metadata)
