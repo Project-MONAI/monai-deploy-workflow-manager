@@ -320,9 +320,9 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
         public async Task<IList<WorkflowInstance>> GetAllFailedAsync()
         {
             return await GetAllAsync(_workflowInstanceCollection,
-                                  wfInstance => (wfInstance.Status == Status.Failed
-                                      && wfInstance.AcknowledgedWorkflowErrors == null) ||
-                                      wfInstance.Tasks.Any(task => task.Status.Equals(TaskExecutionStatus.PartialFail)),
+                                  wfInstance => (wfInstance.Status == Status.Failed ||
+                                      wfInstance.Tasks.Any(task => task.Status.Equals(TaskExecutionStatus.PartialFail)))
+                                      && wfInstance.AcknowledgedWorkflowErrors == null,
                                   Builders<WorkflowInstance>.Sort.Descending(x => x.Id));
         }
     }
