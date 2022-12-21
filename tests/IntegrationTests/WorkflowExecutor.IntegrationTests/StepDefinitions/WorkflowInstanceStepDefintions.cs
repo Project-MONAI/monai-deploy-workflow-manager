@@ -82,8 +82,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             }
         }
 
-        [Given(@"I have (.*) failed workflow Instances")]
-        public void GivenIHaveWorkflowInstancesWithAcknowledgedWorkflowErrors(int count)
+        [Given(@"I have (\d*) failed workflow Instances")]
+        public void GivenIHaveWorkflowInstancesWithUnacknowledgedWorkflowErrors(int count)
         {
             _outputHelper.WriteLine($"Retrieving {count} workflow instances");
             var listOfWorkflowInstance = new List<WorkflowInstance>();
@@ -102,7 +102,19 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             DataHelper.SeededWorkflowInstances = listOfWorkflowInstance;
         }
 
-        [Given(@"I have (.*) partial failed Workflow Instance")]
+        [Given(@"I have an acknowledged failed workflow Instances")]
+        public void GivenIHaveWorkflowInstancesWithAcknowledgedWorkflowErrors()
+        {
+            var listOfWorkflowInstance = new List<WorkflowInstance>();
+            var wi = DataHelper.GetWorkflowInstanceTestData("Workflow_Instance_For_Failed_Partial");
+            wi.Status = Status.Failed;
+            wi.AcknowledgedWorkflowErrors = DateTime.UtcNow;
+            listOfWorkflowInstance.Add(wi);
+            MongoClient.CreateWorkflowInstanceDocument(wi);
+            DataHelper.SeededWorkflowInstances = listOfWorkflowInstance;
+        }
+
+        [Given(@"I have (\d*) partial failed Workflow Instance")]
         public void GivenIHavePartialFailedWorkflowInstance(int count)
         {
             _outputHelper.WriteLine($"Retrieving {count} workflow instances");
@@ -120,6 +132,20 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
                 MongoClient.CreateWorkflowInstanceDocument(wi);
                 _outputHelper.WriteLine("Retrieved workflow instance");
             }
+            DataHelper.SeededWorkflowInstances = listOfWorkflowInstance;
+        }
+
+        [Given(@"I have an acknowledged partially failed workflow Instances")]
+        public void GivenIHavePartialFailedWorkflowInstancesWithAcknowledgedWorkflowErrors()
+        {
+            var listOfWorkflowInstance = new List<WorkflowInstance>();
+
+            var wi = DataHelper.GetWorkflowInstanceTestData("Workflow_Instance_For_Failed_Partial");
+            wi.Status = Status.Succeeded;
+            wi.AcknowledgedWorkflowErrors = DateTime.UtcNow;
+            wi.Tasks[0].Status = TaskExecutionStatus.PartialFail;
+            listOfWorkflowInstance.Add(wi);
+            MongoClient.CreateWorkflowInstanceDocument(wi);
             DataHelper.SeededWorkflowInstances = listOfWorkflowInstance;
         }
 

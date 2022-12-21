@@ -218,7 +218,6 @@ Scenario: Acknowledge task error in a workflow instance - non-existent task
     Then I will get a 404 response
     And I will receive the error message WorkflowInstance or task execution not found for workflowInstanceId: 25dff711-efc5-4eeb-bccc-2bb996400a20
 
-    
 @GetFailedWorkflowInstances
 Scenario: Get workflow failed instances returns no values. Ok Request
 	Given I have an endpoint /workflowinstances/failed
@@ -241,3 +240,19 @@ Scenario: Get workflow failed and partial failed instances returns values. Ok Re
     When I send a GET request
     Then I will get a 200 response
     And I can see 1 returned workflow instances
+
+@GetFailedWorkflowInstances
+Scenario: Acknowledged failed workflow instances are not returned in the Failed list. Ok Request
+	Given I have an endpoint /workflowinstances/failed
+    And I have an acknowledged failed workflow Instances
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see 0 returned workflow instances
+
+@GetPartialFailedWorkflowInstances
+Scenario: Acknowledged partial failed workflow instances are not returned in the Failed list. Ok Request
+	Given I have an endpoint /workflowinstances/failed
+    And I have an acknowledged partially failed workflow Instances
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see 0 returned workflow instances
