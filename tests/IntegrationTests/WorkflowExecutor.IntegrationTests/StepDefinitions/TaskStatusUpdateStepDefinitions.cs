@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Linq;
 using BoDi;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
@@ -74,19 +75,19 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             ExportCompletePublisher.PublishMessage(message.ToMessage());
         }
 
-        [Then(@"the number of successful exports for (.*) is count (.*)")]
-        public void ThenTheNumberOfSuccessfulExportsAre(string completeExportData, string count)
+        [Then(@"Metadata is added to task (.*)")]
+        public void ThenTheNumberOfSuccessfulExportsAre(string completeExportData)
         {
-            var export = DataHelper.GetExportCompleteTestData(completeExportData);
+            var exportCompleteExpected = DataHelper.GetExportCompleteTestData(completeExportData);
 
-            var filestatues = export.FileStatuses.Count(f => f.Value == FileExportStatus.Success);
+            var workflow = DataHelper.GetAllWorkflowInstance(exportCompleteExpected.WorkflowInstanceId);
 
-            //Add Assertion to compare file statues in metadata
+            var task = workflow.Tasks.First(f => f.TaskId == exportCompleteExpected.ExportTaskId);
 
-            //exportEvents.Should().Equals(actual);
+            var resultMetadata = exportCompleteExpected.FileStatuses.ToDictionary(f => f.Key, f => f.Value.ToString() as object);
 
+            task.ResultMetadata.Should().BeEquivalentTo(resultMetadata);
         }
-
 
         [When(@"I publish a Task Update Message (.*) with artifacts (.*) in minio")]
         public async Task WhenIPublishATaskUpdateMessageWithArtifacts(string name, string folderName)

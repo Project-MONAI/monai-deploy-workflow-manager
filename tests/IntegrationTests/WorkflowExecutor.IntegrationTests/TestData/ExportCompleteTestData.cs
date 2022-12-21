@@ -46,8 +46,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 Name = "Export_Complete_Message_for_export_file_statuses",
                 ExportCompleteEvent = new ExportCompleteEvent()
                 {
-                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("Workflow_Instance_for_export_multi_dest_2").WorkflowInstance.Id,
-                    ExportTaskId = Helper.GetWorkflowByName("Workflow_Revision_for_export_multi_dest_2").WorkflowRevision.Workflow.Tasks[1].Id,
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("ExportComplete_WFI_Dispatched").WorkflowInstance.Id,
+                    ExportTaskId = Helper.GetWorkflowByName("Complete_Request_Workflow_Dispatched").WorkflowRevision.Workflow.Tasks[0].Id,
                     Status = ExportStatus.Success,
                     FileStatuses = new Dictionary<string, FileExportStatus>()
                     {
