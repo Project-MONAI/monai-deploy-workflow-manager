@@ -16,6 +16,7 @@
 
 using System.Globalization;
 using BoDi;
+using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support;
@@ -92,6 +93,27 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
                 _outputHelper.WriteLine($"Retrieving workflow instances with index={index}");
                 var wi = DataHelper.GetWorkflowInstanceTestDataByIndex(index);
                 wi.Status = Status.Failed;
+                wi.AcknowledgedWorkflowErrors = null;
+
+                listOfWorkflowInstance.Add(wi);
+                MongoClient.CreateWorkflowInstanceDocument(wi);
+                _outputHelper.WriteLine("Retrieved workflow instance");
+            }
+            DataHelper.SeededWorkflowInstances = listOfWorkflowInstance;
+        }
+
+        [Given(@"I have (.*) partial failed Workflow Instance")]
+        public void GivenIHavePartialFailedWorkflowInstance(int count)
+        {
+            _outputHelper.WriteLine($"Retrieving {count} workflow instances");
+            var listOfWorkflowInstance = new List<WorkflowInstance>();
+
+            foreach (var index in Enumerable.Range(0, count))
+            {
+                _outputHelper.WriteLine($"Retrieving workflow instances with index={index}");
+                var wi = DataHelper.GetWorkflowInstanceTestDataByIndex(index);
+                wi.Status = Status.Succeeded;
+                wi.Tasks[0].Status = TaskExecutionStatus.PartialFail;
                 wi.AcknowledgedWorkflowErrors = null;
 
                 listOfWorkflowInstance.Add(wi);
