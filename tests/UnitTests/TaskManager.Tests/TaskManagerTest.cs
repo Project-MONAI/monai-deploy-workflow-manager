@@ -67,7 +67,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             return Task.FromResult(_testRunnerCallback.GenerateExecuteTaskResult());
         }
 
-        public override Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
+        public override Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent taskCallbackEvent, CancellationToken cancellationToken = default)
         {
             return Task.FromResult(_testRunnerCallback.GenerateGetStatusResult());
         }

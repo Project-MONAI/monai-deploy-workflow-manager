@@ -304,6 +304,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (message.Status != TaskExecutionStatus.Succeeded)
             {
+                await UpdateWorkflowInstanceStatus(workflowInstance, message.TaskId, message.Status);
+
                 return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, message.TaskId, message.Status);
             }
 
@@ -424,8 +426,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return await _workflowInstanceRepository.UpdateWorkflowInstanceStatusAsync(workflowInstance.Id, Status.Failed);
             }
 
-            if (!previousTasks.Any(t => t.Status != TaskExecutionStatus.Succeeded && t.Status != TaskExecutionStatus.Canceled)
-                && (currentTaskStatus == TaskExecutionStatus.Succeeded || currentTaskStatus == TaskExecutionStatus.Canceled))
+            if (!previousTasks.Any(t => t.Status != TaskExecutionStatus.Succeeded && t.Status != TaskExecutionStatus.Canceled && t.Status != TaskExecutionStatus.PartialFail)
+                && (currentTaskStatus == TaskExecutionStatus.Succeeded || currentTaskStatus == TaskExecutionStatus.Canceled || currentTaskStatus == TaskExecutionStatus.PartialFail))
             {
                 return await _workflowInstanceRepository.UpdateWorkflowInstanceStatusAsync(workflowInstance.Id, Status.Succeeded);
             }
