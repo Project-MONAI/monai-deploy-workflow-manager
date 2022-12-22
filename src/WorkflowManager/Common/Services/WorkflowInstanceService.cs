@@ -56,7 +56,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             }
 
             var task = workflowInstance.Tasks.First(t => t.ExecutionId == executionId);
-            if (task.Status != TaskExecutionStatus.Failed && task.Status != TaskExecutionStatus.PartialFail)
+
+            if ((task.Status != TaskExecutionStatus.Failed && task.Status != TaskExecutionStatus.PartialFail)
+                || (workflowInstance.Status != Status.Failed && workflowInstance.Status != Status.Succeeded))
             {
                 throw new MonaiBadRequestException($"WorkflowInstance status or task execution status is not failed for workflowInstanceId: {workflowInstanceId}, executionId: {executionId}");
             }
