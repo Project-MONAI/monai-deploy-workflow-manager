@@ -767,9 +767,11 @@ Example (status):
 
 The Result Metadata and Execution Stats are populated by the plugin and are added to the workflow instance once a task is completed to provide some output of a task. Each plugin will have its own implementation to populate the result metadata. 
 
-Because `result` and `execution_stats` are a dictionary, the section after `context.executions.task_id.result` or  `context.executions.task_id.execution_stats` is the key to be checked in the result/execution_stats dictionary.
+Because `result` and `execution_stats` are a dictionary, the section after `context.executions.task_id.result` or  `context.executions.task_id.execution_stats` is the key to be checked in the result/execution_stats dictionary. 
 
-The result metadata is a dictionary of any type, which means the value can be a string, int, date, boolean etc. They will be parsed to a string for the comparison. An example of the following cases can be seen below. 
+For conditional statements, the key specified is case sensitive and must match exactly to the key which has been output by the model and saved in the result/execution_stats dictionary.
+
+The result metadata is a dictionary of any type, which means the value can be a string, int, date, boolean etc. They will be parsed to a string for the comparison. An example of the following cases can be seen below.
 
 Example String(result):
 ```python
