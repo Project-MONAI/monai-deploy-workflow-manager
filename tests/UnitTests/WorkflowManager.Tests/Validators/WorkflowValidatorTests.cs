@@ -348,13 +348,13 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             Assert.Equal(40, errors.Count);
 
-            var convergingTasksDestinations = "Converging Tasks Destinations in tasks: (test-clinical-review-2, example-task) on task: example-task";
+            var convergingTasksDestinations = "Converging Tasks Destinations in tasks: (test-clinical-review-2⸴ example-task) on task: example-task";
             Assert.Contains(convergingTasksDestinations, errors);
 
-            var convergingTasksDestinations2 = "Converging Tasks Destinations in tasks: (taskLoopdesc4, taskLoopdesc1) on task: taskLoopdesc2";
+            var convergingTasksDestinations2 = "Converging Tasks Destinations in tasks: (taskLoopdesc4⸴ taskLoopdesc1) on task: taskLoopdesc2";
             Assert.Contains(convergingTasksDestinations2, errors);
 
-            var unreferencedTaskError = "Found Task(s) without any task destinations to it: taskdesc3,task_de.sc3?";
+            var unreferencedTaskError = "Found Task(s) without any task destinations to it: taskdesc3⸴ task_de.sc3?";
             Assert.Contains(unreferencedTaskError, errors);
 
             var missingDestinationError = "Task: 'taskLoopdesc4' export_destination: 'DoesNotExistDestination' must be registered in the informatics_gateway object.";
@@ -366,7 +366,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
             var duplicateOutputArtifactName = "Task: 'rootTask' has multiple output names with the same value.";
             Assert.Contains(duplicateOutputArtifactName, errors);
 
-            var duplicateWorkflowName = $"Workflow with name 'Workflowname1' already exists, please review.";
+            var duplicateWorkflowName = $"Workflow with name 'Workflowname1' already exists.";
             Assert.Contains(duplicateWorkflowName, errors);
 
             var missingClinicalReviewArgs1 = "Task: 'test-clinical-review' application_name must be specified.";
@@ -378,10 +378,10 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
             var missingClinicalReviewArgs3 = "Task: 'test-clinical-review' application_version must be specified.";
             Assert.Contains(missingClinicalReviewArgs3, errors);
 
-            var missingClinicalReviewArgs4 = "Task: 'test-clinical-review' mode is incorrectly specified, please specify 'QA', 'Research' or 'Clinical'";
+            var missingClinicalReviewArgs4 = "Task: 'test-clinical-review' mode is incorrectly specified⸴ please specify 'QA'⸴ 'Research' or 'Clinical'";
             Assert.Contains(missingClinicalReviewArgs4, errors);
 
-            var missingArgoArgs = "Task: 'test-argo-task' workflow_template_name must be specified, this corresponds to an Argo template name.";
+            var missingArgoArgs = "Task: 'test-argo-task' workflow_template_name must be specified⸴ this corresponds to an Argo template name.";
             Assert.Contains(missingArgoArgs, errors);
 
             var incorrectClinicalReviewValueFormat = $"Invalid Value property on input artifact 'Invalid Value Format' in task: 'test-clinical-review'. Incorrect format.";
