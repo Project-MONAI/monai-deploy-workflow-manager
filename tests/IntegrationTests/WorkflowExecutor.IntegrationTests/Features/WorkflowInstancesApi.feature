@@ -176,6 +176,7 @@ Scenario Outline: Acknowledge 1 task error in a single task workflow instance
     | workflowInstance                  |
     | Acknowledge_Failed_1_Task         |
     | Acknowledge_Already_Failed_1_Task |
+    | Acknowledge_PartialFailed_1_Task  |
 
 @UpdateWorkflowInstances
 Scenario: Acknowledge 1 task error in a multiple task workflow instance

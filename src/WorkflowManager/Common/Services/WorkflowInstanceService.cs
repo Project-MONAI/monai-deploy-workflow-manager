@@ -55,14 +55,17 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
                 throw new MonaiNotFoundException($"WorkflowInstance or task execution not found for workflowInstanceId: {workflowInstanceId}, executionId: {executionId}");
             }
 
-            if (workflowInstance.Status != Status.Failed || workflowInstance.Tasks.First(t => t.ExecutionId == executionId).Status != TaskExecutionStatus.Failed)
+            var task = workflowInstance.Tasks.First(t => t.ExecutionId == executionId);
+
+            if ((task.Status != TaskExecutionStatus.Failed && task.Status != TaskExecutionStatus.PartialFail)
+                || (workflowInstance.Status != Status.Failed && workflowInstance.Status != Status.Succeeded))
             {
                 throw new MonaiBadRequestException($"WorkflowInstance status or task execution status is not failed for workflowInstanceId: {workflowInstanceId}, executionId: {executionId}");
             }
 
             var updatedInstance = await _workflowInstanceRepository.AcknowledgeTaskError(workflowInstanceId, executionId);
             _logger.AckowledgedTaskError();
-            var failedTasks = updatedInstance.Tasks.Where(t => t.Status == TaskExecutionStatus.Failed);
+            var failedTasks = updatedInstance.Tasks.Where(t => t.Status == TaskExecutionStatus.Failed || t.Status == TaskExecutionStatus.PartialFail);
 
             if (failedTasks.Any() && failedTasks.All(t => t.AcknowledgedTaskErrors != null))
             {
