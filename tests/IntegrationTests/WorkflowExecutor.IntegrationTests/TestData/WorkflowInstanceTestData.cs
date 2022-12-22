@@ -1788,6 +1788,35 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowInstanceTestData()
             {
+                Name = "Acknowledge_PartialFailed_1_Task",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = "25dff711-efc5-4eeb-bccc-2bb996400a20",
+                    AeTitle = "Multi_Req",
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Created")?.WorkflowRevision?.WorkflowId ?? "",
+                    PayloadId = Helper.GetWorkflowRequestByName("Multi_WF_Created").WorkflowRequestMessage.PayloadId.ToString(),
+                    BucketId = "bucket1",
+                    StartTime = DateTime.UtcNow,
+                    Status = Status.Succeeded,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = "d32d5769-4ecf-4639-a048-6ecf2cced04a",
+                            TaskId = "First_Task",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
+                            TaskType = "Multi_task",
+                            Status = TaskExecutionStatus.PartialFail,
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
                 Name = "Acknowledge_Already_Failed_1_Task",
                 WorkflowInstance = new WorkflowInstance()
                 {
