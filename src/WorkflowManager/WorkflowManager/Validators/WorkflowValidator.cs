@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,6 +35,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
     /// </summary>
     public class WorkflowValidator
     {
+        private const string Comma = "⸴ ";
         private readonly ILogger<WorkflowValidator> _logger;
 
         /// <summary>
@@ -143,7 +144,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 foreach (var dupe in duplicates)
                 {
                     var tasks = workflow.Tasks.Where(t => t.TaskDestinations.Any(td => dupe == td.Name));
-                    var taskIds = string.Join(", ", tasks.Select(t => t.Id));
+                    var taskIds = string.Join(Comma, tasks.Select(t => t.Id));
 
                     Errors.Add($"Converging Tasks Destinations in tasks: ({taskIds}) on task: {dupe}");
                 }
@@ -192,7 +193,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             var diff = ids.Except(destinations);
             if (diff.Any())
             {
-                Errors.Add($"Found Task(s) without any task destinations to it: {string.Join(",", diff)}");
+                Errors.Add($"Found Task(s) without any task destinations to it: {string.Join(Comma, diff)}");
             }
         }
 
@@ -248,7 +249,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
             if (string.IsNullOrWhiteSpace(informaticsGateway.AeTitle) || informaticsGateway.AeTitle.Length > 15)
             {
-                Errors.Add("AeTitle is required in the InformaticsGateaway section and must be under 16 charachters.");
+                Errors.Add("AeTitle is required in the InformaticsGateaway section and must be under 16 characters.");
                 return;
             }
         }
@@ -271,7 +272,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         {
             if (ValidTaskTypes.Contains(currentTask.Type.ToLower()) is false)
             {
-                Errors.Add($"Task: '{currentTask.Id}' has an invalid type, please specify: {string.Join(", ", ValidationConstants.ValidTaskTypes)}");
+                Errors.Add($"Task: '{currentTask.Id}' has an invalid type, please specify: {string.Join(Comma, ValidationConstants.ValidTaskTypes)}");
                 return;
             }
 
