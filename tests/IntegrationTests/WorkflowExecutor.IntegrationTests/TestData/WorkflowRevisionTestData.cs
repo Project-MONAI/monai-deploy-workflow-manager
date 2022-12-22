@@ -368,6 +368,36 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowRevisionTestData()
             {
+                Name = "Complete_Request_Workflow_Dispatched",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Basic workflow 1",
+                        Description = "Basic workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "7d7c8b83-6628-413c-9912-a89314e5e2d5",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Multi_Dispatch"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
                 Name = "Multi_Task_Workflow_1",
                 WorkflowRevision = new WorkflowRevision()
                 {

@@ -130,5 +130,14 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <param name="executionId">The Execution Id.</param>
         /// <returns>An updated workflow.</returns>
         Task<WorkflowInstance> AcknowledgeTaskError(string workflowInstanceId, string executionId);
+
+        /// <summary>
+        /// Updates the result metadata for an export complete task.
+        /// </summary>
+        /// <param name="workflowInstanceId">The Workflow Instance Id.</param>
+        /// <param name="executionId">The Execution Id.</param>
+        /// <param name="fileStatuses">The file statuses to set.</param>
+        /// <returns>a Success value.</returns>
+        Task<bool> UpdateExportCompleteMetadataAsync(string workflowInstanceId, string executionId, Dictionary<string, object> fileStatuses);
     }
 }

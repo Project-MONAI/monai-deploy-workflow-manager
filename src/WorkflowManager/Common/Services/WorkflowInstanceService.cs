@@ -74,6 +74,16 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             return updatedInstance;
         }
 
+        public async Task UpdateExportCompleteMetadataAsync(string workflowInstanceId, string executionId, Dictionary<string, FileExportStatus> fileStatuses)
+        {
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId);
+            Guard.Against.NullOrWhiteSpace(executionId);
+
+            var resultMetadata = fileStatuses.ToDictionary(f => f.Key, f => f.Value.ToString() as object);
+
+            await _workflowInstanceRepository.UpdateExportCompleteMetadataAsync(workflowInstanceId, executionId, resultMetadata);
+        }
+
         public async Task<long> CountAsync() => await _workflowInstanceRepository.CountAsync();
 
         public async Task<IList<WorkflowInstance>> GetAllAsync(int? skip = null, int? limit = null, Status? status = null, string? payloadId = null)

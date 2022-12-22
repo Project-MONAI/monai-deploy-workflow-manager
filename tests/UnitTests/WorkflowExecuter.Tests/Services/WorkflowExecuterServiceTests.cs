@@ -88,6 +88,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                                                                   _workflowRepository.Object,
                                                                   _workflowInstanceRepository.Object,
                                                                   _messageBrokerPublisherService.Object,
+                                                                  _workflowInstanceService.Object,
                                                                   conditionalParser,
                                                                   _artifactMapper.Object,
                                                                   _storageService.Object,

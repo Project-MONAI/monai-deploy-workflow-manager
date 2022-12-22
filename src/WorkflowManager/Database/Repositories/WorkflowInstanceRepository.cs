@@ -241,6 +241,26 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
         }
 
+        public async Task<bool> UpdateExportCompleteMetadataAsync(string workflowInstanceId, string executionId, Dictionary<string, object> fileStatuses)
+        {
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            Guard.Against.NullOrEmpty(executionId, nameof(executionId));
+
+            try
+            {
+                await _workflowInstanceCollection.UpdateOneAsync(
+                    i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.ExecutionId == executionId),
+                    Builders<WorkflowInstance>.Update.Set(w => w.Tasks[-1].ResultMetadata, fileStatuses));
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.DbUpdateTasksError(workflowInstanceId, e);
+                return false;
+            }
+        }
+
         public async Task<bool> UpdateTasksAsync(string workflowInstanceId, List<TaskExecution> tasks)
         {
             Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));

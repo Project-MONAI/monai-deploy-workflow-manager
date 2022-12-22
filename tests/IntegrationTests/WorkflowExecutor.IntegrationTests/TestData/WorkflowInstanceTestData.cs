@@ -185,6 +185,36 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+
+            new WorkflowInstanceTestData()
+            {
+                Name = "ExportComplete_WFI_Dispatched",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = "Multi_Req",
+                    WorkflowId = Helper.GetWorkflowByName("Complete_Request_Workflow_Dispatched")?.WorkflowRevision?.WorkflowId ?? "",
+                    PayloadId = Helper.GetWorkflowRequestByName("Complete_WF_Dispatched").WorkflowRequestMessage.PayloadId.ToString(),
+                    StartTime = DateTime.UtcNow,
+                    Status = Status.Created,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = "7d7c8b83-6628-413c-9912-a89314e5e2d5",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
+                            TaskType = "Export",
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+                }
+            },
+
             new WorkflowInstanceTestData()
             {
                 Name = "Existing_WFI_Created_Static_PayloadId",

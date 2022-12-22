@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Common.Interfaces
@@ -55,5 +56,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// Get all failed workflow instance's.
         /// </summary>
         Task<IList<WorkflowInstance>> GetAllFailedAsync();
+
+        Task UpdateExportCompleteMetadataAsync(string workflowInstanceId, string executionId, Dictionary<string, FileExportStatus> fileStatuses);
     }
 }
