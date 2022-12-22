@@ -212,7 +212,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 var checkForDuplicates = await WorkflowService.GetByNameAsync(workflow.Name);
                 if (checkForDuplicates != null)
                 {
-                    Errors.Add($"Workflow with name '{workflow.Name}' already exists, please review.");
+                    Errors.Add($"Workflow with name '{workflow.Name}' already exists.");
                 }
             }
 
@@ -272,7 +272,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         {
             if (ValidTaskTypes.Contains(currentTask.Type.ToLower()) is false)
             {
-                Errors.Add($"Task: '{currentTask.Id}' has an invalid type, please specify: {string.Join(Comma, ValidationConstants.ValidTaskTypes)}");
+                Errors.Add($"Task: '{currentTask.Id}' has an invalid type{Comma}please specify: {string.Join(Comma, ValidationConstants.ValidTaskTypes)}");
                 return;
             }
 
@@ -319,7 +319,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         {
             if (!currentTask.Args.ContainsKey(WorkflowTemplateName))
             {
-                Errors.Add($"Task: '{currentTask.Id}' workflow_template_name must be specified, this corresponds to an Argo template name.");
+                Errors.Add($"Task: '{currentTask.Id}' workflow_template_name must be specified{Comma}this corresponds to an Argo template name.");
             }
         }
 
@@ -379,7 +379,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
             if (!currentTask.Args.ContainsKey(Mode) || !Enum.TryParse(typeof(ModeValues), currentTask.Args[Mode], true, out var _))
             {
-                Errors.Add($"Task: '{currentTask.Id}' mode is incorrectly specified, please specify 'QA', 'Research' or 'Clinical'");
+                Errors.Add($"Task: '{currentTask.Id}' mode is incorrectly specified{Comma}please specify 'QA'{Comma}'Research' or 'Clinical'");
             }
 
             if (!currentTask.Args.ContainsKey(ReviewedTaskId))

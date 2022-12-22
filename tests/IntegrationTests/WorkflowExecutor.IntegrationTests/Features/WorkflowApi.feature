@@ -1,4 +1,4 @@
-# Copyright 2022 MONAI Consortium
+﻿# Copyright 2022 MONAI Consortium
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -102,8 +102,8 @@ Scenario Outline: Update workflow with invalid details
     | endpoint                                        | put_body                                            | message                                                                                                                                          |
     | /workflows/1                                    | Basic_Workflow_1                                    | Failed to validate id, not a valid guid                                                                                                          |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_Name                       | Missing Workflow Name                                                                                                                            |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_AETitle_Length                     | AeTitle is required in the InformaticsGateaway section and must be under 16 charachters.                                                         |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskType                           | has an invalid type, please specify: argo, aide_clinical_review, router, export, docker                                                          |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_AETitle_Length                     | AeTitle is required in the InformaticsGateaway section and must be under 16 characters.                                                         |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskType                           | has an invalid type⸴ please specify: argo⸴ aide_clinical_review⸴ router⸴ export⸴ docker                                                          |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskID_Content                     | Contains Invalid Characters.                                                                                                                     |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Unreferenced_Task                  | Found Task(s) without any task destinations to it                                                                                                |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Loopback_Task                      | Converging Tasks Destinations in task                                                                                                                |
@@ -113,12 +113,12 @@ Scenario Outline: Update workflow with invalid details
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Body_Object                        | Missing InformaticsGateway section.                                                                                                              |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Empty_Workflow_Body                                 | Missing Workflow Name., Missing Workflow Version., Missing InformaticsGateway section., Workflow does not contain Tasks, please review Workflow. |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Dup_Output                         | has multiple output names with the same value                                                                                                    |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_WorkflowName               | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_WorkflowName               | workflow_template_name must be specified⸴ this corresponds to an Argo template name.                                                             |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_ReviewedTaskId             | reviewed_task_id must be specified.                                                                                                              |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_All_Argo_Args              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_1              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_2              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_3              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_All_Argo_Args              | workflow_template_name must be specified⸴ this corresponds to an Argo template name.                                                             |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_1              | workflow_template_name must be specified⸴ this corresponds to an Argo template name.                                                             |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_2              | workflow_template_name must be specified⸴ this corresponds to an Argo template name.                                                             |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_3              | workflow_template_name must be specified⸴ this corresponds to an Argo template name.                                                             |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc'                                          |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Dup_Task_Id                        | Found duplicate task id 'liver-seg'                                                                                                                                          |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Coverging_Task_Dest                | Converging Tasks Destinations in tasks                                                                                                                                          |
@@ -166,9 +166,9 @@ Scenario Outline: Add workflow with invalid details
     And I will receive the error message <message>
     Examples:
     | post_body                                           | message                                                                                                                                          |
-    | Invalid_Workflow_TaskType                           | has an invalid type, please specify: argo, aide_clinical_review, router, export, docker                                                          |
-    | Invalid_Workflow_Missing_Name                       | Missing Workflow Name                                                                                                                            |
-    | Invalid_Workflow_AETitle_Length                     | AeTitle is required in the InformaticsGateaway section and must be under 16 charachters.                                                         |
+    | Invalid_Workflow_TaskType                           | has an invalid type⸴ please specify: argo⸴ aide_clinical_review⸴ router⸴ export⸴ docker                                                          |
+    | Invalid_Workflow_Missing_Name                       | Missing Workflow Name.                                                                                                                            |
+    | Invalid_Workflow_AETitle_Length                     | AeTitle is required in the InformaticsGateaway section and must be under 16 characters.                                                         |
     | Invalid_Workflow_TaskID_Content                     | Contains Invalid Characters.                                                                                                                     |
     | Invalid_Workflow_Unreferenced_Task                  | Found Task(s) without any task destinations to it                                                                                                |
     | Invalid_Workflow_Loopback_Task                      | Converging Tasks Destinations in task                                                                                                                |
@@ -178,12 +178,12 @@ Scenario Outline: Add workflow with invalid details
     | Invalid_Workflow_Body_Object                        | Missing InformaticsGateway section.                                                                                                              |
     | Empty_Workflow_Body                                 | Missing Workflow Name., Missing Workflow Version., Missing InformaticsGateway section., Workflow does not contain Tasks, please review Workflow. |
     | Invalid_Workflow_Dup_Output                         | has multiple output names with the same value                                                                                                    |
-    | Invalid_Workflow_Missing_WorkflowName               | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_WorkflowName               | workflow_template_name must be specified⸴ this corresponds to an Argo template name.                                                             |
     | Invalid_Workflow_Missing_ReviewedTaskId             | reviewed_task_id must be specified.                                                                                                              |
-    | Invalid_Workflow_Missing_All_Argo_Args              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
-    | Invalid_Workflow_Missing_2_Argo_Args_1              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
-    | Invalid_Workflow_Missing_2_Argo_Args_2              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
-    | Invalid_Workflow_Missing_2_Argo_Args_3              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_All_Argo_Args              | workflow_template_name must be specified⸴ this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_2_Argo_Args_1              | workflow_template_name must be specified⸴ this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_2_Argo_Args_2              | workflow_template_name must be specified⸴ this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_2_Argo_Args_3              | workflow_template_name must be specified⸴ this corresponds to an Argo template name.                                                             |
     | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc'                                          |
     | Invalid_Workflow_Dup_Task_Id                        | Found duplicate task id 'liver-seg'                                                                                                                                          |
     | Invalid_Workflow_Coverging_Task_Dest                | Converging Tasks Destinations in tasks                                                                                                                                                 |
@@ -198,7 +198,7 @@ Scenario Outline: Add workflow with duplicate workflow name
     And I have a workflow body Workflow_Dup_Workflow_Name
     When I send a POST request
     Then I will get a 400 response
-    And I will receive the error message Failed to validate workflow: Workflow with name 'Basic workflow' already exists, please review.
+    And I will receive the error message Failed to validate workflow: Workflow with name 'Basic workflow' already exists.
 
 @ValidateWorkflows
 Scenario: Validate workflow with valid details
@@ -216,7 +216,7 @@ Scenario Outline: Validate workflow with invalid details
     And I will receive the error message <message>
     Examples:
     | post_body                                           | message                                                                                                                                          |
-    | Invalid_Workflow_TaskType                           | has an invalid type, please specify: argo, aide_clinical_review, router, export, docker                                                          |
+    | Invalid_Workflow_TaskType                           | has an invalid type⸴ please specify: argo⸴ aide_clinical_review⸴ router⸴ export⸴ docker                                                          |
     | Invalid_Workflow_TaskID_Content                     | Contains Invalid Characters.                                                                                                                     |
     | Invalid_Workflow_Unreferenced_Task                  | Found Task(s) without any task destinations to it                                                                                                |
     | Invalid_Workflow_Loopback_Task                      | Converging Tasks Destinations in task                                                                                                                |
@@ -226,12 +226,12 @@ Scenario Outline: Validate workflow with invalid details
     | Invalid_Workflow_Body_Object                        | Missing InformaticsGateway section.                                                                                                              |
     | Empty_Workflow_Body                                 | Missing Workflow Name., Missing Workflow Version., Missing InformaticsGateway section., Workflow does not contain Tasks, please review Workflow. |
     | Invalid_Workflow_Dup_Output                         | has multiple output names with the same value                                                                                                    |
-    | Invalid_Workflow_Missing_WorkflowName               | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_WorkflowName               | workflow_template_name must be specified⸴ this corresponds to an Argo template name.                                                             |
     | Invalid_Workflow_Missing_ReviewedTaskId             | reviewed_task_id must be specified.                                                                                                              |
-    | Invalid_Workflow_Missing_All_Argo_Args              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
-    | Invalid_Workflow_Missing_2_Argo_Args_1              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
-    | Invalid_Workflow_Missing_2_Argo_Args_2              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
-    | Invalid_Workflow_Missing_2_Argo_Args_3              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_All_Argo_Args              | workflow_template_name must be specified⸴ this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_2_Argo_Args_1              | workflow_template_name must be specified⸴ this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_2_Argo_Args_2              | workflow_template_name must be specified⸴ this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_2_Argo_Args_3              | workflow_template_name must be specified⸴ this corresponds to an Argo template name.                                                             |
     | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc'                                          |
     | Invalid_Workflow_Dup_Task_Id                        | Found duplicate task id 'liver-seg'                                                                                                                                          |
     | Invalid_Workflow_Coverging_Task_Dest                | Converging Tasks Destinations in tasks                                                                                                                                          |
