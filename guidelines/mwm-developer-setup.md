@@ -17,13 +17,13 @@
 # Developer local setup
 
 ## assumptions / prerequisites
-- kubernetes running locally either via Docker desktop or microk8s (or similar) 
+- kubernetes running locally either via Docker desktop or Kind/ microk8s (or similar) 
 - python 3 installed.
 - Helm 3 https://helm.sh/docs/intro/install/
 - rabbitmqadmin https://www.rabbitmq.com/management-cli.html
 - mc.exe https://github.com/minio/mc install and add its location to the storage_settings_executableLocation setting (appsettings.local.json) including the name itself ! ie `mc.exe` if its in the folder of the running executable (\bin\Debug\net6.0).
 
-Note. if you already have docker container for Minio Rabbet etc running Stop these.
+Note. if you already have docker container for Minio Rabbit etc running Stop these.
 
 ### steps
 - following the qickstart here https://argoproj.github.io/argo-workflows/quick-start/ but change to namespace to suit. ie 
@@ -31,6 +31,8 @@ Note. if you already have docker container for Minio Rabbet etc running Stop the
   - `kubectl create ns argo`
   - `kubectl apply -n argo -f https://raw.githubusercontent.com/argoproj/argo-workflows/master/manifests/quick-start-postgres.yaml`
   - `kubectl config set-context --current --namespace=argo`
+
+Note. below Im using bash as its my preferred option,But if you to are using bash and your on windows (wsl2) you MUST make sure you windows .kube/config is also pointing to the saem K8's cluster, this is because the code running in vs will look in there for the context to write k8's secrets too!
 
 now in a bash window (can be cmd or powershell)
 
@@ -60,10 +62,46 @@ from a bash terminal in the root folder of the project
 - `helm upgrade -i -n argo -f deploy/helm/rabbitmq-local.yaml rabbit deploy/helm`
 
 ### running in VisualStudio
-Now assuming your launchSettings has the line 
+Now assuming your launchSettings in workflow manager has the line 
 `"ASPNETCORE_ENVIRONMENT": "Local"`
-and nobody has broken the `appsettings.Local.json` file
-run WorkflowManager (should be the startup project in the solution) in VisualStudio
+AND in taskManager has
+"DOTNET_ENVIRONMENT": "Local"
+and nobody has broken the `appsettings.Local.json` file's
+
+Note. if you dont have a launchsettings file you can make a folder under each project called `Properties` and make a new file called launchSettings.json
+
+WorkflowManager.
+```
+{
+  "profiles": {
+    "Monai.Deploy.WorkflowManager": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "local"
+      }
+    }
+  }
+}
+```
+TaskManger.
+```
+{
+  "profiles": {
+    "Monai.Deploy.WorkflowManager.TaskManager": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "local"
+      }
+    }
+  }
+}
+```
+
+right click on the solution and choose `Set Startup Projects` from the menu, select ` Multiple Startup Projects` radio button, then select both 
+Monai.Deploy.WorkflowManager and  Monai.Deploy.WorkflowManager.TaskManager are set to `start`, then click apply.
+(static/VS-startup.png)
+
+Select "Start" in VisualStudio
 navigate to `http://localhost:5000/swagger`
 
 Open the post/workflows tab and click `try it out`, paste in the following to the body
@@ -119,7 +157,7 @@ this is where the local running code is expecting to talk to Argo.
 - `"messaging_endpoint": "rabbit-monai"`
 this is where argo is expecting to find rabbitMq, so this is the kubernetes address !
 
-click the `Execute` button, if the code can talk to mongo you will see
+click the `Execute` button, if the code can talk to mongoDb you will see somthing like this.
 ```
 {
   "workflow_id": "9235f5e8-9ad2-44d2-8b41-2c1e4d2464c6"
@@ -129,7 +167,7 @@ click the `Execute` button, if the code can talk to mongo you will see
 You can use Mongo Compass, with connection string `mongodb://root:rootpassword@localhost:30017` to check the data is there.
 
 ### now we need an argo template to run.
-navigate to `https://localhost:2746/workflow-templates?namespace=argo` proceed passed the warnings about been insecure.
+navigate to `https://localhost:2746/workflow-templates?namespace=argo` proceed passed the warnings about been insecure. (Chrome, click advance and then proceed to destination)
 click on `CREATE NEW WORKFLOW TEMPLATE` button top left.
 rename it to `name: simple-workflow` so it matches the name in our workflow above
 then click the `Create` button.
@@ -138,13 +176,16 @@ switch the tab back to `workflows` in the left menu (`https://localhost:2746/wor
 ### rabbitmqAdmin for sending rabbit messages
 https://www.rabbitmq.com/management-cli.html
 
-In the command below replace xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx with the new workflowId from above `9235f5e8-9ad2-44d2-8b41-2c1e4d2464c6`
+In the command below replace xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx with the new workflowId from above ie. `9235f5e8-9ad2-44d2-8b41-2c1e4d2464c6`
 
-`rabbitmqadmin -u admin -p admin -P 30672 -V monaideploy publish exchange=monaideploy routing_key=md.workflow.request  properties="{\"app_id\": \"16988a78-87b5-4168-a5c3-2cfc2bab8e54\",\"type\": \"WorkflowRequestMessage\",\"message_id\": \"0277e763-316c-4104-aeda-3620e7a642c7\",\"correlation_id\":\"ab482a7c-4da7-4e76-8d36-d194dd35555e\",\"content_type\": \"application/json\"}" payload="{\"payload_id\":\"00000000-1000-0000-0000-000000000000\",\"workflows\":[\"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\"],\"file_count\":0,\"correlation_id\":\"e4b06f00-5ce3-4477-86cb-4f3bf20680c2\",\"bucket\":\"bucket1\",\"calling_aetitle\":\"MWM\",\"called_aetitle\":\"Basic_AE_3\",\"timestamp\":\"2022-07-13T11:34:34.8428704+01:00\"}"`
+`rabbitmqadmin -u admin -p admin -P 30672 -V monaideploy publish exchange=monaideploy routing_key=md.workflow.request  properties="{\"app_id\": \"16988a78-87b5-4168-a5c3-2cfc2bab8e54\",\"type\": \"WorkflowRequestMessage\",\"message_id\": \"0277e763-316c-4104-aeda-3620e7a642c7\",\"correlation_id\":\"ab482a7c-4da7-4e76-8d36-d194dd35555e\",\"content_type\": \"application/json\"}" payload="{\"payload_id\":\"00000000-1000-0000-0000-000000000000\",\"workflows\":[\"bc8917c8-7324-4f7e-a092-c9a1c0b75446\"],\"file_count\":0,\"correlation_id\":\"e4b06f00-5ce3-4477-86cb-4f3bf20680c2\",\"bucket\":\"bucket1\",\"calling_aetitle\":\"MWM\",\"called_aetitle\":\"Basic_AE_3\",\"timestamp\":\"2022-07-13T11:34:34.8428704+01:00\"}"`
 
 paste the above (with the proper workflowId) into bash and press enter.
 
 Debug in VisualStudio (if its not already running) and view the progress
+if you see error messages in the debug terminal in vs about mc.exe make sure youve copied over as mentioned above.
+ie copy mc.exe to \monai-deploy-workflow-manager\src\TaskManager\TaskManager\bin\Debug\net6.0
+
 in the argo tab `https://localhost:2746/workflows?limit=50`
 you should see the activity of the argo task running. once complete the code will process the callback and update messages.
 
@@ -216,7 +257,7 @@ Once deployed
 - add the default AETitle `curl -H 'Content-Type: application/json-patch+json' -d '{"aeTitle": "MonaiSCU","name": "Monai WFM"}' mig-monai:5000/config/ae`
 - `exit`
 
-The Informatics Gateway is now set up to recieve and pass on data from the PACS or Orthanc servers
+The Informatics Gateway is now set up to receive and pass on data from the PACS or Orthanc servers
 
 if using orthanc something like this `"DicomModalities": {"monai" : [ "MonaiSCU", "mig-monai.monai", 104 ]}` would need to be in its config file.
 
