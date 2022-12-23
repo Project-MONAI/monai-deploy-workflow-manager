@@ -100,10 +100,9 @@ TaskManger.
 right click on the solution and choose `Set Startup Projects` from the menu, select ` Multiple Startup Projects` radio button, then select both 
 Monai.Deploy.WorkflowManager and  Monai.Deploy.WorkflowManager.TaskManager are set to `start`, then click apply.
 
-![upload](static/VS-startup.png)
+![set startup options](static/VS-startup.png)
 
-Select "Start" in VisualStudio
-navigate to `http://localhost:5000/swagger`
+Select "Start" in VisualStudio and navigate to [http://localhost:5000/swagger](http://localhost:5000/swagger)
 
 Open the post/workflows tab and click `try it out`, paste in the following to the body
 
