@@ -46,7 +46,7 @@ This allows you to access argo [localhost:2746](http://localhost:2746) and minio
 Now we have our services running we need to make a DNS change, because minio needs to be accessed from argo (within kubernetes) its addressed something like this `http://minio:9000` but the code running in VisualStudio also needs to access it. To get around this, in notepad (in Aministrator mode) open the file `C:\Windows\System32\drivers\etc\Hosts` add the following line
 - `127.0.0.1	minio`
 
-save the file, now [http://minio:9000]{http://minio:9000} will route to you local machine
+save the file, now [http://minio:9000](http://minio:9000) will route to you local machine
 
 ### setup up an input file
 - open browser [http://minio:9001/buckets/](http://minio:9001/buckets/)
@@ -155,8 +155,8 @@ Open the post/workflows tab and click `try it out`, paste in the following to th
 - `"server_url": "https://localhost:2746"`
 this is where the local running code is expecting to talk to Argo.
 - `"messaging_endpoint": "rabbit-monai"`
-this is where argo is expecting to find rabbitMq, so this is the kubernetes address !
-Also make sure if your running in windows that youe .kube/config is pointing to the correct k8's !
+this is where argo is expecting to find rabbitMq, so this is the kubernetes address!
+- Also make sure if your running in windows that youe .kube/config is pointing to the correct k8's !
 
 click the `Execute` button, if the code can talk to mongoDb you will see something like this.
 ```
@@ -170,28 +170,33 @@ You can use Mongo Compass, with connection string `mongodb://root:rootpassword@l
 ### now we need an argo template to run.
 navigate to [https://localhost:2746/workflow-templates?namespace=argo](https://localhost:2746/workflow-templates?namespace=argo) proceed passed the warnings about been insecure. (Chrome, click advance and then proceed to destination)
 click on `CREATE NEW WORKFLOW TEMPLATE` button top left.
-rename it to `name: simple-workflow` so it matches the name in our workflow above
+set the name to `name: simple-workflow` so it matches the workflow we posted above.
 then click the `Create` button.
-switch the tab back to `workflows` in the left menu [takes you here](https://localhost:2746/workflows?limit=50)
+switch the tab back to [workflows](https://localhost:2746/workflows?limit=50) in the left menu
 
 ### rabbitmqAdmin for sending rabbit messages
 [https://www.rabbitmq.com/management-cli.html](https://www.rabbitmq.com/management-cli.html)
 
 In the command below replace xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx with the new workflowId from above ie. `9235f5e8-9ad2-44d2-8b41-2c1e4d2464c6`
 
-`rabbitmqadmin -u admin -p admin -P 30672 -V monaideploy publish exchange=monaideploy routing_key=md.workflow.request  properties="{\"app_id\": \"16988a78-87b5-4168-a5c3-2cfc2bab8e54\",\"type\": \"WorkflowRequestMessage\",\"message_id\": \"0277e763-316c-4104-aeda-3620e7a642c7\",\"correlation_id\":\"ab482a7c-4da7-4e76-8d36-d194dd35555e\",\"content_type\": \"application/json\"}" payload="{\"payload_id\":\"00000000-1000-0000-0000-000000000000\",\"workflows\":[\"bc8917c8-7324-4f7e-a092-c9a1c0b75446\"],\"file_count\":0,\"correlation_id\":\"e4b06f00-5ce3-4477-86cb-4f3bf20680c2\",\"bucket\":\"bucket1\",\"calling_aetitle\":\"MWM\",\"called_aetitle\":\"Basic_AE_3\",\"timestamp\":\"2022-07-13T11:34:34.8428704+01:00\"}"`
+```rabbitmqadmin -u admin -p admin -P 30672 -V monaideploy publish exchange=monaideploy routing_key=md.workflow.request  properties="{\"app_id\": \"16988a78-87b5-4168-a5c3-2cfc2bab8e54\",\"type\": \"WorkflowRequestMessage\",\"message_id\": \"0277e763-316c-4104-aeda-3620e7a642c7\",\"correlation_id\":\"ab482a7c-4da7-4e76-8d36-d194dd35555e\",\"content_type\": \"application/json\"}" payload="{\"payload_id\":\"00000000-1000-0000-0000-000000000000\",\"workflows\":[\"bc8917c8-7324-4f7e-a092-c9a1c0b75446\"],\"file_count\":0,\"correlation_id\":\"e4b06f00-5ce3-4477-86cb-4f3bf20680c2\",\"bucket\":\"bucket1\",\"calling_aetitle\":\"MWM\",\"called_aetitle\":\"Basic_AE_3\",\"timestamp\":\"2022-07-13T11:34:34.8428704+01:00\"}"```
 
 paste the above (with the proper workflowId) into bash and press enter.
 
 Debug in VisualStudio (if its not already running) and view the progress
 if you see error messages in the debug terminal in vs about mc.exe make sure you've copied it over as mentioned above.
-ie copy mc.exe to \monai-deploy-workflow-manager\src\TaskManager\TaskManager\bin\Debug\net6.0
+ie copy mc.exe to `\monai-deploy-workflow-manager\src\TaskManager\TaskManager\bin\Debug\net6.0`
 
-in the argo tab [https://localhost:2746/workflows?limit=50](https://localhost:2746/workflows?limit=50)
+in the argo workflows tab [https://localhost:2746/workflows?limit=50](https://localhost:2746/workflows?limit=50)
 you should see the activity of the argo task running. once complete the code will process the callback and update messages.
 
 in MongoCompass check the results, by refreshing then selecting the created WorkflowInstance
 by drilling down into Tasks -> 0 -> ExecutionStats, you should see the reported stats.
+
+## Congratulations
+you have just ran a workflow in Monai Workflow Manager and had that execute a template in Argo, your now free to make changes to the above and run your own docker pods with the Argo template !
+
+
 
 ## General hints and tips
 
