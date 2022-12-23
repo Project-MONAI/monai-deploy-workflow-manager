@@ -40,23 +40,23 @@ new bash window `kubectl -n argo port-forward deployment/minio 9000:9000 9001:90
 
 another bash window `kubectl -n argo port-forward deployment/argo-server 2746:2746`
 
-This allows you to access argo (localhost:2746) and minio (localhost:9001)
+This allows you to access argo [localhost:2746](http://localhost:2746) and minio [localhost:9001](http://localhost:9001)
 
 #### Dns change
-Now we have our services running we need to make a DNS change, because minio needs to be accessed from argo (within kubernetes) its addressed somthing like this `http://minio:9000` but the code running in VisualStudio also needs to access it. To get around this, in notepad (in Aministrator mode) open the file `C:\Windows\System32\drivers\etc\Hosts` add the following line
+Now we have our services running we need to make a DNS change, because minio needs to be accessed from argo (within kubernetes) its addressed something like this `http://minio:9000` but the code running in VisualStudio also needs to access it. To get around this, in notepad (in Aministrator mode) open the file `C:\Windows\System32\drivers\etc\Hosts` add the following line
 - `127.0.0.1	minio`
 
-save the file, now `http://minio:9000` will route to you local machine
+save the file, now [http://minio:9000]{http://minio:9000} will route to you local machine
 
 ### setup up an input file
-- open browser `http://minio:9001/buckets/` 
+- open browser [http://minio:9001/buckets/](http://minio:9001/buckets/)
 - log in with `admin` `password`
 - using the UI make a bucket called `bucket1` 
 - and a folder called `00000000-1000-0000-0000-000000000000/dcm/` be careful not to put spaces before or after this name.
 - make an empty local file called `input_dicom` and drag this into the created folder in the browser.
 
 ### add rabbit and mongo services
-install Helm 3 https://helm.sh/docs/intro/install/
+install [Helm 3](https://helm.sh/docs/intro/install/)
 from a bash terminal in the root folder of the project
 - `helm upgrade -i -n argo -f deploy/helm/mongo-local.yaml mongo deploy/helm`
 - `helm upgrade -i -n argo -f deploy/helm/rabbitmq-local.yaml rabbit deploy/helm`
@@ -64,11 +64,11 @@ from a bash terminal in the root folder of the project
 ### running in VisualStudio
 Now assuming your launchSettings in workflow manager has the line 
 `"ASPNETCORE_ENVIRONMENT": "Local"`
-AND in taskManager has
-"DOTNET_ENVIRONMENT": "Local"
+AND in taskManager has the line
+`"DOTNET_ENVIRONMENT": "Local"`
 and nobody has broken the `appsettings.Local.json` file's
 
-Note. if you dont have a launchsettings file you can make a folder under each project called `Properties` and make a new file called launchSettings.json
+Note. if you dont have a launchsettings file you can make a folder under each project called `Properties` and make a new file called launchSettings.json with the following contents.
 
 WorkflowManager.
 ```
@@ -156,8 +156,9 @@ Open the post/workflows tab and click `try it out`, paste in the following to th
 this is where the local running code is expecting to talk to Argo.
 - `"messaging_endpoint": "rabbit-monai"`
 this is where argo is expecting to find rabbitMq, so this is the kubernetes address !
+Also make sure if your running in windows that youe .kube/config is pointing to the correct k8's !
 
-click the `Execute` button, if the code can talk to mongoDb you will see somthing like this.
+click the `Execute` button, if the code can talk to mongoDb you will see something like this.
 ```
 {
   "workflow_id": "9235f5e8-9ad2-44d2-8b41-2c1e4d2464c6"
@@ -167,14 +168,14 @@ click the `Execute` button, if the code can talk to mongoDb you will see somthin
 You can use Mongo Compass, with connection string `mongodb://root:rootpassword@localhost:30017` to check the data is there.
 
 ### now we need an argo template to run.
-navigate to `https://localhost:2746/workflow-templates?namespace=argo` proceed passed the warnings about been insecure. (Chrome, click advance and then proceed to destination)
+navigate to [https://localhost:2746/workflow-templates?namespace=argo](https://localhost:2746/workflow-templates?namespace=argo) proceed passed the warnings about been insecure. (Chrome, click advance and then proceed to destination)
 click on `CREATE NEW WORKFLOW TEMPLATE` button top left.
 rename it to `name: simple-workflow` so it matches the name in our workflow above
 then click the `Create` button.
-switch the tab back to `workflows` in the left menu (`https://localhost:2746/workflows?limit=50`)
+switch the tab back to `workflows` in the left menu [takes you here](https://localhost:2746/workflows?limit=50)
 
 ### rabbitmqAdmin for sending rabbit messages
-https://www.rabbitmq.com/management-cli.html
+[https://www.rabbitmq.com/management-cli.html](https://www.rabbitmq.com/management-cli.html)
 
 In the command below replace xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx with the new workflowId from above ie. `9235f5e8-9ad2-44d2-8b41-2c1e4d2464c6`
 
@@ -183,10 +184,10 @@ In the command below replace xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx with the new w
 paste the above (with the proper workflowId) into bash and press enter.
 
 Debug in VisualStudio (if its not already running) and view the progress
-if you see error messages in the debug terminal in vs about mc.exe make sure youve copied over as mentioned above.
+if you see error messages in the debug terminal in vs about mc.exe make sure you've copied it over as mentioned above.
 ie copy mc.exe to \monai-deploy-workflow-manager\src\TaskManager\TaskManager\bin\Debug\net6.0
 
-in the argo tab `https://localhost:2746/workflows?limit=50`
+in the argo tab [https://localhost:2746/workflows?limit=50](https://localhost:2746/workflows?limit=50)
 you should see the activity of the argo task running. once complete the code will process the callback and update messages.
 
 in MongoCompass check the results, by refreshing then selecting the created WorkflowInstance
@@ -233,7 +234,7 @@ then
 
 
 ### Minio
-examples for Minio (using mc.exe) https://docs.min.io/docs/minio-client-complete-guide.html
+examples for Minio (using mc.exe) [https://docs.min.io/docs/minio-client-complete-guide.html](https://docs.min.io/docs/minio-client-complete-guide.html)
 
 exec into the WorkflowManager pod
 - `k -n monai exec -it mwm-monai-5964656c98-m7k9j -- bash`
