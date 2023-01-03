@@ -59,6 +59,69 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         }
                     }
                 }
+            },
+            new TaskCallbackTestData()
+            {
+                Name = "Task_Callback_Succeeded",
+                TaskCallbackEvent = new TaskCallbackEvent()
+                {
+                    CorrelationId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic_Clinical_Review").TaskDispatchEvent.CorrelationId,
+                    ExecutionId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic_Clinical_Review").TaskDispatchEvent.ExecutionId,
+                    Identity = "Identity_1",
+                    TaskId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic_Clinical_Review").TaskDispatchEvent.TaskId,
+                    WorkflowInstanceId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic_Clinical_Review").TaskDispatchEvent.WorkflowInstanceId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                        { "acceptance", true },
+                        { "user_id", "example_user_id" }
+                    },
+                    Outputs = new List<Messaging.Common.Storage> {
+                        new Messaging.Common.Storage()
+                        {
+                            Name = "output",
+                            Endpoint = "//test",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = "//dcm"
+                        }
+                    }
+                }
+            },
+            new TaskCallbackTestData()
+            {
+                Name = "Task_Callback_Partial_Fail",
+                TaskCallbackEvent = new TaskCallbackEvent()
+                {
+                    CorrelationId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic_Clinical_Review").TaskDispatchEvent.CorrelationId,
+                    ExecutionId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic_Clinical_Review").TaskDispatchEvent.ExecutionId,
+                    Identity = "Identity_1",
+                    TaskId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic_Clinical_Review").TaskDispatchEvent.TaskId,
+                    WorkflowInstanceId = Helper.GetTaskDispatchByName("Task_Dispatch_Basic_Clinical_Review").TaskDispatchEvent.WorkflowInstanceId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                        { "acceptance", false },
+                        { "reason", "not correct" },
+                        { "user_id", "example_user_id" }
+                    },
+                    Outputs = new List<Messaging.Common.Storage> {
+                        new Messaging.Common.Storage()
+                        {
+                            Name = "output",
+                            Endpoint = "//test",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = "//dcm"
+                        }
+                    }
+                }
             }
         };
     }

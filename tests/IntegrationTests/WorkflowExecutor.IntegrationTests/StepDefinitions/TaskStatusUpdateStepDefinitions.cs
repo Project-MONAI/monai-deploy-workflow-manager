@@ -163,6 +163,33 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             });
         }
 
+        [Then(@"Clinical Review Metadata is added to workflow instance")]
+        public void ClinicalReviewMetadataIsAddedtoWorkflowInstance()
+        {
+
+            RetryPolicy.Execute(() =>
+            {
+                _outputHelper.WriteLine($"Retrieving workflow instance by id={DataHelper.TaskUpdateEvent.WorkflowInstanceId}");
+                var workflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
+                _outputHelper.WriteLine("Retrieved workflow instance");
+
+                var taskUpdated = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(DataHelper.TaskUpdateEvent.TaskId));
+
+                taskUpdated.Should().NotBeNull();
+
+                taskUpdated?.ResultMetadata.Should().ContainKey("acceptance");
+
+                var acceptance = (bool)taskUpdated.ResultMetadata["acceptance"];
+
+                if (acceptance is false)
+                {
+                    taskUpdated?.ResultMetadata.Should().ContainKey("reason");
+                }
+
+                taskUpdated?.ResultMetadata.Should().ContainKey("user_id");
+            });
+        }
+
         [Then(@"I can see the status of the Task is not updated")]
         public void ThenICanSeeTheStatusOfTheTaskIsNotUpdated()
         {

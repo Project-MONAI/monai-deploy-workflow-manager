@@ -387,6 +387,43 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowInstanceTestData()
             {
+                Name = "WFI_Clinical_Review_1",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = Helper.GetWorkflowByName("Multi_Task_Workflow_Clinical_Review_1")?.WorkflowRevision?.Workflow?.InformaticsGateway?.AeTitle,
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Task_Workflow_Clinical_Review_1")?.WorkflowRevision?.WorkflowId ?? "",
+                    PayloadId = Guid.NewGuid().ToString(),
+                    StartTime = DateTime.UtcNow,
+                    Status = Status.Created,
+                    BucketId = "monai",
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Clinical_Review_1")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Clinical_Review_1")?.WorkflowRevision?.Workflow?.Tasks.FirstOrDefault()?.Type,
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
+                            Status = TaskExecutionStatus.Succeeded
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Clinical_Review_1")?.WorkflowRevision?.Workflow?.Tasks[1]?.Id,
+                            TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Clinical_Review_1")?.WorkflowRevision?.Workflow?.Tasks[1]?.Type,
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
                 Name = "WFI_Multi_Task_1",
                 WorkflowInstance = new WorkflowInstance()
                 {

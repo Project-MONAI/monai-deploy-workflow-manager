@@ -302,6 +302,43 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new TaskUpdateTestData()
             {
+                Name = "Task_Update_Dispatches_Clinical_Review_False",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Clinical_Review_1").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Clinical_Review_1").WorkflowInstance.Tasks[1].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Clinical_Review_1").WorkflowInstance.Tasks[1].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                         { "acceptance", false },
+                        { "reason", "not correct" },
+                        { "user_id", "example_user_id" }
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "Task_Update_Dispatches_Clinical_Review_True",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Clinical_Review_1").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Clinical_Review_1").WorkflowInstance.Tasks[1].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Clinical_Review_1").WorkflowInstance.Tasks[1].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                         { "acceptance", true },
+                        { "user_id", "example_user_id" }
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
                 Name = "Task_Update_Dispatches_Multi_Tasks",
                 TaskUpdateEvent = new TaskUpdateEvent()
                 {
