@@ -50,8 +50,5 @@ namespace Monai.Deploy.WorkflowManager.Configuration
     {
         [ConfigurationKeyName("server_url")]
         public string ServerUrl { get; set; } = string.Empty;
-
-        [ConfigurationKeyName("namespace")]
-        public string Namespace { get; set; } = string.Empty;
     }
 }
