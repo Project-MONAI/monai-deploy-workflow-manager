@@ -57,6 +57,24 @@ Scenario: Publish a valid Task Update event as failed which does not trigger a n
     Then A Task Dispatch event is not published
     And Workflow Instance status is Failed
 
+@TaskUpdate
+Scenario: Publish a valid Task Update event as partial fail which does not trigger a new task
+    Given I have a clinical workflow Multi_Task_Workflow_Clinical_Review_1
+    And I have a Workflow Instance WFI_Clinical_Review_1 with no artifacts
+    When I publish a Task Update Message Task_Update_Dispatches_Clinical_Review_False with status PartialFail
+    Then A Task Dispatch event is not published
+    And Clinical Review Metadata is added to workflow instance
+    And Workflow Instance status is Succeeded
+
+@TaskUpdate
+Scenario: Publish a valid Task Update event as succeeded which triggers a new task
+    Given I have a clinical workflow Multi_Task_Workflow_Clinical_Review_1
+    And I have a Workflow Instance WFI_Clinical_Review_1 with no artifacts
+    When I publish a Task Update Message Task_Update_Dispatches_Clinical_Review_True with status Succeeded
+    Then 1 Task Dispatch events are published
+    And Clinical Review Metadata is added to workflow instance
+    And Workflow Instance status is Created
+
 @TaskDestinationConditions
 Scenario: Task destination with condition true, WFI is updated with Task and task dispatch message is published
     Given I have a clinical workflow <workflow>

@@ -398,6 +398,64 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowRevisionTestData()
             {
+                Name = "Multi_Task_Workflow_Clinical_Review_1",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Mulit Task workflow 1",
+                        Description = "Multi Task workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "00d275ce-81d8-4d54-a923-d34cf1955cc4",
+                                Type = "Multi_task",
+                                Description = "Multiple request task 1",
+                                Artifacts = new ArtifactMap(),
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination()
+                                    {
+                                        Name = "510ba0cf-8632-4112-994d-36617318a74f"
+                                    }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "510ba0cf-8632-4112-994d-36617318a74f",
+                                Type = "aide_clinical_review",
+                                Description = "Multiple request task 2",
+                                Artifacts = new ArtifactMap(),
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination
+                                    {
+                                        Name = "510ba0cf-8632-4112-994d-36617318a74r"
+                                    }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "510ba0cf-8632-4112-994d-36617318a74r",
+                                Type = "task",
+                                Description = "Multiple request task 2",
+                                Artifacts = new ArtifactMap(),
+                            },
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Multi_Task_1"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
                 Name = "Multi_Task_Workflow_1",
                 WorkflowRevision = new WorkflowRevision()
                 {
