@@ -65,7 +65,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _options = options ?? throw new ArgumentNullException(nameof(options));
-            _namespace = Strings.DefaultNamespace;
 
             ValidateEvent();
             Initialize();
@@ -79,22 +78,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 _activeDeadlineSeconds = result;
             }
 
-            if (Event.TaskPluginArguments.ContainsKey(Keys.Namespace))
-            {
-                _namespace = Event.TaskPluginArguments[Keys.Namespace];
-            }
-
             if (Event.TaskPluginArguments.ContainsKey(Keys.ArgoApiToken))
             {
                 _apiToken = Event.TaskPluginArguments[Keys.ArgoApiToken];
             }
 
-            if (Event.TaskPluginArguments.ContainsKey(Keys.AllowInsecureseUrl))
-            {
-                _allowInsecure = string.Compare("true", Event.TaskPluginArguments[Keys.AllowInsecureseUrl], true) == 0;
-            }
+            _namespace = Event.TaskPluginArguments.ContainsKey(Keys.Namespace) ?
+                Event.TaskPluginArguments[Keys.Namespace] :
+                Strings.DefaultNamespace;
 
-            _baseUrl = Event.TaskPluginArguments[Keys.BaseUrl];
+            _allowInsecure = Event.TaskPluginArguments.ContainsKey(Keys.AllowInsecureseUrl) ?
+                string.Compare("true", Event.TaskPluginArguments[Keys.AllowInsecureseUrl], true) == 0 :
+                true;
+
+            _baseUrl = Event.TaskPluginArguments.ContainsKey(Keys.BaseUrl) ?
+                Event.TaskPluginArguments[Keys.BaseUrl] :
+                _options.Value.TaskManager.ArgoPluginArguments.ServerUrl;
 
             _logger.Initialized(_namespace, _baseUrl, _activeDeadlineSeconds, (!string.IsNullOrWhiteSpace(_apiToken)));
         }
