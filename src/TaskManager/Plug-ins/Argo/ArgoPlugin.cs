@@ -121,7 +121,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 }
             }
 
-            if (!Uri.IsWellFormedUriString(Event.TaskPluginArguments[Keys.BaseUrl], UriKind.Absolute))
+            if (Event.TaskPluginArguments.ContainsKey(Keys.BaseUrl) && !Uri.IsWellFormedUriString(Event.TaskPluginArguments[Keys.BaseUrl], UriKind.Absolute))
             {
                 throw new InvalidTaskException($"The value '{Event.TaskPluginArguments[Keys.BaseUrl]}' provided for '{Keys.BaseUrl}' is not a valid URI.");
             }
