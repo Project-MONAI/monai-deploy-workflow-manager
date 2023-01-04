@@ -37,7 +37,7 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         public string ArgoExitHookSendMessageContainerImage { get; set; } = "ghcr.io/jandelgado/rabtap:latest";
 
         [ConfigurationKeyName("argoPluginArguments")]
-        public ArgoPluginArguments ArgoPluginArguments { get; set; }
+        public ArgoPluginArguments ArgoPluginArguments { get; set; } = new ArgoPluginArguments();
 
         public TaskManagerConfiguration()
         {
