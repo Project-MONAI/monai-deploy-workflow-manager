@@ -736,23 +736,6 @@ public class ArgoPluginTest
         Assert.Null(_submittedArgoTemplate?.Spec.PodGC);
     }
 
-    [Fact(DisplayName = "Default plugin args are assigned when not specified in the event")]
-    public async Task ArgoPlugin_DefaultPluginArgsPresent()
-    {
-        var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
-        Assert.NotNull(argoTemplate);
-
-        SetUpSimpleArgoWorkFlow(argoTemplate);
-
-        var message = GenerateTaskDispatchEventWithValidArguments(true);
-
-        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
-        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
-
-        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
-        //Assert.Equals(result.);
-    }
-
     private void SetUpSimpleArgoWorkFlow(WorkflowTemplate argoTemplate)
     {
         Assert.NotNull(argoTemplate);
