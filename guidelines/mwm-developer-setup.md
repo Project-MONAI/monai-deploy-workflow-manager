@@ -32,7 +32,7 @@ Note. if you already have docker container for Minio Rabbit etc running Stop the
   - `kubectl apply -n argo -f https://raw.githubusercontent.com/argoproj/argo-workflows/master/manifests/quick-start-postgres.yaml`
   - `kubectl config set-context --current --namespace=argo`
 
-Note. below Im using bash as its my preferred option,But if you to are using bash and your on windows (wsl2) you MUST make sure you windows .kube/config is also pointing to the saem K8's cluster, this is because the code running in vs will look in there for the context to write k8's secrets too!
+Note. below Im using bash as its my preferred option, But if you to are using bash and your on windows (wsl2) you MUST make sure you windows .kube/config is also pointing to the same K8's cluster, this is because the code running in vs will look in there for the context to write k8's secrets too!
 
 now in a bash window (can be cmd or powershell)
 
@@ -179,7 +179,7 @@ switch the tab back to [workflows](https://localhost:2746/workflows?limit=50) in
 
 In the command below replace xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx with the new workflowId from above ie. `9235f5e8-9ad2-44d2-8b41-2c1e4d2464c6`
 
-```rabbitmqadmin -u admin -p admin -P 30672 -V monaideploy publish exchange=monaideploy routing_key=md.workflow.request  properties="{\"app_id\": \"16988a78-87b5-4168-a5c3-2cfc2bab8e54\",\"type\": \"WorkflowRequestMessage\",\"message_id\": \"0277e763-316c-4104-aeda-3620e7a642c7\",\"correlation_id\":\"ab482a7c-4da7-4e76-8d36-d194dd35555e\",\"content_type\": \"application/json\"}" payload="{\"payload_id\":\"00000000-1000-0000-0000-000000000000\",\"workflows\":[\"bc8917c8-7324-4f7e-a092-c9a1c0b75446\"],\"file_count\":0,\"correlation_id\":\"e4b06f00-5ce3-4477-86cb-4f3bf20680c2\",\"bucket\":\"bucket1\",\"calling_aetitle\":\"MWM\",\"called_aetitle\":\"Basic_AE_3\",\"timestamp\":\"2022-07-13T11:34:34.8428704+01:00\"}"```
+```rabbitmqadmin -u admin -p admin -P 30672 -V monaideploy publish exchange=monaideploy routing_key=md.workflow.request  properties="{\"app_id\": \"16988a78-87b5-4168-a5c3-2cfc2bab8e54\",\"type\": \"WorkflowRequestMessage\",\"message_id\": \"0277e763-316c-4104-aeda-3620e7a642c7\",\"correlation_id\":\"ab482a7c-4da7-4e76-8d36-d194dd35555e\",\"content_type\": \"application/json\"}" payload="{\"payload_id\":\"00000000-1000-0000-0000-000000000000\",\"workflows\":[\"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\"],\"file_count\":0,\"correlation_id\":\"e4b06f00-5ce3-4477-86cb-4f3bf20680c2\",\"bucket\":\"bucket1\",\"calling_aetitle\":\"MWM\",\"called_aetitle\":\"Basic_AE_3\",\"timestamp\":\"2022-07-13T11:34:34.8428704+01:00\"}"```
 
 paste the above (with the proper workflowId) into bash and press enter.
 
