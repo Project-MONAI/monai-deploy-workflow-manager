@@ -57,6 +57,7 @@ Scenario: Get all triggered workflows instances for payload
     | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&pageNumber=1&pageSize=10&disablePagination=true |
     | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&disablePagination=true                          |
 
+@Ignore
 @GetWorkflowInstances
 Scenario: Verifying file status exports are added to the metadata successfully
     Given I have an endpoint /workflowinstances

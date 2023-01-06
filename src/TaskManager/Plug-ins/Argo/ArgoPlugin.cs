@@ -83,17 +83,35 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 _apiToken = Event.TaskPluginArguments[Keys.ArgoApiToken];
             }
 
-            _namespace = Event.TaskPluginArguments.ContainsKey(Keys.Namespace) ?
-                Event.TaskPluginArguments[Keys.Namespace] :
-                Strings.DefaultNamespace;
+            if (Event.TaskPluginArguments.ContainsKey(Keys.Namespace))
+            {
+                _namespace = Event.TaskPluginArguments[Keys.Namespace];
+            }
+            else
+            {
+                _namespace = Strings.DefaultNamespace;
+                Event.TaskPluginArguments.Add(Keys.Namespace, _namespace);
+            }
 
-            _allowInsecure = Event.TaskPluginArguments.ContainsKey(Keys.AllowInsecureseUrl) ?
-                string.Compare("true", Event.TaskPluginArguments[Keys.AllowInsecureseUrl], true) == 0 :
-                true;
+            if (Event.TaskPluginArguments.ContainsKey(Keys.AllowInsecureseUrl))
+            {
+                _allowInsecure = string.Compare("true", Event.TaskPluginArguments[Keys.AllowInsecureseUrl], true) == 0;
+            }
+            else
+            {
+                _allowInsecure = true;
+                Event.TaskPluginArguments.Add(Keys.AllowInsecureseUrl, "true");
+            }
 
-            _baseUrl = Event.TaskPluginArguments.ContainsKey(Keys.BaseUrl) ?
-                Event.TaskPluginArguments[Keys.BaseUrl] :
-                _options.Value.TaskManager.ArgoPluginArguments.ServerUrl;
+            if (Event.TaskPluginArguments.ContainsKey(Keys.BaseUrl))
+            {
+                _baseUrl = Event.TaskPluginArguments[Keys.BaseUrl];
+            }
+            else
+            {
+                _baseUrl = _options.Value.TaskManager.ArgoPluginArguments.ServerUrl;
+                Event.TaskPluginArguments.Add(Keys.BaseUrl, _baseUrl);
+            }
 
             _logger.Initialized(_namespace, _baseUrl, _activeDeadlineSeconds, (!string.IsNullOrWhiteSpace(_apiToken)));
         }
