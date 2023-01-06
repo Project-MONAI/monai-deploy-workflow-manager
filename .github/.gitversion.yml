@@ -19,6 +19,7 @@ branches:
   main:
     tag: ''
   release:
+    regex: ^release/(?!2022)
     tag: rc
   develop:
     tag: beta
