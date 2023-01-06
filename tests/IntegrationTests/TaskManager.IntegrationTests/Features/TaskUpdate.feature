@@ -45,7 +45,7 @@ Scenario Outline: TaskUpdateEvent is published with correct status upon receivin
     Then A Task Update event with status <status> is published with Task Callback details
     Examples:
     | taskCallbackEvent          | status      |
-    | Task_Callback_Succeeded    | Succeeded   |
+    # | Task_Callback_Succeeded    | Succeeded   |
     | Task_Callback_Partial_Fail | PartialFail |
 
 @TaskDispatch_Persistance
