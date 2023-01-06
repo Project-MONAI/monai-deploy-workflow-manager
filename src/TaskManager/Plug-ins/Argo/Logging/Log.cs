@@ -41,8 +41,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging
         [LoggerMessage(EventId = 1006, Level = LogLevel.Debug, Message = "Creating Argo client with base URL: {baseUrl}.")]
         public static partial void CreatingArgoClient(this ILogger logger, string baseUrl);
 
-        [LoggerMessage(EventId = 1007, Level = LogLevel.Debug, Message = "Creating Kubernetes client: host={host}, namespace={ns}.")]
-        public static partial void CreatingKubernetesClient(this ILogger logger, string host, string ns);
+        [LoggerMessage(EventId = 1007, Level = LogLevel.Debug, Message = "Creating Kubernetes client: host={hostString}, namespace={ns}.")]
+        public static partial void CreatingKubernetesClient(this ILogger logger, string hostString, string ns);
 
         [LoggerMessage(EventId = 1008, Level = LogLevel.Information, Message = "Argo workflow created: {name}")]
         public static partial void ArgoWorkflowCreated(this ILogger logger, string name);
@@ -68,7 +68,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging
         [LoggerMessage(EventId = 1015, Level = LogLevel.Debug, Message = "Metadata file in {path} in bucket {bucket} was not found.")]
         public static partial void MetadataFileNotFound(this ILogger logger, string bucket, string path);
 
-        [LoggerMessage(EventId = 1016, Level = LogLevel.Information, Message = "Argo: {log}")]
-        public static partial void ArgoLog(this ILogger logger, string log);
+        [LoggerMessage(EventId = 1016, Level = LogLevel.Information, Message = "Argo: {logString}")]
+        public static partial void ArgoLog(this ILogger logger, string logString);
     }
 }
