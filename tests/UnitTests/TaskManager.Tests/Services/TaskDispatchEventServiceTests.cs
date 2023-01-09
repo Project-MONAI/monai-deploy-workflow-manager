@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
@@ -38,7 +39,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Services
         }
 
         [Fact(DisplayName = "TaskDispatchEventService - UpdateTaskPluginArgsAsync - Throws error when taskDispatchEvent is null")]
-        public async void TaskDispatchEventService_UpdateTaskPluginArgsAsync_ThrowsErrorWhenTaskDispatchEventNull()
+        public async Task TaskDispatchEventService_UpdateTaskPluginArgsAsync_ThrowsErrorWhenTaskDispatchEventNull()
         {
             TaskDispatchEventInfo eventInfo = null;
             var pluginArgs = new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } };
@@ -51,7 +52,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Services
         }
 
         [Fact(DisplayName = "TaskDispatchEventService - UpdateTaskPluginArgsAsync - Throws error when pluginArgs is null")]
-        public async void TaskDispatchEventService_UpdateTaskPluginArgsAsync_ThrowsErrorWhenPluginArgsNull()
+        public async Task TaskDispatchEventService_UpdateTaskPluginArgsAsync_ThrowsErrorWhenPluginArgsNull()
         {
             TaskDispatchEventInfo eventInfo = GenerateTaskDispatchEventInfo();
             Dictionary<string, string> pluginArgs = null;
@@ -64,7 +65,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Services
         }
 
         [Fact(DisplayName = "TaskDispatchEventService - UpdateTaskPluginArgsAsync - Successful")]
-        public async void TaskDispatchEventService_UpdateTaskPluginArgsAsync_Successful()
+        public async Task TaskDispatchEventService_UpdateTaskPluginArgsAsync_Successful()
         {
             var eventInfo = GenerateTaskDispatchEventInfo();
             var pluginArgs = new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } };
