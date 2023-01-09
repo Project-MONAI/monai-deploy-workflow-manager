@@ -71,7 +71,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services
 
         public async Task<TaskDispatchEventInfo> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEvent, Dictionary<string, string> pluginArgs)
         {
-            Guard.Against.Null(taskDispatchEvent, nameof(taskDispatchEvent));
+            Guard.Against.Null(taskDispatchEvent);
             Guard.Against.Null(pluginArgs);
 
             try

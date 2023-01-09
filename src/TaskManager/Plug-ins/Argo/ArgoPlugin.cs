@@ -74,7 +74,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             Initialize();
         }
 
-        private async void Initialize()
+        private void Initialize()
         {
             if (Event.TaskPluginArguments.ContainsKey(Keys.TimeoutSeconds) &&
                 int.TryParse(Event.TaskPluginArguments[Keys.TimeoutSeconds], out var result))
@@ -125,7 +125,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             if (updateEvent)
             {
                 var eventInfo = new TaskDispatchEventInfo(Event);
-                await _taskDispatchEventService.UpdateTaskPluginArgsAsync(eventInfo, Event.TaskPluginArguments);
+                Task.Run(() => _taskDispatchEventService.UpdateTaskPluginArgsAsync(eventInfo, Event.TaskPluginArguments));
             }
 
             _logger.Initialized(_namespace, _baseUrl, _activeDeadlineSeconds, (!string.IsNullOrWhiteSpace(_apiToken)));
