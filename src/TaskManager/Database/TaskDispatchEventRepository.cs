@@ -121,7 +121,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
             }
             catch (Exception e)
             {
-                _logger.DatabaseException(nameof(UpdateUserAccountsAsync), e);
+                _logger.DatabaseException(nameof(UpdateTaskPluginArgsAsync), e);
                 return default;
             }
         }
