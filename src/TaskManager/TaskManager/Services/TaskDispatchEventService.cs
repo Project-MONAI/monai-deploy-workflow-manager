@@ -68,5 +68,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services
             Guard.Against.NullOrWhiteSpace(taskExecutionId, nameof(taskExecutionId));
             return await _taskDispatchEventRepository.GetByTaskExecutionIdAsync(taskExecutionId).ConfigureAwait(false);
         }
+
+        public async Task<TaskDispatchEventInfo> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEvent, Dictionary<string, string> pluginArgs)
+        {
+            Guard.Against.Null(taskDispatchEvent, nameof(taskDispatchEvent));
+            Guard.Against.Null(pluginArgs);
+
+            try
+            {
+                return await _taskDispatchEventRepository.UpdateTaskPluginArgsAsync(taskDispatchEvent, pluginArgs);
+            }
+            finally
+            {
+                _logger.TaskDispatchEventSaved(taskDispatchEvent.Event.ExecutionId);
+            }
+        }
     }
 }

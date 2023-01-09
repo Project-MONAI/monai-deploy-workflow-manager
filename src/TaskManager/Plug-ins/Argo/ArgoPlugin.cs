@@ -23,9 +23,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
+using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
 using Newtonsoft.Json;
@@ -41,6 +43,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IArgoProvider _argoProvider;
         private readonly ILogger<ArgoPlugin> _logger;
+        private readonly ITaskDispatchEventService _taskDispatchEventService;
         private int? _activeDeadlineSeconds;
         private string _namespace;
         private string _baseUrl = null!;
@@ -60,6 +63,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             _intermediaryArtifactStores = new Dictionary<string, Messaging.Common.Storage>();
             _scope = serviceScopeFactory.CreateScope();
 
+            _taskDispatchEventService = _scope.ServiceProvider.GetService<ITaskDispatchEventService>() ?? throw new ServiceNotFoundException(nameof(ITaskDispatchEventService));
             _kubernetesProvider = _scope.ServiceProvider.GetRequiredService<IKubernetesProvider>() ?? throw new ServiceNotFoundException(nameof(IKubernetesProvider));
             _argoProvider = _scope.ServiceProvider.GetRequiredService<IArgoProvider>() ?? throw new ServiceNotFoundException(nameof(IArgoProvider));
 
@@ -70,7 +74,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             Initialize();
         }
 
-        private void Initialize()
+        private async void Initialize()
         {
             if (Event.TaskPluginArguments.ContainsKey(Keys.TimeoutSeconds) &&
                 int.TryParse(Event.TaskPluginArguments[Keys.TimeoutSeconds], out var result))
@@ -83,6 +87,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 _apiToken = Event.TaskPluginArguments[Keys.ArgoApiToken];
             }
 
+            bool updateEvent = false;
+
             if (Event.TaskPluginArguments.ContainsKey(Keys.Namespace))
             {
                 _namespace = Event.TaskPluginArguments[Keys.Namespace];
@@ -91,6 +97,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             {
                 _namespace = Strings.DefaultNamespace;
                 Event.TaskPluginArguments.Add(Keys.Namespace, _namespace);
+                updateEvent = true;
             }
 
             if (Event.TaskPluginArguments.ContainsKey(Keys.AllowInsecureseUrl))
@@ -101,6 +108,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             {
                 _allowInsecure = true;
                 Event.TaskPluginArguments.Add(Keys.AllowInsecureseUrl, "true");
+                updateEvent = true;
             }
 
             if (Event.TaskPluginArguments.ContainsKey(Keys.BaseUrl))
@@ -111,6 +119,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             {
                 _baseUrl = _options.Value.TaskManager.ArgoPluginArguments.ServerUrl;
                 Event.TaskPluginArguments.Add(Keys.BaseUrl, _baseUrl);
+                updateEvent = true;
+            }
+
+            if (updateEvent)
+            {
+                var eventInfo = new TaskDispatchEventInfo(Event);
+                await _taskDispatchEventService.UpdateTaskPluginArgsAsync(eventInfo, Event.TaskPluginArguments);
             }
 
             _logger.Initialized(_namespace, _baseUrl, _activeDeadlineSeconds, (!string.IsNullOrWhiteSpace(_apiToken)));
