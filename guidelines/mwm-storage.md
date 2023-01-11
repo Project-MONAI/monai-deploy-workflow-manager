@@ -36,7 +36,7 @@ The MWM will be responsible for managing access to objects. It will have root le
 The informatics gateway will have write-only access to a specific storage bucket. This will be used to save the original input, and a reference will then be sent to the MWM.
 
 #### Workflow Manager Task Plugins
-Task plugins, as executable code within the MWM process, will theoretically have access to the entire object store. In practice, when executed they will receive references to specific [artifacts](mwm-workflow-spec.md#artifacts).
+Task plugins, as executable code within the MWM process, will theoretically have access to the entire object store. In practice, when executed they will receive references to specific [artifacts](/docs/setup/mwm-workflow-spec.md#artifacts).
 
 It is the plugins' responsibility to ensure Applications have access to the artifacts they need. How they do so depends on the plugin's architecture - they could send files as payloads in an HTTP call, or they could generate temporary access tokens and send these along with the object reference to app servers.
 
