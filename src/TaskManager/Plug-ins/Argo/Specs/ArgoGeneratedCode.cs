@@ -34,7 +34,7 @@ namespace Argo
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.15.10.0 (NJsonSchema v10.6.10.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial interface IArgoClient
+    public partial interface IArgoGeneratedClient
     {
         /// <param name="listOptions_labelSelector">A selector to restrict the list of returned objects by their labels.
         /// <br/>Defaults to everything.
@@ -3607,13 +3607,13 @@ namespace Argo
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.15.10.0 (NJsonSchema v10.6.10.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ArgoClient : IArgoClient
+    public partial class ArgoGeneratedClient : IArgoGeneratedClient
     {
         private string _baseUrl = "http://localhost:2746";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public ArgoClient(System.Net.Http.HttpClient httpClient)
+        public ArgoGeneratedClient(System.Net.Http.HttpClient httpClient)
         {
             _httpClient = httpClient;
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
