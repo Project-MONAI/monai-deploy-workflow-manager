@@ -65,7 +65,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _options = options ?? throw new ArgumentNullException(nameof(options));
-            _namespace = Strings.DefaultNamespace;
 
             ValidateEvent();
             Initialize();
@@ -79,22 +78,40 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 _activeDeadlineSeconds = result;
             }
 
+            if (Event.TaskPluginArguments.ContainsKey(Keys.ArgoApiToken))
+            {
+                _apiToken = Event.TaskPluginArguments[Keys.ArgoApiToken];
+            }
+
             if (Event.TaskPluginArguments.ContainsKey(Keys.Namespace))
             {
                 _namespace = Event.TaskPluginArguments[Keys.Namespace];
             }
-
-            if (Event.TaskPluginArguments.ContainsKey(Keys.ArgoApiToken))
+            else
             {
-                _apiToken = Event.TaskPluginArguments[Keys.ArgoApiToken];
+                _namespace = Strings.DefaultNamespace;
+                Event.TaskPluginArguments.Add(Keys.Namespace, _namespace);
             }
 
             if (Event.TaskPluginArguments.ContainsKey(Keys.AllowInsecureseUrl))
             {
                 _allowInsecure = string.Compare("true", Event.TaskPluginArguments[Keys.AllowInsecureseUrl], true) == 0;
             }
+            else
+            {
+                _allowInsecure = true;
+                Event.TaskPluginArguments.Add(Keys.AllowInsecureseUrl, "true");
+            }
 
-            _baseUrl = Event.TaskPluginArguments[Keys.BaseUrl];
+            if (Event.TaskPluginArguments.ContainsKey(Keys.BaseUrl))
+            {
+                _baseUrl = Event.TaskPluginArguments[Keys.BaseUrl];
+            }
+            else
+            {
+                _baseUrl = _options.Value.TaskManager.ArgoPluginArguments.ServerUrl;
+                Event.TaskPluginArguments.Add(Keys.BaseUrl, _baseUrl);
+            }
 
             _logger.Initialized(_namespace, _baseUrl, _activeDeadlineSeconds, (!string.IsNullOrWhiteSpace(_apiToken)));
         }
@@ -122,7 +139,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 }
             }
 
-            if (!Uri.IsWellFormedUriString(Event.TaskPluginArguments[Keys.BaseUrl], UriKind.Absolute))
+            if (Event.TaskPluginArguments.ContainsKey(Keys.BaseUrl) && !Uri.IsWellFormedUriString(Event.TaskPluginArguments[Keys.BaseUrl], UriKind.Absolute))
             {
                 throw new InvalidTaskException($"The value '{Event.TaskPluginArguments[Keys.BaseUrl]}' provided for '{Keys.BaseUrl}' is not a valid URI.");
             }
@@ -170,7 +187,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             }
         }
 
-        public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
+        public override async Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent callbackEvent, CancellationToken cancellationToken = default)
         {
             Guard.Against.NullOrWhiteSpace(identity, nameof(identity));
             Task? logTask = null;

@@ -1056,6 +1056,330 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Clinical_Review_Task_Id",
+                Workflow = new Workflow()
+                {
+                    Name = "Basic workflow",
+                    Description = "Basic workflow update",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "router",
+                            Type = "router",
+                            Description = "Basic Workflow update Task update",
+                            Args = new Dictionary<string, string>{ },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[]
+                            {
+                                new TaskDestination
+                                {
+                                    Name="clinical-review"
+                                }
+                            }
+                        },
+                        new TaskObject
+                        {
+                            Id = "clinical-review",
+                            Type = "aide_clinical_review",
+                            Description = "Basic Workflow update Task update",
+                            Args = new Dictionary<string, string>
+                            {
+                                { "workflow_name", "test" },
+                                { "reviewed_task_id", "router" },
+                                { "application_name", "test" },
+                                { "application_version", "1.1" },
+                                { "mode", "QA" },
+                            },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                },
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] { }
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        DataOrigins = new string[]{"test"},
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Clinical_Review_Multiple_Argo_Inputs",
+                Workflow = new Workflow()
+                {
+                    Name = "Basic workflow",
+                    Description = "Basic workflow update",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "argo-task-1",
+                            Type = "argo",
+                            Description = "Argo task",
+                            Args = new Dictionary<string, string> {
+                                { "workflow_template_name", "Workflow Name" },
+                            },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                },
+                                Output = new Artifact[]
+                                {
+                                    new Artifact { Name = "Argo1" }
+                                }
+                            },
+                            TaskDestinations = new TaskDestination[]
+                            {
+                                new TaskDestination
+                                {
+                                    Name = "clinical-review"
+                                },
+                                new TaskDestination
+                                {
+                                    Name = "argo-task-2"
+                                }
+                            }
+                        },
+                        new TaskObject
+                        {
+                            Id = "argo-task-2",
+                            Type = "argo",
+                            Description = "Argo task",
+                            Args = new Dictionary<string, string> {
+                                { "workflow_template_name", "Workflow Name" },
+                            },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                },
+                                Output = new Artifact[]
+                                {
+                                    new Artifact { Name = "Argo2" }
+                                }
+                            },
+                            TaskDestinations = new TaskDestination[] {
+                                new TaskDestination
+                                {
+                                    Name = "clinical-review"
+                                }
+                            }
+                        },
+                        new TaskObject
+                        {
+                            Id = "clinical-review",
+                            Type = "aide_clinical_review",
+                            Description = "Basic Workflow update Task update",
+                            Args = new Dictionary<string, string>
+                            {
+                                { "workflow_name", "test" },
+                                { "reviewed_task_id", "argo-task-1" },
+                                { "application_name", "test" },
+                                { "application_version", "1.1" },
+                                { "mode", "QA" },
+                            },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
+                                    new Artifact { Name = "Argo1", Value = "{{ context.executions.argo-task-1.artifacts.Argo1 }}" },
+                                    new Artifact { Name = "Argo2", Value = "{{ context.executions.argo-task-2.artifacts.Argo2 }}" },
+                                },
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        DataOrigins = new string[]{"test"},
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_Dup_Task_Id",
+                Workflow = new Workflow()
+                {
+                    Name = "Basic workflow",
+                    Description = "Basic workflow update",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "liver-seg",
+                            Type = "argo",
+                            Description = "Basic Workflow update Task update",
+                            Args = new Dictionary<string, string> { { "workflow_template_name", "argo-workflow-2" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact
+                                    {
+                                        Name = "Dicom", Value = "{{ context.input.dicom }}"
+                                    }
+                                },
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        },
+                        new TaskObject
+                        {
+                            Id = "liver-seg",
+                            Type = "argo",
+                            Description = "Basic Workflow update Task update",
+                            Args = new Dictionary<string, string> { { "workflow_template_name", "argo-workflow-2" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact
+                                    {
+                                        Name = "Dicom", Value = "{{ context.input.dicom }}"
+                                    }
+                                },
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        DataOrigins = new string[]{"test"},
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Workflow_Coverging_Task_Dest",
+                Workflow = new Workflow()
+                {
+                    Name = "Basic workflow",
+                    Description = "Basic workflow update",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "router_task",
+                            Type = "router",
+                            Description = "Basic Workflow update Task update",
+                            Args = new Dictionary<string, string> { { "workflow_template_name", "argo-workflow-2" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact
+                                    {
+                                        Name = "Dicom", Value = "{{ context.input.dicom }}"
+                                    }
+                                },
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[]
+                            {
+                                 new TaskDestination{ Name = "task1" },
+                                 new TaskDestination{ Name = "task2" }
+                            }
+                        },
+                        new TaskObject
+                        {
+                            Id = "task1",
+                            Type = "argo",
+                            Description = "Basic Workflow update Task update",
+                            Args = new Dictionary<string, string> { { "workflow_template_name", "argo-workflow-2" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact
+                                    {
+                                        Name = "Dicom", Value = "{{ context.input.dicom }}"
+                                    }
+                                },
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[]
+                            {
+                                 new TaskDestination{ Name = "task3" }
+                            }
+                        },
+                        new TaskObject
+                        {
+                            Id = "task2",
+                            Type = "argo",
+                            Description = "Basic Workflow update Task update",
+                            Args = new Dictionary<string, string> { { "workflow_template_name", "argo-workflow-2" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact
+                                    {
+                                        Name = "Dicom", Value = "{{ context.input.dicom }}"
+                                    }
+                                },
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[]
+                            {
+                                 new TaskDestination{ Name = "task3" }
+                            }
+                        },
+                        new TaskObject
+                        {
+                            Id = "task3",
+                            Type = "argo",
+                            Description = "Basic Workflow update Task update",
+                            Args = new Dictionary<string, string> { { "workflow_template_name", "argo-workflow-2" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact
+                                    {
+                                        Name = "Dicom", Value = "{{ context.input.dicom }}"
+                                    }
+                                },
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] { }
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        DataOrigins = new string[]{"test"},
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
         };
     }
 }

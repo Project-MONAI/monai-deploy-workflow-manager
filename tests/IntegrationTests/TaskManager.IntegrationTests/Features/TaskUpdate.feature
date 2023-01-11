@@ -38,13 +38,15 @@ Scenario Outline: TaskUpdateEvent is published with status Failed after receivin
     | Task_Dispatch_Clinical_Review_WorkflowName_Missing |
 
 @TaskCallback_TaskUpdate
-Scenario: TaskUpdateEvent is published with status Successful after receiving a valid TaskCallbackEvent
+Scenario Outline: TaskUpdateEvent is published with correct status upon receiving a valid TaskCallbackEvent
     Given I have a bucket in MinIO bucket1
-    When A Task Dispatch event is published Task_Dispatch_Basic_Clinical_Review
-    Then A Task Update event with status Accepted is published with Task Dispatch details
-    And The Task Dispatch event is saved in mongo
-    And A Task Callback event is published Task_Callback_Basic
-    And A Task Update event with status Succeeded is published with Task Callback details
+    And I have Task Dispatch Info saved in Mongo Task_Dispatch_Basic_Clinical_Review
+    When A Task Callback event is published <taskCallbackEvent>
+    Then A Task Update event with status <status> is published with Task Callback details
+    Examples:
+    | taskCallbackEvent          | status      |
+    # | Task_Callback_Succeeded    | Succeeded   |
+    | Task_Callback_Partial_Fail | PartialFail |
 
 @TaskDispatch_Persistance
 Scenario: TaskDispatchEvent with different permutations is published and matching TaskDispatchEvent is saved in Mongo

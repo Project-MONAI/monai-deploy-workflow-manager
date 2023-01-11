@@ -16,6 +16,7 @@
 
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
+using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefinitions
@@ -28,12 +29,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         private RabbitPublisher TaskDispatchPublisher { get; set; }
         private RabbitPublisher TaskCallbackPublisher { get; set; }
         private MinioClientUtil MinioClient { get; set; }
+        private MongoClientUtil MongoClient { get; set; }
 
         public CommonStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             TaskDispatchPublisher = objectContainer.Resolve<RabbitPublisher>("TaskDispatchPublisher");
             TaskCallbackPublisher = objectContainer.Resolve<RabbitPublisher>("TaskCallbackPublisher");
             MinioClient = objectContainer.Resolve<MinioClientUtil>();
+            MongoClient = objectContainer.Resolve<MongoClientUtil>();
             DataHelper = objectContainer.Resolve<DataHelper>();
             _outputHelper = outputHelper;
         }
@@ -47,6 +50,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         }
 
         [Then(@"A Task Callback event is published (.*)")]
+        [When(@"A Task Callback event is published (.*)")]
         public void ATaskCallbackEventIsPublished(string name)
         {
             _outputHelper.WriteLine($"Creating json for TaskCallbackEvent with name={name}");
@@ -71,6 +75,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
 
             TaskCallbackPublisher.PublishMessage(message.ToMessage());
             _outputHelper.WriteLine($"Successfully published TaskCallbackEvent with name={name}");
+        }
+
+        [Given(@"I have Task Dispatch Info saved in Mongo (.*)")]
+        public void GivenIHaveTaskDispatchInfoSavedInMongo(string name)
+        {
+            _outputHelper.WriteLine($"Creating json for TaskDispatchEvent with name={name}");
+            var taskDispatch = DataHelper.GetTaskDispatchTestData(name);
+
+            var taskDispatchInfo = new TaskDispatchEventInfo(taskDispatch);
+
+            MongoClient.CreateTaskDispatchEventInfo(taskDispatchInfo);
         }
 
         [Given(@"A Task Dispatch event is published (.*)")]

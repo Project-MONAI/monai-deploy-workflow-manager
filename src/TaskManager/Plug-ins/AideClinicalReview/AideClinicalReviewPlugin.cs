@@ -22,6 +22,7 @@ using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Logging;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Models;
@@ -74,35 +75,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 
         private void Initialize()
         {
-            if (Event.TaskPluginArguments.ContainsKey(Keys.PatientId))
-            {
-                _patientId = Event.TaskPluginArguments[Keys.PatientId];
-            }
-
-            if (Event.TaskPluginArguments.ContainsKey(Keys.PatientName))
-            {
-                _patientName = Event.TaskPluginArguments[Keys.PatientName];
-            }
-
-            if (Event.TaskPluginArguments.ContainsKey(Keys.PatientSex))
-            {
-                _patientSex = Event.TaskPluginArguments[Keys.PatientSex];
-            }
-
-            if (Event.TaskPluginArguments.ContainsKey(Keys.PatientDob))
-            {
-                _patientDob = Event.TaskPluginArguments[Keys.PatientDob];
-            }
-
-            if (Event.TaskPluginArguments.ContainsKey(Keys.PatientAge))
-            {
-                _patientAge = Event.TaskPluginArguments[Keys.PatientAge];
-            }
-
-            if (Event.TaskPluginArguments.ContainsKey(Keys.PatientHospitalId))
-            {
-                _patientHospitalId = Event.TaskPluginArguments[Keys.PatientHospitalId];
-            }
+            InitializePatientDetails();
 
             if (Event.TaskPluginArguments.ContainsKey(Keys.QueueName))
             {
@@ -153,6 +126,39 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             }
 
             _reviewerRoles = new string[] { "clinician" };
+        }
+
+        private void InitializePatientDetails()
+        {
+            if (Event.TaskPluginArguments.ContainsKey(PatientKeys.PatientId))
+            {
+                _patientId = Event.TaskPluginArguments[PatientKeys.PatientId];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(PatientKeys.PatientName))
+            {
+                _patientName = Event.TaskPluginArguments[PatientKeys.PatientName];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(PatientKeys.PatientSex))
+            {
+                _patientSex = Event.TaskPluginArguments[PatientKeys.PatientSex];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(PatientKeys.PatientDob))
+            {
+                _patientDob = Event.TaskPluginArguments[PatientKeys.PatientDob];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(PatientKeys.PatientAge))
+            {
+                _patientAge = Event.TaskPluginArguments[PatientKeys.PatientAge];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(PatientKeys.PatientHospitalId))
+            {
+                _patientHospitalId = Event.TaskPluginArguments[PatientKeys.PatientHospitalId];
+            }
         }
 
         private void ValidateEventAndInit()
@@ -237,9 +243,51 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             _logger.SendClinicalReviewRequestMessageSent(queue);
         }
 
-        public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
+        public override async Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent callbackEvent, CancellationToken cancellationToken = default)
         {
-            return await Task.Run(() => new ExecutionStatus { Status = TaskExecutionStatus.Succeeded });
+            var executionStatus = TaskExecutionStatus.Succeeded;
+
+            // metadata properties
+            var userId = string.Empty;
+            var message = "N/A";
+            var reason = "N/A";
+
+            if (callbackEvent.Metadata.TryGetValue(Keys.MetadataAcceptance, out var acceptance))
+            {
+                executionStatus = (bool)acceptance ?
+                        TaskExecutionStatus.Succeeded :
+                        TaskExecutionStatus.PartialFail;
+            }
+
+            if (callbackEvent.Metadata.TryGetValue(Keys.MetadataMessage, out var metadataMessage))
+            {
+                message = (string)metadataMessage;
+            }
+
+            if (callbackEvent.Metadata.TryGetValue(Keys.MetadataUserId, out var metadataUserId))
+            {
+                userId = (string)metadataUserId;
+            }
+
+            if (callbackEvent.Metadata.TryGetValue(Keys.MetadataReason, out var metadataReason))
+            {
+                reason = (string)metadataReason;
+            }
+
+            _logger.RecordTaskDecision(
+                Event.TaskId,
+                executionStatus == TaskExecutionStatus.Succeeded ? "Accepted" : "Rejected",
+                DateTime.UtcNow.ToLongDateString(),
+                userId,
+                _applicationName,
+                reason,
+                message);
+
+            return await Task.Run(() => new ExecutionStatus
+            {
+                Status = executionStatus,
+                FailureReason = FailureReason.None,
+            });
         }
 
         ~AideClinicalReviewPlugin() => Dispose(disposing: false);
@@ -255,7 +303,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-
         public async ValueTask DisposeAsync()
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {

@@ -23,8 +23,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Monai.Deploy.WorkflowManager.Authentication.Extensions;
+using Monai.Deploy.Security.Authentication.Configurations;
+using Monai.Deploy.Security.Authentication.Extensions;
+using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Shared;
 using Newtonsoft.Json.Converters;
 
@@ -67,7 +70,10 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
             var serviceProvider = services.BuildServiceProvider();
             var logger = serviceProvider.GetService<ILogger<Startup>>();
 
-            services.AddMonaiAuthentication(Configuration, logger);
+            services.AddOptions<AuthenticationOptions>()
+                .Bind(Configuration.GetSection("MonaiDeployAuthentication"));
+
+            services.AddMonaiAuthentication();
             services.AddHttpLoggingForMonai(Configuration);
             services.AddHealthChecks()
                 .AddCheck<MonaiHealthCheck>("Workflow Manager Services")

@@ -222,6 +222,20 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowRequestTestData
             {
+                Name = "Complete_WF_Dispatched",
+                WorkflowRequestMessage = new WorkflowRequestMessage
+                {
+                    Bucket = "bucket1",
+                    PayloadId = Guid.NewGuid(),
+                    Workflows = new List<string>() { },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    CalledAeTitle = "MWM",
+                    CallingAeTitle = "Complete_Dispatch",
+                }
+            },
+            new WorkflowRequestTestData
+            {
                 Name = "Same_AeTitle",
                 WorkflowRequestMessage = new WorkflowRequestMessage
                 {

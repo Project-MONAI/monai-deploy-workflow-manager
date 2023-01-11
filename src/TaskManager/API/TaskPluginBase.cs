@@ -30,7 +30,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
 
         public abstract Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken = default);
 
-        public abstract Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default);
+        public abstract Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent callbackEvent, CancellationToken cancellationToken = default);
 
         protected virtual void Dispose(bool disposing)
         {

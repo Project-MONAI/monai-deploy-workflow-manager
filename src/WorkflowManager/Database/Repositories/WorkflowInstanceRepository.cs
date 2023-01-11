@@ -130,6 +130,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
                 if (status is TaskExecutionStatus.Succeeded
                     || status is TaskExecutionStatus.Failed
+                    || status is TaskExecutionStatus.PartialFail
                     || status is TaskExecutionStatus.Canceled)
                 {
                     update = Builders<WorkflowInstance>.Update
@@ -213,7 +214,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             var acknowledgedTimeStamp = DateTime.UtcNow;
 
             var result = await _workflowInstanceCollection.UpdateOneAsync(
-                i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.ExecutionId == executionId && t.Status == TaskExecutionStatus.Failed),
+                i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.ExecutionId == executionId && (t.Status == TaskExecutionStatus.Failed || t.Status == TaskExecutionStatus.PartialFail)),
                 Builders<WorkflowInstance>.Update.Set(w => w.Tasks[-1].AcknowledgedTaskErrors, acknowledgedTimeStamp));
 
             return await GetByWorkflowInstanceIdAsync(workflowInstanceId);
@@ -237,6 +238,26 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
                 _logger.DbGetTaskByIdError(taskId, e);
 
                 return null;
+            }
+        }
+
+        public async Task<bool> UpdateExportCompleteMetadataAsync(string workflowInstanceId, string executionId, Dictionary<string, object> fileStatuses)
+        {
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            Guard.Against.NullOrEmpty(executionId, nameof(executionId));
+
+            try
+            {
+                await _workflowInstanceCollection.UpdateOneAsync(
+                    i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.ExecutionId == executionId),
+                    Builders<WorkflowInstance>.Update.Set(w => w.Tasks[-1].ResultMetadata, fileStatuses));
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.DbUpdateTasksError(workflowInstanceId, e);
+                return false;
             }
         }
 
@@ -319,7 +340,8 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
         public async Task<IList<WorkflowInstance>> GetAllFailedAsync()
         {
             return await GetAllAsync(_workflowInstanceCollection,
-                                  wfInstance => wfInstance.Status == Status.Failed
+                                  wfInstance => (wfInstance.Status == Status.Failed ||
+                                      wfInstance.Tasks.Any(task => task.Status.Equals(TaskExecutionStatus.PartialFail)))
                                       && wfInstance.AcknowledgedWorkflowErrors == null,
                                   Builders<WorkflowInstance>.Sort.Descending(x => x.Id));
         }

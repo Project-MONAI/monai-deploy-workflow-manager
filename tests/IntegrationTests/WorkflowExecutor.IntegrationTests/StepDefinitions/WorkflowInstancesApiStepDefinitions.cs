@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Globalization;
 using BoDi;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
@@ -153,6 +152,15 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             Assertions.AssertWorkflowInstanceList(expectedData, actualWorkflowInstances
                 ?? throw new Exception("No workflow instance data returned"));
         }
+
+        [Then(@"I can see (.*) returned workflow instances")]
+        public void ThenICanSeeReturnedWorkflowInstances(int count)
+        {
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            var actualWorkflowInstances = JsonConvert.DeserializeObject<List<WorkflowInstance>>(result);
+            actualWorkflowInstances.Count().Should().Be(count);
+        }
+
 
         [Then(@"I will receive no pagination response")]
         public void ThenIWillReceiveNoPaginationResponse()

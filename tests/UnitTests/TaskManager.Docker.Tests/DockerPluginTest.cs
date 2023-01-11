@@ -283,7 +283,7 @@ namespace TaskManager.Docker.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new DockerPlugin(_serviceScopeFactory.Object, _logger.Object, message);
-            var result = await runner.GetStatus("identity", CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
 
             Assert.Equal(TaskExecutionStatus.Failed, result.Status);
             Assert.Equal(FailureReason.Unknown, result.FailureReason);
@@ -313,7 +313,7 @@ namespace TaskManager.Docker.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new DockerPlugin(_serviceScopeFactory.Object, _logger.Object, message);
-            var result = await runner.GetStatus("identity", CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
 
             Assert.Equal(TaskExecutionStatus.Failed, result.Status);
             Assert.Equal(FailureReason.ExternalServiceError, result.FailureReason);
@@ -334,7 +334,7 @@ namespace TaskManager.Docker.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new DockerPlugin(_serviceScopeFactory.Object, _logger.Object, message);
-            var result = await runner.GetStatus("identity", CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
 
             Assert.Equal(TaskExecutionStatus.Failed, result.Status);
             Assert.Equal(FailureReason.ExternalServiceError, result.FailureReason);
@@ -377,7 +377,7 @@ namespace TaskManager.Docker.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new DockerPlugin(_serviceScopeFactory.Object, _logger.Object, message);
-            var result = await runner.GetStatus("identity", CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
 
             Assert.Equal(TaskExecutionStatus.Succeeded, result.Status);
             Assert.Equal(FailureReason.None, result.FailureReason);

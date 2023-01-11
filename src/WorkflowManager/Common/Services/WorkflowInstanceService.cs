@@ -55,14 +55,17 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
                 throw new MonaiNotFoundException($"WorkflowInstance or task execution not found for workflowInstanceId: {workflowInstanceId}, executionId: {executionId}");
             }
 
-            if (workflowInstance.Status != Status.Failed || workflowInstance.Tasks.First(t => t.ExecutionId == executionId).Status != TaskExecutionStatus.Failed)
+            var task = workflowInstance.Tasks.First(t => t.ExecutionId == executionId);
+
+            if ((task.Status != TaskExecutionStatus.Failed && task.Status != TaskExecutionStatus.PartialFail)
+                || (workflowInstance.Status != Status.Failed && workflowInstance.Status != Status.Succeeded))
             {
                 throw new MonaiBadRequestException($"WorkflowInstance status or task execution status is not failed for workflowInstanceId: {workflowInstanceId}, executionId: {executionId}");
             }
 
             var updatedInstance = await _workflowInstanceRepository.AcknowledgeTaskError(workflowInstanceId, executionId);
             _logger.AckowledgedTaskError();
-            var failedTasks = updatedInstance.Tasks.Where(t => t.Status == TaskExecutionStatus.Failed);
+            var failedTasks = updatedInstance.Tasks.Where(t => t.Status == TaskExecutionStatus.Failed || t.Status == TaskExecutionStatus.PartialFail);
 
             if (failedTasks.Any() && failedTasks.All(t => t.AcknowledgedTaskErrors != null))
             {
@@ -72,6 +75,16 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             }
 
             return updatedInstance;
+        }
+
+        public async Task UpdateExportCompleteMetadataAsync(string workflowInstanceId, string executionId, Dictionary<string, FileExportStatus> fileStatuses)
+        {
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId);
+            Guard.Against.NullOrWhiteSpace(executionId);
+
+            var resultMetadata = fileStatuses.ToDictionary(f => f.Key, f => f.Value.ToString() as object);
+
+            await _workflowInstanceRepository.UpdateExportCompleteMetadataAsync(workflowInstanceId, executionId, resultMetadata);
         }
 
         public async Task<long> CountAsync() => await _workflowInstanceRepository.CountAsync();

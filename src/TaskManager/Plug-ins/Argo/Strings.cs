@@ -41,7 +41,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 #pragma warning disable S5443 // public directory /tmp/ is used in Docker container.
         public const string ExitHookOutputPath = "/tmp/";
 #pragma warning restore S5443 // public directory /tmp/ is used in Docker container
-        public const string ExitHookSendMessageContainerImage = "ghcr.io/jandelgado/rabtap:latest";
 
         public const string SecretAccessKey = "accessKey";
         public const string SecretSecretKey = "secretKey";

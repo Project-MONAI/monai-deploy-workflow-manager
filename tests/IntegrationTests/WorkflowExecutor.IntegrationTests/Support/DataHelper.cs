@@ -245,6 +245,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     "succeeded" => TaskExecutionStatus.Succeeded,
                     "failed" => TaskExecutionStatus.Failed,
                     "canceled" => TaskExecutionStatus.Canceled,
+                    "partialfail" => TaskExecutionStatus.PartialFail,
                     _ => throw new Exception($"updateStatus {updateStatus} is not recognised. Please check and try again."),
                 };
 

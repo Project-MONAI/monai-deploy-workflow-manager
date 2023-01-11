@@ -270,7 +270,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 JsonMessage<TaskUpdateEvent>? updateMessage;
                 try
                 {
-                    var executionStatus = await taskRunner.GetStatus(message.Body.Identity, _cancellationTokenSource.Token).ConfigureAwait(false);
+                    var executionStatus = await taskRunner.GetStatus(message.Body.Identity, message.Body, _cancellationTokenSource.Token).ConfigureAwait(false);
                     updateMessage = GenerateUpdateEventMessage(message, message.Body.ExecutionId, message.Body.WorkflowInstanceId, message.Body.TaskId, executionStatus, taskExecution.Event.Outputs);
                     updateMessage.Body.Metadata.Add(Strings.JobIdentity, message.Body.Identity);
                     foreach (var item in message.Body.Metadata)
@@ -386,8 +386,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                     await Task.WhenAll(
                         PopulateTemporaryStorageCredentials(message.Body.Inputs.ToArray()),
                         PopulateTemporaryStorageCredentials(message.Body.IntermediateStorage),
-                        PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray())
-                    ).ConfigureAwait(true);
+                        PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray()))
+                    .ConfigureAwait(true);
                 }
 
                 await _taskDispatchEventService.UpdateUserAccountsAsync(eventInfo).ConfigureAwait(false);
@@ -567,34 +567,37 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             await HandleMessageException(message, WorkflowInstanceId, taskId, executionId, requeue);
 
-            var updateMessage = new JsonMessage<TaskUpdateEvent>(new TaskUpdateEvent
-            {
-                CorrelationId = message.CorrelationId,
-                ExecutionId = executionId,
-                Reason = FailureReason.PluginError,
-                Status = TaskExecutionStatus.Failed,
-                WorkflowInstanceId = WorkflowInstanceId,
-                TaskId = taskId,
-                Message = errors,
-            }, TaskManagerApplicationId, message.CorrelationId);
+            var updateMessage = new JsonMessage<TaskUpdateEvent>(
+                new TaskUpdateEvent
+                {
+                    CorrelationId = message.CorrelationId,
+                    ExecutionId = executionId,
+                    Reason = FailureReason.PluginError,
+                    Status = TaskExecutionStatus.Failed,
+                    WorkflowInstanceId = WorkflowInstanceId,
+                    TaskId = taskId,
+                    Message = errors,
+                },
+                TaskManagerApplicationId,
+                message.CorrelationId);
 
             await SendUpdateEvent(updateMessage).ConfigureAwait(false);
         }
 
-        private async Task HandleMessageException(MessageBase message, string WorkflowInstanceId, string taskId, string executionId, bool requeue)
+        private async Task HandleMessageException(MessageBase message, string workflowInstanceId, string taskId, string executionId, bool requeue)
         {
             if (message is null)
             {
                 return;
             }
 
-            using var loggingScope = (_logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
             {
                 ["correlationId"] = message.CorrelationId,
-                ["workflowInstanceId"] = WorkflowInstanceId,
+                ["workflowInstanceId"] = workflowInstanceId,
                 ["taskId"] = taskId,
-                ["executionId"] = executionId
-            }));
+                ["executionId"] = executionId,
+            });
 
             try
             {

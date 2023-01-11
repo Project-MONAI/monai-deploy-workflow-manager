@@ -15,7 +15,9 @@
  */
 
 using BoDi;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;
@@ -68,6 +70,35 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                     }
                 }
             }
+        }
+
+        [Then(@"Patient details (.*) have been added to task dispatch message")]
+        public void ThenPatientDetailsHaveBeenAddedToTaskDispatchMessage(string name)
+        {
+            var expected = PatientsTestData.TestData.First();
+            var taskDispatchEvents = DataHelper.GetTaskDispatchEvents(1, DataHelper.WorkflowInstances).First();
+
+            var patientId = taskDispatchEvents.TaskPluginArguments["patient_id"];
+            var patientAge = taskDispatchEvents.TaskPluginArguments["patient_age"];
+            var patientSex = taskDispatchEvents.TaskPluginArguments["patient_sex"];
+            var patientDOB = taskDispatchEvents.TaskPluginArguments["patient_dob"];
+            var patientHospital = taskDispatchEvents.TaskPluginArguments["patient_hospital_id"];
+            var patientName = taskDispatchEvents.TaskPluginArguments["patient_name"];
+
+            var actual = new PatientTestData
+            {
+                Name = name,
+                Patient = new PatientDetails()
+                {
+                    PatientId = patientId,
+                    PatientName = patientName,
+                    PatientSex = patientSex,
+                    PatientDob = DateTime.Parse(patientDOB),
+                    PatientAge = patientAge,
+                    PatientHospitalId = patientHospital
+                }
+            };
+            expected.Should().BeEquivalentTo(actual);
         }
 
         [Then(@"A payload collection is created with (.*) workflow instance id")]

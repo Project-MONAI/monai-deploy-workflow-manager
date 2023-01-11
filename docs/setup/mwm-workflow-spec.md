@@ -30,12 +30,13 @@ Workflows can be created or updated via the [Workflow API](https://github.com/Pr
 
 - [Clinical Workflow Specification Language](#clinical-workflow-specification-language)
   - [Overview](#overview)
+- [Contents](#contents)
 - [Workflow](#workflow)
   - [Workflow Revision](#workflow-revision)
   - [Workflow Object](#workflow-object)
-    - [Examples](#examples)
-  - [Informatics Gateway](#informatics-gateway)
-  - [Tasks](#tasks)
+      - [Examples](#examples)
+    - [Informatics Gateway](#informatics-gateway)
+    - [Tasks](#tasks)
 - [Task Object](#task-object)
     - [Task Types](#task-types)
     - [Example of Plugin Names](#example-of-plugin-names)
@@ -45,22 +46,36 @@ Workflows can be created or updated via the [Workflow API](https://github.com/Pr
       - [Router](#router)
       - [Export](#export)
       - [Plugin](#plugin)
-  - [Task Arguments](#task-arguments)
-    - [Argo](#argo)
+    - [Task Arguments](#task-arguments)
+      - [Argo](#argo)
+        - [Resource Request Object](#resource-request-object)
     - [Clinical Review](#clinical-review)
+    - [Router](#router-1)
+    - [Export](#export-1)
   - [Artifacts](#artifacts)
+      - [Artifact Map](#artifact-map)
+      - [Artifact](#artifact)
     - [Supported artifact variables](#supported-artifact-variables)
+      - [DICOM Input](#dicom-input)
+      - [Execution Output Artifacts](#execution-output-artifacts)
+      - [Execution Output Directory](#execution-output-directory)
     - [Artifact usage in Plugins](#artifact-usage-in-plugins)
+      - [Argo Artifacts](#argo-artifacts)
   - [Destinations](#destinations)
     - [Task Destinations](#task-destinations)
-    - [Export Destinations](#export-destinations)
   - [Evaluators](#evaluators)
-    - [Supported Evaluators](#supported-evaluators)
+    - [Supported Evaulators](#supported-evaulators)
     - [Context](#context)
+      - [Execution Context](#execution-context)
+      - [Result Metadata \& Execution Stats - Using Dictionary Values](#result-metadata--execution-stats---using-dictionary-values)
+      - [Argo Metadata](#argo-metadata)
+      - [DICOM Tags](#dicom-tags)
+      - [Patient Details Context](#patient-details-context)
+      - [Workflow Context](#workflow-context)
 
 # Workflow
 
-## workflow Revision
+## Workflow Revision
 
 A workflow revision is a wrapper object that is automatically generated when a workflow is created. This object contains the auto-generated workflow Id and the workflow revision number that is used to keep track of updates.
 
@@ -706,9 +721,11 @@ Conditional evaluators are logical statement strings that may be used to determi
 
     != (Valid for integers and strings)
 
-    IN (Valid for integers and strings compared to lists)
+    CONTAINS (Valid for integers and strings compared to lists)
 
-    NOT IN (Valid for integers and strings compared to lists)
+    NOT_CONTAINS (Valid for integers and strings compared to lists)
+
+more information on conditionals can be found  [Conditionals Docs](guidelines\mwm-conditionals.md)
 
 ### Context
 The workflow metadata is any data that can be used by Evaluators. This includes metadata added by previous tasks, but can also include metadata about the input files (most notably DICOM tags).
@@ -739,19 +756,63 @@ The Execution object contains the following properties:
 |end_time|Optional[timestamp]|The UTC timestamp of when this task execution ended.
 |status|string|One of "Created", "Dispatched" or "Accepted", "Succeeded", "Failed", "Canceled".
 |error_msg|Optional[str]|An error message, if one occurred.
-|result|Optional[dict]|The metadata that was [added by the previous Task](#tasks).
-
-Because `result` and `execution_stats` are a dictionary, the section after `context.executions.task_id.result` or  `context.executions.task_id.execution_stats` is the key to be checked in the result/execution_stats dictionary.
-
-Example (result):
-```python
-{{context.executions.body_part_identifier.result.body_part}} == 'leg'
-```
+|result|Optional[dict]|The metadata that was [added by the previous Task](#result-metadata-&-execution-stats---using-dictionary-values).
 
 Example (status):
 ```python
-{{context.executions.body_part_identifier.status }} == 'Succeeded'
+{{ context.executions.body_part_identifier.status }} == 'Succeeded'
 ```
+
+#### Result Metadata & Execution Stats - Using Dictionary Values
+
+The Result Metadata and Execution Stats are populated by the plugin and are added to the workflow instance once a task is completed to provide some output of a task. Each plugin will have its own implementation to populate the result metadata. 
+
+Because `result` and `execution_stats` are a dictionary, the section after `context.executions.task_id.result` or  `context.executions.task_id.execution_stats` is the key to be checked in the result/execution_stats dictionary. 
+
+For conditional statements, the key specified is case sensitive and must match exactly to the key which has been output by the model and saved in the result/execution_stats dictionary.
+
+The result metadata is a dictionary of any type, which means the value can be a string, int, date, boolean etc. They will be parsed to a string for the comparison. An example of the following cases can be seen below.
+
+Example String(result):
+```python
+{{ context.executions.body_part_identifier.result.body_part }} == 'leg'
+```
+
+
+Example Boolean(result):
+```python
+{{ context.executions.body_part_identifier.result.is_body_part }} == 'True'
+```
+
+
+Example Number(result):
+```python
+{{ context.executions.body_part_identifier.result.body_part_count }} == '10.5'
+```
+
+
+Example Date(result):
+```python
+{{ context.executions.body_part_identifier.result.body_part_count_date }} == '2022-12-25T00:00:00'
+```
+
+#### Argo Metadata
+
+The result metadata for an Argo task is populated by a `metadata.json` that is included somewhere within the tasks output directory. The contents of the JSON file must be in the format of a dictionary, and should be generated by the argo model.
+
+```json
+{
+    "inference_status": true,
+    "result_value": 2.5
+}
+```
+
+If metadata is to be used in a conditional the `metadata.json` must be present somewhere in the output directory and a valid JSON dictionary. It will automatically be imported if it is in the directory. 
+
+An example format of the metadata.json can be found below: 
+
+execution stats are populated from the argo execution values returned automatically.
+
 
 #### DICOM Tags
 When the input data is DICOM, Evaluators can use DICOM tag values in conditional statements.
@@ -767,13 +828,43 @@ Each `Series` object contains the tags of that series. They can be accessed eith
 
 The DICOM tag matching engine allows evaluating conditions against all series and resulting in True if the condition matches _any one_ of them:
 ```python
-{{context.dicom.series.any('0018','0050')}} < 5
+{{context.dicom.series.any('0018','0050')}} < '5'
 ```
 
 In order to check a certain tag across _all_ series, use the study level tags. For example, to only evaluate True for Female patients:
 ```python
 {{context.dicom.series.all('0010','0040')}} == 'F'
 ```
+
+When parsing decimals from dicoms trailing 0's will be trimmed
+for example say the data in '0018','0050' contains '1.6000' the 0's will be trimmed to 1.6
+```python
+{{context.dicom.series.any('0018','0050')}} == '1.6000'
+```
+so in this example expression will fail, you would have to do following expression to pass
+```python
+{{context.dicom.series.any('0018','0050')}} == '1.6'
+```
+
+if you Dicom Metadata contains array of items for example
+```python
+  "00200037": {
+    "vr": "DS",
+    "Value": [
+      1,
+      0,
+      0,
+      0,
+      1,
+      0
+    ]
+  },
+```
+this will be evaluated too an array of items and can be used with CONTAINS and NOT_CONTAINS so you could do for example...
+```python
+{{context.dicom.series.all('0020','0037')}} CONTAINS '1'
+```
+
 
 #### Patient Details Context
 When a workflow is triggered, some patient details are attempted to be retrieved from any input DICOM Images.

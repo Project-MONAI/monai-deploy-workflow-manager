@@ -41,6 +41,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 
         #region TaskDispatchEventInfo
 
+        public void CreateTaskDispatchEventInfo(TaskDispatchEventInfo taskDispatchEventInfo)
+        {
+            RetryMongo.Execute(() =>
+            {
+                TaskDispatchEventInfoCollection.InsertOne(taskDispatchEventInfo);
+            });
+        }
+
         public List<TaskDispatchEventInfo> GetTaskDispatchEventInfoByExecutionId(string executionId)
         {
             var res = RetryTaskDispatchEventInfo.Execute(() =>

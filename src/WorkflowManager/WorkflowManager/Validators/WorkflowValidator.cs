@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,7 @@ using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.Shared;
+using MongoDB.Driver.Linq;
 using static Monai.Deploy.WorkflowManager.Shared.ValidationConstants;
 
 namespace Monai.Deploy.WorkflowManager.Validators
@@ -34,6 +35,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
     /// </summary>
     public class WorkflowValidator
     {
+        private const string Comma = "⸴ ";
         private readonly ILogger<WorkflowValidator> _logger;
 
         /// <summary>
@@ -50,11 +52,6 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// Gets or sets errors from workflow validation.
         /// </summary>
         private List<string> Errors { get; set; } = new List<string>();
-
-        /// <summary>
-        /// Gets or sets successful task paths. (not accounting for conditons).
-        /// </summary>
-        private List<string> SuccessfulPaths { get; set; } = new List<string>();
 
         private IWorkflowService WorkflowService { get; }
 
@@ -73,7 +70,6 @@ namespace Monai.Deploy.WorkflowManager.Validators
         public void Reset()
         {
             Errors.Clear();
-            SuccessfulPaths.Clear();
             OrignalName = string.Empty;
         }
 
@@ -91,14 +87,18 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// <param name="checkForDuplicates">Check for duplicates.</param>
         /// <param name="isUpdate">Used to check for duplicate name if it is a new workflow.</param>
         /// <returns>if any validation errors are produced while validating workflow.</returns>
-        public async Task<(List<string> Errors, List<string> SuccessfulPaths)> ValidateWorkflow(Workflow workflow)
+        public async Task<List<string>> ValidateWorkflow(Workflow workflow)
         {
             var tasks = workflow.Tasks;
             var firstTask = tasks.FirstOrDefault();
 
             await ValidateWorkflowSpec(workflow);
+            if (tasks.Any())
+            {
+                ValidateTasks(workflow, firstTask!.Id);
+            }
+
             DetectUnreferencedTasks(tasks, firstTask);
-            ValidateTask(tasks, firstTask, 0);
             ValidateExportDestinations(workflow);
 
             if (Errors.Any())
@@ -106,9 +106,49 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 _logger.WorkflowValidationErrors(string.Join(Environment.NewLine, Errors));
             }
 
-            var results = (Errors.ToList(), SuccessfulPaths.ToList());
+            var errors = Errors.ToList();
             Reset();
-            return results;
+            return errors;
+        }
+
+        private void ValidateTasks(Workflow workflow, string firstTaskId)
+        {
+            var destinations = new List<string>();
+            foreach (var task in workflow.Tasks)
+            {
+                ValidateTaskArtifacts(task);
+
+                TaskTypeSpecificValidation(workflow.Tasks, task);
+
+                if (task.TaskDestinations.Any(td => td.Name == firstTaskId))
+                {
+                    Errors.Add($"Converging Tasks Destinations in task: {task.Id} on root task: {firstTaskId}");
+                }
+
+                if (workflow.Tasks.Count(t => t.Id == task.Id) > 1)
+                {
+                    Errors.Add($"Found duplicate task id '{task.Id}'");
+                }
+
+                destinations.AddRange(task.TaskDestinations.Select(td => td.Name));
+            }
+
+            if (destinations.Count != destinations.Distinct().Count())
+            {
+                // duplicate destinations
+                var duplicates = destinations
+                .GroupBy(i => i)
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Key);
+
+                foreach (var dupe in duplicates)
+                {
+                    var tasks = workflow.Tasks.Where(t => t.TaskDestinations.Any(td => dupe == td.Name));
+                    var taskIds = string.Join(Comma, tasks.Select(t => t.Id));
+
+                    Errors.Add($"Converging Tasks Destinations in tasks: ({taskIds}) on task: {dupe}");
+                }
+            }
         }
 
         private void ValidateExportDestinations(Workflow workflow)
@@ -153,7 +193,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             var diff = ids.Except(destinations);
             if (diff.Any())
             {
-                Errors.Add($"Found Task(s) without any task destinations to it: {string.Join(",", diff)}");
+                Errors.Add($"Found Task(s) without any task destinations to it: {string.Join(Comma, diff)}");
             }
         }
 
@@ -172,7 +212,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 var checkForDuplicates = await WorkflowService.GetByNameAsync(workflow.Name);
                 if (checkForDuplicates != null)
                 {
-                    Errors.Add($"Workflow with name '{workflow.Name}' already exists, please review.");
+                    Errors.Add($"Workflow with name '{workflow.Name}' already exists.");
                 }
             }
 
@@ -209,31 +249,9 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
             if (string.IsNullOrWhiteSpace(informaticsGateway.AeTitle) || informaticsGateway.AeTitle.Length > 15)
             {
-                Errors.Add("AeTitle is required in the InformaticsGateaway section and must be under 16 charachters.");
+                Errors.Add("AeTitle is required in the InformaticsGateaway section and must be under 16 characters.");
                 return;
             }
-        }
-
-        private void ValidateTask(TaskObject[] tasks, TaskObject currentTask, int iterationCount, List<string> paths = null)
-        {
-            if (tasks.Any() is false || currentTask is null)
-            {
-                return;
-            }
-
-            if (iterationCount > 100)
-            {
-                Errors.Add($"Detected task convergence on path: {string.Join(" => ", paths.Take(5))} => ∞");
-                return;
-            }
-
-            paths ??= new List<string>();
-
-            ValidateTaskArtifacts(currentTask);
-
-            TaskTypeSpecificValidation(tasks, currentTask);
-
-            ValidateTaskDestinations(tasks, currentTask, ref iterationCount, ref paths);
         }
 
         private void ValidateTaskArtifacts(TaskObject currentTask)
@@ -250,48 +268,15 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void ValidateTaskDestinations(TaskObject[] tasks, TaskObject currentTask, ref int iterationCount, ref List<string> paths)
-        {
-            if (currentTask.TaskDestinations.IsNullOrEmpty())
-            {
-                paths.Add(currentTask.Id);
-                SuccessfulPaths.Add(string.Join(" => ", paths));
-                return;
-            }
-
-            foreach (var tasksDestinationName in currentTask.TaskDestinations.Select(td => td.Name))
-            {
-                if (paths.Contains(currentTask.Id.ToString()))
-                {
-                    Errors.Add($"Detected task convergence on path: {string.Join(" => ", paths)} => ∞");
-                    paths = new List<string>();
-                    continue;
-                }
-
-                paths.Add(currentTask.Id.ToString());
-                var nextTask = tasks.FirstOrDefault(t => t.Id == tasksDestinationName);
-                if (nextTask == null)
-                {
-                    Errors.Add($"Task: '{currentTask.Id}' has task destination: '{tasksDestinationName}' that could not be found.");
-                    paths = new List<string>();
-                    continue;
-                }
-
-                ValidateTask(tasks, nextTask, iterationCount += 1, paths);
-
-                paths = new List<string>();
-            }
-        }
-
         private void TaskTypeSpecificValidation(TaskObject[] tasks, TaskObject currentTask)
         {
             if (ValidTaskTypes.Contains(currentTask.Type.ToLower()) is false)
             {
-                Errors.Add($"Task: '{currentTask.Id}' has an invalid type, please specify: {string.Join(", ", ValidationConstants.ValidTaskTypes)}");
+                Errors.Add($"Task: '{currentTask.Id}' has an invalid type{Comma}please specify: {string.Join(Comma, ValidationConstants.ValidTaskTypes)}");
                 return;
             }
 
-            ValidateInputs(tasks, currentTask);
+            ValidateInputs(currentTask);
 
             if (currentTask.Type.Equals(ArgoTaskType, StringComparison.OrdinalIgnoreCase) is true)
             {
@@ -304,7 +289,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void ValidateInputs(TaskObject[] tasks, TaskObject currentTask)
+        private void ValidateInputs(TaskObject currentTask)
         {
             if (currentTask.Type.ToLower() == RouterTaskType)
             {
@@ -334,7 +319,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         {
             if (!currentTask.Args.ContainsKey(WorkflowTemplateName))
             {
-                Errors.Add($"Task: '{currentTask.Id}' workflow_template_name must be specified, this corresponds to an Argo template name.");
+                Errors.Add($"Task: '{currentTask.Id}' workflow_template_name must be specified{Comma}this corresponds to an Argo template name.");
             }
         }
 
@@ -370,6 +355,12 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 if (tasks.FirstOrDefault(t => t.Id == referencedId) == null)
                 {
                     Errors.Add($"Invalid input artifact '{inputArtifact.Name}' in task '{currentTask.Id}': No matching task for ID '{referencedId}'");
+                    continue;
+                }
+
+                if (currentTask.Args.ContainsKey(ReviewedTaskId) && currentTask.Args[ReviewedTaskId].Equals(referencedId, StringComparison.OrdinalIgnoreCase) is false)
+                {
+                    Errors.Add($"Invalid input artifact '{inputArtifact.Name}' in task '{currentTask.Id}': Task cannot reference a non-reviewed task artifacts '{referencedId}'");
                 }
             }
         }
@@ -388,16 +379,25 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
             if (!currentTask.Args.ContainsKey(Mode) || !Enum.TryParse(typeof(ModeValues), currentTask.Args[Mode], true, out var _))
             {
-                Errors.Add($"Task: '{currentTask.Id}' mode is incorrectly specified, please specify 'QA', 'Research' or 'Clinical'");
+                Errors.Add($"Task: '{currentTask.Id}' mode is incorrectly specified{Comma}please specify 'QA'{Comma}'Research' or 'Clinical'");
             }
 
             if (!currentTask.Args.ContainsKey(ReviewedTaskId))
             {
                 Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id must be specified.");
+                return;
             }
             else if (tasks.Any(t => t.Id.ToLower() == currentTask.Args[ReviewedTaskId].ToLower()) is false)
             {
                 Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id: '{currentTask.Args[ReviewedTaskId]}' could not be found in the workflow.");
+                return;
+            }
+
+            var reviewedTask = tasks.First(t => t.Id.ToLower() == currentTask.Args[ReviewedTaskId].ToLower());
+
+            if (reviewedTask.Type.Equals(ArgoTaskType, StringComparison.OrdinalIgnoreCase) is false)
+            {
+                Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id: '{currentTask.Args[ReviewedTaskId]}' does not reference an Argo task.");
             }
         }
     }

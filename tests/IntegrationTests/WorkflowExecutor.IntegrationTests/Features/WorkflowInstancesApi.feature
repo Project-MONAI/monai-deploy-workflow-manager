@@ -57,6 +57,14 @@ Scenario: Get all triggered workflows instances for payload
     | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&pageNumber=1&pageSize=10&disablePagination=true |
     | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&disablePagination=true                          |
 
+@Ignore
+@GetWorkflowInstances
+Scenario: Verifying file status exports are added to the metadata successfully
+    Given I have an endpoint /workflowinstances
+    And I have a Workflow Instance ExportComplete_WFI_Dispatched with no artifacts
+    When I publish a Export Complete Message Export_Complete_Message_for_export_file_statuses
+    Then Metadata is added to task Export_Complete_Message_for_export_file_statuses
+
 @WorkflowInstancePagination
 Scenario Outline: Get all workflow instances from API - Test pagination
     Given I have an endpoint /workflowinstances<pagination_query>
@@ -149,7 +157,6 @@ Scenario: Get all workflows instances by Id. Id Bad Request
     Then I will get a 400 response
     And I will receive the error message Failed to validate id, not a valid GUID
 
-
 @GetWorkflowInstances
 Scenario: Get workflow instances by payloadId. Id Bad Request
 	Given I have an endpoint /workflowinstances?payloadid=invalidid
@@ -170,6 +177,7 @@ Scenario Outline: Acknowledge 1 task error in a single task workflow instance
     | workflowInstance                  |
     | Acknowledge_Failed_1_Task         |
     | Acknowledge_Already_Failed_1_Task |
+    | Acknowledge_PartialFailed_1_Task  |
 
 @UpdateWorkflowInstances
 Scenario: Acknowledge 1 task error in a multiple task workflow instance
@@ -219,7 +227,6 @@ Scenario: Acknowledge task error in a workflow instance - non-existent task
     Then I will get a 404 response
     And I will receive the error message WorkflowInstance or task execution not found for workflowInstanceId: 25dff711-efc5-4eeb-bccc-2bb996400a20
 
-    
 @GetFailedWorkflowInstances
 Scenario: Get workflow failed instances returns no values. Ok Request
 	Given I have an endpoint /workflowinstances/failed
@@ -234,3 +241,27 @@ Scenario: Get workflow failed instances returns values. Ok Request
     When I send a GET request
     Then I will get a 200 response
     And I can see 10 failed workflow instances
+
+@GetPartialFailedWorkflowInstances
+Scenario: Get workflow failed and partial failed instances returns values. Ok Request
+	Given I have an endpoint /workflowinstances/failed
+    And I have 1 partial failed Workflow Instance 
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see 1 returned workflow instances
+
+@GetFailedWorkflowInstances
+Scenario: Acknowledged failed workflow instances are not returned in the Failed list. Ok Request
+	Given I have an endpoint /workflowinstances/failed
+    And I have an acknowledged failed workflow Instances
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see 0 returned workflow instances
+
+@GetPartialFailedWorkflowInstances
+Scenario: Acknowledged partial failed workflow instances are not returned in the Failed list. Ok Request
+	Given I have an endpoint /workflowinstances/failed
+    And I have an acknowledged partially failed workflow Instances
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see 0 returned workflow instances

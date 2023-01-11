@@ -16,6 +16,7 @@
 
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 {
@@ -252,8 +253,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 case LE:
                 case EG:
                 case EL:
-                    if ((int.TryParse(conditionalGroup.LeftParameter, out _)
-                        || int.TryParse(conditionalGroup.RightParameter, out _)) is false)
+                    if ((decimal.TryParse(conditionalGroup.LeftParameter, out _)
+                        || decimal.TryParse(conditionalGroup.RightParameter, out _)) is false)
                     {
                         throw new ArgumentException($"Invalid numeric value in: {input}");
                     }
@@ -273,18 +274,28 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 NOT_CONTAINS => !ContainsEvaluate(),
                 EQUAL_EQUALS => string.Equals(LeftParameter.Trim(), RightParameter.Trim(), StringComparison.InvariantCultureIgnoreCase),
                 NOT_EQUAL => !string.Equals(LeftParameter.Trim(), RightParameter.Trim(), StringComparison.InvariantCultureIgnoreCase),
-                GTstr => Convert.ToInt16(LeftParameter, culture) > Convert.ToInt16(RightParameter, culture),
-                LTstr => Convert.ToInt16(LeftParameter, culture) < Convert.ToInt16(RightParameter, culture),
-                GE => Convert.ToInt16(LeftParameter, culture) >= Convert.ToInt16(RightParameter, culture),
-                EG => Convert.ToInt16(LeftParameter, culture) >= Convert.ToInt16(RightParameter, culture),
-                LE => Convert.ToInt16(LeftParameter, culture) <= Convert.ToInt16(RightParameter, culture),
-                EL => Convert.ToInt16(LeftParameter, culture) <= Convert.ToInt16(RightParameter, culture),
+                GTstr => Convert.ToDecimal(LeftParameter, culture) > Convert.ToDecimal(RightParameter, culture),
+                LTstr => Convert.ToDecimal(LeftParameter, culture) < Convert.ToDecimal(RightParameter, culture),
+                GE => Convert.ToDecimal(LeftParameter, culture) >= Convert.ToDecimal(RightParameter, culture),
+                EG => Convert.ToDecimal(LeftParameter, culture) >= Convert.ToDecimal(RightParameter, culture),
+                LE => Convert.ToDecimal(LeftParameter, culture) <= Convert.ToDecimal(RightParameter, culture),
+                EL => Convert.ToDecimal(LeftParameter, culture) <= Convert.ToDecimal(RightParameter, culture),
                 _ => throw new InvalidOperationException("Invalid logical operator between parameters {} and"),
             };
         }
 
         private bool ContainsEvaluate()
         {
+            if (LeftParameterIsArray && RightParameterIsArray)
+            {
+                var arr1 = LeftParameter.Split(',').Select(i => CleanString(i)).ToArray();
+                var arr2 = RightParameter.Split(',').Select(i => CleanString(i)).ToArray();
+                MakeNullsUpperCase(arr1);
+                MakeNullsUpperCase(arr2);
+                var result = arr1.Any(item => arr2.Any(p => p.Equals(item)));
+                return result;
+            }
+
             string[] arr;
             var compare = string.Empty;
 
@@ -299,20 +310,29 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
                 compare = LeftParameter;
             }
 
-            if (arr.Any(p =>
-                p.Trim().Equals(NULL, StringComparison.InvariantCultureIgnoreCase)
-                || p.Trim().Equals(UNDEFINED, StringComparison.InvariantCultureIgnoreCase)))
+            MakeNullsUpperCase(arr);
+
+            return arr.Any(p => CleanString(p).Equals(compare));
+        }
+
+        private static string CleanString(string p) => p.Trim().Trim('\"').Trim('\'').Trim('“').Trim('”');
+
+        private static bool EqualsNullOrDefined(string str) =>
+            str.Trim().Equals(NULL, StringComparison.InvariantCultureIgnoreCase)
+            || str.Trim().Equals(UNDEFINED, StringComparison.InvariantCultureIgnoreCase);
+
+        private static void MakeNullsUpperCase(string[] arr)
+        {
+            if (arr.Any(p => EqualsNullOrDefined(p)))
             {
                 for (var i = 0; i < arr.Length; i++)
                 {
-                    if (arr[i].Trim().Equals(NULL, StringComparison.InvariantCultureIgnoreCase) || arr[i].Equals(UNDEFINED, StringComparison.InvariantCultureIgnoreCase))
+                    if (EqualsNullOrDefined(arr[i]))
                     {
                         arr[i] = NULL;
                     }
                 }
             }
-
-            return arr.Any(p => p.Trim().Trim('\"').Trim('\'').Trim('“').Trim('”').Equals(compare));
         }
     }
 }

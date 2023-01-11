@@ -43,13 +43,13 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Extensions
         }
 
         [Fact]
-        public void IsValidDicomFile_ValidUnknownExtension_ReturnsTrue()
+        public void IsValidDicomFile_ValidUnknownExtension_ReturnsFalse()
         {
             var fileInfo = new VirtualFileInfo("DicomFile", "folder/folder2/dicomfile", "tag", 222);
 
             var result = fileInfo.IsValidDicomFile();
 
-            Assert.True(result);
+            Assert.False(result);
         }
 
         [Fact]

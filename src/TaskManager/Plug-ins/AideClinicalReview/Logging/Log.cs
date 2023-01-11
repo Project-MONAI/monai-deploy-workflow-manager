@@ -28,5 +28,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Logging
 
         [LoggerMessage(EventId = 3, Level = LogLevel.Information, Message = "{eventType} sent.")]
         public static partial void SendClinicalReviewRequestMessageSent(this ILogger logger, string eventType);
+
+        [LoggerMessage(EventId = 4, Level = LogLevel.Debug, Message = "Task: {taskId} given decision: {decision} at {dateTime} by user {userId} in app {appName}. Reason: {reason}. Note: {note}")]
+        public static partial void RecordTaskDecision(this ILogger logger,
+                                                        string taskId,
+                                                        string decision,
+                                                        string dateTime,
+                                                        string userId,
+                                                        string appName,
+                                                        string reason,
+                                                        string note);
     }
 }

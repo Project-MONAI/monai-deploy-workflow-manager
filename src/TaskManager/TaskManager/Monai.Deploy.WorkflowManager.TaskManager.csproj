@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   ~ Copyright 2022 MONAI Consortium
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <ItemGroup>
@@ -63,9 +62,9 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
     <PackageReference Include="Monai.Deploy.Storage" Version="0.2.10" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.17-rc0020" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.19" />
     <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.10" />
-    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.17-rc0020" />
+    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.19" />
     <PackageReference Include="NLog" Version="5.1.0" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="5.2.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
@@ -78,9 +77,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj" />
     <ProjectReference Include="..\..\Shared\Shared\Monai.Deploy.WorkflowManager.Shared.csproj" />
-    <ProjectReference Include="..\..\WorkflowManager\Authentication\Monai.Deploy.WorkflowManager.Authentication.csproj" />
     <ProjectReference Include="..\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />
     <ProjectReference Include="..\Database\Monai.Deploy.WorkflowManager.TaskManager.Database.csproj" />
+    <ProjectReference Include="..\Plug-ins\AideClinicalReview\Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.csproj" />
     <ProjectReference Include="..\Plug-ins\Argo\Monai.Deploy.WorkflowManager.TaskManager.Argo.csproj" />
     <ProjectReference Include="..\Plug-ins\Docker\Monai.Deploy.WorkflowManager.TaskManager.Docker.csproj" />
   </ItemGroup>

@@ -43,6 +43,29 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
         }
 
         [Fact]
+        public async Task UpdateExportCompleteMetadataAsync_NullWorkflowInstanceId_ThrowsException()
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(() => WorkflowInstanceService.UpdateExportCompleteMetadataAsync(null, "45435436", new Dictionary<string, FileExportStatus>()));
+        }
+
+        [Fact]
+        public async Task UpdateExportCompleteMetadataAsync_NullExecutionId_ThrowsException()
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(() => WorkflowInstanceService.UpdateExportCompleteMetadataAsync("45435436", null, new Dictionary<string, FileExportStatus>()));
+        }
+
+        [Fact]
+        public async Task UpdateExportCompleteMetadataAsync_Update_Passes()
+        {
+            var fileExports = new Dictionary<string, FileExportStatus>()
+            {
+                { "export.dcm", FileExportStatus.Success },
+                { "export2.dcm", FileExportStatus.ConfigurationError },
+            };
+            await WorkflowInstanceService.UpdateExportCompleteMetadataAsync("45435436", "4544223434", fileExports);
+        }
+
+        [Fact]
         public async Task AcknowledgeTaskError_NullWorkflowInstanceId_ThrowsException()
         {
             await Assert.ThrowsAsync<ArgumentNullException>(() => WorkflowInstanceService.AcknowledgeTaskError(null, "45435436"));

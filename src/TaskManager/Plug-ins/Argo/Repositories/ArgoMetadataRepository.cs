@@ -62,9 +62,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Repositories
 
         public override async Task<Dictionary<string, object>> RetrieveMetadata(CancellationToken cancellationToken = default)
         {
-            var path = $"{DispatchEvent.PayloadId}/workflows/{DispatchEvent.WorkflowInstanceId}/{DispatchEvent.ExecutionId}/metadata.json";
+            var outputDir = $"{DispatchEvent.PayloadId}/workflows/{DispatchEvent.WorkflowInstanceId}/{DispatchEvent.ExecutionId}";
 
-            var jsonStr = await RetrieveJsonFromFile(DispatchEvent.IntermediateStorage.Bucket, path);
+            var jsonStr = await RetrieveJsonFromFile(DispatchEvent.IntermediateStorage.Bucket, outputDir);
 
             if (string.IsNullOrWhiteSpace(jsonStr))
             {
@@ -74,19 +74,28 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Repositories
             return JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonStr) ?? new Dictionary<string, object>();
         }
 
-        private async Task<string> RetrieveJsonFromFile(string bucketName, string path)
+        private async Task<string> RetrieveJsonFromFile(string bucketName, string outputDir)
         {
             var jsonStr = string.Empty;
 
             try
             {
-                var stream = await _storageService.GetObjectAsync(bucketName, path);
+                var filesList = await _storageService.ListObjectsAsync(bucketName, outputDir, true);
+
+                var metadataFile = filesList?.FirstOrDefault((file) => file.Filename.ToLower() == "metadata.json");
+
+                if (metadataFile is null)
+                {
+                    throw new FileNotFoundException("File could not be found");
+                }
+
+                var stream = await _storageService.GetObjectAsync(bucketName, metadataFile.FilePath);
 
                 jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
             }
             catch (Exception)
             {
-                _logger.MetadataFileNotFound(bucketName, path);
+                _logger.MetadataFileNotFound(bucketName, outputDir);
             }
 
             return jsonStr;
