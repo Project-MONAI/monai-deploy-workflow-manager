@@ -30,9 +30,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.SharedTest;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
+using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
 using Moq;
 using Moq.Language.Flow;
@@ -52,6 +54,7 @@ public class ArgoPluginTest
     private readonly Mock<IArgoProvider> _argoProvider;
     private readonly Mock<IArgoClient> _argoClient;
     private readonly Mock<IKubernetes> _kubernetesClient;
+    private readonly Mock<ITaskDispatchEventService> _taskDispatchEventService;
     private readonly Mock<ICoreV1Operations> _k8sCoreOperations;
     private readonly IOptions<WorkflowManagerOptions> _options;
     private Workflow? _submittedArgoTemplate;
@@ -64,6 +67,7 @@ public class ArgoPluginTest
         _serviceScopeFactory = new Mock<IServiceScopeFactory>();
         _serviceScope = new Mock<IServiceScope>();
         _kubernetesProvider = new Mock<IKubernetesProvider>();
+        _taskDispatchEventService = new Mock<ITaskDispatchEventService>();
         _argoProvider = new Mock<IArgoProvider>();
         _argoClient = new Mock<IArgoClient>();
         _kubernetesClient = new Mock<IKubernetes>();
@@ -88,12 +92,16 @@ public class ArgoPluginTest
         serviceProvider
             .Setup(x => x.GetService(typeof(IArgoProvider)))
             .Returns(_argoProvider.Object);
+        serviceProvider
+            .Setup(x => x.GetService(typeof(ITaskDispatchEventService)))
+            .Returns(_taskDispatchEventService.Object);
 
         _serviceScope.Setup(x => x.ServiceProvider).Returns(serviceProvider.Object);
 
         _logger.Setup(p => p.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _argoProvider.Setup(p => p.CreateClient(It.IsAny<string>(), It.IsAny<string?>(), true)).Returns(_argoClient.Object);
         _kubernetesProvider.Setup(p => p.CreateClient()).Returns(_kubernetesClient.Object);
+        _taskDispatchEventService.Setup(p => p.UpdateTaskPluginArgsAsync(It.IsAny<TaskDispatchEventInfo>(), It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskDispatchEventInfo(new TaskDispatchEvent()));
         _kubernetesClient.SetupGet<ICoreV1Operations>(p => p.CoreV1).Returns(_k8sCoreOperations.Object);
     }
 

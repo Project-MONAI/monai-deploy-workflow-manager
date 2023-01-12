@@ -46,5 +46,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
         /// <param name="taskExecutionId">Task execution ID associated with the event</param>
         /// <returns></returns>
         Task<bool> RemoveAsync(string taskExecutionId);
+
+        /// <summary>
+        /// Updates the plugin args of a task dispatch event in the database.
+        /// </summary>
+        /// <param name="taskDispatchEventInfo">A TaskDispatchEvent to update.</param>
+        /// <param name="pluginArgs">The plugin arguments to update.</param>
+        /// <returns>The updated TaskDispatchEventInfo.</returns>
+        Task<TaskDispatchEventInfo> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEventInfo, Dictionary<string, string> pluginArgs);
     }
 }
