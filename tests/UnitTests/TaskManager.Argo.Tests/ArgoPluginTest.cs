@@ -143,9 +143,9 @@ public class ArgoPluginTest
     {
         var message = GenerateTaskDispatchEventWithValidArguments();
 
-        _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(GenerateWorkflowTemplate(message));
-        _argoClient.Setup(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
+        _argoClient.Setup(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
             .Throws(new Exception("error"));
 
         SetupKubbernetesSecrets()
@@ -162,7 +162,7 @@ public class ArgoPluginTest
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
         Assert.Equal("error", result.Errors);
 
-        _argoClient.Verify(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Once());
+        _argoClient.Verify(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Once());
         _k8sCoreOperations.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<V1Secret>(),
             It.IsAny<string>(),
@@ -192,7 +192,7 @@ public class ArgoPluginTest
     {
         var message = GenerateTaskDispatchEventWithValidArguments();
 
-        _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(GenerateWorkflowTemplate(message));
 
         SetupKubbernetesSecrets()
@@ -206,7 +206,7 @@ public class ArgoPluginTest
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
         Assert.Equal("error", result.Errors);
 
-        _argoClient.Verify(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
+        _argoClient.Verify(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
         _k8sCoreOperations.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<V1Secret>(),
             It.IsAny<string>(),
@@ -236,7 +236,7 @@ public class ArgoPluginTest
     {
         var message = GenerateTaskDispatchEventWithValidArguments();
 
-        _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .Throws(new Exception("error"));
 
         var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
@@ -246,7 +246,7 @@ public class ArgoPluginTest
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
         Assert.Equal("error", result.Errors);
 
-        _argoClient.Verify(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
+        _argoClient.Verify(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
         _k8sCoreOperations.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<V1Secret>(),
             It.IsAny<string>(),
@@ -278,7 +278,7 @@ public class ArgoPluginTest
 
         var argoTemplate = GenerateWorkflowTemplate(message);
         argoTemplate.Spec.Entrypoint = "missing-template";
-        _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(argoTemplate);
 
         SetupKubbernetesSecrets().Throws(new Exception("error"));
@@ -291,7 +291,7 @@ public class ArgoPluginTest
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
         Assert.Equal($"Template '{argoTemplate.Spec.Entrypoint}' cannot be found in the referenced WorkflowTmplate '{message.TaskPluginArguments[Keys.WorkflowTemplateName]}'.", result.Errors);
 
-        _argoClient.Verify(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
+        _argoClient.Verify(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
         _k8sCoreOperations.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<V1Secret>(),
             It.IsAny<string>(),
@@ -329,9 +329,9 @@ public class ArgoPluginTest
         message.TaskPluginArguments["priorityClass"] = "Helo";
         Workflow? submittedArgoTemplate = null;
 
-        _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(argoTemplate);
-        _argoClient.Setup(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
+        _argoClient.Setup(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
             .Callback((string ns, WorkflowCreateRequest body, CancellationToken cancellationToken) =>
             {
                 submittedArgoTemplate = body.Workflow;
@@ -355,7 +355,7 @@ public class ArgoPluginTest
         Assert.Equal(FailureReason.None, result.FailureReason);
         Assert.Empty(result.Errors);
 
-        _argoClient.Verify(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Once());
+        _argoClient.Verify(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Once());
         _k8sCoreOperations.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<V1Secret>(),
             It.IsAny<string>(),
@@ -446,7 +446,7 @@ public class ArgoPluginTest
     public async Task ArgoPlugin_GetStatus_WaitUntilSucceededPhase()
     {
         var tryCount = 0;
-        _argoClient.Setup(p => p.WorkflowService_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((string ns, string name, string version, string fields, CancellationToken cancellationToken) =>
             {
                 if (tryCount++ < 2)
@@ -480,14 +480,14 @@ public class ArgoPluginTest
         Assert.Equal(FailureReason.None, result.FailureReason);
         Assert.Empty(result.Errors);
 
-        _argoClient.Verify(p => p.WorkflowService_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
+        _argoClient.Verify(p => p.Argo_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
     }
 
     [Fact(DisplayName = "GetStatus - Stats contains info")]
     public async Task ArgoPlugin_GetStatus_HasStatsInfo()
     {
         var tryCount = 0;
-        _argoClient.Setup(p => p.WorkflowService_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((string ns, string name, string version, string fields, CancellationToken cancellationToken) =>
             {
                 if (tryCount++ < 2)
@@ -533,7 +533,7 @@ public class ArgoPluginTest
         Assert.Equal("{\"id\":\"firstId\"}", nodeInfo["nodes.first"]);
         Assert.Empty(result?.Errors);
 
-        _argoClient.Verify(p => p.WorkflowService_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
+        _argoClient.Verify(p => p.Argo_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
     }
 
     public static Dictionary<string, string> ValiateCanConvertToDictionary(object obj)
@@ -552,7 +552,7 @@ public class ArgoPluginTest
     [InlineData(Strings.ArgoPhasePending)]
     public async Task ArgoPlugin_GetStatus_ReturnsExecutionStatusOnSuccess(string phase)
     {
-        _argoClient.Setup(p => p.WorkflowService_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((string ns, string name, string version, string fields, CancellationToken cancellationToken) =>
             {
                 return new Workflow
@@ -589,13 +589,13 @@ public class ArgoPluginTest
             Assert.Equal($"Argo status = '{phase}'. Messages = 'error'.", result.Errors);
         }
 
-        _argoClient.Verify(p => p.WorkflowService_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
+        _argoClient.Verify(p => p.Argo_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
     }
 
     [Fact(DisplayName = "GetStatus - returns ExecutionStatus on failure")]
     public async Task ArgoPlugin_GetStatus_ReturnsExecutionStatusOnFailure()
     {
-        _argoClient.Setup(p => p.WorkflowService_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .Throws(new Exception("error"));
 
         var message = GenerateTaskDispatchEventWithValidArguments();
@@ -607,7 +607,7 @@ public class ArgoPluginTest
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
         Assert.Equal("error", result.Errors);
 
-        _argoClient.Verify(p => p.WorkflowService_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
+        _argoClient.Verify(p => p.Argo_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
     }
 
     [Fact(DisplayName = "ImagePullSecrets - get copied accross")]
@@ -748,10 +748,10 @@ public class ArgoPluginTest
     {
         Assert.NotNull(argoTemplate);
 
-        _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(argoTemplate);
 
-        _argoClient.Setup(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
+        _argoClient.Setup(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
             .Callback((string ns, WorkflowCreateRequest body, CancellationToken cancellationToken) =>
             {
                 _submittedArgoTemplate = body.Workflow;

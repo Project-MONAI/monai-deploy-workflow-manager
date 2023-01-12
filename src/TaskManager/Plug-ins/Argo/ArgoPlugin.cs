@@ -186,7 +186,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             {
                 var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
                 _logger.CreatingArgoWorkflow(workflow.Metadata.GenerateName);
-                var result = await client.WorkflowService_CreateWorkflowAsync(_namespace, new WorkflowCreateRequest { Namespace = _namespace, Workflow = workflow }, cancellationToken).ConfigureAwait(false);
+                var result = await client.Argo_CreateWorkflowAsync(_namespace, new WorkflowCreateRequest { Namespace = _namespace, Workflow = workflow }, cancellationToken).ConfigureAwait(false);
                 _logger.ArgoWorkflowCreated(result.Metadata.Name);
                 return new ExecutionStatus
                 {
@@ -209,14 +209,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             try
             {
                 var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
-                var workflow = await client.WorkflowService_GetWorkflowAsync(_namespace, identity, null, null, cancellationToken).ConfigureAwait(false);
+                var workflow = await client.Argo_GetWorkflowAsync(_namespace, identity, null, null, cancellationToken).ConfigureAwait(false);
 
                 // it take sometime for the Argo job to be in the final state after emitting the callback event.
                 var retryCount = 30;
                 while (workflow.Status.Phase.Equals(Strings.ArgoPhaseRunning, StringComparison.OrdinalIgnoreCase) && retryCount-- > 0)
                 {
                     await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
-                    workflow = await client.WorkflowService_GetWorkflowAsync(_namespace, identity, null, null, cancellationToken).ConfigureAwait(false);
+                    workflow = await client.Argo_GetWorkflowAsync(_namespace, identity, null, null, cancellationToken).ConfigureAwait(false);
                 }
                 logTask = PipeExecutionLogs(client, identity);
 
@@ -318,14 +318,21 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private async Task PipeExecutionLogs(IArgoClient client, string identity)
         {
+            try
+            {
 #pragma warning disable CA2254 // Template should be a static expression
-            var logs = await client.WorkflowService_WorkflowLogsAsync(_namespace, identity, null, "init", null, null, null, null, null, null, null, null, null, null, null);
-            _logger.ArgoLog(logs);
-            logs = await client.WorkflowService_WorkflowLogsAsync(_namespace, identity, null, "wait", null, null, null, null, null, null, null, null, null, null, null);
-            _logger.ArgoLog(logs);
-            logs = await client.WorkflowService_WorkflowLogsAsync(_namespace, identity, null, "main", null, null, null, null, null, null, null, null, null, null, null);
-            _logger.ArgoLog(logs);
+                var logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "init");
+                _logger.ArgoLog(logs);
+                logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "wait");
+                _logger.ArgoLog(logs);
+                logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "main");
+                _logger.ArgoLog(logs);
 #pragma warning restore CA2254 // Template should be a static expression
+            }
+            catch (Exception ex)
+            {
+                int we = 0;
+            }
         }
 
         private async Task<Workflow> BuildWorkflowWrapper(CancellationToken cancellationToken)
@@ -543,7 +550,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             try
             {
                 var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
-                return await client.WorkflowTemplateService_GetWorkflowTemplateAsync(_namespace, workflowTemplateName, null).ConfigureAwait(false);
+                return await client.Argo_GetWorkflowTemplateAsync(_namespace, workflowTemplateName, null).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -901,13 +908,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
 
-            await client.WorkflowService_StopWorkflowAsync(_namespace, identity, new WorkflowStopRequest
+            await client.Argo_StopWorkflowAsync(_namespace, identity, new WorkflowStopRequest
             {
                 Namespace = _namespace,
                 Name = identity,
             });
 
-            await client.WorkflowService_TerminateWorkflowAsync(_namespace, identity, new WorkflowTerminateRequest
+            await client.Argo_TerminateWorkflowAsync(_namespace, identity, new WorkflowTerminateRequest
             {
                 Name = identity,
                 Namespace = _namespace
