@@ -109,5 +109,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
                 return false;
             }
         }
+
+        public async Task<TaskDispatchEventInfo> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEventInfo, Dictionary<string, string> pluginArgs)
+        {
+            Guard.Against.Null(taskDispatchEventInfo);
+            Guard.Against.Null(pluginArgs);
+
+            try
+            {
+                await _taskDispatchEventCollection.FindOneAndUpdateAsync(i => i.Id == taskDispatchEventInfo.Id, Builders<TaskDispatchEventInfo>.Update.Set(p => p.Event.TaskPluginArguments, pluginArgs)).ConfigureAwait(false);
+                return await GetByTaskExecutionIdAsync(taskDispatchEventInfo.Event.ExecutionId).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                _logger.DatabaseException(nameof(UpdateTaskPluginArgsAsync), e);
+                return default;
+            }
+        }
     }
 }
