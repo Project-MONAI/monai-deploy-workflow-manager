@@ -61,7 +61,7 @@ jobs:
             type=raw,value=develop-nightly-${{ steps.date.outputs.date }}
 
       - name: Build and Push Container Image for ${{ matrix.feature }}
-        uses: docker/build-push-action@v3.2.0
+        uses: docker/build-push-action@v3.3.0
         with:
           context: .
           push: true
