@@ -135,7 +135,7 @@ public class ArgoPluginTest
         var message = GenerateTaskDispatchEventWithValidArguments();
 
         _ = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
-        _logger.VerifyLogging($"Argo plugin initialized: namespace=namespace, base URL=http://api-endpoint/, activeDeadlineSeconds=50, apiToken configured=True.", LogLevel.Information, Times.Once());
+        _logger.VerifyLogging($"Argo plugin initialized: namespace=namespace, base URL=http://api-endpoint/, activeDeadlineSeconds=50, apiToken configured=true. allowInsecure=true", LogLevel.Information, Times.Once());
     }
 
     [Fact(DisplayName = "ExecuteTask - returns ExecutionStatus on failure")]

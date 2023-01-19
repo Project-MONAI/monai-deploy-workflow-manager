@@ -50,8 +50,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging
         [LoggerMessage(EventId = 1009, Level = LogLevel.Debug, Message = "Creating Argo workflow: {generateName}")]
         public static partial void CreatingArgoWorkflow(this ILogger logger, string generateName);
 
-        [LoggerMessage(EventId = 1010, Level = LogLevel.Information, Message = "Argo plugin initialized: namespace={argoNamespace}, base URL={baseUrl}, activeDeadlineSeconds={activeDeadlineSeconds}, apiToken configured={apiTokenSet}.")]
-        public static partial void Initialized(this ILogger logger, string argoNamespace, string baseUrl, int? activeDeadlineSeconds, bool apiTokenSet);
+        [LoggerMessage(EventId = 1010, Level = LogLevel.Information, Message = "Argo plugin initialized: namespace={argoNamespace}, base URL={baseUrl}, activeDeadlineSeconds={activeDeadlineSeconds}, apiToken configured={apiTokenSet}. allowInsecure={allowInsecure}")]
+        public static partial void Initialized(this ILogger logger, string argoNamespace, string baseUrl, int? activeDeadlineSeconds, string apiTokenSet, string allowInsecure);
 
         [LoggerMessage(EventId = 1011, Level = LogLevel.Error, Message = "Error generating Argo workflow.")]
         public static partial void ErrorGeneratingWorkflow(this ILogger logger, Exception ex);
