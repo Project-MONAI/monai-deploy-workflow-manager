@@ -76,6 +76,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private void Initialize()
         {
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["correlationId"] = Event.CorrelationId,
+                ["workflowInstanceId"] = Event.WorkflowInstanceId,
+                ["taskId"] = Event.TaskId,
+                ["executionId"] = Event.ExecutionId,
+                ["payloadId"] = Event.PayloadId
+            });
+
             if (Event.TaskPluginArguments.ContainsKey(Keys.TimeoutSeconds) &&
                 int.TryParse(Event.TaskPluginArguments[Keys.TimeoutSeconds], out var result))
             {
