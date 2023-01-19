@@ -128,7 +128,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 Task.Run(() => _taskDispatchEventService.UpdateTaskPluginArgsAsync(eventInfo, Event.TaskPluginArguments));
             }
 
-            _logger.Initialized(_namespace, _baseUrl, _activeDeadlineSeconds, (!string.IsNullOrWhiteSpace(_apiToken)));
+            _logger.Initialized(_namespace,
+                _baseUrl,
+                _activeDeadlineSeconds,
+                !string.IsNullOrWhiteSpace(_apiToken) ? "true" : "false",
+                _allowInsecure ? "true" : "false");
         }
 
         private void ValidateEvent()

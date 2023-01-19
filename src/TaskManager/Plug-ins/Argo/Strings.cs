@@ -19,7 +19,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
     public static class Strings
     {
         public const string ArgoApiVersion = "argoproj.io/v1alpha1";
-        public const string DefaultNamespace = "default";
+        public const string DefaultNamespace = "argo";
         public const string KindWorkflow = "Workflow";
 
         public const string TaskIdLabelSelectorName = "md-task-id";
