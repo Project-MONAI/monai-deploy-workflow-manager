@@ -86,19 +86,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             });
 
             if (Event.TaskPluginArguments.ContainsKey(Keys.TimeoutSeconds) &&
+                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[Keys.TimeoutSeconds]) &&
                 int.TryParse(Event.TaskPluginArguments[Keys.TimeoutSeconds], out var result))
             {
                 _activeDeadlineSeconds = result;
             }
 
-            if (Event.TaskPluginArguments.ContainsKey(Keys.ArgoApiToken))
+            if (Event.TaskPluginArguments.ContainsKey(Keys.ArgoApiToken) &&
+                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[Keys.ArgoApiToken]))
             {
                 _apiToken = Event.TaskPluginArguments[Keys.ArgoApiToken];
             }
 
             bool updateEvent = false;
 
-            if (Event.TaskPluginArguments.ContainsKey(Keys.Namespace))
+            if (Event.TaskPluginArguments.ContainsKey(Keys.Namespace) &&
+                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[Keys.Namespace]))
             {
                 _namespace = Event.TaskPluginArguments[Keys.Namespace];
             }
@@ -109,7 +112,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 updateEvent = true;
             }
 
-            if (Event.TaskPluginArguments.ContainsKey(Keys.AllowInsecureseUrl))
+            if (Event.TaskPluginArguments.ContainsKey(Keys.AllowInsecureseUrl) &&
+                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[Keys.AllowInsecureseUrl]))
             {
                 _allowInsecure = string.Compare("true", Event.TaskPluginArguments[Keys.AllowInsecureseUrl], true) == 0;
             }
@@ -120,7 +124,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 updateEvent = true;
             }
 
-            if (Event.TaskPluginArguments.ContainsKey(Keys.BaseUrl))
+            if (Event.TaskPluginArguments.ContainsKey(Keys.BaseUrl) &&
+                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[Keys.BaseUrl]))
             {
                 _baseUrl = Event.TaskPluginArguments[Keys.BaseUrl];
             }
@@ -153,7 +158,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             foreach (var key in Keys.RequiredParameters)
             {
-                if (!Event.TaskPluginArguments.ContainsKey(key))
+                if (!Event.TaskPluginArguments.ContainsKey(key) &&
+                    string.IsNullOrWhiteSpace(Event.TaskPluginArguments[key]))
                 {
                     throw new InvalidTaskException($"Required parameter to execute Argo workflow is missing: {key}");
                 }
@@ -167,7 +173,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 }
             }
 
-            if (Event.TaskPluginArguments.ContainsKey(Keys.BaseUrl) && !Uri.IsWellFormedUriString(Event.TaskPluginArguments[Keys.BaseUrl], UriKind.Absolute))
+            if (Event.TaskPluginArguments.ContainsKey(Keys.BaseUrl) &&
+                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[Keys.BaseUrl]) && !Uri.IsWellFormedUriString(Event.TaskPluginArguments[Keys.BaseUrl], UriKind.Absolute))
             {
                 throw new InvalidTaskException($"The value '{Event.TaskPluginArguments[Keys.BaseUrl]}' provided for '{Keys.BaseUrl}' is not a valid URI.");
             }
