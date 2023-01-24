@@ -35,7 +35,11 @@ namespace Monai.Deploy.WorkflowManager.Validators
     /// </summary>
     public class WorkflowValidator
     {
-        private const string Comma = "⸴ ";
+        /// <summary>
+        /// Separator when joining errors in single string.
+        /// </summary>
+        public static readonly string Separator = ";";
+        private const string Comma = ", ";
         private readonly ILogger<WorkflowValidator> _logger;
 
         /// <summary>
@@ -63,6 +67,16 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// will have duplicate.
         /// </summary>
         public string OrignalName { get; internal set; } = string.Empty;
+
+        /// <summary>
+        /// Returns single string of errors.
+        /// </summary>
+        /// <param name="errors">List of errors.</param>
+        /// <returns></returns>
+        public static string ErrorsToString(List<string> errors)
+        {
+            return string.Join(Separator, errors);
+        }
 
         /// <summary>
         /// Resets the validator.

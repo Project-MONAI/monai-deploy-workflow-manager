@@ -156,7 +156,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
 
             if (errors.Count > 0)
             {
-                var validationErrors = string.Join(", ", errors);
+                var validationErrors = WorkflowValidator.ErrorsToString(errors);
                 _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
 
                 return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", BadRequest);
@@ -180,7 +180,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
 
             if (errors.Count > 0)
             {
-                var validationErrors = string.Join(", ", errors);
+                var validationErrors = WorkflowValidator.ErrorsToString(errors);
                 _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
 
                 return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", BadRequest);
@@ -226,7 +226,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
 
             if (errors.Count > 0)
             {
-                var validationErrors = string.Join(", ", errors);
+                var validationErrors = WorkflowValidator.ErrorsToString(errors);
                 _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
 
                 return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/{id}", BadRequest);
