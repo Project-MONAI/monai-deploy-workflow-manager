@@ -43,6 +43,7 @@
 
 
   <ItemGroup>
+    <PackageReference Include="Mongo.Migration" Version="3.1.4" />
     <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
   </ItemGroup>
 

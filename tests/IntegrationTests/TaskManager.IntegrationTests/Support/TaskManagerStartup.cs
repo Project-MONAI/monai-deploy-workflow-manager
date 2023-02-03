@@ -34,6 +34,8 @@ using Monai.Deploy.WorkflowManager.TaskManager.Database.Options;
 using Monai.Deploy.WorkflowManager.TaskManager.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.TaskManager.Services.Http;
+using Mongo.Migration.Startup.DotNetCore;
+using Mongo.Migration.Startup;
 using MongoDB.Driver;
 using NLog.Web;
 
@@ -81,6 +83,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                     // Mongo DB
                     services.Configure<TaskManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
                     services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
+                    services.AddMigration(new MongoMigrationSettings
+                    {
+                        ConnectionString = hostContext.Configuration.GetSection("WorkloadManagerDatabase:ConnectionString").Value,
+                        Database = hostContext.Configuration.GetSection("WorkloadManagerDatabase:DatabaseName").Value,
+                    });
+
                     services.AddTransient<ITaskDispatchEventRepository, TaskDispatchEventRepository>();
 
                     // StorageService - Since mc.exe is unavailable during e2e, skip admin check

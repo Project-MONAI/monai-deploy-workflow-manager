@@ -16,12 +16,16 @@
 
 using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.TaskManager.Migrations;
+using Mongo.Migration.Documents;
+using Mongo.Migration.Documents.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
 {
-    public class TaskDispatchEventInfo
+    [CollectionLocation("TaskDispatchEvents"), RuntimeVersion("1.0.0")]
+    public class TaskDispatchEventInfo : IDocument
     {
         /// <summary>
         /// Gets or sets the ID of the object.
@@ -29,6 +33,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
         [BsonId]
         [JsonProperty(PropertyName = "id")]
         public Guid Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets Db version.
+        /// </summary>
+        [JsonConverter(typeof(DocumentVersionConvert))]
+        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 0);
 
         /// <summary>
         /// Gets or sets the original task disatpch event.

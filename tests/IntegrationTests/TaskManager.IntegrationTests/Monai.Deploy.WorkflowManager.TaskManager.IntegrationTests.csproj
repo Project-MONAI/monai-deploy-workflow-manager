@@ -30,6 +30,7 @@
     <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.19" />
     <PackageReference Include="Monai.Deploy.Storage" Version="0.2.10" />
     <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.10" />
+    <PackageReference Include="Mongo.Migration" Version="3.1.4" />
     <PackageReference Include="Polly" Version="7.2.3" />
     <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
     <PackageReference Include="SpecFlow.NUnit" Version="3.9.74" />
