@@ -31,6 +31,8 @@ using Monai.Deploy.WorkflowManager.TaskManager.Database;
 using Monai.Deploy.WorkflowManager.TaskManager.Database.Options;
 using Monai.Deploy.WorkflowManager.TaskManager.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.Services.Http;
+using Mongo.Migration.Startup.DotNetCore;
+using Mongo.Migration.Startup;
 using MongoDB.Driver;
 using NLog;
 using NLog.LayoutRenderers;
@@ -108,6 +110,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
             services.AddTransient<ITaskDispatchEventRepository, TaskDispatchEventRepository>();
             services.AddTransient<IFileSystem, FileSystem>();
+            services.AddMigration(new MongoMigrationSettings
+            {
+                ConnectionString = hostContext.Configuration.GetSection("WorkloadManagerDatabase:ConnectionString").Value,
+                Database = hostContext.Configuration.GetSection("WorkloadManagerDatabase:DatabaseName").Value,
+            });
 
             services.AddTransient<IContentTypeProvider, FileExtensionContentTypeProvider>();
 

@@ -42,7 +42,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
 
             var mongoDatabase = client.GetDatabase(databaseSettings.Value.DatabaseName);
-            _workflowCollection = mongoDatabase.GetCollection<WorkflowRevision>(databaseSettings.Value.WorkflowCollectionName);
+            _workflowCollection = mongoDatabase.GetCollection<WorkflowRevision>("Workflows");
         }
 
         public List<WorkflowRevision> GetWorkflowsList()

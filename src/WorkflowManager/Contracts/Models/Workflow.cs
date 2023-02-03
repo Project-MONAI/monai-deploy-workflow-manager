@@ -18,6 +18,7 @@ using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
+
     public class Workflow
     {
         [JsonProperty(PropertyName = "name")]
@@ -34,5 +35,6 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         [JsonProperty(PropertyName = "tasks")]
         public TaskObject[] Tasks { get; set; } = System.Array.Empty<TaskObject>();
+
     }
 }

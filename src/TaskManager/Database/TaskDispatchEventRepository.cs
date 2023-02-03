@@ -41,7 +41,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var mongoDatabase = client.GetDatabase(databaseSettings.Value.DatabaseName);
-            _taskDispatchEventCollection = mongoDatabase.GetCollection<TaskDispatchEventInfo>(databaseSettings.Value.TaskDispatchEventCollectionName);
+            _taskDispatchEventCollection = mongoDatabase.GetCollection<TaskDispatchEventInfo>("TaskDispatchEvents");
         }
 
         public async Task<TaskDispatchEventInfo?> CreateAsync(TaskDispatchEventInfo taskDispatchEventInfo)

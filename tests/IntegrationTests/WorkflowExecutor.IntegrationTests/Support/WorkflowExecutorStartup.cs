@@ -38,6 +38,8 @@ using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
 using Monai.Deploy.WorkflowManager.Validators;
+using Mongo.Migration.Startup.DotNetCore;
+using Mongo.Migration.Startup;
 using MongoDB.Driver;
 using NLog.Web;
 
@@ -97,6 +99,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 // Mongo DB
                 services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
                 services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
+                services.AddMigration(new MongoMigrationSettings
+                {
+                    ConnectionString = hostContext.Configuration.GetSection("WorkloadManagerDatabase:ConnectionString").Value,
+                    Database = hostContext.Configuration.GetSection("WorkloadManagerDatabase:DatabaseName").Value,
+                });
                 services.AddTransient<IWorkflowRepository, WorkflowRepository>();
                 services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
                 services.AddTransient<IPayloadRepsitory, PayloadRepository>();

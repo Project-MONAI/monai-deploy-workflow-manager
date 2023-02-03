@@ -20,3 +20,5 @@
 Renamed the (Generated) Argo client to ArgoGeneratedClient, added a new ArgoClient using just the methods used by this codebase.
 
 Enhanced the ArgoClient -> Argo_Get_WorkflowLogsAsync method to decode the json better and make the logs extracted from Argo more readable.
+
+Added Mongo Migraions, to allow changes without breaking current stored entries
