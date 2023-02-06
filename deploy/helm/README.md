@@ -95,7 +95,7 @@ you should consider using volume claims.
 Once you have the rabbitmq installed, you can move to the next step and
 install mongodb.
 
-### Argo Workflows
+### MongoDB
 
 1. Install mongodb with helm
 
@@ -241,6 +241,9 @@ template with the contents of:
 
 https://github.com/Project-MONAI/monai-deploy/blob/main/e2e-testing/test-scenarios/Argo_Workflows/argo_workflow_5.yaml
 
+Review the namespace that should be one you have setup. If you followed
+the example in this README, it should be "monai".
+
 > :Hint: You could also use curl and use the REST API
 
 
@@ -258,6 +261,12 @@ Open the post/workflows tab and click try it out. You can use the
 following workflow:
 
 https://github.com/Project-MONAI/monai-deploy/blob/main/e2e-testing/test-scenarios/Clinical_Workflows/liver_seg.json
+
+Review the namespace that should be one you have setup. If you followed
+the example in this README, it should be "monai".
+
+Review the "ae_title" value. If you have followed the example in this
+README, it should be "MONAISCU".
 
 > :Warning: On a production environment swagger won't be available.
 You can still use the REST api.
