@@ -131,6 +131,15 @@ dependency, which are argo workflows.
 > :Warning: Note that we are setting up the authentication method for
 demonstration purposes. You might want to review this for production envs.
 
+You need to have some admin permissions so that new deployments can be
+created by Argo Workflows. The following will add them:
+
+```kubectl create rolebinding default-admin --clusterrole=admin --serviceaccount=monai:default --namespace=monai```
+
+> :WARNING!: This adds admin permissions to all service accounts in the
+monai namespace. This is for demonstration purposes.  Be careful with
+this if you want to set up a production environment.
+
 Congrats! You have installed all dependencies. It was not difficult
 with helm, right?
 
