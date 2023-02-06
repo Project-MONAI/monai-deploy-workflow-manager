@@ -22,3 +22,5 @@ Renamed the (Generated) Argo client to ArgoGeneratedClient, added a new ArgoClie
 Enhanced the ArgoClient -> Argo_Get_WorkflowLogsAsync method to decode the json better and make the logs extracted from Argo more readable.
 
 Added Mongo Migraions, to allow changes without breaking current stored entries
+
+Added resource constraints to the generated ARGO templates, so these can operate within a Kubernetes cluster with a Resource Quota in the ARGO namespace.

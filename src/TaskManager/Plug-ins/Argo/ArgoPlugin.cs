@@ -618,16 +618,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             if (workflow.Spec.TtlStrategy is null)
             {
-                workflow.Spec.TtlStrategy = new TTLStrategy { SecondsAfterCompletion = _options.Value.ArgoTtlStatergySeconds };
+                workflow.Spec.TtlStrategy = new TTLStrategy { SecondsAfterCompletion = _options.Value.ArgoTtlStrategySeconds };
             }
             else
             {
                 if (workflow.Spec.TtlStrategy.SecondsAfterCompletion.HasValue)
-                    workflow.Spec.TtlStrategy.SecondsAfterCompletion = Math.Max(_options.Value.MinArgoTtlStatergySeconds, workflow.Spec.TtlStrategy.SecondsAfterCompletion.Value);
+                    workflow.Spec.TtlStrategy.SecondsAfterCompletion = Math.Max(_options.Value.MinArgoTtlStrategySeconds, workflow.Spec.TtlStrategy.SecondsAfterCompletion.Value);
                 if (workflow.Spec.TtlStrategy.SecondsAfterSuccess.HasValue)
-                    workflow.Spec.TtlStrategy.SecondsAfterSuccess = Math.Max(_options.Value.MinArgoTtlStatergySeconds, workflow.Spec.TtlStrategy.SecondsAfterSuccess.Value);
+                    workflow.Spec.TtlStrategy.SecondsAfterSuccess = Math.Max(_options.Value.MinArgoTtlStrategySeconds, workflow.Spec.TtlStrategy.SecondsAfterSuccess.Value);
                 if (workflow.Spec.TtlStrategy.SecondsAfterFailure.HasValue)
-                    workflow.Spec.TtlStrategy.SecondsAfterFailure = Math.Max(_options.Value.MinArgoTtlStatergySeconds, workflow.Spec.TtlStrategy.SecondsAfterFailure.Value);
+                    workflow.Spec.TtlStrategy.SecondsAfterFailure = Math.Max(_options.Value.MinArgoTtlStrategySeconds, workflow.Spec.TtlStrategy.SecondsAfterFailure.Value);
             }
             RemovePodGCStratergy(workflow);
         }
