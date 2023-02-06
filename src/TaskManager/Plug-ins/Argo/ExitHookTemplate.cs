@@ -74,9 +74,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 Container = new Container2
                 {
                     Image = Strings.ExitHookGenerateMessageContainerImage,
+                    Resources = new ResourceRequirements
+                    {
+                        Limits = new Dictionary<string, string>
+                        {
+                            {"cpu", _options.TaskManager.ArgoPluginArguments.MessageGeneratorContainerCpuLimit},
+                            {"memory", _options.TaskManager.ArgoPluginArguments.MessageGeneratorContainerMemoryLimit}
+                        }
+                    },
                     Command = new List<string> { "/bin/sh", "-c" },
                     Args = new List<string> { $"echo \"{{{{inputs.parameters.message}}}}\" > {Strings.ExitHookOutputPath}{_messageFileName}; cat {Strings.ExitHookOutputPath}{_messageFileName};" }
                 },
+                PodSpecPatch = "{\"initContainers\":[{\"name\":\"init\",\"resources\":{\"limits\":{\"cpu\":\"" + _options.TaskManager.ArgoPluginArguments.InitContainerCpuLimit + "\",\"memory\": \"" + _options.TaskManager.ArgoPluginArguments.InitContainerMemoryLimit + "\"},\"requests\":{\"cpu\":\"0\",\"memory\":\"0Mi\"}}}],\"containers\":[{\"name\":\"wait\",\"resources\":{\"limits\":{\"cpu\":\"" + _options.TaskManager.ArgoPluginArguments.WaitContainerCpuLimit + "\",\"memory\":\"" + _options.TaskManager.ArgoPluginArguments.WaitContainerMemoryLimit + "\"},\"requests\":{\"cpu\":\"0\",\"memory\":\"0Mi\"}}}]}",
                 Outputs = new Outputs
                 {
                     Artifacts = new List<Artifact>()
@@ -155,6 +164,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 Container = new Container2
                 {
                     Image = _options.TaskManager.ArgoExitHookSendMessageContainerImage,
+                    Resources = new ResourceRequirements
+                    {
+                        Limits = new Dictionary<string, string>{ {"cpu", _options.TaskManager.ArgoPluginArguments.MessageSenderContainerCpuLimit}, {"memory", _options.TaskManager.ArgoPluginArguments.MessageSenderContainerMemoryLimit} }
+                    },
                     Command = new List<string> { "/rabtap" },
                     Args = new List<string> {
                         "pub",
@@ -164,7 +177,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                         "--delay=0s",
                         "--confirms",
                         "--mandatory" }
-                }
+                },
+                PodSpecPatch = "{\"initContainers\":[{\"name\":\"init\",\"resources\":{\"limits\":{\"cpu\":\"" + _options.TaskManager.ArgoPluginArguments.InitContainerCpuLimit + "\",\"memory\": \"" + _options.TaskManager.ArgoPluginArguments.InitContainerMemoryLimit + "\"},\"requests\":{\"cpu\":\"0\",\"memory\":\"0Mi\"}}}],\"containers\":[{\"name\":\"wait\",\"resources\":{\"limits\":{\"cpu\":\"" + _options.TaskManager.ArgoPluginArguments.WaitContainerCpuLimit + "\",\"memory\":\"" + _options.TaskManager.ArgoPluginArguments.WaitContainerMemoryLimit + "\"},\"requests\":{\"cpu\":\"0\",\"memory\":\"0Mi\"}}}]}",
             };
         }
     }

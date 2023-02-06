@@ -60,6 +60,14 @@ public class ArgoPluginTest
     private Workflow? _submittedArgoTemplate;
     private readonly int _argoTtlStatergySeconds = 360;
     private readonly int _minAgoTtlStatergySeconds = 30;
+    private readonly string _initContainerCpuLimit = "100m";
+    private readonly string _initContainerMemoryLimit = "200Mi";
+    private readonly string _waitContainerCpuLimit = "200m";
+    private readonly string _waitContainerMemoryLimit = "300Mi";
+    private readonly string _messageGeneratorContainerCpuLimit = "300m";
+    private readonly string _messageGeneratorContainerMemoryLimit = "400Mi";
+    private readonly string _messageSenderContainerCpuLimit = "400m";
+    private readonly string _messageSenderContainerMemoryLimit = "500Mi";
 
     public ArgoPluginTest()
     {
@@ -80,8 +88,16 @@ public class ArgoPluginTest
         _options.Value.Messaging.PublisherSettings.Add("exchange", "exchange");
         _options.Value.Messaging.PublisherSettings.Add("virtualHost", "vhost");
         _options.Value.Messaging.Topics.TaskCallbackRequest = "md.tasks.callback";
-        _options.Value.ArgoTtlStatergySeconds = _argoTtlStatergySeconds;
-        _options.Value.MinArgoTtlStatergySeconds = _minAgoTtlStatergySeconds;
+        _options.Value.ArgoTtlStrategySeconds = _argoTtlStatergySeconds;
+        _options.Value.MinArgoTtlStrategySeconds = _minAgoTtlStatergySeconds;
+        _options.Value.TaskManager.ArgoPluginArguments.InitContainerCpuLimit = _initContainerCpuLimit;
+        _options.Value.TaskManager.ArgoPluginArguments.InitContainerMemoryLimit = _initContainerMemoryLimit;
+        _options.Value.TaskManager.ArgoPluginArguments.WaitContainerCpuLimit = _waitContainerCpuLimit;
+        _options.Value.TaskManager.ArgoPluginArguments.WaitContainerMemoryLimit = _waitContainerMemoryLimit;
+        _options.Value.TaskManager.ArgoPluginArguments.MessageGeneratorContainerCpuLimit = _messageGeneratorContainerCpuLimit;
+        _options.Value.TaskManager.ArgoPluginArguments.MessageGeneratorContainerMemoryLimit = _messageGeneratorContainerMemoryLimit;
+        _options.Value.TaskManager.ArgoPluginArguments.MessageSenderContainerCpuLimit = _messageSenderContainerCpuLimit;
+        _options.Value.TaskManager.ArgoPluginArguments.MessageSenderContainerMemoryLimit = _messageSenderContainerMemoryLimit;
 
         _serviceScopeFactory.Setup(p => p.CreateScope()).Returns(_serviceScope.Object);
 
@@ -630,8 +646,8 @@ public class ArgoPluginTest
         Assert.Equal(secret, _submittedArgoTemplate?.Spec.ImagePullSecrets.First());
     }
 
-    [Fact(DisplayName = "TTL gets added if not pressent")]
-    public async Task ArgoPlugin_Ensures_TTL_Added_If_Not_pressent()
+    [Fact(DisplayName = "TTL gets added if not present")]
+    public async Task ArgoPlugin_Ensures_TTL_Added_If_Not_present()
     {
         var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
         Assert.NotNull(argoTemplate);
@@ -645,6 +661,34 @@ public class ArgoPluginTest
 
         Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
         Assert.Equal(_argoTtlStatergySeconds, _submittedArgoTemplate?.Spec.TtlStrategy?.SecondsAfterCompletion);
+    }
+
+    [Fact(DisplayName = "Argo Plugin adds required resource limits")]
+    public async Task ArgoPlugin_Adds_Container_Resource_Restrictions_Based_On_Configured_Values()
+    {
+        var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
+        Assert.NotNull(argoTemplate);
+
+        SetUpSimpleArgoWorkFlow(argoTemplate);
+
+        var message = GenerateTaskDispatchEventWithValidArguments();
+
+        var expectedPodSpecPatch = "{\"initContainers\":[{\"name\":\"init\",\"resources\":{\"limits\":{\"cpu\":\"" + _initContainerCpuLimit + "\",\"memory\": \"" +
+                                                   _initContainerMemoryLimit +
+                                                   "\"},\"requests\":{\"cpu\":\"0\",\"memory\":\"0Mi\"}}}],\"containers\":[{\"name\":\"wait\",\"resources\":{\"limits\":{\"cpu\":\"" +
+                                                   _waitContainerCpuLimit + "\",\"memory\":\"" + _waitContainerMemoryLimit +
+                                                   "\"},\"requests\":{\"cpu\":\"0\",\"memory\":\"0Mi\"}}}]}";
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
+        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+        Assert.Equal(_messageGeneratorContainerCpuLimit, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateGenerateTemplateName).Container.Resources.Limits["cpu"]);
+        Assert.Equal(_messageGeneratorContainerMemoryLimit, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateGenerateTemplateName).Container.Resources.Limits["memory"]);
+        Assert.Equal(expectedPodSpecPatch, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateGenerateTemplateName).PodSpecPatch);
+        Assert.Equal(_messageSenderContainerCpuLimit, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).Container.Resources.Limits["cpu"]);
+        Assert.Equal(_messageSenderContainerMemoryLimit, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).Container.Resources.Limits["memory"]);
+        Assert.Equal(expectedPodSpecPatch, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).PodSpecPatch);
     }
 
     [Theory(DisplayName = "TTL gets extended if too short")]
@@ -725,7 +769,7 @@ public class ArgoPluginTest
         Assert.Equal(secondsAfterFailure, _submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterFailure);
     }
 
-    [Fact(DisplayName = "pocGC gets removed if pressent")]
+    [Fact(DisplayName = "pocGC gets removed if present")]
     public async Task ArgoPlugin_Ensures_podGC_is_removed()
     {
         var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
