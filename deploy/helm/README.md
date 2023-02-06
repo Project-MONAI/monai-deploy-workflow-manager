@@ -214,7 +214,6 @@ change that for production environments.
 2. Configure Orthanc with Monai Information Gateway:
 
 ``` kubectl port-forward services/orthanc-monai 4242:4242 8042:8042 ```
-``` curl -v -X PUT http://demo:demo@localhost:8042/modalities/monai -d '{"AET" : "MONAISCU", "Host" : "mig-monai", "Port": 104}' ```
 
 Congrats! You have finish the setup! Now let's test it.
 

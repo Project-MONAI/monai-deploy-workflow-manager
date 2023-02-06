@@ -26,9 +26,8 @@ enviromentVariables:
   CONNECTIVITY_CHECKS_PLUGIN_ENABLED: "true"
   ORTHANC__REGISTERED_USERS: |
     {"demo": "demo"}
-"RegisteredUsers":
   ORTHANC__DICOM_MODALITIES: |
-    {"monai" : [ "MonaiSCU", "mig-monai", 104 ]}
+    {"monai" : [ "MONAISCU", "mig-monai", 104 ]}
 
 service:
   type: NodePort
