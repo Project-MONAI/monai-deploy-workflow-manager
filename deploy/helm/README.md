@@ -211,10 +211,6 @@ And now is time to install Orthanc, the last piece.
 > :Warning: As before, note credentials are in the yaml file. You should
 change that for production environments.
 
-2. Configure Orthanc with Monai Information Gateway:
-
-``` kubectl port-forward services/orthanc-monai 4242:4242 8042:8042 ```
-
 Congrats! You have finish the setup! Now let's test it.
 
 ## TEST
