@@ -69,6 +69,7 @@
     :why: Apache-2.0 (https://github.com/MichaCo/DnsClient.NET/raw/dev/LICENSE)
     :versions:
     - 1.6.1
+    - 1.4.0
     :when: 2022-10-14 23:36:42.746807998 Z
 - - :approve
   - Docker.DotNet
@@ -235,14 +236,8 @@
     :why: Apache-2.0 (https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt)
     :versions:
     - 2.1.0
-    :when: 2022-10-14 23:36:52.062635438 Z
-- - :approve
-  - Microsoft.AspNetCore.Http.Abstractions
-  - :who: mocsharp
-    :why: Apache-2.0 (https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt)
-    :versions:
     - 2.2.0
-    :when: 2022-10-14 23:36:52.442347272 Z
+    :when: 2022-10-14 23:36:52.062635438 Z
 - - :approve
   - Microsoft.AspNetCore.Http.Extensions
   - :who: mocsharp
@@ -405,6 +400,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 3.0.0
+    - 2.2.0
     :when: 2022-10-14 23:37:01.366955631 Z
 - - :approve
   - Microsoft.Extensions.Configuration.Binder
@@ -455,6 +451,7 @@
     :versions:
     - 6.0.0
     - 6.0.1
+    - 2.2.0
     :when: 2022-10-14 23:37:03.975202345 Z
 - - :approve
   - Microsoft.Extensions.DependencyInjection.Abstractions
@@ -563,6 +560,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.2
+    - 2.0.0
     :when: 2022-10-14 23:37:09.821156462 Z
 - - :approve
   - Microsoft.Extensions.Logging.Configuration
@@ -570,6 +568,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 3.0.0
+    - 2.2.0
     :when: 2022-10-14 23:37:10.225726023 Z
 - - :approve
   - Microsoft.Extensions.Logging.Configuration
@@ -584,6 +583,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 2.2.0
     :when: 2022-10-14 23:37:11.015778545 Z
 - - :approve
   - Microsoft.Extensions.Logging.Debug
@@ -591,6 +591,8 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 2.0.0
+    - 2.2.0
     :when: 2022-10-14 23:37:11.396975779 Z
 - - :approve
   - Microsoft.Extensions.Logging.EventLog
@@ -619,6 +621,7 @@
     :why: Apache-2.0 (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 2.0.0
     :when: 2022-10-14 23:37:12.901607973 Z
 - - :approve
   - Microsoft.Extensions.Options.ConfigurationExtensions
@@ -626,6 +629,8 @@
     :why: Apache-2.0 (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 3.0.0
+    - 2.0.0
+    - 2.2.0
     :when: 2022-10-14 23:37:13.281680374 Z
 - - :approve
   - Microsoft.Extensions.Options.ConfigurationExtensions
@@ -723,6 +728,7 @@
     :why: MICROSOFT .NET LIBRARY License (http://go.microsoft.com/fwlink/?LinkId=329770)
     :versions:
     - 1.1.0
+    - 2.1.2
     :when: 2022-10-14 23:37:18.412134581 Z
 - - :approve
   - Microsoft.NETCore.Platforms
@@ -887,14 +893,10 @@
     :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
     :versions:
     - 2.10.0
-    :when: 2022-10-14 23:37:30.926882753 Z
-- - :approve
-  - Serilog
-  - :who: mocsharp
-    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
-    :versions:
     - 2.12.0
-    :when: 2022-10-14 23:37:31.312837906 Z
+    - 2.8.0
+    :when: 2022-10-14 23:37:30.926882753 Z
+
 - - :approve
   - Serilog.AspNetCore
   - :who: mocsharp
@@ -964,6 +966,21 @@
     :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
     :versions:
     - 5.0.0
+    - 3.2.0
+    :when: 2022-10-14 23:37:35.402868961 Z
+- - :approve
+  - Serilog.Sinks.RollingFile
+  - :who: neildsouth
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
+    :versions:
+    - 3.3.0
+    :when: 2022-10-14 23:37:35.402868961 Z
+- - :approve
+  - Serilog.Sinks.Async
+  - :who: neildsouth
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
+    :versions:
+    - 1.1.0
     :when: 2022-10-14 23:37:35.402868961 Z
 - - :approve
   - Serilog.Sinks.Http
@@ -978,6 +995,7 @@
     :why: MIT (https://github.com/adamhathcock/sharpcompress/raw/master/LICENSE.txt)
     :versions:
     - 0.30.1
+    - 0.23.0
     :when: 2022-10-14 23:37:36.289199068 Z
 - - :approve
   - Snappier
@@ -1125,6 +1143,7 @@
     :why: MICROSOFT .NET LIBRARY License (http://go.microsoft.com/fwlink/?LinkId=329770)
     :versions:
     - 4.3.0
+    - 4.0.12
     :when: 2022-10-14 23:37:44.795018964 Z
 - - :approve
   - System.ComponentModel.Annotations
@@ -1209,6 +1228,7 @@
     :why: MICROSOFT .NET LIBRARY License (http://go.microsoft.com/fwlink/?LinkId=329770)
     :versions:
     - 4.3.0
+    - 4.1.0
     :when: 2022-10-14 23:37:49.133631683 Z
 - - :approve
   - System.Dynamic.Runtime
@@ -1886,6 +1906,7 @@
     :why: MICROSOFT .NET LIBRARY License (http://go.microsoft.com/fwlink/?LinkId=329770)
     :versions:
     - 4.3.0
+    - 4.0.1
     :when: 2022-10-14 23:38:29.841118580 Z
 - - :approve
   - System.ValueTuple
@@ -1893,6 +1914,7 @@
     :why: MIT (https://github.com/dotnet/corefx/raw/master/LICENSE.TXT)
     :versions:
     - 4.4.0
+    - 4.5.0
     :when: 2022-10-14 23:38:30.241703462 Z
 - - :approve
   - System.Xml.ReaderWriter
@@ -2206,13 +2228,6 @@
     - 2.4.5
     :when: 2022-10-14 23:38:48.802854287 Z
 - - :approve
-  - NLog
-  - :who: mocsharp
-    :why: BSD 3-Clause License (https://github.com/NLog/NLog/raw/dev/LICENSE.txt)
-    :versions:
-    - 5.1.0
-    :when: 2022-10-12 03:14:06.538744982 Z
-- - :approve
   - NLog.Extensions.Logging
   - :who: mocsharp
     :why: BSD 2-Clause Simplified License (https://github.com/NLog/NLog.Extensions.Logging/raw/master/LICENSE)
@@ -2305,18 +2320,12 @@
     - 2.18.0
     :when: 2022-11-02 21:44:41.801284907 Z
 - - :approve
-  - MongoDB.Driver
-  - :who: mocsharp
-    :why: Apache-2.0 (https://github.com/mongodb/mongo-csharp-driver/raw/master/License.txt)
-    :versions:
-    - 2.18.0
-    :when: 2022-11-02 21:45:01.214220067 Z
-- - :approve
   - MongoDB.Driver.Core
   - :who: mocsharp
     :why: Apache-2.0 (https://github.com/mongodb/mongo-csharp-driver/raw/master/License.txt)
     :versions:
     - 2.18.0
+    - 2.13.1
     :when: 2022-11-02 21:45:23.777282609 Z
 - - :approve
   - MongoDB.Libmongocrypt
@@ -2324,6 +2333,7 @@
     :why: Apache-2.0 (https://github.com/mongodb/mongo-csharp-driver/raw/master/License.txt)
     :versions:
     - 1.6.0
+    - 1.2.2
     :when: 2022-11-02 21:45:54.431951720 Z
 - - :approve
   - Monai.Deploy.Storage
@@ -2366,3 +2376,70 @@
     :versions:
     - 6.0.3
     :when: 2022-12-02 13:13:13.431951720 Z
+- - :approve
+  - MongoDB.Driver
+  - :who: mocsharp
+    :why: Apache-2.0 (https://github.com/mongodb/mongo-csharp-driver/raw/master/License.txt)
+    :versions:
+    - 2.18.0
+    - 2.13.1
+    :when: 2022-11-02 21:45:01.214220067 Z
+- - :approve
+  - NLog
+  - :who: mocsharp
+    :why: BSD 3-Clause License (https://github.com/NLog/NLog/raw/dev/LICENSE.txt)
+    :versions:
+    - 5.1.0
+    - 4.7.11
+    :when: 2022-10-12 03:14:06.538744982 Z
+- - :approve
+  - Mongo.Migration
+  - :who: neildsouth
+    :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
+    :versions:
+    - 3.1.4
+    :when: 2023-02-02 15:35:00.000000000 Z
+- - :approve
+  - LightInject
+  - :who: neildsouth
+    :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
+    :versions:
+    - 5.4.0
+    :when: 2023-02-02 15:35:00.000000000 Z
+- - :approve
+  - Serilog.Extensions.Logging
+  - :who: neildsouth
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
+    :versions:
+    - 2.0.4
+    :when: 2023-02-02 15:35:00.000000000 Z
+- - :approve
+  - Serilog.Extensions.Logging.File
+  - :who: neildsouth
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
+    :versions:
+    - 2.0.0
+    :when: 2023-02-02 15:35:00.000000000 Z
+- - :approve
+  - Serilog.Formatting.Compact
+  - :who: neildsouth
+    :why: Apache-2.0 (https://github.com/serilog/serilog/raw/dev/LICENSE)
+    :versions:
+    - 1.0.0
+    :when: 2023-02-02 15:35:00.000000000 Z
+
+- - :approve
+  - System.Text.Encoding.CodePages
+  - :who: neildsouth
+    :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
+    :versions:
+    - 4.5.1
+    :when: 2023-02-02 15:35:00.000000000 Z
+
+- - :approve
+  - System.Collections.NonGeneric
+  - :who: neildsouth
+    :why: MICROSOFT .NET LIBRARY License (http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2023-02-02 15:35:00.000000000 Z

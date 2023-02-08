@@ -46,7 +46,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var mongoDatabase = client.GetDatabase(databaseSettings.Value.DatabaseName);
-            _payloadCollection = mongoDatabase.GetCollection<Payload>(databaseSettings.Value.PayloadCollectionName);
+            _payloadCollection = mongoDatabase.GetCollection<Payload>("Payloads");
         }
 
         public Task<long> CountAsync() => CountAsync(_payloadCollection, null);

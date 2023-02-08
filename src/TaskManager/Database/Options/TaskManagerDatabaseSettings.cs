@@ -25,8 +25,5 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database.Options
 
         [ConfigurationKeyName("DatabaseName")]
         public string DatabaseName { get; set; } = null!;
-
-        [ConfigurationKeyName("TaskDispatchEventCollectionName")]
-        public string TaskDispatchEventCollectionName { get; set; } = null!;
     }
 }

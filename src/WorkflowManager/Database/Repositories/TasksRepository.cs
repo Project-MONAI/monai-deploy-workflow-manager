@@ -46,7 +46,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var mongoDatabase = client.GetDatabase(bookStoreDatabaseSettings.Value.DatabaseName);
-            _workflowInstanceCollection = mongoDatabase.GetCollection<WorkflowInstance>(bookStoreDatabaseSettings.Value.WorkflowInstanceCollectionName);
+            _workflowInstanceCollection = mongoDatabase.GetCollection<WorkflowInstance>("WorkflowInstances");
 
             var task = Task.Run(() => EnsureIndex(_workflowInstanceCollection));
             task.Wait();
