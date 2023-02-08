@@ -440,6 +440,56 @@ More info at:
 https://github.com/Project-MONAI/monai-deploy-informatics-gateway/blob/develop/docs/api/rest/config.md
 
 
+## Deploying in Google Kubernetes Engine
+
+Check you have enough GPU quota in the zone you want to deploy. I have
+tested this in europe-west4-a and I had to request to increase the quota
+to 1 nvidia-tesla-a100 GPU.
+
+Create a standard cluster and name it monai-deploy-1
+
+> Note you could create an autopilot cluster, so that GPU nodes are
+deployed automatically. Be aware that autopilot needs as much quota
+as nodes you have multplied by the GPUs you request. With the standard
+autopilot cluster configuration, I was getting 11 nodes, and so it was
+requesting 11 GPUs, which was way higher than my quota.
+
+Configure your cluster:
+
+```gcloud container clusters get-credentials monai-deploy-1```
+
+Check your cluster:
+
+```kubectl cluster-info```
+
+Edit the argo template and add the node selector:
+
+```
+      metadata: {}
+      + nodeSelector:
+      +  cloud.google.com/gke-accelerator: nvidia-tesla-a100
+      container:
+```
+
+Add a node pool and inside that pool a node with 1 GPU.
+
+Install drivers with:
+
+```kubectl apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/master/nvidia-driver-installer/cos/daemonset-preloaded-latest.yaml```
+
+More info at https://cloud.google.com/kubernetes-engine/docs/how-to/gpus#console
+
+Then, you will need a bigger machine for the argo workflows. You need
+to create another pool with one node and this time you can select type
+e2-standard-2.
+
+Now, you can run all the helm and kubectl commands above.
+
+```Warning: Using GKE with GPUs will cost you money, be careful with
+that. ```
+
+
+
 [0] https://drive.google.com/file/d/1d8Scm3q-kHTqr_-KfnXH0rPnCgKld2Iy/view?usp=sharing
 a DICOM dataset that was converted to DICOM from Medical Decathlon
 training and validation images (see https://github.com/Project-MONAI/monai-deploy/tree/main/deploy/monai-deploy-express#running-a-monai-deploy-workflow)
