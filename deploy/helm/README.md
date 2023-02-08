@@ -195,10 +195,13 @@ install the Monai Informatics Gateway.
 
 2. Configure the aeTitle:
 
-``` kubectl exec -ti  mig-monai bash ```
-``` curl --location --request POST 'http://localhost:5000/config/ae/' --header 'Content-Type: application/json'  --data-raw '{ "aeTitle": "MONAISCU", "name": "MONAISCU" }' ```
+```
+MIG=$(kubectl get pods --no-headers -o=name --selector=app.kubernetes.io/instance=mig)
+kubectl exec -ti ${MIG} -- curl --location --request POST 'http://localhost:5000/config/ae/' --header 'Content-Type: application/json'  --data-raw '{ "aeTitle": "MONAISCU", "name": "MONAISCU" }```
+kubectl exec -ti ${MIG} -- curl --location --request POST http://localhost:5000/config/destination --header 'Content-Type: application/json' --data-raw '{"name": "ORTHANC", "hostIp": "orthanc-monai", "port": 4242, "aeTitle": "ORTHANC"}'
 
-Note without this extra step, you will not be able to connect Orthanc.
+Note without this extra step, you will not be able to connect to and from
+Orthanc.
 
 And now is time to install Orthanc, the last piece.
 
@@ -280,7 +283,7 @@ You can still use the REST api.
 
 Select "upload dcm image"
 
-You can use one from .... FIXME
+You can use [0]
 
 ### Send the dcm to MIG
 
@@ -428,5 +431,15 @@ More info at:
 
 https://github.com/Project-MONAI/monai-deploy-informatics-gateway/blob/develop/docs/api/rest/config.md
 
+1- If you see an error in the Informatics Gateway Log that could not
+connect to the destination AE, it is because the Informatics
+Gateway lacks the configuration about ORTHANC as the destination.
+
+More info at:
+
+https://github.com/Project-MONAI/monai-deploy-informatics-gateway/blob/develop/docs/api/rest/config.md
 
 
+[0] https://drive.google.com/file/d/1d8Scm3q-kHTqr_-KfnXH0rPnCgKld2Iy/view?usp=sharing
+a DICOM dataset that was converted to DICOM from Medical Decathlon
+training and validation images (see https://github.com/Project-MONAI/monai-deploy/tree/main/deploy/monai-deploy-express#running-a-monai-deploy-workflow)
