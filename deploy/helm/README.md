@@ -88,7 +88,7 @@ namespace, here you need to use the one you've chosen.
 > :warning: Note the user and password are hard coded inside the yaml
 file.
 
-> :hint: Note we use the -local.yaml file. This is because this is a
+> :bulb: Note we use the -local.yaml file. This is because this is a
 demo and we are not using external storage. On a production environment,
 you should consider using volume claims.
 
@@ -104,7 +104,7 @@ install mongodb.
 > :warning: Note the user and password are hard coded inside the yaml
 file.
 
->: hint: Note we use the -local.yaml file, so storage is not persisted.
+> :bulb: Note we use the -local.yaml file, so storage is not persisted.
 For production, you should consider using volume claims. 
 
 Next, let's install minio, a "like s3" service.
@@ -128,7 +128,7 @@ dependency, which are argo workflows.
 
 ``` helm upgrade -i -n monai -f argo-workflows.yaml argo-workflows argo/argo-workflows ```
 
-> :Warning: Note that we are setting up the authentication method for
+> :warning: Note that we are setting up the authentication method for
 demonstration purposes. You might want to review this for production envs.
 
 You need to have some admin permissions so that new deployments can be
@@ -154,23 +154,25 @@ Now, let's install the Monai Project components.
 
 Easy, right?
 
-> :Hint: If you look at the yaml file, you will notice that we setting
+> :bulb: If you look at the yaml file, you will notice that we setting
 the container image and the tag name to pull. We are using the devel
 image from the github registry. You may want to change that and use a
 more stable release for production environments and even pull t hem from
 a private container registry.
-> :Hint: In the yaml file, you will see that there are the secrets for
+
+> :bulbt: In the yaml file, you will see that there are the secrets for
 mongodb and minio. In case you changed them earlier, you should change
 them as well in this yaml file. Not only the secrets, but also the
 endpoints. The endpoints are the name of the service in your kubernetes
 cluster. You can get this with `kubectl get services`.
-> :Hint: You can see in the yaml file that there is a specific syntax
+
+> :bulb: You can see in the yaml file that there is a specific syntax
 for the configuration environment variables. All configuration variables
 can be overwritten with environment variables in this yaml file. To see
 the list of variables, see the application.settings file in
 src/TaskManager/TaskManager . You will easily guess the syntax ;)
 
-> :Hint: You can see that we are setting the environment variables
+> :waning: You can see that we are setting the environment variables
 `ASPNETCORE_ENVIRONMENT` and `DOTNET_ENVIRONMENT` . This is to enable
 debug messages and tooling. For production environments you should
 change that.
@@ -181,7 +183,7 @@ change that.
 
 ``` helm upgrade -i -n monai -f MWM.yaml mwm . ```
 
-> :Hint: All previous hints warnings in the Monai Task Manager can be
+> All previous :bulb: and :warnings: warnings in the Monai Task Manager can be
 applied.
 
 With the Worfklow Manager installed, there is only one last piece to
@@ -197,8 +199,9 @@ install the Monai Informatics Gateway.
 
 ```
 MIG=$(kubectl get pods --no-headers -o=name --selector=app.kubernetes.io/instance=mig)
-kubectl exec -ti ${MIG} -- curl --location --request POST 'http://localhost:5000/config/ae/' --header 'Content-Type: application/json'  --data-raw '{ "aeTitle": "MONAISCU", "name": "MONAISCU" }```
+kubectl exec -ti ${MIG} -- curl --location --request POST 'http://localhost:5000/config/ae/' --header 'Content-Type: application/json'  --data-raw '{ "aeTitle": "MONAISCU", "name": "MONAISCU" }'
 kubectl exec -ti ${MIG} -- curl --location --request POST http://localhost:5000/config/destination --header 'Content-Type: application/json' --data-raw '{"name": "ORTHANC", "hostIp": "orthanc-monai", "port": 4242, "aeTitle": "ORTHANC"}'
+```
 
 Note without this extra step, you will not be able to connect to and from
 Orthanc.
@@ -211,7 +214,7 @@ And now is time to install Orthanc, the last piece.
 
 ``` helm upgrade -i -n monai -f orthanc.yaml orthanc . ```
 
-> :Warning: As before, note credentials are in the yaml file. You should
+> :warning: As before, note credentials are in the yaml file. You should
 change that for production environments.
 
 Congrats! You have finish the setup! Now let's test it.
@@ -222,7 +225,7 @@ We need to access the orthanc web interface. We can do this by using port-forwar
 
 ```kubectl port-forward services/orthanc-monai 4242:4242 8042:8042```
 
-> :Warning: for production environments, you will need something more
+> :warning: for production environments, you will need something more
 sophisticated, like a load balancer.
 
 Now you can open your browser and point it to `http://127.0.0.1:8042`.
@@ -251,7 +254,7 @@ https://github.com/Project-MONAI/monai-deploy/blob/main/e2e-testing/test-scenari
 Review the namespace that should be one you have setup. If you followed
 the example in this README, it should be "monai".
 
-> :Hint: You could also use curl and use the REST API
+> :bulb: You could also use curl and use the REST API
 
 
 ### Clinical Workflow
@@ -275,7 +278,7 @@ the example in this README, it should be "monai".
 Review the "ae_title" value. If you have followed the example in this
 README, it should be "MONAISCU".
 
-> :Warning: On a production environment swagger won't be available.
+> :warning: On a production environment swagger won't be available.
 You can still use the REST api.
 
 
@@ -308,7 +311,7 @@ If you want to uninstall, just run
 sudo /usr/local/bin/k3s-uninstall.sh
 ```
 
-> :Warning: This will erase everything!
+> :warning: This will erase everything!
 
 
 ## Troubleshooting
@@ -485,7 +488,7 @@ e2-standard-2.
 
 Now, you can run all the helm and kubectl commands above.
 
-```Warning: Using GKE with GPUs will cost you money, be careful with
+```warning: Using GKE with GPUs will cost you money, be careful with
 that. ```
 
 
