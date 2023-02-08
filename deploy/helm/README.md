@@ -488,8 +488,8 @@ e2-standard-2.
 
 Now, you can run all the helm and kubectl commands above.
 
-```warning: Using GKE with GPUs will cost you money, be careful with
-that. ```
+> :warning: Using GKE with GPUs will cost you money, be careful with
+that.
 
 
 
