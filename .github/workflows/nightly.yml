@@ -29,7 +29,9 @@ jobs:
             image: ghcr.io/project-monai/monai-deploy-workflow-manager
           - dockerfile: TaskManager.Dockerfile
             image: ghcr.io/project-monai/monai-deploy-task-manager
-    env: 
+          - dockerfile: CallbackApp.Dockerfile
+            image: ghcr.io/project-monai/monai-deploy-task-manager-callback
+    env:
       REGISTRY: ghcr.io
     permissions:
       packages: write
