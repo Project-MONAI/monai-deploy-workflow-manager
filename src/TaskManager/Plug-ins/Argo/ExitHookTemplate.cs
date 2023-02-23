@@ -53,12 +53,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             _messageFileName = $"{_messageId}.json";
         }
 
-        public Template2 GenerateMessageTemplate(S3Artifact2 artifact)
+        public Template2 GenerateCallbackMessageTemplate(S3Artifact2 artifact)
         {
             var taskUpdateEvent = GenerateTaskCallbackEvent();
             var taskUpdateEventJson = JsonConvert.SerializeObject(taskUpdateEvent);
-            var message = GenerateTaskCallbackMessage();
-            var messageJson = JsonConvert.SerializeObject(JsonConvert.SerializeObject(message)); // serialize the message 2x
 
             return new Template2()
             {
@@ -68,7 +66,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     Parameters = new List<Parameter>()
                     {
                         new Parameter { Name = Strings.ExitHookParameterEvent, Value = taskUpdateEventJson },
-                        new Parameter { Name = Strings.ExitHookParameterMessage, Value = messageJson }
                     }
                 },
                 Container = new Container2
@@ -82,8 +79,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                             {"memory", _options.TaskManager.ArgoPluginArguments.MessageGeneratorContainerMemoryLimit}
                         }
                     },
-                    Command = new List<string> { "/bin/sh", "-c" },
-                    Args = new List<string> { $"echo \"{{{{inputs.parameters.message}}}}\" > {Strings.ExitHookOutputPath}{_messageFileName}; cat {Strings.ExitHookOutputPath}{_messageFileName};" }
+                    Command = new List<string> { "python" },
+                    Args = new List<string> {
+                        "/app/app.py",
+                        "--host", _messagingEndpoint,
+                        "--username", _messagingUsername,
+                        "--password", _messagingPassword,
+                        "--vhost", _messagingVhost,
+                        "--exchange", _messagingExchange,
+                        "--topic", _messagingTopic,
+                        "--correlationId", _taskDispatchEvent.CorrelationId,
+                        "--message", "{{inputs.parameters.event}}"
+                        }
                 },
                 PodSpecPatch = "{\"initContainers\":[{\"name\":\"init\",\"resources\":{\"limits\":{\"cpu\":\"" + _options.TaskManager.ArgoPluginArguments.InitContainerCpuLimit + "\",\"memory\": \"" + _options.TaskManager.ArgoPluginArguments.InitContainerMemoryLimit + "\"},\"requests\":{\"cpu\":\"0\",\"memory\":\"0Mi\"}}}],\"containers\":[{\"name\":\"wait\",\"resources\":{\"limits\":{\"cpu\":\"" + _options.TaskManager.ArgoPluginArguments.WaitContainerCpuLimit + "\",\"memory\":\"" + _options.TaskManager.ArgoPluginArguments.WaitContainerMemoryLimit + "\"},\"requests\":{\"cpu\":\"0\",\"memory\":\"0Mi\"}}}]}",
                 Outputs = new Outputs
@@ -115,71 +122,5 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 Identity = "{{workflow.name}}",
                 Outputs = _taskDispatchEvent.Outputs ?? new List<Messaging.Common.Storage>()
             };
-
-        private object GenerateTaskCallbackMessage() =>
-             new
-             {
-                 ContentType = Strings.ContentTypeJson,
-                 CorrelationID = _taskDispatchEvent.CorrelationId,
-                 MessageID = _messageId.ToString(),
-                 Type = nameof(TaskCallbackEvent),
-                 AppID = Strings.ApplicationId,
-                 Exchange = _messagingExchange,
-                 RoutingKey = _messagingTopic,
-                 DeliveryMode = 2,
-                 Body = "{{=sprig.b64enc(inputs.parameters.event)}}"
-             };
-
-        public Template2 GenerateSendTemplate(S3Artifact2 artifact)
-        {
-            var copyOfArtifact = new S3Artifact2
-            {
-                AccessKeySecret = artifact.AccessKeySecret,
-                Bucket = artifact.Bucket,
-                Endpoint = artifact.Endpoint,
-                Insecure = artifact.Insecure,
-                Key = $"{artifact.Key}/{_messageFileName}",
-                SecretKeySecret = artifact.SecretKeySecret,
-            };
-
-            return new Template2()
-            {
-                Name = Strings.ExitHookTemplateSendTemplateName,
-                Inputs = new Inputs
-                {
-                    Artifacts = new List<Artifact>()
-                    {
-                        new Artifact
-                        {
-                            Name = "message",
-                            Path  = $"{Strings.ExitHookOutputPath}{_messageFileName}",
-                            Archive = new ArchiveStrategy
-                            {
-                                None = new NoneStrategy()
-                            },
-                            S3 = copyOfArtifact
-                        }
-                    }
-                },
-                Container = new Container2
-                {
-                    Image = _options.TaskManager.ArgoExitHookSendMessageContainerImage,
-                    Resources = new ResourceRequirements
-                    {
-                        Limits = new Dictionary<string, string>{ {"cpu", _options.TaskManager.ArgoPluginArguments.MessageSenderContainerCpuLimit}, {"memory", _options.TaskManager.ArgoPluginArguments.MessageSenderContainerMemoryLimit} }
-                    },
-                    Command = new List<string> { "/rabtap" },
-                    Args = new List<string> {
-                        "pub",
-                        $"--uri=amqp://{_messagingUsername}:{_messagingPassword}@{_messagingEndpoint}/{_messagingVhost}",
-                        "--format=json",
-                        $"{Strings.ExitHookOutputPath}{_messageFileName}",
-                        "--delay=0s",
-                        "--confirms",
-                        "--mandatory" }
-                },
-                PodSpecPatch = "{\"initContainers\":[{\"name\":\"init\",\"resources\":{\"limits\":{\"cpu\":\"" + _options.TaskManager.ArgoPluginArguments.InitContainerCpuLimit + "\",\"memory\": \"" + _options.TaskManager.ArgoPluginArguments.InitContainerMemoryLimit + "\"},\"requests\":{\"cpu\":\"0\",\"memory\":\"0Mi\"}}}],\"containers\":[{\"name\":\"wait\",\"resources\":{\"limits\":{\"cpu\":\"" + _options.TaskManager.ArgoPluginArguments.WaitContainerCpuLimit + "\",\"memory\":\"" + _options.TaskManager.ArgoPluginArguments.WaitContainerMemoryLimit + "\"},\"requests\":{\"cpu\":\"0\",\"memory\":\"0Mi\"}}}]}",
-            };
-        }
     }
 }

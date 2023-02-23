@@ -541,15 +541,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                             Name = Strings.ExitHookTemplateGenerateTemplateName,
                             Template = Strings.ExitHookTemplateGenerateTemplateName,
                         }
-                    },
-
-                    new ParallelSteps()
-                    {
-                        new WorkflowStep()
-                        {
-                            Name = Strings.ExitHookTemplateSendTemplateName,
-                            Template = Strings.ExitHookTemplateSendTemplateName,
-                        }
                     }
                 }
             };
@@ -559,8 +550,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             var artifact = await CreateArtifact(temporaryStore, cancellationToken).ConfigureAwait(false);
 
             var exitHookTemplate = new ExitHookTemplate(_options.Value, Event);
-            workflow.Spec.Templates.Add(exitHookTemplate.GenerateMessageTemplate(artifact));
-            workflow.Spec.Templates.Add(exitHookTemplate.GenerateSendTemplate(artifact));
+            workflow.Spec.Templates.Add(exitHookTemplate.GenerateCallbackMessageTemplate(artifact));
         }
 
         private async Task<WorkflowTemplate> LoadWorkflowTemplate(string workflowTemplateName)
