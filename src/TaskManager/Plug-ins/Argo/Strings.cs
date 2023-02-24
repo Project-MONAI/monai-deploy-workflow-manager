@@ -32,7 +32,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         public const string ExitHook = "exit";
         public const string ExitHookTemplateName = "exit-message-template";
-        public const string ExitHookTemplateGenerateTemplateName = "generate-message";
         public const string ExitHookTemplateSendTemplateName = "send-message";
         public const string ExitHookParameterEvent = "event";
         public const string ExitHookGenerateMessageContainerImage = "monai-deploy-task-manager-callback:1.0";

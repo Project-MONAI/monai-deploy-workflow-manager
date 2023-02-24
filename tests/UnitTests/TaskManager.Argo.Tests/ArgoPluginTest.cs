@@ -683,11 +683,8 @@ public class ArgoPluginTest
         var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
 
         Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
-        Assert.Equal(_messageGeneratorContainerCpuLimit, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateGenerateTemplateName).Container.Resources.Limits["cpu"]);
-        Assert.Equal(_messageGeneratorContainerMemoryLimit, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateGenerateTemplateName).Container.Resources.Limits["memory"]);
-        Assert.Equal(expectedPodSpecPatch, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateGenerateTemplateName).PodSpecPatch);
-        Assert.Equal(_messageSenderContainerCpuLimit, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).Container.Resources.Limits["cpu"]);
-        Assert.Equal(_messageSenderContainerMemoryLimit, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).Container.Resources.Limits["memory"]);
+        Assert.Equal(_messageGeneratorContainerCpuLimit, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).Container.Resources.Limits["cpu"]);
+        Assert.Equal(_messageGeneratorContainerMemoryLimit, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).Container.Resources.Limits["memory"]);
         Assert.Equal(expectedPodSpecPatch, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).PodSpecPatch);
     }
 

@@ -60,7 +60,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             return new Template2()
             {
-                Name = Strings.ExitHookTemplateGenerateTemplateName,
+                Name = Strings.ExitHookTemplateSendTemplateName,
                 Inputs = new Inputs
                 {
                     Parameters = new List<Parameter>()

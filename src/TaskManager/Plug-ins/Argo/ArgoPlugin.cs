@@ -538,8 +538,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     {
                         new WorkflowStep()
                         {
-                            Name = Strings.ExitHookTemplateGenerateTemplateName,
-                            Template = Strings.ExitHookTemplateGenerateTemplateName,
+                            Name = Strings.ExitHookTemplateSendTemplateName,
+                            Template = Strings.ExitHookTemplateSendTemplateName,
                         }
                     }
                 }
