@@ -4,6 +4,7 @@
   - :who: mocsharp
     :why: Apache-2.0 (http://aws.amazon.com/apache2.0/)
     :versions:
+    - 3.7.100.6
     - 3.7.100.14
     :when: 2022-10-14 23:36:39.233755632 Z
 - - :approve
@@ -11,6 +12,7 @@
   - :who: mocsharp
     :why: Apache-2.0 (http://aws.amazon.com/apache2.0/)
     :versions:
+    - 3.7.100.6
     - 3.7.100.14
     :when: 2022-10-14 23:36:39.628260680 Z
 - - :approve
