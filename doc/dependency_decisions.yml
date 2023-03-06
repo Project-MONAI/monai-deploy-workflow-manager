@@ -4,14 +4,14 @@
   - :who: mocsharp
     :why: Apache-2.0 (http://aws.amazon.com/apache2.0/)
     :versions:
-    - 3.7.100.6
+    - 3.7.100.14
     :when: 2022-10-14 23:36:39.233755632 Z
 - - :approve
   - AWSSDK.SecurityToken
   - :who: mocsharp
     :why: Apache-2.0 (http://aws.amazon.com/apache2.0/)
     :versions:
-    - 3.7.100.6
+    - 3.7.100.14
     :when: 2022-10-14 23:36:39.628260680 Z
 - - :approve
   - Ardalis.GuardClauses
@@ -2314,27 +2314,27 @@
     :when: 2022-11-02 21:44:06.994266372 Z
 - - :approve
   - MongoDB.Bson
-  - :who: mocsharp
+  - :who: nsouth
     :why: Apache-2.0 (https://github.com/mongodb/mongo-csharp-driver/raw/master/License.txt)
     :versions:
-    - 2.18.0
-    :when: 2022-11-02 21:44:41.801284907 Z
+    - 2.19.0
+    :when: 2023-03-03 10:37:41.801284907 Z
 - - :approve
   - MongoDB.Driver.Core
-  - :who: mocsharp
+  - :who: nsouth
     :why: Apache-2.0 (https://github.com/mongodb/mongo-csharp-driver/raw/master/License.txt)
     :versions:
-    - 2.18.0
+    - 2.19.0
     - 2.13.1
-    :when: 2022-11-02 21:45:23.777282609 Z
+    :when: 2023-03-03 10:37:41.801284907 Z
 - - :approve
   - MongoDB.Libmongocrypt
-  - :who: mocsharp
+  - :who: nsouth
     :why: Apache-2.0 (https://github.com/mongodb/mongo-csharp-driver/raw/master/License.txt)
     :versions:
-    - 1.6.0
+    - 1.7.0
     - 1.2.2
-    :when: 2022-11-02 21:45:54.431951720 Z
+    :when: 2023-03-03 10:37:41.801284907 Z
 - - :approve
   - Monai.Deploy.Storage
   - :who: RemakingEden
@@ -2378,12 +2378,12 @@
     :when: 2022-12-02 13:13:13.431951720 Z
 - - :approve
   - MongoDB.Driver
-  - :who: mocsharp
+  - :who: nsouth
     :why: Apache-2.0 (https://github.com/mongodb/mongo-csharp-driver/raw/master/License.txt)
     :versions:
-    - 2.18.0
+    - 2.19.0
     - 2.13.1
-    :when: 2022-11-02 21:45:01.214220067 Z
+    :when: 2023-03-03 10:37:41.801284907 Z
 - - :approve
   - NLog
   - :who: mocsharp
