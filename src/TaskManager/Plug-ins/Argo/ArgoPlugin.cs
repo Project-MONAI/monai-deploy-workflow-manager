@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -538,15 +538,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     {
                         new WorkflowStep()
                         {
-                            Name = Strings.ExitHookTemplateGenerateTemplateName,
-                            Template = Strings.ExitHookTemplateGenerateTemplateName,
-                        }
-                    },
-
-                    new ParallelSteps()
-                    {
-                        new WorkflowStep()
-                        {
                             Name = Strings.ExitHookTemplateSendTemplateName,
                             Template = Strings.ExitHookTemplateSendTemplateName,
                         }
@@ -559,8 +550,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             var artifact = await CreateArtifact(temporaryStore, cancellationToken).ConfigureAwait(false);
 
             var exitHookTemplate = new ExitHookTemplate(_options.Value, Event);
-            workflow.Spec.Templates.Add(exitHookTemplate.GenerateMessageTemplate(artifact));
-            workflow.Spec.Templates.Add(exitHookTemplate.GenerateSendTemplate(artifact));
+            workflow.Spec.Templates.Add(exitHookTemplate.GenerateCallbackMessageTemplate(artifact));
         }
 
         private async Task<WorkflowTemplate> LoadWorkflowTemplate(string workflowTemplateName)

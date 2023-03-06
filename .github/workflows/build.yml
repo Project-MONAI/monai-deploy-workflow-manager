@@ -33,6 +33,8 @@ jobs:
             image: ghcr.io/project-monai/monai-deploy-workflow-manager
           - dockerfile: TaskManager.Dockerfile
             image: ghcr.io/project-monai/monai-deploy-task-manager
+          - dockerfile: CallbackApp.Dockerfile
+            image: ghcr.io/project-monai/monai-deploy-task-manager-callback
     outputs:
       semVer: ${{ steps.gitversion.outputs.semVer }}
       majorMinorPatch: ${{ steps.gitversion.outputs.majorMinorPatch }}
