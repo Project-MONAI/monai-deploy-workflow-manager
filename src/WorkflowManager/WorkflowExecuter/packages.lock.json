@@ -132,8 +132,8 @@
       },
       "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": {
         "type": "Transitive",
-        "resolved": "6.0.12",
-        "contentHash": "7GN8C+pcaIBMDQA6OOgBEWT+1Y/OhZTxzovNXIxxBsfU4xI7bmjez5321ya5rN2NbJXUmStNnJics78RkPQO4w=="
+        "resolved": "6.0.14",
+        "contentHash": "5QAO6QADZLRKFBDwMR34LtxPxTLmxEwG4OLFGgncvvIiTx8OjezILov4RFStCyzrqUvtlq6VJ88y9DnfgjAjNw=="
       },
       "Microsoft.Extensions.FileProviders.Abstractions": {
         "type": "Transitive",
@@ -775,7 +775,7 @@
         "type": "Project",
         "dependencies": {
           "Ardalis.GuardClauses": "[4.0.1, )",
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.10, )"
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.14, )"
         }
       },
       "monai.deploy.workflowmanager.storage": {

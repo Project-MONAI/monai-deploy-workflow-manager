@@ -18,9 +18,9 @@
       },
       "Microsoft.Extensions.ApiDescription.Client": {
         "type": "Direct",
-        "requested": "[6.0.10, )",
-        "resolved": "6.0.10",
-        "contentHash": "FcXKNXSaSItFDpbPpYfkv8C/29rIociSPShNb5BYPB/EOcIXkA5GJO7cvU3tZdJzQ9uvBk6r5qMNwl09fSw1AQ=="
+        "requested": "[6.0.14, )",
+        "resolved": "6.0.14",
+        "contentHash": "CS3Zr5RAj4HHAXEGHXLjb/RbrxJgLAyTrkOXkvqS8C/afiSf3CAcC+7nhVKCq7Abn8A2FxtBVNg4jTtwQuGi5A=="
       },
       "Ardalis.GuardClauses": {
         "type": "Transitive",

@@ -29,12 +29,12 @@
       },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
-        "requested": "[17.3.2, )",
-        "resolved": "17.3.2",
-        "contentHash": "apR0ha1T8FujBwq1P8i/DOZjbI5XhcP/i8As4NnVztVSpZG8GtWRPCstcmgkUkBpvEfcrrDPlJWbuZY+Hl1hSg==",
+        "requested": "[17.5.0, )",
+        "resolved": "17.5.0",
+        "contentHash": "IJ4eSPcsRbwbAZehh1M9KgejSy0u3d0wAdkJytfCh67zOaCl5U3ltruUEe15MqirdRqGmm/ngbjeaVeGapSZxg==",
         "dependencies": {
-          "Microsoft.CodeCoverage": "17.3.2",
-          "Microsoft.TestPlatform.TestHost": "17.3.2"
+          "Microsoft.CodeCoverage": "17.5.0",
+          "Microsoft.TestPlatform.TestHost": "17.5.0"
         }
       },
       "Moq": {
@@ -193,8 +193,8 @@
       },
       "Microsoft.AspNetCore.JsonPatch": {
         "type": "Transitive",
-        "resolved": "6.0.10",
-        "contentHash": "d/TRLC4nrlkMZChda9swuv1zKn33yXVxy5xz6CEaSPelpiLQXV5oCjN5zot6MF4TGDuf5N2px75j2rUghkkW6Q==",
+        "resolved": "6.0.14",
+        "contentHash": "rX4pfSKnDErxnpcJrQ/PruPa64LjdkEl1nBvC587XRANzHOaLrUu9pAbZmqBYUn5Yq9xKd5Sg+95Ev+f84iiQw==",
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
           "Newtonsoft.Json": "13.0.1"
@@ -202,18 +202,18 @@
       },
       "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
         "type": "Transitive",
-        "resolved": "6.0.10",
-        "contentHash": "ok09jxzJ57s63dQtzlMGPAo4w3pTR3zZoNp0bTT0J4rKJgoJz8uhBHzr6PeCnRNWAOu0nm0b1irg5LhSDwEOBQ==",
+        "resolved": "6.0.14",
+        "contentHash": "blMa3cqHH2f/9DETvUZpVLVid5vNKjm5vbQbdLEg7h3RQ6XWphHeKZrR7MauGVnwUbNaBCzxxFMcDl2YeAlxdg==",
         "dependencies": {
-          "Microsoft.AspNetCore.JsonPatch": "6.0.10",
+          "Microsoft.AspNetCore.JsonPatch": "6.0.14",
           "Newtonsoft.Json": "13.0.1",
           "Newtonsoft.Json.Bson": "1.0.2"
         }
       },
       "Microsoft.CodeCoverage": {
         "type": "Transitive",
-        "resolved": "17.3.2",
-        "contentHash": "+CeYNY9hYNRgv1wAID5koeDVob1ZOrOYfRRTLxU9Zm5ZMDMkMZ8wzXgakxVv+jtk8tPdE8Ze9vVE+czMKapv/Q=="
+        "resolved": "17.5.0",
+        "contentHash": "6FQo0O6LKDqbCiIgVQhJAf810HSjFlOj7FunWaeOGDKxy8DAbpHzPk4SfBTXz9ytaaceuIIeR6hZgplt09m+ig=="
       },
       "Microsoft.CSharp": {
         "type": "Transitive",
@@ -330,8 +330,8 @@
       },
       "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": {
         "type": "Transitive",
-        "resolved": "6.0.12",
-        "contentHash": "7GN8C+pcaIBMDQA6OOgBEWT+1Y/OhZTxzovNXIxxBsfU4xI7bmjez5321ya5rN2NbJXUmStNnJics78RkPQO4w=="
+        "resolved": "6.0.14",
+        "contentHash": "5QAO6QADZLRKFBDwMR34LtxPxTLmxEwG4OLFGgncvvIiTx8OjezILov4RFStCyzrqUvtlq6VJ88y9DnfgjAjNw=="
       },
       "Microsoft.Extensions.FileProviders.Abstractions": {
         "type": "Transitive",
@@ -562,8 +562,8 @@
       },
       "Microsoft.TestPlatform.ObjectModel": {
         "type": "Transitive",
-        "resolved": "17.3.2",
-        "contentHash": "DJEIfSA2GDC+2m42vKGNR2hm+Uhta4SpCsLZVVvYIiYMjxtk7GzNnv82qvE4SCW3kIYllMg2D0rr8juuj/f7AA==",
+        "resolved": "17.5.0",
+        "contentHash": "QwiBJcC/oEA1kojOaB0uPWOIo4i6BYuTBBYJVhUvmXkyYqZ2Ut/VZfgi+enf8LF8J4sjO98oRRFt39MiRorcIw==",
         "dependencies": {
           "NuGet.Frameworks": "5.11.0",
           "System.Reflection.Metadata": "1.6.0"
@@ -571,11 +571,11 @@
       },
       "Microsoft.TestPlatform.TestHost": {
         "type": "Transitive",
-        "resolved": "17.3.2",
-        "contentHash": "113J19v31pIx+PzmdEw67cWTZWh/YApnprbclFeat6szNbnpKOKG7Ap4PX5LT6E5Da+xONyilxvx2HZPpEaXPQ==",
+        "resolved": "17.5.0",
+        "contentHash": "X86aikwp9d4SDcBChwzQYZihTPGEtMdDk+9t64emAl7N0Tq+OmlLAoW+Rs+2FB2k6QdUicSlT4QLO2xABRokaw==",
         "dependencies": {
-          "Microsoft.TestPlatform.ObjectModel": "17.3.2",
-          "Newtonsoft.Json": "9.0.1"
+          "Microsoft.TestPlatform.ObjectModel": "17.5.0",
+          "Newtonsoft.Json": "13.0.1"
         }
       },
       "Microsoft.Win32.Registry": {
@@ -1647,7 +1647,7 @@
         "type": "Project",
         "dependencies": {
           "AspNetCore.HealthChecks.MongoDb": "[6.0.2, )",
-          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "[6.0.10, )",
+          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "[6.0.14, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[6.0.0, )",
           "Microsoft.Extensions.Hosting": "[6.0.1, )",
           "Microsoft.Extensions.Options": "[6.0.0, )",
@@ -1740,7 +1740,7 @@
         "type": "Project",
         "dependencies": {
           "Ardalis.GuardClauses": "[4.0.1, )",
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.10, )"
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.14, )"
         }
       },
       "monai.deploy.workflowmanager.storage": {

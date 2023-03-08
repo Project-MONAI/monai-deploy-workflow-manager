@@ -14,11 +14,11 @@
       },
       "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
         "type": "Direct",
-        "requested": "[6.0.10, )",
-        "resolved": "6.0.10",
-        "contentHash": "ok09jxzJ57s63dQtzlMGPAo4w3pTR3zZoNp0bTT0J4rKJgoJz8uhBHzr6PeCnRNWAOu0nm0b1irg5LhSDwEOBQ==",
+        "requested": "[6.0.14, )",
+        "resolved": "6.0.14",
+        "contentHash": "blMa3cqHH2f/9DETvUZpVLVid5vNKjm5vbQbdLEg7h3RQ6XWphHeKZrR7MauGVnwUbNaBCzxxFMcDl2YeAlxdg==",
         "dependencies": {
-          "Microsoft.AspNetCore.JsonPatch": "6.0.10",
+          "Microsoft.AspNetCore.JsonPatch": "6.0.14",
           "Newtonsoft.Json": "13.0.1",
           "Newtonsoft.Json.Bson": "1.0.2"
         }
@@ -341,8 +341,8 @@
       },
       "Microsoft.AspNetCore.JsonPatch": {
         "type": "Transitive",
-        "resolved": "6.0.10",
-        "contentHash": "d/TRLC4nrlkMZChda9swuv1zKn33yXVxy5xz6CEaSPelpiLQXV5oCjN5zot6MF4TGDuf5N2px75j2rUghkkW6Q==",
+        "resolved": "6.0.14",
+        "contentHash": "rX4pfSKnDErxnpcJrQ/PruPa64LjdkEl1nBvC587XRANzHOaLrUu9pAbZmqBYUn5Yq9xKd5Sg+95Ev+f84iiQw==",
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
           "Newtonsoft.Json": "13.0.1"
@@ -454,8 +454,8 @@
       },
       "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": {
         "type": "Transitive",
-        "resolved": "6.0.12",
-        "contentHash": "7GN8C+pcaIBMDQA6OOgBEWT+1Y/OhZTxzovNXIxxBsfU4xI7bmjez5321ya5rN2NbJXUmStNnJics78RkPQO4w=="
+        "resolved": "6.0.14",
+        "contentHash": "5QAO6QADZLRKFBDwMR34LtxPxTLmxEwG4OLFGgncvvIiTx8OjezILov4RFStCyzrqUvtlq6VJ88y9DnfgjAjNw=="
       },
       "Microsoft.Extensions.FileProviders.Abstractions": {
         "type": "Transitive",
@@ -1559,7 +1559,7 @@
         "type": "Project",
         "dependencies": {
           "Ardalis.GuardClauses": "[4.0.1, )",
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.10, )"
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.14, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.aideclinicalreview": {
