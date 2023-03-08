@@ -70,7 +70,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 },
                 Container = new Container2
                 {
-                    Image = Strings.ExitHookGenerateMessageContainerImage,
+                    Image = _options.TaskManager.ArgoExitHookSendMessageContainerImage,
                     Resources = new ResourceRequirements
                     {
                         Limits = new Dictionary<string, string>
