@@ -13,9 +13,9 @@
       },
       "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": {
         "type": "Direct",
-        "requested": "[6.0.10, )",
-        "resolved": "6.0.10",
-        "contentHash": "U1PO967am1BIWbxBiLcYzVx8KOTYa9NvhBNgTn8Oii3LcsjvIwHzM+GTYy6bTiHnAFAlK5HAjxusAnAHSHJRoA=="
+        "requested": "[6.0.14, )",
+        "resolved": "6.0.14",
+        "contentHash": "5QAO6QADZLRKFBDwMR34LtxPxTLmxEwG4OLFGgncvvIiTx8OjezILov4RFStCyzrqUvtlq6VJ88y9DnfgjAjNw=="
       },
       "JetBrains.Annotations": {
         "type": "Transitive",
