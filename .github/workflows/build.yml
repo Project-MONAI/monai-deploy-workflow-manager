@@ -74,7 +74,7 @@ jobs:
       - name: Extract metadata (tags, labels) for Docker
         if: ${{ !contains(github.ref, 'refs/heads/main') }}
         id: meta
-        uses: docker/metadata-action@v4.1.1
+        uses: docker/metadata-action@v4.3.0
         with:
           images: ${{ matrix.image }}
           tags: |
@@ -158,7 +158,7 @@ jobs:
           dotnet-version: "6.0.x"
 
       - name: Enable NuGet cache
-        uses: actions/cache@v3.0.11
+        uses: actions/cache@v3.2.6
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -195,7 +195,7 @@ jobs:
           Get-ChildItem ~\release -Recurse
 
       - name: Upload docs
-        uses: actions/upload-artifact@v3.1.1
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: artifacts
           path: ~/release
