@@ -70,13 +70,13 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.19, )",
-        "resolved": "0.1.19",
-        "contentHash": "XP9AFsjbYsv8xGc5yTSE1SL6zuBoNZJQx/GGEd/NLwl+YiaCZA7MfHrnGp7wz9Me03+nlyGpLEiKlSVljpCXtg==",
+        "requested": "[0.1.20, )",
+        "resolved": "0.1.20",
+        "contentHash": "du9oxFRvtTeBBGiErXbbXBPonFIP9WE46SPqN9YvH9K9Sf+vUpI/VQWDL4vafqQCF0HNnU1MnHOJGsD0l9s2CQ==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.11",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.12",
           "Microsoft.Extensions.Logging": "6.0.0",
           "Newtonsoft.Json": "13.0.2",
           "System.ComponentModel.Annotations": "5.0.0",
@@ -85,11 +85,11 @@
       },
       "Monai.Deploy.Messaging.RabbitMQ": {
         "type": "Direct",
-        "requested": "[0.1.19, )",
-        "resolved": "0.1.19",
-        "contentHash": "o4eq4yHUQ/vZnYbT2aWlhIvtAtTdPTHqo5jR0wpl6xmebKidB3RGIq6lqX6fbzBjByUYzzA2AzNoCPykL56NkA==",
+        "requested": "[0.1.20, )",
+        "resolved": "0.1.20",
+        "contentHash": "Wq0SNUBq4wP42FoBzxJmCYJBQ399GqYHG70oXCNCAG2/Dhx7DWK4BmnQu1M0b+WfdHlLB2uA5/ry5zj5L4VaeA==",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.19",
+          "Monai.Deploy.Messaging": "0.1.20",
           "Polly": "7.2.3",
           "RabbitMQ.Client": "6.4.0",
           "System.Collections.Concurrent": "4.3.0"
@@ -170,17 +170,17 @@
       },
       "NLog": {
         "type": "Direct",
-        "requested": "[5.1.0, )",
-        "resolved": "5.1.0",
-        "contentHash": "oW7ekrkRG9okpDMUcEglunWj8Qf2RY8qkgl+/chJoavzg3dbT13y32t19R54FKkmq80fKzw4ZekZkCrRGanKgQ=="
+        "requested": "[5.1.2, )",
+        "resolved": "5.1.2",
+        "contentHash": "JfQY93ure3IPVTN3eabBewBGvrcXcWIlaesFEXdy5UzIymfIT9yCgLISYtM0cOhjWziIaUr/6Z9NC2RwtjwrsQ=="
       },
       "NLog.Web.AspNetCore": {
         "type": "Direct",
-        "requested": "[5.2.0, )",
-        "resolved": "5.2.0",
-        "contentHash": "DqFgdydAWW+pshPdzh0ydk2jJrrVaZmBNz5+p9K8N9q/4BOPJ94S2fD8t9erd7ZMhnigaqOq/HqZH4nGGOYTbA==",
+        "requested": "[5.2.2, )",
+        "resolved": "5.2.2",
+        "contentHash": "0Qa6V7LXgbWNxYdZDLcQz/TjGrSfx32XThxAL+xoAtjplC2uCIhy27WiMIjznuMAJR3zjElIiYzMmPSsQ4LZSQ==",
         "dependencies": {
-          "NLog.Extensions.Logging": "5.2.0"
+          "NLog.Extensions.Logging": "5.2.2"
         }
       },
       "StyleCop.Analyzers": {
@@ -191,14 +191,14 @@
       },
       "Swashbuckle.AspNetCore": {
         "type": "Direct",
-        "requested": "[6.4.0, )",
-        "resolved": "6.4.0",
-        "contentHash": "eUBr4TW0up6oKDA5Xwkul289uqSMgY0xGN4pnbOIBqCcN9VKGGaPvHX3vWaG/hvocfGDP+MGzMA0bBBKz2fkmQ==",
+        "requested": "[6.5.0, )",
+        "resolved": "6.5.0",
+        "contentHash": "FK05XokgjgwlCI6wCT+D4/abtQkL1X1/B9Oas6uIwHFmYrIO9WUD5aLC9IzMs9GnHfUXOtXZ2S43gN1mhs5+aA==",
         "dependencies": {
           "Microsoft.Extensions.ApiDescription.Server": "6.0.5",
-          "Swashbuckle.AspNetCore.Swagger": "6.4.0",
-          "Swashbuckle.AspNetCore.SwaggerGen": "6.4.0",
-          "Swashbuckle.AspNetCore.SwaggerUI": "6.4.0"
+          "Swashbuckle.AspNetCore.Swagger": "6.5.0",
+          "Swashbuckle.AspNetCore.SwaggerGen": "6.5.0",
+          "Swashbuckle.AspNetCore.SwaggerUI": "6.5.0"
         }
       },
       "Ardalis.GuardClauses": {
@@ -403,10 +403,10 @@
       },
       "Microsoft.Extensions.Diagnostics.HealthChecks": {
         "type": "Transitive",
-        "resolved": "6.0.11",
-        "contentHash": "E6HxKQvrm0AeDagW6w+CsyVfXAO/pscrbX6mQ+XnThdwkeTxi0cnuXDTiTmd+WSmofSfpBKOS0VlvHUOxskdLQ==",
+        "resolved": "6.0.12",
+        "contentHash": "TdsjGYOHDg8656T2tWHUXNkYFUFstL/L9GEjboasuAetubH52yHkNpQV6WuqA6BpbfZHZj8xwKqN7aL7ZWO1Rg==",
         "dependencies": {
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "6.0.11",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "6.0.12",
           "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.3",
           "Microsoft.Extensions.Options": "6.0.0"
@@ -414,8 +414,8 @@
       },
       "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": {
         "type": "Transitive",
-        "resolved": "6.0.11",
-        "contentHash": "MQS7GE1ux7Lo1yOr59M7ZTEoFY3GJ9hHkxXQnQc8EPxkt5S7cX4qe6djSWH+mk9qQan+AjFZzdC1x5Af5IaseA=="
+        "resolved": "6.0.12",
+        "contentHash": "7GN8C+pcaIBMDQA6OOgBEWT+1Y/OhZTxzovNXIxxBsfU4xI7bmjez5321ya5rN2NbJXUmStNnJics78RkPQO4w=="
       },
       "Microsoft.Extensions.FileProviders.Abstractions": {
         "type": "Transitive",
@@ -697,12 +697,12 @@
       },
       "NLog.Extensions.Logging": {
         "type": "Transitive",
-        "resolved": "5.2.0",
-        "contentHash": "wzVFG5p8Nwbs1Ws29T8YJg+UbJfsh61h6U4xArnDSrtVvOoccwKtoFPZWwbym3ZTiTFmHIf7Ugu1j/WnT7z3vg==",
+        "resolved": "5.2.2",
+        "contentHash": "V6sd+0Hrk2XlU//XbUizFYTE8Hf8+xFkhi81shIhsKl4tvWFUYmjBY/zBy/wlQCt0K6mfseaEKnayRJVhIz5Iw==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
           "Microsoft.Extensions.Logging": "6.0.0",
-          "NLog": "5.1.0"
+          "NLog": "5.1.2"
         }
       },
       "Polly": {
@@ -903,24 +903,24 @@
       },
       "Swashbuckle.AspNetCore.Swagger": {
         "type": "Transitive",
-        "resolved": "6.4.0",
-        "contentHash": "nl4SBgGM+cmthUcpwO/w1lUjevdDHAqRvfUoe4Xp/Uvuzt9mzGUwyFCqa3ODBAcZYBiFoKvrYwz0rabslJvSmQ==",
+        "resolved": "6.5.0",
+        "contentHash": "XWmCmqyFmoItXKFsQSwQbEAsjDKcxlNf1l+/Ki42hcb6LjKL8m5Db69OTvz5vLonMSRntYO1XLqz0OP+n3vKnA==",
         "dependencies": {
           "Microsoft.OpenApi": "1.2.3"
         }
       },
       "Swashbuckle.AspNetCore.SwaggerGen": {
         "type": "Transitive",
-        "resolved": "6.4.0",
-        "contentHash": "lXhcUBVqKrPFAQF7e/ZeDfb5PMgE8n5t6L5B6/BQSpiwxgHzmBcx8Msu42zLYFTvR5PIqE9Q9lZvSQAcwCxJjw==",
+        "resolved": "6.5.0",
+        "contentHash": "Y/qW8Qdg9OEs7V013tt+94OdPxbRdbhcEbw4NiwGvf4YBcfhL/y7qp/Mjv/cENsQ2L3NqJ2AOu94weBy/h4KvA==",
         "dependencies": {
-          "Swashbuckle.AspNetCore.Swagger": "6.4.0"
+          "Swashbuckle.AspNetCore.Swagger": "6.5.0"
         }
       },
       "Swashbuckle.AspNetCore.SwaggerUI": {
         "type": "Transitive",
-        "resolved": "6.4.0",
-        "contentHash": "1Hh3atb3pi8c+v7n4/3N80Jj8RvLOXgWxzix6w3OZhB7zBGRwsy7FWr4e3hwgPweSBpwfElqj4V4nkjYabH9nQ=="
+        "resolved": "6.5.0",
+        "contentHash": "OvbvxX+wL8skxTBttcBsVxdh73Fag4xwqEU2edh4JMn7Ws/xJHnY/JB1e9RoCb6XpDxUF3hD9A0Z1lEUx40Pfw=="
       },
       "System.Buffers": {
         "type": "Transitive",
@@ -1507,14 +1507,14 @@
       "monai.deploy.workflowmanager.configuration": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.19, )",
+          "Monai.Deploy.Messaging": "[0.1.20, )",
           "Monai.Deploy.Storage": "[0.2.10, )"
         }
       },
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.19, )",
+          "Monai.Deploy.Messaging": "[0.1.20, )",
           "Mongo.Migration": "[3.1.4, )",
           "MongoDB.Bson": "[2.19.0, )"
         }
