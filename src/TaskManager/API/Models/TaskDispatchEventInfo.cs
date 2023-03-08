@@ -37,7 +37,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
         /// <summary>
         /// Gets or sets Db version.
         /// </summary>
-        [JsonConverter(typeof(DocumentVersionConvert))]
+        [JsonConverter(typeof(DocumentVersionConvert)), BsonSerializer(typeof(DocumentVersionConverBson))]
         public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 0);
 
         /// <summary>
