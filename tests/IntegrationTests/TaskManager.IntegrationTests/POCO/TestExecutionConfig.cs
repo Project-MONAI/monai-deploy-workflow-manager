@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO
         {
             public static string Host { get; set; }
 
-            public static int Port { get; set; }
+            public static int WebPort { get; set; } = 15672;
+
+            public static int Port { get; set; } = 5672;
 
             public static string User { get; set; }
 
@@ -43,6 +45,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO
             public static string TaskUpdateQueue { get; set; }
 
             public static string ClinicalReviewQueue { get; set; }
+        }
+
+        public static class ApiConfig
+        {
+            public static string TaskManagerBaseUrl { get; set; }
         }
 
         public static class MongoConfig

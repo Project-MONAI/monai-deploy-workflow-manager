@@ -66,7 +66,7 @@ The message is a JSON document with the following fields:
 
 ###### Dicom Metadata File
 To improve processing time, the MWM expects the DICOM metadata tags to be available in a structured JSON object.
-This object is used for [metadata evaluation](mwm-workflow-spec.md#dicom-tags).
+This object is used for [metadata evaluation](/docs/setup/mwm-workflow-spec.md#dicom-tags).
 
 The format is as follows:
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,5 +49,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         /// <param name="previousTaskId">Previous Tasks Id.</param>
         /// <returns></returns>
         Task<TaskExecution> CreateTaskExecutionAsync(TaskObject task, WorkflowInstance workflowInstance, string? bucketName = null, string? payloadId = null, string? previousTaskId = null);
+
+        /// <summary>
+        /// Attaches patient metadata to task execution plugin arguments.
+        /// </summary>
+        /// <param name="task"></param>
+        /// <param name="patientDetails"></param>
+        void AttachPatientMetaData(TaskExecution task, PatientDetails patientDetails);
     }
 }

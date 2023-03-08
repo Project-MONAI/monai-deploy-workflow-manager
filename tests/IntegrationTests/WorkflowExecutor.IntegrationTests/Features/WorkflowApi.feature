@@ -1,4 +1,4 @@
-# Copyright 2022 MONAI Consortium
+﻿# Copyright 2022 MONAI Consortium
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ Scenario: Get all clinical workflows from API - Single workflow
     And I have a clinical workflow Basic_Workflow_1
     When I send a GET request
     Then I will get a 200 response
-    And I can see 1 workflow is returned
+    And I can see the expected workflows are returned
 
 @GetWorkflows
 Scenario: Get all clinical workflows from API - Multiple workflows
@@ -32,14 +32,14 @@ Scenario: Get all clinical workflows from API - Multiple workflows
     And I have a clinical workflow Basic_Workflow_3
     When I send a GET request
     Then I will get a 200 response
-    And I can see 2 workflows are returned
+    And I can see the expected workflows are returned
 
 @GetWorkflows
 Scenario: Get all clinical workflows from API - No workflows
     Given I have an endpoint /workflows
     When I send a GET request
     Then I will get a 200 response
-    And I can see 0 workflows are returned
+    And I can see the expected workflows are returned
 
 @WorkflowPagination
 Scenario Outline: Get all clinical workflows from API - Test pagination
@@ -83,7 +83,7 @@ Scenario Outline: Invalid pagination returns 400
 @UpdateWorkflows
 Scenario: Update workflow with valid details
     Given I have a clinical workflow Basic_Workflow_1_static
-    And  I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
+    And I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
     And I have a body Basic_Workflow_1
     When I send a PUT request
     Then I will get a 201 response
@@ -99,30 +99,45 @@ Scenario Outline: Update workflow with invalid details
     Then I will get a 400 response
     And I will receive the error message <message>
     Examples:
-    | endpoint                                        | put_body                           | message                                                 |
-    | /workflows/1                                    | Basic_Workflow_1                   | Failed to validate id, not a valid guid                 |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Name_Length       | is not a valid Workflow Name                            |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Desc_Length       | is not a valid Workflow Description                     |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_AETitle_Length    | is not a valid AE Title                                 |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_ExportDest        | is not a valid Informatics Gateway - exportDestinations |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskDesc_Length   | is not a valid taskDescription                          |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskType_Length   | is not a valid taskType                                 |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskID_Length     | is not a valid taskId                                   |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskID_Content    | Contains Invalid Characters.                            |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Unreferenced_Task | Found Task(s) without any task destinations to it       |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Loopback_Task     | Detected task convergence on path                       |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_0_Tasks           | Missing Workflow Tasks                                  |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Version_Null      | Missing Workflow Version                                |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Version_Blank     | Missing Workflow Version                                |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Body_Object       | 'informaticsGateway' cannot be null                     |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Empty_Workflow_Body                | '' is not a valid Workflow Description                  |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Dup_Output        | has multiple output names with the same value           |
+    | endpoint                                        | put_body                                            | message                                                                                                                                          |
+    | /workflows/1                                    | Basic_Workflow_1                                    | Failed to validate id, not a valid guid                                                                                                          |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_Name                       | Missing Workflow Name                                                                                                                            |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_AETitle_Length                     | AeTitle is required in the InformaticsGateaway section and must be under 16 characters.                                                         |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskType                           | has an invalid type, please specify: argo, aide_clinical_review, router, export, docker                                                          |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_TaskID_Content                     | Contains Invalid Characters.                                                                                                                     |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Unreferenced_Task                  | Found Task(s) without any task destinations to it                                                                                                |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Loopback_Task                      | Converging Tasks Destinations in task                                                                                                                |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_0_Tasks                            | Workflow does not contain Tasks, please review Workflow.                                                                                         |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Version_Null                       | Missing Workflow Version                                                                                                                         |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Version_Blank                      | Missing Workflow Version                                                                                                                         |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Body_Object                        | Missing InformaticsGateway section.                                                                                                              |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Empty_Workflow_Body                                 | Failed to validate workflow: Missing Workflow Name.;Missing Workflow Version.;Missing InformaticsGateway section.;Workflow does not contain Tasks, please review Workflow. |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Dup_Output                         | has multiple output names with the same value                                                                                                    |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_WorkflowName               | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_ReviewedTaskId             | reviewed_task_id must be specified.                                                                                                              |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_All_Argo_Args              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_1              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_2              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Missing_2_Argo_Args_3              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc'                                          |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Dup_Task_Id                        | Found duplicate task id 'liver-seg'                                                                                                                                          |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Coverging_Task_Dest                | Converging Tasks Destinations in tasks                                                                                                                                          |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Clinical_Review_Task_Id                     | 'clinical-review' reviewed_task_id: 'router' does not reference an Argo task.                                                                    |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Clinical_Review_Multiple_Argo_Inputs        | Invalid input artifact 'Argo2' in task 'clinical-review': Task cannot reference a non-reviewed task artifacts 'argo-task-2'                      |
 
+
+@UpdateWorkflows
+Scenario Outline: Update workflow with duplicate workflow name
+    Given I have a clinical workflow Basic_Workflow_1_static
+    And  I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
+    And I have a body Workflow_Dup_Workflow_Name
+    When I send a PUT request
+    Then I will get a 201 response
 
 @UpdateWorkflows
 Scenario: Update workflow where workflow ID does not exist
     Given I have a clinical workflow Basic_Workflow_1
-    And  I have an endpoint /workflows/52b87b54-a728-4796-9a79-d30867da2a6e
+    And I have an endpoint /workflows/52b87b54-a728-4796-9a79-d30867da2a6e
     And I have a body Basic_Workflow_1
     When I send a PUT request
     Then I will get a 404 response
@@ -130,48 +145,103 @@ Scenario: Update workflow where workflow ID does not exist
 
 @AddWorkflows
 Scenario: Add workflow with valid details
-    Given  I have an endpoint /workflows
-    And I have a body Basic_Workflow_1
+    Given I have an endpoint /workflows
+    And I have a workflow body Basic_Workflow_1
     When I send a POST request
     Then I will get a 201 response
 
 @AddWorkflows
 Scenario: Add workflow with valid empty details
-    Given  I have an endpoint /workflows
-    And I have a body Basic_Workflow_2
+    Given I have an endpoint /workflows
+    And I have a workflow body Basic_Workflow_2
     When I send a POST request
     Then I will get a 201 response
 
 @AddWorkflows
 Scenario Outline: Add workflow with invalid details
-    Given  I have an endpoint /workflows
+    Given I have an endpoint /workflows
+    And I have a workflow body <post_body>
+    When I send a POST request
+    Then I will get a 400 response
+    And I will receive the error message <message>
+    Examples:
+    | post_body                                           | message                                                                                                                                          |
+    | Invalid_Workflow_TaskType                           | has an invalid type, please specify: argo, aide_clinical_review, router, export, docker                                                          |
+    | Invalid_Workflow_Missing_Name                       | Missing Workflow Name.                                                                                                                            |
+    | Invalid_Workflow_AETitle_Length                     | AeTitle is required in the InformaticsGateaway section and must be under 16 characters.                                                         |
+    | Invalid_Workflow_TaskID_Content                     | Contains Invalid Characters.                                                                                                                     |
+    | Invalid_Workflow_Unreferenced_Task                  | Found Task(s) without any task destinations to it                                                                                                |
+    | Invalid_Workflow_Loopback_Task                      | Converging Tasks Destinations in task                                                                                                                |
+    | Invalid_Workflow_0_Tasks                            | Workflow does not contain Tasks, please review Workflow.                                                                                         |
+    | Invalid_Workflow_Version_Null                       | Missing Workflow Version                                                                                                                         |
+    | Invalid_Workflow_Version_Blank                      | Missing Workflow Version                                                                                                                         |
+    | Invalid_Workflow_Body_Object                        | Missing InformaticsGateway section.                                                                                                              |
+    | Empty_Workflow_Body                                 | Failed to validate workflow: Missing Workflow Name.;Missing Workflow Version.;Missing InformaticsGateway section.;Workflow does not contain Tasks, please review Workflow. |
+    | Invalid_Workflow_Dup_Output                         | has multiple output names with the same value                                                                                                    |
+    | Invalid_Workflow_Missing_WorkflowName               | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_ReviewedTaskId             | reviewed_task_id must be specified.                                                                                                              |
+    | Invalid_Workflow_Missing_All_Argo_Args              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_2_Argo_Args_1              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_2_Argo_Args_2              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_2_Argo_Args_3              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc'                                          |
+    | Invalid_Workflow_Dup_Task_Id                        | Found duplicate task id 'liver-seg'                                                                                                                                          |
+    | Invalid_Workflow_Coverging_Task_Dest                | Converging Tasks Destinations in tasks                                                                                                                                                 |
+    | Invalid_Clinical_Review_Task_Id                     | 'clinical-review' reviewed_task_id: 'router' does not reference an Argo task.                                                                    |
+    | Invalid_Clinical_Review_Multiple_Argo_Inputs        | Invalid input artifact 'Argo2' in task 'clinical-review': Task cannot reference a non-reviewed task artifacts 'argo-task-2'                      |
+
+
+@AddWorkflows
+Scenario Outline: Add workflow with duplicate workflow name
+    Given I have a clinical workflow Basic_Workflow_1_static
+    And I have an endpoint /workflows
+    And I have a workflow body Workflow_Dup_Workflow_Name
+    When I send a POST request
+    Then I will get a 400 response
+    And I will receive the error message Failed to validate workflow: Workflow with name 'Basic workflow' already exists.
+
+@ValidateWorkflows
+Scenario: Validate workflow with valid details
+    Given I have an endpoint /workflows/validate
+    And I have a body Basic_Workflow_1
+    When I send a POST request
+    Then I will get a 204 response
+
+@ValidateWorkflows
+Scenario Outline: Validate workflow with invalid details
+    Given I have an endpoint /workflows/validate
     And I have a body <post_body>
     When I send a POST request
     Then I will get a 400 response
     And I will receive the error message <message>
     Examples:
-    | post_body                          | message                                                 |
-    | Invalid_Workflow_Name_Length       | is not a valid Workflow Name                            |
-    | Invalid_Workflow_Desc_Length       | is not a valid Workflow Description                     |
-    | Invalid_Workflow_AETitle_Length    | is not a valid AE Title                                 |
-    | Invalid_Workflow_ExportDest        | is not a valid Informatics Gateway - exportDestinations |
-    | Invalid_Workflow_TaskDesc_Length   | is not a valid taskDescription                          |
-    | Invalid_Workflow_TaskType_Length   | is not a valid taskType                                 |
-    | Invalid_Workflow_TaskID_Length     | is not a valid taskId                                   |
-    | Invalid_Workflow_TaskID_Content    | Contains Invalid Characters.                            |
-    | Invalid_Workflow_Unreferenced_Task | Found Task(s) without any task destinations to it       |
-    | Invalid_Workflow_Loopback_Task     | Detected task convergence on path                       |
-    | Invalid_Workflow_0_Tasks           | Missing Workflow Tasks                                  |
-    | Invalid_Workflow_Version_Null      | Missing Workflow Version                                |
-    | Invalid_Workflow_Version_Blank     | Missing Workflow Version                                |
-    | Invalid_Workflow_Body_Object       | 'informaticsGateway' cannot be null                     |
-    | Empty_Workflow_Body                | '' is not a valid Workflow Description                  |
-    | Invalid_Workflow_Dup_Output        | has multiple output names with the same value           |
+    | post_body                                           | message                                                                                                                                          |
+    | Invalid_Workflow_TaskType                           | has an invalid type, please specify: argo, aide_clinical_review, router, export, docker                                                          |
+    | Invalid_Workflow_TaskID_Content                     | Contains Invalid Characters.                                                                                                                     |
+    | Invalid_Workflow_Unreferenced_Task                  | Found Task(s) without any task destinations to it                                                                                                |
+    | Invalid_Workflow_Loopback_Task                      | Converging Tasks Destinations in task                                                                                                                |
+    | Invalid_Workflow_0_Tasks                            | Workflow does not contain Tasks, please review Workflow.                                                                                         |
+    | Invalid_Workflow_Version_Null                       | Missing Workflow Version                                                                                                                         |
+    | Invalid_Workflow_Version_Blank                      | Missing Workflow Version                                                                                                                         |
+    | Invalid_Workflow_Body_Object                        | Missing InformaticsGateway section.                                                                                                              |
+    | Empty_Workflow_Body                                 | Failed to validate workflow: Missing Workflow Name.;Missing Workflow Version.;Missing InformaticsGateway section.;Workflow does not contain Tasks, please review Workflow. |
+    | Invalid_Workflow_Dup_Output                         | has multiple output names with the same value                                                                                                    |
+    | Invalid_Workflow_Missing_WorkflowName               | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_ReviewedTaskId             | reviewed_task_id must be specified.                                                                                                              |
+    | Invalid_Workflow_Missing_All_Argo_Args              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_2_Argo_Args_1              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_2_Argo_Args_2              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Missing_2_Argo_Args_3              | workflow_template_name must be specified, this corresponds to an Argo template name.                                                             |
+    | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc'                                          |
+    | Invalid_Workflow_Dup_Task_Id                        | Found duplicate task id 'liver-seg'                                                                                                                                          |
+    | Invalid_Workflow_Coverging_Task_Dest                | Converging Tasks Destinations in tasks                                                                                                                                          |
+    | Invalid_Clinical_Review_Task_Id                     | 'clinical-review' reviewed_task_id: 'router' does not reference an Argo task.                                                                                                                                          |
+    | Invalid_Clinical_Review_Multiple_Argo_Inputs        | Invalid input artifact 'Argo2' in task 'clinical-review': Task cannot reference a non-reviewed task artifacts 'argo-task-2'                                                                                                                                           |
 
 @DeleteWorkflows
 Scenario: Delete a workflow with one revision
     Given I have a clinical workflow Basic_Workflow_1_static
-    And  I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
+    And I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
     When I send a DELETE request
     Then I will get a 200 response
     And all revisions of the workflow are marked as deleted
@@ -180,7 +250,7 @@ Scenario: Delete a workflow with one revision
 Scenario: Delete a workflow with multiple revisions
     Given I have a clinical workflow Basic_Workflow_multiple_revisions_1
     And I have a clinical workflow Basic_Workflow_multiple_revisions_2
-    And  I have an endpoint /workflows/570611d3-ad74-43a4-ae84-539164ee8f0c
+    And I have an endpoint /workflows/570611d3-ad74-43a4-ae84-539164ee8f0c
     When I send a DELETE request
     Then I will get a 200 response
     And all revisions of the workflow are marked as deleted
@@ -188,7 +258,7 @@ Scenario: Delete a workflow with multiple revisions
 @DeleteWorkflows
 Scenario: Delete workflow with invalid details
     Given I have a clinical workflow Basic_Workflow_1_static
-    And  I have an endpoint /workflows/1
+    And I have an endpoint /workflows/1
     When I send a DELETE request
     Then I will get a 400 response
     And I will receive the error message Failed to validate id, not a valid guid
@@ -196,7 +266,7 @@ Scenario: Delete workflow with invalid details
 @DeleteWorkflows
 Scenario: Delete workflow where workflow ID does not exist
     Given I have a clinical workflow Basic_Workflow_1
-    And  I have an endpoint /workflows/52b87b54-a728-4796-9a79-d30867da2a6e
+    And I have an endpoint /workflows/52b87b54-a728-4796-9a79-d30867da2a6e
     When I send a DELETE request
     Then I will get a 404 response
     And I will receive the error message Failed to validate id, workflow not found
@@ -204,7 +274,7 @@ Scenario: Delete workflow where workflow ID does not exist
 @DeleteWorkflows
 Scenario: Delete a workflow and receive 404 when trying to GET by ID
     Given I have a clinical workflow Basic_Workflow_1_static
-    And  I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
+    And I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
     And I send a DELETE request
     When I send a GET request
     Then I will get a 404 response
@@ -213,7 +283,7 @@ Scenario: Delete a workflow and receive 404 when trying to GET by ID
 @DeleteWorkflows
 Scenario: Delete a workflow and receive 404 when trying to UPDATE by ID
     Given I have a clinical workflow Basic_Workflow_1_static
-    And  I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
+    And I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
     And I send a DELETE request
     And I have a body Basic_Workflow_1
     When I send a PUT request
@@ -223,7 +293,7 @@ Scenario: Delete a workflow and receive 404 when trying to UPDATE by ID
 @DeleteWorkflows
 Scenario: Delete a workflow and receive 404 when trying to GET all
     Given I have a clinical workflow Basic_Workflow_1_static
-    And  I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
+    And I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
     And I send a DELETE request
     And I have an endpoint /workflows
     When I send a GET request

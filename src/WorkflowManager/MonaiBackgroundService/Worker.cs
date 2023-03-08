@@ -20,7 +20,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.MonaiBackgroundService.Logging;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 
@@ -28,7 +28,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
 {
     public class Worker : BackgroundService
     {
-        private const string IdentityKey = "IdentityKey";
+        private const string JobIdentity = "JobIdentity";
         private readonly ILogger<Worker> _logger;
         private readonly ITasksService _tasksService;
         private readonly IMessageBrokerPublisherService _publisherService;
@@ -54,13 +54,12 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
             while (!stoppingToken.IsCancellationRequested)
             {
                 IsRunning = true;
-                var time = DateTimeOffset.Now;
+                var time = DateTime.UtcNow;
                 _logger.ServiceStarted(ServiceName);
-                _logger.LogDebug("Worker running at: {time}", time);
 
                 await DoWork();
 
-                _logger.LogDebug("Worker completed in: {time} milliseconds", (int)(DateTimeOffset.Now - time).TotalMilliseconds);
+                _logger.ServiceCompleted(ServiceName, (int)(DateTime.UtcNow - time).TotalMilliseconds);
                 await Task.Delay(_options.Value.BackgroundServiceSettings.BackgroundServiceDelay, stoppingToken);
             }
 
@@ -70,16 +69,23 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
 
         public async Task DoWork()
         {
-            var (Tasks, _) = await _tasksService.GetAllAsync();
-            foreach (var task in Tasks.Where(t => t.TimeoutInterval != 0 && t.Timeout < DateTime.UtcNow))
+            try
             {
-                task.ExecutionStats.TryGetValue(IdentityKey, out var identity);
+                var (Tasks, _) = await _tasksService.GetAllAsync();
+                foreach (var task in Tasks.Where(t => t.TimeoutInterval != 0 && t.Timeout < DateTime.UtcNow))
+                {
+                    task.ResultMetadata.TryGetValue(JobIdentity, out var identity);
 
-                var correlationId = Guid.NewGuid().ToString();
+                    var correlationId = Guid.NewGuid().ToString();
 
-                await PublishTimeoutUpdateEvent(task, correlationId, task.WorkflowInstanceId).ConfigureAwait(false); // -> task manager
+                    await PublishTimeoutUpdateEvent(task, correlationId, task.WorkflowInstanceId).ConfigureAwait(false); // -> task manager
 
-                await PublishCancellationEvent(task, correlationId, identity ?? string.Empty, task.WorkflowInstanceId).ConfigureAwait(false); // -> workflow executor
+                    await PublishCancellationEvent(task, correlationId, (string)identity ?? task.ExecutionId, task.WorkflowInstanceId).ConfigureAwait(false); // -> workflow executor
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.WorkerException(e.Message);
             }
         }
 
@@ -106,7 +112,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
                 workflowInstanceId,
                 task.TaskId,
                 FailureReason.TimedOut,
-                $"Task ({task.TaskId.Substring(0, 15)}) timed out @ {DateTime.UtcNow}");
+                $"{DateTime.UtcNow}");
 
             cancellationEvent.Validate();
 
@@ -117,9 +123,9 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
 
         private async Task PublishTimeoutUpdateEvent(TaskExecution task, string correlationId, string workflowInstanceId)
         {
-            var timeoutString = $"{task.TaskStartTime.ToShortDateString()} {task.TaskStartTime.ToShortTimeString}";
+            var timeoutString = $"{task.TaskStartTime.ToShortDateString()} {task.TaskStartTime.ToShortTimeString()}";
             var duration = DateTime.UtcNow - task.TaskStartTime;
-            var durationString = $"{duration.Seconds} Seconds";
+            var durationString = $"{duration.TotalSeconds} Seconds";
 
             _logger.TimingOutTask(task.TaskId, timeoutString, durationString, task.ExecutionId, correlationId);
 

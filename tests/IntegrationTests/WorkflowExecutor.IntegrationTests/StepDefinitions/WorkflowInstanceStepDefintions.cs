@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+using System.Globalization;
 using BoDi;
+using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support;
@@ -80,34 +82,18 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             }
         }
 
-        [Given(@"I have (.*) failed workflow Instances with acknowledged workflow errors with mid date as (.*)")]
-        public void GivenIHaveWorkflowInstancesWithAcknowledgedWorkflowErrors(int count, string midDate)
+        [Given(@"I have (\d*) failed workflow Instances")]
+        public void GivenIHaveWorkflowInstancesWithUnacknowledgedWorkflowErrors(int count)
         {
             _outputHelper.WriteLine($"Retrieving {count} workflow instances");
             var listOfWorkflowInstance = new List<WorkflowInstance>();
-
-            var parseResult = DateTime.TryParse(midDate, out var dateTimeParsed);
-
-            if (parseResult is false)
-            {
-                throw new Exception("Bad date time provided in generating data.");
-            }
-
 
             foreach (var index in Enumerable.Range(0, count))
             {
                 _outputHelper.WriteLine($"Retrieving workflow instances with index={index}");
                 var wi = DataHelper.GetWorkflowInstanceTestDataByIndex(index);
                 wi.Status = Status.Failed;
-
-                if (index % 2 == 0)
-                {
-                    wi.AcknowledgedWorkflowErrors = dateTimeParsed.AddDays(-index);
-                }
-                else
-                {
-                    wi.AcknowledgedWorkflowErrors = dateTimeParsed.AddDays(index);
-                }
+                wi.AcknowledgedWorkflowErrors = null;
 
                 listOfWorkflowInstance.Add(wi);
                 MongoClient.CreateWorkflowInstanceDocument(wi);
@@ -116,30 +102,85 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             DataHelper.SeededWorkflowInstances = listOfWorkflowInstance;
         }
 
-        [Then(@"I can see (.*) Workflow Instances are created")]
-        [Then(@"I can see (.*) Workflow Instance is created")]
+        [Given(@"I have an acknowledged failed workflow Instances")]
+        public void GivenIHaveWorkflowInstancesWithAcknowledgedWorkflowErrors()
+        {
+            var listOfWorkflowInstance = new List<WorkflowInstance>();
+            var wi = DataHelper.GetWorkflowInstanceTestData("Workflow_Instance_For_Failed_Partial");
+            wi.Status = Status.Failed;
+            wi.AcknowledgedWorkflowErrors = DateTime.UtcNow;
+            listOfWorkflowInstance.Add(wi);
+            MongoClient.CreateWorkflowInstanceDocument(wi);
+            DataHelper.SeededWorkflowInstances = listOfWorkflowInstance;
+        }
+
+        [Given(@"I have (\d*) partial failed Workflow Instance")]
+        public void GivenIHavePartialFailedWorkflowInstance(int count)
+        {
+            _outputHelper.WriteLine($"Retrieving {count} workflow instances");
+            var listOfWorkflowInstance = new List<WorkflowInstance>();
+
+            foreach (var index in Enumerable.Range(0, count))
+            {
+                _outputHelper.WriteLine($"Retrieving workflow instances with index={index}");
+                var wi = DataHelper.GetWorkflowInstanceTestDataByIndex(index);
+                wi.Status = Status.Succeeded;
+                wi.Tasks[0].Status = TaskExecutionStatus.PartialFail;
+                wi.AcknowledgedWorkflowErrors = null;
+
+                listOfWorkflowInstance.Add(wi);
+                MongoClient.CreateWorkflowInstanceDocument(wi);
+                _outputHelper.WriteLine("Retrieved workflow instance");
+            }
+            DataHelper.SeededWorkflowInstances = listOfWorkflowInstance;
+        }
+
+        [Given(@"I have an acknowledged partially failed workflow Instances")]
+        public void GivenIHavePartialFailedWorkflowInstancesWithAcknowledgedWorkflowErrors()
+        {
+            var listOfWorkflowInstance = new List<WorkflowInstance>();
+
+            var wi = DataHelper.GetWorkflowInstanceTestData("Workflow_Instance_For_Failed_Partial");
+            wi.Status = Status.Succeeded;
+            wi.AcknowledgedWorkflowErrors = DateTime.UtcNow;
+            wi.Tasks[0].Status = TaskExecutionStatus.PartialFail;
+            listOfWorkflowInstance.Add(wi);
+            MongoClient.CreateWorkflowInstanceDocument(wi);
+            DataHelper.SeededWorkflowInstances = listOfWorkflowInstance;
+        }
+
+        [Then(@"I can see ([1-9]*) Workflow Instances are created")]
+        [Then(@"I can see ([0-9]*) Workflow Instance is created")]
         public void ThenICanSeeAWorkflowInstanceIsCreated(int count)
         {
             _outputHelper.WriteLine($"Retrieving {count} workflow instance/s using the payloadid={DataHelper.WorkflowRequestMessage.PayloadId.ToString()}");
             var workflowInstances = DataHelper.GetWorkflowInstances(count, DataHelper.WorkflowRequestMessage.PayloadId.ToString());
             _outputHelper.WriteLine($"Retrieved {count} workflow instance/s");
 
-            if (workflowInstances != null)
+            foreach (var workflowInstance in workflowInstances)
             {
-                foreach (var workflowInstance in workflowInstances)
+                var workflowRevision = DataHelper.WorkflowRevisions.OrderByDescending(x => x.Revision).FirstOrDefault(x => x.WorkflowId.Equals(workflowInstance.WorkflowId));
+
+                if (workflowRevision != null)
                 {
-                    var workflowRevision = DataHelper.WorkflowRevisions.OrderByDescending(x => x.Revision).FirstOrDefault(x => x.WorkflowId.Equals(workflowInstance.WorkflowId));
-
-                    if (workflowRevision != null)
-                    {
-                        Assertions.AssertWorkflowInstanceMatchesExpectedWorkflow(workflowInstance, workflowRevision, DataHelper.WorkflowRequestMessage);
-
-                    }
-                    else
-                    {
-                        throw new Exception($"Workflow not found for workflowId {workflowInstance.WorkflowId}");
-                    }
+                    Assertions.AssertWorkflowInstanceMatchesExpectedWorkflow(workflowInstance, workflowRevision, DataHelper.WorkflowRequestMessage);
                 }
+                else
+                {
+                    throw new Exception($"Workflow not found for workflowId {workflowInstance.WorkflowId}");
+                }
+            }
+        }
+
+        [Then(@"I can see no Workflow Instances are created")]
+        public void ThenICanSeeNoWorkflowInstanceIsCreated()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                _outputHelper.WriteLine($"Trying to Retreive 0 workflow instance/s using the payloadid={DataHelper.WorkflowRequestMessage.PayloadId.ToString()}");
+                var workflowInstances = DataHelper.GetWorkflowInstances(0, DataHelper.WorkflowRequestMessage.PayloadId.ToString());
+                _outputHelper.WriteLine($"Retrieved {workflowInstances.Count} workflow instance/s");
+                Thread.Sleep(300);
             }
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.WorkflowManager.Contracts.Rest;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
+using Monai.Deploy.WorkflowManager.Shared;
 using Moq;
 using Xunit;
 

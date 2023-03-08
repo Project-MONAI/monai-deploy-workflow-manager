@@ -109,6 +109,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             ContainerVolumeMount intermediateVolumeMount;
             List<ContainerVolumeMount> outputVolumeMounts;
 
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["correlationId"] = Event.CorrelationId,
+                ["workflowInstanceId"] = Event.WorkflowInstanceId,
+                ["taskId"] = Event.TaskId,
+                ["executionId"] = Event.ExecutionId
+            });
+
             try
             {
                 inputVolumeMounts = await SetupInputs(cancellationToken).ConfigureAwait(false);
@@ -182,10 +190,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             {
                 _logger.ErrorLaunchingContainerMonitor(containerId, exception);
             }
-            return new ExecutionStatus() { Status = TaskExecutionStatus.Accepted };
+
+            return new ExecutionStatus()
+            {
+                Status = TaskExecutionStatus.Accepted,
+                Stats = new Dictionary<string, string> { { Strings.IdentityKey, containerId } }
+            };
         }
 
-        public override async Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
+        public override async Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent callbackEvent, CancellationToken cancellationToken = default)
         {
             Guard.Against.NullOrWhiteSpace(identity, nameof(identity));
 

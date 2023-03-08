@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 
 using BoDi;
-using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using TechTalk.SpecFlow.Infrastructure;
+using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support;
+using MongoDB.Driver;
 using Polly;
 using Polly.Retry;
-using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
@@ -103,8 +103,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             _outputHelper.WriteLine($"Event published");
         }
 
-        [Then(@"(.*) Task Dispatch event is published")]
-        [Then(@"(.*) Task Dispatch events are published")]
+        [Then(@"([1-9]*) Task Dispatch event is published")]
+        [Then(@"([1-9]*) Task Dispatch events are published")]
         public void TaskDispatchEventIsPublished(int count)
         {
             _outputHelper.WriteLine($"Retrieving {count} task dispatch event/s");
@@ -136,21 +136,25 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             for (var i = 0; i < 5; i++)
             {
-                var taskDispatchEvent = TaskDispatchConsumer.GetMessage<TaskDispatchEvent>();
+                _outputHelper.WriteLine($"Retrieving task dispatch event/s");
+                var taskDispatchEvents = DataHelper.GetTaskDispatchEvents(0, DataHelper.WorkflowInstances);
+                _outputHelper.WriteLine($"Retrieved task dispatch event/s");
 
-                if (taskDispatchEvent != null)
+                foreach (var taskDispatchEvent in taskDispatchEvents)
                 {
-                    var workflowInstance = MongoClient.GetWorkflowInstanceById(taskDispatchEvent.WorkflowInstanceId);
-
-                    if (workflowInstance != null)
+                    if (taskDispatchEvent != null)
                     {
-                        if (workflowInstance.Tasks.FirstOrDefault(x => x.ExecutionId.Equals(taskDispatchEvent.ExecutionId)) != null)
+                        var workflowInstance = MongoClient.GetWorkflowInstanceById(taskDispatchEvent.WorkflowInstanceId);
+
+                        if (workflowInstance != null)
                         {
-                            throw new Exception($"Task Dispatch Event has been published when workflowInstance status was {workflowInstance.Tasks[0].Status}");
+                            if (workflowInstance.Tasks.FirstOrDefault(x => x.ExecutionId.Equals(taskDispatchEvent.ExecutionId)) != null)
+                            {
+                                throw new Exception($"Task Dispatch Event has been published when workflowInstance status was {workflowInstance.Tasks[0].Status}");
+                            }
                         }
                     }
                 }
-
                 Thread.Sleep(1000);
             }
         }

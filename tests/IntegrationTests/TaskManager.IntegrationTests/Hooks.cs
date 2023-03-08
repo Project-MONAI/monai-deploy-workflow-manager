@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                 .Build();
 
             TestExecutionConfig.RabbitConfig.Host = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:endpoint");
-            TestExecutionConfig.RabbitConfig.Port = 15672;
+            TestExecutionConfig.RabbitConfig.WebPort = 15672;
             TestExecutionConfig.RabbitConfig.User = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:username");
             TestExecutionConfig.RabbitConfig.Password = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:password");
             TestExecutionConfig.RabbitConfig.VirtualHost = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:virtualHost");
@@ -73,7 +73,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 
             TestExecutionConfig.MongoConfig.ConnectionString = config.GetValue<string>("WorkloadManagerDatabase:ConnectionString");
             TestExecutionConfig.MongoConfig.Database = config.GetValue<string>("WorkloadManagerDatabase:DatabaseName");
-            TestExecutionConfig.MongoConfig.TaskDispatchEventCollection = config.GetValue<string>("WorkloadManagerDatabase:TaskDispatchEventCollectionName");
+            TestExecutionConfig.MongoConfig.TaskDispatchEventCollection = "TaskDispatchEvents";
 
             TestExecutionConfig.MinioConfig.Endpoint = config.GetValue<string>("WorkflowManager:storage:settings:endpoint");
             TestExecutionConfig.MinioConfig.AccessKey = config.GetValue<string>("WorkflowManager:storage:settings:accessKey");
@@ -81,13 +81,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             TestExecutionConfig.MinioConfig.Bucket = config.GetValue<string>("WorkflowManager:storage:settings:bucket");
             TestExecutionConfig.MinioConfig.Region = config.GetValue<string>("WorkflowManager:storage:settings:region");
 
+            TestExecutionConfig.ApiConfig.TaskManagerBaseUrl = "http://localhost:5000";
+
             RabbitConnectionFactory.DeleteAllQueues();
 
-            Host = TaskManagerStartup.StartTaskManager();
+            RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             MongoClient = new MongoClientUtil();
             HttpClient = new HttpClient();
             MinioClient = new MinioClientUtil();
-            RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+            Host = TaskManagerStartup.StartTaskManager();
+
+            RabbitConnectionFactory.SetRabbitConnection();
         }
 
         [BeforeTestRun(Order = 2)]
@@ -123,17 +127,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                 }
             });
 
-            TaskDispatchPublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-            TaskCallbackPublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
-            TaskUpdateConsumer = new RabbitConsumer(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
-            ClinicalReviewConsumer = new RabbitConsumer(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
+            TaskDispatchPublisher = new RabbitPublisher(TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            TaskCallbackPublisher = new RabbitPublisher(TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
+            TaskUpdateConsumer = new RabbitConsumer(TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            ClinicalReviewConsumer = new RabbitConsumer(TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
         }
 
         /// <summary>
         /// Adds Rabbit and Mongo clients to Specflow IoC container for test scenario being executed.
         /// </summary>
         [BeforeScenario]
-        public void SetUp()
+        public void SetUp(ScenarioContext scenarioContext, ISpecFlowOutputHelper outputHelper)
         {
             ObjectContainer.RegisterInstanceAs(TaskDispatchPublisher, "TaskDispatchPublisher");
             ObjectContainer.RegisterInstanceAs(TaskCallbackPublisher, "TaskCallbackPublisher");
@@ -142,6 +146,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             ObjectContainer.RegisterInstanceAs(MinioClient);
             var dataHelper = new DataHelper(ObjectContainer);
             ObjectContainer.RegisterInstanceAs(dataHelper);
+
+            var apiHelper = new ApiHelper(HttpClient ?? throw new ArgumentException("No HttpClient"));
+            ObjectContainer.RegisterInstanceAs(apiHelper);
+
+            MongoClient!.ListAllCollections(outputHelper, scenarioContext.ScenarioInfo.Title);
         }
 
         /// <summary>
@@ -150,10 +159,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         [AfterTestRun(Order = 1)]
         public static void TearDownRabbit()
         {
-            TaskDispatchPublisher?.CloseConnection();
-            TaskUpdateConsumer?.CloseConnection();
-            TaskCallbackPublisher?.CloseConnection();
-            ClinicalReviewConsumer?.CloseConnection();
             Host?.StopAsync();
         }
     }

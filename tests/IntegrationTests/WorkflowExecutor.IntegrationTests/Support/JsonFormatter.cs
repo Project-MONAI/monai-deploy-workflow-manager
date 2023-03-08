@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
-    static class JsonFormatter
+    internal static class JsonFormatter
     {
         public static string FormatJson(string json)
         {

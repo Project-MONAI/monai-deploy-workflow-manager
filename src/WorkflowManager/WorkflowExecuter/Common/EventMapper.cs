@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
         public Dictionary<string, string> Stats { get; set; }
 
         public string Errors { get; set; }
-
     }
 
     public static class EventMapper
@@ -75,7 +74,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             FailureReason failureReason,
             string message)
         {
-            Guard.Against.Null(identity, nameof(identity));
+            //Guard.Against.Null(identity, nameof(identity));
             Guard.Against.Null(workflowInstanceId, nameof(workflowInstanceId));
 
             return new TaskCancellationEvent
@@ -136,6 +135,17 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 }
             }
 
+            var pluginArgs = task.TaskPluginArguments;
+            if (pluginArgs.ContainsKey("reviewed_task_id"))
+            {
+                var reviewedTask = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId.ToLower() == pluginArgs["reviewed_task_id"]);
+
+                if (reviewedTask is not null)
+                {
+                    pluginArgs.Add("reviewed_execution_id", reviewedTask.ExecutionId);
+                }
+            }
+
             return new TaskDispatchEvent
             {
                 WorkflowInstanceId = workflowInstance.Id,
@@ -143,7 +153,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 ExecutionId = task.ExecutionId.ToString(),
                 CorrelationId = correlationId,
                 Status = TaskExecutionStatus.Created,
-                TaskPluginArguments = task.TaskPluginArguments,
+                TaskPluginArguments = pluginArgs,
                 Inputs = inputs,
                 Outputs = outputs,
                 TaskPluginType = task.TaskType,

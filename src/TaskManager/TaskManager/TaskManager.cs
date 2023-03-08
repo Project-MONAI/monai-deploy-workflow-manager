@@ -27,11 +27,11 @@ using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.S3Policy.Policies;
 using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Monai.Deploy.WorkflowManager.TaskManager.Logging;
-using Minio.DataModel;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
@@ -85,14 +85,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             _messageBrokerPublisherService = _scope.ServiceProvider.GetRequiredService<IMessageBrokerPublisherService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerPublisherService));
             _messageBrokerSubscriberService = _scope.ServiceProvider.GetRequiredService<IMessageBrokerSubscriberService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerSubscriberService));
 
-            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskDispatchRequest, _options.Value.Messaging.Topics.TaskDispatchRequest, TaskDispatchEventReceivedCallback);
-            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskCallbackRequest, _options.Value.Messaging.Topics.TaskCallbackRequest, TaskCallbackEventReceivedCallback);
-            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskCancellationRequest, _options.Value.Messaging.Topics.TaskCancellationRequest, TaskCancelationEventCallback);
+            _messageBrokerSubscriberService.OnConnectionError += (sender, args) =>
+            {
+                _logger.MessagingServiceErrorRecover(args.ErrorMessage);
+                SubscribeToEvents();
+            };
+            SubscribeToEvents();
 
             Status = ServiceStatus.Running;
             _logger.ServiceStarted(ServiceName);
 
             return Task.CompletedTask;
+        }
+
+        private void SubscribeToEvents()
+        {
+            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskDispatchRequest, _options.Value.Messaging.Topics.TaskDispatchRequest, TaskDispatchEventReceivedCallback);
+            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskCallbackRequest, _options.Value.Messaging.Topics.TaskCallbackRequest, TaskCallbackEventReceivedCallback);
+            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskCancellationRequest, _options.Value.Messaging.Topics.TaskCancellationRequest, TaskCancelationEventCallback);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -141,7 +151,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 ["messageType"] = args.Message.MessageDescription
             });
 
-
             JsonMessage<T>? message = null;
             try
             {
@@ -164,6 +173,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
         private async Task HandleCancellationTask(JsonMessage<TaskCancellationEvent> message)
         {
+            _logger.PrecessingTaskCancellationEvent();
             Guard.Against.Null(message, nameof(message));
 
             try
@@ -173,7 +183,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             catch (MessageValidationException ex)
             {
                 _logger.InvalidMessageReceived(message.MessageId, message.CorrelationId, ex);
-                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, false).ConfigureAwait(false);
                 return;
             }
 
@@ -193,7 +203,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             catch (Exception ex)
             {
                 _logger.UnsupportedRunner(pluginAssembly, ex);
-                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, false).ConfigureAwait(false);
                 return;
             }
         }
@@ -209,7 +219,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             catch (MessageValidationException ex)
             {
                 _logger.InvalidMessageReceived(message.MessageId, message.CorrelationId, ex);
-                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                await HandleMessageExceptionTaskUpdate(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
                 return;
             }
 
@@ -217,11 +227,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             if (taskExecution is null)
             {
                 _logger.NoActiveExecutorWithTheId(message.Body.ExecutionId);
-                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, Strings.NoMatchingExecutorId, false).ConfigureAwait(false);
+                await HandleMessageExceptionTaskUpdate(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, Strings.NoMatchingExecutorId, false).ConfigureAwait(false);
                 return;
             }
 
             ITaskPlugin? taskRunner = null;
+
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["durationSoFar"] = (DateTime.UtcNow - taskExecution.Started).TotalMilliseconds,
+                ["correlationId"] = taskExecution.Event.CorrelationId,
+                ["workflowInstanceId"] = taskExecution.Event.WorkflowInstanceId,
+                ["taskId"] = taskExecution.Event.TaskId,
+                ["executionId"] = taskExecution.Event.ExecutionId,
+            });
 
             try
             {
@@ -233,7 +252,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 catch (MessageValidationException ex)
                 {
                     _logger.InvalidMessageReceived(message.MessageId, message.CorrelationId, ex);
-                    await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                    await HandleMessageExceptionTaskUpdate(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
                     return;
                 }
 
@@ -244,14 +263,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 catch (Exception ex)
                 {
                     _logger.UnsupportedRunner(pluginAssembly, ex);
-                    await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                    await HandleMessageExceptionTaskUpdate(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
                     return;
                 }
 
                 JsonMessage<TaskUpdateEvent>? updateMessage;
                 try
                 {
-                    var executionStatus = await taskRunner.GetStatus(message.Body.Identity, _cancellationTokenSource.Token).ConfigureAwait(false);
+                    var executionStatus = await taskRunner.GetStatus(message.Body.Identity, message.Body, _cancellationTokenSource.Token).ConfigureAwait(false);
                     updateMessage = GenerateUpdateEventMessage(message, message.Body.ExecutionId, message.Body.WorkflowInstanceId, message.Body.TaskId, executionStatus, taskExecution.Event.Outputs);
                     updateMessage.Body.Metadata.Add(Strings.JobIdentity, message.Body.Identity);
                     foreach (var item in message.Body.Metadata)
@@ -260,7 +279,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 catch (Exception ex)
                 {
                     _logger.ErrorExecutingTask(ex);
-                    await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                    await HandleMessageExceptionTaskUpdate(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
                     return;
                 }
 
@@ -286,7 +305,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 catch (Exception ex)
                 {
                     _logger.MetadataRetrievalFailed(ex);
-                    await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                    await HandleMessageExceptionTaskUpdate(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
                     return;
                 }
 
@@ -342,7 +361,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             catch (MessageValidationException ex)
             {
                 _logger.InvalidMessageReceived(message.MessageId, message.CorrelationId, ex);
-                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                await HandleMessageExceptionTaskUpdate(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
                 return;
             }
 
@@ -367,8 +386,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                     await Task.WhenAll(
                         PopulateTemporaryStorageCredentials(message.Body.Inputs.ToArray()),
                         PopulateTemporaryStorageCredentials(message.Body.IntermediateStorage),
-                        PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray())
-                    ).ConfigureAwait(true);
+                        PopulateTemporaryStorageCredentials(message.Body.Outputs.ToArray()))
+                    .ConfigureAwait(true);
                 }
 
                 await _taskDispatchEventService.UpdateUserAccountsAsync(eventInfo).ConfigureAwait(false);
@@ -376,7 +395,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             catch (Exception ex)
             {
                 _logger.GenerateTemporaryCredentialsException(ex);
-                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, true).ConfigureAwait(false);
+                await HandleMessageExceptionTaskUpdate(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, true).ConfigureAwait(false);
                 return;
             }
 
@@ -388,7 +407,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             catch (Exception ex)
             {
                 _logger.UnsupportedRunner(pluginAssembly, ex);
-                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                await HandleMessageExceptionTaskUpdate(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
                 taskRunner?.Dispose();
                 return;
             }
@@ -403,7 +422,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             catch (Exception ex)
             {
                 _logger.ErrorExecutingTask(ex);
-                await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
+                await HandleMessageExceptionTaskUpdate(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
             }
         }
 
@@ -542,22 +561,43 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             return Interlocked.CompareExchange(ref _activeJobs, expectedActiveJobs, activeJobs) != activeJobs;
         }
 
-        private async Task HandleMessageException(MessageBase message, string WorkflowInstanceId, string taskId, string executionId, string errors, bool requeue)
+        private async Task HandleMessageExceptionTaskUpdate(MessageBase message, string WorkflowInstanceId, string taskId, string executionId, string errors, bool requeue)
         {
             Guard.Against.NullService(_messageBrokerSubscriberService, nameof(IMessageBrokerSubscriberService));
 
+            await HandleMessageException(message, WorkflowInstanceId, taskId, executionId, requeue);
+
+            var updateMessage = new JsonMessage<TaskUpdateEvent>(
+                new TaskUpdateEvent
+                {
+                    CorrelationId = message.CorrelationId,
+                    ExecutionId = executionId,
+                    Reason = FailureReason.PluginError,
+                    Status = TaskExecutionStatus.Failed,
+                    WorkflowInstanceId = WorkflowInstanceId,
+                    TaskId = taskId,
+                    Message = errors,
+                },
+                TaskManagerApplicationId,
+                message.CorrelationId);
+
+            await SendUpdateEvent(updateMessage).ConfigureAwait(false);
+        }
+
+        private async Task HandleMessageException(MessageBase message, string workflowInstanceId, string taskId, string executionId, bool requeue)
+        {
             if (message is null)
             {
                 return;
             }
 
-            using var loggingScope = (_logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
             {
                 ["correlationId"] = message.CorrelationId,
-                ["workflowInstanceId"] = WorkflowInstanceId,
+                ["workflowInstanceId"] = workflowInstanceId,
                 ["taskId"] = taskId,
-                ["executionId"] = executionId
-            }));
+                ["executionId"] = executionId,
+            });
 
             try
             {
@@ -578,19 +618,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             {
                 _logger.ErrorSendingMessage(message.MessageDescription, ex);
             }
-
-            var updateMessage = new JsonMessage<TaskUpdateEvent>(new TaskUpdateEvent
-            {
-                CorrelationId = message.CorrelationId,
-                ExecutionId = executionId,
-                Reason = FailureReason.PluginError,
-                Status = TaskExecutionStatus.Failed,
-                WorkflowInstanceId = WorkflowInstanceId,
-                TaskId = taskId,
-                Message = errors,
-            }, TaskManagerApplicationId, message.CorrelationId);
-
-            await SendUpdateEvent(updateMessage).ConfigureAwait(false);
         }
 
         protected virtual void Dispose(bool disposing)

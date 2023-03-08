@@ -38,9 +38,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private DataHelper DataHelper { get; }
         private MongoClientUtil MongoClient { get; }
 
-        [Then(@"I can see (.*) workflows are returned")]
-        [Then(@"I can see (.*) workflow is returned")]
-        public void ThenICanSeeWorkflowsAreReturned(int count)
+        [Then(@"I can see the expected workflows are returned")]
+        public void ThenICanSeeWorkflowsAreReturned()
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var workflowRevisions = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowRevision>>>(result);
@@ -56,7 +55,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             var deserializedResult = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowRevision>>>(result);
             Assertions.AssertPagination(count, request, deserializedResult);
         }
-
 
         [Then(@"the Workflow Id (.*) is returned in the response body")]
         public void ThenTheWorkflowIdIsReturned(string id)
@@ -83,7 +81,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var workflowRevisions = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowRevision>>>(result);
-
             workflowRevisions?.Data.Should().BeNullOrEmpty();
         }
     }

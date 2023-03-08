@@ -13,4 +13,6 @@ A few sentences describing the changes proposed in this pull request.
 - [ ] Breaking change (fix or new feature that would cause existing functionality to change).
 - [ ] New tests added to cover the changes.
 - [ ] All tests passed locally.
-- [ ] [Documentation comments](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments) included/updated.
+- [ ] [Documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/) included/updated.
+- [ ] [User guide updated](../docs).
+- [ ] I have updated the [changelog](../docs/changelog.md)

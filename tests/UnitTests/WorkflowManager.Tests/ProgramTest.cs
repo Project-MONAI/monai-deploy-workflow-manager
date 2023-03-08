@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,8 @@ namespace Monai.Deploy.WorkflowManager.Tests
 {
     public class ProgramTest
     {
-        const string PlugInDirectoryName = "plug-ins";
+        private const string PlugInDirectoryName = "plug-ins";
+
         [Fact(DisplayName = "Program - runs properly")]
         public void Startup_RunsProperly()
         {

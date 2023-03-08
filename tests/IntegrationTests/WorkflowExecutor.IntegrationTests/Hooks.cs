@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Polly;
 using Polly.Retry;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManagerIntegrationTests
 {
@@ -63,7 +64,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
                 .Build();
 
             TestExecutionConfig.RabbitConfig.Host = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:endpoint");
-            TestExecutionConfig.RabbitConfig.Port = 15672;
+            TestExecutionConfig.RabbitConfig.WebPort = 15672;
             TestExecutionConfig.RabbitConfig.User = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:username");
             TestExecutionConfig.RabbitConfig.Password = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:password");
             TestExecutionConfig.RabbitConfig.VirtualHost = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:virtualHost");
@@ -77,9 +78,9 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
 
             TestExecutionConfig.MongoConfig.ConnectionString = config.GetValue<string>("WorkloadManagerDatabase:ConnectionString");
             TestExecutionConfig.MongoConfig.Database = config.GetValue<string>("WorkloadManagerDatabase:DatabaseName");
-            TestExecutionConfig.MongoConfig.WorkflowCollection = config.GetValue<string>("WorkloadManagerDatabase:WorkflowCollectionName");
-            TestExecutionConfig.MongoConfig.WorkflowInstanceCollection = config.GetValue<string>("WorkloadManagerDatabase:WorkflowInstanceCollectionName");
-            TestExecutionConfig.MongoConfig.PayloadCollection = config.GetValue<string>("WorkloadManagerDatabase:PayloadCollectionName");
+            TestExecutionConfig.MongoConfig.WorkflowCollection = "Workflows";
+            TestExecutionConfig.MongoConfig.WorkflowInstanceCollection = "WorkflowInstances";
+            TestExecutionConfig.MongoConfig.PayloadCollection = "Payloads";
 
             TestExecutionConfig.MinioConfig.Endpoint = config.GetValue<string>("WorkflowManager:storage:settings:endpoint");
             TestExecutionConfig.MinioConfig.AccessKey = config.GetValue<string>("WorkflowManager:storage:settings:accessKey");
@@ -132,7 +133,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         /// Adds Rabbit and Mongo clients to Specflow IoC container for test scenario being executed.
         /// </summary>
         [BeforeScenario]
-        public void SetUp()
+        public void SetUp(ScenarioContext scenarioContext, ISpecFlowOutputHelper outputHelper)
         {
             ObjectContainer.RegisterInstanceAs(WorkflowPublisher, "WorkflowPublisher");
             ObjectContainer.RegisterInstanceAs(TaskDispatchConsumer, "TaskDispatchConsumer");
@@ -145,6 +146,8 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             ObjectContainer.RegisterInstanceAs(dataHelper);
             var apiHelper = new ApiHelper(HttpClient);
             ObjectContainer.RegisterInstanceAs(apiHelper);
+
+            MongoClient.ListAllCollections(outputHelper, scenarioContext.ScenarioInfo.Title);
         }
 
         [BeforeTestRun(Order = 2)]
@@ -159,7 +162,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         }
 
         [BeforeTestRun(Order = 3)]
-        public async static Task CreateBucket()
+        public static async Task CreateBucket()
         {
             await MinioClient.CreateBucket(TestExecutionConfig.MinioConfig.Bucket);
         }
@@ -170,9 +173,6 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         [AfterTestRun(Order = 1)]
         public static void StopServices()
         {
-            WorkflowPublisher?.CloseConnection();
-            TaskDispatchConsumer?.CloseConnection();
-            TaskUpdatePublisher?.CloseConnection();
             Host?.StopAsync();
         }
     }

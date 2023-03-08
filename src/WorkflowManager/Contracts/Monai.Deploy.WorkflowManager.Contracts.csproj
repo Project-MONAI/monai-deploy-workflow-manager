@@ -1,5 +1,5 @@
-<!--
-  ~ Copyright 2021-2022 MONAI Consortium
+﻿<!--
+  ~ Copyright 2022 MONAI Consortium
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
     <RootNamespace>Monai.Deploy.WorkflowManager.Contracts</RootNamespace>
     <Nullable>enable</Nullable>
     <CodeAnalysisRuleSet>..\..\.sonarlint\project-monai_monai-deploy-workflow-managercsharp.ruleset</CodeAnalysisRuleSet>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,14 +29,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="..\..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+    <Compile Include="..\..\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.209" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.6-rc0001" />
-    <PackageReference Include="MongoDB.Bson" Version="2.17.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
+    <AdditionalFiles Include="..\..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.20" />
+    <PackageReference Include="Mongo.Migration" Version="3.1.4" />
+    <PackageReference Include="MongoDB.Bson" Version="2.19.0" />
   </ItemGroup>
 </Project>

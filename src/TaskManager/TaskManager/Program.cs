@@ -16,7 +16,7 @@
 
 using System.IO.Abstractions;
 using System.Reflection;
-using Elastic.CommonSchema.Serilog;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,10 +30,13 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.Database;
 using Monai.Deploy.WorkflowManager.TaskManager.Database.Options;
 using Monai.Deploy.WorkflowManager.TaskManager.Extensions;
+using Monai.Deploy.WorkflowManager.TaskManager.Services.Http;
+using Mongo.Migration.Startup.DotNetCore;
+using Mongo.Migration.Startup;
 using MongoDB.Driver;
-using Serilog;
-using Serilog.Events;
-using Serilog.Exceptions;
+using NLog;
+using NLog.LayoutRenderers;
+using NLog.Web;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
@@ -44,9 +47,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
         private static void Main(string[] args)
         {
-            var host = CreateHostBuilder(args).Build();
+            var version = typeof(Program).Assembly;
+            var assemblyVersionNumber = version.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0.1";
 
+            var logger = ConfigureNLog(assemblyVersionNumber);
+            logger.Info($"Initializing MONAI Deploy Task Manager v{assemblyVersionNumber}");
+
+            var host = CreateHostBuilder(args).Build();
             host.Run();
+            logger.Info("MONAI Deploy Deploy Task Manager shutting down.");
+
+            NLog.LogManager.Shutdown();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -66,28 +77,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 })
                 .ConfigureLogging((builderContext, configureLogging) =>
                 {
-                    configureLogging.AddConfiguration(builderContext.Configuration.GetSection("Logging"));
-                    configureLogging.AddFile(o => o.RootPath = AppContext.BaseDirectory);
+                    configureLogging.ClearProviders();
+                    configureLogging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                 })
-                .UseSerilog((context, services, configuration) => configuration
-                    .ReadFrom.Configuration(context.Configuration)
-                    .ReadFrom.Services(services)
-                    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                    .MinimumLevel.Debug()
-                    .Enrich.FromLogContext()
-                    .Enrich.WithExceptionDetails()
-                    .Enrich.WithProperty("dllversion", Assembly.GetEntryAssembly()?.GetName().Version)
-                    .Enrich.WithProperty("dllName", Assembly.GetEntryAssembly()?.GetName().Name)
-                    .WriteTo.File(
-                        path: "logs/MTM-.log",
-                        rollingInterval: RollingInterval.Day,
-                        formatter: new EcsTextFormatter())
-                .WriteTo.Console())
-
                 .ConfigureServices((hostContext, services) =>
                 {
                     ConfigureServices(hostContext, services);
-                });
+                })
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.CaptureStartupErrors(true);
+                    webBuilder.UseStartup<Startup>();
+                })
+                .UseNLog();
 
         private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
         {
@@ -96,19 +98,36 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             services.AddOptions<MessageBrokerServiceConfiguration>().Bind(hostContext.Configuration.GetSection("WorkflowManager:messaging"));
             services.AddHttpClient();
 
-            services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
-            services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
-            services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
+            // StorageService
+            services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value, HealthCheckOptions.ServiceHealthCheck | HealthCheckOptions.AdminServiceHealthCheck);
+
+            // MessageBroker
+            services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value, true);
+            services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value, true);
 
             // Mongo DB (Workflow Manager)
             services.Configure<TaskManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
             services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
             services.AddTransient<ITaskDispatchEventRepository, TaskDispatchEventRepository>();
             services.AddTransient<IFileSystem, FileSystem>();
+            services.AddMigration(new MongoMigrationSettings
+            {
+                ConnectionString = hostContext.Configuration.GetSection("WorkloadManagerDatabase:ConnectionString").Value,
+                Database = hostContext.Configuration.GetSection("WorkloadManagerDatabase:DatabaseName").Value,
+            });
 
             services.AddTransient<IContentTypeProvider, FileExtensionContentTypeProvider>();
 
             services.AddTaskManager(hostContext);
+        }
+
+        private static Logger ConfigureNLog(string assemblyVersionNumber)
+        {
+            LayoutRenderer.Register("servicename", logEvent => typeof(Program).Namespace);
+            LayoutRenderer.Register("serviceversion", logEvent => assemblyVersionNumber);
+            LayoutRenderer.Register("machinename", logEvent => Environment.MachineName);
+
+            return LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
         }
     }
 }

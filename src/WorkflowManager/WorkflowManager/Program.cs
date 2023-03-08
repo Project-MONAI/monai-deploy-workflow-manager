@@ -18,7 +18,6 @@ using System;
 using System.IO;
 using System.IO.Abstractions;
 using System.Reflection;
-using Elastic.CommonSchema.Serilog;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -39,10 +38,13 @@ using Monai.Deploy.WorkflowManager.MonaiBackgroundService;
 using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
+using Monai.Deploy.WorkflowManager.Validators;
+using Mongo.Migration.Startup;
+using Mongo.Migration.Startup.DotNetCore;
 using MongoDB.Driver;
-using Serilog;
-using Serilog.Events;
-using Serilog.Exceptions;
+using NLog;
+using NLog.LayoutRenderers;
+using NLog.Web;
 
 namespace Monai.Deploy.WorkflowManager
 {
@@ -71,23 +73,9 @@ namespace Monai.Deploy.WorkflowManager
                 })
                 .ConfigureLogging((builderContext, configureLogging) =>
                 {
-                    configureLogging.AddConfiguration(builderContext.Configuration.GetSection("Logging"));
-                    configureLogging.AddFile(o => o.RootPath = AppContext.BaseDirectory);
+                    configureLogging.ClearProviders();
+                    configureLogging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                 })
-                .UseSerilog((context, services, configuration) => configuration
-                    .ReadFrom.Configuration(context.Configuration)
-                    .ReadFrom.Services(services)
-                    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                    .MinimumLevel.Debug()
-                    .Enrich.FromLogContext()
-                    .Enrich.WithExceptionDetails()
-                    .Enrich.WithProperty("dllversion", Assembly.GetEntryAssembly().GetName().Version)
-                    .Enrich.WithProperty("dllName", Assembly.GetEntryAssembly().GetName().Name)
-                    .WriteTo.File(
-                        path: "logs/MWM-.log",
-                        rollingInterval: RollingInterval.Day,
-                        formatter: new EcsTextFormatter())
-                    .WriteTo.Console())
                 .ConfigureServices((hostContext, services) =>
                 {
                     ConfigureServices(hostContext, services);
@@ -96,7 +84,8 @@ namespace Monai.Deploy.WorkflowManager
                 {
                     webBuilder.CaptureStartupErrors(true);
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+               .UseNLog();
 
         private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
         {
@@ -123,6 +112,7 @@ namespace Monai.Deploy.WorkflowManager
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkflowManagerOptions>, ConfigurationValidator>());
 
             services.AddSingleton<ConfigurationValidator>();
+            services.AddTransient<WorkflowValidator>();
 
             services.AddSingleton<DataRetentionService>();
 
@@ -141,9 +131,14 @@ namespace Monai.Deploy.WorkflowManager
             services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
             services.AddTransient<IPayloadRepsitory, PayloadRepository>();
             services.AddTransient<ITasksRepository, TasksRepository>();
+            services.AddMigration(new MongoMigrationSettings
+            {
+                ConnectionString = hostContext.Configuration.GetSection("WorkloadManagerDatabase:ConnectionString").Value,
+                Database = hostContext.Configuration.GetSection("WorkloadManagerDatabase:DatabaseName").Value,
+            });
 
             // StorageService
-            services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value);
+            services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value, HealthCheckOptions.ServiceHealthCheck);
 
             // MessageBroker
             services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
@@ -168,9 +163,26 @@ namespace Monai.Deploy.WorkflowManager
 
         private static void Main(string[] args)
         {
-            var host = CreateHostBuilder(args).Build();
+            var version = typeof(Program).Assembly;
+            var assemblyVersionNumber = version.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0.1";
 
+            var logger = ConfigureNLog(assemblyVersionNumber);
+            logger.Info($"Initializing MONAI Deploy Workflow Manager v{assemblyVersionNumber}");
+
+            var host = CreateHostBuilder(args).Build();
             host.Run();
+            logger.Info("MONAI Deploy Workflow Manager shutting down.");
+
+            NLog.LogManager.Shutdown();
+        }
+
+        private static Logger ConfigureNLog(string assemblyVersionNumber)
+        {
+            LayoutRenderer.Register("servicename", logEvent => typeof(Program).Namespace);
+            LayoutRenderer.Register("serviceversion", logEvent => assemblyVersionNumber);
+            LayoutRenderer.Register("machinename", logEvent => Environment.MachineName);
+
+            return LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
         }
 
 #pragma warning restore SA1600 // Elements should be documented

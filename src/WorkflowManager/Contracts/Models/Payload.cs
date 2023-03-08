@@ -17,12 +17,21 @@
 using System;
 using System.Collections.Generic;
 using Monai.Deploy.Messaging.Common;
+using Monai.Deploy.WorkflowManager.Contracts.Migrations;
+using Mongo.Migration.Documents;
+using Mongo.Migration.Documents.Attributes;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
-    public class Payload
+    [CollectionLocation("Payloads"), RuntimeVersion("1.0.0")]
+    public class Payload : IDocument
     {
+        [JsonConverter(typeof(DocumentVersionConvert)), BsonSerializer(typeof(DocumentVersionConverBson))]
+        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 0);
+
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; } = string.Empty;
 

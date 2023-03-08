@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using Moq;
-using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
-using NUnit.Framework;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
+using Moq;
+using NUnit.Framework;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
 {
@@ -129,12 +129,11 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         public void ValidateWorkflowRequest_WorkflowRequestMessageWithNullWorkflow_ThrowsArgumentNullException()
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
-            message.Workflows = new List<string> { null };
+            message.Workflows = new List<string> { "" };
 
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                _eventPayloadValidator.ValidateWorkflowRequest(message);
-            });
+            var result = _eventPayloadValidator.ValidateWorkflowRequest(message);
+
+            Assert.IsFalse(result);
         }
 
         [Test]
@@ -247,7 +246,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
                 Workflows = new List<string>(),
                 FileCount = 2,
                 CorrelationId = Guid.NewGuid().ToString(),
-                Timestamp = DateTime.Now,
+                Timestamp = DateTime.UtcNow,
                 CalledAeTitle = "AeTitle",
                 CallingAeTitle = "CallingAeTitle",
             };

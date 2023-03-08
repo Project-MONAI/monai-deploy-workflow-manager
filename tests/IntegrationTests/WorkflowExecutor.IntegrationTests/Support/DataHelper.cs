@@ -21,7 +21,9 @@ using Monai.Deploy.WorkflowManager.Models;
 using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
 using Polly;
 using Polly.Retry;
+
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
+
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
     public class DataHelper
@@ -243,6 +245,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     "succeeded" => TaskExecutionStatus.Succeeded,
                     "failed" => TaskExecutionStatus.Failed,
                     "canceled" => TaskExecutionStatus.Canceled,
+                    "partialfail" => TaskExecutionStatus.PartialFail,
                     _ => throw new Exception($"updateStatus {updateStatus} is not recognised. Please check and try again."),
                 };
 
@@ -334,7 +337,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 }
                 else
                 {
-                    throw new Exception($"{count} task dispatch events could not be found");
+                    throw new Exception($"{count} task dispatch events could not be found, actual amount is {TaskDispatchEvents.Count}");
                 }
             });
 

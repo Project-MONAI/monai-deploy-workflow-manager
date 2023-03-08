@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,8 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Database.Repositories
@@ -45,7 +46,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var mongoDatabase = client.GetDatabase(databaseSettings.Value.DatabaseName);
-            _payloadCollection = mongoDatabase.GetCollection<Payload>(databaseSettings.Value.PayloadCollectionName);
+            _payloadCollection = mongoDatabase.GetCollection<Payload>("Payloads");
         }
 
         public Task<long> CountAsync() => CountAsync(_payloadCollection, null);
@@ -62,7 +63,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(CreateAsync), e);
+                _logger.DbPayloadCreationError(e);
 
                 return false;
             }
@@ -74,11 +75,11 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             var filter = builder.Empty;
             if (!string.IsNullOrEmpty(patientId))
             {
-                filter &= builder.Eq(p => p.PatientDetails.PatientId, patientId);
+                filter &= builder.Regex(p => p.PatientDetails.PatientId, new BsonRegularExpression($"/{patientId}/i"));
             }
             if (!string.IsNullOrEmpty(patientName))
             {
-                filter &= builder.Eq(p => p.PatientDetails.PatientName, patientName);
+                filter &= builder.Regex(p => p.PatientDetails.PatientName, new BsonRegularExpression($"/{patientName}/i"));
             }
 
             return await GetAllAsync(_payloadCollection,
@@ -114,7 +115,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
             catch (Exception ex)
             {
-                _logger.DbCallFailed(nameof(UpdateAssociatedWorkflowInstancesAsync), ex);
+                _logger.DbUpdateWorkflowInstanceError(ex);
                 return false;
             }
         }

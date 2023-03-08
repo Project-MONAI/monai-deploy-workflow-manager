@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using MongoDB.Driver;
 using Polly;
 using Polly.Retry;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
@@ -41,9 +42,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             PayloadCollection = Database.GetCollection<Payload>($"{TestExecutionConfig.MongoConfig.PayloadCollection}");
             RetryMongo = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
             RetryPayload = Policy<List<Payload>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
+            CreateCollection("dummy");
         }
 
         #region WorkflowRevision
+
         public void CreateWorkflowRevisionDocument(WorkflowRevision workflowRevision)
         {
             RetryMongo.Execute(() =>
@@ -95,9 +98,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             return WorkflowRevisionCollection.Find(x => x.WorkflowId == workflowId).ToList();
         }
-        #endregion
+
+        #endregion WorkflowRevision
 
         #region WorkflowInstances
+
         public void CreateWorkflowInstanceDocument(WorkflowInstance workflowInstance)
         {
             RetryMongo.Execute(() =>
@@ -115,6 +120,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             return WorkflowInstanceCollection.Find(x => x.Id == Id).FirstOrDefault();
         }
+
         public WorkflowInstance GetWorkflowInstanceByWorkflowId(string Id)
         {
             return WorkflowInstanceCollection.Find(x => x.WorkflowId == Id).FirstOrDefault();
@@ -147,9 +153,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 WorkflowInstanceCollection.DeleteOne(x => x.Id.Equals(id));
             });
         }
-        #endregion
+
+        #endregion WorkflowInstances
 
         #region Payload
+
         public void CreatePayloadDocument(Payload payload)
         {
             RetryMongo.Execute(() =>
@@ -157,6 +165,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 PayloadCollection.InsertOne(payload);
             });
         }
+
         public List<Payload> GetPayloadCollectionByPayloadId(string payloadId)
         {
             var res = RetryPayload.Execute(() =>
@@ -204,11 +213,30 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 }
             });
         }
-        #endregion
+
+        #endregion Payload
 
         public void DropDatabase(string dbName)
         {
             Client.DropDatabase(dbName);
+        }
+
+        internal void ListAllCollections(ISpecFlowOutputHelper outputHelper, string testFeature)
+        {
+            var collections = Database.ListCollectionNames().ToList();
+            outputHelper.WriteLine($"MongoDB collections found in test feature '{testFeature}': {collections.Count}");
+            collections.ForEach(p => outputHelper.WriteLine($"- Collection: {p}"));
+        }
+
+        private void CreateCollection(string collectionName)
+        {
+            RetryMongo.Execute(() =>
+            {
+                if (!Database.ListCollectionNames().ToList().Contains(collectionName))
+                {
+                    Database.CreateCollection(collectionName);
+                }
+            });
         }
     }
 }

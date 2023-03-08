@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,12 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <param name="workflowIds">The workflow Ids.</param>
         Task<IList<WorkflowRevision>> GetByWorkflowsIdsAsync(IEnumerable<string> workflowIds);
 
+        // <summary>
+        // Retrieves a workflow based on a name.
+        // </summary>
+        /// <param name="name">The workflow name</param>
+        Task<WorkflowRevision> GetByWorkflowNameAsync(string name);
+
         /// <summary>
         /// Retrieves a workflow based on an aeTitle.
         /// </summary>
@@ -64,7 +70,9 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <param name="workflow"></param>
         /// <returns></returns>
         Task<DateTime> SoftDeleteWorkflow(WorkflowRevision workflow);
+
         Task<long> CountAsync();
+
         Task<IList<WorkflowRevision>> GetAllAsync(int? skip, int? limit);
 
         /// <summary>

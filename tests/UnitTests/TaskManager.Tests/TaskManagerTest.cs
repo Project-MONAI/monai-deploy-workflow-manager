@@ -29,6 +29,7 @@ using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.S3Policy.Policies;
 using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Moq;
 using Xunit;
@@ -66,7 +67,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             return Task.FromResult(_testRunnerCallback.GenerateExecuteTaskResult());
         }
 
-        public override Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
+        public override Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent taskCallbackEvent, CancellationToken cancellationToken = default)
         {
             return Task.FromResult(_testRunnerCallback.GenerateGetStatusResult());
         }

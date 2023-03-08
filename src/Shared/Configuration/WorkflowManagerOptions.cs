@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,6 +60,11 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         /// </summary>
         public BackgroundServiceSettings BackgroundServiceSettings { get; set; }
 
+        [ConfigurationKeyName("argoTtlStrategySeconds")]
+        public int ArgoTtlStrategySeconds { get; set; } = 60 * 60 * 24 * 2; // 2 days before the pods get automatically cleaned up from argo
+
+        [ConfigurationKeyName("minArgoTtlStrategySeconds")]
+        public int MinArgoTtlStrategySeconds { get; set; } = 30; // time to get logs before cleanup !
 
         public WorkflowManagerOptions()
         {

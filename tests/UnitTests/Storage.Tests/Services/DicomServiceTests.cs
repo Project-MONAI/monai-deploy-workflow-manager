@@ -16,19 +16,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Monai.Deploy.Storage.API;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.WorkflowManager.Storage.Services;
-using Moq;
-using Xunit;
-using System.Text;
+using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Storage.Constants;
+using Monai.Deploy.WorkflowManager.Storage.Services;
+using Moq;
 using Newtonsoft.Json;
-using System.IO;
+using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
 {
@@ -113,7 +113,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
                 PatientName = "Jack",
                 PatientId = "patientid",
                 PatientSex = "Male",
-                PatientDob = new DateTime(1996, 01, 20),
+                PatientDob = new DateTime(1996, 01, 20, 0, 0, 0, kind: DateTimeKind.Utc),
                 PatientAge = "25",
                 PatientHospitalId = "hospitalid"
             };
@@ -144,6 +144,50 @@ namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
             var result = await DicomService.GetPayloadPatientDetailsAsync(payloadId, bucketName);
 
             result.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [InlineData("CS", new object[] { "data" }, "data")]
+        [InlineData("DA", new object[] { "data" }, "data")]
+        [InlineData("DS", new object[] { "data" }, "data")]
+        [InlineData("IS", new object[] { "data" }, "data")]
+        [InlineData("LO", new object[] { "data" }, "data")]
+        [InlineData("SH", new object[] { "data" }, "data")]
+        [InlineData("UI", new object[] { "data" }, "data")]
+        [InlineData("UL", new object[] { "data" }, "data")]
+        [InlineData("US", new object[] { "data" }, "data")]
+        public void GetValue_GivenValue_ReturnsResult(string vr, object[] data, string expectedResult)
+        {
+            var dicom = new DicomValue() { Vr = vr, Value = data };
+            var dict = new Dictionary<string, DicomValue>()
+            {
+                { "key", dicom }
+            };
+
+            var result = DicomService.GetValue(dict, "key");
+
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void GetValue_GivenUnsportedValue_ReturnsResult()
+        {
+            var unsportedTypes = new List<string>() { "AE", "AS", "AT", "DT", "FL", "FD", "LT", "OB", "OD", "OF", "OL", "OV", "OW", "SL", "SQ", "SS", "ST", "SV", "TM", "UC", "UN", "UR", "UT", "UV" };
+            var data = new object[] { "data" };
+            var expectedData = "data";
+            foreach (var vr in unsportedTypes)
+            {
+                var dicom = new DicomValue() { Vr = vr, Value = data };
+                var dict = new Dictionary<string, DicomValue>()
+                {
+                    { "key", dicom }
+                };
+
+                var result = DicomService.GetValue(dict, "key");
+
+                Assert.Equal(expectedData, result);
+
+            }
         }
     }
 }

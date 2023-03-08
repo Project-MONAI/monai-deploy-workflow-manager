@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
@@ -22,6 +23,7 @@ using Monai.Deploy.WorkflowManager.ConditionsResolver.Constants;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.Storage.Services;
 
 namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
@@ -93,37 +95,32 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             }
         }
 
-        public bool TryParse(string[] conditions, WorkflowInstance workflowInstance)
+        public bool TryParse(string[] conditions, WorkflowInstance workflowInstance, out string resolvedConditional)
         {
             Guard.Against.NullOrEmpty(conditions);
             Guard.Against.Null(workflowInstance);
-            try
-            {
-                var joinedConditions = conditions.CombineConditionString();
-                joinedConditions = ResolveParameters(joinedConditions, workflowInstance);
-                var conditionalGroup = ConditionalGroup.Create(joinedConditions);
-                return conditionalGroup.Evaluate();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning($"Failure attemping to parse condition - {conditions}", ex);
-                return false;
-            }
+
+            var joinedConditions = conditions.CombineConditionString();
+            return TryParse(joinedConditions, workflowInstance, out resolvedConditional);
         }
 
-        public bool TryParse(string conditions, WorkflowInstance workflowInstance)
+        public bool TryParse(string conditions, WorkflowInstance workflowInstance, out string resolvedConditional)
         {
             Guard.Against.NullOrEmpty(conditions);
             Guard.Against.Null(workflowInstance);
+            resolvedConditional = string.Empty;
+
             try
             {
-                conditions = ResolveParameters(conditions, workflowInstance);
-                var conditionalGroup = ConditionalGroup.Create(conditions);
-                return conditionalGroup.Evaluate();
+                resolvedConditional = ResolveParameters(conditions, workflowInstance);
+                var conditionalGroup = ConditionalGroup.Create(resolvedConditional);
+                var result = conditionalGroup.Evaluate();
+                _logger.ConditionalParserResult(conditions, resolvedConditional, result.ToString());
+                return result;
             }
             catch (Exception ex)
             {
-                _logger.LogWarning($"Failure attemping to parse condition - {conditions}", ex);
+                _logger.FailedToParseCondition(resolvedConditional, conditions, ex);
                 return false;
             }
         }
@@ -157,17 +154,25 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                     {
                         result = "NULL";
                     }
-                    conditions = conditions
-                        .Remove(parameter.Key.Index, parameter.Key.Length)
-                        .Insert(parameter.Key.Index, $"'{result}'");
+                    if (result.StartsWith('[') && result.EndsWith(']'))
+                    {
+                        conditions = conditions
+                            .Remove(parameter.Key.Index, parameter.Key.Length)
+                            .Insert(parameter.Key.Index, $"{result}");
+                    }
+                    else
+                    {
+                        conditions = conditions
+                            .Remove(parameter.Key.Index, parameter.Key.Length)
+                            .Insert(parameter.Key.Index, $"'{result}'");
+                    }
                 }
 
                 ClearWorkflowParser();
                 return conditions;
             }
-            catch (Exception e)
+            catch
             {
-                _logger.LogError(e.Message);
                 ClearWorkflowParser();
                 throw;
             }
@@ -186,7 +191,6 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
         {
             WorkflowInstance = null;
         }
-
 
         /// <summary>
         /// Parses regex match collection for brackets
@@ -221,25 +225,29 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
             Guard.Against.NullOrWhiteSpace(value);
 
             value = value.Substring(2, value.Length - 4).Trim();
+
             var context = ParameterContext.Undefined;
+            (string? Result, ParameterContext Context) result = (Result: null, Context: context);
             if (value.StartsWith(ExecutionsTask))
             {
-                return ResolveExecutionTasks(value);
+                result = ResolveExecutionTasks(value);
             }
             if (value.StartsWith(ContextDicomSeries))
             {
-                return ResolveDicom(value);
+                result = ResolveDicom(value);
             }
             if (value.StartsWith(PatientDetails))
             {
-                return ResolvePatientDetails(value);
+                result = ResolvePatientDetails(value);
             }
             if (value.StartsWith(ContextWorkflow))
             {
-                return ResolveContextWorkflow(value);
+                result = ResolveContextWorkflow(value);
             }
 
-            return (Result: null, Context: context);
+            _logger.ResolveValue(value, result.Result);
+
+            return result;
         }
 
         private (string? Result, ParameterContext Context) ResolveDicom(string value)
@@ -286,39 +294,57 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 
             if (subValues.Length > 3)
             {
-                keyValue = subValues[3]?.Split('\'')[1];
+                keyValue = subValues[3];
             }
 
+            _logger.ResolveExecutionTask(subValueKey);
             var resultStr = null as string;
             switch (subValueKey.ToLower())
             {
                 case ParameterConstants.TaskId:
                     resultStr = task.TaskId;
                     break;
+
                 case ParameterConstants.Status:
                     resultStr = task.Status.ToString();
                     break;
+
                 case ParameterConstants.ExecutionId:
                     resultStr = task.ExecutionId;
                     break;
+
                 case ParameterConstants.OutputDirectory:
                     resultStr = task.OutputDirectory;
                     break;
+
                 case ParameterConstants.TaskType:
                     resultStr = task.TaskType;
                     break;
+
                 case ParameterConstants.PreviousTaskId:
                     resultStr = task.PreviousTaskId;
                     break;
+
                 case ParameterConstants.ErrorMessage:
                     resultStr = task.Reason.ToString();
                     break;
+
                 case ParameterConstants.Result:
                     resultStr = GetValueFromDictionary(task.ResultMetadata, keyValue);
                     break;
-                case ParameterConstants.StartTime:
-                    resultStr = task.TaskStartTime.ToString("dd/MM/yyyy HH:mm:ss");
+
+                case ParameterConstants.ExecutionStats:
+                    resultStr = GetValueFromDictionary(task.ExecutionStats, keyValue);
                     break;
+
+                case ParameterConstants.StartTime:
+                    resultStr = task.TaskStartTime.ToString("s", CultureInfo.InvariantCulture);
+                    break;
+
+                case ParameterConstants.EndTime:
+                    resultStr = task.TaskEndTime?.ToString("s", CultureInfo.InvariantCulture);
+                    break;
+
                 default:
                     break;
             }
@@ -339,6 +365,23 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                 {
                     return valueStr;
                 }
+
+                if (value is DateTime valueDate)
+                {
+                    return valueDate.ToString("s", CultureInfo.InvariantCulture);
+                }
+
+                return value.ToString();
+            }
+
+            return null;
+        }
+
+        private static string? GetValueFromDictionary(Dictionary<string, string> dictionary, string? key)
+        {
+            if (key is not null && dictionary.TryGetValue(key, out var value))
+            {
+                return value;
             }
 
             return null;
@@ -361,15 +404,18 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 
             if (workflowSpecValue is not null)
             {
+                _logger.ResolveWorkflow(keyValue);
                 var resultStr = null as string;
                 switch (keyValue)
                 {
                     case ParameterConstants.Name:
                         resultStr = workflowSpecValue.Name;
                         break;
+
                     case ParameterConstants.Description:
                         resultStr = workflowSpecValue.Description;
                         break;
+
                     default:
                         break;
                 }
@@ -403,21 +449,27 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
                     case ParameterConstants.PatientId:
                         resultStr = patientValue.PatientId;
                         break;
+
                     case ParameterConstants.PatientName:
                         resultStr = patientValue.PatientName;
                         break;
+
                     case ParameterConstants.PatientSex:
                         resultStr = patientValue.PatientSex;
                         break;
+
                     case ParameterConstants.PatientDob:
                         resultStr = patientValue.PatientDob?.ToString("dd/MM/yyyy");
                         break;
+
                     case ParameterConstants.PatientAge:
                         resultStr = patientValue.PatientAge;
                         break;
+
                     case ParameterConstants.PatientHospitalId:
                         resultStr = patientValue.PatientHospitalId;
                         break;
+
                     default:
                         break;
                 }
@@ -427,7 +479,5 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 
             return (Result: null, Context: ParameterContext.PatientDetails);
         }
-
-
     }
 }

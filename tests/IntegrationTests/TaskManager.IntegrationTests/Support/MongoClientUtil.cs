@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
     public class MongoClientUtil
     {
         private MongoClient Client { get; set; }
-        private IMongoDatabase Database { get; set; }
+        internal IMongoDatabase Database { get; set; }
         private IMongoCollection<TaskDispatchEventInfo> TaskDispatchEventInfoCollection { get; set; }
         private RetryPolicy RetryMongo { get; set; }
         private RetryPolicy<List<TaskDispatchEventInfo>> RetryTaskDispatchEventInfo { get; set; }
@@ -40,6 +40,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
         }
 
         #region TaskDispatchEventInfo
+
+        public void CreateTaskDispatchEventInfo(TaskDispatchEventInfo taskDispatchEventInfo)
+        {
+            RetryMongo.Execute(() =>
+            {
+                TaskDispatchEventInfoCollection.InsertOne(taskDispatchEventInfo);
+            });
+        }
 
         public List<TaskDispatchEventInfo> GetTaskDispatchEventInfoByExecutionId(string executionId)
         {
@@ -70,6 +78,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
         public void DropDatabase(string dbName)
         {
             Client.DropDatabase(dbName);
+        }
+
+        internal void ListAllCollections(ISpecFlowOutputHelper outputHelper, string testFeature)
+        {
+            var collections = Database.ListCollectionNames().ToList();
+            outputHelper.WriteLine($"MongoDB collections found in test feature '{testFeature}': {collections.Count}");
+            collections.ForEach(p => outputHelper.WriteLine($"- Collection: {p}"));
         }
     }
 }

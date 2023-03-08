@@ -84,6 +84,5 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support
         {
             return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
-
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using System;
-using Ardalis.GuardClauses;
-using System.Linq;
 
 namespace Monai.Deploy.WorkflowManager.Database.Repositories
 {
@@ -42,7 +42,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
 
             var mongoDatabase = client.GetDatabase(databaseSettings.Value.DatabaseName);
-            _workflowCollection = mongoDatabase.GetCollection<WorkflowRevision>(databaseSettings.Value.WorkflowCollectionName);
+            _workflowCollection = mongoDatabase.GetCollection<WorkflowRevision>("Workflows");
         }
 
         public List<WorkflowRevision> GetWorkflowsList()
@@ -97,6 +97,18 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             workflows = workflows.GroupBy(w => w.WorkflowId).Select(g => g.First()).ToList();
 
             return workflows;
+        }
+
+        public async Task<WorkflowRevision> GetByWorkflowNameAsync(string name)
+        {
+            Guard.Against.NullOrWhiteSpace(name, nameof(name));
+
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            var workflow = await _workflowCollection
+                .Find(x => x.Workflow.Name.ToLower() == name.ToLower() && x.Deleted == null)
+                .FirstOrDefaultAsync();
+
+            return workflow;
         }
 
         public async Task<WorkflowRevision> GetByAeTitleAsync(string aeTitle)
@@ -187,7 +199,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             return deletedTimeStamp;
         }
 
-        public Task<long> CountAsync() => CountAsync(_workflowCollection, null);
+        public async Task<long> CountAsync() => await _workflowCollection.CountDocumentsAsync(x => x.Deleted == null);
 
         public async Task<IList<WorkflowRevision>> GetAllAsync(int? skip = null, int? limit = null)
             => await GetAllAsync(_workflowCollection,
@@ -195,6 +207,5 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
                                       Builders<WorkflowRevision>.Sort.Descending(x => x.Id),
                                       skip,
                                       limit);
-
     }
 }

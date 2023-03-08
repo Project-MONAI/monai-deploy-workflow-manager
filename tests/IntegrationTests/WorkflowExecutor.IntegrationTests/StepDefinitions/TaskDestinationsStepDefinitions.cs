@@ -31,7 +31,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private Assertions Assertions { get; set; }
         private readonly ISpecFlowOutputHelper _outputHelper;
 
-
         public TaskDestinationsStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
@@ -60,12 +59,17 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             RetryPolicy.Execute(() =>
             {
                 Contracts.Models.WorkflowInstance workflowInstance;
-                if (DataHelper.TaskUpdateEvent.WorkflowInstanceId != "")
+                if (string.IsNullOrWhiteSpace(DataHelper.TaskUpdateEvent.WorkflowInstanceId) is false)
                 {
                     _outputHelper.WriteLine($"Retrieving workflow instance by id={DataHelper.TaskUpdateEvent.WorkflowInstanceId}");
                     workflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
                 }
-                else if (DataHelper.WorkflowRequestMessage.PayloadId != null)
+                else if (string.IsNullOrWhiteSpace(DataHelper.ExportCompleteEvent.WorkflowInstanceId) is false)
+                {
+                    _outputHelper.WriteLine($"Retrieving workflow instance by Workflow Instance Id={DataHelper.ExportCompleteEvent.WorkflowInstanceId}");
+                    workflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.ExportCompleteEvent.WorkflowInstanceId);
+                }
+                else if (DataHelper.WorkflowRequestMessage.PayloadId != Guid.Empty)
                 {
                     _outputHelper.WriteLine($"Retrieving workflow instance by PayloadId={DataHelper.WorkflowRequestMessage.PayloadId}");
                     workflowInstance = MongoClient.GetWorkflowInstance(DataHelper.WorkflowRequestMessage.PayloadId.ToString());
@@ -100,6 +104,5 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .ToList();
         }
-
     }
 }

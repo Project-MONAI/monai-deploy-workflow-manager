@@ -33,10 +33,46 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         [ConfigurationKeyName("storageCredentialDurationSeconds")]
         public int TemporaryStorageCredentialDurationSeconds { get; set; } = 3600;
 
+        [ConfigurationKeyName("argoExitHookSendMessageContainerImage")]
+        public string ArgoExitHookSendMessageContainerImage { get; set; } = "ghcr.io/jandelgado/rabtap:latest";
+
+        [ConfigurationKeyName("argoPluginArguments")]
+        public ArgoPluginArguments ArgoPluginArguments { get; set; } = new ArgoPluginArguments();
+
         public TaskManagerConfiguration()
         {
             PluginAssemblyMappings = new Dictionary<string, string>();
             MetadataAssemblyMappings = new Dictionary<string, string>();
         }
+    }
+
+    public class ArgoPluginArguments
+    {
+        [ConfigurationKeyName("server_url")]
+        public string ServerUrl { get; set; } = string.Empty;
+
+        [ConfigurationKeyName("initContainerCpuLimit")]
+        public string InitContainerCpuLimit { get; set; } = "1";
+
+        [ConfigurationKeyName("initContainerMemoryLimit")]
+        public string InitContainerMemoryLimit { get; set; } = "500Mi";
+
+        [ConfigurationKeyName("waitContainerCpuLimit")]
+        public string WaitContainerCpuLimit { get; set; } = "1";
+
+        [ConfigurationKeyName("waitContainerMemoryLimit")]
+        public string WaitContainerMemoryLimit { get; set; } = "500Mi";
+
+        [ConfigurationKeyName("messageGeneratorContainerCpuLimit")]
+        public string MessageGeneratorContainerCpuLimit { get; set; } = "1";
+
+        [ConfigurationKeyName("messageGeneratorContainerMemoryLimit")]
+        public string MessageGeneratorContainerMemoryLimit { get; set; } = "500Mi";
+
+        [ConfigurationKeyName("messageSenderContainerCpuLimit")]
+        public string MessageSenderContainerCpuLimit { get; set; } = "1";
+
+        [ConfigurationKeyName("messageSenderContainerMemoryLimit")]
+        public string MessageSenderContainerMemoryLimit { get; set; } = "500Mi";
     }
 }

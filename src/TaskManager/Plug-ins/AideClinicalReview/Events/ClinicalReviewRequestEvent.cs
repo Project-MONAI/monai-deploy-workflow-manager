@@ -24,6 +24,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events
     public class ClinicalReviewRequestEvent : EventBase
     {
         /// <summary>
+        /// Gets or sets the workflow instance ID.
+        /// </summary>
+        [JsonProperty(PropertyName = "workflow_instance_id")]
+        [Required]
+        public string WorkflowInstanceId { get; set; }
+        /// <summary>
         /// Gets or sets the execution ID representing the instance of the task.
         /// </summary>
         [JsonProperty(PropertyName = "execution_id")]
@@ -70,6 +76,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events
         /// </summary>
         [JsonProperty(PropertyName = "patient_metadata")]
         public PatientMetadata PatientMetadata { get; set; }
+
+        /// <summary>
+        /// Gets or sets the reviewer roles.
+        /// </summary>
+        [JsonProperty(PropertyName = "reviewer_roles")]
+        public string[] ReviewerRoles { get; set; } = Array.Empty<string>();
+
+        /// <summary>
+        /// Gets or sets the application metadata.
+        /// </summary>
+        [JsonProperty(PropertyName = "application_metadata")]
+        public Dictionary<string, string> ApplicationMetadata { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         /// Gets or sets the name of the workflow.

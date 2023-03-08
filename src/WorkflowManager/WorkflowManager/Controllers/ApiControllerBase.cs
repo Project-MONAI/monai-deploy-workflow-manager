@@ -52,12 +52,12 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <summary>
         /// Gets bad Request 400.
         /// </summary>
-        public static new int BadRequest => (int)HttpStatusCode.BadRequest;
+        public new static int BadRequest => (int)HttpStatusCode.BadRequest;
 
         /// <summary>
         /// Gets notFound 404.
         /// </summary>
-        public static new int NotFound => (int)HttpStatusCode.NotFound;
+        public new static int NotFound => (int)HttpStatusCode.NotFound;
 
         /// <summary>
         /// Creates a pagination paged response.

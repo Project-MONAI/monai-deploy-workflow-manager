@@ -94,7 +94,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin
             return Task.FromResult(new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None });
         }
 
-        public override Task<ExecutionStatus> GetStatus(string identity, CancellationToken cancellationToken = default)
+        public override Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent callbackEvent, CancellationToken cancellationToken = default)
         {
             if (_getStatusStatus.ToLower() == "accepted")
             {

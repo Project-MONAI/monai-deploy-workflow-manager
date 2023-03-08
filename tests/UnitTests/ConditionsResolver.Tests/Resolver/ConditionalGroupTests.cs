@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -164,6 +164,17 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
             var result = conditionalGroup.Evaluate();
 
             Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void ConditionalGroup_GivenConditionalWithLargeInt_Evaluate()
+        {
+            var val1 = decimal.MaxValue;
+            var val2 = decimal.MinValue;
+            var leftEquation = $"'{val1}' >= '{val2}'";
+            var conditionalGroup = new ConditionalGroup();
+            conditionalGroup.Parse(leftEquation);
+            Assert.True(conditionalGroup.Evaluate());
         }
 
         [Fact]

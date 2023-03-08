@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
@@ -36,30 +36,29 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
         {
             Guard.Against.Null(payload, nameof(payload));
 
+            using var loggingScope = Logger.BeginScope(new Dictionary<string, object>
+            {
+                ["correlationId"] = payload.CorrelationId,
+                ["payloadId"] = payload.PayloadId,
+            });
+
             var valid = true;
             var payloadValid = payload.IsValid(out var validationErrors);
 
             if (!payloadValid)
             {
-                Logger.ValidationErrors(string.Join(Environment.NewLine, validationErrors));
+                Logger.FailedToValidateWorkflowRequestEvent(string.Join(Environment.NewLine, validationErrors));
             }
 
             valid &= payloadValid;
 
-            if (payload.Workflows is null)
-            {
-                return valid;
-            }
-
             foreach (var workflow in payload.Workflows)
             {
-                Guard.Against.Null(workflow, nameof(workflow));
-
                 var workflowValid = !string.IsNullOrEmpty(workflow);
 
                 if (!workflowValid)
                 {
-                    Logger.ValidationErrors("Workflow is null or empty");
+                    Logger.FailedToValidateWorkflowRequestEvent("Workflow id is empty string");
                 }
 
                 valid &= workflowValid;
@@ -72,14 +71,20 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
         {
             Guard.Against.Null(payload, nameof(payload));
 
+            using var loggingScope = Logger.BeginScope(new Dictionary<string, object>
+            {
+                ["correlationId"] = payload.CorrelationId,
+                ["executionId"] = payload.ExecutionId,
+                ["taskId"] = payload.TaskId,
+            });
+
             try
             {
                 payload.Validate();
             }
             catch (MessageValidationException e)
             {
-                Logger.Exception($"Failed to validate {nameof(TaskUpdateEvent)}", e);
-
+                Logger.FailedToValidateTaskUpdateEvent(e);
                 return false;
             }
 
@@ -90,13 +95,19 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
         {
             Guard.Against.Null(payload, nameof(payload));
 
+            using var loggingScope = Logger.BeginScope(new Dictionary<string, object>
+            {
+                ["workflowInstanceId"] = payload.WorkflowInstanceId,
+                ["exportTaskId"] = payload.ExportTaskId,
+            });
+
             try
             {
                 payload.Validate();
             }
             catch (MessageValidationException e)
             {
-                Logger.Exception($"Failed to validate {nameof(ExportCompleteEvent)}", e);
+                Logger.FailedToValidateExportCompleteEvent(e);
 
                 return false;
             }

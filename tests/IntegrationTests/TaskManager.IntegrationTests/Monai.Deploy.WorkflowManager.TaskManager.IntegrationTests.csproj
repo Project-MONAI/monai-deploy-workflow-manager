@@ -23,22 +23,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-    <PackageReference Include="Minio" Version="4.0.5" />
-    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.6-rc0001" />
-    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.5" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+    <PackageReference Include="Minio" Version="4.0.6" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.20" />
+    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.20" />
+    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.10" />
+    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.10" />
+    <PackageReference Include="Mongo.Migration" Version="3.1.4" />
     <PackageReference Include="Polly" Version="7.2.3" />
-    <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
     <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
     <PackageReference Include="SpecFlow.NUnit" Version="3.9.74" />
     <PackageReference Include="nunit" Version="3.13.3" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
-    <PackageReference Include="FluentAssertions" Version="6.7.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
+    <PackageReference Include="FluentAssertions" Version="6.10.0" />
   </ItemGroup>
 
   <ItemGroup>

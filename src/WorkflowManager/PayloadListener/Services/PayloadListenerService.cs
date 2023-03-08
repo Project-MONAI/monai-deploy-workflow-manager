@@ -17,13 +17,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Messaging.API;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
-using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Rest;
-using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
+using Monai.Deploy.WorkflowManager.Shared;
 
 namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 {
@@ -71,6 +70,11 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             _eventPayloadListenerService = eventPayloadListenerService ?? throw new ArgumentNullException(nameof(eventPayloadListenerService));
 
             _messageSubscriber = _scope.ServiceProvider.GetRequiredService<IMessageBrokerSubscriberService>();
+            _messageSubscriber.OnConnectionError += (sender, args) =>
+            {
+                _logger.MessagingServiceErrorRecover(args.ErrorMessage);
+                SetupPolling();
+            };
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -106,6 +110,15 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         {
             Task.Run(async () =>
             {
+                using var loggerScope = _logger.BeginScope(new Dictionary<string, object>
+                {
+                    ["correlationId"] = eventArgs.Message.CorrelationId,
+                    ["source"] = eventArgs.Message.ApplicationId,
+                    ["messageId"] = eventArgs.Message.MessageId,
+                    ["messageDescription"] = eventArgs.Message.MessageDescription,
+                });
+
+                _logger.WorkflowRequestReceived();
                 await _eventPayloadListenerService.ReceiveWorkflowPayload(eventArgs);
             }).ConfigureAwait(false);
         }
@@ -114,6 +127,15 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         {
             Task.Run(async () =>
             {
+                using var loggerScope = _logger.BeginScope(new Dictionary<string, object>
+                {
+                    ["correlationId"] = eventArgs.Message.CorrelationId,
+                    ["source"] = eventArgs.Message.ApplicationId,
+                    ["messageId"] = eventArgs.Message.MessageId,
+                    ["messageDescription"] = eventArgs.Message.MessageDescription,
+                });
+
+                _logger.TaskUpdateReceived();
                 await _eventPayloadListenerService.TaskUpdatePayload(eventArgs);
             }).ConfigureAwait(false);
         }
@@ -122,6 +144,15 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         {
             Task.Run(async () =>
             {
+                using var loggerScope = _logger.BeginScope(new Dictionary<string, object>
+                {
+                    ["correlationId"] = eventArgs.Message.CorrelationId,
+                    ["source"] = eventArgs.Message.ApplicationId,
+                    ["messageId"] = eventArgs.Message.MessageId,
+                    ["messageDescription"] = eventArgs.Message.MessageDescription,
+                });
+
+                _logger.ExportCompleteReceived();
                 await _eventPayloadListenerService.ExportCompletePayload(eventArgs);
             }).ConfigureAwait(false);
         }

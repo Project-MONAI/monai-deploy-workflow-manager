@@ -1,4 +1,4 @@
-# Copyright 2021-2022 MONAI Consortium
+# Copyright 2022 MONAI Consortium
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Enable NuGet cache
-      uses: actions/cache@v3.0.10
+      uses: actions/cache@v3.2.6
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -65,7 +65,7 @@ jobs:
       run: license_finder -r
       
     - name: Check License Header
-      uses: apache/skywalking-eyes@main
+      uses: apache/skywalking-eyes@v0.4.0
 
     - name: Check this step to see how to resolve failure with license scanning
       if: ${{ failure() && steps.license_scanning.conclusion == 'failure' }}

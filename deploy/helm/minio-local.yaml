@@ -15,18 +15,20 @@
 
 replicaCount: 1
 
-# image:
-  # repository: minio/minio
-  # pullPolicy: IfNotPresent
-  # tag: latest
-  # command: 
-    # - "/bin/sh"
-    # - "-ce"
-    # - "/usr/bin/docker-entrypoint.sh minio server /data"
-
+image:
+  repository: minio/minio
+  pullPolicy: IfNotPresent
+  tag: latest
+  #command: 
+   # - server /data --console-address ":9001"
+  args:
+    - server
+    - /data
+    - --console-address
+    - ":9001"
 enviromentVariables:
-  MINIO_ROOT_USER: admin
-  MINIO_ROOT_PASSWORD: password
+  MINIO_ROOT_USER: minioadmin
+  MINIO_ROOT_PASSWORD: minioadmin
 
 service:
   type: NodePort
@@ -35,7 +37,7 @@ service:
   port2: 9001
   nodeport2: 30091
   selector: 
-    app: minio
+    app.kubernetes.io/instance: minio
 
 
 

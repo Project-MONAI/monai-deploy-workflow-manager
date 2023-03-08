@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Monai.Deploy.Messaging.Events;
@@ -113,9 +112,32 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         Task<bool> UpdateWorkflowInstanceStatusAsync(string workflowInstanceId, Status status);
 
         /// <summary>
-        /// Get all failed workflow instance's within a time span.
+        /// Get all failed workflow instance's.
         /// </summary>
-        /// <param name="timeSpan">length of period to check.</param>
-        Task<IList<WorkflowInstance>> GetAllFailedAsync(DateTime startDate);
+        Task<IList<WorkflowInstance>> GetAllFailedAsync();
+
+        /// <summary>
+        /// Acknowledges a workflowinstance error.
+        /// </summary>
+        /// <param name="workflowInstanceId">The Workflow Instance Id.</param>
+        /// <returns>An updated workflow.</returns>
+        Task<WorkflowInstance> AcknowledgeWorkflowInstanceErrors(string workflowInstanceId);
+
+        /// <summary>
+        /// Acknowledges a task error.
+        /// </summary>
+        /// <param name="workflowInstanceId">The Workflow Instance Id.</param>
+        /// <param name="executionId">The Execution Id.</param>
+        /// <returns>An updated workflow.</returns>
+        Task<WorkflowInstance> AcknowledgeTaskError(string workflowInstanceId, string executionId);
+
+        /// <summary>
+        /// Updates the result metadata for an export complete task.
+        /// </summary>
+        /// <param name="workflowInstanceId">The Workflow Instance Id.</param>
+        /// <param name="executionId">The Execution Id.</param>
+        /// <param name="fileStatuses">The file statuses to set.</param>
+        /// <returns>a Success value.</returns>
+        Task<bool> UpdateExportCompleteMetadataAsync(string workflowInstanceId, string executionId, Dictionary<string, object> fileStatuses);
     }
 }

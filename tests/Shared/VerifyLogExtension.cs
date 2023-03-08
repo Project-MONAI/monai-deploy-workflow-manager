@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ using Moq;
 namespace Monai.Deploy.WorkflowManager.SharedTest
 {
     [ExcludeFromCodeCoverage]
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
     public static class VerifyLogExtension
     {
         public static Mock<ILogger> VerifyLoggingMessageEndsWith(this Mock<ILogger> logger, string expectedMessage, LogLevel expectedLogLevel = LogLevel.Debug, Times? times = null)
@@ -137,5 +136,6 @@ namespace Monai.Deploy.WorkflowManager.SharedTest
             return logger;
         }
     }
+
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 }

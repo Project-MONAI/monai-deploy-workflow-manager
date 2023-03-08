@@ -200,22 +200,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     CorrelationId = Guid.NewGuid().ToString(),
                     Reason = FailureReason.None,
                     Message = "Task Message",
-                    TaskId = "303c441f-7181-43cf-b1fd-83e5acec99fa",
-                    Metadata = new Dictionary<string, object>()
-                    {
-                    }
-                }
-            },
-            new TaskUpdateTestData()
-            {
-                Name = "Task_Status_Update_Missing_TaskId",
-                TaskUpdateEvent = new TaskUpdateEvent()
-                {
-                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Id,
-                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Tasks[0].ExecutionId,
-                    CorrelationId = Guid.NewGuid().ToString(),
-                    Reason = FailureReason.None,
-                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Task_Status_Update").WorkflowInstance.Tasks[0].TaskId,
                     Metadata = new Dictionary<string, object>()
                     {
                     }
@@ -312,6 +297,43 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     TaskId = Helper.GetWorkflowInstanceByName("WFI_Multi_Task_1").WorkflowInstance.Tasks[0].TaskId,
                     Metadata = new Dictionary<string, object>()
                     {
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "Task_Update_Dispatches_Clinical_Review_False",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Clinical_Review_1").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Clinical_Review_1").WorkflowInstance.Tasks[1].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Clinical_Review_1").WorkflowInstance.Tasks[1].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                         { "acceptance", false },
+                        { "reason", "not correct" },
+                        { "user_id", "example_user_id" }
+                    }
+                }
+            },
+            new TaskUpdateTestData()
+            {
+                Name = "Task_Update_Dispatches_Clinical_Review_True",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("WFI_Clinical_Review_1").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("WFI_Clinical_Review_1").WorkflowInstance.Tasks[1].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("WFI_Clinical_Review_1").WorkflowInstance.Tasks[1].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                         { "acceptance", true },
+                        { "user_id", "example_user_id" }
                     }
                 }
             },
@@ -550,6 +572,23 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Reason = FailureReason.None,
                     Message = "Task Message",
                     TaskId = Helper.GetWorkflowInstanceByName("WFI_Task_Multiple_Destination_Condition_True").WorkflowInstance.Tasks[0].TaskId,
+                    Metadata = new Dictionary<string, object>()
+                    {
+                    }
+                }
+            },
+
+             new TaskUpdateTestData()
+            {
+                Name = "Task_Update_Task_Multiple_Destination_Condition_Case_Sensitivity",
+                TaskUpdateEvent = new TaskUpdateEvent()
+                {
+                    WorkflowInstanceId = Helper.GetWorkflowInstanceByName("Workflow_Instance_For_Case_Sensitivity").WorkflowInstance.Id,
+                    ExecutionId = Helper.GetWorkflowInstanceByName("Workflow_Instance_For_Case_Sensitivity").WorkflowInstance.Tasks[0].ExecutionId,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Reason = FailureReason.None,
+                    Message = "Task Message",
+                    TaskId = Helper.GetWorkflowInstanceByName("Workflow_Instance_For_Case_Sensitivity").WorkflowInstance.Tasks[0].TaskId,
                     Metadata = new Dictionary<string, object>()
                     {
                     }

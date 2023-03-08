@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
         }
 
         [Fact]
-        public async Task ConvertArtifactVariablesToPath_MultipleArtifacts_ReturnsMappedPaths()
+        public void ConvertArtifactVariablesToPath_MultipleArtifacts_ReturnsMappedPaths()
         {
             var artifacts = new Artifact[]
             {
@@ -122,7 +122,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
             _storageService.Setup(w => w.VerifyObjectExistsAsync(workflowInstance.BucketId, value2)).ReturnsAsync(value2);
             _storageService.Setup(w => w.VerifyObjectExistsAsync(workflowInstance.BucketId, value3)).ReturnsAsync(value3);
 
-            var response = await ArtifactMapper.ConvertArtifactVariablesToPath(artifacts, workflowInstance.PayloadId, workflowInstance.Id, workflowInstance.BucketId);
+            var result = ArtifactMapper.TryConvertArtifactVariablesToPath(artifacts, workflowInstance.PayloadId, workflowInstance.Id, workflowInstance.BucketId, true, out var response);
+            response.Should().NotBeNullOrEmpty();
+            Assert.True(result);
 
             response.Should().BeEquivalentTo(expected);
         }
@@ -164,24 +166,24 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
                 Status = Status.Created,
                 BucketId = "bucket",
                 Tasks = new List<TaskExecution>
+                {
+                    new TaskExecution
                     {
-                        new TaskExecution
+                        TaskId = "image_type_detector",
+                        ExecutionId = executionId,
+                        Status = TaskExecutionStatus.Dispatched,
+                        OutputArtifacts = new Dictionary<string, string>
                         {
-                            TaskId = "image_type_detector",
-                            ExecutionId = executionId,
-                            Status = TaskExecutionStatus.Dispatched,
-                            OutputArtifacts = new Dictionary<string, string>
-                            {
-                                { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}" }
-                            }
-                        },
-                        new TaskExecution
-                        {
-                            TaskId = "coffee",
-                            Status = TaskExecutionStatus.Created,
-                            OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}"
+                            { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}" }
                         }
+                    },
+                    new TaskExecution
+                    {
+                        TaskId = "coffee",
+                        Status = TaskExecutionStatus.Created,
+                        OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}"
                     }
+                }
             };
 
             _workflowInstanceRepository.Setup(w => w.GetTaskByIdAsync(workflowInstance.Id, "image_type_detector")).ReturnsAsync(workflowInstance.Tasks[0]);
@@ -190,6 +192,141 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Common
             _storageService.Setup(w => w.VerifyObjectExistsAsync(workflowInstance.BucketId, It.IsAny<KeyValuePair<string, string>>())).ReturnsAsync(default(KeyValuePair<string, string>));
 
             await Assert.ThrowsAsync<FileNotFoundException>(async () => await ArtifactMapper.ConvertArtifactVariablesToPath(artifacts, workflowInstance.PayloadId, workflowInstance.Id, workflowInstance.BucketId));
+        }
+
+        [Fact]
+        public void TryConvertArtifactVariablesToPath_MultipleMissingRequiredArtifacts_ShouldNotThrow()
+        {
+            var artifacts = new Artifact[]
+            {
+                new Artifact
+                {
+                    Name = "taskartifact",
+                    Value = "{{ context.executions.image_type_detector.artifacts.dicom }}",
+                    Mandatory = true
+                },
+                new Artifact
+                {
+                    Name = "dicomimage",
+                    Value = "{{ context.input.dicom }}",
+                    Mandatory = true
+                },
+                new Artifact
+                {
+                    Name = "outputtaskdir",
+                    Value = "{{ context.executions.coffee.output_dir }}",
+                    Mandatory = true
+                }
+            };
+
+            var payloadId = Guid.NewGuid().ToString();
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var executionId = Guid.NewGuid().ToString();
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = Guid.NewGuid().ToString(),
+                PayloadId = payloadId,
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                {
+                    new TaskExecution
+                    {
+                        TaskId = "image_type_detector",
+                        ExecutionId = executionId,
+                        Status = TaskExecutionStatus.Dispatched,
+                        OutputArtifacts = new Dictionary<string, string>
+                        {
+                            { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}" }
+                        }
+                    },
+                    new TaskExecution
+                    {
+                        TaskId = "coffee",
+                        Status = TaskExecutionStatus.Created,
+                        OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}"
+                    }
+                }
+            };
+
+            _workflowInstanceRepository.Setup(w => w.GetTaskByIdAsync(workflowInstance.Id, "image_type_detector")).ReturnsAsync(workflowInstance.Tasks[0]);
+            _workflowInstanceRepository.Setup(w => w.GetTaskByIdAsync(workflowInstance.Id, "coffee")).ReturnsAsync(workflowInstance.Tasks[1]);
+
+            _storageService.Setup(w => w.VerifyObjectExistsAsync(workflowInstance.BucketId, It.IsAny<KeyValuePair<string, string>>())).ReturnsAsync(default(KeyValuePair<string, string>));
+
+            var result = ArtifactMapper.TryConvertArtifactVariablesToPath(artifacts, workflowInstance.PayloadId, workflowInstance.Id, workflowInstance.BucketId, true, out var response);
+            Assert.NotNull(response);
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void TryConvertArtifactVariablesToPath_MultipleMissingRequiredArtifacts_ShouldThrowWhenNotFileNotFoundException()
+        {
+            var artifacts = new Artifact[]
+            {
+                new Artifact
+                {
+                    Name = "taskartifact",
+                    Value = "{{ context.executions.image_type_detector.artifacts.dicom }}",
+                    Mandatory = true
+                },
+                new Artifact
+                {
+                    Name = "dicomimage",
+                    Value = "{{ context.input.dicom }}",
+                    Mandatory = true
+                },
+                new Artifact
+                {
+                    Name = "outputtaskdir",
+                    Value = "{{ context.executions.coffee.output_dir }}",
+                    Mandatory = true
+                }
+            };
+
+            var payloadId = Guid.NewGuid().ToString();
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var executionId = Guid.NewGuid().ToString();
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = Guid.NewGuid().ToString(),
+                PayloadId = payloadId,
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                {
+                    new TaskExecution
+                    {
+                        TaskId = "image_type_detector",
+                        ExecutionId = executionId,
+                        Status = TaskExecutionStatus.Dispatched,
+                        OutputArtifacts = new Dictionary<string, string>
+                        {
+                            { "dicom", $"{payloadId}/workflows/{workflowInstanceId}/{executionId}" }
+                        }
+                    },
+                    new TaskExecution
+                    {
+                        TaskId = "coffee",
+                        Status = TaskExecutionStatus.Created,
+                        OutputDirectory = $"{payloadId}/workflows/{workflowInstanceId}/{executionId}"
+                    }
+                }
+            };
+
+            _workflowInstanceRepository.Setup(w => w.GetTaskByIdAsync(workflowInstance.Id, "image_type_detector")).ReturnsAsync(workflowInstance.Tasks[0]);
+            var exceptionMessage = "test exception";
+            _workflowInstanceRepository.Setup(w => w.GetTaskByIdAsync(workflowInstance.Id, "coffee")).Throws(new Exception(exceptionMessage));
+
+            _storageService.Setup(w => w.VerifyObjectExistsAsync(workflowInstance.BucketId, It.IsAny<KeyValuePair<string, string>>())).ReturnsAsync(default(KeyValuePair<string, string>));
+
+            var ex = Assert.Throws<AggregateException>(() => ArtifactMapper.TryConvertArtifactVariablesToPath(artifacts, workflowInstance.PayloadId, workflowInstance.Id, workflowInstance.BucketId, false, out var response));
+            ex.InnerException.Should().BeOfType<Exception>();
+            ex?.InnerException?.Message.Should().Be(exceptionMessage);
         }
 
         [Fact]

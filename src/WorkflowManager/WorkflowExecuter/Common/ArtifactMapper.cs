@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ using Microsoft.Extensions.Logging;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
 
 namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 {
@@ -37,6 +37,40 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             _workflowInstanceRepository = workflowInstanceRepository ?? throw new ArgumentNullException(nameof(workflowInstanceRepository));
             _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        public bool TryConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet, out Dictionary<string, string> artifactPaths)
+        {
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["payloadId"] = payloadId,
+                ["workflowInstanceId"] = workflowInstanceId,
+                ["bucketId"] = bucketId,
+            });
+
+            try
+            {
+                var task = ConvertArtifactVariablesToPath(artifacts, payloadId, workflowInstanceId, bucketId, shouldExistYet);
+                task.Wait();
+                artifactPaths = task.Result;
+                return true;
+            }
+            catch (FileNotFoundException ex)
+            {
+                _logger.ConvertArtifactVariablesToPathError(ex);
+                artifactPaths = new Dictionary<string, string>();
+                return false;
+            }
+            catch (AggregateException ex)
+            {
+                _logger.ConvertArtifactVariablesToPathError(ex);
+                if (ex.InnerException is FileNotFoundException)
+                {
+                    artifactPaths = new Dictionary<string, string>();
+                    return false;
+                }
+                throw;
+            }
         }
 
         public async Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet = true)
@@ -116,6 +150,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
         private async Task<KeyValuePair<string, string>> ConvertVariableStringToPath(Artifact artifact, string variableString, string workflowInstanceId, string payloadId, string bucketId, bool shouldExistYet, string suffix = "")
         {
+            _logger.ConvertingVariableStringToPath(variableString);
             if (variableString.StartsWith("context.input.dicom", StringComparison.InvariantCultureIgnoreCase))
             {
                 return await VerifyExists(new KeyValuePair<string, string>(artifact.Name, $"{payloadId}/dcm{suffix}"), bucketId, shouldExistYet);

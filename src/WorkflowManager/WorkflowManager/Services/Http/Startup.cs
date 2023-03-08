@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
+using System.Linq;
+using System.Net.Mime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Monai.Deploy.WorkflowManager.Authentication.Extensions;
-using Monai.Deploy.WorkflowManager.Logging.Attributes;
+using Monai.Deploy.Security.Authentication.Configurations;
+using Monai.Deploy.Security.Authentication.Extensions;
+using Monai.Deploy.Storage.Configuration;
+using Monai.Deploy.WorkflowManager.Shared;
 using Newtonsoft.Json.Converters;
-using Serilog;
 
 namespace Monai.Deploy.WorkflowManager.Services.Http
 {
@@ -54,26 +59,8 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
         {
             services.AddSingleton(Configuration);
             services.AddHttpContextAccessor();
-            services.AddApiVersioning(
-                options =>
-                {
-                    options.ReportApiVersions = true;
-                    options.AssumeDefaultVersionWhenUnspecified = true;
-                });
+            services.AddControllers().AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
-            services.AddVersionedApiExplorer(
-                options =>
-                {
-                    // Add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
-                    // NOTE: the specified format code will format the version as "'v'major[.minor][-status]"
-                    options.GroupNameFormat = "'v'VVV";
-
-                    // NOTE: this option is only necessary when versioning by url segment. the SubstitutionFormat
-                    // can also be used to control the format of the API version in route templates
-                    options.SubstituteApiVersionInUrl = true;
-                });
-
-            services.AddControllers(options => options.Filters.Add(typeof(LogActionFilterAttribute))).AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MONAI Workflow Manager", Version = "v1" });
@@ -83,7 +70,14 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
             var serviceProvider = services.BuildServiceProvider();
             var logger = serviceProvider.GetService<ILogger<Startup>>();
 
-            services.AddMonaiAuthentication(Configuration, logger);
+            services.AddOptions<AuthenticationOptions>()
+                .Bind(Configuration.GetSection("MonaiDeployAuthentication"));
+
+            services.AddMonaiAuthentication();
+            services.AddHttpLoggingForMonai(Configuration);
+            services.AddHealthChecks()
+                .AddCheck<MonaiHealthCheck>("Workflow Manager Services")
+                .AddMongoDb(mongodbConnectionString: Configuration["WorkloadManagerDatabase:ConnectionString"], mongoDatabaseName: Configuration["WorkloadManagerDatabase:DatabaseName"]);
         }
 
         /// <summary>
@@ -92,6 +86,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
         /// <param name="app">Application Builder.</param>
         /// <param name="env">Web Host Environment.</param>
 #pragma warning disable SA1204 // Static elements should appear before instance elements
+
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 #pragma warning restore SA1204 // Static elements should appear before instance elements
         {
@@ -103,10 +98,29 @@ namespace Monai.Deploy.WorkflowManager.Services.Http
             }
 
             app.UseRouting();
+            app.UseHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+            {
+                ResponseWriter = async (context, report) =>
+                {
+                    var result = System.Text.Json.JsonSerializer.Serialize(new
+                    {
+                        status = report.Status.ToString(),
+                        checks = report.Entries.Select(c => new
+                        {
+                            check = c.Key,
+                            result = c.Value.Status.ToString(),
+                        }),
+                    });
+
+                    context.Response.ContentType = MediaTypeNames.Application.Json;
+                    await context.Response.WriteAsync(result);
+                },
+            });
 
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpointAuthorizationMiddleware();
+            app.UseHttpLogging();
 
             app.UseEndpoints(endpoints =>
             {

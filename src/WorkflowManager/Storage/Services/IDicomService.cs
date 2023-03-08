@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,5 +55,13 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
         /// <param name="bucketId"></param>
         /// <returns></returns>
         Task<string> GetAnyValueAsync(string keyId, string payloadId, string bucketId);
+
+        /// <summary>
+        /// Gets value given DicomValue.
+        /// </summary>
+        /// <param name="dict"></param>
+        /// <param name="keyId"></param>
+        /// <returns></returns>
+        string GetValue(Dictionary<string, DicomValue> dict, string keyId);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -167,6 +167,5 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             const string expectedInstance = "/payload";
             Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
-
     }
 }

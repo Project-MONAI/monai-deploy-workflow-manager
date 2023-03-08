@@ -1,4 +1,4 @@
-# Copyright 2021-2022 MONAI Consortium
+# Copyright 2022 MONAI Consortium
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,12 +25,18 @@ jobs:
   secret-scan:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: '0'
-
-    - name: Secret detection
-      uses: gitleaks/gitleaks-action@v1.6.0
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@v3.28.7
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
 
   dependency-scan:
     runs-on: ubuntu-latest
@@ -46,22 +52,21 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Enable NuGet cache
-      uses: actions/cache@v3.0.10
+      uses: actions/cache@v3.2.6
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
         restore-keys: |
           ${{ runner.os }}-nuget
 
-    - name: Install NuGetDefense tool
-      run: dotnet tool install --global NuGetDefense.Tool
-
     - name: Restore Solution
       run: dotnet restore Monai.Deploy.WorkflowManager.sln
       working-directory: ./src
 
-    - name: Dependency Scanning
+    - name: Dependency Scan
       run: |
-        sed -i "s/OSSINDEXAPI_TOKEN/$OSSINDEXAPI_TOKEN/g" NuGetDefense.json
-        sed -i "s/OSSINDEXAPI_USERNAME/$OSSINDEXAPI_USERNAME/g" NuGetDefense.json
-        nugetdefense -p src/Monai.Deploy.WorkflowManager.sln --settings-file NuGetDefense.json
+        dotnet list package --vulnerable 2>&1 | tee vulnerable.txt
+        echo "Analyzing dotnet list package command log output..."
+        sh -c "! grep 'has the following vulnerable packages' vulnerable.txt"
+      working-directory: ./src
+

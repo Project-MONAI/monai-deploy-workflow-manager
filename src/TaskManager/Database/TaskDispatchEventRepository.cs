@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var mongoDatabase = client.GetDatabase(databaseSettings.Value.DatabaseName);
-            _taskDispatchEventCollection = mongoDatabase.GetCollection<TaskDispatchEventInfo>(databaseSettings.Value.TaskDispatchEventCollectionName);
+            _taskDispatchEventCollection = mongoDatabase.GetCollection<TaskDispatchEventInfo>("TaskDispatchEvents");
         }
 
         public async Task<TaskDispatchEventInfo?> CreateAsync(TaskDispatchEventInfo taskDispatchEventInfo)
@@ -107,6 +107,23 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
             {
                 _logger.DatabaseException(nameof(RemoveAsync), e);
                 return false;
+            }
+        }
+
+        public async Task<TaskDispatchEventInfo> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEventInfo, Dictionary<string, string> pluginArgs)
+        {
+            Guard.Against.Null(taskDispatchEventInfo);
+            Guard.Against.Null(pluginArgs);
+
+            try
+            {
+                await _taskDispatchEventCollection.FindOneAndUpdateAsync(i => i.Id == taskDispatchEventInfo.Id, Builders<TaskDispatchEventInfo>.Update.Set(p => p.Event.TaskPluginArguments, pluginArgs)).ConfigureAwait(false);
+                return await GetByTaskExecutionIdAsync(taskDispatchEventInfo.Event.ExecutionId).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                _logger.DatabaseException(nameof(UpdateTaskPluginArgsAsync), e);
+                return default;
             }
         }
     }

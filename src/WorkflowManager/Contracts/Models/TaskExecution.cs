@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,9 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "task_start_time")]
         public DateTime TaskStartTime { get; set; }
 
+        [JsonProperty(PropertyName = "task_end_time")]
+        public DateTime? TaskEndTime { get; set; }
+
         [JsonProperty(PropertyName = "execution_stats")]
         public Dictionary<string, string> ExecutionStats { get; set; } = new Dictionary<string, string>();
 
@@ -65,9 +68,6 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "result")]
         public Dictionary<string, object> ResultMetadata { get; set; } = new Dictionary<string, object>();
 
-        [JsonProperty(PropertyName = "input_parameters")]
-        public Dictionary<string, object> InputParameters { get; set; } = new Dictionary<string, object>();
-
         [JsonProperty(PropertyName = "next_timeout")]
         public DateTime Timeout { get => TaskStartTime.AddMinutes(TimeoutInterval); }
 
@@ -76,5 +76,10 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         [JsonProperty(PropertyName = "acknowledged_task_errors")]
         public DateTime? AcknowledgedTaskErrors { get; set; } = null;
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

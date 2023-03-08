@@ -16,26 +16,40 @@
 
 using System.Net;
 using BoDi;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Newtonsoft.Json;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class CommonStepDefinitions
     {
-        public CommonStepDefinitions(ObjectContainer objectContainer)
+        public CommonStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             ApiHelper = objectContainer.Resolve<ApiHelper>();
             DataHelper = objectContainer.Resolve<DataHelper>();
+            MongoClient = objectContainer.Resolve<MongoClientUtil>();
+            _outputHelper = outputHelper;
         }
 
         private ApiHelper ApiHelper { get; }
 
         private DataHelper DataHelper { get; }
 
+        private MongoClientUtil MongoClient { get; }
+
+        private readonly ISpecFlowOutputHelper _outputHelper;
+
         [Given(@"I have an endpoint (.*)")]
-        public void GivenIHaveAnEndpoint(string endpoint) => ApiHelper.SetUrl(new Uri(TestExecutionConfig.ApiConfig.BaseUrl + endpoint));
+        public void GivenIHaveAnEndpoint(string endpoint)
+        {
+            var apiUri = new Uri(TestExecutionConfig.ApiConfig.BaseUrl + endpoint);
+            ApiHelper.SetUrl(apiUri);
+            _outputHelper.WriteLine($"API Url set to {apiUri}");
+        }
 
         [Given(@"I send a (.*) request")]
         [When(@"I send a (.*) request")]
@@ -51,11 +65,22 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             ApiHelper.Response.StatusCode.Should().Be((HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), expectedCode));
         }
 
+        [When(@"I have a workflow body (.*)")]
+        [Given(@"I have a workflow body (.*)")]
+        public void GivenIHaveAWorkflowBody(string name)
+        {
+            var body = DataHelper.GetWorkflowObjectTestData(name);
+            Support.HttpRequestMessageExtensions.AddJsonBody(ApiHelper.Request, body);
+        }
+
         [When(@"I have a body (.*)")]
         [Given(@"I have a body (.*)")]
         public void GivenIHaveABody(string name)
         {
-            Support.HttpRequestMessageExtensions.AddJsonBody(ApiHelper.Request, DataHelper.GetWorkflowObjectTestData(name));
+            WorkflowUpdateRequest body = new();
+            body.Workflow = DataHelper.GetWorkflowObjectTestData(name);
+            body.OriginalWorkflowName = body.Workflow.Name;
+            Support.HttpRequestMessageExtensions.AddJsonBody(ApiHelper.Request, body);
         }
 
         [When(@"I have a Task Request body (.*)")]
@@ -68,8 +93,24 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"I will receive the error message (.*)")]
         public void ThenIWillReceiveTheCorrectErrorMessage(string message)
         {
-            ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().ContainAll("type", "title", "status", "traceId");
-            ApiHelper.Response.Content.ReadAsStringAsync().Result.Should().Contain(message);
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            result.Should().ContainAll("type", "title", "status", "traceId");
+            result.Should().Contain(message);
+        }
+
+        [Then(@"I will get a health check response status message (.*)")]
+        public async Task ThenIWillGetAHealthCheckResponseMessage(string expectedMessage)
+        {
+            var contentMessage = await ApiHelper.Response?.Content.ReadAsStringAsync();
+            contentMessage.Should().NotBeNull();
+            var response = JsonConvert.DeserializeObject<HealthCheckResponse>(contentMessage);
+            response.Should().NotBeNull();
+            response!.Status.Should().Be(expectedMessage);
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "minio", Result = expectedMessage });
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "Rabbit MQ Publisher", Result = expectedMessage });
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "Rabbit MQ Subscriber", Result = expectedMessage });
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "Workflow Manager Services", Result = expectedMessage });
+            response!.Checks.Should().ContainEquivalentOf<Component>(new Component { Check = "mongodb", Result = expectedMessage });
         }
     }
 }

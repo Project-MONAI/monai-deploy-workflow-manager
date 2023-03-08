@@ -64,11 +64,10 @@ Scenario: Publish a valid workflow request triggering a workflow with multiple r
 Scenario: Publish an invalid workflow request which does not create a workflow instance
     Given I have a clinical workflow Basic_Workflow_3
     When I publish a Workflow Request Message <workflowRequestMessage> with no artifacts
-    Then I can see 0 Workflow Instances are created
+    Then I can see no Workflow Instances are created
     Examples:
     | workflowRequestMessage                    |
     | Missing_PayloadID_Invalid_WF_Request      |
-    | Missing_WorkflowID_Invalid_WF_Request     |
     | Missing_Bucket_Invalid_WF_Request         |
     | Missing_CorrelationID_Invalid_WF_Request  |
     | Missing_CallingAETitle_Invalid_WF_Request |
@@ -76,12 +75,19 @@ Scenario: Publish an invalid workflow request which does not create a workflow i
     | No_Matching_AE_Title                      |
 
 @WorkflowRequest
+Scenario: Publish an workflow request with ae title that matches old version and does not create a workflow instance
+    Given I have a clinical workflow Basic_Workflow_Multiple_Revisions_Different_AE_1
+    And I have a clinical workflow Basic_Workflow_Multiple_Revisions_Different_AE_2
+    When I publish a Workflow Request Message AE_Title_From_Old_Version with no artifacts
+    Then I can see no Workflow Instances are created
+
+@WorkflowRequest
 Scenario: Publish a valid workflow request with an existing Workflow Instance with a Task which is not dispatched
     Given I have a clinical workflow Multi_Request_Workflow_Created
     And I have a Workflow Instance Existing_WFI_Created with no artifacts
     When I publish a Workflow Request Message Multi_WF_Created with no artifacts
     Then I can see an additional Workflow Instance is not created
-    And 0 Task Dispatch event is published
+    And A Task Dispatch event is not published
 
 @WorkflowRequest
 Scenario: Publish a valid workflow request with an existing Workflow Instance with a Task which is dispatched

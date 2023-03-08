@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
 using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Database.Repositories
@@ -46,7 +46,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var mongoDatabase = client.GetDatabase(bookStoreDatabaseSettings.Value.DatabaseName);
-            _workflowInstanceCollection = mongoDatabase.GetCollection<WorkflowInstance>(bookStoreDatabaseSettings.Value.WorkflowInstanceCollectionName);
+            _workflowInstanceCollection = mongoDatabase.GetCollection<WorkflowInstance>("WorkflowInstances");
 
             var task = Task.Run(() => EnsureIndex(_workflowInstanceCollection));
             task.Wait();
@@ -101,8 +101,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(GetAllAsync), e);
-
+                _logger.DbGetAllTasksError(e);
                 return (new List<TaskExecution>(), 0);
             }
         }
@@ -123,8 +122,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
             catch (Exception e)
             {
-                _logger.DbCallFailed(nameof(GetAllAsync), e);
-
+                _logger.DbGetTasksError(taskId, e);
                 return default;
             }
         }

@@ -75,6 +75,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -124,6 +127,380 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "AllowInsecureUrl", "false" },
                         { "BaseUrl", "https://test.com" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
+                    }
+                }
+            },
+            new TaskDispatchTestData
+            {
+                Name = "Task_Dispatch_Clinical_Reviewer_Role_Single_Role",
+                TaskDispatchEvent = new TaskDispatchEvent()
+                {
+                    PayloadId = Guid.NewGuid().ToString(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    ExecutionId = Guid.NewGuid().ToString(),
+                    WorkflowInstanceId = Guid.NewGuid().ToString(),
+                    TaskId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Dispatched,
+                    TaskPluginType = "aide_clinical_review",
+                    Inputs = new List<Messaging.Common.Storage>()
+                    {
+                        new Messaging.Common.Storage
+                        {
+                            Name = "input1",
+                            Endpoint = "//test_1",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test1",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = "//dcm_1"
+                        },
+                    },
+                    IntermediateStorage = new Messaging.Common.Storage
+                    {
+                        Name = "input",
+                        Endpoint = "//test",
+                        Credentials = new Messaging.Common.Credentials()
+                        {
+                            AccessKey = "test",
+                            AccessToken = "test",
+                        },
+                        Bucket = "bucket1",
+                        RelativeRootPath = "//dcm"
+                    },
+                    TaskPluginArguments = new Dictionary<string, string>()
+                    {
+                        { "workflow_name", "Workflow_1" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
+                        { "patient_id", "100001" },
+                        { "queue_name", "aide.clinical_review.request" },
+                        { "reviewer_roles", "head_scan_clinician" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
+                    }
+                }
+            },
+            new TaskDispatchTestData
+            {
+                Name = "Task_Dispatch_Clinical_Reviewer_Role_Mutiple_Roles",
+                TaskDispatchEvent = new TaskDispatchEvent()
+                {
+                    PayloadId = Guid.NewGuid().ToString(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    ExecutionId = Guid.NewGuid().ToString(),
+                    WorkflowInstanceId = Guid.NewGuid().ToString(),
+                    TaskId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Dispatched,
+                    TaskPluginType = "aide_clinical_review",
+                    Inputs = new List<Messaging.Common.Storage>()
+                    {
+                        new Messaging.Common.Storage
+                        {
+                            Name = "input1",
+                            Endpoint = "//test_1",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test1",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = "//dcm_1"
+                        },
+                    },
+                    IntermediateStorage = new Messaging.Common.Storage
+                    {
+                        Name = "input",
+                        Endpoint = "//test",
+                        Credentials = new Messaging.Common.Credentials()
+                        {
+                            AccessKey = "test",
+                            AccessToken = "test",
+                        },
+                        Bucket = "bucket1",
+                        RelativeRootPath = "//dcm"
+                    },
+                    TaskPluginArguments = new Dictionary<string, string>()
+                    {
+                        { "workflow_name", "Workflow_1" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
+                        { "patient_id", "100001" },
+                        { "queue_name", "aide.clinical_review.request" },
+                        { "reviewer_roles", "head_scan_clinician, brain_scan_clinician" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
+                    }
+                }
+            },
+            new TaskDispatchTestData
+            {
+                Name = "Task_Dispatch_Clinical_Reviewer_Role_Default_Role",
+                TaskDispatchEvent = new TaskDispatchEvent()
+                {
+                    PayloadId = Guid.NewGuid().ToString(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    ExecutionId = Guid.NewGuid().ToString(),
+                    WorkflowInstanceId = Guid.NewGuid().ToString(),
+                    TaskId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Dispatched,
+                    TaskPluginType = "aide_clinical_review",
+                    Inputs = new List<Messaging.Common.Storage>()
+                    {
+                        new Messaging.Common.Storage
+                        {
+                            Name = "input1",
+                            Endpoint = "//test_1",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test1",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = "//dcm_1"
+                        },
+                    },
+                    IntermediateStorage = new Messaging.Common.Storage
+                    {
+                        Name = "input",
+                        Endpoint = "//test",
+                        Credentials = new Messaging.Common.Credentials()
+                        {
+                            AccessKey = "test",
+                            AccessToken = "test",
+                        },
+                        Bucket = "bucket1",
+                        RelativeRootPath = "//dcm"
+                    },
+                    TaskPluginArguments = new Dictionary<string, string>()
+                    {
+                        { "workflow_name", "Workflow_1" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
+                        { "patient_id", "100001" },
+                        { "queue_name", "aide.clinical_review.request" },
+                        { "reviewer_roles", "" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
+                    }
+                }
+            },
+            new TaskDispatchTestData
+            {
+                Name = "Task_Dispatch_Clinical_Review_Application_Name",
+                TaskDispatchEvent = new TaskDispatchEvent()
+                {
+                    PayloadId = Guid.NewGuid().ToString(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    ExecutionId = Guid.NewGuid().ToString(),
+                    WorkflowInstanceId = Guid.NewGuid().ToString(),
+                    TaskId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Dispatched,
+                    TaskPluginType = "aide_clinical_review",
+                    Inputs = new List<Messaging.Common.Storage>()
+                    {
+                        new Messaging.Common.Storage
+                        {
+                            Name = "input1",
+                            Endpoint = "//test_1",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test1",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = "//dcm_1"
+                        },
+                    },
+                    IntermediateStorage = new Messaging.Common.Storage
+                    {
+                        Name = "input",
+                        Endpoint = "//test",
+                        Credentials = new Messaging.Common.Credentials()
+                        {
+                            AccessKey = "test",
+                            AccessToken = "test",
+                        },
+                        Bucket = "bucket1",
+                        RelativeRootPath = "//dcm"
+                    },
+                    TaskPluginArguments = new Dictionary<string, string>()
+                    {
+                        { "workflow_name", "Workflow_1" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
+                        { "patient_id", "100001" },
+                        { "queue_name", "aide.clinical_review.request" },
+                        { "reviewer_roles", "" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
+                    }
+                }
+            },
+            new TaskDispatchTestData
+            {
+                Name = "Task_Dispatch_Clinical_Review_Application_Version",
+                TaskDispatchEvent = new TaskDispatchEvent()
+                {
+                    PayloadId = Guid.NewGuid().ToString(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    ExecutionId = Guid.NewGuid().ToString(),
+                    WorkflowInstanceId = Guid.NewGuid().ToString(),
+                    TaskId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Dispatched,
+                    TaskPluginType = "aide_clinical_review",
+                    Inputs = new List<Messaging.Common.Storage>()
+                    {
+                        new Messaging.Common.Storage
+                        {
+                            Name = "input1",
+                            Endpoint = "//test_1",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test1",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = "//dcm_1"
+                        },
+                    },
+                    IntermediateStorage = new Messaging.Common.Storage
+                    {
+                        Name = "input",
+                        Endpoint = "//test",
+                        Credentials = new Messaging.Common.Credentials()
+                        {
+                            AccessKey = "test",
+                            AccessToken = "test",
+                        },
+                        Bucket = "bucket1",
+                        RelativeRootPath = "//dcm"
+                    },
+                    TaskPluginArguments = new Dictionary<string, string>()
+                    {
+                        { "workflow_name", "Workflow_1" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
+                        { "patient_id", "100001" },
+                        { "queue_name", "aide.clinical_review.request" },
+                        { "reviewer_roles", "" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
+                    }
+                }
+            },
+            new TaskDispatchTestData
+            {
+                Name = "Task_Dispatch_Clinical_Review_QA_Mode",
+                TaskDispatchEvent = new TaskDispatchEvent()
+                {
+                    PayloadId = Guid.NewGuid().ToString(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    ExecutionId = Guid.NewGuid().ToString(),
+                    WorkflowInstanceId = Guid.NewGuid().ToString(),
+                    TaskId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Dispatched,
+                    TaskPluginType = "aide_clinical_review",
+                    Inputs = new List<Messaging.Common.Storage>()
+                    {
+                        new Messaging.Common.Storage
+                        {
+                            Name = "input1",
+                            Endpoint = "//test_1",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test1",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = "//dcm_1"
+                        },
+                    },
+                    IntermediateStorage = new Messaging.Common.Storage
+                    {
+                        Name = "input",
+                        Endpoint = "//test",
+                        Credentials = new Messaging.Common.Credentials()
+                        {
+                            AccessKey = "test",
+                            AccessToken = "test",
+                        },
+                        Bucket = "bucket1",
+                        RelativeRootPath = "//dcm"
+                    },
+                    TaskPluginArguments = new Dictionary<string, string>()
+                    {
+                        { "workflow_name", "Workflow_1" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
+                        { "patient_id", "100001" },
+                        { "queue_name", "aide.clinical_review.request" },
+                        { "reviewer_roles", "" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
+                    }
+                }
+            },
+            new TaskDispatchTestData
+            {
+                Name = "Task_Dispatch_Clinical_Review_Reviewed_Execution_Id",
+                TaskDispatchEvent = new TaskDispatchEvent()
+                {
+                    PayloadId = Guid.NewGuid().ToString(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    ExecutionId = Guid.NewGuid().ToString(),
+                    WorkflowInstanceId = Guid.NewGuid().ToString(),
+                    TaskId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Dispatched,
+                    TaskPluginType = "aide_clinical_review",
+                    Inputs = new List<Messaging.Common.Storage>()
+                    {
+                        new Messaging.Common.Storage
+                        {
+                            Name = "input1",
+                            Endpoint = "//test_1",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test1",
+                                AccessToken = "test1",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = "//dcm_1"
+                        },
+                    },
+                    IntermediateStorage = new Messaging.Common.Storage
+                    {
+                        Name = "input",
+                        Endpoint = "//test",
+                        Credentials = new Messaging.Common.Credentials()
+                        {
+                            AccessKey = "test",
+                            AccessToken = "test",
+                        },
+                        Bucket = "bucket1",
+                        RelativeRootPath = "//dcm"
+                    },
+                    TaskPluginArguments = new Dictionary<string, string>()
+                    {
+                        { "workflow_name", "Workflow_1" },
+                        { "reviewed_task_id", "some_task" },
+                        { "reviewed_execution_id", "some_execution" },
+                        { "patient_id", "100001" },
+                        { "queue_name", "aide.clinical_review.request" },
+                        { "reviewer_roles", "" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -189,7 +566,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "patient_name", "John Doe" },
                         { "patient_sex", "Male" },
                         { "patient_dob", "01/01/1990" },
-                        { "queue_name", "aide.clinical_review.request" }
+                        { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" }
                     }
                 }
             },
@@ -239,6 +619,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -287,6 +670,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_task_id", "some_task" },
                         { "reviewed_execution_id", "some_execution" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -348,6 +734,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -385,6 +774,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -433,6 +825,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -481,6 +876,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -529,6 +927,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -577,6 +978,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -624,6 +1028,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_task_id", "some_task" },
                         { "reviewed_execution_id", "some_execution" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -671,6 +1078,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "workflow_name", "Workflow_1" },
                         { "reviewed_task_id", "some_task" },
                         { "reviewed_execution_id", "some_execution" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },
@@ -720,6 +1130,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                         { "reviewed_execution_id", "some_execution" },
                         { "patient_id", "100001" },
                         { "queue_name", "aide.clinical_review.request" },
+                        { "application_name", "app name" },
+                        { "application_version", "v1" },
+                        { "mode", "QA" },
                     }
                 }
             },

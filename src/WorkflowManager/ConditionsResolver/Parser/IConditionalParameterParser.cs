@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,13 +41,15 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
         /// </summary>
         /// <param name="conditions">An array of strings of conditions.</param>
         /// <param name="workflowInstance">The workflow instance of the task.</param>
-        bool TryParse(string[] conditions, WorkflowInstance workflowInstance);
+        /// <param name="resolvedConditional">outputs the resolved conditional.</param>
+        bool TryParse(string[] conditions, WorkflowInstance workflowInstance, out string? resolvedConditional);
 
         /// <summary>
         /// Verifies if a string of conditions evaluates to true.
         /// </summary>
         /// <param name="conditions">A string of conditions.</param>
         /// <param name="workflowInstance">The workflow instance of the task.</param>
-        bool TryParse(string conditions, WorkflowInstance workflowInstance);
+        /// <param name="resolvedConditional">outputs the resolved conditional.</param>
+        bool TryParse(string conditions, WorkflowInstance workflowInstance, out string resolvedConditional);
     }
 }

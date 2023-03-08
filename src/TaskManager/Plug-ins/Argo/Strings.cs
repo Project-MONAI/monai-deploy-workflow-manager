@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
     public static class Strings
     {
         public const string ArgoApiVersion = "argoproj.io/v1alpha1";
-        public const string DefaultNamespace = "default";
+        public const string DefaultNamespace = "argo";
         public const string KindWorkflow = "Workflow";
 
         public const string TaskIdLabelSelectorName = "md-task-id";
@@ -32,16 +32,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         public const string ExitHook = "exit";
         public const string ExitHookTemplateName = "exit-message-template";
-        public const string ExitHookTemplateGenerateTemplateName = "generate-message";
         public const string ExitHookTemplateSendTemplateName = "send-message";
         public const string ExitHookParameterEvent = "event";
-        public const string ExitHookParameterMessage = "message";
-        public const string ExitHookGenerateMessageContainerImage = "alpine:latest";
         public const string ExitHookOutputArtifactName = "output";
 #pragma warning disable S5443 // public directory /tmp/ is used in Docker container.
         public const string ExitHookOutputPath = "/tmp/";
 #pragma warning restore S5443 // public directory /tmp/ is used in Docker container
-        public const string ExitHookSendMessageContainerImage = "ghcr.io/jandelgado/rabtap:latest";
 
         public const string SecretAccessKey = "accessKey";
         public const string SecretSecretKey = "secretKey";

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,30 @@
  * limitations under the License.
  */
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using Monai.Deploy.WorkflowManager.Contracts.Migrations;
+using Mongo.Migration.Documents;
+using Mongo.Migration.Documents.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
-    public class WorkflowInstance
+    [CollectionLocation("WorkflowInstances"), RuntimeVersion("1.0.0")]
+    public class WorkflowInstance : IDocument
     {
+        [JsonConverter(typeof(DocumentVersionConvert)), BsonSerializer(typeof(DocumentVersionConverBson))]
+        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 0);
+
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "ae_title")]
         public string? AeTitle { get; set; } = string.Empty;
+
+        [JsonProperty(PropertyName = "workflow_name")]
+        public string WorkflowName { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "workflow_id")]
         public string WorkflowId { get; set; } = string.Empty;
@@ -51,5 +62,10 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         [JsonProperty(PropertyName = "acknowledged_workflow_errors")]
         public DateTime? AcknowledgedWorkflowErrors { get; set; } = null;
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

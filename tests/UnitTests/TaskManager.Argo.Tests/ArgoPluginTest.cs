@@ -30,15 +30,18 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.SharedTest;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
+using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
 using Moq;
 using Moq.Language.Flow;
 using Newtonsoft.Json;
 using Xunit;
 using YamlDotNet.Serialization;
+using Options = Microsoft.Extensions.Options.Options;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests;
 
@@ -51,7 +54,20 @@ public class ArgoPluginTest
     private readonly Mock<IArgoProvider> _argoProvider;
     private readonly Mock<IArgoClient> _argoClient;
     private readonly Mock<IKubernetes> _kubernetesClient;
+    private readonly Mock<ITaskDispatchEventService> _taskDispatchEventService;
+    private readonly Mock<ICoreV1Operations> _k8sCoreOperations;
     private readonly IOptions<WorkflowManagerOptions> _options;
+    private Workflow? _submittedArgoTemplate;
+    private readonly int _argoTtlStatergySeconds = 360;
+    private readonly int _minAgoTtlStatergySeconds = 30;
+    private readonly string _initContainerCpuLimit = "100m";
+    private readonly string _initContainerMemoryLimit = "200Mi";
+    private readonly string _waitContainerCpuLimit = "200m";
+    private readonly string _waitContainerMemoryLimit = "300Mi";
+    private readonly string _messageGeneratorContainerCpuLimit = "300m";
+    private readonly string _messageGeneratorContainerMemoryLimit = "400Mi";
+    private readonly string _messageSenderContainerCpuLimit = "400m";
+    private readonly string _messageSenderContainerMemoryLimit = "500Mi";
 
     public ArgoPluginTest()
     {
@@ -59,9 +75,11 @@ public class ArgoPluginTest
         _serviceScopeFactory = new Mock<IServiceScopeFactory>();
         _serviceScope = new Mock<IServiceScope>();
         _kubernetesProvider = new Mock<IKubernetesProvider>();
+        _taskDispatchEventService = new Mock<ITaskDispatchEventService>();
         _argoProvider = new Mock<IArgoProvider>();
         _argoClient = new Mock<IArgoClient>();
         _kubernetesClient = new Mock<IKubernetes>();
+        _k8sCoreOperations = new Mock<ICoreV1Operations>();
 
         _options = Options.Create(new WorkflowManagerOptions());
         _options.Value.Messaging.PublisherSettings.Add("endpoint", "1.2.2.3/virtualhost");
@@ -70,6 +88,16 @@ public class ArgoPluginTest
         _options.Value.Messaging.PublisherSettings.Add("exchange", "exchange");
         _options.Value.Messaging.PublisherSettings.Add("virtualHost", "vhost");
         _options.Value.Messaging.Topics.TaskCallbackRequest = "md.tasks.callback";
+        _options.Value.ArgoTtlStrategySeconds = _argoTtlStatergySeconds;
+        _options.Value.MinArgoTtlStrategySeconds = _minAgoTtlStatergySeconds;
+        _options.Value.TaskManager.ArgoPluginArguments.InitContainerCpuLimit = _initContainerCpuLimit;
+        _options.Value.TaskManager.ArgoPluginArguments.InitContainerMemoryLimit = _initContainerMemoryLimit;
+        _options.Value.TaskManager.ArgoPluginArguments.WaitContainerCpuLimit = _waitContainerCpuLimit;
+        _options.Value.TaskManager.ArgoPluginArguments.WaitContainerMemoryLimit = _waitContainerMemoryLimit;
+        _options.Value.TaskManager.ArgoPluginArguments.MessageGeneratorContainerCpuLimit = _messageGeneratorContainerCpuLimit;
+        _options.Value.TaskManager.ArgoPluginArguments.MessageGeneratorContainerMemoryLimit = _messageGeneratorContainerMemoryLimit;
+        _options.Value.TaskManager.ArgoPluginArguments.MessageSenderContainerCpuLimit = _messageSenderContainerCpuLimit;
+        _options.Value.TaskManager.ArgoPluginArguments.MessageSenderContainerMemoryLimit = _messageSenderContainerMemoryLimit;
 
         _serviceScopeFactory.Setup(p => p.CreateScope()).Returns(_serviceScope.Object);
 
@@ -80,29 +108,23 @@ public class ArgoPluginTest
         serviceProvider
             .Setup(x => x.GetService(typeof(IArgoProvider)))
             .Returns(_argoProvider.Object);
+        serviceProvider
+            .Setup(x => x.GetService(typeof(ITaskDispatchEventService)))
+            .Returns(_taskDispatchEventService.Object);
 
         _serviceScope.Setup(x => x.ServiceProvider).Returns(serviceProvider.Object);
 
         _logger.Setup(p => p.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _argoProvider.Setup(p => p.CreateClient(It.IsAny<string>(), It.IsAny<string?>(), true)).Returns(_argoClient.Object);
         _kubernetesProvider.Setup(p => p.CreateClient()).Returns(_kubernetesClient.Object);
+        _taskDispatchEventService.Setup(p => p.UpdateTaskPluginArgsAsync(It.IsAny<TaskDispatchEventInfo>(), It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskDispatchEventInfo(new TaskDispatchEvent()));
+        _kubernetesClient.SetupGet<ICoreV1Operations>(p => p.CoreV1).Returns(_k8sCoreOperations.Object);
     }
 
     [Fact(DisplayName = "Throws when missing required plug-in arguments")]
     public void ArgoPlugin_ThrowsWhenMissingPluginArguments()
     {
         var message = GenerateTaskDispatchEvent();
-        Assert.Throws<InvalidTaskException>(() => new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message));
-
-        foreach (var key in Keys.RequiredParameters.Take(Keys.RequiredParameters.Count - 1))
-        {
-            message.TaskPluginArguments.Add(key, Guid.NewGuid().ToString());
-            Assert.Throws<InvalidTaskException>(() => new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message));
-        }
-        message.TaskPluginArguments[Keys.RequiredParameters[Keys.RequiredParameters.Count - 1]] = Guid.NewGuid().ToString();
-        Assert.Throws<InvalidTaskException>(() => new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message));
-
-        message.TaskPluginArguments[Keys.BaseUrl] = "/api";
         Assert.Throws<InvalidTaskException>(() => new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message));
     }
 
@@ -129,7 +151,7 @@ public class ArgoPluginTest
         var message = GenerateTaskDispatchEventWithValidArguments();
 
         _ = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
-        _logger.VerifyLogging($"Argo plugin initialized: namespace=namespace, base URL=http://api-endpoint/, activeDeadlineSeconds=50, apiToken configured=True.", LogLevel.Information, Times.Once());
+        _logger.VerifyLogging($"Argo plugin initialized: namespace=namespace, base URL=http://api-endpoint/, activeDeadlineSeconds=50, apiToken configured=true. allowInsecure=true", LogLevel.Information, Times.Once());
     }
 
     [Fact(DisplayName = "ExecuteTask - returns ExecutionStatus on failure")]
@@ -137,9 +159,9 @@ public class ArgoPluginTest
     {
         var message = GenerateTaskDispatchEventWithValidArguments();
 
-        _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(GenerateWorkflowTemplate(message));
-        _argoClient.Setup(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
+        _argoClient.Setup(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
             .Throws(new Exception("error"));
 
         SetupKubbernetesSecrets()
@@ -156,8 +178,8 @@ public class ArgoPluginTest
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
         Assert.Equal("error", result.Errors);
 
-        _argoClient.Verify(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Once());
-        _kubernetesClient.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
+        _argoClient.Verify(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Once());
+        _k8sCoreOperations.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<V1Secret>(),
             It.IsAny<string>(),
             It.IsAny<string>(),
@@ -168,7 +190,7 @@ public class ArgoPluginTest
             It.IsAny<CancellationToken>()), Times.Exactly(3));
 
         await runner.DisposeAsync().ConfigureAwait(false);
-        _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
+        _k8sCoreOperations.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<V1DeleteOptions>(),
@@ -186,7 +208,7 @@ public class ArgoPluginTest
     {
         var message = GenerateTaskDispatchEventWithValidArguments();
 
-        _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(GenerateWorkflowTemplate(message));
 
         SetupKubbernetesSecrets()
@@ -200,8 +222,8 @@ public class ArgoPluginTest
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
         Assert.Equal("error", result.Errors);
 
-        _argoClient.Verify(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
-        _kubernetesClient.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
+        _argoClient.Verify(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
+        _k8sCoreOperations.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<V1Secret>(),
             It.IsAny<string>(),
             It.IsAny<string>(),
@@ -212,7 +234,7 @@ public class ArgoPluginTest
             It.IsAny<CancellationToken>()), Times.Once());
 
         await runner.DisposeAsync().ConfigureAwait(false);
-        _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
+        _k8sCoreOperations.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<V1DeleteOptions>(),
@@ -230,7 +252,7 @@ public class ArgoPluginTest
     {
         var message = GenerateTaskDispatchEventWithValidArguments();
 
-        _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .Throws(new Exception("error"));
 
         var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
@@ -240,8 +262,8 @@ public class ArgoPluginTest
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
         Assert.Equal("error", result.Errors);
 
-        _argoClient.Verify(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
-        _kubernetesClient.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
+        _argoClient.Verify(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
+        _k8sCoreOperations.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<V1Secret>(),
             It.IsAny<string>(),
             It.IsAny<string>(),
@@ -252,7 +274,7 @@ public class ArgoPluginTest
             It.IsAny<CancellationToken>()), Times.Never());
 
         await runner.DisposeAsync().ConfigureAwait(false);
-        _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
+        _k8sCoreOperations.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<V1DeleteOptions>(),
@@ -272,7 +294,7 @@ public class ArgoPluginTest
 
         var argoTemplate = GenerateWorkflowTemplate(message);
         argoTemplate.Spec.Entrypoint = "missing-template";
-        _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(argoTemplate);
 
         SetupKubbernetesSecrets().Throws(new Exception("error"));
@@ -285,8 +307,8 @@ public class ArgoPluginTest
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
         Assert.Equal($"Template '{argoTemplate.Spec.Entrypoint}' cannot be found in the referenced WorkflowTmplate '{message.TaskPluginArguments[Keys.WorkflowTemplateName]}'.", result.Errors);
 
-        _argoClient.Verify(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
-        _kubernetesClient.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
+        _argoClient.Verify(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
+        _k8sCoreOperations.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<V1Secret>(),
             It.IsAny<string>(),
             It.IsAny<string>(),
@@ -297,7 +319,7 @@ public class ArgoPluginTest
             It.IsAny<CancellationToken>()), Times.Never());
 
         await runner.DisposeAsync().ConfigureAwait(false);
-        _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
+        _k8sCoreOperations.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<V1DeleteOptions>(),
@@ -311,21 +333,21 @@ public class ArgoPluginTest
     }
 
     [Theory(DisplayName = "ExecuteTask - WorkflowTemplate test")]
-    [InlineData("SimpleTemplate.yml", 3)]
+    [InlineData("SimpleTemplate.yml", 3, true)]
     [InlineData("DagWithIntermediateArtifacts.yml", 3)]
-    public async Task ArgoPlugin_ExecuteTask_WorkflowTemplates(string filename, int secretsCreated)
+    public async Task ArgoPlugin_ExecuteTask_WorkflowTemplates(string filename, int secretsCreated, bool withoutDefaultArguments = false)
     {
         var argoTemplate = LoadArgoTemplate(filename);
         Assert.NotNull(argoTemplate);
 
-        var message = GenerateTaskDispatchEventWithValidArguments();
+        var message = GenerateTaskDispatchEventWithValidArguments(withoutDefaultArguments);
         message.TaskPluginArguments["resources"] = "{\"memory_reservation\": \"string\",\"cpu_reservation\": \"string\",\"gpu_limit\": 1,\"memory_limit\": \"string\",\"cpu_limit\": \"string\"}";
         message.TaskPluginArguments["priorityClass"] = "Helo";
         Workflow? submittedArgoTemplate = null;
 
-        _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(argoTemplate);
-        _argoClient.Setup(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
+        _argoClient.Setup(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
             .Callback((string ns, WorkflowCreateRequest body, CancellationToken cancellationToken) =>
             {
                 submittedArgoTemplate = body.Workflow;
@@ -349,8 +371,8 @@ public class ArgoPluginTest
         Assert.Equal(FailureReason.None, result.FailureReason);
         Assert.Empty(result.Errors);
 
-        _argoClient.Verify(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Once());
-        _kubernetesClient.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
+        _argoClient.Verify(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Once());
+        _k8sCoreOperations.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<V1Secret>(),
             It.IsAny<string>(),
             It.IsAny<string>(),
@@ -361,7 +383,7 @@ public class ArgoPluginTest
             It.IsAny<CancellationToken>()), Times.Exactly(secretsCreated));
 
         await runner.DisposeAsync().ConfigureAwait(false);
-        _kubernetesClient.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
+        _k8sCoreOperations.Verify(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<V1DeleteOptions>(),
@@ -440,7 +462,7 @@ public class ArgoPluginTest
     public async Task ArgoPlugin_GetStatus_WaitUntilSucceededPhase()
     {
         var tryCount = 0;
-        _argoClient.Setup(p => p.WorkflowService_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((string ns, string name, string version, string fields, CancellationToken cancellationToken) =>
             {
                 if (tryCount++ < 2)
@@ -468,20 +490,20 @@ public class ArgoPluginTest
         var message = GenerateTaskDispatchEventWithValidArguments();
 
         var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
-        var result = await runner.GetStatus("identity", CancellationToken.None).ConfigureAwait(false);
+        var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
 
         Assert.Equal(TaskExecutionStatus.Succeeded, result.Status);
         Assert.Equal(FailureReason.None, result.FailureReason);
         Assert.Empty(result.Errors);
 
-        _argoClient.Verify(p => p.WorkflowService_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
+        _argoClient.Verify(p => p.Argo_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
     }
 
     [Fact(DisplayName = "GetStatus - Stats contains info")]
     public async Task ArgoPlugin_GetStatus_HasStatsInfo()
     {
         var tryCount = 0;
-        _argoClient.Setup(p => p.WorkflowService_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((string ns, string name, string version, string fields, CancellationToken cancellationToken) =>
             {
                 if (tryCount++ < 2)
@@ -515,7 +537,7 @@ public class ArgoPluginTest
         var message = GenerateTaskDispatchEventWithValidArguments();
 
         var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
-        var result = await runner.GetStatus("identity", CancellationToken.None).ConfigureAwait(false);
+        var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
 
         var objNodeInfo = result?.Stats;
         Assert.NotNull(objNodeInfo);
@@ -527,7 +549,7 @@ public class ArgoPluginTest
         Assert.Equal("{\"id\":\"firstId\"}", nodeInfo["nodes.first"]);
         Assert.Empty(result?.Errors);
 
-        _argoClient.Verify(p => p.WorkflowService_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
+        _argoClient.Verify(p => p.Argo_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
     }
 
     public static Dictionary<string, string> ValiateCanConvertToDictionary(object obj)
@@ -538,7 +560,6 @@ public class ArgoPluginTest
 #pragma warning restore CS8603 // Possible null reference return.
     }
 
-
     [Theory(DisplayName = "GetStatus - returns ExecutionStatus on success")]
     [InlineData(Strings.ArgoPhaseSucceeded)]
     [InlineData(Strings.ArgoPhaseFailed)]
@@ -547,7 +568,7 @@ public class ArgoPluginTest
     [InlineData(Strings.ArgoPhasePending)]
     public async Task ArgoPlugin_GetStatus_ReturnsExecutionStatusOnSuccess(string phase)
     {
-        _argoClient.Setup(p => p.WorkflowService_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((string ns, string name, string version, string fields, CancellationToken cancellationToken) =>
             {
                 return new Workflow
@@ -563,7 +584,7 @@ public class ArgoPluginTest
         var message = GenerateTaskDispatchEventWithValidArguments();
 
         var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
-        var result = await runner.GetStatus("identity", CancellationToken.None).ConfigureAwait(false);
+        var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
 
         if (phase == Strings.ArgoPhaseSucceeded)
         {
@@ -584,47 +605,197 @@ public class ArgoPluginTest
             Assert.Equal($"Argo status = '{phase}'. Messages = 'error'.", result.Errors);
         }
 
-        _argoClient.Verify(p => p.WorkflowService_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
+        _argoClient.Verify(p => p.Argo_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
     }
 
     [Fact(DisplayName = "GetStatus - returns ExecutionStatus on failure")]
     public async Task ArgoPlugin_GetStatus_ReturnsExecutionStatusOnFailure()
     {
-        _argoClient.Setup(p => p.WorkflowService_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _argoClient.Setup(p => p.Argo_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .Throws(new Exception("error"));
 
         var message = GenerateTaskDispatchEventWithValidArguments();
 
         var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
-        var result = await runner.GetStatus("identity", CancellationToken.None).ConfigureAwait(false);
+        var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
 
         Assert.Equal(TaskExecutionStatus.Failed, result.Status);
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
         Assert.Equal("error", result.Errors);
 
-        _argoClient.Verify(p => p.WorkflowService_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
+        _argoClient.Verify(p => p.Argo_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
     }
 
     [Fact(DisplayName = "ImagePullSecrets - get copied accross")]
     public async Task ArgoPlugin_Copies_ImagePullSecrets()
     {
         var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
-
         Assert.NotNull(argoTemplate);
+
         var secret = new LocalObjectReference() { Name = "ImagePullSecret" };
         argoTemplate.Spec.ImagePullSecrets = new List<LocalObjectReference>() { secret };
 
         var message = GenerateTaskDispatchEventWithValidArguments();
-        message.TaskPluginArguments["resources"] = "{\"memory_reservation\": \"string\",\"cpu_reservation\": \"string\",\"gpu_limit\": 1,\"memory_limit\": \"string\",\"cpu_limit\": \"string\"}";
-        message.TaskPluginArguments["priorityClass"] = "Helo";
-        Workflow? submittedArgoTemplate = null;
 
-        _argoClient.Setup(p => p.WorkflowTemplateService_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+        SetUpSimpleArgoWorkFlow(argoTemplate);
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
+        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+        Assert.Equal(secret, _submittedArgoTemplate?.Spec.ImagePullSecrets.First());
+    }
+
+    [Fact(DisplayName = "TTL gets added if not present")]
+    public async Task ArgoPlugin_Ensures_TTL_Added_If_Not_present()
+    {
+        var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
+        Assert.NotNull(argoTemplate);
+
+        SetUpSimpleArgoWorkFlow(argoTemplate);
+
+        var message = GenerateTaskDispatchEventWithValidArguments();
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
+        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+        Assert.Equal(_argoTtlStatergySeconds, _submittedArgoTemplate?.Spec.TtlStrategy?.SecondsAfterCompletion);
+    }
+
+    [Fact(DisplayName = "Argo Plugin adds required resource limits")]
+    public async Task ArgoPlugin_Adds_Container_Resource_Restrictions_Based_On_Configured_Values()
+    {
+        var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
+        Assert.NotNull(argoTemplate);
+
+        SetUpSimpleArgoWorkFlow(argoTemplate);
+
+        var message = GenerateTaskDispatchEventWithValidArguments();
+
+        var expectedPodSpecPatch = "{\"initContainers\":[{\"name\":\"init\",\"resources\":{\"limits\":{\"cpu\":\"" + _initContainerCpuLimit + "\",\"memory\": \"" +
+                                                   _initContainerMemoryLimit +
+                                                   "\"},\"requests\":{\"cpu\":\"0\",\"memory\":\"0Mi\"}}}],\"containers\":[{\"name\":\"wait\",\"resources\":{\"limits\":{\"cpu\":\"" +
+                                                   _waitContainerCpuLimit + "\",\"memory\":\"" + _waitContainerMemoryLimit +
+                                                   "\"},\"requests\":{\"cpu\":\"0\",\"memory\":\"0Mi\"}}}]}";
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
+        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+        Assert.Equal(_messageGeneratorContainerCpuLimit, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).Container.Resources.Limits["cpu"]);
+        Assert.Equal(_messageGeneratorContainerMemoryLimit, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).Container.Resources.Limits["memory"]);
+        Assert.Equal(expectedPodSpecPatch, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).PodSpecPatch);
+    }
+
+    [Theory(DisplayName = "TTL gets extended if too short")]
+    [InlineData(31, 31, 29)]
+    [InlineData(1, null, null)]
+    [InlineData(null, 31, 3)]
+    public async Task ArgoPlugin_Ensures_TTL_Extended_If_Too_Short(int? secondsAfterCompletion, int? secondsAfterSuccess, int? secondsAfterFailure)
+    {
+        var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
+        Assert.NotNull(argoTemplate);
+
+        argoTemplate.Spec.TtlStrategy = new TTLStrategy();
+        argoTemplate.Spec.TtlStrategy.SecondsAfterCompletion = secondsAfterCompletion;
+        argoTemplate.Spec.TtlStrategy.SecondsAfterSuccess = secondsAfterSuccess;
+        argoTemplate.Spec.TtlStrategy.SecondsAfterFailure = secondsAfterFailure;
+
+        SetUpSimpleArgoWorkFlow(argoTemplate);
+
+        var message = GenerateTaskDispatchEventWithValidArguments();
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
+        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+        if (secondsAfterCompletion is not null)
+        {
+            Assert.Equal(Math.Max(_minAgoTtlStatergySeconds, secondsAfterCompletion.Value), _submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterCompletion);
+        }
+        else
+        {
+            Assert.Null(_submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterCompletion);
+        }
+
+        if (secondsAfterSuccess is not null)
+        {
+            Assert.Equal(Math.Max(_minAgoTtlStatergySeconds, secondsAfterSuccess.Value), _submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterSuccess);
+        }
+        else
+        {
+            Assert.Null(_submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterSuccess);
+        }
+
+        if (secondsAfterFailure is not null)
+        {
+            Assert.Equal(Math.Max(_minAgoTtlStatergySeconds, secondsAfterFailure.Value), _submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterFailure);
+        }
+        else
+        {
+            Assert.Null(_submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterFailure);
+        }
+    }
+
+    [Theory(DisplayName = "TTL gets left as is if longer")]
+    [InlineData(31, 31, 31)]
+    [InlineData(9999999, 31, 31)]
+    [InlineData(31, null, null)]
+    [InlineData(31, 31, null)]
+    public async Task ArgoPlugin_Ensures_TTL_Remains(int? secondsAfterCompletion, int? secondsAfterSuccess, int? secondsAfterFailure)
+    {
+        var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
+        Assert.NotNull(argoTemplate);
+
+        argoTemplate.Spec.TtlStrategy = new TTLStrategy();
+        argoTemplate.Spec.TtlStrategy.SecondsAfterCompletion = secondsAfterCompletion;
+        argoTemplate.Spec.TtlStrategy.SecondsAfterSuccess = secondsAfterSuccess;
+        argoTemplate.Spec.TtlStrategy.SecondsAfterFailure = secondsAfterFailure;
+
+        SetUpSimpleArgoWorkFlow(argoTemplate);
+
+        var message = GenerateTaskDispatchEventWithValidArguments();
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
+        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+        Assert.Equal(secondsAfterCompletion, _submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterCompletion);
+        Assert.Equal(secondsAfterSuccess, _submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterSuccess);
+        Assert.Equal(secondsAfterFailure, _submittedArgoTemplate?.Spec.TtlStrategy.SecondsAfterFailure);
+    }
+
+    [Fact(DisplayName = "pocGC gets removed if present")]
+    public async Task ArgoPlugin_Ensures_podGC_is_removed()
+    {
+        var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
+        Assert.NotNull(argoTemplate);
+
+        argoTemplate.Spec.PodGC = new PodGC { Strategy = "OnePodSeccess" };
+
+        SetUpSimpleArgoWorkFlow(argoTemplate);
+
+        var message = GenerateTaskDispatchEventWithValidArguments();
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
+        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+        Assert.Null(_submittedArgoTemplate?.Spec.PodGC);
+    }
+
+    private void SetUpSimpleArgoWorkFlow(WorkflowTemplate argoTemplate)
+    {
+        Assert.NotNull(argoTemplate);
+
+        _argoClient.Setup(p => p.Argo_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(argoTemplate);
-        _argoClient.Setup(p => p.WorkflowService_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
+
+        _argoClient.Setup(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
             .Callback((string ns, WorkflowCreateRequest body, CancellationToken cancellationToken) =>
             {
-                submittedArgoTemplate = body.Workflow;
+                _submittedArgoTemplate = body.Workflow;
             })
             .ReturnsAsync((string ns, WorkflowCreateRequest body, CancellationToken cancellationToken) =>
             {
@@ -637,22 +808,22 @@ public class ArgoPluginTest
                 return new HttpOperationResponse<V1Secret> { Body = body, Response = new HttpResponseMessage { } };
             });
         SetupKubernetesDeleteSecret();
-
-        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
-        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
-
-        Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
-        Assert.Equal(secret, submittedArgoTemplate?.Spec.ImagePullSecrets.First());
     }
 
-    private static TaskDispatchEvent GenerateTaskDispatchEventWithValidArguments()
+    private static TaskDispatchEvent GenerateTaskDispatchEventWithValidArguments(bool withoutDefaultProperties = false)
     {
         var message = GenerateTaskDispatchEvent();
-        message.TaskPluginArguments[Keys.BaseUrl] = "http://api-endpoint/";
         message.TaskPluginArguments[Keys.WorkflowTemplateName] = "workflowTemplate";
-        message.TaskPluginArguments[Keys.Namespace] = "namespace";
         message.TaskPluginArguments[Keys.TimeoutSeconds] = "50";
         message.TaskPluginArguments[Keys.ArgoApiToken] = "token";
+
+        if (withoutDefaultProperties is false)
+        {
+            message.TaskPluginArguments[Keys.BaseUrl] = "http://api-endpoint/";
+            message.TaskPluginArguments[Keys.Namespace] = "namespace";
+            message.TaskPluginArguments[Keys.AllowInsecureseUrl] = "true";
+        }
+
         return message;
     }
 
@@ -900,7 +1071,7 @@ public class ArgoPluginTest
         return deserializer.Deserialize<WorkflowTemplate>(templateString);
     }
 
-    private ISetup<IKubernetes, Task<HttpOperationResponse<V1Secret>>> SetupKubbernetesSecrets() => _kubernetesClient.Setup(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
+    private ISetup<ICoreV1Operations, Task<HttpOperationResponse<V1Secret>>> SetupKubbernetesSecrets() => _k8sCoreOperations.Setup(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
                            It.IsAny<V1Secret>(),
                            It.IsAny<string>(),
                            It.IsAny<string>(),
@@ -910,7 +1081,7 @@ public class ArgoPluginTest
                            It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
                            It.IsAny<CancellationToken>()));
 
-    private void SetupKubernetesDeleteSecret() => _kubernetesClient.Setup(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
+    private void SetupKubernetesDeleteSecret() => _k8sCoreOperations.Setup(p => p.DeleteNamespacedSecretWithHttpMessagesAsync(
                        It.IsAny<string>(),
                        It.IsAny<string>(),
                        It.IsAny<V1DeleteOptions>(),

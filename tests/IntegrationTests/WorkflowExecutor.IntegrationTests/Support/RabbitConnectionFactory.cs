@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
@@ -30,7 +31,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 HostName = TestExecutionConfig.RabbitConfig.Host,
                 UserName = TestExecutionConfig.RabbitConfig.User,
                 Password = TestExecutionConfig.RabbitConfig.Password,
-                VirtualHost = TestExecutionConfig.RabbitConfig.VirtualHost
+                VirtualHost = TestExecutionConfig.RabbitConfig.VirtualHost,
+                Port = TestExecutionConfig.RabbitConfig.Port
             };
 
             Channel = connectionFactory.CreateConnection().CreateModel();

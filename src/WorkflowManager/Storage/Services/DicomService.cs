@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
+using System.Globalization;
+using System.Linq;
 using System.Text;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
+using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Logging.Logging;
+using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.Storage.Constants;
 using Newtonsoft.Json;
-using Monai.Deploy.Storage.API;
-using System.Globalization;
 using Newtonsoft.Json.Linq;
 
 namespace Monai.Deploy.WorkflowManager.Storage.Services
@@ -37,6 +38,32 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
+
+        private static readonly Dictionary<string, string> SupportedTypes = new()
+        {
+            { "CS", "Code String" },
+            { "DA", "Date" },
+            { "DS", "Decimal String" },
+            { "IS", "Integer String" },
+            { "LO", "Long String" },
+            { "SH", "Short String" },
+            { "UI", "Unique Identifier (UID)" },
+            { "UL", "Unsigned Long" },
+            { "US", "Unsigned Short" },
+        };
+
+        private static readonly Dictionary<string, string> UnsupportedTypes = new()
+        {
+            { "CS", "Code String" },
+            { "DA", "Date" },
+            { "DS", "Decimal String" },
+            { "IS", "Integer String" },
+            { "LO", "Long String" },
+            { "SH", "Short String" },
+            { "UI", "Unique Identifier (UID)" },
+            { "UL", "Unsigned Long" },
+            { "US", "Unsigned Short" },
+        };
 
         public async Task<PatientDetails> GetPayloadPatientDetailsAsync(string payloadId, string bucketName)
         {
@@ -72,22 +99,24 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
 
             try
             {
-                if (items is null || items.Count == 0)
+                if (items is null || items.Any() is false)
                 {
                     return null;
                 }
 
-                foreach (var item in items)
+                foreach (var filePath in items.Select(item => item.FilePath))
                 {
-                    if (!item.FilePath.EndsWith(".dcm.json"))
+                    if (filePath.EndsWith(".dcm.json") is false)
                     {
                         continue;
                     }
 
-                    var stream = await _storageService.GetObjectAsync(bucketId, item.FilePath);
+                    var stream = await _storageService.GetObjectAsync(bucketId, filePath);
                     var jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
 
-                    var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
+                    var dict = new Dictionary<string, DicomValue>(StringComparer.OrdinalIgnoreCase);
+                    JsonConvert.PopulateObject(jsonStr, dict);
+
                     var value = GetValue(dict, keyId);
 
                     if (!string.IsNullOrWhiteSpace(value))
@@ -98,7 +127,7 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             }
             catch (Exception e)
             {
-                _logger.FailedToGetDicomTag(payloadId, keyId, bucketId, e);
+                _logger.FailedToGetDicomTagFromPayload(payloadId, keyId, bucketId, e);
             }
 
             return null;
@@ -194,41 +223,109 @@ namespace Monai.Deploy.WorkflowManager.Storage.Services
             var stream = await _storageService.GetObjectAsync(bucketId, items[index].FilePath);
             var jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
 
-            var dict = JsonConvert.DeserializeObject<Dictionary<string, DicomValue>>(jsonStr);
-
+            var dict = new Dictionary<string, DicomValue>(StringComparer.OrdinalIgnoreCase);
+            JsonConvert.PopulateObject(jsonStr, dict);
             return GetValue(dict, keyId);
         }
 
-        private static string GetValue(Dictionary<string, DicomValue>? dict, string keyId)
+        public string GetValue(Dictionary<string, DicomValue> dict, string keyId)
         {
-            if (dict is null)
+            if (dict.Any() is false)
             {
                 return string.Empty;
             }
 
-            dict.TryGetValue(keyId, out var value);
+            var result = string.Empty;
 
-            if (value is not null && value.Value is not null)
+            if (dict.TryGetValue(keyId, out var value))
             {
-
-                if (string.Equals(keyId, DicomTagConstants.PatientNameTag))
+                if (string.Equals(keyId, DicomTagConstants.PatientNameTag) || value.Vr.ToUpperInvariant() == "PN")
                 {
-                    return GetPatientName(value.Value);
+                    result = GetPatientName(value.Value);
+                    _logger.GetPatientName(result);
+                    return result;
                 }
-
-                var str = value?.Value.Cast<string>();
-
-                if (str is not null)
+                var jsonString = DecodeComplexString(value);
+                if (SupportedTypes.TryGetValue(value.Vr.ToUpperInvariant(), out var vrFullString))
                 {
-                    return string.Concat(str);
+                    result = TryGetValueAndLogSupported(vrFullString, value, jsonString);
+                }
+                else if (UnsupportedTypes.TryGetValue(value.Vr.ToUpperInvariant(), out vrFullString))
+                {
+                    result = TryGetValueAndLogSupported(vrFullString, value, jsonString);
+                }
+                else
+                {
+                    result = TryGetValueAndLogUnSupported("Unknown Dicom Type", value, jsonString);
                 }
             }
+            return result;
+        }
 
-            return string.Empty;
+        private string TryGetValueAndLogSupported(string vrFullString, DicomValue value, string jsonString)
+        {
+            var result = TryGetValue(value);
+            _logger.SupportedType(value.Vr, vrFullString, jsonString, result);
+            return result;
+        }
+
+        private string TryGetValueAndLogUnSupported(string vrFullString, DicomValue value, string jsonString)
+        {
+            var result = TryGetValue(value);
+            _logger.UnsupportedType(value.Vr, vrFullString, jsonString, result);
+            return result;
+        }
+
+        private string TryGetValue(DicomValue value)
+        {
+            var result = string.Empty;
+            foreach (var val in value.Value)
+            {
+                try
+                {
+                    if (double.TryParse(val.ToString(), out var dbl))
+                    {
+                        result = ConcatResult(result, dbl);
+                    }
+                    else
+                    {
+                        result = ConcatResult(result, val);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.UnableToCastDicomValueToString(DecodeComplexString(value), ex);
+                }
+            }
+            if (value.Value.Length > 1)
+            {
+                return $"[{result}]";
+            }
+            return result;
+        }
+
+        private static string ConcatResult(string result, dynamic str)
+        {
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                result = string.Concat(result, $"{str}");
+            }
+            else
+            {
+                result = string.Concat(result, $", {str}");
+            }
+
+            return result;
+        }
+
+        private static string DecodeComplexString(DicomValue dicomValue)
+        {
+            return JsonConvert.SerializeObject(dicomValue.Value);
         }
 
         private static string GetPatientName(object[] values)
         {
+
             var resultStr = new List<string>();
 
             foreach (var value in values)

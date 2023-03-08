@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,27 @@
 
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 {
     public static class RabbitConnectionFactory
     {
-        private static IModel? Channel { get; set; }
+        public static IConnection? Connection { get; set; }
 
-        public static IModel GetRabbitConnection()
+        public static IList<string> QueueNames = new List<string>()
+        {
+            $"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}",
+            $"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}",
+            $"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}",
+            $"{TestExecutionConfig.RabbitConfig.ClinicalReviewQueue}",
+            $"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter",
+            $"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter",
+            $"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter",
+            $"{TestExecutionConfig.RabbitConfig.ClinicalReviewQueue}-dead-letter",
+        };
+
+        public static void SetRabbitConnection()
         {
             var connectionFactory = new ConnectionFactory
             {
@@ -33,51 +46,53 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                 VirtualHost = TestExecutionConfig.RabbitConfig.VirtualHost
             };
 
-            Channel = connectionFactory.CreateConnection().CreateModel();
-
-            return Channel;
+            Connection = connectionFactory.CreateConnection();
         }
 
         public static void DeleteQueue(string queueName)
         {
-            if (Channel is null)
+            using (var channel = Connection?.CreateModel())
             {
-                GetRabbitConnection();
+                channel?.QueueDelete(queueName);
             }
-
-            Channel?.QueueDelete(queueName);
         }
 
         public static void PurgeQueue(string queueName)
         {
-            if (Channel is null)
+            using (var channel = Connection?.CreateModel())
             {
-                GetRabbitConnection();
+                channel?.QueuePurge(queueName);
             }
-
-            Channel?.QueuePurge(queueName);
         }
 
         public static void DeleteAllQueues()
         {
-            DeleteQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-            DeleteQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
-            DeleteQueue(TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
-            DeleteQueue(TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
-            DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter");
-            DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
-            DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter");
-            DeleteQueue($"{TestExecutionConfig.RabbitConfig.ClinicalReviewQueue}-dead-letter");
+            foreach (var name in QueueNames)
+            {
+                try
+                {
+                    DeleteQueue(name);
+                }
+                catch (OperationInterruptedException ex)
+                {
+                    Console.WriteLine($"Unable to delete Queue:{name} please see Message:{ex.Message}");
+                }
+            }
         }
 
         public static void PurgeAllQueues()
         {
-            PurgeQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-            PurgeQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
-            PurgeQueue(TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
-            PurgeQueue(TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
-            PurgeQueue($"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter");
-            PurgeQueue($"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter");
+            foreach (var name in QueueNames)
+            {
+                try
+                {
+                    PurgeQueue(name);
+                }
+                catch (OperationInterruptedException ex)
+                {
+                    Console.WriteLine($"Unable to purge Queue:{name} please see Message:{ex.Message}");
+                }
+            }
         }
     }
 }

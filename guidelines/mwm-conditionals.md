@@ -94,6 +94,3 @@ The item array can be contained on either side of the conditional.
 
 The item array can be contained on either side of the conditional.
 
-
-### PARAMETERS '{{ }}'
-TODO: fill this section out

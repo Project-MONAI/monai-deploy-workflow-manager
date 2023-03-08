@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-using System.Threading.Tasks;
+using System.Linq;
 using BoDi;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;
@@ -74,6 +75,26 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             ExportCompletePublisher.PublishMessage(message.ToMessage());
         }
 
+        [Then(@"Metadata is added to task (.*)")]
+        public void ThenTheNumberOfSuccessfulExportsAre(string completeExportData)
+        {
+            RetryPolicy.Execute(() =>
+            {
+                var exportCompleteExpected = DataHelper.GetExportCompleteTestData(completeExportData);
+
+                var workflow = DataHelper.GetAllWorkflowInstance(exportCompleteExpected.WorkflowInstanceId);
+
+                var task = workflow.Tasks.First(f => f.TaskId == exportCompleteExpected.ExportTaskId);
+
+                var resultMetadata = exportCompleteExpected.FileStatuses.ToDictionary(f => f.Key, f => f.Value.ToString() as object);
+
+                if (task.ResultMetadata.Any())
+                {
+                    task.ResultMetadata.Should().BeEquivalentTo(resultMetadata);
+                }
+            });
+        }
+
         [When(@"I publish a Task Update Message (.*) with artifacts (.*) in minio")]
         public async Task WhenIPublishATaskUpdateMessageWithArtifacts(string name, string folderName)
         {
@@ -126,6 +147,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 var taskUpdated = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(DataHelper.TaskUpdateEvent.TaskId));
 
                 taskUpdated.Should().NotBeNull();
+
                 taskUpdated?.Status.Should().Be(DataHelper.TaskUpdateEvent.Status);
                 taskUpdated?.Reason.Should().Be(DataHelper.TaskUpdateEvent.Reason);
 
@@ -141,15 +163,59 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             });
         }
 
+        [Then(@"Clinical Review Metadata is added to workflow instance")]
+        public void ClinicalReviewMetadataIsAddedtoWorkflowInstance()
+        {
+
+            RetryPolicy.Execute(() =>
+            {
+                _outputHelper.WriteLine($"Retrieving workflow instance by id={DataHelper.TaskUpdateEvent.WorkflowInstanceId}");
+                var workflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
+                _outputHelper.WriteLine("Retrieved workflow instance");
+
+                var taskUpdated = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(DataHelper.TaskUpdateEvent.TaskId));
+
+                taskUpdated.Should().NotBeNull();
+
+                taskUpdated?.ResultMetadata.Should().ContainKey("acceptance");
+
+                var acceptance = (bool)taskUpdated.ResultMetadata["acceptance"];
+
+                if (acceptance is false)
+                {
+                    taskUpdated?.ResultMetadata.Should().ContainKey("reason");
+                }
+
+                taskUpdated?.ResultMetadata.Should().ContainKey("user_id");
+            });
+        }
+
         [Then(@"I can see the status of the Task is not updated")]
         public void ThenICanSeeTheStatusOfTheTaskIsNotUpdated()
         {
-            for (int i = 0; i < 2; i++)
+            if (DataHelper.TaskUpdateEvent.TaskId != "")
             {
-                Thread.Sleep(2000);
-                var updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
-                var orignalWorkflowInstance = DataHelper.WorkflowInstances.FirstOrDefault(x => x.Id.Equals(DataHelper.TaskUpdateEvent.WorkflowInstanceId));
-                updatedWorkflowInstance.Tasks[0].Status.Should().Be(orignalWorkflowInstance?.Tasks[0].Status);
+                RetryPolicy.Execute(() =>
+                {
+                    _outputHelper.WriteLine($"Retrieving workflow instance by id={DataHelper.TaskUpdateEvent.WorkflowInstanceId}");
+                    var workflowInstance = MongoClient.GetWorkflowInstanceById(DataHelper.TaskUpdateEvent.WorkflowInstanceId);
+                    _outputHelper.WriteLine("Retrieved workflow instance");
+
+                    var taskUpdated = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(DataHelper.TaskUpdateEvent.TaskId));
+
+                    if (taskUpdated != null)
+                    {
+                        taskUpdated.Status.Should().NotBe(DataHelper.TaskUpdateEvent.Status);
+                    }
+                    else
+                    {
+                        throw new Exception($"Task Update Event could not be found with task ID {DataHelper.TaskUpdateEvent.TaskId}");
+                    }
+                });
+            }
+            else
+            {
+                throw new Exception("A task update has not been sent which is required for this assertion");
             }
         }
 

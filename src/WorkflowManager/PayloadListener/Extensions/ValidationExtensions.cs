@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 
             if (!string.IsNullOrWhiteSpace(aeTitle) && aeTitle.Length <= 15) return true;
 
-            validationErrors?.Add($"'{aeTitle}' is not a valid AE Title (source: {source}).");
+            validationErrors?.Add($"AeTitle is required in the InformaticsGateaway section.");
             return false;
         }
 
@@ -85,7 +85,9 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
         {
             Guard.Against.NullOrWhiteSpace(source, nameof(source));
 
-            if (!string.IsNullOrWhiteSpace(payloadId) && Guid.TryParse(payloadId, out var _)) return true;
+            var parsed = Guid.TryParse(payloadId, out var parsedGuid);
+
+            if (!string.IsNullOrWhiteSpace(payloadId) && parsed && parsedGuid != Guid.Empty) return true;
 
             validationErrors?.Add($"'{payloadId}' is not a valid {nameof(payloadId)}: must be a valid guid (source: {payloadId}).");
 

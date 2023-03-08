@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
+using System.Reactive.Linq;
 using Minio;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
 using Polly;
 using Polly.Retry;
-using System.Reactive.Linq;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 {
@@ -63,7 +63,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                         }
                         catch (Exception)
                         {
-
                         }
                     }
                     else

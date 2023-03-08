@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Test.Controllers
 {
-    public sealed class WorkflowsInstanceControllerTests
+    public class WorkflowsInstanceControllerTests
     {
         private WorkflowInstanceController WorkflowInstanceController { get; set; }
 
@@ -52,9 +53,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             _logger = new Mock<ILogger<WorkflowInstanceController>>();
             _uriService = new Mock<IUriService>();
 
+            _logger.Setup(p => p.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
             WorkflowInstanceController = new WorkflowInstanceController(_workflowInstanceService.Object, _logger.Object, _uriService.Object, _options);
         }
-
 
         [Fact]
         public async Task GetListAsync_WorkflowInstancesExist_ReturnsList()
@@ -244,6 +245,77 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
 
+        [Fact]
+        public async Task AcknowledgeTaskError_ServiceException_ReturnProblem()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var executionId = Guid.NewGuid().ToString();
+            _workflowInstanceService.Setup(w => w.AcknowledgeTaskError(workflowInstanceId, executionId)).ThrowsAsync(new Exception());
+
+            var result = await WorkflowInstanceController.AcknowledgeTaskError(workflowInstanceId, executionId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task AcknowledgeTaskError_InvalidWorkflowInstanceId_ReturnsBadRequest()
+        {
+            var workflowInstanceId = "2";
+            var executionId = Guid.NewGuid().ToString();
+
+            var result = await WorkflowInstanceController.AcknowledgeTaskError(workflowInstanceId, executionId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task AcknowledgeTaskError_InvalidExecutionId_ReturnsBadRequest()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var executionId = "2";
+
+            var result = await WorkflowInstanceController.AcknowledgeTaskError(workflowInstanceId, executionId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task AcknowledgeTaskError_WorkflowInstanceUpdated_ReturnsOk()
+        {
+            var workflowsInstance = new WorkflowInstance
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = Guid.NewGuid().ToString(),
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Failed,
+                AcknowledgedWorkflowErrors = DateTime.UtcNow,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = Guid.NewGuid().ToString(),
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            Status = TaskExecutionStatus.Failed,
+                            AcknowledgedTaskErrors = DateTime.UtcNow
+                        }
+                    }
+            };
+
+            _workflowInstanceService.Setup(w => w.AcknowledgeTaskError(workflowsInstance.WorkflowId, workflowsInstance.Tasks.First().ExecutionId)).ReturnsAsync(workflowsInstance);
+
+            var result = await WorkflowInstanceController.AcknowledgeTaskError(workflowsInstance.WorkflowId, workflowsInstance.Tasks.First().ExecutionId);
+
+            var objectResult = Assert.IsType<OkObjectResult>(result);
+
+            objectResult.Value.Should().BeEquivalentTo(workflowsInstance);
+        }
+
         [Theory]
         [InlineData("2022-02-21", "en-GB")]
         [InlineData("2022-02-21", "en-US")]
@@ -296,11 +368,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             };
 
             var expectedResponse = new List<WorkflowInstance>() { workflowsInstance };
-            _workflowInstanceService.Setup(w => w.GetAllFailedAsync(It.IsAny<DateTime>()))
+            _workflowInstanceService.Setup(w => w.GetAllFailedAsync())
                 .ReturnsAsync(expectedResponse);
 
             Thread.CurrentThread.CurrentCulture = new CultureInfo(controlerCulture);
-            var result = await WorkflowInstanceController.GetFailedAsync(input);
+            var result = await WorkflowInstanceController.GetFailedAsync();
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal((int)HttpStatusCode.OK, objectResult.StatusCode);
@@ -309,73 +381,24 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Fact]
-        public async Task TaskGetFailedAsync_GivenInvalidInTheFutureDateString_ReturnsProblem()
+        public async Task TaskGetFailedAsync_GivenGetAllFailedAsyncReturnsNoResults_ReturnsEmptyList()
         {
-            var workflowsInstance = new WorkflowInstance
-            {
-                Id = Guid.NewGuid().ToString(),
-                WorkflowId = Guid.NewGuid().ToString(),
-                PayloadId = Guid.NewGuid().ToString(),
-                Status = Status.Created,
-                BucketId = "bucket",
-                Tasks = new List<TaskExecution>
-                    {
-                        new TaskExecution
-                        {
-                            TaskId = Guid.NewGuid().ToString(),
-                            Status = TaskExecutionStatus.Dispatched
-                        }
-                    }
-            };
-
-            _workflowInstanceService.Setup(w => w.GetAllFailedAsync(It.IsAny<DateTime>()))
-                .ReturnsAsync(new List<WorkflowInstance>() { workflowsInstance });
-
-            var result = await WorkflowInstanceController.GetFailedAsync(DateTime.UtcNow.AddDays(5));
-
-            var objectResult = Assert.IsType<ObjectResult>(result);
-            objectResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
-            var responseValue = (ProblemDetails)objectResult.Value;
-            responseValue.Status.Should().Be((int)HttpStatusCode.BadRequest);
-
-            var startsWithException = "Failed to validate acknowledged value:";
-            var endsWithException = "provided time is in the future.";
-            Assert.StartsWith(startsWithException, responseValue.Detail);
-            Assert.EndsWith(endsWithException, responseValue.Detail);
-
-            const string expectedInstance = "/workflowinstances";
-            Assert.StartsWith(expectedInstance, responseValue.Instance);
-        }
-
-        [Fact]
-        public async Task TaskGetFailedAsync_GivenGetAllFailedAsyncReturnsNoResults_ReturnsProblem()
-        {
-            _workflowInstanceService.Setup(w => w.GetAllFailedAsync(It.IsAny<DateTime>()))
+            _workflowInstanceService.Setup(w => w.GetAllFailedAsync())
                 .ReturnsAsync(new List<WorkflowInstance>() { });
-            var inputString = "2022-02-21";
-            var input = DateTime.Parse(inputString, CultureInfo.InvariantCulture);
 
-            var result = await WorkflowInstanceController.GetFailedAsync(input);
+            var result = await WorkflowInstanceController.GetFailedAsync();
 
-            var objectResult = Assert.IsType<ObjectResult>(result);
-            objectResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
-            var responseValue = (ProblemDetails)objectResult.Value;
-            responseValue.Status.Should().Be((int)HttpStatusCode.NotFound);
-
-            var problemMessage = "Request failed, no workflow instances found since 2022-02-21";
-            responseValue.Detail.Should().Be(problemMessage);
-
-            const string expectedInstance = "/workflowinstances";
-            Assert.StartsWith(expectedInstance, responseValue.Instance);
+            var objectResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal((int)HttpStatusCode.OK, objectResult.StatusCode);
+            objectResult.Value.Should().BeEquivalentTo(new List<WorkflowInstance>() { });
         }
 
         [Fact]
         public async Task TaskGetFailedAsync_GivenGetAllFailedAsyncReturnsThrowsException_ReturnsInternalServiceError()
         {
-            _workflowInstanceService.Setup(w => w.GetAllFailedAsync(It.IsAny<DateTime>())).ThrowsAsync(new Exception());
-            var inputString = "2022-02-21";
-            var input = DateTime.Parse(inputString, CultureInfo.InvariantCulture);
-            var result = await WorkflowInstanceController.GetFailedAsync(input);
+            _workflowInstanceService.Setup(w => w.GetAllFailedAsync()).ThrowsAsync(new Exception());
+;
+            var result = await WorkflowInstanceController.GetFailedAsync();
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             objectResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
@@ -386,18 +409,17 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             responseValue.Detail.Should().Be(problemMessage);
 
             const string expectedInstance = "/workflowinstances";
-            var expectedErrorMessage = "GetFailedAsync - Failed to get failed workflowInstances";
+            var expectedErrorMessage = "Unexpected error occurred in GET /workflowinstances/failed API.";
 
             Assert.StartsWith(expectedInstance, responseValue.Instance);
 
             _logger.Verify(logger => logger.Log(
                 It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
-                It.Is<EventId>(eventId => eventId.Id == 0),
-                It.Is<It.IsAnyType>((@object, @type) => @object.ToString() == expectedErrorMessage && @type.Name == "FormattedLogValues"),
+                It.Is<EventId>(eventId => eventId.Id == 100006),
+                It.Is<It.IsAnyType>((@object, @type) => @object.ToString() == expectedErrorMessage),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);
-
         }
     }
 }

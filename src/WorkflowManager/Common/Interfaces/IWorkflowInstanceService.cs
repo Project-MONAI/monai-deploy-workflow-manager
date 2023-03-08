@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Common.Interfaces
@@ -23,7 +24,15 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// <summary>
         /// Gets a workflow instance from the workflow instance repository by Id.
         /// </summary>
-        Task<WorkflowInstance> GetByIdAsync(string id);
+        public Task<WorkflowInstance> GetByIdAsync(string id);
+
+        /// <summary>
+        /// Acknowledges a task error and acknowledges a workflow if all tasks are acknowledged.
+        /// </summary>
+        /// <param name="workflowInstanceId">The Workflow Instance Id.</param>
+        /// <param name="executionId">The Task Execution Id.</param>
+        /// <returns>An updated workflow.</returns>
+        public Task<WorkflowInstance> AcknowledgeTaskError(string workflowInstanceId, string executionId);
 
         /// <summary>
         /// Used for filtering status also.
@@ -43,11 +52,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// <returns></returns>
         public Task<long> FilteredCountAsync(Status? status = null, string? payloadId = null);
 
-
         /// <summary>
-        /// Get all failed workflow instance's within a time span.
+        /// Get all failed workflow instance's.
         /// </summary>
-        /// <param name="timeSpan">length of period to check.</param>
-        Task<IList<WorkflowInstance>> GetAllFailedAsync(DateTime dateTime);
+        Task<IList<WorkflowInstance>> GetAllFailedAsync();
+
+        Task UpdateExportCompleteMetadataAsync(string workflowInstanceId, string executionId, Dictionary<string, FileExportStatus> fileStatuses);
     }
 }

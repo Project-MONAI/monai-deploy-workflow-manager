@@ -57,6 +57,14 @@ Scenario: Get all triggered workflows instances for payload
     | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&pageNumber=1&pageSize=10&disablePagination=true |
     | ?payloadId=c2219298-44ec-44d6-b9c7-b2c3e5abaf45&disablePagination=true                          |
 
+@Ignore
+@GetWorkflowInstances
+Scenario: Verifying file status exports are added to the metadata successfully
+    Given I have an endpoint /workflowinstances
+    And I have a Workflow Instance ExportComplete_WFI_Dispatched with no artifacts
+    When I publish a Export Complete Message Export_Complete_Message_for_export_file_statuses
+    Then Metadata is added to task Export_Complete_Message_for_export_file_statuses
+
 @WorkflowInstancePagination
 Scenario Outline: Get all workflow instances from API - Test pagination
     Given I have an endpoint /workflowinstances<pagination_query>
@@ -147,8 +155,7 @@ Scenario: Get all workflows instances by Id. Id Bad Request
     And I have a Workflow Instance WFI_Static_1 with no artifacts
     When I send a GET request
     Then I will get a 400 response
-    And I will receive the error message Failed to validate id, not a valid guid
-
+    And I will receive the error message Failed to validate id, not a valid GUID
 
 @GetWorkflowInstances
 Scenario: Get workflow instances by payloadId. Id Bad Request
@@ -156,44 +163,105 @@ Scenario: Get workflow instances by payloadId. Id Bad Request
     And I have a Workflow Instance WFI_Static_1 with no artifacts
     When I send a GET request
     Then I will get a 400 response
-    And I will receive the error message Failed to validate payloadId, not a valid guid
+    And I will receive the error message Failed to validate payloadId, not a valid GUID
 
-@GetFailedWorkflowInstances
-Scenario: Get workflow failed instances with invalid parameter. Bad Request
-	Given I have an endpoint /workflowinstances/failed?acknowledged=donkey
-    When I send a GET request
-    Then I will get a 400 response
-    And I will receive the error message The value 'donkey' is not valid.
+@UpdateWorkflowInstances
+Scenario Outline: Acknowledge 1 task error in a single task workflow instance
+    Given I have an endpoint /workflowinstances/25dff711-efc5-4eeb-bccc-2bb996400a20/executions/d32d5769-4ecf-4639-a048-6ecf2cced04a/acknowledge
+    And I have a Workflow Instance <workflowInstance> with no artifacts
+    When I send a PUT request
+    Then I will get a 200 response
+    And I can see the Task First_Task error is acknowledged on workflow instance <workflowInstance>
+    And I can see the workflow Instance <workflowInstance> error is acknowledged
+    Examples:
+    | workflowInstance                  |
+    | Acknowledge_Failed_1_Task         |
+    | Acknowledge_Already_Failed_1_Task |
+    | Acknowledge_PartialFailed_1_Task  |
 
-@GetFailedWorkflowInstances
-Scenario: Get workflow failed instances with invalid date. Bad Request
-	Given I have an endpoint /workflowinstances/failed?acknowledged=0000-00-00
-    When I send a GET request
+@UpdateWorkflowInstances
+Scenario: Acknowledge 1 task error in a multiple task workflow instance
+    Given I have an endpoint /workflowinstances/25dff711-efc5-4eeb-bccc-2bb996400a20/executions/d32d5769-4ecf-4639-a048-6ecf2cced04a/acknowledge
+    And I have a Workflow Instance Acknowledge_Failed_2_Task with no artifacts
+    When I send a PUT request
+    Then I will get a 200 response
+    And I can see the Task First_Task error is acknowledged on workflow instance Acknowledge_Failed_2_Task
+    And I can see the workflow Instance Acknowledge_Failed_1_Task error is not acknowledged
+
+@UpdateWorkflowInstances
+Scenario Outline: Acknowledge task error in a workflow instance - invalid endpoint
+	Given I have an endpoint <endpoint>
+    And I have a Workflow Instance Acknowledge_Failed_1_Task with no artifacts
+    When I send a PUT request
     Then I will get a 400 response
-    And I will receive the error message The value '0000-00-00' is not valid.
-    
-@GetFailedWorkflowInstances
-Scenario: Get workflow failed instances in future. Bad Request
-	Given I have an endpoint /workflowinstances/failed?acknowledged=2199-12-15
-    When I send a GET request
+    And I will receive the error message <errorMessage>
+    Examples:
+    | endpoint                                                                                 | errorMessage                                     |
+    | /workflowinstances/invalidID/executions/d32d5769-4ecf-4639-a048-6ecf2cced04a/acknowledge | Failed to validate id, not a valid GUID          |
+    | /workflowinstances/25dff711-efc5-4eeb-bccc-2bb996400a20/executions/invalidID/acknowledge | Failed to validate executionId, not a valid GUID |
+
+@UpdateWorkflowInstances
+Scenario Outline: Acknowledge task error in a workflow instance - workflow instance/task not failed
+	Given I have an endpoint /workflowinstances/25dff711-efc5-4eeb-bccc-2bb996400a20/executions/d32d5769-4ecf-4639-a048-6ecf2cced04a/acknowledge
+    And I have a Workflow Instance <workflowInstance> with no artifacts
+    When I send a PUT request
     Then I will get a 400 response
-    And I will receive the error message Failed to validate acknowledged value: 2199-12-15, provided time is in the future.
-    
-@GetFailedWorkflowInstances
-Scenario: Get workflow failed instances returns no values. Not Found
-	Given I have an endpoint /workflowinstances/failed?acknowledged=2021-12-15
-    When I send a GET request
+    And I will receive the error message WorkflowInstance status or task execution status is not failed for workflowInstanceId: 25dff711-efc5-4eeb-bccc-2bb996400a20
+    Examples:
+    | workflowInstance                |
+    | Acknowledge_Not_Failed_Instance |
+    | Acknowledge_Not_Failed_1_Task   |
+
+@UpdateWorkflowInstances
+Scenario: Acknowledge task error in a workflow instance - non-existent workflow instance
+	Given I have an endpoint /workflowinstances/25dff711-efc5-4eeb-bccc-2bb996400a20/executions/d32d5769-4ecf-4639-a048-6ecf2cced04a/acknowledge
+    When I send a PUT request
     Then I will get a 404 response
-    And I will receive the error message Request failed, no workflow instances found since 2021-12-15
+    And I will receive the error message WorkflowInstance or task execution not found for workflowInstanceId: 25dff711-efc5-4eeb-bccc-2bb996400a20
+
+@UpdateWorkflowInstances
+Scenario: Acknowledge task error in a workflow instance - non-existent task
+	Given I have an endpoint /workflowinstances/25dff711-efc5-4eeb-bccc-2bb996400a20/executions/a10ac451-a4cc-429f-ba5b-cea5124844c3/acknowledge
+    And I have a Workflow Instance Acknowledge_Failed_1_Task with no artifacts
+    When I send a PUT request
+    Then I will get a 404 response
+    And I will receive the error message WorkflowInstance or task execution not found for workflowInstanceId: 25dff711-efc5-4eeb-bccc-2bb996400a20
+
+@GetFailedWorkflowInstances
+Scenario: Get workflow failed instances returns no values. Ok Request
+	Given I have an endpoint /workflowinstances/failed
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see 0 failed workflow instances
         
 @GetFailedWorkflowInstances
 Scenario: Get workflow failed instances returns values. Ok Request
-	Given I have an endpoint /workflowinstances/failed?acknowledged=<date_query>
-    And I have 10 failed workflow Instances with acknowledged workflow errors with mid date as <date_query>
+	Given I have an endpoint /workflowinstances/failed
+    And I have 10 failed workflow Instances
     When I send a GET request
     Then I will get a 200 response
-    And I can see 5 failed workflow instances since <date_query>
-    Examples:
-    | date_query | 
-    | 2021-12-15 | 
-    | 2021-02-02 | 
+    And I can see 10 failed workflow instances
+
+@GetPartialFailedWorkflowInstances
+Scenario: Get workflow failed and partial failed instances returns values. Ok Request
+	Given I have an endpoint /workflowinstances/failed
+    And I have 1 partial failed Workflow Instance 
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see 1 returned workflow instances
+
+@GetFailedWorkflowInstances
+Scenario: Acknowledged failed workflow instances are not returned in the Failed list. Ok Request
+	Given I have an endpoint /workflowinstances/failed
+    And I have an acknowledged failed workflow Instances
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see 0 returned workflow instances
+
+@GetPartialFailedWorkflowInstances
+Scenario: Acknowledged partial failed workflow instances are not returned in the Failed list. Ok Request
+	Given I have an endpoint /workflowinstances/failed
+    And I have an acknowledged partially failed workflow Instances
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see 0 returned workflow instances

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,23 @@
  */
 
 using Ardalis.GuardClauses;
+using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Logging;
 
 namespace Monai.Deploy.WorkflowManager.Common.Services
 {
     public class WorkflowService : IWorkflowService
     {
         private readonly IWorkflowRepository _workflowRepository;
+        private readonly ILogger<WorkflowService> _logger;
 
-        public WorkflowService(IWorkflowRepository workflowRepository)
+        public WorkflowService(IWorkflowRepository workflowRepository, ILogger<WorkflowService> logger)
         {
             _workflowRepository = workflowRepository ?? throw new ArgumentNullException(nameof(workflowRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<WorkflowRevision> GetAsync(string id)
@@ -39,11 +43,20 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             return workflow;
         }
 
+        public async Task<WorkflowRevision> GetByNameAsync(string name)
+        {
+            Guard.Against.NullOrWhiteSpace(name);
+
+            return await _workflowRepository.GetByWorkflowNameAsync(name);
+        }
+
         public async Task<string> CreateAsync(Workflow workflow)
         {
             Guard.Against.Null(workflow);
 
-            return await _workflowRepository.CreateAsync(workflow);
+            var id = await _workflowRepository.CreateAsync(workflow);
+            _logger.WorkflowCreated(id, workflow.Name);
+            return id;
         }
 
         public async Task<string?> UpdateAsync(Workflow workflow, string id)
@@ -58,13 +71,17 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
                 return null;
             }
 
-            return await _workflowRepository.UpdateAsync(workflow, existingWorkflow);
+            var result = await _workflowRepository.UpdateAsync(workflow, existingWorkflow);
+            _logger.WorkflowUpdated(id, workflow.Name);
+            return result;
         }
 
         public Task<DateTime> DeleteWorkflowAsync(WorkflowRevision workflow)
         {
             Guard.Against.Null(workflow);
-            return _workflowRepository.SoftDeleteWorkflow(workflow);
+            var result = _workflowRepository.SoftDeleteWorkflow(workflow);
+            _logger.WorkflowDeleted(workflow.WorkflowId, workflow.Id, workflow.Workflow?.Name);
+            return result;
         }
 
         public async Task<long> CountAsync() => await _workflowRepository.CountAsync();

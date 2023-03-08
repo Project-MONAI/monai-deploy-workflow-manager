@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-using System.Collections;
+using System.Web;
 using BoDi;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -182,7 +182,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
             if (taskDispatchEvent.Inputs.Count > 0)
             {
-
                 if (taskUpdateEvent != null)
                 {
                     AssertInputArtifactsForTaskDispatch(workflowRevisionTask,
@@ -212,7 +211,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public void AssertExportRequestEvent(ExportRequestEvent exportRequestEvent, WorkflowInstance workflowInstance, WorkflowRevision workflowRevision, WorkflowRequestMessage? workflowRequestMessage = null, TaskUpdateEvent? taskUpdateEvent = null)
         {
             var workflowInstanceTask = workflowInstance.Tasks.FirstOrDefault(x => x.TaskId.Equals(exportRequestEvent.ExportTaskId, StringComparison.OrdinalIgnoreCase));
-
             var workflowRevisionTask = workflowRevision?.Workflow?.Tasks.FirstOrDefault(x => x.Id.Equals(exportRequestEvent.ExportTaskId, StringComparison.OrdinalIgnoreCase));
 
             if (workflowRequestMessage != null)
@@ -225,16 +223,13 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
 
             workflowRevisionTask.ExportDestinations.Select(x => x.Name).ToArray().Should().BeEquivalentTo(exportRequestEvent.Destinations);
-            if (taskUpdateEvent.Outputs[0].RelativeRootPath.EndsWith(".dcm"))
-            {
-                exportRequestEvent.Files.Count().Should().Be(workflowRevisionTask.Artifacts.Input.Count());
-            }
-            else
-            {
-                var filesList = MinioClient.ListFilesFromDir(TestExecutionConfig.MinioConfig.Bucket, taskUpdateEvent.Outputs[0].RelativeRootPath).Result;
-                var filteredFileList = filesList.Where(f => f.FilePath.EndsWith(".dcm"));
-                exportRequestEvent.Files.Count().Should().Be(filteredFileList.Count());
-            }
+            var outputPath = taskUpdateEvent.Outputs[0].RelativeRootPath;
+            var outputExtension = Path.GetExtension(taskUpdateEvent.Outputs[0].RelativeRootPath);
+
+            var filesList = MinioClient.ListFilesFromDir(TestExecutionConfig.MinioConfig.Bucket, taskUpdateEvent.Outputs[0].RelativeRootPath).Result;
+            var filteredFileList = filesList.Where(f => f.FilePath.ToLower().EndsWith(".dcm"));
+            exportRequestEvent.Files.Count().Should().Be(filteredFileList.Count());
+
             exportRequestEvent.WorkflowInstanceId.Should().Match(workflowInstance.Id);
             exportRequestEvent.ExportTaskId.Should().Match(workflowInstanceTask?.TaskId);
         }
@@ -265,8 +260,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public void AssertPayload(Payload payload, Payload? actualPayload)
         {
             actualPayload.Should().NotBeNull();
-            actualPayload?.Should().BeEquivalentTo(payload, options => options.Excluding(x => x.Timestamp));
-            actualPayload?.Timestamp.ToString(format: "yyyy-MM-dd hh:mm:ss").Should().Be(payload.Timestamp.ToString(format: "yyyy-MM-dd hh:mm:ss"));
+            actualPayload?.Should().BeEquivalentTo(payload, options => options.Excluding(x => x.Timestamp).Excluding(x => x.PatientDetails.PatientDob));
+            actualPayload?.Timestamp.ToString("u").Should().Be(payload.Timestamp.ToString("u"));
+            actualPayload?.PatientDetails.PatientDob?.ToString("u").Should().Be(payload.PatientDetails.PatientDob?.ToString("u"));
         }
 
         public void AssertPayloadList(List<Payload> payload, List<Payload>? actualPayloads)
@@ -290,8 +286,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             payloadCollection.CalledAeTitle.Should().Be(workflowRequestMessage.CalledAeTitle);
             payloadCollection.CorrelationId.Should().Be(workflowRequestMessage.CorrelationId);
             payloadCollection.Timestamp.Should().BeCloseTo(DateTime.UtcNow, precision: TimeSpan.FromMinutes(1));
-            payloadCollection.PatientDetails.Should().BeEquivalentTo(patientDetails);
+            payloadCollection.PatientDetails.Should().BeEquivalentTo(patientDetails, options => options.Excluding(x => x.PatientDob));
+            payloadCollection.PatientDetails.PatientDob?.ToUniversalTime().Should().Be(patientDetails.PatientDob?.ToUniversalTime());
         }
+
         public void AssertPayloadWorkflowInstanceId(Payload payloadCollection, List<WorkflowInstance> workflowInstances)
         {
             foreach (var workflowInstance in workflowInstances)
@@ -303,6 +301,46 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public void AssertWorkflowIstanceMatchesExpectedTaskStatusUpdate(WorkflowInstance updatedWorkflowInstance, TaskExecutionStatus taskExecutionStatus)
         {
             updatedWorkflowInstance.Tasks[0].Status.Should().Be(taskExecutionStatus);
+        }
+
+        public static void AssertSearch<T>(int count, string? queries, T? Response)
+        {
+            var responseType = Response?.GetType();
+            GetPropertyValues(Response, responseType, out var data, out var totalPages, out var pageSize, out var totalRecords, out var pageNumber);
+            if (string.IsNullOrWhiteSpace(queries) is false)
+            {
+                var splitQuery = queries?.Split("&") ?? Array.Empty<string>();
+                foreach (var query in splitQuery)
+                {
+                    if (query.Contains("status=") || query.Contains("payloadId=") || query.Contains("pageNumber=") || query.Contains("pageSize="))
+                    {
+                        continue;
+                    }
+                    else if (query.Contains("patientName"))
+                    {
+                        var patientName = query.Split("=")[1];
+                        var decodePatientName = HttpUtility.UrlDecode(patientName);
+                        foreach (var payload in data)
+                        {
+                            payload.PatientDetails.PatientName.Should().Contain(decodePatientName);
+                        }
+                    }
+                    else if (query.Contains("patientId"))
+                    {
+                        var patientId = query.Split("=")[1];
+                        var decodePatientId = HttpUtility.UrlDecode(patientId);
+                        foreach (var payload in data)
+                        {
+                            payload.PatientDetails.PatientId.Should().Contain(decodePatientId);
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception($"Search query {query} is not valid");
+                    }
+                }
+            }
+            data.Count.Should().Be(count);
         }
 
         public static void AssertPagination<T>(int count, string? queries, T? Response)
@@ -343,9 +381,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             pageSize.Should().Be(pageSizeQuery);
         }
 
-        private static void GetPropertyValues<T>(T? Response, Type? responseType, out ICollection? data, out object? totalPages, out object? pageSize, out object? totalRecords, out object? pageNumber)
+        private static void GetPropertyValues<T>(T? Response, Type? responseType, out ICollection<Payload> data, out object? totalPages, out object? pageSize, out object? totalRecords, out object? pageNumber)
         {
-            data = responseType?.GetProperty("Data")?.GetValue(Response, null) as ICollection;
+            data = responseType?.GetProperty("Data")?.GetValue(Response, null) as ICollection<Payload>;
             totalPages = responseType?.GetProperty("TotalPages")?.GetValue(Response, null);
             pageSize = responseType?.GetProperty("PageSize")?.GetValue(Response, null);
             totalRecords = responseType?.GetProperty("TotalRecords")?.GetValue(Response, null);
@@ -410,10 +448,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             foreach (var actualWorkflowInstance in actualWorkflowInstances)
             {
                 var expectedWorkflowInstance = expectedWorkflowInstances.FirstOrDefault(x => x.Id.Equals(actualWorkflowInstance.Id));
-                actualWorkflowInstance.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss").Should().Be(expectedWorkflowInstance?.StartTime.ToString(format: "yyyy-MM-dd hh:mm:ss"));
+                actualWorkflowInstance.StartTime.ToString("u").Should().Be(expectedWorkflowInstance?.StartTime.ToString("u"));
+                actualWorkflowInstance.AcknowledgedWorkflowErrors?.ToString("u").Should().Be(expectedWorkflowInstance?.AcknowledgedWorkflowErrors?.ToString("u"));
             }
             actualWorkflowInstances.OrderBy(x => x.Id).Should().BeEquivalentTo(expectedWorkflowInstances.OrderBy(x => x.Id),
-                options => options.Excluding(x => x.StartTime));
+                options => options.Excluding(x => x.StartTime).Excluding(x => x.AcknowledgedWorkflowErrors));
         }
 
         public void AssertWorkflowInstance(List<WorkflowInstance> expectedWorkflowInstances, WorkflowInstance? actualWorkflowInstance)
@@ -425,7 +464,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
 
-        private static void AssertDataCount(ICollection? Data, int pageNumberQuery, int pageSizeQuery, int count)
+        private static void AssertDataCount(ICollection<Payload> Data, int pageNumberQuery, int pageSizeQuery, int count)
         {
             if ((pageNumberQuery * pageSizeQuery) > count)
             {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,15 @@
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.POCO
 {
-    static class TestExecutionConfig
+    internal static class TestExecutionConfig
     {
         public static class RabbitConfig
         {
             public static string Host { get; set; } = string.Empty;
 
-            public static int Port { get; set; }
+            public static int WebPort { get; set; } = 15672;
+
+            public static int Port { get; set; } = 5672;
 
             public static string User { get; set; } = string.Empty;
 

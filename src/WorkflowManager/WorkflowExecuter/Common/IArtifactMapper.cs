@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,5 +29,17 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
         /// <param name="bucketId">Bucket id used to verify.</param>
         /// <param name="shouldExistYet">Checks if it should exist yet.</param>
         Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet = true);
+
+        /// <summary>
+        /// If ConvertArtifactVariablesToPath throws a FileNotFoundException will only return false and artifactPaths will be empty.
+        /// </summary>
+        /// <param name="artifacts"></param>
+        /// <param name="payloadId"></param>
+        /// <param name="workflowInstanceId"></param>
+        /// <param name="bucketId"></param>
+        /// <param name="shouldExistYet"></param>
+        /// <param name="artifactPaths"></param>
+        /// <returns>bool if ConvertArtifactVariablesToPath runs successfully</returns>
+        bool TryConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet, out Dictionary<string, string> artifactPaths);
     }
 }
