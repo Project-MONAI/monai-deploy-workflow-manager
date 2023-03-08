@@ -34,7 +34,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         public const string ExitHookTemplateName = "exit-message-template";
         public const string ExitHookTemplateSendTemplateName = "send-message";
         public const string ExitHookParameterEvent = "event";
-        public const string ExitHookGenerateMessageContainerImage = "monai-deploy-task-manager-callback:1.0";
         public const string ExitHookOutputArtifactName = "output";
 #pragma warning disable S5443 // public directory /tmp/ is used in Docker container.
         public const string ExitHookOutputPath = "/tmp/";
