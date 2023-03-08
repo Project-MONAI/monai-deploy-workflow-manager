@@ -74,7 +74,7 @@ jobs:
       - name: Extract metadata (tags, labels) for Docker
         if: ${{ !contains(github.ref, 'refs/heads/main') }}
         id: meta
-        uses: docker/metadata-action@v4.1.1
+        uses: docker/metadata-action@v4.3.0
         with:
           images: ${{ matrix.image }}
           tags: |
