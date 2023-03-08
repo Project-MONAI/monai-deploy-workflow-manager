@@ -407,8 +407,8 @@
       },
       "MongoDB.Bson": {
         "type": "Transitive",
-        "resolved": "2.18.0",
-        "contentHash": "iyiVjkCAZIUiyYDZXXUqISeW7n3O/qcM90PUeJybryg7g4rXhSMRY0oLpAg+NdoXD/Qm9LlmVIePAluHQB91tQ==",
+        "resolved": "2.19.0",
+        "contentHash": "pGp9F2PWU3Dj54PiXKibuaQ5rphWkfp8/Nsy5jLp2dWZGRGlr3r/Lfwnr0PvfihFfxieUcJZ2z3VeO8RctXcvA==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "5.0.0"
         }
@@ -861,7 +861,7 @@
         "dependencies": {
           "Monai.Deploy.Messaging": "[0.1.19, )",
           "Mongo.Migration": "[3.1.4, )",
-          "MongoDB.Bson": "[2.18.0, )"
+          "MongoDB.Bson": "[2.19.0, )"
         }
       }
     }

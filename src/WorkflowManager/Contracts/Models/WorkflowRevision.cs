@@ -30,7 +30,7 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "id")]
         public string? Id { get; set; }
 
-        [JsonConverter(typeof(DocumentVersionConvert))]
+        [JsonConverter(typeof(DocumentVersionConvert)), BsonSerializer(typeof(DocumentVersionConverBson))]
         public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 0);
 
         [JsonProperty(PropertyName = "workflow_id")]
