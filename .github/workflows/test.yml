@@ -39,7 +39,7 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Enable NuGet cache
-      uses: actions/cache@v3.0.11
+      uses: actions/cache@v3.2.6
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -62,7 +62,7 @@ jobs:
       working-directory: ./tests
 
     - name: Archive code coverage results
-      uses: actions/upload-artifact@v3.1.1
+      uses: actions/upload-artifact@v3.1.2
       with:
         name: code-coverage-reports
         path: ./tests/**/coverage.opencover.xml
@@ -113,7 +113,7 @@ jobs:
       run: dotnet tool install --global SpecFlow.Plus.LivingDoc.CLI
 
     - name: Enable NuGet cache
-      uses: actions/cache@v3.0.11
+      uses: actions/cache@v3.2.6
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -139,7 +139,7 @@ jobs:
 
     - name: Publish report
       if: always()
-      uses: actions/upload-artifact@v3.1.1
+      uses: actions/upload-artifact@v3.1.2
       with:
         name: WorkflowExecutorIntegrationTestReport
         path: ./tests/IntegrationTests/WorkflowExecutor.IntegrationTests/bin/Debug/net6.0/LivingDoc.html
@@ -190,7 +190,7 @@ jobs:
       run: dotnet tool install --global SpecFlow.Plus.LivingDoc.CLI
 
     - name: Enable NuGet cache
-      uses: actions/cache@v3.0.11
+      uses: actions/cache@v3.2.6
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -216,7 +216,7 @@ jobs:
 
     - name: Publish report
       if: always()
-      uses: actions/upload-artifact@v3.1.1
+      uses: actions/upload-artifact@v3.1.2
       with:
         name: TaskManagerIntegrationTestReport
         path: ./tests/IntegrationTests/TaskManager.IntegrationTests/bin/Debug/net6.0/LivingDoc.html
@@ -236,7 +236,7 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Enable NuGet cache
-      uses: actions/cache@v3.0.11
+      uses: actions/cache@v3.2.6
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
