@@ -70,13 +70,13 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.20, )",
-        "resolved": "0.1.20",
-        "contentHash": "du9oxFRvtTeBBGiErXbbXBPonFIP9WE46SPqN9YvH9K9Sf+vUpI/VQWDL4vafqQCF0HNnU1MnHOJGsD0l9s2CQ==",
+        "requested": "[0.1.21, )",
+        "resolved": "0.1.21",
+        "contentHash": "dxvFv8ZCLk54QEPcYbAPbgMPPJ7piqt66Mxh5Ep8mdZyksf1kX0cqP3d7Y3zlOBXp9BAf07vioNYDHzPHio1Mw==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.12",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.14",
           "Microsoft.Extensions.Logging": "6.0.0",
           "Newtonsoft.Json": "13.0.2",
           "System.ComponentModel.Annotations": "5.0.0",
@@ -85,11 +85,11 @@
       },
       "Monai.Deploy.Messaging.RabbitMQ": {
         "type": "Direct",
-        "requested": "[0.1.20, )",
-        "resolved": "0.1.20",
-        "contentHash": "Wq0SNUBq4wP42FoBzxJmCYJBQ399GqYHG70oXCNCAG2/Dhx7DWK4BmnQu1M0b+WfdHlLB2uA5/ry5zj5L4VaeA==",
+        "requested": "[0.1.21, )",
+        "resolved": "0.1.21",
+        "contentHash": "2Zf64akC3Q6xyKP4YyuRpQMrV8xuR2ri6cCnsh6GKQJXBEQPRO/x9MUcm9n4pbIWRZjZOgOUG4o/GhxlGeq/Bg==",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.20",
+          "Monai.Deploy.Messaging": "0.1.21",
           "Polly": "7.2.3",
           "RabbitMQ.Client": "6.4.0",
           "System.Collections.Concurrent": "4.3.0"
@@ -403,10 +403,10 @@
       },
       "Microsoft.Extensions.Diagnostics.HealthChecks": {
         "type": "Transitive",
-        "resolved": "6.0.12",
-        "contentHash": "TdsjGYOHDg8656T2tWHUXNkYFUFstL/L9GEjboasuAetubH52yHkNpQV6WuqA6BpbfZHZj8xwKqN7aL7ZWO1Rg==",
+        "resolved": "6.0.14",
+        "contentHash": "Gl5I5/zL2MUzg5S4FzrkfpEBh/xSZGJbBrJHS5KDiwrWIKw+yfxYCjmjq7hZN+OJrKZrjWbhRVJcXiqwN9FsNg==",
         "dependencies": {
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "6.0.12",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "6.0.14",
           "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.3",
           "Microsoft.Extensions.Options": "6.0.0"
@@ -1507,14 +1507,14 @@
       "monai.deploy.workflowmanager.configuration": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.20, )",
+          "Monai.Deploy.Messaging": "[0.1.21, )",
           "Monai.Deploy.Storage": "[0.2.10, )"
         }
       },
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.20, )",
+          "Monai.Deploy.Messaging": "[0.1.21, )",
           "Mongo.Migration": "[3.1.4, )",
           "MongoDB.Bson": "[2.19.0, )"
         }
