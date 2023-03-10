@@ -9,7 +9,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM python:3.10-slim-buster
+FROM python:3.10-alpine
 
 WORKDIR /app
 COPY src/TaskManager/CallbackApp/app.py ./
@@ -17,4 +17,4 @@ COPY src/TaskManager/CallbackApp/requirements.txt ./
 
 RUN pip install -r requirements.txt
 
-CMD ["/app/app.py"]
+CMD ["/usr/local/bin/python3", "/app/app.py"]
