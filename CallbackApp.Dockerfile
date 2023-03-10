@@ -11,6 +11,8 @@
 
 FROM python:3.10-alpine
 
+RUN apk update && apk upgrade
+RUN apk add libcom_err=1.46.6-r0
 WORKDIR /app
 COPY src/TaskManager/CallbackApp/app.py ./
 COPY src/TaskManager/CallbackApp/requirements.txt ./
