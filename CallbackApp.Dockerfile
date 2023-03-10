@@ -9,12 +9,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM python:3.10-slim-buster
+FROM python:3.10-alpine
 
+RUN apk update && apk upgrade
+RUN apk add libcom_err=1.46.6-r0
 WORKDIR /app
 COPY src/TaskManager/CallbackApp/app.py ./
 COPY src/TaskManager/CallbackApp/requirements.txt ./
 
 RUN pip install -r requirements.txt
 
-CMD ["/app/app.py"]
+CMD ["/usr/local/bin/python3", "/app/app.py"]
