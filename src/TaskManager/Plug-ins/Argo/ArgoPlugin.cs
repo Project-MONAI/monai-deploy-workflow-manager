@@ -608,7 +608,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             if (workflow.Spec.TtlStrategy is null)
             {
-                workflow.Spec.TtlStrategy = new TTLStrategy { SecondsAfterCompletion = _options.Value.ArgoTtlStrategySeconds };
+                workflow.Spec.TtlStrategy = new TTLStrategy
+                {
+                    SecondsAfterSuccess = _options.Value.ArgoTtlStrategyFailureSeconds,
+                    SecondsAfterFailure = _options.Value.ArgoTtlStrategyFailureSeconds
+                };
             }
             else
             {
