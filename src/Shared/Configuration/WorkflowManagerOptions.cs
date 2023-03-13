@@ -60,8 +60,11 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         /// </summary>
         public BackgroundServiceSettings BackgroundServiceSettings { get; set; }
 
-        [ConfigurationKeyName("argoTtlStrategySeconds")]
-        public int ArgoTtlStrategySeconds { get; set; } = 60 * 60 * 24 * 2; // 2 days before the pods get automatically cleaned up from argo
+        [ConfigurationKeyName("argoTtlStrategyFailureSeconds")]
+        public int ArgoTtlStrategyFailureSeconds { get; set; } = 60;
+
+        [ConfigurationKeyName("argoTtlStrategySuccessSeconds")]
+        public int ArgoTtlStrategySuccessSeconds { get; set; } = 60;
 
         [ConfigurationKeyName("minArgoTtlStrategySeconds")]
         public int MinArgoTtlStrategySeconds { get; set; } = 30; // time to get logs before cleanup !
