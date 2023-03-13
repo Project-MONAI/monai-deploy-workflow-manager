@@ -610,7 +610,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             {
                 workflow.Spec.TtlStrategy = new TTLStrategy
                 {
-                    SecondsAfterSuccess = _options.Value.ArgoTtlStrategyFailureSeconds,
+                    SecondsAfterSuccess = _options.Value.ArgoTtlStrategySuccessSeconds,
                     SecondsAfterFailure = _options.Value.ArgoTtlStrategyFailureSeconds
                 };
             }
