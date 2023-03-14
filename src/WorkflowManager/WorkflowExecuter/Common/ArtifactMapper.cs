@@ -202,7 +202,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             if (shouldExistYet)
             {
                 _logger.VerifyArtifactExistence(bucketId, artifact.Key, artifact.Value);
-                artifact = await _storageService.VerifyObjectExistsAsync(bucketId, artifact);
+                artifact = await _storageService.VerifyObjectExistsAsync(bucketId, artifact.Value) ? artifact : default(KeyValuePair<string, string>);
             }
 
             return artifact;

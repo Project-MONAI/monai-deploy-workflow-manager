@@ -88,7 +88,8 @@ public class ArgoPluginTest
         _options.Value.Messaging.PublisherSettings.Add("exchange", "exchange");
         _options.Value.Messaging.PublisherSettings.Add("virtualHost", "vhost");
         _options.Value.Messaging.Topics.TaskCallbackRequest = "md.tasks.callback";
-        _options.Value.ArgoTtlStrategySeconds = _argoTtlStatergySeconds;
+        _options.Value.ArgoTtlStrategyFailureSeconds = _argoTtlStatergySeconds;
+        _options.Value.ArgoTtlStrategySuccessSeconds = _argoTtlStatergySeconds;
         _options.Value.MinArgoTtlStrategySeconds = _minAgoTtlStatergySeconds;
         _options.Value.TaskManager.ArgoPluginArguments.InitContainerCpuLimit = _initContainerCpuLimit;
         _options.Value.TaskManager.ArgoPluginArguments.InitContainerMemoryLimit = _initContainerMemoryLimit;
@@ -660,7 +661,7 @@ public class ArgoPluginTest
         var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
 
         Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
-        Assert.Equal(_argoTtlStatergySeconds, _submittedArgoTemplate?.Spec.TtlStrategy?.SecondsAfterCompletion);
+        Assert.Equal(_argoTtlStatergySeconds, _submittedArgoTemplate?.Spec.TtlStrategy?.SecondsAfterSuccess);
     }
 
     [Fact(DisplayName = "Argo Plugin adds required resource limits")]
