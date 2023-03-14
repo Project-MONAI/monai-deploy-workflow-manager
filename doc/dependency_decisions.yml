@@ -6,6 +6,7 @@
     :versions:
     - 3.7.100.6
     - 3.7.100.14
+    - 3.7.100.25
     :when: 2022-10-14 23:36:39.233755632 Z
 - - :approve
   - AWSSDK.SecurityToken
@@ -14,6 +15,7 @@
     :versions:
     - 3.7.100.6
     - 3.7.100.14
+    - 3.7.100.25
     :when: 2022-10-14 23:36:39.628260680 Z
 - - :approve
   - Ardalis.GuardClauses
@@ -115,6 +117,7 @@
     :versions:
     - 7.1.0
     - 7.2.0
+    - 7.2.1
     :when: 2022-10-14 23:36:45.046338701 Z
 - - :approve
   - Gherkin
@@ -137,6 +140,7 @@
     :versions:
     - 5.1.0
     - 5.2.0
+    - 5.2.1
     :when: 2022-10-14 23:36:46.266913084 Z
 - - :approve
   - JetBrains.Annotations
@@ -152,6 +156,7 @@
     :versions:
     - 9.0.38
     - 9.1.3
+    - 10.1.4
     :when: 2022-10-14 23:36:47.426563919 Z
 - - :approve
   - KubernetesClient.Basic
@@ -160,6 +165,7 @@
     :versions:
     - 9.0.38
     - 9.1.3
+    - 10.1.4
     :when: 2022-10-14 23:36:47.841963923 Z
 - - :approve
   - KubernetesClient.Models
@@ -168,6 +174,7 @@
     :versions:
     - 9.0.38
     - 9.1.3
+    - 10.1.4
     :when: 2022-10-14 23:36:48.248893280 Z
 - - :approve
   - Microsoft.AspNet.WebApi.Client
@@ -374,6 +381,7 @@
     :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
     :versions:
     - 6.0.14
+    - 7.0.3
     :when: 2022-10-14 23:36:59.804108720 Z
 - - :approve
   - Microsoft.Extensions.ApiDescription.Server
@@ -388,6 +396,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.1
+    - 7.0.0
     :when: 2022-10-14 23:37:00.596541774 Z
 - - :approve
   - Microsoft.Extensions.Configuration.Abstractions
@@ -395,6 +404,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 7.0.0
     :when: 2022-10-14 23:37:00.965204596 Z
 - - :approve
   - Microsoft.Extensions.Configuration.Binder
@@ -403,6 +413,7 @@
     :versions:
     - 3.0.0
     - 2.2.0
+    - 7.0.3
     :when: 2022-10-14 23:37:01.366955631 Z
 - - :approve
   - Microsoft.Extensions.Configuration.Binder
@@ -417,6 +428,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 7.0.0
     :when: 2022-10-14 23:37:02.101196514 Z
 - - :approve
   - Microsoft.Extensions.Configuration.EnvironmentVariables
@@ -424,6 +436,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.1
+    - 7.0.0
     :when: 2022-10-14 23:37:02.494310563 Z
 - - :approve
   - Microsoft.Extensions.Configuration.FileExtensions
@@ -431,6 +444,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 7.0.0
     :when: 2022-10-14 23:37:02.876351993 Z
 - - :approve
   - Microsoft.Extensions.Configuration.Json
@@ -438,6 +452,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 7.0.0
     :when: 2022-10-14 23:37:03.264528794 Z
 - - :approve
   - Microsoft.Extensions.Configuration.UserSecrets
@@ -445,6 +460,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.1
+    - 7.0.0
     :when: 2022-10-14 23:37:03.616456695 Z
 - - :approve
   - Microsoft.Extensions.DependencyInjection
@@ -454,6 +470,7 @@
     - 6.0.0
     - 6.0.1
     - 2.2.0
+    - 7.0.0
     :when: 2022-10-14 23:37:03.975202345 Z
 - - :approve
   - Microsoft.Extensions.DependencyInjection.Abstractions
@@ -461,6 +478,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 7.0.0
     :when: 2022-10-14 23:37:04.347623848 Z
 - - :approve
   - Microsoft.Extensions.DependencyModel
@@ -493,6 +511,7 @@
     :versions:
     - 6.0.12
     - 6.0.14
+    - 7.0.3
     :when: 2022-10-14 23:37:05.963687838 Z
 - - :approve
   - Microsoft.Extensions.FileProviders.Abstractions
@@ -500,6 +519,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 7.0.0
     :when: 2022-10-14 23:37:06.355048773 Z
 - - :approve
   - Microsoft.Extensions.FileProviders.Physical
@@ -507,6 +527,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 3.0.0
+    - 7.0.0
     :when: 2022-10-14 23:37:06.775924763 Z
 - - :approve
   - Microsoft.Extensions.FileProviders.Physical
@@ -521,6 +542,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 3.0.0
+    - 7.0.0
     :when: 2022-10-14 23:37:07.536437899 Z
 - - :approve
   - Microsoft.Extensions.FileSystemGlobbing
@@ -535,6 +557,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.1
+    - 7.0.1
     :when: 2022-10-14 23:37:08.290708539 Z
 - - :approve
   - Microsoft.Extensions.Hosting.Abstractions
@@ -542,6 +565,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 7.0.0
     :when: 2022-10-14 23:37:08.685809938 Z
 - - :approve
   - Microsoft.Extensions.Http
@@ -549,6 +573,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 3.1.0
     :when: 2022-10-14 23:37:09.069264115 Z
 - - :approve
   - Microsoft.Extensions.Logging
@@ -556,6 +581,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 7.0.0
     :when: 2022-10-14 23:37:09.454044811 Z
 - - :approve
   - Microsoft.Extensions.Logging.Abstractions
@@ -564,6 +590,7 @@
     :versions:
     - 6.0.2
     - 2.0.0
+    - 7.0.0
     :when: 2022-10-14 23:37:09.821156462 Z
 - - :approve
   - Microsoft.Extensions.Logging.Configuration
@@ -572,6 +599,7 @@
     :versions:
     - 3.0.0
     - 2.2.0
+    - 7.0.0
     :when: 2022-10-14 23:37:10.225726023 Z
 - - :approve
   - Microsoft.Extensions.Logging.Configuration
@@ -587,6 +615,7 @@
     :versions:
     - 6.0.0
     - 2.2.0
+    - 7.0.0
     :when: 2022-10-14 23:37:11.015778545 Z
 - - :approve
   - Microsoft.Extensions.Logging.Debug
@@ -596,6 +625,7 @@
     - 6.0.0
     - 2.0.0
     - 2.2.0
+    - 7.0.0
     :when: 2022-10-14 23:37:11.396975779 Z
 - - :approve
   - Microsoft.Extensions.Logging.EventLog
@@ -603,6 +633,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 7.0.0
     :when: 2022-10-14 23:37:11.778355224 Z
 - - :approve
   - Microsoft.Extensions.Logging.EventSource
@@ -610,6 +641,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 7.0.0
     :when: 2022-10-14 23:37:12.159538043 Z
 - - :approve
   - Microsoft.Extensions.ObjectPool
@@ -617,6 +649,7 @@
     :why: Apache-2.0 (https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt)
     :versions:
     - 2.2.0
+    - 7.0.0
     :when: 2022-10-14 23:37:12.523798182 Z
 - - :approve
   - Microsoft.Extensions.Options
@@ -625,6 +658,7 @@
     :versions:
     - 6.0.0
     - 2.0.0
+    - 7.0.1
     :when: 2022-10-14 23:37:12.901607973 Z
 - - :approve
   - Microsoft.Extensions.Options.ConfigurationExtensions
@@ -634,6 +668,7 @@
     - 3.0.0
     - 2.0.0
     - 2.2.0
+    - 7.0.0
     :when: 2022-10-14 23:37:13.281680374 Z
 - - :approve
   - Microsoft.Extensions.Options.ConfigurationExtensions
@@ -648,6 +683,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 7.0.0
     :when: 2022-10-14 23:37:14.010026638 Z
 - - :approve
   - Microsoft.IdentityModel.JsonWebTokens
@@ -811,6 +847,7 @@
     :why: Apache-2.0 (https://github.com/minio/minio-dotnet/raw/master/LICENSE)
     :versions:
     - 4.0.6
+    - 4.0.7
     :when: 2022-10-14 23:37:22.726827733 Z
 - - :approve
   - Moq
@@ -854,6 +891,7 @@
     :versions:
     - 13.0.1
     - 13.0.2
+    - 13.0.3
     :when: 2022-10-14 23:37:28.643149375 Z
 - - :approve
   - Newtonsoft.Json
@@ -1203,6 +1241,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 7.0.1
     :when: 2022-10-14 23:37:47.604075647 Z
 - - :approve
   - System.Diagnostics.EventLog
@@ -1210,6 +1249,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 6.0.0
+    - 7.0.0
     :when: 2022-10-14 23:37:47.971770524 Z
 - - :approve
   - System.Diagnostics.Tools
@@ -1346,6 +1386,7 @@
     - 6.10.0
     - 6.23.1
     - 6.25.1
+    - 6.27.0
     :when: 2022-10-14 23:37:56.206982078 Z
 - - :approve
   - System.Linq
@@ -1825,6 +1866,7 @@
     - 6.0.0
     - 6.0.6
     - 7.0.0
+    - 7.0.2
     :when: 2022-10-14 23:38:24.828973176 Z
 - - :approve
   - System.Text.RegularExpressions
@@ -1955,6 +1997,8 @@
     - 12.0.1
     - 12.0.2
     - 12.1.0
+    - 13.0.1
+    - 13.0.2
     :when: 2022-10-18 19:24:00.795702526 Z
 - - :approve
   - ZstdSharp.Port
@@ -1977,6 +2021,7 @@
     :versions:
     - 6.0.0
     - 7.0.0
+    - 8.0.0
     :when: 2022-10-14 23:38:33.492435168 Z
 - - :approve
   - runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl
@@ -2258,6 +2303,7 @@
     :versions:
     - 6.23.1
     - 6.25.1
+    - 6.27.0
     :when: 2022-10-21 05:31:10.785578919 Z
 - - :approve
   - Microsoft.IdentityModel.JsonWebTokens
@@ -2265,6 +2311,7 @@
     :why: MIT (https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/raw/dev/LICENSE.txt)
     :versions:
     - 6.23.1
+    - 6.27.0
     :when: 2022-10-21 05:31:37.975238340 Z
 - - :approve
   - Microsoft.IdentityModel.Logging
@@ -2272,6 +2319,7 @@
     :why: MIT (https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/raw/dev/LICENSE.txt)
     :versions:
     - 6.23.1
+    - 6.27.0
     :when: 2022-10-21 05:31:55.670637917 Z
 - - :approve
   - Microsoft.IdentityModel.Tokens
@@ -2279,6 +2327,7 @@
     :why: MIT (https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/raw/dev/LICENSE.txt)
     :versions:
     - 6.23.1
+    - 6.27.0
     :when: 2022-10-21 05:32:02.785856125 Z
 - - :approve
   - Monai.Deploy.Messaging
@@ -2300,6 +2349,7 @@
     :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
     - 0.2.10
+    - 0.2.13
     :when: 2022-11-02 21:43:46.964761113 Z
 - - :approve
   - Monai.Deploy.Storage.MinIO
@@ -2307,6 +2357,7 @@
     :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
     - 0.2.10
+    - 0.2.13
     :when: 2022-11-02 21:43:57.620687413 Z
 - - :approve
   - Monai.Deploy.Storage.S3Policy
@@ -2314,6 +2365,7 @@
     :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
     - 0.2.10
+    - 0.2.13
     :when: 2022-11-02 21:44:06.994266372 Z
 - - :approve
   - MongoDB.Bson
