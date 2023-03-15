@@ -603,24 +603,24 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Transitive",
-        "resolved": "0.1.21",
-        "contentHash": "dxvFv8ZCLk54QEPcYbAPbgMPPJ7piqt66Mxh5Ep8mdZyksf1kX0cqP3d7Y3zlOBXp9BAf07vioNYDHzPHio1Mw==",
+        "resolved": "0.1.22-rc0011",
+        "contentHash": "khBiYmQhw2AH1qJ61JDrlZ9jjjBumyFvYAiTdvCny0KaSVlj9CjzsvuD6TRrb+oFHuL1ZehFvvhD53vGcSD4zw==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.14",
           "Microsoft.Extensions.Logging": "6.0.0",
-          "Newtonsoft.Json": "13.0.2",
+          "Newtonsoft.Json": "13.0.3",
           "System.ComponentModel.Annotations": "5.0.0",
           "System.IO.Abstractions": "17.2.3"
         }
       },
       "Monai.Deploy.Messaging.RabbitMQ": {
         "type": "Transitive",
-        "resolved": "0.1.21",
-        "contentHash": "2Zf64akC3Q6xyKP4YyuRpQMrV8xuR2ri6cCnsh6GKQJXBEQPRO/x9MUcm9n4pbIWRZjZOgOUG4o/GhxlGeq/Bg==",
+        "resolved": "0.1.22-rc0011",
+        "contentHash": "OTFvY4tO00zNrP+zjF7QY5mjsILWKfa3SyLB9wvxcJw8zIOJlkGDWoXTq84fLdL5QR/L5GT7PeD3Yhl82h8rcg==",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.21",
+          "Monai.Deploy.Messaging": "0.1.22-rc0011",
           "Polly": "7.2.3",
           "RabbitMQ.Client": "6.4.0",
           "System.Collections.Concurrent": "4.3.0"
@@ -1651,8 +1651,8 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[7.0.0, )",
           "Microsoft.Extensions.Hosting": "[7.0.1, )",
           "Microsoft.Extensions.Options": "[7.0.1, )",
-          "Monai.Deploy.Messaging": "[0.1.21, )",
-          "Monai.Deploy.Messaging.RabbitMQ": "[0.1.21, )",
+          "Monai.Deploy.Messaging": "[0.1.22-rc0011, )",
+          "Monai.Deploy.Messaging.RabbitMQ": "[0.1.22-rc0011, )",
           "Monai.Deploy.Security": "[0.1.3, )",
           "Monai.Deploy.Storage": "[0.2.13, )",
           "Monai.Deploy.Storage.MinIO": "[0.2.13, )",
