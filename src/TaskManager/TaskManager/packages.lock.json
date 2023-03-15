@@ -74,9 +74,9 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.22-rc0011, )",
-        "resolved": "0.1.22-rc0011",
-        "contentHash": "khBiYmQhw2AH1qJ61JDrlZ9jjjBumyFvYAiTdvCny0KaSVlj9CjzsvuD6TRrb+oFHuL1ZehFvvhD53vGcSD4zw==",
+        "requested": "[0.1.22-rc0012, )",
+        "resolved": "0.1.22-rc0012",
+        "contentHash": "L7iTbtpB41nEEb12qVSf92pljZkN9HowioY5uXJ1drZ39mUHnOIv5qcCgtcaf1eNsaTUMLOHLMv4XaESdKVRUw==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -89,11 +89,11 @@
       },
       "Monai.Deploy.Messaging.RabbitMQ": {
         "type": "Direct",
-        "requested": "[0.1.22-rc0011, )",
-        "resolved": "0.1.22-rc0011",
-        "contentHash": "OTFvY4tO00zNrP+zjF7QY5mjsILWKfa3SyLB9wvxcJw8zIOJlkGDWoXTq84fLdL5QR/L5GT7PeD3Yhl82h8rcg==",
+        "requested": "[0.1.22-rc0012, )",
+        "resolved": "0.1.22-rc0012",
+        "contentHash": "lvvr3Q8JL5400qmAPV2ogLI3zXAI6YWIZavurxel+6E2oEYpSQ8ArNsjZM+i+xnetUWClcv/vE5cjR/BAMdUuw==",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.22-rc0011",
+          "Monai.Deploy.Messaging": "0.1.22-rc0012",
           "Polly": "7.2.3",
           "RabbitMQ.Client": "6.4.0",
           "System.Collections.Concurrent": "4.3.0"
