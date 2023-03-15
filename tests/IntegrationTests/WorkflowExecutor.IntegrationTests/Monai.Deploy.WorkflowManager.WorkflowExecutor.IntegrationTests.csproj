@@ -34,8 +34,8 @@
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
     <PackageReference Include="Minio" Version="4.0.6" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.22-rc0011" />
-    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.22-rc0011" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.22-rc0012" />
+    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.22-rc0012" />
     <PackageReference Include="Monai.Deploy.Storage" Version="0.2.13" />
     <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.13" />
     <PackageReference Include="Polly" Version="7.2.3" />

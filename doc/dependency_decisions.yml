@@ -2335,7 +2335,7 @@
     :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
     - 0.1.21
-    - 0.1.22-rc0011
+    - 0.1.22-rc0012
     :when: 2022-12-15 21:43:10.781625468 Z
 - - :approve
   - Monai.Deploy.Messaging.RabbitMQ
@@ -2343,7 +2343,7 @@
     :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
     - 0.1.21
-    - 0.1.22-rc0011
+    - 0.1.22-rc0012
     :when: 2022-12-15 21:43:20.975488411 Z
 - - :approve
   - Monai.Deploy.Storage
