@@ -199,7 +199,7 @@ Scenario Outline: Add workflow with invalid details
     | Invalid_Clinical_Review_Task_Id                     | 'clinical-review' reviewed_task_id: 'router' does not reference an Argo task.                                                                                              |
     | Invalid_Clinical_Review_Multiple_Argo_Inputs        | Invalid input artifact 'Argo2' in task 'clinical-review': Task cannot reference a non-reviewed task artifacts 'argo-task-2'                                                |
     | Invalid_Clinical_Review_Missing_Notifications       | notifications must be specified                                                                                                                                            |
-    | Invalid_Clinical_Review_Invalid_Notifications       | otifications is incorrectly specified                                                                                                                                      |
+    | Invalid_Clinical_Review_Invalid_Notifications       | notifications is incorrectly specified                                                                                                                                     |
 
 @AddWorkflows
 Scenario Outline: Add workflow with duplicate workflow name
