@@ -155,14 +155,14 @@ Scenario: Add workflow with valid details
 @AddWorkflows
 Scenario: Add workflow with valid details with clinical review task
     Given I have an endpoint /workflows
-    And I have a workflow body Basic_Workflow_1
+    And I have a workflow body Valid_Workflow_With_Clinical_Review
     When I send a POST request
     Then I will get a 201 response
 
 @AddWorkflows
 Scenario: Add workflow with valid empty details
     Given I have an endpoint /workflows
-    And I have a workflow body Valid_Workflow_With_Clinical_Review
+    And I have a workflow body Basic_Workflow_2
     When I send a POST request
     Then I will get a 201 response
 
