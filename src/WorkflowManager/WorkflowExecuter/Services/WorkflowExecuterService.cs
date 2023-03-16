@@ -15,6 +15,7 @@
  */
 
 using System.Globalization;
+using System.Linq;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -521,8 +522,10 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         private async Task<bool> HandleOutputArtifacts(WorkflowInstance workflowInstance, List<Messaging.Common.Storage> outputs, TaskExecution task, WorkflowRevision workflowRevision)
         {
             var artifactDict = outputs.ToArtifactDictionary();
+            var list = artifactDict.Select(a => $"{a.Value}").ToList();
+            var validOutputArtifacts = (await _storageService.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactDict.Select(a => a.Value).ToList(), default)) ?? new Dictionary<string, bool>();
 
-            var validOutputArtifacts = await _storageService.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactDict);
+            var validArtifacts = artifactDict.Where(a => validOutputArtifacts.Any(v => v.Value && v.Key == a.Value)).ToDictionary(d => d.Key, d => d.Value);
 
             var revisionTask = workflowRevision.Workflow?.Tasks.FirstOrDefault(t => t.Id == task.TaskId);
 
@@ -536,10 +539,10 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             foreach (var artifact in artifactDict)
             {
                 var outputArtifact = revisionTask.Artifacts.Output.FirstOrDefault(o => o.Name == artifact.Key);
-                _logger.LogArtifactPassing(new Artifact { Name = artifact.Key, Value = artifact.Value, Mandatory = outputArtifact?.Mandatory ?? true }, artifact.Value, "Post-Task Output Artifact", validOutputArtifacts.ContainsKey(artifact.Key));
+                _logger.LogArtifactPassing(new Artifact { Name = artifact.Key, Value = artifact.Value, Mandatory = outputArtifact?.Mandatory ?? true }, artifact.Value, "Post-Task Output Artifact", validOutputArtifacts?.ContainsKey(artifact.Key) ?? false);
             }
 
-            var missingOutputs = revisionTask.Artifacts.Output.Where(o => validOutputArtifacts.ContainsKey(o.Name) is false);
+            var missingOutputs = revisionTask.Artifacts.Output.Where(o => validArtifacts.Any(m => m.Key == o.Name) is false);
 
             if (missingOutputs.Any(o => o.Mandatory))
             {
@@ -552,12 +555,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             if (currentTask is not null)
             {
-                currentTask.OutputArtifacts = validOutputArtifacts;
+                currentTask.OutputArtifacts = validArtifacts;
             }
 
             if (validOutputArtifacts is not null && validOutputArtifacts.Any())
             {
-                return await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, task.TaskId, validOutputArtifacts);
+                return await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, task.TaskId, validArtifacts);
             }
 
             return true;

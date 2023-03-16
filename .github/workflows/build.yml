@@ -54,7 +54,7 @@ jobs:
 
       - name: Determine Version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.9.15
+        uses: gittools/actions/gitversion/execute@v0.10.2
         with:
           useConfigFile: true
           updateAssemblyInfo: true
@@ -125,7 +125,7 @@ jobs:
 
       - name: Anchore Container Scan
         id: anchore-scan
-        uses: anchore/scan-action@v3.3.2
+        uses: anchore/scan-action@v3.3.4
         continue-on-error: true
         if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
@@ -157,7 +157,7 @@ jobs:
           dotnet-version: "6.0.x"
 
       - name: Enable NuGet cache
-        uses: actions/cache@v3.2.6
+        uses: actions/cache@v3.3.1
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -227,12 +227,12 @@ jobs:
           msg: ${{ github.repository }}
 
       - name: Install GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/setup@v0.9.15
+        uses: gittools/actions/gitreleasemanager/setup@v0.10.2
         with:
           versionSpec: "0.13.x"
 
       - name: Create release with GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/create@v0.9.15
+        uses: gittools/actions/gitreleasemanager/create@v0.10.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           owner: ${{ steps.repo.outputs._0 }}
@@ -243,7 +243,7 @@ jobs:
             artifacts/mwm-docs-${{ env.SEMVER }}.zip
 
       - name: Publish release with GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/publish@v0.9.15
+        uses: gittools/actions/gitreleasemanager/publish@v0.10.2
         if: ${{ contains(github.ref, 'refs/heads/main') }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -252,7 +252,7 @@ jobs:
           tagName: ${{ env.MAJORMINORPATCH }}
 
       - name: Close release with GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/close@v0.9.15
+        uses: gittools/actions/gitreleasemanager/close@v0.10.2
         if: ${{ contains(github.ref, 'refs/heads/main') }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
