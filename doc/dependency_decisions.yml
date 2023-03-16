@@ -7,6 +7,7 @@
     - 3.7.100.6
     - 3.7.100.14
     - 3.7.100.25
+    - 3.7.105.20
     :when: 2022-10-14 23:36:39.233755632 Z
 - - :approve
   - AWSSDK.SecurityToken
@@ -16,6 +17,7 @@
     - 3.7.100.6
     - 3.7.100.14
     - 3.7.100.25
+    - 3.7.101.26
     :when: 2022-10-14 23:36:39.628260680 Z
 - - :approve
   - Ardalis.GuardClauses
@@ -381,7 +383,7 @@
     :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
     :versions:
     - 6.0.14
-    - 7.0.3
+    - 6.0.15
     :when: 2022-10-14 23:36:59.804108720 Z
 - - :approve
   - Microsoft.Extensions.ApiDescription.Server
@@ -503,6 +505,7 @@
     - 6.0.10
     - 6.0.12
     - 6.0.14
+    - 6.0.15
     :when: 2022-10-14 23:37:05.589288760 Z
 - - :approve
   - Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions
@@ -511,7 +514,7 @@
     :versions:
     - 6.0.12
     - 6.0.14
-    - 7.0.3
+    - 6.0.15
     :when: 2022-10-14 23:37:05.963687838 Z
 - - :approve
   - Microsoft.Extensions.FileProviders.Abstractions
@@ -2335,7 +2338,7 @@
     :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
     - 0.1.21
-    - 0.1.22-rc0012
+    - 0.1.22
     :when: 2022-12-15 21:43:10.781625468 Z
 - - :approve
   - Monai.Deploy.Messaging.RabbitMQ
@@ -2343,7 +2346,7 @@
     :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
     - 0.1.21
-    - 0.1.22-rc0012
+    - 0.1.22
     :when: 2022-12-15 21:43:20.975488411 Z
 - - :approve
   - Monai.Deploy.Storage
@@ -2352,6 +2355,7 @@
     :versions:
     - 0.2.10
     - 0.2.13
+    - 0.2.15
     :when: 2022-11-02 21:43:46.964761113 Z
 - - :approve
   - Monai.Deploy.Storage.MinIO
@@ -2360,6 +2364,7 @@
     :versions:
     - 0.2.10
     - 0.2.13
+    - 0.2.15
     :when: 2022-11-02 21:43:57.620687413 Z
 - - :approve
   - Monai.Deploy.Storage.S3Policy
@@ -2368,6 +2373,7 @@
     :versions:
     - 0.2.10
     - 0.2.13
+    - 0.2.15
     :when: 2022-11-02 21:44:06.994266372 Z
 - - :approve
   - MongoDB.Bson
