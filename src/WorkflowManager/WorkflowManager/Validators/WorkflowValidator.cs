@@ -407,6 +407,16 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 return;
             }
 
+            if (!currentTask.Args.ContainsKey(Notifications))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' notifications must be specified.");
+                return;
+            }
+            else if (!Enum.TryParse(typeof(NotificationValues), currentTask.Args[Notifications], true, out var _))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' notifications is incorrectly specified{Comma}please specify 'true' or 'false'");
+            }
+
             var reviewedTask = tasks.First(t => t.Id.ToLower() == currentTask.Args[ReviewedTaskId].ToLower());
 
             if (reviewedTask.Type.Equals(ArgoTaskType, StringComparison.OrdinalIgnoreCase) is false)
