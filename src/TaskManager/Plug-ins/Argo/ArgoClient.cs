@@ -37,6 +37,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         Task<Version?> Argo_GetVersionAsync();
 
         Task<string?> Argo_Get_WorkflowLogsAsync(string argoNamespace, string name, string podName, string logOptions_container);
+
+        Task<WorkflowTemplate> Argo_CreateWorkflowTemplateAsync(string argoNamespace, WorkflowTemplateCreateRequest body, CancellationToken cancellationToken);
     }
 
     public class ArgoClient : IArgoClient
@@ -62,7 +64,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             var Method = "POST";
             var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
-            return await SendRequest(content, urlBuilder, Method, cancellationToken).ConfigureAwait(false);
+            return await SendRequest<Workflow>(content, urlBuilder, Method, cancellationToken).ConfigureAwait(false);
 
         }
 
@@ -99,7 +101,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             var Method = "PUT";
             var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
-            return await SendRequest(content, urlBuilder, Method, new CancellationToken()).ConfigureAwait(false);
+            return await SendRequest<Workflow>(content, urlBuilder, Method, new CancellationToken()).ConfigureAwait(false);
 
         }
 
@@ -114,7 +116,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             var Method = "PUT";
             var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
-            return await SendRequest(content, urlBuilder, Method, new CancellationToken()).ConfigureAwait(false);
+            return await SendRequest<Workflow>(content, urlBuilder, Method, new CancellationToken()).ConfigureAwait(false);
         }
 
         public async Task<WorkflowTemplate> Argo_GetWorkflowTemplateAsync(string argoNamespace, string name, string getOptions_resourceVersion)
@@ -162,7 +164,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             urlBuilder.Length--;
             return await GetRequest<string>(urlBuilder, true).ConfigureAwait(false);
         }
-        private async Task<Workflow> SendRequest(StringContent stringContent, StringBuilder urlBuilder, string Method, CancellationToken cancellationToken)
+        private async Task<T> SendRequest<T>(StringContent stringContent, StringBuilder urlBuilder, string Method, CancellationToken cancellationToken)
         {
             using (var request = new HttpRequestMessage())
             {
@@ -172,7 +174,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 request.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
                 request.RequestUri = new Uri(urlBuilder.ToString(), UriKind.RelativeOrAbsolute);
 
-                var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                HttpResponseMessage? response = null;
+                try
+                {
+                    response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    var mess = ex.Message;
+                    throw;
+                }
+
 
                 try
                 {
@@ -186,7 +198,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     var status = (int)response.StatusCode;
                     if (status == 200)
                     {
-                        var objectResponse_ = await ReadObjectResponseAsync<Workflow>(response, headers).ConfigureAwait(false);
+                        var objectResponse_ = await ReadObjectResponseAsync<T>(response, headers).ConfigureAwait(false);
                         if (objectResponse_.Object == null)
                         {
                             throw new ApiException("Response was null which was not expected.", status, objectResponse_.Text, headers, null);
@@ -334,6 +346,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 var message = "Could not deserialize the response body stream as array of ArgoLogEntryResult.";
                 throw new ApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
             }
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async Task<WorkflowTemplate> Argo_CreateWorkflowTemplateAsync(string argoNamespace, WorkflowTemplateCreateRequest body, CancellationToken cancellationToken)
+        {
+            Guard.Against.NullOrWhiteSpace(argoNamespace);
+            Guard.Against.Null(body);
+
+            var urlBuilder = new StringBuilder();
+            urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflow-templates/{argoNamespace}");
+
+            var Method = "POST";
+            var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
+            return await SendRequest<WorkflowTemplate>(content, urlBuilder, Method, cancellationToken).ConfigureAwait(false);
         }
 
         protected struct ObjectResponseResult<T>
