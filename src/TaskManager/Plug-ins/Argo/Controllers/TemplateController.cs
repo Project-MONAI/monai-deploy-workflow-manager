@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-using System.Runtime.InteropServices;
 using System.Text;
-using Amazon.Runtime.Internal.Util;
 using Argo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Configuration;
-using MongoDB.Bson.IO;
-
-
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers
 {
@@ -48,12 +42,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers
             _argoPlugin = new ArgoPlugin(scopeFactory, argoLogger, options, new Messaging.Events.TaskDispatchEvent());
 
 
-        }
-
-        [HttpGet]
-        public ActionResult<IEnumerable<int>> Values()
-        {
-            return StatusCode(200, new List<int> { 12, 155, 12, 9 });
         }
 
         [HttpPost]
