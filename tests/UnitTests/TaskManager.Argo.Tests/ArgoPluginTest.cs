@@ -785,6 +785,42 @@ public class ArgoPluginTest
         Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
         Assert.Null(_submittedArgoTemplate?.Spec.PodGC);
     }
+    [Fact]
+    public async Task ArgoPlugin_CreateArgoTemplate_Invalid_json_Throws_JsonSerializationException()
+    {
+        var template = "\"name\":\"fred\"";
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, new Messaging.Events.TaskDispatchEvent());
+
+        await Assert.ThrowsAsync<JsonSerializationException>(async () => await runner.CreateArgoTemplate(template).ConfigureAwait(false));
+    }
+
+    [Fact]
+    public async Task ArgoPlugin_CreateArgoTemplate_Invalid_Object_Throws()
+    {
+        var template = "@";
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, new Messaging.Events.TaskDispatchEvent());
+
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await runner.CreateArgoTemplate(template).ConfigureAwait(false));
+    }
+
+    [Fact]
+    public async Task ArgoPlugin_CreateArgoTemplate_Valid_json_Calls_Client()
+    {
+        _argoClient.Setup(a =>
+        a.Argo_CreateWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<WorkflowTemplateCreateRequest>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.FromResult(new WorkflowTemplate()));
+
+        var template = "{\"name\":\"fred\"}";
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, new Messaging.Events.TaskDispatchEvent());
+        await runner.CreateArgoTemplate(template).ConfigureAwait(false);
+
+        _argoClient.Verify(a =>
+            a.Argo_CreateWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<WorkflowTemplateCreateRequest>(), It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
 
     private void SetUpSimpleArgoWorkFlow(WorkflowTemplate argoTemplate)
     {
