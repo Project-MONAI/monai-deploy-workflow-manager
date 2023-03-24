@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Workflow Manager - Task APIs | MONAI Deploy Workflow Manager v0.1.3 </title>
+    <title>Task Manager - Argo Template API | MONAI Deploy Workflow Manager v0.1.3 </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Workflow Manager - Task APIs | MONAI Deploy Workflow Manager v0.1.3 ">
+    <meta name="title" content="Task Manager - Argo Template API | MONAI Deploy Workflow Manager v0.1.3 ">
     <meta name="generator" content="docfx 2.59.4.0">
     
     <link rel="shortcut icon" href="../../../images/favicon.ico">
@@ -77,7 +77,7 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="workflow-manager---task-apis">Workflow Manager - Task APIs</h1>
+<h1 id="task-manager---argo-template-api">Task Manager - Argo Template API</h1>
 <!--
   ~ Copyright 2022 MONAI Consortium
   ~
@@ -94,14 +94,17 @@
   ~ limitations under the License.
 -->
 
-<p><strong>TEMPLATE</strong></p>
-<h2 id="getpostputdelete-tasks">GET/POST/PUT/DELETE /tasks/</h2>
-<p><em>description</em></p>
+<p>The template endpoint provides the following APIs to post a new template to Argo plugin of
+the Task Manager.</p>
+<h2 id="post-argotemplate">POST /argo/template</h2>
+<p>Posts a new template to Argo and returns the resultant template.</p>
 <h3 id="parameters">Parameters</h3>
-<p><em>parameters</em></p>
+<p>body, json string of the wrapped template</p>
 <h3 id="responses">Responses</h3>
 <p>Response Content Type: JSON</p>
-<p><em>response type</em></p>
+<ul>
+<li>the actual Argo resultant template.</li>
+</ul>
 <table>
 <thead>
 <tr>
@@ -112,23 +115,161 @@
 <tbody>
 <tr>
 <td>200</td>
-<td>Service is healthy.</td>
+<td>template posted sucsessfully.</td>
 </tr>
 <tr>
-<td>503</td>
-<td>Service is unhealthy.</td>
+<td>400</td>
+<td>bad json or template post error</td>
 </tr>
 <tr>
 <td>500</td>
-<td>Server error. The response will be a <a href="https://datatracker.ietf.org/doc/html/rfc7807">Problem details</a> object with server error details.</td>
+<td>Internal service error.</td>
 </tr>
 </tbody>
 </table>
 <h3 id="example-request">Example Request</h3>
-<pre><code class="lang-bash">curl --location --request GET 'http://localhost:5000/workflows'
+<p>file saved locally as workflowtemplate.json</p>
+<pre><code class="lang-json">{
+	&quot;Namespace&quot;: &quot;argo&quot;,
+	&quot;serverDryRun&quot;: false,
+	&quot;submitOptions&quot;: {
+		&quot;parameters&quot;: [
+			&quot;name=value&quot;
+		]
+	},
+	&quot;template&quot;: {
+		&quot;metadata&quot;: {
+			&quot;name&quot;: &quot;fantastic-tiger&quot;,
+			&quot;namespace&quot;: &quot;argo&quot;,
+			&quot;labels&quot;: {
+				&quot;example&quot;: &quot;true&quot;
+			}
+		},
+		&quot;spec&quot;: {
+			&quot;workflowMetadata&quot;: {
+				&quot;labels&quot;: {
+					&quot;example&quot;: &quot;true&quot;
+				}
+			},
+			&quot;entrypoint&quot;: &quot;argosay&quot;,
+			&quot;arguments&quot;: {
+				&quot;parameters&quot;: [
+					{
+						&quot;name&quot;: &quot;message&quot;,
+						&quot;value&quot;: &quot;hello argo&quot;
+					}
+				]
+			},
+			&quot;templates&quot;: [
+				{
+					&quot;name&quot;: &quot;argosay&quot;,
+					&quot;inputs&quot;: {
+						&quot;parameters&quot;: [
+							{
+								&quot;name&quot;: &quot;message&quot;,
+								&quot;value&quot;: &quot;{{workflow.parameters.message}}&quot;
+							}
+						]
+					},
+					&quot;container&quot;: {
+						&quot;name&quot;: &quot;main&quot;,
+						&quot;image&quot;: &quot;argoproj/argosay:v2&quot;,
+						&quot;command&quot;: [
+							&quot;/argosay&quot;
+						],
+						&quot;args&quot;: [
+							&quot;echo&quot;,
+							&quot;{{inputs.parameters.message}}&quot;
+						]
+					}
+				}
+			],
+			&quot;ttlStrategy&quot;: {
+				&quot;secondsAfterCompletion&quot;: 300
+			},
+			&quot;podGC&quot;: {
+				&quot;strategy&quot;: &quot;OnPodCompletion&quot;
+			}
+		}
+	}
+}
+</code></pre>
+<pre><code class="lang-bash">curl -d @workflowtemplate.json 'http://localhost:5000/argo/template'
 </code></pre>
 <h3 id="example-response">Example Response</h3>
-<pre><code class="lang-json">*sample output*
+<pre><code class="lang-json">{
+	&quot;metadata&quot;: {
+		&quot;creationTimestamp&quot;: &quot;2023-03-23T17:28:34+00:00&quot;,
+		&quot;generation&quot;: 1,
+		&quot;labels&quot;: {
+			&quot;example&quot;: &quot;true&quot;,
+			&quot;workflows.argoproj.io/creator&quot;: &quot;system-serviceaccount-argo-argo-argo-workflows-server&quot;
+		},
+		&quot;managedFields&quot;: [
+			{
+				&quot;apiVersion&quot;: &quot;argoproj.io/v1alpha1&quot;,
+				&quot;fieldsType&quot;: &quot;FieldsV1&quot;,
+				&quot;fieldsV1&quot;: {},
+				&quot;manager&quot;: &quot;argo&quot;,
+				&quot;operation&quot;: &quot;Update&quot;,
+				&quot;time&quot;: &quot;2023-03-23T17:28:34+00:00&quot;
+			}
+		],
+		&quot;name&quot;: &quot;fantastic-tiger&quot;,
+		&quot;namespace&quot;: &quot;argo&quot;,
+		&quot;resourceVersion&quot;: &quot;12030505&quot;,
+		&quot;uid&quot;: &quot;e7609791-2d30-4dae-a47e-f1796846068d&quot;
+	},
+	&quot;spec&quot;: {
+		&quot;arguments&quot;: {
+			&quot;parameters&quot;: [
+				{
+					&quot;name&quot;: &quot;message&quot;,
+					&quot;value&quot;: &quot;hello argo&quot;
+				}
+			]
+		},
+		&quot;entrypoint&quot;: &quot;argosay&quot;,
+		&quot;podGC&quot;: {
+			&quot;strategy&quot;: &quot;OnPodCompletion&quot;
+		},
+		&quot;templates&quot;: [
+			{
+				&quot;container&quot;: {
+					&quot;args&quot;: [
+						&quot;echo&quot;,
+						&quot;{{inputs.parameters.message}}&quot;
+					],
+					&quot;command&quot;: [
+						&quot;/argosay&quot;
+					],
+					&quot;image&quot;: &quot;argoproj/argosay:v2&quot;,
+					&quot;name&quot;: &quot;main&quot;,
+					&quot;resources&quot;: {}
+				},
+				&quot;inputs&quot;: {
+					&quot;parameters&quot;: [
+						{
+							&quot;name&quot;: &quot;message&quot;,
+							&quot;value&quot;: &quot;{{workflow.parameters.message}}&quot;
+						}
+					]
+				},
+				&quot;metadata&quot;: {},
+				&quot;name&quot;: &quot;argosay&quot;,
+				&quot;outputs&quot;: {}
+			}
+		],
+		&quot;ttlStrategy&quot;: {
+			&quot;secondsAfterCompletion&quot;: 300
+		},
+		&quot;workflowMetadata&quot;: {
+			&quot;labels&quot;: {
+				&quot;example&quot;: &quot;true&quot;
+			}
+		}
+	}
+}
 </code></pre>
 </article>
           </div>

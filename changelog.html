@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Changelog | MONAI Deploy Workflow Manager v0.1.2 </title>
+    <title>Changelog | MONAI Deploy Workflow Manager v0.1.3 </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Changelog | MONAI Deploy Workflow Manager v0.1.2 ">
+    <meta name="title" content="Changelog | MONAI Deploy Workflow Manager v0.1.3 ">
     <meta name="generator" content="docfx 2.59.4.0">
     
     <link rel="shortcut icon" href="images/favicon.ico">
@@ -83,6 +83,7 @@
 <p>Enhanced the ArgoClient -&gt; Argo_Get_WorkflowLogsAsync method to decode the json better and make the logs extracted from Argo more readable.</p>
 <p>Added Mongo Migraions, to allow changes without breaking current stored entries</p>
 <p>Added resource constraints to the generated ARGO templates, so these can operate within a Kubernetes cluster with a Resource Quota in the ARGO namespace.</p>
+<p>Added ability for plugins (currently Argo) to have controllers, any dll marked with the new Monai.Deploy.WorkflowManager.Shared.PlugInAttribute will have any controllers added to TaskManager</p>
 </article>
           </div>
           

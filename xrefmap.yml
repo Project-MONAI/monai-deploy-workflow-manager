@@ -859,18 +859,30 @@ references:
   commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.#ctor
   fullName: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.WorkflowManagerOptions
   nameWithType: WorkflowManagerOptions.WorkflowManagerOptions
-- uid: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategySeconds
-  name: ArgoTtlStrategySeconds
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html#Monai_Deploy_WorkflowManager_Configuration_WorkflowManagerOptions_ArgoTtlStrategySeconds
-  commentId: P:Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategySeconds
-  fullName: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategySeconds
-  nameWithType: WorkflowManagerOptions.ArgoTtlStrategySeconds
-- uid: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategySeconds*
-  name: ArgoTtlStrategySeconds
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html#Monai_Deploy_WorkflowManager_Configuration_WorkflowManagerOptions_ArgoTtlStrategySeconds_
-  commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategySeconds
-  fullName: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategySeconds
-  nameWithType: WorkflowManagerOptions.ArgoTtlStrategySeconds
+- uid: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategyFailureSeconds
+  name: ArgoTtlStrategyFailureSeconds
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html#Monai_Deploy_WorkflowManager_Configuration_WorkflowManagerOptions_ArgoTtlStrategyFailureSeconds
+  commentId: P:Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategyFailureSeconds
+  fullName: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategyFailureSeconds
+  nameWithType: WorkflowManagerOptions.ArgoTtlStrategyFailureSeconds
+- uid: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategyFailureSeconds*
+  name: ArgoTtlStrategyFailureSeconds
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html#Monai_Deploy_WorkflowManager_Configuration_WorkflowManagerOptions_ArgoTtlStrategyFailureSeconds_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategyFailureSeconds
+  fullName: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategyFailureSeconds
+  nameWithType: WorkflowManagerOptions.ArgoTtlStrategyFailureSeconds
+- uid: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategySuccessSeconds
+  name: ArgoTtlStrategySuccessSeconds
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html#Monai_Deploy_WorkflowManager_Configuration_WorkflowManagerOptions_ArgoTtlStrategySuccessSeconds
+  commentId: P:Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategySuccessSeconds
+  fullName: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategySuccessSeconds
+  nameWithType: WorkflowManagerOptions.ArgoTtlStrategySuccessSeconds
+- uid: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategySuccessSeconds*
+  name: ArgoTtlStrategySuccessSeconds
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html#Monai_Deploy_WorkflowManager_Configuration_WorkflowManagerOptions_ArgoTtlStrategySuccessSeconds_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategySuccessSeconds
+  fullName: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.ArgoTtlStrategySuccessSeconds
+  nameWithType: WorkflowManagerOptions.ArgoTtlStrategySuccessSeconds
 - uid: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.BackgroundServiceSettings
   name: BackgroundServiceSettings
   href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html#Monai_Deploy_WorkflowManager_Configuration_WorkflowManagerOptions_BackgroundServiceSettings
