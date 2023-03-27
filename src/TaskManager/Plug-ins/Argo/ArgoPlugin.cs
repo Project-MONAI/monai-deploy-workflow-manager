@@ -25,6 +25,7 @@ using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
@@ -32,6 +33,7 @@ using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
 using Newtonsoft.Json;
 
+[assembly: PlugIn()]
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
     public sealed class ArgoPlugin : TaskPluginBase, IAsyncDisposable
@@ -45,7 +47,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         private readonly ILogger<ArgoPlugin> _logger;
         private readonly ITaskDispatchEventService _taskDispatchEventService;
         private int? _activeDeadlineSeconds;
-        private string _namespace;
+        private string _namespace = "argo";
         private string _baseUrl = null!;
         private bool _allowInsecure = true;
         private string? _apiToken;
@@ -70,8 +72,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _options = options ?? throw new ArgumentNullException(nameof(options));
 
-            ValidateEvent();
-            Initialize();
+            _baseUrl = _options.Value.TaskManager.ArgoPluginArguments.ServerUrl;
+
+            if (taskDispatchEvent.Inputs.Count != 0 ||
+                taskDispatchEvent.Outputs.Count != 0 ||
+                taskDispatchEvent.ExecutionId != "")
+            {
+                ValidateEvent();
+                Initialize();
+            }
         }
 
         private void Initialize()
@@ -933,6 +942,32 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 Name = identity,
                 Namespace = _namespace
             });
+        }
+
+        public async Task<WorkflowTemplate> CreateArgoTemplate(string template)
+        {
+            try
+            {
+                WorkflowTemplateCreateRequest? templateCreateRequest = null;
+                var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
+                try
+                {
+                    templateCreateRequest = JsonConvert.DeserializeObject<WorkflowTemplateCreateRequest>(template);
+                }
+                catch (JsonReaderException ex)
+                {
+                    _logger.ErrorDeserializingWorkflowTemplateCreateRequest(ex.Message, ex);
+                    var mess = ex.Message;
+                    throw new InvalidOperationException(mess);
+                }
+
+                return await client.Argo_CreateWorkflowTemplateAsync(_namespace, templateCreateRequest, new CancellationToken()).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorCreatingWorkflowTemplate(ex);
+                throw;
+            }
         }
     }
 }

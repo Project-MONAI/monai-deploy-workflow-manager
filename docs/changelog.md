@@ -24,3 +24,5 @@ Enhanced the ArgoClient -> Argo_Get_WorkflowLogsAsync method to decode the json 
 Added Mongo Migraions, to allow changes without breaking current stored entries
 
 Added resource constraints to the generated ARGO templates, so these can operate within a Kubernetes cluster with a Resource Quota in the ARGO namespace.
+
+Added ability for plugins (currently Argo) to have controllers, any dll marked with the new Monai.Deploy.WorkflowManager.Shared.PlugInAttribute will have any controllers added to TaskManager
