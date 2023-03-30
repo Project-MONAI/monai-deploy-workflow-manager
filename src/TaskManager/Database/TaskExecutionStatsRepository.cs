@@ -44,6 +44,31 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var mongoDatabase = client.GetDatabase(databaseSettings.Value.DatabaseName, null);
             _taskExecutionStatsCollection = mongoDatabase.GetCollection<TaskExecutionStats>("ExecutionStats", null);
+            EnsureIndex(_taskExecutionStatsCollection).GetAwaiter().GetResult();
+        }
+
+        private static async Task EnsureIndex(IMongoCollection<TaskExecutionStats> TaskExecutionStatsCollection)
+        {
+            var asyncCursor = (await TaskExecutionStatsCollection.Indexes.ListAsync());
+            var bsonDocuments = (await asyncCursor.ToListAsync());
+            var indexes = bsonDocuments.Select(_ => _.GetElement("name").Value.ToString()).ToList();
+
+            // If index not present create it else skip.
+            if (!indexes.Any(i => i is not null && i.Equals("ExecutionStatsIndex")))
+            {
+                // Create Index here
+
+                var options = new CreateIndexOptions()
+                {
+                    Name = "TasksIndex"
+                };
+                var model = new CreateIndexModel<TaskExecutionStats>(
+                    Builders<TaskExecutionStats>.IndexKeys.Ascending(s => s.Started),
+                    options
+                    );
+
+                await TaskExecutionStatsCollection.Indexes.CreateOneAsync(model);
+            }
         }
 
         public async Task CreateAsync(TaskDispatchEventInfo taskDispatchEventInfo)
