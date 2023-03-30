@@ -107,8 +107,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             // Mongo DB (Workflow Manager)
             services.Configure<TaskManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
+            services.Configure<TaskExecutionDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
             services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
             services.AddTransient<ITaskDispatchEventRepository, TaskDispatchEventRepository>();
+            services.AddTransient<ITaskExecutionStatsRepository, TaskExecutionStatsRepository>();
             services.AddTransient<IFileSystem, FileSystem>();
             services.AddMigration(new MongoMigrationSettings
             {
