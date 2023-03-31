@@ -49,6 +49,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
 
         private static async Task EnsureIndex(IMongoCollection<TaskExecutionStats> TaskExecutionStatsCollection)
         {
+            Guard.Against.Null(TaskExecutionStatsCollection, "TaskExecutionStatsCollection");
+
             var asyncCursor = (await TaskExecutionStatsCollection.Indexes.ListAsync());
             var bsonDocuments = (await asyncCursor.ToListAsync());
             var indexes = bsonDocuments.Select(_ => _.GetElement("name").Value.ToString()).ToList();

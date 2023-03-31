@@ -15,6 +15,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -23,6 +24,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Monai.Deploy.WorkflowManager.TaskManager.Database;
 using Monai.Deploy.WorkflowManager.TaskManager.Database.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Clusters;
 using Moq;
@@ -47,8 +49,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _dbase = new Mock<IMongoDatabase>();
             _collection = new Mock<IMongoCollection<TaskExecutionStats>>();
 
+            var IndexDoc = new BsonDocument(new Dictionary<string, string> { { "name", "ExecutionStatsIndex" } });
+            var indexList = Task.FromResult(new List<BsonDocument>() { IndexDoc });
+
+            var cursor = new Mock<IAsyncCursor<BsonDocument>>();
+
             _dbase.Setup(d => d.GetCollection<TaskExecutionStats>(It.IsAny<string>(), null)).Returns(_collection.Object);
             _client.Setup(c => c.GetDatabase(It.IsAny<string>(), null)).Returns(_dbase.Object);
+            _collection.Setup(c => c.Indexes.ListAsync(It.IsAny<CancellationToken>())).Returns(Task.FromResult(cursor.Object));
 
             _repo = new TaskExecutionStatsRepository(_client.Object, _options, _logger.Object);
         }
