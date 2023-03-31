@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 
 using System.ComponentModel.DataAnnotations;
+using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.TaskManager.Migrations;
 using Mongo.Migration.Documents;
@@ -69,13 +70,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
         public string TaskId { get; set; }
 
         /// <summary>
-        /// the messageId of the message
-        /// </summary>
-        [JsonProperty(PropertyName = "message_id")]
-        [Required]
-        public string MessageId { get; set; }
-
-        /// <summary>
         /// Gets or sets the date time that the task started with the plug-in.
         /// </summary>
         [JsonProperty(PropertyName = "started")]
@@ -107,6 +101,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
 
         public TaskExecutionStats(TaskDispatchEventInfo dispatchInfo)
         {
+            Guard.Against.Null(dispatchInfo, "dispatchInfo");
             CorrelationId = dispatchInfo.Event.CorrelationId;
             WorkflowInstanceId = dispatchInfo.Event.WorkflowInstanceId;
             ExecutionId = dispatchInfo.Event.ExecutionId;
@@ -117,6 +112,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
 
         public TaskExecutionStats(TaskUpdateEvent taskUpdateEvent)
         {
+            Guard.Against.Null(taskUpdateEvent, "taskUpdateEvent");
             CorrelationId = taskUpdateEvent.CorrelationId;
             WorkflowInstanceId = taskUpdateEvent.WorkflowInstanceId;
             ExecutionId = taskUpdateEvent.ExecutionId;
