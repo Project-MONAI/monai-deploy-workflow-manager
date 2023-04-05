@@ -37,6 +37,10 @@ using MongoDB.Driver;
 using NLog;
 using NLog.LayoutRenderers;
 using NLog.Web;
+using Microsoft.AspNetCore.Http;
+using Monai.Deploy.WorkflowManager.Shared.Services;
+using Microsoft.AspNetCore.Builder;
+
 
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
@@ -62,6 +66,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.CaptureStartupErrors(true);
+                    webBuilder.UseStartup<Startup>();
+                })
                 .ConfigureHostConfiguration(configHost =>
                 {
                     configHost.SetBasePath(Directory.GetCurrentDirectory());
@@ -84,11 +93,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 {
                     ConfigureServices(hostContext, services);
                 })
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.CaptureStartupErrors(true);
-                    webBuilder.UseStartup<Startup>();
-                })
+
                 .UseNLog();
 
         private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
@@ -121,6 +126,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             services.AddTransient<IContentTypeProvider, FileExtensionContentTypeProvider>();
 
             services.AddTaskManager(hostContext);
+            services.AddHostedService<ApplicationPartsLogger>();
+
+            services.AddHttpContextAccessor();
+            services.AddSingleton<IUriService>(p =>
+            {
+                var accessor = p.GetRequiredService<IHttpContextAccessor>();
+                var request = accessor?.HttpContext?.Request;
+                var uri = string.Concat(request?.Scheme, "://", request?.Host.ToUriComponent());
+                var newUri = new Uri(uri);
+                return new UriService(newUri);
+            });
         }
 
         private static Logger ConfigureNLog(string assemblyVersionNumber)

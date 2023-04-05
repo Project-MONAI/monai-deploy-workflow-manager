@@ -1,5 +1,5 @@
-﻿/*
- * Copyright 2022 MONAI Consortium
+/*
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,29 @@
  * limitations under the License.
  */
 
-using Microsoft.AspNetCore.Authorization;
+using System;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.ControllersShared
 {
     /// <summary>
-    /// Base authenticated api controller base.
+    /// Base Api Controller.
     /// </summary>
-    [Authorize]
-    public class AuthenticatedApiControllerBase : WFMApiControllerBase
+    [ApiController]
+    public class WFMApiControllerBase : ApiControllerBase
     {
+        private readonly IOptions<WorkflowManagerOptions> _options;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthenticatedApiControllerBase"/> class.
+        /// Initializes a new instance of the <see cref="WFMApiControllerBase"/> class.
         /// </summary>
-        /// <param name="options">Options</param>
-        public AuthenticatedApiControllerBase(IOptions<WorkflowManagerOptions> options)
+        /// <param name="options">Workflow manager options.</param>
+        public WFMApiControllerBase(IOptions<WorkflowManagerOptions> options)
             : base(options)
         {
+            _options = options ?? throw new ArgumentNullException(nameof(options));
         }
     }
 }

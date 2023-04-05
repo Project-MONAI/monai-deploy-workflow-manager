@@ -34,5 +34,39 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
         /// <param name="taskDispatchEvent">A TaskDispatchEvent to update.</param>
         /// <returns>Returns the created TaskDispatchEventInfo.</returns>
         Task UpdateExecutionStatsAsync(TaskUpdateEvent taskUpdateEvent);
+
+        /// <summary>
+        /// Returns paged entries between the two given dates.
+        /// </summary>
+        /// <param name="startTime">start of the range.</param>
+        /// <param name="endTime">end of the range.</param>
+        /// <returns>a paged view of entried in range</returns>
+        Task<IEnumerable<TaskExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int PageSize = 10, int PageNumber = 1);
+
+        /// <summary>
+        /// Return the total number of stats between the dates
+        /// </summary>
+        /// <param name="startTime">start of the range.</param>
+        /// <param name="endTime">end of the range.</param>
+        /// <returns>The count of all records in range</returns>
+        Task<long> GetStatsCountAsync(DateTime startTime, DateTime endTime);
+
+        /// <summary>
+        /// Returns all stats NOT in the passed status.
+        /// </summary>
+        /// <param name="startTime">start of the range.</param>
+        /// <param name="endTime">end of the range.</param>
+        /// <param name="taskStatus">the status were NOT looking for</param>
+        /// <returns>All stats NOT of that status</returns>
+        Task<long> GetStatsStatusNotEqualCountAsync(DateTime startTime, DateTime endTime, TaskExecutionStatus taskStatus = TaskExecutionStatus.Succeeded);
+
+        /// <summary>
+        /// Calculates the average exection time for the given range
+        /// </summary>
+        /// <param name="startTime">start of the range.</param>
+        /// <param name="endTime">end of the range.</param>
+        /// <returns>the average exection times in the time range</returns>
+        Task<(double avgTotalExecution, double avgArgoExecution)> GetAverageStats(DateTime startTime, DateTime endTime);
+
     }
 }

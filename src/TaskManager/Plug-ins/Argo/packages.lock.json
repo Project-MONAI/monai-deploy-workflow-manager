@@ -1181,7 +1181,8 @@
         "type": "Project",
         "dependencies": {
           "Ardalis.GuardClauses": "[4.0.1, )",
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.15, )"
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.15, )",
+          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.api": {

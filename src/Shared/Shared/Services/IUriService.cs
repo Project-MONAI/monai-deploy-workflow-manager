@@ -1,5 +1,5 @@
-﻿/*
- * Copyright 2022 MONAI Consortium
+/*
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Shared.Filter;
 
-namespace Monai.Deploy.WorkflowManager.ControllersShared
+namespace Monai.Deploy.WorkflowManager.Shared.Services
 {
     /// <summary>
-    /// Base authenticated api controller base.
+    /// Uri Serivce.
     /// </summary>
-    [Authorize]
-    public class AuthenticatedApiControllerBase : WFMApiControllerBase
+    public interface IUriService
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthenticatedApiControllerBase"/> class.
+        /// Gets Relative Uri path with filters as a string.
         /// </summary>
-        /// <param name="options">Options</param>
-        public AuthenticatedApiControllerBase(IOptions<WorkflowManagerOptions> options)
-            : base(options)
-        {
-        }
+        /// <param name="filter">Filters.</param>
+        /// <param name="route">Route.</param>
+        /// <returns>Relative Uri string.</returns>
+        public string GetPageUriString(PaginationFilter filter, string route);
     }
 }

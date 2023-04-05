@@ -173,6 +173,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 It.IsAny<CancellationToken>()), Times.Once);
         }
 
+        [Fact]
+        public async Task Should_Return_Only_dates_in_range()
+        {
+            var connection = "mongodb://root:rootpassword@localhost:30017";
+            var client = new MongoClient(connection);
+            var options = Options.Create(new TaskExecutionDatabaseSettings() { DatabaseName = "WorkloadManager" });
+            var logger = new Mock<ILogger<TaskExecutionStatsRepository>>();
+            var repo = new TaskExecutionStatsRepository(client, options, logger.Object);
+
+            var res = await repo.GetStatsCountAsync(new DateTime(2023, 4, 4, 16, 23, 40), new DateTime(2023, 4, 4, 18, 23, 41));
+            Assert.Equal(3, res);
+            res = await repo.GetStatsStatusNotEqualCountAsync(new DateTime(2023, 4, 4, 16, 23, 40), new DateTime(2023, 4, 4, 18, 23, 41), TaskExecutionStatus.Succeeded);
+            Assert.Equal(1, res);
+
+            var stats = await repo.GetAverageStats(new DateTime(2023, 4, 4, 16, 23, 40), new DateTime(2023, 4, 4, 18, 23, 41));
+
+        }
+
 
     }
 }

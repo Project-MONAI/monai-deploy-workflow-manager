@@ -62,7 +62,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
 
                 var options = new CreateIndexOptions()
                 {
-                    Name = "TasksIndex"
+                    Name = "ExecutionStatsIndex"
                 };
                 var model = new CreateIndexModel<TaskExecutionStats>(
                     Builders<TaskExecutionStats>.IndexKeys.Ascending(s => s.Started),
@@ -99,19 +99,32 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
             try
             {
                 var updateMe = ExposeExecutionStats(new TaskExecutionStats(taskUpdateEvent), taskUpdateEvent);
+                var duration = updateMe.CompletedAt == default ? 0 : (updateMe.CompletedAt - updateMe.Started).TotalMilliseconds / 1000;
                 await _taskExecutionStatsCollection.UpdateOneAsync(o =>
                         o.ExecutionId == updateMe.ExecutionId,
                     Builders<TaskExecutionStats>.Update
                         .Set(w => w.Status, updateMe.Status)
-                        .Set(w => w.LastUpdated, DateTime.Now)
+                        .Set(w => w.LastUpdated, DateTime.UtcNow)
                         .Set(w => w.CompletedAt, updateMe.CompletedAt)
                         .Set(w => w.ExecutionTimeSeconds, updateMe.ExecutionTimeSeconds)
+                        .Set(w => w.DurationSeconds, duration)
+
                     , new UpdateOptions { IsUpsert = true }).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 _logger.DatabaseException(nameof(CreateAsync), e);
             }
+        }
+
+        public async Task<IEnumerable<TaskExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int PageSize = 10, int PageNumber = 1)
+        {
+            var result = await _taskExecutionStatsCollection.Find(T =>
+            T.Started >= startTime && T.Started <= endTime)
+                .Limit(PageSize)
+                .Skip((PageNumber - 1) * PageSize)
+                .ToListAsync();
+            return result;
         }
 
         private static TaskExecutionStats ExposeExecutionStats(TaskExecutionStats taskExecutionStats, TaskUpdateEvent taskUpdateEvent)
@@ -122,6 +135,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
                     DateTime.TryParse(taskUpdateEvent.ExecutionStats["finishedAt"], out var finished))
                 {
                     taskExecutionStats.CompletedAt = finished;
+                    taskExecutionStats.DurationSeconds = (taskExecutionStats.CompletedAt - taskExecutionStats.Started).TotalMilliseconds / 1000;
                 }
 
                 var statKeys = taskUpdateEvent.ExecutionStats.Keys.Where(v => v.StartsWith("podStartTime") || v.StartsWith("podFinishTime"));
@@ -144,6 +158,30 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
                 }
             }
             return taskExecutionStats;
+        }
+
+        public async Task<long> GetStatsCountAsync(DateTime startTime, DateTime endTime)
+        {
+            return await _taskExecutionStatsCollection.CountDocumentsAsync(T => T.Started >= startTime && T.Started <= endTime);
+        }
+
+        public async Task<long> GetStatsStatusNotEqualCountAsync(DateTime start, DateTime endTime, TaskExecutionStatus taskStatus = TaskExecutionStatus.Succeeded)
+        {
+            return await _taskExecutionStatsCollection.CountDocumentsAsync(T => T.Started >= start && T.Started <= endTime && T.Status != taskStatus.ToString());
+        }
+
+        public async Task<(double avgTotalExecution, double avgArgoExecution)> GetAverageStats(DateTime startTime, DateTime endTime)
+        {
+            var test = await _taskExecutionStatsCollection.Aggregate()
+                .Match(T => T.Started >= startTime && T.Started <= endTime && T.Status == TaskExecutionStatus.Succeeded.ToString())
+                .Group(g => new { duration = g.CompletedAt - g.Started }, r => new
+                {
+                    avgTotalExecution = r.Average(x => (x.DurationSeconds)),
+                    avgArgoExecution = r.Average(x => (x.ExecutionTimeSeconds))
+                }).ToListAsync();
+
+            var firstResult = test.FirstOrDefault() ?? new { avgTotalExecution = 0.0, avgArgoExecution = 0.0 };
+            return (firstResult.avgTotalExecution, firstResult.avgArgoExecution);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
         /// </summary>
         [BsonId]
         [JsonProperty(PropertyName = "id")]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         /// <summary>
         /// Gets or sets Db version.
@@ -73,31 +73,48 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
         /// Gets or sets the date time that the task started with the plug-in.
         /// </summary>
         [JsonProperty(PropertyName = "started")]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime Started { get; set; }
 
         /// <summary>
-        /// Gets or sets the date time that the task started with the plug-in.
+        /// Gets or sets the date time that the task last updated.
         /// </summary>
         [JsonProperty(PropertyName = "lastUpdated")]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime LastUpdated { get; set; }
 
         /// <summary>
-        /// Gets or sets the date time that the task started with the plug-in.
+        /// Gets or sets the date time that the task completed.
         /// </summary>
         [JsonProperty(PropertyName = "completedAt")]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime CompletedAt { get; set; }
 
         /// <summary>
-        /// Gets or sets the date time that the task started with the plug-in.
+        /// Gets or sets the duration of time actually executing in Argo, calculated from the metadata.
         /// </summary>
         [JsonProperty(PropertyName = "executionTimeSeconds")]
         public double ExecutionTimeSeconds { get; set; }
 
         /// <summary>
-        /// Gets or sets the date time that the task started with the plug-in.
+        /// Gets or sets the status.
         /// </summary>
         [JsonProperty(PropertyName = "status")]
-        public string Status { get; set; } = TaskStatus.Created.ToString();
+        public string Status { get; set; } = TaskExecutionStatus.Created.ToString();
+
+        /// <summary>
+        /// Gets or sets the duration, difference between startedAt and CompletedAt time.
+        /// </summary>
+        [JsonProperty(PropertyName = "durationSeconds")]
+        public double DurationSeconds
+        {
+            get; set;
+        }
+
+        public TaskExecutionStats()
+        {
+
+        }
 
         public TaskExecutionStats(TaskDispatchEventInfo dispatchInfo)
         {

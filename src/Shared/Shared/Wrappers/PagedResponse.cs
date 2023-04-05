@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.Wrappers
+using Monai.Deploy.WorkflowManager.Shared.Filter;
+using Monai.Deploy.WorkflowManager.Shared.Services;
+
+namespace Monai.Deploy.WorkflowManager.Shared.Wrappers
 {
     /// <summary>
     /// Paged Response for use with paginations.
@@ -77,5 +80,26 @@ namespace Monai.Deploy.WorkflowManager.Wrappers
         /// Gets or sets previousPage.
         /// </summary>
         public string PreviousPage { get; set; }
+
+        public void SetUp(PaginationFilter validFilter, long totalRecords, IUriService uriService, string route)
+        {
+            var totalPages = (double)totalRecords / PageSize;
+            var roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
+
+            NextPage =
+                validFilter.PageNumber >= 1 && validFilter.PageNumber < roundedTotalPages
+                ? uriService.GetPageUriString(new PaginationFilter(validFilter.PageNumber + 1, PageSize), route)
+                : null;
+
+            PreviousPage =
+                validFilter.PageNumber - 1 >= 1 && validFilter.PageNumber <= roundedTotalPages
+                ? uriService.GetPageUriString(new PaginationFilter(validFilter.PageNumber - 1, PageSize), route)
+            : null;
+
+            FirstPage = uriService.GetPageUriString(new PaginationFilter(1, PageSize), route);
+            LastPage = uriService.GetPageUriString(new PaginationFilter(roundedTotalPages, PageSize), route);
+            TotalPages = roundedTotalPages;
+            TotalRecords = totalRecords;
+        }
     }
 }
