@@ -25,12 +25,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
     [Binding]
     public class CommonApiDefinitions
     {
-        private MongoClientUtil MongoClient { get; }
-
         public CommonApiDefinitions(ObjectContainer objectContainer)
         {
             ApiHelper = objectContainer.Resolve<ApiHelper>();
-            MongoClient = objectContainer.Resolve<MongoClientUtil>();
         }
 
         [Given(@"I have a TaskManager endpoint (.*)")]

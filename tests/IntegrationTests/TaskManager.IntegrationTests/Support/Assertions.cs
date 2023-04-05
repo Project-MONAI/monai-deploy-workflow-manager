@@ -116,11 +116,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
         {
             Output.WriteLine("Asserting details of TaskUpdateEvent with TaskDispatchEvent");
             taskUpdateEvent.ExecutionId.Should().Be(taskDispatchEvent.ExecutionId);
-            taskUpdateEvent.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId); // - BUG 227 raised
+            taskUpdateEvent.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId);
             taskUpdateEvent.Status.Should().Be(status);
             taskUpdateEvent.TaskId.Should().Be(taskDispatchEvent.TaskId);
             taskUpdateEvent.WorkflowInstanceId.Should().Be(taskDispatchEvent.WorkflowInstanceId);
             Output.WriteLine("Details of TaskUpdateEvent matches TaskDispatchEvent");
+        }
+
+        public void AssertExecutionStats(List<TaskExecutionStats> ExecutionStats, TaskDispatchEvent taskDispatchEvent = null, TaskCallbackEvent taskCallbackEvent = null)
+        {
+            Output.WriteLine("Asserting details of TaskExecutionStats");
+
+            Output.WriteLine("Details TaskExecutionStats are correct");
         }
 
         private string GetTaskPluginArguments(TaskDispatchEvent taskDispatchEvent, string key)

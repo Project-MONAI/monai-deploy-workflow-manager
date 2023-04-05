@@ -37,6 +37,7 @@
     <PackageReference Include="nunit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
     <PackageReference Include="FluentAssertions" Version="6.10.0" />
+    <PackageReference Include="Verify.NUnit" Version="19.12.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -102,6 +102,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             RabbitConnectionFactory.PurgeAllQueues();
 
             MongoClient?.DeleteAllTaskDispatch();
+
+            MongoClient?.DeleteAllExecutionStats();
         }
 
         // <summary>
