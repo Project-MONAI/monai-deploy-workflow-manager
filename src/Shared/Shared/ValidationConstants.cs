@@ -48,11 +48,22 @@ namespace Monai.Deploy.WorkflowManager.Shared
         /// </summary>
         public static readonly string Mode = "mode";
 
+        /// <summary>
+        /// Key for the notifications.
+        /// </summary>
+        public static readonly string Notifications = "notifications";
+
         public enum ModeValues
         {
             QA,
             Research,
             Clinical
+        }
+
+        public enum NotificationValues
+        {
+            True,
+            False
         }
 
         /// <summary>
