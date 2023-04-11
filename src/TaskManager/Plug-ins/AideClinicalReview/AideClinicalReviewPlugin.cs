@@ -92,10 +92,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             {
                 _notifications = Boolean.TryParse(Event.TaskPluginArguments[Keys.Notifications], out bool result);
             }
-            else
-            {
-                _notifications = true;
-            }
 
             if (Event.TaskPluginArguments.ContainsKey(Keys.ReviewedExecutionId))
             {
