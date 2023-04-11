@@ -170,7 +170,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Tests
             Assert.Equal("", result.Errors);
         }
 
-        private static TaskDispatchEvent GenerateTaskDispatchEventWithValidArguments(bool acceptance = true)
+        private static TaskDispatchEvent GenerateTaskDispatchEventWithValidArguments(bool acceptance = true, string notifications = "true")
         {
             var message = GenerateTaskDispatchEvent();
             message.TaskPluginArguments[Keys.WorkflowName] = "workflowName";
@@ -186,6 +186,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Tests
             message.TaskPluginArguments[Keys.ApplicationName] = "applicationname";
             message.TaskPluginArguments[Keys.Mode] = "mode";
             message.TaskPluginArguments[Keys.ReviewerRoles] = "admin,clinician";
+            message.TaskPluginArguments[Keys.Notifications] = notifications;
             message.Metadata[Keys.MetadataAcceptance] = acceptance;
             message.Metadata[Keys.MetadataUserId] = "userid";
             message.Metadata[Keys.MetadataReason] = "reason";
