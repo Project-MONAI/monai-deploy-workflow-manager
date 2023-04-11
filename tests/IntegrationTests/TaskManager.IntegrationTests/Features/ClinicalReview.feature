@@ -82,3 +82,13 @@ Scenario: Clincial review task dispatch event triggers clincial review event wit
     Given I have a bucket in MinIO bucket1
     When A Task Dispatch event is published Task_Dispatch_Clinical_Review_Reviewed_Execution_Id
     Then A Clincial Review Request event is published
+
+@ClinicalReviewPlugin
+Scenario Outline: Clincial review task dispatch event triggers clincial review event with notifications
+    Given I have a bucket in MinIO bucket1
+    When A Task Dispatch event is published <testData>
+    Then A Clincial Review Request event is published
+    Examples:
+    | testData                                          |
+    | Task_Dispatch_Clinical_Review_Notifications_True  |
+    | Task_Dispatch_Clinical_Review_Notifications_False |
