@@ -40,6 +40,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             clinicalReviewRequestEvent.PatientMetadata.PatientName.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_name"));
             clinicalReviewRequestEvent.PatientMetadata.PatientSex.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_sex"));
             clinicalReviewRequestEvent.PatientMetadata.PatientDob.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_dob"));
+            try
+            {
+                var notifications = GetTaskPluginArguments(taskDispatchEvent, "notifications");
+
+            }
+            catch (Exception ex)
+            {
+                clinicalReviewRequestEvent.Notifications.Should().Be(true);
+            }
+
             clinicalReviewRequestEvent.WorkflowName.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "workflow_name"));
 
             foreach (var file in clinicalReviewRequestEvent.Files)

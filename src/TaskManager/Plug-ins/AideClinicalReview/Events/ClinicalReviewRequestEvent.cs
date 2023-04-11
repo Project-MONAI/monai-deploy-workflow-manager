@@ -72,6 +72,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events
         public string WorkflowName { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the workflow.
+        /// </summary>
+        [JsonProperty(PropertyName = "notifications")]
+        [Required]
+        public bool Notifications { get; set; }
+
+        /// <summary>
         /// Gets or sets patient metadata.
         /// </summary>
         [JsonProperty(PropertyName = "patient_metadata")]
