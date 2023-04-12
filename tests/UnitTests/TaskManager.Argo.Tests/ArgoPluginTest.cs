@@ -343,7 +343,7 @@ public class ArgoPluginTest
 
         var message = GenerateTaskDispatchEventWithValidArguments(withoutDefaultArguments);
         message.TaskPluginArguments["resources"] = "{\"memory_reservation\": \"string\",\"cpu_reservation\": \"string\",\"gpu_limit\": 1,\"memory_limit\": \"string\",\"cpu_limit\": \"string\"}";
-        message.TaskPluginArguments["priorityClass"] = "Helo";
+        message.TaskPluginArguments["priority"] = "Helo";
         Workflow? submittedArgoTemplate = null;
 
         _argoClient.Setup(p => p.Argo_GetWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
