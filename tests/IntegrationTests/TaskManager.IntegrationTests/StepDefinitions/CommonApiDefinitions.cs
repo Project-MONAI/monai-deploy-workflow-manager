@@ -19,24 +19,25 @@ using FluentAssertions;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
 using Newtonsoft.Json;
+using Snapshooter.NUnit;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class CommonApiDefinitions
     {
-        private MongoClientUtil MongoClient { get; }
+        public ApiHelper ApiHelper { get; }
+
+        public DataHelper DataHelper { get; }
 
         public CommonApiDefinitions(ObjectContainer objectContainer)
         {
             ApiHelper = objectContainer.Resolve<ApiHelper>();
-            MongoClient = objectContainer.Resolve<MongoClientUtil>();
+            DataHelper = objectContainer.Resolve<DataHelper>();
         }
 
         [Given(@"I have a TaskManager endpoint (.*)")]
         public void GivenIHaveATaskmanagerEndpoint(string endpoint) => ApiHelper.SetUrl(new Uri(TestExecutionConfig.ApiConfig.TaskManagerBaseUrl + endpoint));
-
-        public ApiHelper ApiHelper { get; }
 
         [Given(@"I send a (.*) request")]
         [When(@"I send a (.*) request")]
@@ -49,7 +50,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         [Then(@"I will get a (.*) response")]
         public void ThenIWillGetAResponse(string expectedCode)
         {
+            var content = ApiHelper.Response?.Content.ReadAsStringAsync().Result;
             ApiHelper.Response?.StatusCode.Should().Be((HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), expectedCode));
+        }
+
+        [Then(@"I will get a health check response message")]
+        public void ThenIWillGetAHealthCheckResponseMessage()
+        {
+            Snapshot.Match(DataHelper.FormatResponse(ApiHelper.Response?.Content.ReadAsStringAsync().Result));
         }
 
         [Then(@"I will get a status message (.*)")]

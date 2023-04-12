@@ -30,10 +30,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             $"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}",
             $"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}",
             $"{TestExecutionConfig.RabbitConfig.ClinicalReviewQueue}",
+            $"{TestExecutionConfig.RabbitConfig.TaskCancellationQueue}",
             $"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter",
             $"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter",
             $"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter",
             $"{TestExecutionConfig.RabbitConfig.ClinicalReviewQueue}-dead-letter",
+            $"{TestExecutionConfig.RabbitConfig.TaskCancellationQueue}-dead-letter"
         };
 
         public static void SetRabbitConnection()
@@ -43,7 +45,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                 HostName = TestExecutionConfig.RabbitConfig.Host,
                 UserName = TestExecutionConfig.RabbitConfig.User,
                 Password = TestExecutionConfig.RabbitConfig.Password,
-                VirtualHost = TestExecutionConfig.RabbitConfig.VirtualHost
+                VirtualHost = TestExecutionConfig.RabbitConfig.VirtualHost,
+                Port = TestExecutionConfig.RabbitConfig.Port,
             };
 
             Connection = connectionFactory.CreateConnection();

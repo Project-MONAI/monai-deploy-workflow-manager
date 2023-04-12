@@ -31,6 +31,7 @@ using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
+using Monai.Deploy.WorkflowManager.TaskManager.Database;
 using Monai.Deploy.WorkflowManager.TaskManager.Logging;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager
@@ -46,6 +47,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         private readonly IServiceScope _scope;
         private readonly CancellationTokenSource _cancellationTokenSource;
         private readonly IStorageService _storageService;
+        private readonly ITaskExecutionStatsRepository _taskExecutionStatsRepository;
         private readonly ITaskDispatchEventService _taskDispatchEventService;
         private CancellationToken _cancellationToken;
         private IMessageBrokerPublisherService? _messageBrokerPublisherService;
@@ -74,6 +76,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             _storageAdminService = _scope.ServiceProvider.GetService<IStorageAdminService>() ?? throw new ServiceNotFoundException(nameof(IStorageAdminService));
             _storageService = _scope.ServiceProvider.GetService<IStorageService>() ?? throw new ServiceNotFoundException(nameof(IStorageService));
             _taskDispatchEventService = _scope.ServiceProvider.GetService<ITaskDispatchEventService>() ?? throw new ServiceNotFoundException(nameof(ITaskDispatchEventService));
+            _taskExecutionStatsRepository = _scope.ServiceProvider.GetService<ITaskExecutionStatsRepository>() ?? throw new ServiceNotFoundException(nameof(ITaskExecutionStatsRepository));
             _messageBrokerPublisherService = null;
             _messageBrokerSubscriberService = null;
             _activeJobs = 0;
@@ -357,6 +360,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 await _taskDispatchEventService.CreateAsync(eventInfo).ConfigureAwait(false);
                 message.Body.Validate();
                 pluginAssembly = _options.Value.TaskManager.PluginAssemblyMappings[message.Body.TaskPluginType];
+                await _taskExecutionStatsRepository.CreateAsync(eventInfo);
             }
             catch (MessageValidationException ex)
             {
@@ -539,6 +543,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             try
             {
+                await _taskExecutionStatsRepository.UpdateExecutionStatsAsync(message.Body);
                 _logger.SendingTaskUpdateMessage(_options.Value.Messaging.Topics.TaskUpdateRequest, message.Body.Reason);
                 await _messageBrokerPublisherService!.Publish(_options.Value.Messaging.Topics.TaskUpdateRequest, message.ToMessage()).ConfigureAwait(false);
                 _logger.TaskUpdateMessageSent(_options.Value.Messaging.Topics.TaskUpdateRequest);
