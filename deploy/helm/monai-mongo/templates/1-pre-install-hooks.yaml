@@ -1,0 +1,114 @@
+{{- if .Values.createResource }}
+{{ range $index, $node := (lookup "v1" "Node" "" "").items }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ printf "%s%s" "setup-mongo-directories-pv-" $node.metadata.name | quote }}
+  labels:
+    type: {{ printf "%s%s" $.Values.resource.storage.globalStorageClassName "-pv" | quote }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service | quote }}
+    app.kubernetes.io/instance: {{ $.Release.Name | quote }}
+    app.kubernetes.io/version: {{ $.Chart.AppVersion }}
+    helm.sh/chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+  annotations:
+    "helm.sh/hook": pre-install, pre-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  capacity:
+    storage: 10Gi
+  # # Below will make the PV 'AVAILABLE' again if it has been previously deployed, 'BOUND' and subsequently 'RELEASED'
+  # claimRef:
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: {{ $.Values.resource.storage.globalStorageClassName }}
+  local:
+    path: {{ $.Values.resource.storage.globalDataDirectory }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ $node.metadata.name }}
+---
+{{ end }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: setup-mongo-directories-pvc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    "helm.sh/hook": pre-install, pre-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: {{ .Values.resource.storage.globalStorageClassName }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: setup-mongo-directories
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    "helm.sh/hook": pre-install, pre-upgrade
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  #ttlSecondsAfterFinished: 20
+  template:
+    metadata:
+      name: setup-mongo-directories
+      namespace: {{ .Release.Namespace }}
+      labels:
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    spec:
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: setup-mongo-directories-pvc
+
+      containers:
+      - name: directory-maker
+        command: 
+        - "mkdir"
+        - "-p"
+        - {{ $.Values.resource.storage.backupsDirectory | quote }}
+        {{ range $index, $node := (lookup "v1" "Node" "" "").items }}
+        - "mkdir"
+        - "-p"
+        - {{ printf "%s%s" $.Values.resource.storage.mongoDataDirectory $node.metadata.name | quote }}
+        - "mkdir"
+        - "-p"
+        - {{ printf "%s%s" $.Values.resource.storage.mongoLogsDirectory $node.metadata.name | quote }}
+        {{ end }}
+        image: busybox        
+        volumeMounts:
+        - mountPath: {{ .Values.resource.storage.globalDataDirectory }}
+          name: data
+      
+      restartPolicy: Never
+{{- end }}

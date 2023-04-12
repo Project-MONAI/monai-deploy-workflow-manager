@@ -1,0 +1,75 @@
+# Copyright 2023 MONAI Consortium
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+replicaCount: 3
+image:
+  repository: ghcr.io/project-monai/monai-deploy-task-manager
+
+enviromentVariables:
+  DOTNET_ENVIRONMENT: Production
+  WorkflowManager__messaging__publisherSettings__endpoint: rabbitmq.rabbitmq
+  WorkflowManager__messaging__subscriberSettings__endpoint: rabbitmq.rabbitmq
+  WorkflowManager__TaskManager__argoPluginArguments__server_url: http://argo-argo-workflows-server.argo:2746
+  WorkflowManager__TaskManager__argoExitHookSendMessageContainerImage: ghcr.io/project-monai/monai-deploy-task-manager-callback:0.1.7
+  WorkflowManager__storage__settings__executableLocation: "mc"
+  WorkflowManager__argoTtlStrategySuccessSeconds: 60
+  WorkflowManager__argoTtlStrategyFailureSeconds: 120
+  Kestrel__EndPoints__Http__Url: "http://::5000"
+
+enviromentVariablesFromSecrets:
+  secrets:
+    - name: WorkflowManager__messaging__subscriberSettings__username
+      secretName: rabbit-user-secret
+      secretKey: username
+    - name: WorkflowManager__messaging__subscriberSettings__password
+      secretName: rabbit-user-secret
+      secretKey: password
+    - name: WorkflowManager__messaging__publisherSettings__username
+      secretName: rabbit-user-secret
+      secretKey: username
+    - name: WorkflowManager__messaging__publisherSettings__password
+      secretName: rabbit-user-secret
+      secretKey: password
+    - name: WorkloadManagerDatabase__ConnectionString
+      secretName: #{MongoMonaiUserSecretName}
+      secretKey: connectionString.standard
+    - name: WorkflowManager__storage__settings__endpoint
+      secretName: minio-admin-user
+      secretKey: connectionstring
+    - name: WorkflowManager__storage__settings__accessKey
+      secretName: minio-admin-user
+      secretKey: user
+    - name: WorkflowManager__storage__settings__accessToken
+      secretName: minio-admin-user
+      secretKey: password
+
+service:
+  type: ClusterIP
+  port: 5000
+
+serviceAccount:
+  create: true
+  name: mtm
+  namespace: monai
+  clusterrole:
+    name: clusterrole-taskmanager-argo-secret-master
+    rules:
+      apiGroups: [""]
+      resources: ["secrets"]
+      verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+probes:
+  path: /health
+  port: 5000
+  timeout: 5

@@ -1,0 +1,50 @@
+apiVersion: v1
+entries:
+  monai-mongodb:
+  - apiVersion: v2
+    appVersion: 0.7.8
+    created: "2023-04-12T22:35:38.446394508+01:00"
+    description: MongoDB Kubernetes Community Operator with MONAI Customisations
+    digest: ce45f7c519c2306970b70fb651cba1f0b3e5dfe607b72e9f23042d5621155861
+    home: https://github.com/mongodb/mongodb-kubernetes-operator
+    icon: https://mongodb-images-new.s3.eu-west-1.amazonaws.com/leaf-green-dark.png
+    keywords:
+    - mongodb
+    - database
+    - nosql
+    kubeVersion: '>=1.16-0'
+    name: monai-mongodb
+    type: application
+    urls:
+    - monai-mongodb-0.7.8.tgz
+    version: 0.7.8
+  task-manager:
+  - apiVersion: v2
+    appVersion: 0.1.7
+    created: "2023-04-12T22:35:38.457309907+01:00"
+    description: The MONAI Deploy Task Manager, responsible for executing tasks as
+      part of a workflow
+    digest: f8224fac6759c064d3ff6e549f7b56791f489cd57668c982e3ca028cf55187d8
+    home: https://github.com/Project-MONAI/monai-deploy-workflow-manager
+    icon: https://avatars.githubusercontent.com/u/56449156?s=200&v=4
+    name: task-manager
+    type: application
+    urls:
+    - task-manager-0.1.7.tgz
+    version: 0.1.7
+  workflow-manager:
+  - apiVersion: v2
+    appVersion: 0.1.7
+    created: "2023-04-12T22:35:38.468160306+01:00"
+    description: The Workflow Manager component of MONAI Deploy, responsible for executing
+      workflows following receipt of data and requesting instances of tasks to be
+      created by the Task Manager
+    digest: 1e44da5fcadb1ffd0638a2ddb326813c8ba717017a3a9ef0e42188c10e7bde37
+    home: https://github.com/Project-MONAI/monai-deploy-workflow-manager
+    icon: https://avatars.githubusercontent.com/u/56449156?s=200&v=4
+    name: workflow-manager
+    type: application
+    urls:
+    - workflow-manager-0.1.7.tgz
+    version: 0.1.7
+generated: "2023-04-12T22:35:38.43382181+01:00"

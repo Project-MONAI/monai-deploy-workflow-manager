@@ -1,0 +1,195 @@
+{{- if and .Values.resource.tls.enabled .Values.resource.tls.useCertManager }}
+# cert-manager resources
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: tls-selfsigned-issuer
+  namespace: {{ .Values.namespace }}
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tls-selfsigned-ca
+  namespace: {{ .Values.namespace }}
+spec:
+  isCA: true
+  commonName: "*.{{ .Values.resource.name }}-svc.{{ .Values.namespace }}.svc.cluster.local"
+  dnsNames:
+    - "*.{{ .Values.resource.name }}-svc.{{ .Values.namespace }}.svc.cluster.local"
+  secretName: {{ .Values.resource.tls.caCertificateSecretRef }}
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: tls-selfsigned-issuer
+    kind: Issuer
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: tls-ca-issuer
+  namespace: {{ .Values.namespace }}
+spec:
+  ca:
+    secretName: {{ .Values.resource.tls.caCertificateSecretRef }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cert-manager-tls-certificate
+  namespace: {{ .Values.namespace }}
+spec:
+  secretName: {{ .Values.resource.tls.certificateKeySecretRef }}
+  issuerRef:
+    name: tls-ca-issuer
+    kind: Issuer
+  duration: {{ .Values.resource.tls.certManager.certDuration | default "8760h" }}   # default to 365 days
+  renewBefore: {{ .Values.resource.tls.certManager.renewCertBefore | default "720h" }} # default to 30 days
+  commonName: "*.{{ .Values.resource.name }}-svc.{{ .Values.namespace }}.svc.cluster.local"
+  dnsNames:
+    - "*.{{ .Values.resource.name }}-svc.{{ .Values.namespace }}.svc.cluster.local"
+{{- end }}
+
+{{- if .Values.createResource }}
+# the user credentials will be generated from these secrets
+# once the credentials are generated, these secrets are no longer required
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongo-admin-password
+type: Opaque
+stringData:
+  password: {{ .Values.resource.adminPassword }}
+
+{{- range $secret := $.Values.resource.extraUsers }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongo-{{.name}}-password
+type: Opaque
+stringData:
+  password: {{ .password }}
+{{- end}}
+
+# mongodb resources
+---
+apiVersion: mongodbcommunity.mongodb.com/v1
+kind: MongoDBCommunity
+metadata:
+  name: {{ .Values.resource.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  members: {{ .Values.resource.members }}
+  type: ReplicaSet
+  version: {{ .Values.resource.version }}
+  security:
+    tls:
+      enabled: {{ .Values.resource.tls.enabled }}
+      {{- if .Values.resource.tls.enabled }}
+      certificateKeySecretRef:
+        name: {{ .Values.resource.tls.certificateKeySecretRef }}
+      caCertificateSecretRef:
+        name: {{ .Values.resource.tls.caCertificateSecretRef }}
+      {{- end }}
+    authentication:
+      modes: ["SCRAM"]
+  users:
+    - name: admin
+      db: admin
+      passwordSecretRef: # a reference to the secret that will be used to generate the user's password
+        name: mongo-admin-password
+      roles:
+        - name: clusterAdmin
+          db: admin
+        - name: userAdminAnyDatabase
+          db: admin
+        - name: backup
+          db: admin
+        - name: restore
+          db: admin
+      scramCredentialsSecretName: mongo-admin-scram-credentials
+
+      {{- range $secret := $.Values.resource.extraUsers }}
+
+    - name: {{ .name }}
+      db: admin
+      passwordSecretRef:
+        name: mongo-{{.name}}-password
+      roles:
+        - name: readWrite
+          db: {{.db }}
+      scramCredentialsSecretName: mongo-{{.name}}-scram-credentials
+      {{- end }}
+
+  statefulSet:
+    spec:
+      template:
+        spec:
+          #  Hostpath volumes are owned by root
+          #  but MongoDB containers run as non root
+          #  so we use an init container to change the owner of
+          #  the directory (init containers run as root)
+          initContainers:
+          - command:
+              - chown
+              - -R
+              - "2000"
+              - /data
+            image: busybox
+            volumeMounts:
+            - mountPath: /data
+              name: data-volume
+            securityContext:
+              runAsNonRoot: false
+              runAsUser: 0
+              runAsGroup: 0
+            name: change-dir-permissions
+          # Container spec will be merged into default operator-created one
+          containers:
+            - name: mongod
+              resources:
+                limits:
+                  cpu: {{ .Values.resource.resources.mongod.limits.cpu }}
+                  memory: {{ .Values.resource.resources.mongod.limits.memory }}
+                requests:
+                  cpu: {{ .Values.resource.resources.mongod.requests.cpu }}
+                  memory:  {{ .Values.resource.resources.mongod.requests.memory }}
+            - name: mongodb-agent
+              resources:
+                limits:
+                  cpu: {{ .Values.resource.resources.mongodbAgent.limits.cpu }}
+                  memory: {{ .Values.resource.resources.mongodbAgent.limits.memory }}
+                requests:
+                  cpu: {{ .Values.resource.resources.mongodbAgent.requests.cpu }}
+                  memory:  {{ .Values.resource.resources.mongodbAgent.requests.memory }}
+      volumeClaimTemplates:
+      - metadata:
+          name: data-volume
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: {{ .Values.resource.storage.dataStorageCapacityRequest }}
+          selector:
+            matchLabels:
+              # We set this label when creating the volume
+              type: {{ .Values.resource.storage.dataVolumeLabel }}
+          storageClassName: {{ .Values.resource.storage.storageClassName }}
+      - metadata:
+          name: logs-volume
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: {{ .Values.resource.storage.logsStorageCapacityRequest }}
+          selector:
+            matchLabels:
+              type: {{ .Values.resource.storage.logsVolumeLabel }}
+          storageClassName: {{ .Values.resource.storage.storageClassName }}
+{{- end }}

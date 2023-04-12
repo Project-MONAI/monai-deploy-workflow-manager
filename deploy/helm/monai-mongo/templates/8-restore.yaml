@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $.Values.resource.storage.backupsStorageClassName }}-claimrest
+spec:
+  storageClassName: {{ $.Values.resource.storage.backupsStorageClassName }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{.Values.resource.storage.dataStorageCapacityRequest}}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mongo-restore
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: "0 5 31 2 ?" # Never, the idea is that this is triggered manually
+  successfulJobsHistoryLimit: 1
+  suspend: false
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 72000
+      template:
+        metadata:
+          labels:
+            job: mongo-restore
+        spec:
+          containers:
+          - name: mongo-restore-copy
+            image: mongo
+            imagePullPolicy: IfNotPresent
+            envFrom:
+            - secretRef:
+                name: mongodb-backup-account
+            command:
+              - /bin/sh
+              - -c
+              - |-
+                filname=mongobackup$(date +%y-%m-%d)
+                echo "using filename of $filname, edit cron job to change"
+                cd backups
+                echo "restoring database {{ .Values.backups.databaseBackup1 }}"
+                mongorestore --uri $connectionString -u $username -p $password -d {{ .Values.backups.databaseBackup1 }} --authenticationDatabase admin $filname/{{ .Values.backups.databaseBackup1 }}/
+                echo "restoring database {{ .Values.backups.databaseBackup2 }}"
+                mongorestore --uri $connectionString -u $username -p $password -d {{ .Values.backups.databaseBackup2 }} --authenticationDatabase admin $filname/{{ .Values.backups.databaseBackup2 }}/
+                echo "restore finished $(date)"
+            volumeMounts:
+              - mountPath: /backups
+                name: mongo-backup-storage
+          initContainers:
+          - name: mongo-restore-uncompress
+            image: alpine
+            imagePullPolicy: IfNotPresent
+            command:
+              - /bin/sh
+              - -c
+              - |-
+                filname=mongo$(date +%y-%m-%d)
+                echo "using filename of $filname, edit cron job to change"
+                cd backups
+                tar -xvzf $filname.tar.gz
+                echo "decompressed to $filname"
+            volumeMounts:
+              - mountPath: /backups
+                name: mongo-backup-storage
+
+          restartPolicy: Never
+          volumes:
+            - name: mongo-backup-storage
+              persistentVolumeClaim:
+                claimName: {{ $.Values.resource.storage.backupsStorageClassName }}-claimrest

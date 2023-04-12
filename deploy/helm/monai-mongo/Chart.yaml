@@ -1,0 +1,13 @@
+apiVersion: v2
+name: monai-mongodb
+description: MongoDB Kubernetes Community Operator with MONAI Customisations
+version: 0.7.8
+type: application
+appVersion: 0.7.8
+kubeVersion: '>=1.16-0'
+keywords:
+- mongodb
+- database
+- nosql
+icon: https://mongodb-images-new.s3.eu-west-1.amazonaws.com/leaf-green-dark.png
+home: https://github.com/mongodb/mongodb-kubernetes-operator

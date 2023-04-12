@@ -1,0 +1,99 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+   name: {{ .Values.resource.storage.storageClassName }}
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+   name: {{ .Values.resource.storage.backupsStorageClassName }}
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+{{ range $index, $node := (lookup "v1" "Node" "" "").items }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ printf "%s-%s" "mongodb-data-pv" $node.metadata.name | quote }}
+  labels:
+    type: {{ $.Values.resource.storage.dataVolumeLabel }}
+spec:
+  capacity:
+    storage: {{ $.Values.resource.storage.dataStorageCapacityRequest }}
+  # Below will make the PV 'AVAILABLE' again if it has been previously deployed, 'BOUND' and subsequently 'RELEASED'
+  claimRef:
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: {{ $.Values.resource.storage.storageClassName }}
+  local:
+    path: {{ printf "%s%s" $.Values.resource.storage.mongoDataDirectory $node.metadata.name | quote }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ $node.metadata.name }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ printf "%s-%s" "mongodb-logs-pv" $node.metadata.name | quote }}
+  labels:
+    type: {{ $.Values.resource.storage.logsVolumeLabel }}
+spec:
+  capacity:
+    storage: {{ $.Values.resource.storage.logsStorageCapacityRequest }}
+  # Below will make the PV 'AVAILABLE' again if it has been previously deployed, 'BOUND' and subsequently 'RELEASED'
+  claimRef:
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: {{ $.Values.resource.storage.storageClassName }}
+  local:
+    path: {{ printf "%s%s" $.Values.resource.storage.mongoDataDirectory $node.metadata.name | quote }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ $node.metadata.name }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ printf "%s-%s" "mongodb-bk-pv" $node.metadata.name | quote }}
+  labels:
+    type: {{ $.Values.resource.storage.bkVolumeLabel }}
+spec:
+  capacity:
+    storage: {{ $.Values.resource.storage.dataStorageCapacityRequest }}
+  # Below will make the PV 'AVAILABLE' again if it has been previously deployed, 'BOUND' and subsequently 'RELEASED'
+  claimRef:
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: {{ $.Values.resource.storage.backupsStorageClassName }}
+  local:
+    path: {{ $.Values.resource.storage.backupsDirectory | quote }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ $node.metadata.name }}
+---
+{{ end }}

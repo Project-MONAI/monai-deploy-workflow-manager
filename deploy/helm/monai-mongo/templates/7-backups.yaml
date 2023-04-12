@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $.Values.resource.storage.backupsStorageClassName }}-claim
+spec:
+  storageClassName: {{ $.Values.resource.storage.backupsStorageClassName }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{.Values.resource.storage.dataStorageCapacityRequest}}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongodb-backup-account
+stringData:
+  connectionString: mongodb://mongodb-svc.{{ .Release.Namespace }}.svc.cluster.local/?replicaSet=mongodb
+  username: admin
+  password:  {{ .Values.resource.adminPassword }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mongo-backup
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: {{ .Values.backups.backupcron | quote }}
+  successfulJobsHistoryLimit: 3
+  suspend: false
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 72000
+      template:
+        metadata:
+          labels:
+            job: mongo-backup
+        spec:
+          containers:
+          - name: mongo-backup-copy
+            image: mongo
+            imagePullPolicy: IfNotPresent
+            envFrom:
+            - secretRef:
+                name: mongodb-backup-account
+            command:
+              - /bin/sh
+              - -c
+              - |-
+                mkdir backups/mongobackup$(date +%y-%m-%d)
+                echo "backing up database {{ .Values.backups.databaseBackup1 }}"
+                mongodump --uri $connectionString -u $username -p $password -d {{ .Values.backups.databaseBackup1 }} --authenticationDatabase admin -o backups/mongobackup$(date +%y-%m-%d)
+                echo "backing up database {{ .Values.backups.databaseBackup2 }}"
+                mongodump --uri $connectionString -u $username -p $password -d {{ .Values.backups.databaseBackup2 }} --authenticationDatabase admin -o backups/mongobackup$(date +%y-%m-%d)
+                echo "Backup complete, compressing $(date)"
+                cd backups
+                tar czvf mongo$(date +%y-%m-%d).tar.gz mongobackup$(date +%y-%m-%d)
+                echo "compress complete removing temp folder "
+                rm -r mongobackup$(date +%y-%m-%d)
+                cd ..
+                echo "deleteing old backups $(date)"
+                find backups -mtime +3 -type f -delete
+            volumeMounts:
+              - mountPath: /backups
+                name: mongo-backup-storage
+          restartPolicy: Never
+          volumes:
+            - name: mongo-backup-storage
+              persistentVolumeClaim:
+                claimName: {{ $.Values.resource.storage.backupsStorageClassName }}-claim
