@@ -38,3 +38,11 @@ version: 0.1.7
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "0.1.7"
+
+dependencies:
+  - name: task-manager
+    version: "0.1.7"
+    repository: "https://monai.io/monai-deploy-workflow-manager/"
+  - name: monai-mongo
+    version: "0.7.8"
+    repository: "https://monai.io/monai-deploy-workflow-manager/"
