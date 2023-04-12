@@ -1,0 +1,66 @@
+<!--
+  ~ Copyright 2023 MONAI Consortium
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/Project-MONAI/MONAI/dev/docs/images/MONAI-logo-color.png" width="50%" alt='project-monai'>
+</p>
+
+💡 If you want to know more about MONAI Deploy WG vision, overall structure, and guidelines, please read [MONAI Deploy](https://github.com/Project-MONAI/monai-deploy) first.
+
+# MONAI Deploy Workflow Manager Helm Repository
+
+[![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
+
+## About
+
+To install the workflow manager component of MONAI Deploy, a helm chart has been created for installing it into a Kubernetes Cluster.
+
+The Workflow Manager has a secondary service called the Task Manager, which is responsible for executing each task within a workflow. By installing the `workflow-manager` helm chart, the `task-manager` chart will also be installed.
+
+The MONAI Deploy Workflow Manager also has a number of 3rd party dependency charts, including:
+
+ - monai-mongo (a slightly tweaked version of the MongoDB Community Operator)
+ - RabbitMQ
+ - MinIO
+
+## Install Helm and add the monai-deploy repository
+
+To get started, first install Helm. See their docs: https://helm.sh/docs/intro/install/
+
+Secondly, add the MONAI Workflow Manager Helm repo as a repository to your helm:
+
+```bash
+$ helm repo add monai-deploy https://monai.io/monai-deploy-workflow-manager/
+$ helm repo update
+```
+
+To see what versions are available for install, call the helm search command:
+
+```bash
+$ helm search repo monai-deploy
+NAME                    CHART VERSION   APP VERSION     DESCRIPTION
+monai/monai-mongodb     0.7.8           0.7.8           MongoDB Kubernetes Community Operator with MONA...
+monai/task-manager      0.1.7           0.1.7           The MONAI Deploy Task Manager, responsible for ...
+monai/workflow-manager  0.1.7           0.1.7           The Workflow Manager component of MONAI Deploy,...
+```
+
+## Install Workflow Manager (and its dependencies)
+
+To install the MONAI Deploy Workflow Manager, first make sure your kubectl is connected to the correct Kubernetes context and then install the relevant chart:
+
+```bash
+$ helm upgrade -i -n monai --create-namespace workflow-manager monai-deploy/workflow-manager
+```
