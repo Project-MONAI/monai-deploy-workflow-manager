@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ using Mongo.Migration.Startup.DotNetCore;
 using Mongo.Migration.Startup;
 using MongoDB.Driver;
 using NLog.Web;
+using Monai.Deploy.WorkflowManager.Shared.Services;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {

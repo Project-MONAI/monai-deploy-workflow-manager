@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,10 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Controllers;
-using Monai.Deploy.WorkflowManager.Services;
-using Monai.Deploy.WorkflowManager.Wrappers;
+using Monai.Deploy.WorkflowManager.ControllersShared;
+using Monai.Deploy.WorkflowManager.Shared.Filter;
+using Monai.Deploy.WorkflowManager.Shared.Services;
+using Monai.Deploy.WorkflowManager.Shared.Wrappers;
 using Moq;
 using Xunit;
 
@@ -82,13 +83,13 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<Status?>(), It.IsAny<string>())).ReturnsAsync(() => workflowsInstances);
             _workflowInstanceService.Setup(w => w.FilteredCountAsync(It.IsAny<Status?>(), It.IsAny<string>())).ReturnsAsync(workflowsInstances.Count);
-            _uriService.Setup(s => s.GetPageUriString(It.IsAny<Filter.PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
+            _uriService.Setup(s => s.GetPageUriString(It.IsAny<PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
-            var result = await WorkflowInstanceController.GetListAsync(new Filter.PaginationFilter());
+            var result = await WorkflowInstanceController.GetListAsync(new PaginationFilter());
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
 
-            var responseValue = (PagedResponse<List<WorkflowInstance>>)objectResult.Value;
+            var responseValue = (PagedResponse<IEnumerable<WorkflowInstance>>)objectResult.Value;
             responseValue.Data.Should().BeEquivalentTo(workflowsInstances);
             responseValue.FirstPage.Should().Be("unitTest");
             responseValue.LastPage.Should().Be("unitTest");
@@ -127,7 +128,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<Status?>(), It.IsAny<string>())).ReturnsAsync(() => workflowsInstances);
 
-            var result = await WorkflowInstanceController.GetListAsync(new Filter.PaginationFilter(), null, null, true);
+            var result = await WorkflowInstanceController.GetListAsync(new PaginationFilter(), null, null, true);
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
 
@@ -139,7 +140,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         public async Task GetListAsync_InvalidPayloadId_Returns400()
         {
             var expectedErrorMessage = "Failed to validate payloadId, not a valid guid";
-            var result = await WorkflowInstanceController.GetListAsync(new Filter.PaginationFilter(), null, "invalid", true);
+            var result = await WorkflowInstanceController.GetListAsync(new PaginationFilter(), null, "invalid", true);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
 
@@ -156,7 +157,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<Status>(), It.IsAny<string>())).ThrowsAsync(new Exception());
             _workflowInstanceService.Setup(w => w.CountAsync()).ReturnsAsync(0);
 
-            var result = await WorkflowInstanceController.GetListAsync(new Filter.PaginationFilter());
+            var result = await WorkflowInstanceController.GetListAsync(new PaginationFilter());
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);

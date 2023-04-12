@@ -26,11 +26,11 @@ using Monai.Deploy.WorkflowManager.Common.Exceptions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Filter;
 using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.Services;
+using Monai.Deploy.WorkflowManager.Shared.Filter;
+using Monai.Deploy.WorkflowManager.Shared.Services;
 
-namespace Monai.Deploy.WorkflowManager.Controllers
+namespace Monai.Deploy.WorkflowManager.ControllersShared
 {
     /// <summary>
     /// Workflow Instances Controller.
