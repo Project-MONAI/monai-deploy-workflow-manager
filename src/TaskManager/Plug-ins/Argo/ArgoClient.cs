@@ -22,37 +22,9 @@ using Ardalis.GuardClauses;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
-    public interface IArgoClient
+    public class ArgoClient : BaseArgoClient, IArgoClient
     {
-        Task<Workflow> Argo_CreateWorkflowAsync(string argoNamespace, WorkflowCreateRequest body, CancellationToken cancellationToken);
-
-        Task<Workflow> Argo_GetWorkflowAsync(string argoNamespace, string name, string getOptions_resourceVersion, string fields, CancellationToken cancellationToken);
-
-        Task<WorkflowTemplate> Argo_GetWorkflowTemplateAsync(string argoNamespace, string name, string getOptions_resourceVersion);
-
-        Task<Workflow> Argo_StopWorkflowAsync(string argoNamespace, string name, WorkflowStopRequest body);
-
-        Task<Workflow> Argo_TerminateWorkflowAsync(string argoNamespace, string name, WorkflowTerminateRequest body);
-
-        Task<Version?> Argo_GetVersionAsync();
-
-        Task<string?> Argo_Get_WorkflowLogsAsync(string argoNamespace, string name, string podName, string logOptions_container);
-
-        Task<WorkflowTemplate> Argo_CreateWorkflowTemplateAsync(string argoNamespace, WorkflowTemplateCreateRequest body, CancellationToken cancellationToken);
-    }
-
-    public class ArgoClient : IArgoClient
-    {
-        private readonly HttpClient _httpClient;
-
-        public string BaseUrl { get; set; } = "http://localhost:2746";
-
-        private string FormattedBaseUrl { get { return BaseUrl != null ? BaseUrl.TrimEnd('/') : ""; } }
-
-        public ArgoClient(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+        public ArgoClient(HttpClient httpClient) : base(httpClient) { }
 
         public async Task<Workflow> Argo_CreateWorkflowAsync(string argoNamespace, WorkflowCreateRequest body, CancellationToken cancellationToken)
         {
@@ -164,27 +136,113 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             urlBuilder.Length--;
             return await GetRequest<string>(urlBuilder, true).ConfigureAwait(false);
         }
-        private async Task<T> SendRequest<T>(StringContent stringContent, StringBuilder urlBuilder, string Method, CancellationToken cancellationToken)
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async Task<WorkflowTemplate> Argo_CreateWorkflowTemplateAsync(string argoNamespace, WorkflowTemplateCreateRequest body, CancellationToken cancellationToken)
+        {
+            Guard.Against.NullOrWhiteSpace(argoNamespace);
+            Guard.Against.Null(body);
+
+            var urlBuilder = new StringBuilder();
+            urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflow-templates/{argoNamespace}");
+
+            var method = "POST";
+            var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
+            return await SendRequest<WorkflowTemplate>(content, urlBuilder, method, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async Task<bool> Argo_DeleteWorkflowTemplateAsync(string argoNamespace, string templateName, CancellationToken cancellationToken)
+        {
+            Guard.Against.NullOrWhiteSpace(argoNamespace);
+
+            var urlBuilder = new StringBuilder();
+            urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflow-templates/{argoNamespace}/{templateName}");
+
+            var method = "DELETE";
+            var response = await HttpClient.SendAsync(new HttpRequestMessage(new HttpMethod(method), urlBuilder.ToString()), cancellationToken).ConfigureAwait(false);
+            return (int)response.StatusCode == 200;
+        }
+
+        private string ConvertToString(object value, CultureInfo cultureInfo)
+        {
+            if (value == null)
+            {
+                return "";
+            }
+
+            if (value is Enum)
+            {
+                var name = Enum.GetName(value.GetType(), value);
+                if (name != null)
+                {
+                    var field = System.Reflection.IntrospectionExtensions.GetTypeInfo(value.GetType()).GetDeclaredField(name);
+                    if (field != null)
+                    {
+                        if (System.Reflection.CustomAttributeExtensions.GetCustomAttribute(field, typeof(System.Runtime.Serialization.EnumMemberAttribute)) is System.Runtime.Serialization.EnumMemberAttribute attribute)
+                        {
+                            return attribute.Value ?? name;
+                        }
+                    }
+
+                    var converted = Convert.ToString(Convert.ChangeType(value, Enum.GetUnderlyingType(value.GetType()), cultureInfo));
+                    return converted ?? string.Empty;
+                }
+            }
+            else if (value is bool boolean)
+            {
+                return Convert.ToString(boolean, cultureInfo).ToLowerInvariant();
+            }
+            else if (value is byte[] v)
+            {
+                return Convert.ToBase64String(v);
+            }
+            else if (value.GetType().IsArray)
+            {
+                var array = Enumerable.OfType<object>((Array)value);
+                return string.Join(",", Enumerable.Select(array, o => ConvertToString(o, cultureInfo)));
+            }
+
+            var result = Convert.ToString(value, cultureInfo);
+            return result ?? "";
+        }
+    }
+
+    /// <summary>
+    /// <see cref="BaseArgoClient"/> generic functions relating to argo requests
+    /// </summary>
+    public class BaseArgoClient
+    {
+        public string BaseUrl { get; set; } = "";
+
+        protected string FormattedBaseUrl { get { return BaseUrl != null ? BaseUrl.TrimEnd('/') : ""; } }
+
+        protected readonly HttpClient HttpClient;
+
+        public BaseArgoClient(HttpClient httpClient)
+        {
+            HttpClient = httpClient;
+        }
+
+        protected async Task<T> SendRequest<T>(StringContent stringContent, StringBuilder urlBuilder, string method, CancellationToken cancellationToken)
         {
             using (var request = new HttpRequestMessage())
             {
-                stringContent.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                request.Content = stringContent;
-                request.Method = new HttpMethod(Method);
+                if (stringContent is not null)
+                {
+                    stringContent.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request.Content = stringContent;
+                }
+                request.Method = new HttpMethod(method);
                 request.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
                 request.RequestUri = new Uri(urlBuilder.ToString(), UriKind.RelativeOrAbsolute);
 
                 HttpResponseMessage? response = null;
-                try
-                {
-                    response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    var mess = ex.Message;
-                    throw;
-                }
-
+                response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, cancellationToken).ConfigureAwait(false);
 
                 try
                 {
@@ -222,7 +280,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             }
         }
 
-        private async Task<T?> GetRequest<T>(StringBuilder urlBuilder, bool isLogs = false)
+        protected async Task<T?> GetRequest<T>(StringBuilder urlBuilder, bool isLogs = false)
         {
 
             using (var request = new HttpRequestMessage())
@@ -231,7 +289,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 request.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
                 request.RequestUri = new Uri(urlBuilder.ToString(), UriKind.RelativeOrAbsolute);
 
-                var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+                var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
                 try
                 {
                     var headers_ = Enumerable.ToDictionary(response.Headers, h_ => h_.Key, h_ => h_.Value);
@@ -270,7 +328,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 }
             }
         }
-
 
         protected virtual async Task<ObjectResponseResult<T?>> ReadObjectResponseAsync<T>(HttpResponseMessage response, IReadOnlyDictionary<string, IEnumerable<string>> headers, bool isLogs = false)
         {
@@ -348,23 +405,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             }
         }
 
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>A successful response.</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<WorkflowTemplate> Argo_CreateWorkflowTemplateAsync(string argoNamespace, WorkflowTemplateCreateRequest body, CancellationToken cancellationToken)
-        {
-            Guard.Against.NullOrWhiteSpace(argoNamespace);
-            Guard.Against.Null(body);
-
-            var urlBuilder = new StringBuilder();
-            urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflow-templates/{argoNamespace}");
-
-            var Method = "POST";
-            var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
-            return await SendRequest<WorkflowTemplate>(content, urlBuilder, Method, cancellationToken).ConfigureAwait(false);
-        }
-
-        protected struct ObjectResponseResult<T>
+        protected readonly struct ObjectResponseResult<T>
         {
             public ObjectResponseResult(T responseObject, string responseText)
             {
@@ -377,60 +418,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             public string Text { get; }
         }
 
-        private string ConvertToString(object value, CultureInfo cultureInfo)
-        {
-            if (value == null)
-            {
-                return "";
-            }
-
-            if (value is Enum)
-            {
-                var name = Enum.GetName(value.GetType(), value);
-                if (name != null)
-                {
-                    var field = System.Reflection.IntrospectionExtensions.GetTypeInfo(value.GetType()).GetDeclaredField(name);
-                    if (field != null)
-                    {
-                        if (System.Reflection.CustomAttributeExtensions.GetCustomAttribute(field, typeof(System.Runtime.Serialization.EnumMemberAttribute)) is System.Runtime.Serialization.EnumMemberAttribute attribute)
-                        {
-                            return attribute.Value ?? name;
-                        }
-                    }
-
-                    var converted = Convert.ToString(Convert.ChangeType(value, Enum.GetUnderlyingType(value.GetType()), cultureInfo));
-                    return converted ?? string.Empty;
-                }
-            }
-            else if (value is bool boolean)
-            {
-                return Convert.ToString(boolean, cultureInfo).ToLowerInvariant();
-            }
-            else if (value is byte[] v)
-            {
-                return Convert.ToBase64String(v);
-            }
-            else if (value.GetType().IsArray)
-            {
-                var array = Enumerable.OfType<object>((Array)value);
-                return string.Join(",", Enumerable.Select(array, o => ConvertToString(o, cultureInfo)));
-            }
-
-            var result = Convert.ToString(value, cultureInfo);
-            return result ?? "";
-        }
         class ArgoLogEntry
         {
             public string Content { get; set; } = "";
 
             public string PodName { get; set; } = "";
         }
+
         class ArgoLogEntryResult
         {
             public ArgoLogEntry Result { get; set; } = new ArgoLogEntry();
         }
     }
-
 
     public class Version
     {

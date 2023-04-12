@@ -68,5 +68,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers
 
             return Ok(workflowTemplate);
         }
+
+        [Route("{name}")]
+        [HttpDelete]
+        public async Task<ActionResult<bool>> DeleteArgoTemplate(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return BadRequest("No name parameter provided");
+            }
+
+            try
+            {
+                return Ok(await _argoPlugin.DeleteArgoTemplate(name));
+            }
+            catch (Exception)
+            {
+                return BadRequest("message: Argo unable to process template");
+            }
+        }
     }
 }

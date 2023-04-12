@@ -969,5 +969,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 throw;
             }
         }
+
+        public async Task<bool> DeleteArgoTemplate(string templateName)
+        {
+            try
+            {
+                var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
+                return await client.Argo_DeleteWorkflowTemplateAsync(_namespace, templateName, new CancellationToken()).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorDeletingWorkflowTemplate(ex);
+                throw;
+            }
+        }
     }
 }

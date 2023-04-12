@@ -86,7 +86,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
         /// <summary>
         /// Key for priority classnames on task plugin arguments side
         /// </summary>
-        public static readonly string TaskPriorityClassName = "priorityClass";
+        public static readonly string TaskPriorityClassName = "priority";
 
         /// <summary>
         /// Required arguments to run the Argo workflow.
