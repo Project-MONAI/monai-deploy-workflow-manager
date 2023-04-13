@@ -1,0 +1,119 @@
+# Copyright 2022 MONAI Consortium
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# The entrypoint template contains a dag with three tasks and three additional template
+#   each referenced by the tasks defined in the dag.
+# The `run-segmentation` task in the dag references the `segmentation` template that
+#   expects a single input artifact `input-from-ig` to be provided by
+#   the Task Manager.  Due to Argo limitation, the argument must provide
+#   the artifact connection information and to workaround this, we trick
+#   Argo to think that a Key-Only Artifact is used (https://argoproj.github.io/argo-workflows/key-only-artifacts/)
+#   with the name `what-ever-key-you-like-here`. The Argo Plug-in for Task Manager (APTM) will
+#   replace this with a matching input from TaskDispatchEvent.Inputs (md.tasks.dispatch).
+#   Note: do not provide any other information for the s3 connection, otherwise, it will assume
+#   connection information is provided by the user and will be ignored.
+# The same applies to the second task `run-inference` that references the `inference` template.
+# The `run-generate-report` template contains two arguments, but they do not have an s3.key
+#   defined and therefore, APTM will not inject the connection information. However, Argo itself
+#   know that the data should be coming from the data template defined in the `from` property.
+# For the `segmentation` template.  The input will not be injected with a connection information
+#   because the template is referenced by the task `run-segmentation` and a connection information is
+#   already provided there. For the `segmentation-output`, if a matching name exists in
+#   TaskDispatchEvent.Outputs, then the connection information is injected based on the matching instance.
+#   Otherwise, APTM will use the intermediate artifact store provided in TaskDispatchEvent.IntermediateStorage
+#   and the path will be set to the relative path + the name of the workflow + the name of the artifact.
+#   The same applies to template `inference`.
+# For the last template, `generate-report`, inputs are ignored because they are defined as arguments in
+#   the `run-generate-report` template. However, the output will be provided similarly to the other two templates.
+
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: artifact-input-copy-dag
+spec:
+  entrypoint: my-entrypoint
+  templates:
+  - name: my-entrypoint
+    dag:
+      tasks:
+      - name: run-segmentation
+        template: segmentation
+        arguments:
+          artifacts:
+          - name: input-dicom
+            s3:
+              key: what-ever-key-you-like-here
+      - name: run-inference
+        template: inference
+        arguments:
+          artifacts:
+          - name: input-dicom
+            s3:
+              key: what-ever-key-you-like-here
+      - name: run-generate-report
+        template: generate-report
+        depends: "run-segmentation && run-inference"
+        arguments:
+          artifacts:
+          - name: segmentation-output
+            from: "{{tasks.run-segmentation.outputs.artifacts.segmentation-output}}"
+          - name: inference-output
+            from: "{{tasks.run-inference.outputs.artifacts.inference-output}}"
+  - name: segmentation
+    inputs:
+      artifacts:
+      - name: input-dicom
+        path: /input/
+    outputs:
+      artifacts:
+      - name: segmentation-output
+        path: /output
+        archive:
+          none: {}
+    container:
+      image: debian:latest
+      command: [sh, -c]
+      args: ["cp -r /input/ /output/"]
+  - name: inference
+    inputs:
+      artifacts:
+      - name: input-dicom
+        path: /input/
+    outputs:
+      artifacts:
+      - name: inference-output
+        path: /output
+        archive:
+          none: {}
+    container:
+      image: debian:latest
+      command: [sh, -c]
+      args: ["cp -r /input/ /output/"]
+  - name: generate-report
+    inputs:
+      artifacts:
+      - name: segmentation-output
+        path: /input/segmentation
+      - name: inference-output
+        path: /input/inference
+    outputs:
+      artifacts:
+      - name: output
+        path: /output
+    container:
+      image: debian:latest
+      command: [sh, -c]
+      args: ["cp -r /input/ /output/"]

@@ -1,0 +1,145 @@
+<!--
+  ~ Copyright 2022 MONAI Consortium
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Drivers\**" />
+    <EmbeddedResource Remove="Drivers\**" />
+    <None Remove="Drivers\**" />
+    <SpecFlowFeatureFiles Remove="Drivers\**" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Drivers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+    <PackageReference Include="Minio" Version="4.0.7" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.22" />
+    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.22" />
+    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.15" />
+    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.15" />
+    <PackageReference Include="Polly" Version="7.2.3" />
+    <PackageReference Include="Snapshooter.NUnit" Version="0.13.0" />
+    <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
+    <PackageReference Include="SpecFlow.NUnit" Version="3.9.74" />
+    <PackageReference Include="nunit" Version="3.13.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
+    <PackageReference Include="FluentAssertions" Version="6.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\WorkflowManager\WorkflowManager\Monai.Deploy.WorkflowManager.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Features\PayloadApi.feature.cs">
+      <DependentUpon>PayloadApi.feature</DependentUpon>
+    </Compile>
+    <Compile Update="Features\PayloadCollection.feature.cs">
+      <DependentUpon>PayloadCollection.feature</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.Test.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\no_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\null_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\null_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\output_metadata_multiple_files\dcm\output4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\output_metadata_multiple_files\dcm\output3.DCM">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\output_metadata_multiple_files\dcm\output3.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\output_metadata_multiple_files\dcm\output2.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\output_metadata_multiple_files\dcm\output1.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\output_metadata\dcm\output.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\partial_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\partial_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\full_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\full_patient_metadata\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\patient_1_lordge\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DICOMs\patient_1_lordge\dcm\07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <SpecFlowFeatureFiles Update="Features\PayloadApi.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\PayloadCollection.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+  </ItemGroup>
+
+  <Target Name="CopyStoragePlugin" AfterTargets="Build">
+    <ItemGroup>
+      <AWSSDK Include="$(TargetDir)AWSSDK*.dll" />
+      <Minio Include="$(TargetDir)Minio.dll" />
+      <MonaiDeployStorage Include="$(TargetDir)Monai.Deploy.Storage.*.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(AWSSDK)" DestinationFolder="$(TargetDir)plug-ins\" />
+    <Copy SourceFiles="@(Minio)" DestinationFolder="$(TargetDir)plug-ins\" />
+    <Copy SourceFiles="@(MonaiDeployStorage)" DestinationFolder="$(TargetDir)plug-ins\" />
+  </Target>
+
+  <Target Name="CopyMessagingPlugin" AfterTargets="Build">
+    <ItemGroup>
+      <MonaiDeployMessaging Include="$(TargetDir)Monai.Deploy.Messaging.*" />
+      <RabbitMQ Include="$(TargetDir)RabbitMQ.Client.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(MonaiDeployMessaging)" DestinationFolder="$(TargetDir)plug-ins\" />
+    <Copy SourceFiles="@(RabbitMQ)" DestinationFolder="$(TargetDir)plug-ins\" />
+  </Target>
+
+</Project>

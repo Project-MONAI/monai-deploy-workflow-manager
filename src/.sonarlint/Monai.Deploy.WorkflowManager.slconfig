@@ -1,0 +1,15 @@
+{
+  "ServerUri": "https://sonarcloud.io/",
+  "Organization": {
+    "Key": "project-monai",
+    "Name": "Project MONAI"
+  },
+  "ProjectKey": "Project-MONAI_monai-deploy-workflow-manager",
+  "ProjectName": "monai-deploy-workflow-manager",
+  "Profiles": {
+    "CSharp": {
+      "ProfileKey": "AX96ONQSnTk2GEVJ9ILJ",
+      "ProfileTimestamp": "2022-07-05T10:19:10Z"
+    }
+  }
+}
