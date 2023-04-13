@@ -19,7 +19,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.Configuration
 {
-    public class WorkflowManagerOptions
+    public class WorkflowManagerOptions : PagedOptions
     {
         /// <summary>
         /// Name of the key for retrieve database connection string.
@@ -43,12 +43,6 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         /// </summary>
         [ConfigurationKeyName("taskManager")]
         public TaskManagerConfiguration TaskManager { get; set; }
-
-        /// <summary>
-        /// Represents the <c>endpointSettings</c> section of the configuration file.
-        /// </summary>
-        [ConfigurationKeyName("endpointSettings")]
-        public EndpointSettings EndpointSettings { get; set; }
 
         [ConfigurationKeyName("taskTimeoutMinutes")]
         public double TaskTimeoutMinutes { get; set; } = 60;

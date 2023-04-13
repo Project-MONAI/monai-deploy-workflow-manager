@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-using System;
-using System.Collections.Generic;
 using System.Net;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Filter;
-using Monai.Deploy.WorkflowManager.Services;
-using Monai.Deploy.WorkflowManager.Wrappers;
+using Monai.Deploy.WorkflowManager.Shared.Filter;
+using Monai.Deploy.WorkflowManager.Shared.Wrappers;
+using Monai.Deploy.WorkflowManager.Shared.Services;
+using Microsoft.AspNetCore.Routing;
 
-namespace Monai.Deploy.WorkflowManager.Controllers
+namespace Monai.Deploy.WorkflowManager.ControllersShared
 {
     /// <summary>
     /// Base Api Controller.
@@ -33,15 +32,15 @@ namespace Monai.Deploy.WorkflowManager.Controllers
     [ApiController]
     public class ApiControllerBase : ControllerBase
     {
-        private readonly IOptions<WorkflowManagerOptions> _options;
+        public IOptions<WorkflowManagerOptions> Options { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiControllerBase"/> class.
         /// </summary>
         /// <param name="options">Workflow manager options.</param>
-        public ApiControllerBase(IOptions<WorkflowManagerOptions> options)
+        public ApiControllerBase(IOptions<WorkflowManagerOptions> Options)
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
+            this.Options = Options ?? throw new ArgumentNullException(nameof(Options));
         }
 
         /// <summary>
@@ -69,34 +68,26 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <param name="uriService">Uri service.</param>
         /// <param name="route">Route.</param>
         /// <returns>Returns <see cref="PagedResponse{T}"/>.</returns>
-        public PagedResponse<List<T>> CreatePagedReponse<T>(List<T> pagedData, PaginationFilter validFilter, long totalRecords, IUriService uriService, string route)
+        public PagedResponse<IEnumerable<T>> CreatePagedReponse<T>(IEnumerable<T> pagedData, PaginationFilter validFilter, long totalRecords, IUriService uriService, string route)
         {
             Guard.Against.Null(pagedData);
             Guard.Against.Null(validFilter);
             Guard.Against.Null(route);
             Guard.Against.Null(uriService);
 
-            var pageSize = validFilter.PageSize ?? _options.Value.EndpointSettings.DefaultPageSize;
-            var respose = new PagedResponse<List<T>>(pagedData, validFilter.PageNumber, pageSize);
-            var totalPages = (double)totalRecords / pageSize;
-            var roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
+            var pageSize = validFilter.PageSize ?? Options.Value.EndpointSettings.DefaultPageSize;
+            var respose = new PagedResponse<IEnumerable<T>>(pagedData, validFilter.PageNumber, pageSize);
 
-            respose.NextPage =
-                validFilter.PageNumber >= 1 && validFilter.PageNumber < roundedTotalPages
-                ? uriService.GetPageUriString(new PaginationFilter(validFilter.PageNumber + 1, pageSize), route)
-                : null;
-
-            respose.PreviousPage =
-                validFilter.PageNumber - 1 >= 1 && validFilter.PageNumber <= roundedTotalPages
-                ? uriService.GetPageUriString(new PaginationFilter(validFilter.PageNumber - 1, pageSize), route)
-                : null;
-
-            respose.FirstPage = uriService.GetPageUriString(new PaginationFilter(1, pageSize), route);
-            respose.LastPage = uriService.GetPageUriString(new PaginationFilter(roundedTotalPages, pageSize), route);
-            respose.TotalPages = roundedTotalPages;
-            respose.TotalRecords = totalRecords;
-
+            respose.SetUp(validFilter, totalRecords, uriService, route);
             return respose;
+        }
+
+
+        public StatsPagedResponse<IEnumerable<T>> CreateStatsPagedReponse<T>(IEnumerable<T> pagedData, PaginationFilter validFilter, long totalRecords, IUriService uriService, string route)
+        {
+            var response = new StatsPagedResponse<IEnumerable<T>>(pagedData, validFilter.PageNumber, validFilter.PageSize.Value);
+            response.SetUp(validFilter, totalRecords, uriService, route);
+            return response;
         }
     }
 }
