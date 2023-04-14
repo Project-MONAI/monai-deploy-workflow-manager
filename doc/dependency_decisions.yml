@@ -2506,3 +2506,33 @@
     :versions:
     - 4.3.0
     :when: 2023-02-02 15:35:00.000000000 Z
+
+- - :approve
+  - System.IO.Pipelines
+  - :who: neildsouth
+    :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
+    :versions:
+    - 6.0.3
+    :when: 2023-04-11 13:37:00.000000000 Z
+- - :approve
+  - Microsoft.Extensions.DependencyModel
+  - :who: neildsouth
+    :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
+    :versions:
+    - 6.0.0
+    :when: 2023-04-11 13:37:00.000000000 Z
+- - :approve
+  - Microsoft.AspNetCore.TestHost
+  - :who: neildsouth
+    :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
+    :versions:
+    - 6.0.15
+    :when: 2023-04-11 13:37:00.000000000 Z
+- - :approve
+  - Microsoft.AspNetCore.Mvc.Testing
+  - :who: neildsouth
+    :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
+    :versions:
+    - 6.0.15
+    :when: 2023-04-11 13:37:00.000000000 Z
+

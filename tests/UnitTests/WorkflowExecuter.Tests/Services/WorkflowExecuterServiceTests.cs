@@ -58,6 +58,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         private readonly Mock<IWorkflowService> _workflowService;
         private readonly IOptions<WorkflowManagerOptions> _configuration;
         private readonly IOptions<StorageServiceConfiguration> _storageConfiguration;
+        private readonly int _timeoutForTypeTask = 999;
+        private readonly int _timeoutForDefault = 966;
 
         public WorkflowExecuterServiceTests()
         {
@@ -71,7 +73,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _payloadService = new Mock<IPayloadService>();
             _workflowService = new Mock<IWorkflowService>();
 
-            _configuration = Options.Create(new WorkflowManagerOptions() { Messaging = new MessageBrokerConfiguration { Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch", ExportRequestPrefix = "md.export.request" }, DicomAgents = new DicomAgentConfiguration { DicomWebAgentName = "monaidicomweb" } } });
+            _configuration = Options.Create(new WorkflowManagerOptions() { TaskTimeoutMinutes = _timeoutForDefault, PerTaskTypeTimeoutMinutes = new Dictionary<string, double> { { "taskType", _timeoutForTypeTask } }, Messaging = new MessageBrokerConfiguration { Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch", ExportRequestPrefix = "md.export.request" }, DicomAgents = new DicomAgentConfiguration { DicomWebAgentName = "monaidicomweb" } } });
             _storageConfiguration = Options.Create(new StorageServiceConfiguration() { Settings = new Dictionary<string, string> { { "bucket", "testbucket" }, { "endpoint", "localhost" }, { "securedConnection", "False" } } });
 
             var dicom = new Mock<IDicomService>();
@@ -1907,6 +1909,65 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         }
 
         [Fact]
+        public async Task ProcessTaskUpdate_Timout_Sends_Message_To_TaskTimeoutRoutingKey()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+
+            var metadata = new Dictionary<string, object>();
+            metadata.Add("a", "b");
+            metadata.Add("c", "d");
+
+            var updateEvent = new TaskUpdateEvent
+            {
+                WorkflowInstanceId = workflowInstanceId,
+                TaskId = "pizza",
+                ExecutionId = Guid.NewGuid().ToString(),
+                Status = TaskExecutionStatus.Failed,
+                Reason = FailureReason.TimedOut,
+                Message = "This is a message",
+                Metadata = metadata,
+                CorrelationId = Guid.NewGuid().ToString()
+            };
+
+            var workflowId = Guid.NewGuid().ToString();
+
+            var workflow = new WorkflowRevision
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = workflowId,
+                Revision = 1,
+                Workflow = new Workflow
+                {
+                    Name = "Workflowname2",
+                    Description = "Workflowdesc2",
+                    Version = "1",
+                }
+            };
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = "pizza",
+                            Status = TaskExecutionStatus.Failed
+                        }
+                    }
+            };
+
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
+            var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
+            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.AideClinicalReviewCancelation, It.IsAny<Message>()), Times.Exactly(1));
+        }
+
+        [Fact]
         public async Task ProcessExportComplete_ValidExportCompleteEventMultipleTaskDestinationsDispatched_ReturnsTrue()
         {
             var workflowInstanceId = Guid.NewGuid().ToString();
@@ -2258,6 +2319,58 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             taskExec.TaskPluginArguments[PatientKeys.PatientDob].Should().NotBeNull();
             taskExec.TaskPluginArguments[PatientKeys.PatientHospitalId].Should().BeSameAs(patientDetails.PatientHospitalId);
             taskExec.TaskPluginArguments[PatientKeys.PatientName].Should().BeSameAs(patientDetails.PatientName);
+        }
+
+        [Fact]
+        public async Task TaskExecShouldHaveCorrectTimeout()
+        {
+            var workflowId = Guid.NewGuid().ToString();
+            var payloadId = Guid.NewGuid().ToString();
+            var workflowInstanceId = Guid.NewGuid().ToString();
+
+            var pizzaTask = new TaskObject
+            {
+                Id = "pizza",
+                Type = "taskType",
+                Description = "taskdesc",
+            };
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId,
+            };
+            var bucket = "bucket";
+
+            var newPizza = await WorkflowExecuterService.CreateTaskExecutionAsync(pizzaTask, workflowInstance, bucket, payloadId);
+            Assert.Equal(_timeoutForTypeTask, newPizza.TimeoutInterval);
+
+        }
+
+        [Fact]
+        public async Task TaskExecShouldPickUpConfiguredDefaultTimeout()
+        {
+            var workflowId = Guid.NewGuid().ToString();
+            var payloadId = Guid.NewGuid().ToString();
+            var workflowInstanceId = Guid.NewGuid().ToString();
+
+            var pizzaTask = new TaskObject
+            {
+                Id = "pizza",
+                Type = "someothertype",
+                Description = "taskdesc",
+            };
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId,
+            };
+            var bucket = "bucket";
+
+            var newPizza = await WorkflowExecuterService.CreateTaskExecutionAsync(pizzaTask, workflowInstance, bucket, payloadId);
+            Assert.Equal(_timeoutForDefault, newPizza.TimeoutInterval);
+
         }
     }
 }

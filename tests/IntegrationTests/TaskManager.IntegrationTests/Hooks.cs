@@ -70,10 +70,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             TestExecutionConfig.RabbitConfig.TaskCallbackQueue = "md.tasks.callback";
             TestExecutionConfig.RabbitConfig.TaskUpdateQueue = "md.tasks.update";
             TestExecutionConfig.RabbitConfig.ClinicalReviewQueue = "aide.clinical_review.request";
+            TestExecutionConfig.RabbitConfig.TaskCancellationQueue = "md.tasks.cancellation";
 
             TestExecutionConfig.MongoConfig.ConnectionString = config.GetValue<string>("WorkloadManagerDatabase:ConnectionString");
             TestExecutionConfig.MongoConfig.Database = config.GetValue<string>("WorkloadManagerDatabase:DatabaseName");
             TestExecutionConfig.MongoConfig.TaskDispatchEventCollection = "TaskDispatchEvents";
+            TestExecutionConfig.MongoConfig.ExecutionStatsCollection = "ExecutionStats";
 
             TestExecutionConfig.MinioConfig.Endpoint = config.GetValue<string>("WorkflowManager:storage:settings:endpoint");
             TestExecutionConfig.MinioConfig.AccessKey = config.GetValue<string>("WorkflowManager:storage:settings:accessKey");
@@ -102,6 +104,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             RabbitConnectionFactory.PurgeAllQueues();
 
             MongoClient?.DeleteAllTaskDispatch();
+
+            MongoClient?.DeleteAllExecutionStats();
         }
 
         // <summary>
@@ -159,6 +163,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         [AfterTestRun(Order = 1)]
         public static void TearDownRabbit()
         {
+            RabbitConnectionFactory.DeleteAllQueues();
             Host?.StopAsync();
         }
     }

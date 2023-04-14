@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ using Monai.Deploy.WorkflowManager.MonaiBackgroundService;
 using Monai.Deploy.WorkflowManager.Services;
 using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
 using Monai.Deploy.WorkflowManager.Services.Http;
+using Monai.Deploy.WorkflowManager.Shared.Services;
 using Monai.Deploy.WorkflowManager.Validators;
 using Mongo.Migration.Startup;
 using Mongo.Migration.Startup.DotNetCore;
