@@ -45,6 +45,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO
             public static string TaskUpdateQueue { get; set; }
 
             public static string ClinicalReviewQueue { get; set; }
+
+            public static object TaskCancellationQueue { get; set; }
         }
 
         public static class ApiConfig
@@ -65,6 +67,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO
             public static string Database { get; set; }
 
             public static string TaskDispatchEventCollection { get; set; }
+
+            public static string ExecutionStatsCollection { get; set; }
         }
 
         public static class MinioConfig

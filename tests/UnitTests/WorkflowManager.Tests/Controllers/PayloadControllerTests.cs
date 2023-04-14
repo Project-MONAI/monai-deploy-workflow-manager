@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,10 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Controllers;
-using Monai.Deploy.WorkflowManager.Services;
-using Monai.Deploy.WorkflowManager.Wrappers;
+using Monai.Deploy.WorkflowManager.ControllersShared;
+using Monai.Deploy.WorkflowManager.Shared.Filter;
+using Monai.Deploy.WorkflowManager.Shared.Services;
+using Monai.Deploy.WorkflowManager.Shared.Wrappers;
 using Moq;
 using Xunit;
 
@@ -66,13 +67,13 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(payloads);
             _payloadService.Setup(w => w.CountAsync()).ReturnsAsync(payloads.Count);
-            _uriService.Setup(s => s.GetPageUriString(It.IsAny<Filter.PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
+            _uriService.Setup(s => s.GetPageUriString(It.IsAny<PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
-            var result = await PayloadController.GetAllAsync(new Filter.PaginationFilter());
+            var result = await PayloadController.GetAllAsync(new PaginationFilter());
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
 
-            var responseValue = (PagedResponse<List<Payload>>)objectResult.Value;
+            var responseValue = (PagedResponse<IEnumerable<Payload>>)objectResult.Value;
             responseValue.Data.Should().BeEquivalentTo(payloads);
             responseValue.FirstPage.Should().Be("unitTest");
             responseValue.LastPage.Should().Be("unitTest");
@@ -91,7 +92,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         {
             _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
 
-            var result = await PayloadController.GetAllAsync(new Filter.PaginationFilter());
+            var result = await PayloadController.GetAllAsync(new PaginationFilter());
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
