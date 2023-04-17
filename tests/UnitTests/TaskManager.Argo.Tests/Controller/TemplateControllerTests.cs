@@ -16,7 +16,9 @@
 
 using System.IO;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
+using Argo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -71,6 +73,69 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
         }
 
+        [Fact(DisplayName = "CreateArgoTemplate - argo exception")]
+        public async Task CreateArgoTemplate_Controller_ReturnsBadRequestOnACeption()
+        {
+            var data = "{}";
+            var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(data));
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Body = stream;
+            httpContext.Request.ContentLength = stream.Length;
+            var controllerContext = new ControllerContext()
+            {
+                HttpContext = httpContext
+            };
+
+            TemplateController = new TemplateController(
+                ServiceScopeFactory.Object,
+                _tempLogger.Object,
+                _argoLogger.Object,
+                Options)
+            {
+                ControllerContext = controllerContext
+            };
+
+            ArgoClient.Setup(a => a.Argo_CreateWorkflowTemplateAsync(
+                It.IsAny<string>(),
+                It.IsAny<WorkflowTemplateCreateRequest>(),
+                It.IsAny<CancellationToken>())).ThrowsAsync(new FileNotFoundException());
+
+            var result = await TemplateController.CreateArgoTemplate();
+
+            var reqResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal((int)HttpStatusCode.BadRequest, reqResult.StatusCode);
+        }
+
+        [Fact(DisplayName = "CreateArgoTemplate - value is empty string")]
+        public async Task CreateArgoTemplate_Controller_EmptyString()
+        {
+            var data = "";
+            var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(data));
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Body = stream;
+            httpContext.Request.ContentLength = stream.Length;
+            var controllerContext = new ControllerContext()
+            {
+                HttpContext = httpContext
+            };
+
+            TemplateController = new TemplateController(
+                ServiceScopeFactory.Object,
+                _tempLogger.Object,
+                _argoLogger.Object,
+                Options)
+            {
+                ControllerContext = controllerContext
+            };
+
+            var result = await TemplateController.CreateArgoTemplate();
+
+            var reqResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal((int)HttpStatusCode.BadRequest, reqResult.StatusCode);
+        }
+
         [Fact(DisplayName = "DeleteArgoTemplate - ReturnsOk")]
         public async Task DeleteArgoTemplate_Controller_ReturnsOk()
         {
@@ -85,6 +150,41 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             Assert.IsType<ActionResult<bool>>(result);
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
+        }
+
+        [Fact(DisplayName = "DeleteArgoTemplate - empty string")]
+        public async Task DeleteArgoTemplate_Controller_EmptyString()
+        {
+            TemplateController = new TemplateController(
+                ServiceScopeFactory.Object,
+                _tempLogger.Object,
+                _argoLogger.Object,
+                Options);
+
+            var result = await TemplateController.DeleteArgoTemplate("");
+
+            var reqResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal((int)HttpStatusCode.BadRequest, reqResult.StatusCode);
+        }
+
+        [Fact(DisplayName = "DeleteArgoTemplate - badrequest on exception")]
+        public async Task DeleteArgoTemplate_Controller_Exception()
+        {
+            TemplateController = new TemplateController(
+                ServiceScopeFactory.Object,
+                _tempLogger.Object,
+                _argoLogger.Object,
+                Options);
+
+            ArgoClient.Setup(a => a.Argo_DeleteWorkflowTemplateAsync(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>())).ThrowsAsync(new FileNotFoundException());
+
+            var result = await TemplateController.DeleteArgoTemplate("template");
+
+            var reqResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal((int)HttpStatusCode.BadRequest, reqResult.StatusCode);
         }
     }
 }

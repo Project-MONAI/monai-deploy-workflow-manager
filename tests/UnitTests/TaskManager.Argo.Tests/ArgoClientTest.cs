@@ -249,6 +249,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
             result = ArgoClient.ConvertToString(MyEnum.Zero, CultureInfo.InvariantCulture);
             Assert.Equal("0", result);
 
+            //enum
+            result = ArgoClient.ConvertToString(null, CultureInfo.InvariantCulture);
+            Assert.Equal("", result);
+
+
             //byte array
             var data = new byte[3];
             data[0] = byte.MinValue;
