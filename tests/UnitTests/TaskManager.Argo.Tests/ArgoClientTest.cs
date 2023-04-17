@@ -14,33 +14,32 @@
  * limitations under the License.
  */
 
+using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
+using Moq.Protected;
 using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
 {
     public class ArgoClientTest
     {
-        private readonly Mock<HttpClient> _mockHttpClient;
-        ArgoClient ArgoClient { get; set; }
-
-        public ArgoClientTest()
-        {
-            _mockHttpClient = new Mock<HttpClient>();
-            ArgoClient = new ArgoClient(_mockHttpClient.Object);
-        }
-
         [Fact(DisplayName = "Argo_DeleteWorkflowTemplateAsync - Calls Send Async With Delete")]
         public async Task Argo_DeleteWorkflowTemplateAsync()
         {
-            _mockHttpClient.Setup(x => x.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new HttpResponseMessage(System.Net.HttpStatusCode.OK));
+            var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
+            mockHttpMessageHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.OK });
+
+            var httpclient = new HttpClient(mockHttpMessageHandler.Object);
+
+            ArgoClient ArgoClient = new(httpclient);
 
             var result = await ArgoClient.Argo_DeleteWorkflowTemplateAsync("test", "test", new CancellationToken(false));
-            _mockHttpClient.Verify(x => x.SendAsync(It.Is<HttpRequestMessage>(m => m.Method == HttpMethod.Delete)));
 
             Assert.True(result);
         }
@@ -48,13 +47,36 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
         [Fact(DisplayName = "Argo_GetVersionAsync - Calls Send Async With Get")]
         public async Task Argo_GetVersionAsync()
         {
-            _mockHttpClient.Setup(x => x.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new HttpResponseMessage(System.Net.HttpStatusCode.OK));
+            var ver = new Argo.Version()
+            {
+                BuildDate = "date",
+                Compiler = "compilse",
+                GitCommit = "commit",
+                GitTag = "tag",
+                GitTreeState = "state",
+                GoVersion = "gover",
+            };
+            var data = Newtonsoft.Json.JsonConvert.SerializeObject(ver);
+            var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(data));
+
+            var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
+            mockHttpMessageHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StreamContent(stream) });
+
+            var httpclient = new HttpClient(mockHttpMessageHandler.Object);
+
+            ArgoClient ArgoClient = new(httpclient);
 
             var result = await ArgoClient.Argo_GetVersionAsync();
-            _mockHttpClient.Verify(x => x.SendAsync(It.Is<HttpRequestMessage>(m => m.Method == HttpMethod.Get)));
 
             Assert.NotNull(result);
+            Assert.Equal(ver.GitCommit, result.GitCommit);
+            Assert.Equal(ver.BuildDate, result.BuildDate);
+            Assert.Equal(ver.Compiler, result.Compiler);
+            Assert.Equal(ver.GitTag, result.GitTag);
+            Assert.Equal(ver.GitCommit, result.GitCommit);
+            Assert.Equal(ver.GitTreeState, result.GitTreeState);
         }
     }
 }

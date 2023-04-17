@@ -217,7 +217,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
     /// </summary>
     public class BaseArgoClient
     {
-        public string BaseUrl { get; set; } = "";
+        public string BaseUrl { get; set; } = "http://localhost:2746";
 
         protected string FormattedBaseUrl { get { return BaseUrl != null ? BaseUrl.TrimEnd('/') : ""; } }
 
@@ -331,7 +331,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         protected virtual async Task<ObjectResponseResult<T?>> ReadObjectResponseAsync<T>(HttpResponseMessage response, IReadOnlyDictionary<string, IEnumerable<string>> headers, bool isLogs = false)
         {
-            if (response == null || response.Content == null)
+            if (response == null || response.Content == null || response.Content.GetType().Name == "EmptyContent")
             {
                 return new ObjectResponseResult<T?>(default, string.Empty);
             }
