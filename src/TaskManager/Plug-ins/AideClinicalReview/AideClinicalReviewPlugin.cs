@@ -88,9 +88,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
                 _workflowName = Event.TaskPluginArguments[Keys.WorkflowName];
             }
 
-            if (Event.TaskPluginArguments.ContainsKey(Keys.Notifications))
+            if (Event.TaskPluginArguments.ContainsKey(Keys.Notifications) && Boolean.TryParse(Event.TaskPluginArguments[Keys.Notifications], out var result))
             {
-                _notifications = Boolean.TryParse(Event.TaskPluginArguments[Keys.Notifications], out bool result);
+                _notifications = result;
+            }
+            else
+            {
+                _notifications = true;
             }
 
             if (Event.TaskPluginArguments.ContainsKey(Keys.ReviewedExecutionId))

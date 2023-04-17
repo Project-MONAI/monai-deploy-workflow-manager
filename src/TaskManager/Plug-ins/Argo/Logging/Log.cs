@@ -78,5 +78,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging
         [LoggerMessage(EventId = 1018, Level = LogLevel.Error, Message = "Error deserializing WorkflowTemplateCreateRequest. {message}")]
         public static partial void ErrorDeserializingWorkflowTemplateCreateRequest(this ILogger logger, string message, Exception ex);
 
+        [LoggerMessage(EventId = 1017, Level = LogLevel.Error, Message = "Error deleting Template in Argo.")]
+        public static partial void ErrorDeletingWorkflowTemplate(this ILogger logger, Exception ex);
+
     }
 }
