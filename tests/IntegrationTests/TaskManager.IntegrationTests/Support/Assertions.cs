@@ -40,12 +40,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             clinicalReviewRequestEvent.PatientMetadata.PatientName.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_name"));
             clinicalReviewRequestEvent.PatientMetadata.PatientSex.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_sex"));
             clinicalReviewRequestEvent.PatientMetadata.PatientDob.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_dob"));
-            try
+            if (Boolean.TryParse(GetTaskPluginArguments(taskDispatchEvent, "notifications"), out bool result))
             {
-                var notifications = GetTaskPluginArguments(taskDispatchEvent, "notifications");
-
+                var notifications = Boolean.Parse(GetTaskPluginArguments(taskDispatchEvent, "notifications"));
+                clinicalReviewRequestEvent.Notifications.Should().Be(notifications);
             }
-            catch (Exception ex)
+            else
             {
                 clinicalReviewRequestEvent.Notifications.Should().Be(true);
             }
