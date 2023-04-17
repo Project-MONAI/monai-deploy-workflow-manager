@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.Filter
+namespace Monai.Deploy.WorkflowManager.Shared.Filter
 {
     /// <summary>
     /// Pagination Filter class.

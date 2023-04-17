@@ -553,6 +553,60 @@ public class ArgoPluginTest
         _argoClient.Verify(p => p.Argo_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
     }
 
+    [Fact(DisplayName = "GetStatus - Stats contains info")]
+    public async Task ArgoPlugin_GetStatus_Argregates_stats()
+    {
+        var tryCount = 0;
+        _argoClient.Setup(p => p.Argo_GetWorkflowAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((string ns, string name, string version, string fields, CancellationToken cancellationToken) =>
+            {
+                if (tryCount++ < 2)
+                {
+                    return new Workflow
+                    {
+                        Status = new WorkflowStatus
+                        {
+                            Phase = Strings.ArgoPhaseRunning,
+                            Message = string.Empty
+                        }
+                    };
+                }
+
+                return new Workflow
+                {
+                    Status = new WorkflowStatus
+                    {
+                        Phase = Strings.ArgoPhaseSucceeded,
+                        Message = Strings.ArgoPhaseSucceeded,
+                        Nodes = new Dictionary<string, NodeStatus>
+                        {
+                            { "first", new NodeStatus { Id = "firstId" ,Type="Pod" ,Name="", StartedAt = new DateTime(2023,3,3) , FinishedAt = new DateTime(2023,3,3,8,0,32)} },
+                            { "second", new NodeStatus { Id = "secondId",Type="Pod" ,Name = $"node-{Strings.ExitHookTemplateSendTemplateName}"  , StartedAt = new DateTime(2023,3,4) , FinishedAt = new DateTime(2023,3,4,8,0,32)} },
+                            { "third", new NodeStatus { Id = "thirdId" ,Type="Pod" ,Name="", StartedAt = new DateTime(2023,3,4) , FinishedAt = new DateTime(2023,3,4,8,0,32)}  },
+                        }
+                    }
+                };
+            });
+
+        var message = GenerateTaskDispatchEventWithValidArguments();
+
+        var runner = new ArgoPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
+        var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
+
+        var objNodeInfo = result?.Stats;
+        Assert.NotNull(objNodeInfo);
+#pragma warning disable CS8604 // Possible null reference argument.
+        var nodeInfo = ValiateCanConvertToDictionary(objNodeInfo);
+#pragma warning restore CS8604 // Possible null reference argument.
+
+        Assert.True(nodeInfo.ContainsKey("podStartTime0"));
+        Assert.True(nodeInfo.ContainsKey("podFinishTime0"));
+        Assert.True(nodeInfo.ContainsKey("send-messagepodFinishTime1"));
+        Assert.Equal("03/03/2023 08:00:32 +00:00", nodeInfo["podFinishTime0"]);
+
+        _argoClient.Verify(p => p.Argo_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
+    }
+
     public static Dictionary<string, string> ValiateCanConvertToDictionary(object obj)
     {
         var json = JsonConvert.SerializeObject(obj, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });

@@ -51,6 +51,10 @@
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="6.0.15" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
