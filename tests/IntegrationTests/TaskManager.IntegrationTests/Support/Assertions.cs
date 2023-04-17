@@ -42,8 +42,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             clinicalReviewRequestEvent.PatientMetadata.PatientDob.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_dob"));
             if (Boolean.TryParse(GetTaskPluginArguments(taskDispatchEvent, "notifications"), out bool result))
             {
-                var notifications = Boolean.Parse(GetTaskPluginArguments(taskDispatchEvent, "notifications"));
-                clinicalReviewRequestEvent.Notifications.Should().Be(notifications);
+                clinicalReviewRequestEvent.Notifications.Should().Be(result);
             }
             else
             {

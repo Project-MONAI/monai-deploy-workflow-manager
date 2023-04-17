@@ -90,7 +90,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 
             if (Boolean.TryParse(Event.TaskPluginArguments[Keys.Notifications], out bool result))
             {
-                _notifications = Boolean.Parse(Event.TaskPluginArguments[Keys.Notifications]);
+                _notifications = result;
             }
             else
             {
