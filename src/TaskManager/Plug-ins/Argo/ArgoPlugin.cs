@@ -456,6 +456,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     template.PriorityClassName = priorityClassName;
                 }
             }
+            if (priorityClassName is not null)
+            {
+                workflow.Spec.PodPriorityClassName = priorityClassName;
+            }
         }
 
         private static void AddLimit(Dictionary<string, string>? resources, Template2 template, ResourcesKey key)
