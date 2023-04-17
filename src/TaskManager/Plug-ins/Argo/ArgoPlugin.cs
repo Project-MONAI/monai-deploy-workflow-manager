@@ -335,10 +335,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             if (workflow.Status.Nodes is not null)
             {
+                var podcount = 0;
+                var preprend = "";
                 foreach (var item in workflow.Status.Nodes)
                 {
                     var json = JsonConvert.SerializeObject(item.Value, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     stats.Add($"nodes.{item.Key}", json);
+
+                    if (item.Value is not null && item.Value.Type == "Pod")
+                    {
+                        if (item.Value.Name.EndsWith(Strings.ExitHookTemplateSendTemplateName))
+                        {
+                            preprend = Strings.ExitHookTemplateSendTemplateName;
+                        }
+                        stats.Add($"{preprend}podStartTime{podcount}", item.Value.StartedAt is not null ? item.Value.StartedAt.ToString() : "");
+                        stats.Add($"{preprend}podFinishTime{podcount++}", item.Value.FinishedAt is not null ? item.Value.FinishedAt.ToString() : "");
+                    }
                 }
             }
 

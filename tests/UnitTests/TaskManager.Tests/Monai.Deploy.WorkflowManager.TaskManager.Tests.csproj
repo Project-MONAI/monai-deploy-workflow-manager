@@ -26,6 +26,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
     <PackageReference Include="Moq" Version="4.18.4" />
+    <PackageReference Include="FluentAssertions" Version="6.10.0" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -41,6 +42,7 @@
     <ProjectReference Include="..\..\..\src\Shared\Shared\Monai.Deploy.WorkflowManager.Shared.csproj" />
     <ProjectReference Include="..\..\..\src\TaskManager\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />
     <ProjectReference Include="..\..\..\src\TaskManager\TaskManager\Monai.Deploy.WorkflowManager.TaskManager.csproj" />
+    <ProjectReference Include="..\..\..\src\WorkflowManager\Contracts\Monai.Deploy.WorkflowManager.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

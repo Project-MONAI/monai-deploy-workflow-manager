@@ -27,16 +27,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
         private MongoClient Client { get; set; }
         internal IMongoDatabase Database { get; set; }
         private IMongoCollection<TaskDispatchEventInfo> TaskDispatchEventInfoCollection { get; set; }
+        private IMongoCollection<TaskExecutionStats> ExecutionStatsCollection { get; set; }
         private RetryPolicy RetryMongo { get; set; }
         private RetryPolicy<List<TaskDispatchEventInfo>> RetryTaskDispatchEventInfo { get; set; }
+        private RetryPolicy<List<TaskExecutionStats>> RetryTaskExecutionStats { get; set; }
 
         public MongoClientUtil()
         {
             Client = new MongoClient(TestExecutionConfig.MongoConfig.ConnectionString);
             Database = Client.GetDatabase($"{TestExecutionConfig.MongoConfig.Database}");
             TaskDispatchEventInfoCollection = Database.GetCollection<TaskDispatchEventInfo>($"{TestExecutionConfig.MongoConfig.TaskDispatchEventCollection}");
+            ExecutionStatsCollection = Database.GetCollection<TaskExecutionStats>($"{TestExecutionConfig.MongoConfig.ExecutionStatsCollection}");
             RetryMongo = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
             RetryTaskDispatchEventInfo = Policy<List<TaskDispatchEventInfo>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
+            RetryTaskExecutionStats = Policy<List<TaskExecutionStats>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
         }
 
         #region TaskDispatchEventInfo
@@ -74,6 +78,43 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
         }
 
         #endregion TaskDispatchEventInfo
+
+        #region ExecutionStats
+
+        internal void DeleteAllExecutionStats()
+        {
+            RetryMongo.Execute(() =>
+            {
+                ExecutionStatsCollection.DeleteMany("{ }");
+
+                var taskDispatch = ExecutionStatsCollection.Find("{ }").ToList();
+
+                if (taskDispatch.Count > 0)
+                {
+                    throw new Exception("All Execution Stats were not deleted!");
+                }
+            });
+        }
+
+        public void CreateExecutionStats(TaskExecutionStats taskExecutionStats)
+        {
+            RetryMongo.Execute(() =>
+            {
+                ExecutionStatsCollection.InsertOne(taskExecutionStats);
+            });
+        }
+
+        public List<TaskExecutionStats> GetExecutionStatsByExecutionId(string executionId)
+        {
+            var res = RetryTaskExecutionStats.Execute(() =>
+            {
+                return ExecutionStatsCollection.Find(x => x.ExecutionId == executionId).ToList();
+            });
+
+            return res;
+        }
+
+        #endregion ExecutionStats
 
         public void DropDatabase(string dbName)
         {

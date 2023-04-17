@@ -18,13 +18,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Configuration;
 
-namespace Monai.Deploy.WorkflowManager.Controllers
+namespace Monai.Deploy.WorkflowManager.ControllersShared
 {
     /// <summary>
     /// Base authenticated api controller base.
     /// </summary>
     [Authorize]
-    public class AuthenticatedApiControllerBase : ApiControllerBase
+    public class AuthenticatedApiControllerBase : WFMApiControllerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticatedApiControllerBase"/> class.

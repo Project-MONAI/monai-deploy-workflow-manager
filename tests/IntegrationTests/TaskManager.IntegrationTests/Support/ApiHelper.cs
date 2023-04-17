@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Web;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
@@ -57,5 +58,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             {
                 RequestUri = new Uri($"{url}"),
             };
+
+        public void AddQueryParams(Dictionary<string, string> dict)
+        {
+            var builder = new UriBuilder(Request.RequestUri);
+            var query = HttpUtility.ParseQueryString(builder.Query);
+            foreach (var kv in dict)
+            {
+                query[kv.Key] = kv.Value;
+            }
+            SetUrl(new Uri(builder.ToString() + "?" + query.ToString()));
+        }
     }
 }
