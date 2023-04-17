@@ -40,6 +40,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             clinicalReviewRequestEvent.PatientMetadata.PatientName.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_name"));
             clinicalReviewRequestEvent.PatientMetadata.PatientSex.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_sex"));
             clinicalReviewRequestEvent.PatientMetadata.PatientDob.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_dob"));
+            try
+            {
+                var notifications = GetTaskPluginArguments(taskDispatchEvent, "notifications");
+
+            }
+            catch (Exception ex)
+            {
+                clinicalReviewRequestEvent.Notifications.Should().Be(true);
+            }
+
             clinicalReviewRequestEvent.WorkflowName.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "workflow_name"));
 
             foreach (var file in clinicalReviewRequestEvent.Files)
@@ -116,11 +126,32 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
         {
             Output.WriteLine("Asserting details of TaskUpdateEvent with TaskDispatchEvent");
             taskUpdateEvent.ExecutionId.Should().Be(taskDispatchEvent.ExecutionId);
-            taskUpdateEvent.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId); // - BUG 227 raised
+            taskUpdateEvent.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId);
             taskUpdateEvent.Status.Should().Be(status);
             taskUpdateEvent.TaskId.Should().Be(taskDispatchEvent.TaskId);
             taskUpdateEvent.WorkflowInstanceId.Should().Be(taskDispatchEvent.WorkflowInstanceId);
             Output.WriteLine("Details of TaskUpdateEvent matches TaskDispatchEvent");
+        }
+
+        public void AssertExecutionStats(TaskExecutionStats executionStats, TaskDispatchEvent taskDispatchEvent = null, TaskCallbackEvent taskCallbackEvent = null)
+        {
+            Output.WriteLine("Asserting details of TaskExecutionStats");
+            if (taskDispatchEvent != null)
+            {
+                executionStats.ExecutionId.Should().Be(taskDispatchEvent.ExecutionId);
+                executionStats.WorkflowInstanceId.Should().Be(taskDispatchEvent.WorkflowInstanceId);
+                executionStats.StartedUTC.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(20));
+                executionStats.TaskId.Should().Be(taskDispatchEvent.TaskId);
+                executionStats.Status.Should().Be("Accepted");
+                executionStats.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId);
+            }
+            else
+            {
+                executionStats.LastUpdatedUTC.Should().BeAfter(executionStats.StartedUTC);
+                executionStats.ExecutionTimeSeconds.Should().BeGreaterThan(0);
+                executionStats.DurationSeconds.Should().BeGreaterThan(0);
+            }
+            Output.WriteLine("Details TaskExecutionStats are correct");
         }
 
         private string GetTaskPluginArguments(TaskDispatchEvent taskDispatchEvent, string key)

@@ -46,6 +46,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         private string _patientHospitalId;
         private string _queueName;
         private string _workflowName;
+        private bool _notifications;
         private string _reviewedTaskId;
         private string _applicationName;
         private string _mode;
@@ -85,6 +86,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             if (Event.TaskPluginArguments.ContainsKey(Keys.WorkflowName))
             {
                 _workflowName = Event.TaskPluginArguments[Keys.WorkflowName];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(Keys.Notifications))
+            {
+                _notifications = Boolean.TryParse(Event.TaskPluginArguments[Keys.Notifications], out bool result);
             }
 
             if (Event.TaskPluginArguments.ContainsKey(Keys.ReviewedExecutionId))
@@ -213,6 +219,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
                 ReviewedTaskId = _reviewedTaskId,
                 ReviewedExecutionId = _reviewedExecutionId,
                 WorkflowName = _workflowName,
+                Notifications = _notifications,
                 Files = Event.Inputs,
                 ReviewerRoles = _reviewerRoles,
                 PatientMetadata = new PatientMetadata

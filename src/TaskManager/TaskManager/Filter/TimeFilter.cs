@@ -1,5 +1,5 @@
-/*
- * Copyright 2022 MONAI Consortium
+﻿/*
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+using Monai.Deploy.WorkflowManager.Shared.Filter;
 
-using Monai.Deploy.WorkflowManager.Filter;
-
-namespace Monai.Deploy.WorkflowManager.Services
+namespace Monai.Deploy.WorkflowManager.TaskManager.Filter
 {
-    /// <summary>
-    /// Uri Serivce.
-    /// </summary>
-    public interface IUriService
+    public class TimeFilter : PaginationFilter
     {
-        /// <summary>
-        /// Gets Relative Uri path with filters as a string.
-        /// </summary>
-        /// <param name="filter">Filters.</param>
-        /// <param name="route">Route.</param>
-        /// <returns>Relative Uri string.</returns>
-        public string GetPageUriString(PaginationFilter filter, string route);
+        public DateTime StartTime { get; set; }
+
+        public DateTime EndTime { get; set; }
     }
 }
