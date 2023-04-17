@@ -16,6 +16,7 @@
 
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -52,9 +53,11 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         private readonly IPayloadService _payloadService;
         private readonly StorageServiceConfiguration _storageConfiguration;
         private readonly double _defaultTaskTimeoutMinutes;
+        private readonly Dictionary<string, double> _defaultPerTaskTypeTimeoutMinutes = new Dictionary<string, double>();
 
         private string TaskDispatchRoutingKey { get; }
         private string ExportRequestRoutingKey { get; }
+        private string TaskTimeoutRoutingKey { get; }
 
         public WorkflowExecuterService(
             ILogger<WorkflowExecuterService> logger,
@@ -81,7 +84,9 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             _storageConfiguration = storageConfiguration.Value;
             _defaultTaskTimeoutMinutes = configuration.Value.TaskTimeoutMinutes;
+            _defaultPerTaskTypeTimeoutMinutes = configuration.Value.PerTaskTypeTimeoutMinutes;
             TaskDispatchRoutingKey = configuration.Value.Messaging.Topics.TaskDispatchRequest;
+            TaskTimeoutRoutingKey = configuration.Value.Messaging.Topics.AideClinicalReviewCancelation;
             ExportRequestRoutingKey = $"{configuration.Value.Messaging.Topics.ExportRequestPrefix}.{configuration.Value.Messaging.DicomAgents.ScuAgentName}";
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -275,6 +280,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             if (message.Reason == FailureReason.TimedOut && currentTask.Status == TaskExecutionStatus.Failed)
             {
                 _logger.TaskTimedOut(message.TaskId, message.WorkflowInstanceId, currentTask.Timeout);
+                await TimeOutEvent(workflowInstance, currentTask, message.CorrelationId);
 
                 return false;
             }
@@ -750,6 +756,15 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return true;
         }
 
+        private async Task<bool> TimeOutEvent(WorkflowInstance workflowInstance, TaskExecution taskExec, string correlationId)
+        {
+            var exportRequestEvent = EventMapper.GenerateTaskCancellationEvent("", taskExec.ExecutionId, workflowInstance.Id, taskExec.TaskId, FailureReason.TimedOut, "Timed out");
+            var jsonMesssage = new JsonMessage<TaskCancellationEvent>(exportRequestEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, correlationId, Guid.NewGuid().ToString());
+
+            await _messageBrokerPublisherService.Publish(TaskTimeoutRoutingKey, jsonMesssage.ToMessage());
+            return true;
+        }
+
         private async Task<WorkflowInstance> CreateWorkflowInstanceAsync(WorkflowRequestEvent message, WorkflowRevision workflow)
         {
             Guard.Against.Null(message, nameof(message));
@@ -821,6 +836,10 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             if (task.TimeoutMinutes == -1)
             {
                 task.TimeoutMinutes = _defaultTaskTimeoutMinutes;
+            }
+            if (_defaultPerTaskTypeTimeoutMinutes is not null && _defaultPerTaskTypeTimeoutMinutes.ContainsKey(task.Type))
+            {
+                task.TimeoutMinutes = _defaultPerTaskTypeTimeoutMinutes[task.Type];
             }
 
             var inputArtifacts = new Dictionary<string, string>();

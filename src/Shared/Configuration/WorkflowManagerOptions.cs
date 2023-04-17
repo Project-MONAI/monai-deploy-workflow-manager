@@ -15,6 +15,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.Configuration
@@ -46,6 +47,10 @@ namespace Monai.Deploy.WorkflowManager.Configuration
 
         [ConfigurationKeyName("taskTimeoutMinutes")]
         public double TaskTimeoutMinutes { get; set; } = 60;
+
+        [ConfigurationKeyName("perTaskTypeTimeoutMinutes")]
+        public Dictionary<string, double> PerTaskTypeTimeoutMinutes { get; set; }
+
 
         public TimeSpan TaskTimeout { get => TimeSpan.FromMinutes(TaskTimeoutMinutes); }
 
