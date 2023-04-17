@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,11 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Controllers;
+using Monai.Deploy.WorkflowManager.ControllersShared;
 using Monai.Deploy.WorkflowManager.Models;
-using Monai.Deploy.WorkflowManager.Services;
-using Monai.Deploy.WorkflowManager.Wrappers;
+using Monai.Deploy.WorkflowManager.Shared.Filter;
+using Monai.Deploy.WorkflowManager.Shared.Services;
+using Monai.Deploy.WorkflowManager.Shared.Wrappers;
 using Moq;
 using Xunit;
 
@@ -78,13 +79,13 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 }
             };
             _tasksService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>())).ReturnsAsync(() => (Tasks: new List<TaskExecution> { taskExecution }, Count: 1));
-            _uriService.Setup(s => s.GetPageUriString(It.IsAny<Filter.PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
+            _uriService.Setup(s => s.GetPageUriString(It.IsAny<PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
-            var result = await TasksController.GetListAsync(new Filter.PaginationFilter());
+            var result = await TasksController.GetListAsync(new PaginationFilter());
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
 
-            var responseValue = (PagedResponse<List<TaskExecution>>)objectResult.Value;
+            var responseValue = (PagedResponse<IEnumerable<TaskExecution>>)objectResult.Value;
             responseValue.Data.Should().BeEquivalentTo(workflowsInstances.First().Tasks);
             responseValue.FirstPage.Should().Be("unitTest");
             responseValue.LastPage.Should().Be("unitTest");

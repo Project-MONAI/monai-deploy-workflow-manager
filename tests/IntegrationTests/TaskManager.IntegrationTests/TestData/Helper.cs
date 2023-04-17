@@ -27,7 +27,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                 return taskDispatchTestData;
             }
 
-            throw new Exception($"workflow {name} does not exist. Please check and try again!");
+            throw new Exception($"Task Dispatch {name} does not exist. Please check and try again!");
+        }
+
+        public static ExecutionStatTestData GetExecutionStatsByName(string name)
+        {
+            var executionStatsTestData = ExecutionStatsTestData.TestData.Find(c => c.Name == name);
+
+            if (executionStatsTestData != null)
+            {
+                return executionStatsTestData;
+            }
+
+            throw new Exception($"Execution stat {name} does not exist. Please check and try again!");
         }
     }
 }
