@@ -31,6 +31,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers
     {
         private readonly ArgoPlugin _argoPlugin;
         private readonly ILogger<TemplateController> _tempLogger;
+
         public TemplateController(
             IServiceScopeFactory scopeFactory,
             ILogger<TemplateController> tempLogger,
@@ -51,7 +52,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers
 
             var value2 = await reader.ReadToEndAsync();
 
-            if (String.IsNullOrWhiteSpace(value2))
+            if (string.IsNullOrWhiteSpace(value2))
             {
                 return BadRequest("No file recieved");
             }
@@ -67,6 +68,25 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers
 
 
             return Ok(workflowTemplate);
+        }
+
+        [Route("{name}")]
+        [HttpDelete]
+        public async Task<ActionResult<bool>> DeleteArgoTemplate(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return BadRequest("No name parameter provided");
+            }
+
+            try
+            {
+                return Ok(await _argoPlugin.DeleteArgoTemplate(name));
+            }
+            catch (Exception)
+            {
+                return BadRequest("message: Argo unable to process template");
+            }
         }
     }
 }
