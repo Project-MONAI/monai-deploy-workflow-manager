@@ -168,7 +168,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             return (int)response.StatusCode == 200;
         }
 
-        private string ConvertToString(object value, CultureInfo cultureInfo)
+        public static string ConvertToString(object value, CultureInfo cultureInfo)
         {
             if (value == null)
             {
@@ -363,7 +363,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             }
         }
 
-        protected static string DecodeLogs(string logInput)
+        public static string DecodeLogs(string logInput)
         {
             var rows = logInput.Split(new String[] { "\n" }, StringSplitOptions.None);
             var jsonBody = $"[{string.Join(",", rows)}]";
