@@ -468,6 +468,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     template.PriorityClassName = priorityClassName;
                 }
             }
+            if (priorityClassName is not null)
+            {
+                workflow.Spec.PodPriorityClassName = priorityClassName;
+            }
         }
 
         private static void AddLimit(Dictionary<string, string>? resources, Template2 template, ResourcesKey key)
@@ -978,6 +982,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             catch (Exception ex)
             {
                 _logger.ErrorCreatingWorkflowTemplate(ex);
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteArgoTemplate(string templateName)
+        {
+            try
+            {
+                var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
+                return await client.Argo_DeleteWorkflowTemplateAsync(_namespace, templateName, new CancellationToken()).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorDeletingWorkflowTemplate(ex);
                 throw;
             }
         }
