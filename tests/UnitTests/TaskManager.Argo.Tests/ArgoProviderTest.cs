@@ -20,13 +20,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Argo;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using Newtonsoft.Json;
 using Xunit;
-using Version = Argo.Version;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
 {
@@ -66,7 +64,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
             httpFactory.Setup(p => p.CreateClient(It.IsAny<string>())).Returns(httpClient);
             var argo = new ArgoProvider(logger.Object, httpFactory.Object);
 
-            var client = argo.CreateClient(baseUri, token) as ArgoClientTest;
+            var client = argo.CreateClient(baseUri, token) as ArgoClient;
 
             Assert.NotNull(client);
             Assert.Equal(baseUri.ToString(), client!.BaseUrl);

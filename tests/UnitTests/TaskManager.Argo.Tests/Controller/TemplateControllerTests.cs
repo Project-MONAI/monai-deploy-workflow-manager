@@ -14,159 +14,77 @@
  * limitations under the License.
  */
 
-using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Controllers;
-using Monai.Deploy.WorkflowManager.Services;
+using Monai.Deploy.WorkflowManager.TaskManager.Argo;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers;
-using Monai.Deploy.WorkflowManager.Wrappers;
+using Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests;
 using Moq;
 using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Test.Controllers
 {
-    public class TemplateControllerTests
+    public class TemplateControllerTests : ArgoPluginTestBase
     {
-        private TemplateController TemplateController { get; set; }
+        private readonly Mock<ILogger<TemplateController>> _tempLogger;
+        private readonly Mock<ILogger<ArgoPlugin>> _argoLogger;
 
-        //private readonly Mock<IPayloadService> _payloadService;
-        //private readonly Mock<ILogger<PayloadsController>> _logger;
-        //private readonly Mock<IUriService> _uriService;
-        //private readonly IOptions<WorkflowManagerOptions> _options;
+        private TemplateController TemplateController { get; set; }
 
         public TemplateControllerTests()
         {
-            //_options = Options.Create(new WorkflowManagerOptions());
-            //_payloadService = new Mock<IPayloadService>();
-            //_logger = new Mock<ILogger<PayloadsController>>();
-            //_uriService = new Mock<IUriService>();
-
-            TemplateController = new TemplateController();
+            _tempLogger = new Mock<ILogger<TemplateController>>();
+            _argoLogger = new Mock<ILogger<ArgoPlugin>>();
         }
 
-        [Fact]
-        public async Task GetListAsync_PayloadsExist_ReturnsList()
+        [Fact(DisplayName = "CreateArgoTemplate - ReturnsOk")]
+        public async Task CreateArgoTemplate_Controller_ReturnsOk()
         {
-            var payloads = new List<Payload>
+            var data = "{}";
+            var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(data));
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Body = stream;
+            httpContext.Request.ContentLength = stream.Length;
+            var controllerContext = new ControllerContext()
             {
-                new Payload
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    PayloadId = Guid.NewGuid().ToString(),
-                }
+                HttpContext = httpContext
             };
 
-            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(payloads);
-            _payloadService.Setup(w => w.CountAsync()).ReturnsAsync(payloads.Count);
-            _uriService.Setup(s => s.GetPageUriString(It.IsAny<Filter.PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
-
-            var result = await PayloadController.GetAllAsync(new Filter.PaginationFilter());
-
-            var objectResult = Assert.IsType<OkObjectResult>(result);
-
-            var responseValue = (PagedResponse<List<Payload>>)objectResult.Value;
-            responseValue.Data.Should().BeEquivalentTo(payloads);
-            responseValue.FirstPage.Should().Be("unitTest");
-            responseValue.LastPage.Should().Be("unitTest");
-            responseValue.PageNumber.Should().Be(1);
-            responseValue.PageSize.Should().Be(10);
-            responseValue.TotalPages.Should().Be(1);
-            responseValue.TotalRecords.Should().Be(1);
-            responseValue.Succeeded.Should().Be(true);
-            responseValue.PreviousPage.Should().Be(null);
-            responseValue.NextPage.Should().Be(null);
-            responseValue.Errors.Should().BeNullOrEmpty();
-        }
-
-        [Fact]
-        public async Task GetListAsync_ServiceException_ReturnProblem()
-        {
-            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
-
-            var result = await PayloadController.GetAllAsync(new Filter.PaginationFilter());
-
-            var objectResult = Assert.IsType<ObjectResult>(result);
-            Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
-
-            const string expectedInstance = "/payload";
-            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
-        }
-
-        [Fact]
-        public async Task GetByIdAsync_PayloadExists_ReturnsOk()
-        {
-            var payloadId = Guid.NewGuid().ToString();
-            var payload = new Payload
+            TemplateController = new TemplateController(
+                ServiceScopeFactory.Object,
+                _tempLogger.Object,
+                _argoLogger.Object,
+                Options)
             {
-                Id = Guid.NewGuid().ToString(),
-                PayloadId = payloadId,
+                ControllerContext = controllerContext
             };
 
-            _payloadService.Setup(w => w.GetByIdAsync(payloadId)).ReturnsAsync(payload);
+            var result = await TemplateController.CreateArgoTemplate();
 
-            var result = await PayloadController.GetAsync(payloadId);
-
-            var objectResult = Assert.IsType<OkObjectResult>(result);
-
-            objectResult.Value.Should().BeEquivalentTo(payload);
+            Assert.IsType<ActionResult<Argo.WorkflowTemplate>>(result);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
         }
 
-        [Fact]
-        public async Task GetByIdAsync_PayloadDoesNotExist_ReturnsNotFound()
+        [Fact(DisplayName = "DeleteArgoTemplate - ReturnsOk")]
+        public async Task DeleteArgoTemplate_Controller_ReturnsOk()
         {
-            var payloadId = Guid.NewGuid().ToString();
+            TemplateController = new TemplateController(
+                ServiceScopeFactory.Object,
+                _tempLogger.Object,
+                _argoLogger.Object,
+                Options);
 
-            var result = await PayloadController.GetAsync(payloadId);
+            var result = await TemplateController.DeleteArgoTemplate("template");
 
-            var objectResult = Assert.IsType<ObjectResult>(result);
-
-            var responseValue = (ProblemDetails)objectResult.Value;
-            string expectedErrorMessage = $"Failed to find payload with payload id: {payloadId}";
-            responseValue.Detail.Should().BeEquivalentTo(expectedErrorMessage);
-
-            Assert.Equal((int)HttpStatusCode.NotFound, responseValue.Status);
-
-            const string expectedInstance = "/payload";
-            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
-        }
-
-        [Fact]
-        public async Task GetByIdAsync_InvalidId_ReturnsBadRequest()
-        {
-            var payloadId = "2";
-
-            var result = await PayloadController.GetAsync(payloadId);
-
-            var objectResult = Assert.IsType<ObjectResult>(result);
-
-            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
-
-            const string expectedInstance = "/payload";
-            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
-        }
-
-        [Fact]
-        public async Task GetByIdAsync_ServiceException_ReturnProblem()
-        {
-            var payloadId = Guid.NewGuid().ToString();
-            _payloadService.Setup(w => w.GetByIdAsync(payloadId)).ThrowsAsync(new Exception());
-
-            var result = await PayloadController.GetAsync(payloadId);
-
-            var objectResult = Assert.IsType<ObjectResult>(result);
-            Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
-
-            const string expectedInstance = "/payload";
-            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+            Assert.IsType<ActionResult<bool>>(result);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
         }
     }
 }
