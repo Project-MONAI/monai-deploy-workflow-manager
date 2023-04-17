@@ -61,5 +61,8 @@ namespace Monai.Deploy.WorkflowManager.Logging
 
         [LoggerMessage(EventId = 100013, Level = LogLevel.Information, Message = "BYpass authentication.")]
         public static partial void BypassAuthentication(this ILogger logger);
+
+        [LoggerMessage(EventId = 100014, Level = LogLevel.Error, Message = "Unexpected error occurred in get /workflows/aetitle API.")]
+        public static partial void WorkflowGetAeTitleAsyncError(this ILogger logger, Exception ex);
     }
 }

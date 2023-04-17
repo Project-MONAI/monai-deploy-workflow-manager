@@ -295,5 +295,52 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
                     InternalServerError);
             }
         }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="filter"></param>
+        /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
+        [HttpGet("aetitle/{title}")]
+        [ProducesResponseType(typeof(WorkflowRevision), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetByAeTitle([FromRoute] string title, [FromQuery] PaginationFilter filter)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                _logger.LogDebug($"{nameof(GetByAeTitle)} - Failed to validate {nameof(title)}");
+
+                return Problem($"Failed to validate {nameof(title)}, not a valid AE title", $"/workflows/aetitle/{title}", BadRequest);
+            }
+
+            try
+            {
+                var route = Request?.Path.Value ?? string.Empty;
+                var pageSize = filter.PageSize ?? _options.Value.EndpointSettings.DefaultPageSize;
+                var validFilter = new PaginationFilter(filter.PageNumber, pageSize, _options.Value.EndpointSettings.MaxPageSize);
+
+                var pagedData = await _workflowService.GetByAeTitleAsync(
+                    title,
+                    (validFilter.PageNumber - 1) * validFilter.PageSize,
+                    validFilter.PageSize);
+
+                var dataTotal = await _workflowService.GetCountByAeTitleAsync(title);
+                var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
+
+                return Ok(pagedReponse);
+            }
+            catch (Exception e)
+            {
+                _logger.WorkflowGetAeTitleAsyncError(e);
+
+                return Problem(
+                    $"Unexpected error occurred: {e.Message}",
+                    $"/workflows/aetitle",
+                    InternalServerError);
+            }
+        }
     }
 }

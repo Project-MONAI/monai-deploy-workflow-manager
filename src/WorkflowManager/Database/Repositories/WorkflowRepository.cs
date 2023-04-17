@@ -43,6 +43,33 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
             var mongoDatabase = client.GetDatabase(databaseSettings.Value.DatabaseName);
             _workflowCollection = mongoDatabase.GetCollection<WorkflowRevision>("Workflows");
+            EnsureIndex().GetAwaiter().GetResult();
+        }
+
+        private async Task EnsureIndex()
+        {
+            Guard.Against.Null(_workflowCollection, "WorkflowCollection");
+
+            var asyncCursor = (await _workflowCollection.Indexes.ListAsync());
+            var bsonDocuments = (await asyncCursor.ToListAsync());
+            var indexes = bsonDocuments.Select(_ => _.GetElement("name").Value.ToString()).ToList();
+
+            // If index not present create it else skip.
+            if (!indexes.Any(i => i is not null && i.Equals("AeTitleIndex")))
+            {
+                // Create Index here
+
+                var options = new CreateIndexOptions()
+                {
+                    Name = "AeTitleIndex"
+                };
+                var model = new CreateIndexModel<WorkflowRevision>(
+                    Builders<WorkflowRevision>.IndexKeys.Ascending(s => s.Workflow.InformaticsGateway.AeTitle),
+                    options
+                    );
+
+                await _workflowCollection.Indexes.CreateOneAsync(model);
+            }
         }
 
         public List<WorkflowRevision> GetWorkflowsList()
@@ -121,6 +148,29 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
                 .FirstOrDefaultAsync();
 
             return workflow;
+        }
+
+        public async Task<IEnumerable<WorkflowRevision>> GetAllByAeTitleAsync(string aeTitle, int? skip, int? limit)
+        {
+            Guard.Against.NullOrWhiteSpace(aeTitle, nameof(aeTitle));
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            var workflows = await _workflowCollection
+                .Find(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle && x.Deleted == null)
+                .Skip(skip)
+                .Limit(limit)
+                .ToListAsync();
+
+            return workflows
+                .GroupBy(w => w.WorkflowId)
+                .Select(g => g.First())
+                .ToList(); ;
+        }
+
+        public async Task<long> GetCountByAeTitleAsync(string aeTitle)
+        {
+            Guard.Against.NullOrWhiteSpace(aeTitle, nameof(aeTitle));
+            return await _workflowCollection
+                .CountDocumentsAsync(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle && x.Deleted == null);
         }
 
         public async Task<IList<WorkflowRevision>> GetWorkflowsByAeTitleAsync(List<string> aeTitles)
