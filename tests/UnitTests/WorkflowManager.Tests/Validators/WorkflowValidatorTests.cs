@@ -17,6 +17,7 @@
 using System;
 using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
+using Amazon.Runtime.Internal.Transform;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -534,6 +535,98 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
                 Assert.True(errors.Count == 0);
             }
+        }
+
+        [Fact]
+        public async Task ValidateWorkflow_Incorrect_podPriorityClassName_ReturnsErrors()
+        {
+            var workflow = new Workflow
+            {
+                Name = "Workflowname1",
+                Description = "Workflowdesc1",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    ExportDestinations = new string[] { "oneDestination", "twoDestination", "threeDestination" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject
+                    {
+                        Args = new System.Collections.Generic.Dictionary<string, string>{
+                            { "priority" ,"god" },
+                            { "workflow_template_name" ,"spot"}
+                        },
+                        Id = "rootTask",
+                        Type = "argo",
+                        Description = "TestDesc",
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]{
+                                new Artifact
+                                {
+                                    Name = "non_unique_artifact",
+                                    Value = "Example Value"
+                                }
+                            }
+                        }
+                    },
+                }
+            };
+
+            _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
+
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+
+            Assert.Single(errors);
+        }
+
+        [Fact]
+        public async Task ValidateWorkflow_correct_podPriorityClassName_ReturnsNoErrors()
+        {
+            var workflow = new Workflow
+            {
+                Name = "Workflowname1",
+                Description = "Workflowdesc1",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    ExportDestinations = new string[] { "oneDestination", "twoDestination", "threeDestination" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject
+                    {
+                        Args = new System.Collections.Generic.Dictionary<string, string>{
+                            { "priority" ,"high" },
+                            { "workflow_template_name" ,"spot"}
+                        },
+                        Id = "rootTask",
+                        Type = "argo",
+                        Description = "TestDesc",
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]{
+                                new Artifact
+                                {
+                                    Name = "non_unique_artifact",
+                                    Value = "Example Value"
+                                }
+                            }
+                        }
+                    },
+                }
+            };
+
+            _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
+
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+
+            Assert.Empty(errors);
         }
     }
 }
