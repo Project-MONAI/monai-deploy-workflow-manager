@@ -32,6 +32,7 @@ using Monai.Deploy.WorkflowManager.Shared.Wrappers;
 using Moq;
 using Xunit;
 using Monai.Deploy.WorkflowManager.Shared.Filter;
+using Monai.Deploy.WorkflowManager.Common.Services;
 
 namespace Monai.Deploy.WorkflowManager.Test.Controllers
 {
@@ -48,7 +49,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
         public WorkflowsControllerTests()
         {
-            _options = Options.Create(new WorkflowManagerOptions());
+            _options = Options.Create(new WorkflowManagerOptions { EndpointSettings = new EndpointSettings { MaxPageSize = 99 } });
             _workflowService = new Mock<IWorkflowService>();
 
             _logger = new Mock<ILogger<WorkflowsController>>();
@@ -882,6 +883,69 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             const string expectedInstance = "/workflows";
             Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
+
+        [Fact]
+        public async Task GetByAeTitle_WorkflowsGivenEmptyTitle_ShouldBadRequest()
+        {
+
+            var result = await WorkflowsController.GetByAeTitle(string.Empty, null);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal("Failed to validate title, not a valid AE title", result.As<ObjectResult>().Value.As<ProblemDetails>().Detail);
+
+            Assert.Equal(400, objectResult.StatusCode);
+
+            const string expectedInstance = "/workflows";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
+
+        [Fact]
+        public async Task GetByAeTitle_ShouldCall_GetByAeTitleAsync()
+        {
+
+            var result = await WorkflowsController.GetByAeTitle("test", new PaginationFilter());
+            var objectResult = Assert.IsType<OkObjectResult>(result);
+
+            _workflowService.Verify(x => x.GetByAeTitleAsync("test", It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+
+            Assert.Equal(200, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetByAeTitle_ShouldCall_GetByAeTitleAsync_With_Skip()
+        {
+
+            var result = await WorkflowsController.GetByAeTitle("test", new PaginationFilter { PageSize = 2, PageNumber = 2 });
+            var objectResult = Assert.IsType<OkObjectResult>(result);
+
+            _workflowService.Verify(x => x.GetByAeTitleAsync("test", 2, It.IsAny<int>()), Times.Once);
+
+            Assert.Equal(200, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetByAeTitle_ShouldCall_GetByAeTitleAsync_With_Limit()
+        {
+
+            var result = await WorkflowsController.GetByAeTitle("test", new PaginationFilter { PageNumber = 2, PageSize = 45 });
+            var objectResult = Assert.IsType<OkObjectResult>(result);
+
+            _workflowService.Verify(x => x.GetByAeTitleAsync("test", It.IsAny<int>(), 45), Times.Once);
+
+            Assert.Equal(200, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetByAeTitle_ShouldCall_GetCountByAeTitleAsync()
+        {
+
+            var result = await WorkflowsController.GetByAeTitle("test", new PaginationFilter());
+            var objectResult = Assert.IsType<OkObjectResult>(result);
+
+            _workflowService.Verify(x => x.GetCountByAeTitleAsync("test"), Times.Once);
+
+            Assert.Equal(200, objectResult.StatusCode);
         }
     }
 }

@@ -50,5 +50,21 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// </summary>
         /// <param name="workflow">Workflow to delete.</param>
         Task<DateTime> DeleteWorkflowAsync(WorkflowRevision workflow);
+
+        /// <summary>
+        /// get all workflows with AeTitle
+        /// </summary>
+        /// <param name="aeTitle">the title to get</param>
+        /// <param name="skip">skip x num of records</param>
+        /// <param name="limit">limit to x number</param>
+        /// <returns></returns>
+        Task<IEnumerable<WorkflowRevision>> GetByAeTitleAsync(string aeTitle, int? skip = null, int? limit = null);
+
+        /// <summary>
+        /// returns the number of workflows with this aetitle
+        /// </summary>
+        /// <param name="aeTitle">the title to count</param>
+        /// <returns></returns>
+        Task<long> GetCountByAeTitleAsync(string aeTitle);
     }
 }
