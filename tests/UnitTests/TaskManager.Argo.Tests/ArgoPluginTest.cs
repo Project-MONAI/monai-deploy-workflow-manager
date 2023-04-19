@@ -806,6 +806,68 @@ public class ArgoPluginTest : ArgoPluginTestBase
             Times.Once);
     }
 
+    [Fact(DisplayName = "podPriorityClassName gets set if not given in workflow")]
+    public async Task ArgoPlugin_Ensures_podPriorityClassName_is_set()
+    {
+        var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
+        Assert.NotNull(argoTemplate);
+
+        SetUpSimpleArgoWorkFlow(argoTemplate);
+
+        var message = GenerateTaskDispatchEventWithValidArguments();
+
+        WorkflowCreateRequest? requestMade = default;
+        ArgoClient.Setup(a => a.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
+         .Callback<string, WorkflowCreateRequest, CancellationToken>((name, request, token) =>
+             {
+                 requestMade = request;
+             });
+
+        var defaultClassName = "standard";
+        var runner = new ArgoPlugin(ServiceScopeFactory.Object, _logger.Object, Options, message);
+        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+        Assert.NotNull(requestMade);
+        Assert.Equal(defaultClassName, requestMade.Workflow.Spec.PodPriorityClassName);
+
+        foreach (var template in requestMade.Workflow.Spec.Templates)
+        {
+            Assert.Equal(defaultClassName, template.PriorityClassName);
+        }
+    }
+
+    [Fact(DisplayName = "podPriorityClassName gets set if given in workflow")]
+    public async Task ArgoPlugin_Ensures_podPriorityClassName_is_set_as_given()
+    {
+        var argoTemplate = LoadArgoTemplate("SimpleTemplate.yml");
+        Assert.NotNull(argoTemplate);
+
+        SetUpSimpleArgoWorkFlow(argoTemplate);
+
+        var message = GenerateTaskDispatchEventWithValidArguments();
+
+        var givenClassName = "fred";
+        message.TaskPluginArguments.Add("priority", givenClassName);
+
+        WorkflowCreateRequest? requestMade = default;
+        ArgoClient.Setup(a => a.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()))
+         .Callback<string, WorkflowCreateRequest, CancellationToken>((name, request, token) =>
+         {
+             requestMade = request;
+         });
+
+        var runner = new ArgoPlugin(ServiceScopeFactory.Object, _logger.Object, Options, message);
+        var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+        Assert.NotNull(requestMade);
+        Assert.Equal(givenClassName, requestMade.Workflow.Spec.PodPriorityClassName);
+
+        foreach (var template in requestMade.Workflow.Spec.Templates)
+        {
+            Assert.Equal(givenClassName, template.PriorityClassName);
+        }
+    }
+
     private void SetUpSimpleArgoWorkFlow(WorkflowTemplate argoTemplate)
     {
         Assert.NotNull(argoTemplate);

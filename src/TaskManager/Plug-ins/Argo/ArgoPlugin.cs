@@ -434,7 +434,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             Guard.Against.Null(workflow);
 
             var resources = Event.GetTaskPluginArgumentsParameter<Dictionary<string, string>>(Keys.ArgoResource);
-            var priorityClassName = Event.GetTaskPluginArgumentsParameter(Keys.TaskPriorityClassName);
+            var priorityClassName = Event.GetTaskPluginArgumentsParameter(Keys.TaskPriorityClassName) ?? "standard";
             var argoParameters = Event.GetTaskPluginArgumentsParameter<Dictionary<string, string>>(Keys.ArgoParameters);
 
             if (argoParameters is not null)
@@ -462,16 +462,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 AddRequest(resources, template, ResourcesKeys.CpuReservation);
                 AddRequest(resources, template, ResourcesKeys.MemoryReservation);
                 AddRequest(resources, template, ResourcesKeys.GpuLimit);
-
-                if (priorityClassName is not null)
-                {
-                    template.PriorityClassName = priorityClassName;
-                }
+                template.PriorityClassName = priorityClassName;
             }
-            if (priorityClassName is not null)
-            {
-                workflow.Spec.PodPriorityClassName = priorityClassName;
-            }
+            workflow.Spec.PodPriorityClassName = priorityClassName;
         }
 
         private static void AddLimit(Dictionary<string, string>? resources, Template2 template, ResourcesKey key)
