@@ -30,7 +30,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers
     public class TemplateController : ControllerBase
     {
         private readonly ArgoPlugin _argoPlugin;
-        private readonly ILogger<TemplateController> _tempLogger;
+        private readonly ILogger<TemplateController> _logger;
 
         public TemplateController(
             IServiceScopeFactory scopeFactory,
@@ -38,7 +38,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers
             ILogger<ArgoPlugin> argoLogger,
             IOptions<WorkflowManagerOptions> options)
         {
-            _tempLogger = tempLogger;
+            _logger = tempLogger;
 
             _argoPlugin = new ArgoPlugin(scopeFactory, argoLogger, options, new Messaging.Events.TaskDispatchEvent());
 
@@ -51,6 +51,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers
             using StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
 
             var value2 = await reader.ReadToEndAsync();
+            _logger.LogDebug($"value passed into template :{value2}");
 
             if (string.IsNullOrWhiteSpace(value2))
             {
