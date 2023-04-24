@@ -21,87 +21,87 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
         /// <summary>
         /// Key for the namespace where the Argo workflows are stored and executed.
         /// </summary>
-        public const string Namespace = "namespace";
+        public static readonly string Namespace = "namespace";
 
         /// <summary>
         /// Key for the endpoint where the Argo server is running.
         /// </summary>
-        public const string BaseUrl = "server_url";
+        public static readonly string BaseUrl = "server_url";
 
         /// <summary>
         /// Key for the endpoint where the Argo server is running.
         /// </summary>
-        public const string AllowInsecureseUrl = "allow_insecure";
+        public static readonly string AllowInsecureseUrl = "allow_insecure";
 
         /// <summary>
         /// Key for the name of the main 'WorkflowTemplate' stored on the targeted Argo server.
         /// </summary>
-        public const string WorkflowTemplateName = "workflow_template_name";
+        public static readonly string WorkflowTemplateName = "workflow_template_name";
 
         /// <summary>
         /// Key for the setting 'ActiveDeadlineSeconds' of a Argo workflow.
         /// </summary>
-        public const string TimeoutSeconds = "timeoutSeconds";
+        public static readonly string TimeoutSeconds = "timeoutSeconds";
 
         /// <summary>
         /// Key for setting the API token to authenticate to the Argo server.
         /// </summary>
-        public const string ArgoApiToken = "apiToken";
+        public static readonly string ArgoApiToken = "apiToken";
 
         /// <summary>
         /// Key for setting the message broker's endpoint.
         /// </summary>
-        public const string MessagingEndpoint = "endpoint";
+        public static readonly string MessagingEndpoint = "endpoint";
 
         /// <summary>
         /// Key for setting the user name to access the message broker.
         /// </summary>
-        public const string MessagingUsername = "username";
+        public static readonly string MessagingUsername = "username";
 
         /// <summary>
         /// Key for setting the password to access the message broker.
         /// </summary>
-        public const string MessagingPassword = "password";
+        public static readonly string MessagingPassword = "password";
 
         /// <summary>
         /// Key for setting the exchange of the message broker.
         /// </summary>
-        public const string MessagingExchange = "exchange";
+        public static readonly string MessagingExchange = "exchange";
 
         /// <summary>
         /// Key for setting the vhost of the message broker.
         /// </summary>
-        public const string MessagingVhost = "virtualHost";
+        public static readonly string MessagingVhost = "virtualHost";
 
         /// <summary>
         /// Key for resource limitations
         /// </summary>
-        public const string ArgoResource = "resources";
+        public static readonly string ArgoResource = "resources";
 
         /// <summary>
         /// Key for resource limitations
         /// </summary>
-        public const string ArgoParameters = "parameters";
+        public static readonly string ArgoParameters = "parameters";
 
         /// <summary>
         /// Key for priority classnames on task plugin arguments side
         /// </summary>
-        public const string TaskPriorityClassName = "priority";
+        public static readonly string TaskPriorityClassName = "priority";
 
         /// <summary>
         /// Key for CPU
         /// </summary>
-        public const string Cpu = "cpu";
+        public static readonly string Cpu = "cpu";
 
         /// <summary>
         /// Key for memory allocation
         /// </summary>
-        public const string Memory = "memory_gb";
+        public static readonly string Memory = "memory_gb";
 
         /// <summary>
         /// Key for GPU
         /// </summary>
-        public const string Gpu = "number_gpu";
+        public static readonly string Gpu = "number_gpu";
 
         /// <summary>
         /// Required arguments to run the Argo workflow.
