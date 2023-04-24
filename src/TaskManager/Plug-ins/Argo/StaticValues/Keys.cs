@@ -21,72 +21,87 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
         /// <summary>
         /// Key for the namespace where the Argo workflows are stored and executed.
         /// </summary>
-        public static readonly string Namespace = "namespace";
+        public const string Namespace = "namespace";
 
         /// <summary>
         /// Key for the endpoint where the Argo server is running.
         /// </summary>
-        public static readonly string BaseUrl = "server_url";
+        public const string BaseUrl = "server_url";
 
         /// <summary>
         /// Key for the endpoint where the Argo server is running.
         /// </summary>
-        public static readonly string AllowInsecureseUrl = "allow_insecure";
+        public const string AllowInsecureseUrl = "allow_insecure";
 
         /// <summary>
         /// Key for the name of the main 'WorkflowTemplate' stored on the targeted Argo server.
         /// </summary>
-        public static readonly string WorkflowTemplateName = "workflow_template_name";
+        public const string WorkflowTemplateName = "workflow_template_name";
 
         /// <summary>
         /// Key for the setting 'ActiveDeadlineSeconds' of a Argo workflow.
         /// </summary>
-        public static readonly string TimeoutSeconds = "timeoutSeconds";
+        public const string TimeoutSeconds = "timeoutSeconds";
 
         /// <summary>
         /// Key for setting the API token to authenticate to the Argo server.
         /// </summary>
-        public static readonly string ArgoApiToken = "apiToken";
+        public const string ArgoApiToken = "apiToken";
 
         /// <summary>
         /// Key for setting the message broker's endpoint.
         /// </summary>
-        public static readonly string MessagingEndpoint = "endpoint";
+        public const string MessagingEndpoint = "endpoint";
 
         /// <summary>
         /// Key for setting the user name to access the message broker.
         /// </summary>
-        public static readonly string MessagingUsername = "username";
+        public const string MessagingUsername = "username";
 
         /// <summary>
         /// Key for setting the password to access the message broker.
         /// </summary>
-        public static readonly string MessagingPassword = "password";
+        public const string MessagingPassword = "password";
 
         /// <summary>
         /// Key for setting the exchange of the message broker.
         /// </summary>
-        public static readonly string MessagingExchange = "exchange";
+        public const string MessagingExchange = "exchange";
 
         /// <summary>
         /// Key for setting the vhost of the message broker.
         /// </summary>
-        public static readonly string MessagingVhost = "virtualHost";
+        public const string MessagingVhost = "virtualHost";
 
         /// <summary>
         /// Key for resource limitations
         /// </summary>
-        public static readonly string ArgoResource = "resources";
+        public const string ArgoResource = "resources";
 
         /// <summary>
         /// Key for resource limitations
         /// </summary>
-        public static readonly string ArgoParameters = "parameters";
+        public const string ArgoParameters = "parameters";
 
         /// <summary>
         /// Key for priority classnames on task plugin arguments side
         /// </summary>
-        public static readonly string TaskPriorityClassName = "priority";
+        public const string TaskPriorityClassName = "priority";
+
+        /// <summary>
+        /// Key for CPU
+        /// </summary>
+        public const string Cpu = "cpu";
+
+        /// <summary>
+        /// Key for memory allocation
+        /// </summary>
+        public const string Memory = "memory_gb";
+
+        /// <summary>
+        /// Key for GPU
+        /// </summary>
+        public const string Gpu = "number_gpu";
 
         /// <summary>
         /// Required arguments to run the Argo workflow.
