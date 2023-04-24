@@ -529,6 +529,18 @@ references:
   commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.#ctor
   fullName: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.MessageBrokerConfigurationKeys
   nameWithType: MessageBrokerConfigurationKeys.MessageBrokerConfigurationKeys
+- uid: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.AideClinicalReviewCancelation
+  name: AideClinicalReviewCancelation
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.html#Monai_Deploy_WorkflowManager_Configuration_MessageBrokerConfigurationKeys_AideClinicalReviewCancelation
+  commentId: P:Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.AideClinicalReviewCancelation
+  fullName: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.AideClinicalReviewCancelation
+  nameWithType: MessageBrokerConfigurationKeys.AideClinicalReviewCancelation
+- uid: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.AideClinicalReviewCancelation*
+  name: AideClinicalReviewCancelation
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.html#Monai_Deploy_WorkflowManager_Configuration_MessageBrokerConfigurationKeys_AideClinicalReviewCancelation_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.AideClinicalReviewCancelation
+  fullName: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.AideClinicalReviewCancelation
+  nameWithType: MessageBrokerConfigurationKeys.AideClinicalReviewCancelation
 - uid: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.AideClinicalReviewRequest
   name: AideClinicalReviewRequest
   href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.html#Monai_Deploy_WorkflowManager_Configuration_MessageBrokerConfigurationKeys_AideClinicalReviewRequest
@@ -625,6 +637,36 @@ references:
   commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.WorkflowRequest
   fullName: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.WorkflowRequest
   nameWithType: MessageBrokerConfigurationKeys.WorkflowRequest
+- uid: Monai.Deploy.WorkflowManager.Configuration.PagedOptions
+  name: PagedOptions
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.PagedOptions.html
+  commentId: T:Monai.Deploy.WorkflowManager.Configuration.PagedOptions
+  fullName: Monai.Deploy.WorkflowManager.Configuration.PagedOptions
+  nameWithType: PagedOptions
+- uid: Monai.Deploy.WorkflowManager.Configuration.PagedOptions.#ctor
+  name: PagedOptions()
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.PagedOptions.html#Monai_Deploy_WorkflowManager_Configuration_PagedOptions__ctor
+  commentId: M:Monai.Deploy.WorkflowManager.Configuration.PagedOptions.#ctor
+  fullName: Monai.Deploy.WorkflowManager.Configuration.PagedOptions.PagedOptions()
+  nameWithType: PagedOptions.PagedOptions()
+- uid: Monai.Deploy.WorkflowManager.Configuration.PagedOptions.#ctor*
+  name: PagedOptions
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.PagedOptions.html#Monai_Deploy_WorkflowManager_Configuration_PagedOptions__ctor_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.PagedOptions.#ctor
+  fullName: Monai.Deploy.WorkflowManager.Configuration.PagedOptions.PagedOptions
+  nameWithType: PagedOptions.PagedOptions
+- uid: Monai.Deploy.WorkflowManager.Configuration.PagedOptions.EndpointSettings
+  name: EndpointSettings
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.PagedOptions.html#Monai_Deploy_WorkflowManager_Configuration_PagedOptions_EndpointSettings
+  commentId: P:Monai.Deploy.WorkflowManager.Configuration.PagedOptions.EndpointSettings
+  fullName: Monai.Deploy.WorkflowManager.Configuration.PagedOptions.EndpointSettings
+  nameWithType: PagedOptions.EndpointSettings
+- uid: Monai.Deploy.WorkflowManager.Configuration.PagedOptions.EndpointSettings*
+  name: EndpointSettings
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.PagedOptions.html#Monai_Deploy_WorkflowManager_Configuration_PagedOptions_EndpointSettings_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.PagedOptions.EndpointSettings
+  fullName: Monai.Deploy.WorkflowManager.Configuration.PagedOptions.EndpointSettings
+  nameWithType: PagedOptions.EndpointSettings
 - uid: Monai.Deploy.WorkflowManager.Configuration.RetryConfiguration
   name: RetryConfiguration
   href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.RetryConfiguration.html
@@ -901,18 +943,6 @@ references:
   commentId: F:Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.DatabaseConnectionStringKey
   fullName: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.DatabaseConnectionStringKey
   nameWithType: WorkflowManagerOptions.DatabaseConnectionStringKey
-- uid: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.EndpointSettings
-  name: EndpointSettings
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html#Monai_Deploy_WorkflowManager_Configuration_WorkflowManagerOptions_EndpointSettings
-  commentId: P:Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.EndpointSettings
-  fullName: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.EndpointSettings
-  nameWithType: WorkflowManagerOptions.EndpointSettings
-- uid: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.EndpointSettings*
-  name: EndpointSettings
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html#Monai_Deploy_WorkflowManager_Configuration_WorkflowManagerOptions_EndpointSettings_
-  commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.EndpointSettings
-  fullName: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.EndpointSettings
-  nameWithType: WorkflowManagerOptions.EndpointSettings
 - uid: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.Messaging
   name: Messaging
   href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html#Monai_Deploy_WorkflowManager_Configuration_WorkflowManagerOptions_Messaging
@@ -937,6 +967,18 @@ references:
   commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.MinArgoTtlStrategySeconds
   fullName: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.MinArgoTtlStrategySeconds
   nameWithType: WorkflowManagerOptions.MinArgoTtlStrategySeconds
+- uid: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.PerTaskTypeTimeoutMinutes
+  name: PerTaskTypeTimeoutMinutes
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html#Monai_Deploy_WorkflowManager_Configuration_WorkflowManagerOptions_PerTaskTypeTimeoutMinutes
+  commentId: P:Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.PerTaskTypeTimeoutMinutes
+  fullName: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.PerTaskTypeTimeoutMinutes
+  nameWithType: WorkflowManagerOptions.PerTaskTypeTimeoutMinutes
+- uid: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.PerTaskTypeTimeoutMinutes*
+  name: PerTaskTypeTimeoutMinutes
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html#Monai_Deploy_WorkflowManager_Configuration_WorkflowManagerOptions_PerTaskTypeTimeoutMinutes_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.PerTaskTypeTimeoutMinutes
+  fullName: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.PerTaskTypeTimeoutMinutes
+  nameWithType: WorkflowManagerOptions.PerTaskTypeTimeoutMinutes
 - uid: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.Storage
   name: Storage
   href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html#Monai_Deploy_WorkflowManager_Configuration_WorkflowManagerOptions_Storage
@@ -2974,12 +3016,138 @@ references:
   commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.MetadataRepositoryBase.RetrieveMetadata
   fullName: Monai.Deploy.WorkflowManager.TaskManager.API.MetadataRepositoryBase.RetrieveMetadata
   nameWithType: MetadataRepositoryBase.RetrieveMetadata
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations
+  name: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.html
+  commentId: N:Monai.Deploy.WorkflowManager.TaskManager.API.Migrations
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations
+  nameWithType: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion
+  name: M001_TaskExecutionStats_addVersion
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.html
+  commentId: T:Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion
+  nameWithType: M001_TaskExecutionStats_addVersion
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.#ctor
+  name: M001_TaskExecutionStats_addVersion()
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_TaskManager_API_Migrations_M001_TaskExecutionStats_addVersion__ctor
+  commentId: M:Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.#ctor
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.M001_TaskExecutionStats_addVersion()
+  nameWithType: M001_TaskExecutionStats_addVersion.M001_TaskExecutionStats_addVersion()
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.#ctor*
+  name: M001_TaskExecutionStats_addVersion
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_TaskManager_API_Migrations_M001_TaskExecutionStats_addVersion__ctor_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.#ctor
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.M001_TaskExecutionStats_addVersion
+  nameWithType: M001_TaskExecutionStats_addVersion.M001_TaskExecutionStats_addVersion
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.Down(MongoDB.Bson.BsonDocument)
+  name: Down(BsonDocument)
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_TaskManager_API_Migrations_M001_TaskExecutionStats_addVersion_Down_MongoDB_Bson_BsonDocument_
+  commentId: M:Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.Down(MongoDB.Bson.BsonDocument)
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.Down(MongoDB.Bson.BsonDocument)
+  nameWithType: M001_TaskExecutionStats_addVersion.Down(BsonDocument)
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.Down*
+  name: Down
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_TaskManager_API_Migrations_M001_TaskExecutionStats_addVersion_Down_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.Down
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.Down
+  nameWithType: M001_TaskExecutionStats_addVersion.Down
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.Up(MongoDB.Bson.BsonDocument)
+  name: Up(BsonDocument)
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_TaskManager_API_Migrations_M001_TaskExecutionStats_addVersion_Up_MongoDB_Bson_BsonDocument_
+  commentId: M:Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.Up(MongoDB.Bson.BsonDocument)
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.Up(MongoDB.Bson.BsonDocument)
+  nameWithType: M001_TaskExecutionStats_addVersion.Up(BsonDocument)
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.Up*
+  name: Up
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_TaskManager_API_Migrations_M001_TaskExecutionStats_addVersion_Up_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.Up
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Migrations.M001_TaskExecutionStats_addVersion.Up
+  nameWithType: M001_TaskExecutionStats_addVersion.Up
 - uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models
   name: Monai.Deploy.WorkflowManager.TaskManager.API.Models
   href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.html
   commentId: N:Monai.Deploy.WorkflowManager.TaskManager.API.Models
   fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models
   nameWithType: Monai.Deploy.WorkflowManager.TaskManager.API.Models
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO
+  name: ExecutionStatDTO
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.html
+  commentId: T:Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO
+  nameWithType: ExecutionStatDTO
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.#ctor(Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats)
+  name: ExecutionStatDTO(TaskExecutionStats)
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_ExecutionStatDTO__ctor_Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_
+  commentId: M:Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.#ctor(Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats)
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.ExecutionStatDTO(Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats)
+  nameWithType: ExecutionStatDTO.ExecutionStatDTO(TaskExecutionStats)
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.#ctor*
+  name: ExecutionStatDTO
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_ExecutionStatDTO__ctor_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.#ctor
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.ExecutionStatDTO
+  nameWithType: ExecutionStatDTO.ExecutionStatDTO
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.ExecutionDurationSeconds
+  name: ExecutionDurationSeconds
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_ExecutionStatDTO_ExecutionDurationSeconds
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.ExecutionDurationSeconds
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.ExecutionDurationSeconds
+  nameWithType: ExecutionStatDTO.ExecutionDurationSeconds
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.ExecutionDurationSeconds*
+  name: ExecutionDurationSeconds
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_ExecutionStatDTO_ExecutionDurationSeconds_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.ExecutionDurationSeconds
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.ExecutionDurationSeconds
+  nameWithType: ExecutionStatDTO.ExecutionDurationSeconds
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.ExecutionId
+  name: ExecutionId
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_ExecutionStatDTO_ExecutionId
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.ExecutionId
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.ExecutionId
+  nameWithType: ExecutionStatDTO.ExecutionId
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.ExecutionId*
+  name: ExecutionId
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_ExecutionStatDTO_ExecutionId_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.ExecutionId
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.ExecutionId
+  nameWithType: ExecutionStatDTO.ExecutionId
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.FinishedAt
+  name: FinishedAt
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_ExecutionStatDTO_FinishedAt
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.FinishedAt
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.FinishedAt
+  nameWithType: ExecutionStatDTO.FinishedAt
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.FinishedAt*
+  name: FinishedAt
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_ExecutionStatDTO_FinishedAt_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.FinishedAt
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.FinishedAt
+  nameWithType: ExecutionStatDTO.FinishedAt
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.StartedAt
+  name: StartedAt
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_ExecutionStatDTO_StartedAt
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.StartedAt
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.StartedAt
+  nameWithType: ExecutionStatDTO.StartedAt
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.StartedAt*
+  name: StartedAt
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_ExecutionStatDTO_StartedAt_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.StartedAt
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.StartedAt
+  nameWithType: ExecutionStatDTO.StartedAt
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.Status
+  name: Status
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_ExecutionStatDTO_Status
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.Status
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.Status
+  nameWithType: ExecutionStatDTO.Status
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.Status*
+  name: Status
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_ExecutionStatDTO_Status_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.Status
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.ExecutionStatDTO.Status
+  nameWithType: ExecutionStatDTO.Status
 - uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskDispatchEventInfo
   name: TaskDispatchEventInfo
   href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskDispatchEventInfo.html
@@ -3082,6 +3250,180 @@ references:
   commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskDispatchEventInfo.Version
   fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskDispatchEventInfo.Version
   nameWithType: TaskDispatchEventInfo.Version
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats
+  name: TaskExecutionStats
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html
+  commentId: T:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats
+  nameWithType: TaskExecutionStats
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.#ctor
+  name: TaskExecutionStats()
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats__ctor
+  commentId: M:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.#ctor
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.TaskExecutionStats()
+  nameWithType: TaskExecutionStats.TaskExecutionStats()
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.#ctor(Monai.Deploy.Messaging.Events.TaskUpdateEvent)
+  name: TaskExecutionStats(TaskUpdateEvent)
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats__ctor_Monai_Deploy_Messaging_Events_TaskUpdateEvent_
+  commentId: M:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.#ctor(Monai.Deploy.Messaging.Events.TaskUpdateEvent)
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.TaskExecutionStats(Monai.Deploy.Messaging.Events.TaskUpdateEvent)
+  nameWithType: TaskExecutionStats.TaskExecutionStats(TaskUpdateEvent)
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.#ctor(Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskDispatchEventInfo)
+  name: TaskExecutionStats(TaskDispatchEventInfo)
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats__ctor_Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskDispatchEventInfo_
+  commentId: M:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.#ctor(Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskDispatchEventInfo)
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.TaskExecutionStats(Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskDispatchEventInfo)
+  nameWithType: TaskExecutionStats.TaskExecutionStats(TaskDispatchEventInfo)
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.#ctor*
+  name: TaskExecutionStats
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats__ctor_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.#ctor
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.TaskExecutionStats
+  nameWithType: TaskExecutionStats.TaskExecutionStats
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.CompletedAtUTC
+  name: CompletedAtUTC
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_CompletedAtUTC
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.CompletedAtUTC
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.CompletedAtUTC
+  nameWithType: TaskExecutionStats.CompletedAtUTC
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.CompletedAtUTC*
+  name: CompletedAtUTC
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_CompletedAtUTC_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.CompletedAtUTC
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.CompletedAtUTC
+  nameWithType: TaskExecutionStats.CompletedAtUTC
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.CorrelationId
+  name: CorrelationId
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_CorrelationId
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.CorrelationId
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.CorrelationId
+  nameWithType: TaskExecutionStats.CorrelationId
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.CorrelationId*
+  name: CorrelationId
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_CorrelationId_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.CorrelationId
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.CorrelationId
+  nameWithType: TaskExecutionStats.CorrelationId
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.DurationSeconds
+  name: DurationSeconds
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_DurationSeconds
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.DurationSeconds
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.DurationSeconds
+  nameWithType: TaskExecutionStats.DurationSeconds
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.DurationSeconds*
+  name: DurationSeconds
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_DurationSeconds_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.DurationSeconds
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.DurationSeconds
+  nameWithType: TaskExecutionStats.DurationSeconds
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.ExecutionId
+  name: ExecutionId
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_ExecutionId
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.ExecutionId
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.ExecutionId
+  nameWithType: TaskExecutionStats.ExecutionId
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.ExecutionId*
+  name: ExecutionId
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_ExecutionId_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.ExecutionId
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.ExecutionId
+  nameWithType: TaskExecutionStats.ExecutionId
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.ExecutionTimeSeconds
+  name: ExecutionTimeSeconds
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_ExecutionTimeSeconds
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.ExecutionTimeSeconds
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.ExecutionTimeSeconds
+  nameWithType: TaskExecutionStats.ExecutionTimeSeconds
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.ExecutionTimeSeconds*
+  name: ExecutionTimeSeconds
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_ExecutionTimeSeconds_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.ExecutionTimeSeconds
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.ExecutionTimeSeconds
+  nameWithType: TaskExecutionStats.ExecutionTimeSeconds
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Id
+  name: Id
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_Id
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Id
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Id
+  nameWithType: TaskExecutionStats.Id
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Id*
+  name: Id
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_Id_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Id
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Id
+  nameWithType: TaskExecutionStats.Id
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.LastUpdatedUTC
+  name: LastUpdatedUTC
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_LastUpdatedUTC
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.LastUpdatedUTC
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.LastUpdatedUTC
+  nameWithType: TaskExecutionStats.LastUpdatedUTC
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.LastUpdatedUTC*
+  name: LastUpdatedUTC
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_LastUpdatedUTC_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.LastUpdatedUTC
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.LastUpdatedUTC
+  nameWithType: TaskExecutionStats.LastUpdatedUTC
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.StartedUTC
+  name: StartedUTC
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_StartedUTC
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.StartedUTC
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.StartedUTC
+  nameWithType: TaskExecutionStats.StartedUTC
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.StartedUTC*
+  name: StartedUTC
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_StartedUTC_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.StartedUTC
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.StartedUTC
+  nameWithType: TaskExecutionStats.StartedUTC
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Status
+  name: Status
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_Status
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Status
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Status
+  nameWithType: TaskExecutionStats.Status
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Status*
+  name: Status
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_Status_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Status
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Status
+  nameWithType: TaskExecutionStats.Status
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.TaskId
+  name: TaskId
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_TaskId
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.TaskId
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.TaskId
+  nameWithType: TaskExecutionStats.TaskId
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.TaskId*
+  name: TaskId
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_TaskId_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.TaskId
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.TaskId
+  nameWithType: TaskExecutionStats.TaskId
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Version
+  name: Version
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_Version
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Version
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Version
+  nameWithType: TaskExecutionStats.Version
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Version*
+  name: Version
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_Version_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Version
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.Version
+  nameWithType: TaskExecutionStats.Version
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.WorkflowInstanceId
+  name: WorkflowInstanceId
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_WorkflowInstanceId
+  commentId: P:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.WorkflowInstanceId
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.WorkflowInstanceId
+  nameWithType: TaskExecutionStats.WorkflowInstanceId
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.WorkflowInstanceId*
+  name: WorkflowInstanceId
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats_WorkflowInstanceId_
+  commentId: Overload:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.WorkflowInstanceId
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.WorkflowInstanceId
+  nameWithType: TaskExecutionStats.WorkflowInstanceId
 - uid: Monai.Deploy.WorkflowManager.TaskManager.API.ServiceNotFoundException
   name: ServiceNotFoundException
   href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.ServiceNotFoundException.html
