@@ -52,6 +52,15 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <param name="aeTitle">An aeTitle to retrieve.</param>
         Task<WorkflowRevision> GetByAeTitleAsync(string aeTitle);
 
+        Task<IEnumerable<WorkflowRevision>> GetAllByAeTitleAsync(string aeTitle, int? skip, int? limit);
+
+        /// <summary>
+        /// Retrieves a count of workflows based on an aeTitle.
+        /// </summary>
+        /// <param name="aeTitle"></param>
+        /// <returns></returns>
+        Task<long> GetCountByAeTitleAsync(string aeTitle);
+
         /// <summary>
         /// Retrieves a list of workflows based on an aeTitle.
         /// </summary>

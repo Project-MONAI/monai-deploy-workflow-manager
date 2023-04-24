@@ -88,5 +88,13 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
 
         public async Task<IList<WorkflowRevision>> GetAllAsync(int? skip = null, int? limit = null)
             => await _workflowRepository.GetAllAsync(skip, limit);
+
+
+        public async Task<IEnumerable<WorkflowRevision>> GetByAeTitleAsync(string aeTitle, int? skip = null, int? limit = null)
+        => await _workflowRepository.GetAllByAeTitleAsync(aeTitle, skip, limit);
+
+        public async Task<long> GetCountByAeTitleAsync(string aeTitle)
+         => await _workflowRepository.GetCountByAeTitleAsync(aeTitle);
+
     }
 }

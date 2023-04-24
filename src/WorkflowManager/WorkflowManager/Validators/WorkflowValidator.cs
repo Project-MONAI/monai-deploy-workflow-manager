@@ -41,6 +41,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         public static readonly string Separator = ";";
         private const string Comma = ", ";
         private readonly ILogger<WorkflowValidator> _logger;
+        public static readonly string TaskPriorityClassName = "priority";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowValidator"/> class.
@@ -334,6 +335,18 @@ namespace Monai.Deploy.WorkflowManager.Validators
             if (!currentTask.Args.ContainsKey(WorkflowTemplateName))
             {
                 Errors.Add($"Task: '{currentTask.Id}' workflow_template_name must be specified{Comma}this corresponds to an Argo template name.");
+            }
+
+            if (currentTask.Args.ContainsKey(TaskPriorityClassName))
+            {
+                switch (currentTask.Args[TaskPriorityClassName].ToLower())
+                {
+                    case "high" or "standard" or "low":
+                        break;
+                    default:
+                        Errors.Add($"Task: '{currentTask.Id}' TaskPriorityClassName must be one of \"high\"{Comma} \"standard\" or \"low\"");
+                        break;
+                }
             }
         }
 
