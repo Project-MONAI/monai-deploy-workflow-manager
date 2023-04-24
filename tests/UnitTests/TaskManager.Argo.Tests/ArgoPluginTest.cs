@@ -76,20 +76,6 @@ public class ArgoPluginTest : ArgoPluginTestBase
         Assert.Throws<ConfigurationException>(() => new ArgoPlugin(ServiceScopeFactory.Object, _logger.Object, Options, message));
     }
 
-    [Theory(DisplayName = "Throws with invalid plugin arguments")]
-    [InlineData(Keys.Cpu, "0.1")]
-    [InlineData(Keys.Cpu, "0")]
-    [InlineData(Keys.Memory, "0.1")]
-    [InlineData(Keys.Memory, "0")]
-    [InlineData(Keys.Gpu, "0.1")]
-    [InlineData(Keys.Gpu, "2")]
-    public void ArgoPlugin_ThrowsWithInvalidPluginArguments(string key, string value)
-    {
-        var message = GenerateTaskDispatchEventWithValidArguments();
-        message.TaskPluginArguments[key] = value;
-        Assert.Throws<InvalidTaskException>(() => new ArgoPlugin(ServiceScopeFactory.Object, _logger.Object, Options, message));
-    }
-
     [Fact(DisplayName = "Initializes values")]
     public void ArgoPlugin_InitializesValues()
     {

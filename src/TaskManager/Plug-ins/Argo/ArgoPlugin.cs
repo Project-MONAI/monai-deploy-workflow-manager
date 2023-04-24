@@ -187,33 +187,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             {
                 throw new InvalidTaskException($"The value '{Event.TaskPluginArguments[Keys.BaseUrl]}' provided for '{Keys.BaseUrl}' is not a valid URI.");
             }
-
-            new List<string> { Keys.Cpu, Keys.Memory }.ForEach(key =>
-            {
-                if (Event.TaskPluginArguments.TryGetValue(key, out var val))
-                {
-                    if (
-                        !string.IsNullOrEmpty(val) &&
-                        double.TryParse(val, out double parsedVal) &&
-                        (parsedVal < 1 || Math.Truncate(parsedVal) != parsedVal)
-                    )
-                    {
-                        throw new InvalidTaskException($"The value '{val}' provided for '{key}' is not valid. The value needs to be a whole number greater than 0.");
-                    }
-                }
-            });
-
-            if (Event.TaskPluginArguments.TryGetValue(Keys.Gpu, out var gpu))
-            {
-                if (
-                    !string.IsNullOrEmpty(gpu) &&
-                    double.TryParse(gpu, out double parsedGpu) &&
-                    (parsedGpu != 0 || parsedGpu != 1)
-                )
-                {
-                    throw new InvalidTaskException($"The value '{gpu}' provided for '{Keys.Gpu}' is not valid. The value needs to be 0 or 1.");
-                }
-            }
         }
 
         public override async Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken = default)
