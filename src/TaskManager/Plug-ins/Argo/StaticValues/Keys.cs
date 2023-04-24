@@ -89,6 +89,21 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
         public static readonly string TaskPriorityClassName = "priority";
 
         /// <summary>
+        /// Key for CPU
+        /// </summary>
+        public static readonly string Cpu = "cpu";
+
+        /// <summary>
+        /// Key for memory allocation
+        /// </summary>
+        public static readonly string Memory = "memory_gb";
+
+        /// <summary>
+        /// Key for GPU
+        /// </summary>
+        public static readonly string Gpu = "number_gpu";
+
+        /// <summary>
         /// Required arguments to run the Argo workflow.
         /// </summary>
         public static readonly IReadOnlyList<string> RequiredParameters =

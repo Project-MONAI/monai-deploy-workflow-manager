@@ -53,6 +53,21 @@ namespace Monai.Deploy.WorkflowManager.Shared
         /// </summary>
         public static readonly string Notifications = "notifications";
 
+        /// <summary>
+        /// Key for the CPU.
+        /// </summary>
+        public static readonly string Cpu = "cpu";
+
+        /// <summary>
+        /// Key for the memory.
+        /// </summary>
+        public static readonly string Memory = "memory_gb";
+
+        /// <summary>
+        /// Key for the GPU.
+        /// </summary>
+        public static readonly string Gpu = "gpu";
+
         public enum ModeValues
         {
             QA,
