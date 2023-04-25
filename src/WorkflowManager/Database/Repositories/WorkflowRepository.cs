@@ -199,9 +199,25 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             return workflows;
         }
 
+        public async Task<IList<WorkflowRevision>> GetWorkflowsForWorkflowRequestAsync(string calledAeTitle, string callingAeTitle)
+        {
+            Guard.Against.NullOrEmpty(calledAeTitle);
+            Guard.Against.NullOrEmpty(callingAeTitle);
+
+            var wfs = await _workflowCollection
+                .Find(x =>
+                    x.Deleted == null &&
+                    x.Workflow != null &&
+                    x.Workflow.InformaticsGateway != null &&
+                    (x.Workflow.InformaticsGateway.AeTitle == calledAeTitle && x.Workflow.InformaticsGateway.DataOrigins.Length == 0 ||
+                    x.Workflow.InformaticsGateway.AeTitle == calledAeTitle && x.Workflow.InformaticsGateway.DataOrigins.Contains(callingAeTitle)))
+                .ToListAsync();
+            return wfs;
+        }
+
         public async Task<string> CreateAsync(Workflow workflow)
         {
-            Guard.Against.Null(workflow, nameof(workflow));
+            Guard.Against.Null(workflow);
 
             var workflowRevision = new WorkflowRevision
             {

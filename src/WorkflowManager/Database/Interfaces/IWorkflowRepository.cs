@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Database.Interfaces
@@ -66,6 +67,23 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// </summary>
         /// <param name="aeTitle">An aeTitle to retrieve workflows for.</param>
         Task<IList<WorkflowRevision>> GetWorkflowsByAeTitleAsync(List<string> aeTitles);
+
+        /// <summary>
+        /// Retrieves a list of workflows based..<br/>
+        /// if clinical workflow has AET no data origin. => WorkflowRequestEvents received with CalledAET with that AET this workflow (regardless of what the CallingAET is)<br/>
+        /// if clinical workflow has AET and data_orgins => only WorkflowRequestEvents with CalledAET with that AET  and CallingAET trigger this workflow.<br/>
+        /// </summary>
+        /// <example>
+        /// If clinical workflow (workflow revision) exists with AET “MONAI” but no data_origins set
+        /// Any inbound WorkflowRequestEvents with CalledAET = “MONAI” trigger this workflow (regardless of what the CallingAET is)
+        /// 
+        /// If clinical workflow (workflow revision) exists with AET “MONAI” and data_origins set as “PACS”
+        /// Only inbound WorkflowRequestEvents with CalledAET = “MONAI” and CallingAET = “PACS” trigger this workflow
+        /// </example>
+        /// <param name="calledAeTitle"></param>
+        /// <param name="sallingAeTitle"></param>
+        /// <returns></returns>
+        Task<IList<WorkflowRevision>> GetWorkflowsForWorkflowRequestAsync(string calledAeTitle, string callingAeTitle);
 
         /// <summary>
         /// Creates a workflow object.
