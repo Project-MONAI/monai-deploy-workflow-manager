@@ -272,7 +272,9 @@ public class ArgoPluginTest : ArgoPluginTestBase
         Assert.NotNull(argoTemplate);
 
         var message = GenerateTaskDispatchEventWithValidArguments(withoutDefaultArguments);
-        message.TaskPluginArguments["resources"] = "{\"memory_reservation\": \"string\",\"cpu_reservation\": \"string\",\"gpu_limit\": 1,\"memory_limit\": \"string\",\"cpu_limit\": \"string\"}";
+        message.TaskPluginArguments["gpu_required"] = "true";
+        message.TaskPluginArguments["memory_gb"] = "1";
+        message.TaskPluginArguments["cpu"] = "1";
         message.TaskPluginArguments["priority"] = "Helo";
         Workflow? submittedArgoTemplate = null;
 
@@ -367,18 +369,13 @@ public class ArgoPluginTest : ArgoPluginTestBase
         {
             Assert.True(template.Container.Resources is not null);
             Assert.True(template.Container.Resources?.Limits is not null);
-            Assert.True(template.Container.Resources?.Requests is not null);
             var value = "";
 
-            Assert.True(template.Container.Resources?.Requests?.TryGetValue("requests.memory", out value));
-            Assert.True(value == "string");
-            Assert.True(template.Container.Resources?.Requests?.TryGetValue("requests.cpu", out value));
-            Assert.True(value == "string");
             Assert.True(template.Container.Resources?.Limits?.TryGetValue("limits.memory", out value));
-            Assert.True(value == "string");
+            Assert.True(value == "1");
             Assert.True(template.Container.Resources?.Limits?.TryGetValue("limits.cpu", out value));
-            Assert.True(value == "string");
-            Assert.True(template.Container.Resources?.Requests?.TryGetValue("nvidia.com/gpu", out value));
+            Assert.True(value == "1");
+            Assert.True(template.Container.Resources?.Limits?.TryGetValue("nvidia.com/gpu", out value));
             Assert.True(value == "1");
 
             Assert.True(template.PriorityClassName == "Helo");
