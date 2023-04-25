@@ -224,7 +224,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
             ArgoClient argoClient = new(httpclient);
 
             var result = await argoClient.Argo_CreateWorkflowTemplateAsync("argo",
-                new WorkflowTemplateCreateRequest { Namespace = "argo" },
+                new WorkflowTemplateCreateRequest { Namespace = "argo", Template = new WorkflowTemplate() },
                 CancellationToken.None);
 
             Assert.NotNull(result);
