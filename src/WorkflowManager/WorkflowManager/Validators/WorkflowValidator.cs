@@ -353,21 +353,18 @@ namespace Monai.Deploy.WorkflowManager.Validators
             {
                 if (
                     currentTask.Args.TryGetValue(key, out var val) &&
-                    !string.IsNullOrEmpty(val) &&
-                    double.TryParse(val, out double parsedVal) &&
-                    (parsedVal < 1 || Math.Truncate(parsedVal) != parsedVal))
+                    (string.IsNullOrEmpty(val) ||
+                    (double.TryParse(val, out double parsedVal) && (parsedVal < 1 || Math.Truncate(parsedVal) != parsedVal))))
                 {
                     Errors.Add($"Task: '{currentTask.Id}' value '{val}' provided for argument '{key}' is not valid. The value needs to be a whole number greater than 0.");
                 }
             });
 
             if (
-                currentTask.Args.TryGetValue(Gpu, out var gpu) &&
-                !string.IsNullOrEmpty(gpu) &&
-                double.TryParse(gpu, out double parsedGpu) &&
-                (parsedGpu != 0 || parsedGpu != 1))
+                currentTask.Args.TryGetValue(GpuRequired, out var gpuRequired) &&
+                (string.IsNullOrEmpty(gpuRequired) || !bool.TryParse(gpuRequired, out var _)))
             {
-                Errors.Add($"Task: '{currentTask.Id}' value '{gpu}' provided for argument '{Gpu}' is not valid. The value needs to be 0 or 1.");
+                Errors.Add($"Task: '{currentTask.Id}' value '{gpuRequired}' provided for argument '{GpuRequired}' is not valid. The value needs to be 'true' or 'false'.");
             }
         }
 
