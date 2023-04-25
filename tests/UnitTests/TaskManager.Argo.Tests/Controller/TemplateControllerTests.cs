@@ -145,10 +145,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 _argoLogger.Object,
                 Options);
 
+            ArgoClient.Setup(a => a.Argo_DeleteWorkflowTemplateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(true));
+
             var result = await TemplateController.DeleteArgoTemplate("template");
 
-            Assert.IsType<ActionResult<bool>>(result);
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var okResult = Assert.IsType<OkResult>(result.Result);
             Assert.Equal((int)HttpStatusCode.OK, okResult.StatusCode);
         }
 
