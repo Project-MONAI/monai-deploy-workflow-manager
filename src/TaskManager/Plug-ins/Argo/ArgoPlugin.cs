@@ -464,10 +464,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             // Convert true / false value to 0 or 1 for number of GPU
             if (key.TaskKey == ResourcesKeys.GpuLimit.TaskKey)
             {
-                if (bool.TryParse(value, out bool gpuRequired))
-                {
-                    value = gpuRequired ? "1" : "0";
-                }
+                value = bool.TryParse(value, out bool gpuRequired) && gpuRequired ? "1" : "0";
             }
 
             template.Container.Resources.Limits.Add(key.ArgoKey, value);
