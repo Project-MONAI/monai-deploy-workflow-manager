@@ -392,7 +392,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
             var invalidArgoArg2 = "Task: 'test-argo-task' value '0.1' provided for argument 'memory_gb' is not valid. The value needs to be a whole number greater than 0.";
             Assert.Contains(invalidArgoArg2, errors);
 
-            var invalidArgoArg3 = "Task: 'test-argo-task' value '2' provided for argument 'gpu' is not valid. The value needs to be 0 or 1.";
+            var invalidArgoArg3 = "Task: 'test-argo-task' value '2' provided for argument 'gpu' is not valid. The value needs to be 'true' or 'false'.";
             Assert.Contains(invalidArgoArg3, errors);
 
             var incorrectClinicalReviewValueFormat = $"Invalid Value property on input artifact 'Invalid Value Format' in task: 'test-clinical-review'. Incorrect format.";

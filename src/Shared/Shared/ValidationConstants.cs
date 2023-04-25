@@ -66,7 +66,7 @@ namespace Monai.Deploy.WorkflowManager.Shared
         /// <summary>
         /// Key for the GPU.
         /// </summary>
-        public static readonly string Gpu = "gpu";
+        public static readonly string GpuRequired = "gpu_required";
 
         public enum ModeValues
         {

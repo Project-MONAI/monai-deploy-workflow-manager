@@ -432,46 +432,23 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         private void ProcessTaskPluginArguments(Workflow workflow)
         {
             Guard.Against.Null(workflow);
-
-            var resources = Event.GetTaskPluginArgumentsParameter<Dictionary<string, string>>(Keys.ArgoResource);
             var priorityClassName = Event.GetTaskPluginArgumentsParameter(Keys.TaskPriorityClassName) ?? "standard";
-            var argoParameters = Event.GetTaskPluginArgumentsParameter<Dictionary<string, string>>(Keys.ArgoParameters);
-
-            if (argoParameters is not null)
-            {
-                foreach (var item in argoParameters)
-                {
-                    if (workflow.Spec.Arguments is null)
-                    {
-                        workflow.Spec.Arguments = new Arguments();
-                    }
-
-                    if (workflow.Spec.Arguments.Parameters is null)
-                    {
-                        workflow.Spec.Arguments.Parameters = new List<Parameter>();
-                    }
-
-                    workflow.Spec.Arguments.Parameters.Add(new Parameter() { Name = item.Key, Value = item.Value });
-                }
-            }
 
             foreach (var template in workflow.Spec.Templates)
             {
-                AddLimit(resources, template, ResourcesKeys.CpuLimit);
-                AddLimit(resources, template, ResourcesKeys.MemoryLimit);
-                AddRequest(resources, template, ResourcesKeys.CpuReservation);
-                AddRequest(resources, template, ResourcesKeys.MemoryReservation);
-                AddRequest(resources, template, ResourcesKeys.GpuLimit);
+                AddLimit(template, ResourcesKeys.CpuLimit);
+                AddLimit(template, ResourcesKeys.MemoryLimit);
+                AddLimit(template, ResourcesKeys.GpuLimit);
                 template.PriorityClassName = priorityClassName;
             }
             workflow.Spec.PodPriorityClassName = priorityClassName;
         }
 
-        private static void AddLimit(Dictionary<string, string>? resources, Template2 template, ResourcesKey key)
+        private void AddLimit(Template2 template, ResourcesKey key)
         {
             Guard.Against.Null(template);
             Guard.Against.Null(key);
-            if (template.Container is null || resources is null || !resources.TryGetValue(key.TaskKey, out var value))
+            if (template.Container is null || !Event.TaskPluginArguments.TryGetValue(key.TaskKey, out var value) || string.IsNullOrWhiteSpace(value))
             {
                 return;
             }
@@ -484,28 +461,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 template.Container.Resources.Limits = new Dictionary<string, string>();
             }
 
+            // Convert true / false value to 0 or 1 for number of GPU
+            if (key.TaskKey == ResourcesKeys.GpuLimit.TaskKey)
+            {
+                if (bool.TryParse(value, out bool gpuRequired))
+                {
+                    value = gpuRequired ? "1" : "0";
+                }
+            }
+
             template.Container.Resources.Limits.Add(key.ArgoKey, value);
-        }
-
-        private static void AddRequest(Dictionary<string, string>? resources, Template2 template, ResourcesKey key)
-        {
-            Guard.Against.Null(template);
-            Guard.Against.Null(key);
-            if (template.Container is null || resources is null || !resources.TryGetValue(key.TaskKey, out var value) || string.IsNullOrWhiteSpace(value))
-            {
-                return;
-            }
-
-            if (template.Container.Resources is null)
-            {
-                template.Container.Resources = new ResourceRequirements();
-            }
-            if (template.Container.Resources.Requests is null)
-            {
-                template.Container.Resources.Requests = new Dictionary<string, string>();
-            }
-
-            template.Container.Resources.Requests.Add(key.ArgoKey, value);
         }
 
         private async Task AddMainWorkflowTemplate(Workflow workflow, CancellationToken cancellationToken)
