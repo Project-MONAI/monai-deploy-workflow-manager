@@ -800,7 +800,9 @@ An example format of the metadata.json can be found below:
 execution stats are populated from the argo execution values returned automatically.
 
 #### Handled Exception Metadata
-Application models can throw handled exceptions to do this application model should output to the `metadata.json` and include for example...
+Application models can throw handled exceptions, to do this your application model should output the properties "exception" and "exception_message" to the `metadata.json`
+
+Example...
 ```json
 {
   "exception": "NoDicomFilesException",
@@ -808,12 +810,13 @@ Application models can throw handled exceptions to do this application model sho
 }
 ```
 
-This can be used in the workflow task destinations queries for example like the following examples...
+We recommend your application exits execution once the metadata.json has been written.
+
+This exception can be used in the workflow task destinations queries for example like the following examples...
 
 ```python
 {{ context.executions.task_id.result.exception }} == 'NoDicomFilesException' && {{ context.executions.task_id.result.exception_message }} == 'No dicom files found.'
 ```
-
 
 ```python
 {{ context.executions.task_id.result.exception_message }} CONTAINS 'No dicom files'
