@@ -48,7 +48,6 @@ Workflows can be created or updated via the [Workflow API](https://github.com/Pr
       - [Plugin](#plugin)
     - [Task Arguments](#task-arguments)
       - [Argo](#argo)
-        - [Resource Request Object](#resource-request-object)
     - [Clinical Review](#clinical-review)
     - [Router](#router-1)
     - [Export](#export-1)
@@ -69,6 +68,7 @@ Workflows can be created or updated via the [Workflow API](https://github.com/Pr
       - [Execution Context](#execution-context)
       - [Result Metadata \& Execution Stats - Using Dictionary Values](#result-metadata--execution-stats---using-dictionary-values)
       - [Argo Metadata](#argo-metadata)
+      - [Handled Exception Metadata](#handled-exception-metadata)
       - [DICOM Tags](#dicom-tags)
       - [Patient Details Context](#patient-details-context)
       - [Workflow Context](#workflow-context)
@@ -711,7 +711,7 @@ Conditional evaluators are logical statement strings that may be used to determi
 
     NOT_CONTAINS (Valid for integers and strings compared to lists)
 
-more information on conditionals can be found  [Conditionals Docs](guidelines\mwm-conditionals.md)
+more information on conditionals can be found  [Conditionals Docs](..\..\guidelines\mwm-conditionals.md)
 
 ### Context
 The workflow metadata is any data that can be used by Evaluators. This includes metadata added by previous tasks, but can also include metadata about the input files (most notably DICOM tags).
@@ -798,6 +798,30 @@ If metadata is to be used in a conditional the `metadata.json` must be present s
 An example format of the metadata.json can be found below:
 
 execution stats are populated from the argo execution values returned automatically.
+
+#### Handled Exception Metadata
+Application models can throw handled exceptions to do this application model should output to the `metadata.json` and include for example...
+```json
+{
+  "exception": "NoDicomFilesException",
+  "exception_message": "No dicom files found."
+}
+```
+
+This can be used in the workflow task destinations queries for example like the following examples...
+
+```python
+{{ context.executions.task_id.result.exception }} == 'NoDicomFilesException' && {{ context.executions.task_id.result.exception_message }} == 'No dicom files found.'
+```
+
+
+```python
+{{ context.executions.task_id.result.exception_message }} CONTAINS 'No dicom files'
+```
+
+```python
+{{ context.executions.task_id.result.exception }} == NULL
+```
 
 
 #### DICOM Tags
