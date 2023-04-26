@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.ControllersShared;
 using Monai.Deploy.WorkflowManager.Shared.Filter;
@@ -78,16 +79,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Controllers
             try
             {
                 var fails = _repository.GetStatsStatusFailedCountAsync(startTime, endTime);
-                var rangeCount = _repository.GetStatsCountAsync(startTime, endTime);
+                var running = _repository.GetStatsStatusCountAsync(startTime, endTime, TaskExecutionStatus.Accepted.ToString());
+                var rangeCount = _repository.GetStatsStatusCountAsync(startTime, endTime);
                 var stats = _repository.GetAverageStats(startTime, endTime);
 
-                await Task.WhenAll(fails, rangeCount, stats);
+                await Task.WhenAll(fails, rangeCount, stats, running);
                 return Ok(new
                 {
                     PeriodStart = startTime,
                     PeriodEnd = endTime,
                     TotalExecutions = (int)rangeCount.Result,
                     TotalFailures = (int)fails.Result,
+                    TotalInprogress = running.Result,
                     AverageTotalExecutionSeconds = Math.Round(stats.Result.avgTotalExecution, 2),
                     AverageArgoExecutionSeconds = Math.Round(stats.Result.avgArgoExecution, 2),
                 });
@@ -102,7 +105,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Controllers
         [ProducesResponseType(typeof(StatsPagedResponse<List<ExecutionStatDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         [HttpGet("stats")]
-        public async Task<IActionResult> GetStatsAsync([FromQuery] TimeFilter filter, string workflowId, string taskId)
+        public async Task<IActionResult> GetStatsAsync([FromQuery] TimeFilter filter, string? workflowId = "", string? taskId = "")
         {
 
             if ((string.IsNullOrWhiteSpace(workflowId) && string.IsNullOrWhiteSpace(taskId)) is false
@@ -130,12 +133,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Controllers
 
             try
             {
-                var allStats = _repository.GetStatsAsync(filter.StartTime, filter.EndTime, pageSize, filter.PageNumber, workflowId, taskId);
-                var fails = _repository.GetStatsStatusFailedCountAsync(filter.StartTime, filter.EndTime, workflowId, taskId);
-                var rangeCount = _repository.GetStatsCountAsync(filter.StartTime, filter.EndTime, workflowId, taskId);
-                var stats = _repository.GetAverageStats(filter.StartTime, filter.EndTime, workflowId, taskId);
+                var allStats = _repository.GetStatsAsync(filter.StartTime, filter.EndTime, pageSize, filter.PageNumber, workflowId ?? string.Empty, taskId ?? string.Empty);
+                var fails = _repository.GetStatsStatusFailedCountAsync(filter.StartTime, filter.EndTime, workflowId ?? string.Empty, taskId ?? string.Empty);
+                var rangeCount = _repository.GetStatsStatusCountAsync(filter.StartTime, filter.EndTime, string.Empty, workflowId ?? string.Empty, taskId ?? string.Empty);
+                var stats = _repository.GetAverageStats(filter.StartTime, filter.EndTime, workflowId ?? string.Empty, taskId ?? string.Empty);
+                var running = _repository.GetStatsStatusCountAsync(filter.StartTime, filter.EndTime, TaskExecutionStatus.Accepted.ToString());
 
-                await Task.WhenAll(allStats, fails, rangeCount, stats);
+                await Task.WhenAll(allStats, fails, rangeCount, stats, running);
 
                 ExecutionStatDTO[] statsDto;
 
@@ -150,6 +154,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Controllers
                 res.PeriodEnd = filter.EndTime;
                 res.TotalExecutions = rangeCount.Result;
                 res.TotalFailures = fails.Result;
+                res.TotalInprogress = running.Result;
                 res.AverageTotalExecutionSeconds = Math.Round(stats.Result.avgTotalExecution, 2);
                 res.AverageArgoExecutionSeconds = Math.Round(stats.Result.avgArgoExecution, 2);
                 return Ok(res);

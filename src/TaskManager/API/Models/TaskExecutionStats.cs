@@ -136,5 +136,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
             TaskId = taskUpdateEvent.TaskId;
             Status = taskUpdateEvent.Status.ToString();
         }
+
+        public TaskExecutionStats(TaskCancellationEvent taskCanceledEvent, string correlationId)
+        {
+            Guard.Against.Null(taskCanceledEvent, "taskCanceledEvent");
+            CorrelationId = correlationId;
+            WorkflowInstanceId = taskCanceledEvent.WorkflowInstanceId;
+            ExecutionId = taskCanceledEvent.ExecutionId;
+            TaskId = taskCanceledEvent.TaskId;
+            Status = TaskExecutionStatus.Failed.ToString();
+        }
     }
 }

@@ -40,6 +40,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
     public class TaskExecutionStatsTests
     {
         private const string NOT_ARGO = "notArgo";
+        private const string NOT_ARGO2 = "notArgo2";
         private readonly Mock<ILogger<TaskManager>> _logger;
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly Mock<IServiceScopeFactory> _serviceScopeFactory;
@@ -103,8 +104,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
 
             _options.Value.TaskManager.PluginAssemblyMappings.Add(PluginStrings.Argo, typeof(TestPlugin).AssemblyQualifiedName);
             _options.Value.TaskManager.PluginAssemblyMappings.Add(NOT_ARGO, typeof(TestPlugin).AssemblyQualifiedName);
+            _options.Value.TaskManager.PluginAssemblyMappings.Add(NOT_ARGO2, typeof(TestPluginNoTimeout).AssemblyQualifiedName);
             _options.Value.TaskManager.MetadataAssemblyMappings.Add(PluginStrings.Argo, typeof(TestMetadataRepository).AssemblyQualifiedName);
             _options.Value.TaskManager.MetadataAssemblyMappings.Add(NOT_ARGO, typeof(TestMetadataRepository).AssemblyQualifiedName);
+            _options.Value.TaskManager.MetadataAssemblyMappings.Add(NOT_ARGO2, typeof(TestMetadataRepository).AssemblyQualifiedName);
             _options.Value.Storage.Settings["accessKey"] = "key";
             _options.Value.Storage.Settings["accessToken"] = "token";
         }
@@ -261,6 +264,73 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
 
         }
 
+        [Fact]
+        public async Task ExecuteTask_SetsExecutionStatsOnCanceled()
+        {
+            var stats = new Dictionary<string, string>() { { "", "" } };
+            _options.Value.TaskManager.MaximumNumberOfConcurrentJobs = 1;
+            _testRunnerCallback
+                .Setup(p => p.GenerateExecuteTaskResult())
+                .Returns(new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None });
+
+            var resetEvent = new CountdownEvent(2);
+
+            var taskDispatchEventMessage = GenerateTaskDispatchEvent();
+            taskDispatchEventMessage.Body.TaskPluginType = NOT_ARGO2;
+            _taskDispatchEventService.Setup(p => p.GetByTaskExecutionIdAsync(It.IsAny<string>()))
+               .ReturnsAsync(new API.Models.TaskDispatchEventInfo(taskDispatchEventMessage.Body));
+            _messageBrokerSubscriberService.Setup(
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskDispatchRequest, StringComparison.OrdinalIgnoreCase)),
+                                 It.IsAny<string>(),
+                                 It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
+                                 It.IsAny<ushort>()))
+                .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
+                {
+                    await Task.Run(() =>
+                    {
+                        messageReceivedCallback(CreateMessageReceivedEventArgs(taskDispatchEventMessage));
+                    }).ConfigureAwait(false);
+                });
+
+            var taskCallbackEventMessage = GenerateTaskCanceledEvent(taskDispatchEventMessage);
+            _messageBrokerSubscriberService.Setup(
+                p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskCancellationRequest, StringComparison.OrdinalIgnoreCase)),
+                                 It.IsAny<string>(),
+                                 It.IsAny<Func<MessageReceivedEventArgs, Task>>(),
+                                 It.IsAny<ushort>()))
+                .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
+                {
+                    Assert.True(resetEvent.Wait(5000));
+                    resetEvent.Reset(1);
+                    await Task.Run(() =>
+                    {
+                        messageReceivedCallback(CreateMessageReceivedCanceledEventArgs(taskCallbackEventMessage));
+                    }).ConfigureAwait(false);
+                });
+            _messageBrokerSubscriberService
+                .Setup(p => p.Acknowledge(It.IsAny<MessageBase>()))
+                .Callback(() =>
+                resetEvent.Signal());
+            _messageBrokerPublisherService
+                .Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
+                .Callback(() =>
+                resetEvent.Signal());
+            _storageService.Setup(p => p.CreateTemporaryCredentialsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Amazon.SecurityToken.Model.Credentials
+                {
+                    AccessKeyId = Guid.NewGuid().ToString(),
+                    SecretAccessKey = Guid.NewGuid().ToString()
+                });
+
+            var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            Assert.Equal(ServiceStatus.Running, service.Status);
+
+            Assert.True(resetEvent.Wait(10000));
+
+            _executionStatsRepo.Verify(p => p.UpdateExecutionStatsAsync(It.IsAny<TaskUpdateEvent>()), Times.Once);
+        }
+
         private static JsonMessage<TaskCallbackEvent> GenerateTaskCallbackEvent(JsonMessage<TaskDispatchEvent>? taskDispatchEventMessage = null)
         {
             return new JsonMessage<TaskCallbackEvent>(
@@ -276,7 +346,21 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                             taskDispatchEventMessage is null ? Guid.NewGuid().ToString() : taskDispatchEventMessage.CorrelationId,
                             "1");
         }
-
+        private static JsonMessage<TaskCancellationEvent> GenerateTaskCanceledEvent(JsonMessage<TaskDispatchEvent>? taskDispatchEventMessage = null)
+        {
+            return new JsonMessage<TaskCancellationEvent>(
+                            new TaskCancellationEvent
+                            {
+                                ExecutionId = taskDispatchEventMessage is null ? Guid.NewGuid().ToString() : taskDispatchEventMessage.Body.ExecutionId,
+                                WorkflowInstanceId = taskDispatchEventMessage is null ? Guid.NewGuid().ToString() : taskDispatchEventMessage.Body.WorkflowInstanceId,
+                                TaskId = taskDispatchEventMessage is null ? Guid.NewGuid().ToString() : taskDispatchEventMessage.Body.TaskId,
+                                Identity = Guid.NewGuid().ToString(),
+                                Message = "just a cancelation test"
+                            },
+                            Guid.NewGuid().ToString(),
+                            taskDispatchEventMessage is null ? Guid.NewGuid().ToString() : taskDispatchEventMessage.CorrelationId,
+                            "1");
+        }
         private static JsonMessage<TaskDispatchEvent> GenerateTaskDispatchEvent()
         {
             var correlationId = Guid.NewGuid().ToString();
@@ -331,6 +415,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             var args = new MessageReceivedEventArgs(message.ToMessage(), CancellationToken.None);
             return args;
         }
+        private static MessageReceivedEventArgs CreateMessageReceivedCanceledEventArgs(JsonMessage<TaskCancellationEvent> message)
+        {
+            var args = new MessageReceivedEventArgs(message.ToMessage(), CancellationToken.None);
+            return args;
+        }
+
 
         private Dictionary<string, string> GetTestExecutionStats()
         {

@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 {
-    "periodStart": "2023-03-11T08:19:51Z",
-    "periodEnd": "2023-03-21T08:19:51Z",
+    "periodStart": "2023-03-26T14:00:13Z",
+    "periodEnd": "2023-04-05T14:00:13Z",
     "totalExecutions": 1,
     "totalFailures": 0,
+    "totalInprogress": 0,
     "averageTotalExecutionSeconds": 30.0,
     "averageArgoExecutionSeconds": 30.0
 }
