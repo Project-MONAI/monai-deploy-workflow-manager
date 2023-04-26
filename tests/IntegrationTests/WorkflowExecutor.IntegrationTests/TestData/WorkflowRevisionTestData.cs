@@ -54,7 +54,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Basic_AE"
+                            AeTitle = "MONAI"
                         }
                     }
                 }
@@ -84,7 +84,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Basic_AE"
+                            AeTitle = "MONAI"
                         }
                     }
                 }
@@ -114,7 +114,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Basic_AE_3"
+                            AeTitle = "MONAI"
                         }
                     }
                 }
@@ -181,7 +181,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowRevisionTestData()
             {
-                Name = "Basic_Workflow_Multiple_Revisions_1",
+                Name = "Basic_Workflow_Multiple_Revisions_1", //not to be confused with 'Basic_Workflow_multiple_revisions_1' (lower case)
                 WorkflowRevision = new WorkflowRevision()
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -204,7 +204,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Multi_Revision"
+                            AeTitle = "MONAI"
                         }
                     }
                 }
@@ -234,7 +234,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Multi_Revision"
+                            AeTitle = "MONAI_2"
                         }
                     }
                 }
@@ -331,7 +331,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Multi_Created"
+                            AeTitle = "Multi_Req"
                         }
                     }
                 }
@@ -675,7 +675,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowRevisionTestData()
             {
-                Name = "Basic_Workflow_multiple_revisions_1",
+                Name = "Basic_Workflow_multiple_revisions_1", //not to be confused with 'Basic_Workflow_Multiple_Revisions_1' (upper case)
                 WorkflowRevision = new WorkflowRevision()
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -698,7 +698,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Basic_AE"
+                            AeTitle = "MONAI_2"
                         }
                     }
                 }
@@ -728,7 +728,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Basic_AE"
+                            AeTitle = "MONAI_2"
                         }
                     }
                 }

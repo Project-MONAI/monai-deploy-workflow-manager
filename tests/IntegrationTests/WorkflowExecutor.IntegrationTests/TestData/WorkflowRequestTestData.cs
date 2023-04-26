@@ -39,8 +39,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Basic_AE",
-                    CallingAeTitle = "Basic_AE_3",
+                    CalledAeTitle = "MONAI",
+                    CallingAeTitle = "PACS",
                 }
             },
             new WorkflowRequestTestData
@@ -95,7 +95,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Multi_Revision",
+                    CalledAeTitle = "MONAI_2",
                     CallingAeTitle = "MWM",
                 }
             },
@@ -258,8 +258,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "MWM",
-                    CallingAeTitle = "Basic_AE",
+                    CalledAeTitle = "MONAI",
+                    CallingAeTitle = "PACS",
                 }
             },
             new WorkflowRequestTestData
@@ -272,8 +272,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Basic_AE",
-                    CallingAeTitle = "MWM",
+                    CalledAeTitle = "MONAI",
+                    CallingAeTitle = "PACS",
                 }
             },
              new WorkflowRequestTestData
@@ -286,8 +286,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Basic_AE",
-                    CallingAeTitle = "MWM",
+                    CalledAeTitle = "MONAI",
+                    CallingAeTitle = "PACS",
                 }
             },
             new WorkflowRequestTestData
