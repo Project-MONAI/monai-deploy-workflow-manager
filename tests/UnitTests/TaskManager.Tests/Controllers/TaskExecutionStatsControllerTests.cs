@@ -66,7 +66,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Controllers
                     },
     };
             _repo.Setup(w => w.GetStatsAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_executionStats);
-            _repo.Setup(w => w.GetStatsCountAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_executionStats.Count());
+            _repo.Setup(w => w.GetStatsStatusCountAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_executionStats.Count());
         }
 
         [Fact]
@@ -162,9 +162,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Controllers
 
             var result = await StatsController.GetStatsAsync(new TimeFilter { StartTime = startTime, EndTime = endTime }, "workflow", "ta");
 
-            _repo.Verify(v => v.GetStatsCountAsync(
+            _repo.Verify(v => v.GetStatsStatusCountAsync(
                 It.Is<DateTime>(d => d.Equals(startTime)),
                 It.Is<DateTime>(d => d.Equals(endTime)),
+                It.Is<string>(s => s.Equals("")),
                 It.Is<string>(s => s.Equals("workflow")),
                 It.Is<string>(s => s.Equals("ta"))));
         }
@@ -192,9 +193,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Controllers
 
             var result = await StatsController.GetOverviewAsync(startTime, endTime);
 
-            _repo.Verify(v => v.GetStatsCountAsync(
+            _repo.Verify(v => v.GetStatsStatusCountAsync(
                 It.Is<DateTime>(d => d.Equals(startTime)),
                 It.Is<DateTime>(d => d.Equals(endTime)),
+                It.Is<string>(s => s.Equals("")),
                 It.Is<string>(s => s.Equals("")),
                 It.Is<string>(s => s.Equals(""))));
         }

@@ -15,8 +15,6 @@
  */
 
 using System.Globalization;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
