@@ -122,6 +122,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
         }
 
         [Fact]
+        public async Task TaskExecutionStatsRepository_UpdateExecutionStatsAsync_Should_Check_For_Null_Event()
+        {
+            var service = new TaskExecutionStatsRepository(_client.Object, _options, _logger.Object);
+            await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateExecutionStatsAsync(null, "correlationId"));
+        }
+
+        [Fact]
         public async Task TaskExecutionStats_Create_Should_Store_All()
         {
             var testStore = new TaskDispatchEventInfo(new TaskDispatchEvent
@@ -248,27 +255,62 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
 
         }
 
-        //[Fact]
-        //public async Task Should_Return_Only_dates_in_range()
-        //{
-        //    var connection = "mongodb://root:rootpassword@localhost:30017";
-        //    var client = new MongoClient(connection);
-        //    var options = Options.Create(new TaskExecutionDatabaseSettings() { DatabaseName = "WorkloadManager" });
-        //    var logger = new Mock<ILogger<TaskExecutionStatsRepository>>();
-        //    var repo = new TaskExecutionStatsRepository(client, options, logger.Object);
-        //    var start = new DateTime(2023, 4, 4, 16, 23, 40).ToUniversalTime();
-        //    var end = new DateTime(2023, 4, 4, 18, 23, 41).ToUniversalTime();
+        [Fact]
+        public async Task TaskExecutionStats_New_TaskCancellationEvent_Should_initialize()
+        {
+            var collerationId = "colleration";
+            var WorkflowInstanceId = "WorkflowInstanceId";
+            var TaskId = "TaskId";
+            var ExecutionId = "ExecutionId";
+            var stats = new TaskExecutionStats(
+                new TaskCancellationEvent
+                {
+                    WorkflowInstanceId = WorkflowInstanceId,
+                    TaskId = TaskId,
+                    ExecutionId = ExecutionId,
+                }, collerationId);
 
-        //    var all = await repo.GetStatsAsync(start, end);
-        //    Assert.Equal(3, all.Count());
 
-        //    var res = await repo.GetStatsCountAsync(start, end);
-        //    Assert.Equal(3, res);
-        //    res = await repo.GetStatsStatusFailedCountAsync(start, end);
-        //    Assert.Equal(1, res);
+            Assert.Equal(collerationId, stats.CorrelationId);
+            Assert.Equal(WorkflowInstanceId, stats.WorkflowInstanceId);
+            Assert.Equal(TaskId, stats.TaskId);
+            Assert.Equal(ExecutionId, stats.ExecutionId);
+            Assert.Equal(TaskExecutionStatus.Failed.ToString(), stats.Status);
+        }
 
-        //    var stats = await repo.GetAverageStats(start, end);
-        //    Assert.Equal((30.0, 9.0), stats);
-        //}
+        [Fact]
+        public async Task UpdateExecutionStatsAsync_CanceledEvent_Should_Update_All()
+        {
+
+            var testStore = new TaskCancellationEvent
+            {
+                ExecutionId = nameof(TaskDispatchEvent.ExecutionId),
+                WorkflowInstanceId = nameof(TaskDispatchEvent.WorkflowInstanceId),
+                TaskId = nameof(TaskDispatchEvent.TaskId),
+            };
+            var collerationId = "collerationId";
+
+            await _repo.UpdateExecutionStatsAsync(testStore, collerationId);
+
+            _collection.Verify(c => c.UpdateOneAsync(
+                It.IsAny<FilterDefinition<TaskExecutionStats>>(),
+                It.IsAny<UpdateDefinition<TaskExecutionStats>>(),
+                It.IsAny<UpdateOptions>(),
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetStatsStatusCountAsync_Should_Call_Count()
+        {
+            var starttime = new DateTime(2023, 4, 1);
+            var endtime = new DateTime(2023, 4, 10);
+
+            await _repo.GetStatsStatusCountAsync(starttime, endtime);
+
+            _collection.Verify(c => c.CountDocumentsAsync(
+                It.IsAny<FilterDefinition<TaskExecutionStats>>(),
+                It.IsAny<CountOptions>(),
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
     }
 }

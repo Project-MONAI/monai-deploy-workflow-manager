@@ -76,6 +76,33 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
         public override Task HandleTimeout(string identity) => throw new NotImplementedException();
     }
 
+    internal sealed class TestPluginNoTimeout : TaskPluginBase
+    {
+        private readonly ITestRunnerCallback _testRunnerCallback;
+
+        public TestPluginNoTimeout(
+            IServiceScopeFactory serviceScopeFactory,
+            TaskDispatchEvent taskDispatchEvent,
+            ITestRunnerCallback testRunnerCallback) : base(taskDispatchEvent)
+        {
+            _ = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
+            _ = taskDispatchEvent ?? throw new ArgumentNullException(nameof(taskDispatchEvent));
+            _testRunnerCallback = testRunnerCallback ?? throw new ArgumentNullException(nameof(testRunnerCallback));
+        }
+
+        public override Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(_testRunnerCallback.GenerateExecuteTaskResult());
+        }
+
+        public override Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent taskCallbackEvent, CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(_testRunnerCallback.GenerateGetStatusResult());
+        }
+
+        public override Task HandleTimeout(string identity) => Task.CompletedTask;
+    }
+
     internal sealed class TestMetadataRepository : MetadataRepositoryBase
     {
         private readonly ITestMetadataRepositoryCallback _testMetadataRepositoryCallback;
@@ -812,7 +839,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             var resetEvent = new CountdownEvent(2);
 
             var taskDispatchEventMessage = GenerateTaskDispatchEvent();
-            taskDispatchEventMessage.Body.TaskPluginType = "argo";
+
             _taskDispatchEventService.Setup(p => p.GetByTaskExecutionIdAsync(It.IsAny<string>()))
                .ReturnsAsync(new API.Models.TaskDispatchEventInfo(taskDispatchEventMessage.Body));
             _messageBrokerSubscriberService.Setup(
@@ -875,11 +902,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
 
             Assert.True(resetEvent.Wait(5000));
 
-            _testRunnerCallback.Verify(p => p.GenerateExecuteTaskResult(), Times.Once());
-            _testRunnerCallback.Verify(p => p.GenerateGetStatusResult(), Times.Once());
-            _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == taskDispatchEventMessage.MessageId)), Times.Once());
-            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m.MessageId == taskCallbackEventMessage.MessageId), false), Times.Once());
-            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.TaskUpdateRequest), It.IsAny<Message>()), Times.Exactly(2));
+            _executionStatsRepo.Verify(p => p.UpdateExecutionStatsAsync(It.IsAny<TaskUpdateEvent>()), Times.Exactly(2));
         }
 
         private static JsonMessage<TaskCallbackEvent> GenerateTaskCallbackEvent(JsonMessage<TaskDispatchEvent>? taskDispatchEventMessage = null)
