@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 {
     "periodStart": "2023-01-01T00:00:00",
-    "periodEnd": "2023-04-11T10:13:30.5584818+01:00",
+    "periodEnd": "2023-04-26T15:01:01.2301205+01:00",
     "totalExecutions": 1,
     "totalFailures": 0,
+    "totalInprogress": 1,
     "averageTotalExecutionSeconds": 30.0,
     "averageArgoExecutionSeconds": 30.0,
     "pageNumber": 1,
@@ -32,8 +32,8 @@
     "data": [
         {
             "executionId": "73127fd4-20cb-42c1-8138-01db8b0d35d6",
-            "startedAt": "2023-02-10T09:13:26.544Z",
-            "finishedAt": "2023-02-10T10:12:56.544Z",
+            "startedAt": "2023-02-25T14:01:00.58Z",
+            "finishedAt": "2023-02-25T15:00:30.58Z",
             "executionDurationSeconds": 30.0,
             "status": "Succeeded"
         }

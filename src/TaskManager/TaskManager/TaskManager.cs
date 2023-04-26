@@ -200,8 +200,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 {
                     throw new InvalidOperationException("Task Event data not found.");
                 }
+
                 var taskRunner = typeof(ITaskPlugin).CreateInstance<ITaskPlugin>(serviceProvider: _scope.ServiceProvider, typeString: pluginAssembly, _serviceScopeFactory, taskExecEvent);
                 await taskRunner.HandleTimeout(message.Body.Identity);
+
+                await _taskExecutionStatsRepository.UpdateExecutionStatsAsync(message.Body, message.CorrelationId);
+                AcknowledgeMessage(message);
             }
             catch (Exception ex)
             {
@@ -515,7 +519,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
         }
 
-        private static JsonMessage<TaskUpdateEvent> GenerateUpdateEventMessage<T>(JsonMessage<T> message, string executionId, string WorkflowInstanceId, string taskId, ExecutionStatus executionStatus, List<Messaging.Common.Storage> outputs = null)
+        private static JsonMessage<TaskUpdateEvent> GenerateUpdateEventMessage<T>(
+            JsonMessage<T> message,
+            string executionId,
+            string workflowInstanceId,
+            string taskId,
+            ExecutionStatus executionStatus,
+            List<Messaging.Common.Storage>? outputs = null)
         {
             Guard.Against.Null(message, nameof(message));
             Guard.Against.Null(executionStatus, nameof(executionStatus));
@@ -527,7 +537,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 Reason = executionStatus.FailureReason,
                 Status = executionStatus.Status,
                 ExecutionStats = executionStatus.Stats,
-                WorkflowInstanceId = WorkflowInstanceId,
+                WorkflowInstanceId = workflowInstanceId,
                 TaskId = taskId,
                 Message = executionStatus.Errors,
                 Outputs = outputs ?? new List<Messaging.Common.Storage>(),
