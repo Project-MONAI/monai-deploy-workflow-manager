@@ -3262,6 +3262,12 @@ references:
   commentId: M:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.#ctor
   fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.TaskExecutionStats()
   nameWithType: TaskExecutionStats.TaskExecutionStats()
+- uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.#ctor(Monai.Deploy.Messaging.Events.TaskCancellationEvent,System.String)
+  name: TaskExecutionStats(TaskCancellationEvent, String)
+  href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats__ctor_Monai_Deploy_Messaging_Events_TaskCancellationEvent_System_String_
+  commentId: M:Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.#ctor(Monai.Deploy.Messaging.Events.TaskCancellationEvent,System.String)
+  fullName: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.TaskExecutionStats(Monai.Deploy.Messaging.Events.TaskCancellationEvent, System.String)
+  nameWithType: TaskExecutionStats.TaskExecutionStats(TaskCancellationEvent, String)
 - uid: Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.#ctor(Monai.Deploy.Messaging.Events.TaskUpdateEvent)
   name: TaskExecutionStats(TaskUpdateEvent)
   href: api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskExecutionStats.html#Monai_Deploy_WorkflowManager_TaskManager_API_Models_TaskExecutionStats__ctor_Monai_Deploy_Messaging_Events_TaskUpdateEvent_

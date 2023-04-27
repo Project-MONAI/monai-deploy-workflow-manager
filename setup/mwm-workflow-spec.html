@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Clinical Workflow Specification Language | MONAI Deploy Workflow Manager v0.1.9 </title>
+    <title>Clinical Workflow Specification Language | MONAI Deploy Workflow Manager v0.1.10 </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Clinical Workflow Specification Language | MONAI Deploy Workflow Manager v0.1.9 ">
+    <meta name="title" content="Clinical Workflow Specification Language | MONAI Deploy Workflow Manager v0.1.10 ">
     <meta name="generator" content="docfx 2.59.4.0">
     
     <link rel="shortcut icon" href="../images/favicon.ico">
@@ -456,8 +456,8 @@ Subsequent tasks are triggered by the <code>task_destinations</code> specified b
     ]
   },
   &quot;task_destinations&quot;: [
-    { 
-      &quot;name&quot;: &quot;export-task-id&quot; 
+    {
+      &quot;name&quot;: &quot;export-task-id&quot;
     }
   ]
 }
@@ -550,7 +550,7 @@ Subsequent tasks are triggered by the <code>task_destinations</code> specified b
 <h4 id="router">Router</h4>
 <p>Router tasks don't have additional fields. They are used to contain <code>task_destinations</code> so that workflow processing can be directed to the desired next step.</p>
 <h4 id="export">Export</h4>
-<p>These are task types that allow for artifacts to be exported based on the input artifacts list. This task type should not have Out artifacts listed.<br>
+<p>These are task types that allow for artifacts to be exported based on the input artifacts list. This task type should not have Out artifacts listed.
 The task also requires these extra attributes:-</p>
 <table>
 <thead>
@@ -646,83 +646,33 @@ The task also requires these extra attributes:-</p>
 <tbody>
 <tr>
 <td>workflow_template_name</td>
-<td>str</td>
+<td>string</td>
 <td>Yes</td>
 <td>The ID of this workflow as registered on the Argo server.</td>
-</tr>
-<tr>
-<td>namespace</td>
-<td>str</td>
-<td>Yes</td>
-<td>The namespace of the argo workflow.</td>
-</tr>
-<tr>
-<td>server_url</td>
-<td>url</td>
-<td>Yes</td>
-<td>The URL of the Argo server.</td>
-</tr>
-<tr>
-<td>allow_insecure</td>
-<td>bool</td>
-<td>No</td>
-<td>Allow insecure connections to argo from the plug-in.</td>
-</tr>
-<tr>
-<td>parameters</td>
-<td>dictionary</td>
-<td>No</td>
-<td>Key value pairs, Argo parameters that will be passed on to the Argo workflow.</td>
 </tr>
 <tr>
 <td>priority_class</td>
 <td>string</td>
 <td>No</td>
-<td>The name of a valid Kubernetes priority class to be assigned to the Argo workflow pods</td>
+<td>The name of a valid Kubernetes priority class to be assigned to the Argo workflow pods.</td>
 </tr>
 <tr>
-<td>resources</td>
-<td>dictionary</td>
-<td>No</td>
-<td>A resource requests &amp; limits object (see below). These will be applied to the Argo workflow pods</td>
-</tr>
-</tbody>
-</table>
-<h5 id="resource-request-object">Resource Request Object</h5>
-<p>Resource request parameters should be included in the task args object dictionary, as a string dictionary. The resources dictionary and all included values below are optional.</p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>memory_reservation</td>
-<td>str</td>
-<td>A valid <a href="https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-memory">Kubernetes memory request value</a>.</td>
-</tr>
-<tr>
-<td>cpu_reservation</td>
-<td>url</td>
-<td>A valid <a href="https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-cpu">Kubernetes CPU request value</a>.</td>
-</tr>
-<tr>
-<td>gpu_limit</td>
-<td>dictionary</td>
-<td>The number of GPUs to be used by this task.</td>
-</tr>
-<tr>
-<td>memory_limit</td>
+<td>gpu_required</td>
 <td>string</td>
-<td>The maximum amount of memory this task may use</td>
+<td>No</td>
+<td>Whether a GPU is to be used by this task.</td>
 </tr>
 <tr>
-<td>cpu_limit</td>
-<td>object</td>
-<td>The maximum amount of CPU this task may use. See</td>
+<td>memory_gb</td>
+<td>string</td>
+<td>No</td>
+<td>The maximum amount of memory in gigabytes this task may use.</td>
+</tr>
+<tr>
+<td>cpu</td>
+<td>string</td>
+<td>No</td>
+<td>The maximum amount of CPU this task may use.</td>
 </tr>
 </tbody>
 </table>
