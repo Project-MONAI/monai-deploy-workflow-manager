@@ -24,6 +24,7 @@ using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Logging;
+using Monai.Deploy.WorkflowManager.Services.InformaticsGateway;
 using Monai.Deploy.WorkflowManager.Shared;
 using MongoDB.Driver.Linq;
 using static Monai.Deploy.WorkflowManager.Shared.ValidationConstants;
@@ -47,9 +48,13 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// Initializes a new instance of the <see cref="WorkflowValidator"/> class.
         /// </summary>
         /// <param name="workflowService">The workflow service.</param>
-        public WorkflowValidator(IWorkflowService workflowService, ILogger<WorkflowValidator> logger)
+        public WorkflowValidator(
+            IWorkflowService workflowService,
+            IInformaticsGatewayService informaticsGatewayService,
+            ILogger<WorkflowValidator> logger)
         {
             WorkflowService = workflowService ?? throw new ArgumentNullException(nameof(workflowService));
+            InformaticsGatewayService = informaticsGatewayService ?? throw new ArgumentNullException(nameof(informaticsGatewayService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -59,6 +64,8 @@ namespace Monai.Deploy.WorkflowManager.Validators
         private List<string> Errors { get; set; } = new List<string>();
 
         private IWorkflowService WorkflowService { get; }
+
+        private IInformaticsGatewayService InformaticsGatewayService { get; }
 
         /// <summary>
         /// used for checking for duplicates, if OrignalName is empty it will be determined as a create
@@ -236,7 +243,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 Errors.Add("Missing Workflow Version.");
             }
 
-            ValidateInformaticsGateaway(workflow.InformaticsGateway);
+            await ValidateInformaticsGateaway(workflow.InformaticsGateway);
 
             if (workflow.Tasks is null || workflow.Tasks.Any() is false)
             {
@@ -254,7 +261,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void ValidateInformaticsGateaway(InformaticsGateway informaticsGateway)
+        private async Task ValidateInformaticsGateaway(InformaticsGateway informaticsGateway)
         {
             if (informaticsGateway is null)
             {
@@ -266,6 +273,17 @@ namespace Monai.Deploy.WorkflowManager.Validators
             {
                 Errors.Add("AeTitle is required in the InformaticsGateaway section and must be under 16 characters.");
                 return;
+            }
+
+            if (!informaticsGateway.DataOrigins.IsNullOrEmpty())
+            {
+                foreach (var origin in informaticsGateway.DataOrigins)
+                {
+                    if (!await InformaticsGatewayService.OriginExists(origin))
+                    {
+                        Errors.Add($"Data origin {origin} does not exists. Please review sources configuration management.");
+                    }
+                }
             }
         }
 

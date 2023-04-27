@@ -105,6 +105,11 @@ namespace Monai.Deploy.WorkflowManager
                 .PostConfigure(options =>
                 {
                 });
+            services.AddOptions<InformaticsGatewayConfiguration>()
+                .Bind(hostContext.Configuration.GetSection("InformaticsGateway"))
+                .PostConfigure(options =>
+                {
+                });
             services.AddOptions<EndpointSettings>()
                 .Bind(hostContext.Configuration.GetSection("WorkflowManager:endpointSettings"))
                 .PostConfigure(options =>

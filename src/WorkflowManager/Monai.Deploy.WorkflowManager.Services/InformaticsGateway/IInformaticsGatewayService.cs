@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
-using System.Reflection;
-
-[assembly: AssemblyFileVersion("0.0.0.0")]
-[assembly: AssemblyVersion("0.0.0.0")]
-[assembly: AssemblyInformationalVersion("0.0.0-development")]
+namespace Monai.Deploy.WorkflowManager.Services.InformaticsGateway
+{
+    public interface IInformaticsGatewayService
+    {
+        /// <summary>
+        /// Checks if a data origin exists with the informatics gateway.
+        /// </summary>
+        /// <param name="name">Name of the source.</param>
+        /// <returns>bool based on success status or the informatics gateway request.</returns>
+        Task<bool> OriginExists(string name);
+    }
+}

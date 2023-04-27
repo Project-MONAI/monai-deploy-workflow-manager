@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-using System.Reflection;
+using Microsoft.Extensions.Configuration;
 
-[assembly: AssemblyFileVersion("0.0.0.0")]
-[assembly: AssemblyVersion("0.0.0.0")]
-[assembly: AssemblyInformationalVersion("0.0.0-development")]
+namespace Monai.Deploy.WorkflowManager.Configuration
+{
+    public class InformaticsGatewayConfiguration
+    {
+        [ConfigurationKeyName("apiHost")]
+        public string ApiHost { get; set; }
+    }
+}
