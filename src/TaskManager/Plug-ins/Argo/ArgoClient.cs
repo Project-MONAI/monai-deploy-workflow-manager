@@ -143,13 +143,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         public virtual async Task<WorkflowTemplate> Argo_CreateWorkflowTemplateAsync(string argoNamespace, WorkflowTemplateCreateRequest body, CancellationToken cancellationToken)
         {
             Guard.Against.NullOrWhiteSpace(argoNamespace);
-            Guard.Against.Null(body);
+            Guard.Against.Null(body.Template);
 
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflow-templates/{argoNamespace}");
 
             var method = "POST";
-            var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
+            var stringBody = Newtonsoft.Json.JsonConvert.SerializeObject(body);
+            var content = new StringContent(stringBody);
+
+            var _logger = NLog.LogManager.GetCurrentClassLogger();
+            _logger.Debug($"Sending content to Argo :{stringBody}");
             return await SendRequest<WorkflowTemplate>(content, urlBuilder, method, cancellationToken).ConfigureAwait(false);
         }
 

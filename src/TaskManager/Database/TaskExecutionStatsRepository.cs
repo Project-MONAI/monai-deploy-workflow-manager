@@ -117,6 +117,29 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
             }
         }
 
+        public async Task UpdateExecutionStatsAsync(TaskCancellationEvent taskCanceledEvent, string correlationId)
+        {
+            Guard.Against.Null(taskCanceledEvent, "taskCanceledEvent");
+
+            try
+            {
+                var updateMe = new TaskExecutionStats(taskCanceledEvent, correlationId);
+                var duration = updateMe.CompletedAtUTC == default ? 0 : (updateMe.CompletedAtUTC - updateMe.StartedUTC).TotalMilliseconds / 1000;
+                await _taskExecutionStatsCollection.UpdateOneAsync(o =>
+                        o.ExecutionId == updateMe.ExecutionId,
+                    Builders<TaskExecutionStats>.Update
+                        .Set(w => w.Status, updateMe.Status)
+                        .Set(w => w.LastUpdatedUTC, DateTime.UtcNow)
+                        .Set(w => w.CompletedAtUTC, updateMe.CompletedAtUTC)
+                        .Set(w => w.DurationSeconds, duration)
+
+                    , new UpdateOptions { IsUpsert = true }).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                _logger.DatabaseException(nameof(CreateAsync), e);
+            }
+        }
         public async Task<IEnumerable<TaskExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int PageSize = 10, int PageNumber = 1, string workflowInstanceId = "", string taskId = "")
         {
             startTime = startTime.ToUniversalTime();
@@ -128,12 +151,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
              T.StartedUTC >= startTime &&
              T.StartedUTC <= endTime.ToUniversalTime() &&
              (workflowinstanceNull || T.WorkflowInstanceId == workflowInstanceId) &&
-             (taskIdNull || T.TaskId == taskId) &&
-             (
-                 T.Status == TaskExecutionStatus.Succeeded.ToString()
-                 || T.Status == TaskExecutionStatus.Failed.ToString()
-                 || T.Status == TaskExecutionStatus.PartialFail.ToString()
-              )
+             (taskIdNull || T.TaskId == taskId)
+             //&&
+             //(
+             //    T.Status == TaskExecutionStatus.Succeeded.ToString()
+             //    || T.Status == TaskExecutionStatus.Failed.ToString()
+             //    || T.Status == TaskExecutionStatus.PartialFail.ToString()
+             // )
              )
                 .Limit(PageSize)
                 .Skip((PageNumber - 1) * PageSize)
@@ -173,24 +197,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
             }
             return taskExecutionStats;
         }
-
-        public async Task<long> GetStatsCountAsync(DateTime startTime, DateTime endTime, string workflowInstanceId = "", string taskId = "")
+        public async Task<long> GetStatsStatusCountAsync(DateTime start, DateTime endTime, string status = "", string workflowInstanceId = "", string taskId = "")
         {
+            var statusNull = string.IsNullOrWhiteSpace(status);
             var workflowinstanceNull = string.IsNullOrWhiteSpace(workflowInstanceId);
             var taskIdNull = string.IsNullOrWhiteSpace(taskId);
 
             return await _taskExecutionStatsCollection.CountDocumentsAsync(T =>
-            T.StartedUTC >= startTime.ToUniversalTime() &&
+            T.StartedUTC >= start.ToUniversalTime() &&
             T.StartedUTC <= endTime.ToUniversalTime() &&
             (workflowinstanceNull || T.WorkflowInstanceId == workflowInstanceId) &&
             (taskIdNull || T.TaskId == taskId) &&
-            (
-                T.Status == TaskExecutionStatus.Succeeded.ToString() ||
-                T.Status == TaskExecutionStatus.Failed.ToString() ||
-                T.Status == TaskExecutionStatus.PartialFail.ToString())
-             );
+            (statusNull || T.Status == status));
         }
-
         public async Task<long> GetStatsStatusFailedCountAsync(DateTime start, DateTime endTime, string workflowInstanceId = "", string taskId = "")
         {
             var workflowinstanceNull = string.IsNullOrWhiteSpace(workflowInstanceId);

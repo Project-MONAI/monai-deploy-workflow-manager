@@ -15,7 +15,6 @@
  */
 
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
-using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
 using Snapshooter.NUnit;

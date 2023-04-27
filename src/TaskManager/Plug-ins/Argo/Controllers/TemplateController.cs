@@ -16,6 +16,7 @@
 using System.Text;
 using Argo;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -72,6 +73,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers
         }
 
         [Route("{name}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete]
         public async Task<ActionResult<bool>> DeleteArgoTemplate(string name)
         {
@@ -82,7 +85,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers
 
             try
             {
-                return Ok(await _argoPlugin.DeleteArgoTemplate(name));
+                var result = await _argoPlugin.DeleteArgoTemplate(name);
+                if (result is true)
+                {
+                    return Ok();
+                }
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
             catch (Exception)
             {

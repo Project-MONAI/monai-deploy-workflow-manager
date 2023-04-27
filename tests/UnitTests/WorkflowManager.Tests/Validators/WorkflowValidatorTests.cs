@@ -15,9 +15,7 @@
  */
 
 using System;
-using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
-using Amazon.Runtime.Internal.Transform;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -206,7 +204,10 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                         Type = "argo",
                         Description = "Test Argo Task",
                         Args = {
-                            { "example", "value" }
+                            { "example", "value" },
+                            { "cpu", "0.1" },
+                            { "memory_gb", "0.1" },
+                            { "gpu_required", "2" }
                         },
                         TaskDestinations = new TaskDestination[]
                         {
@@ -347,7 +348,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             Assert.True(errors.Count > 0);
 
-            Assert.Equal(40, errors.Count);
+            Assert.Equal(43, errors.Count);
 
             var convergingTasksDestinations = "Converging Tasks Destinations in tasks: (test-clinical-review-2, example-task) on task: example-task";
             Assert.Contains(convergingTasksDestinations, errors);
@@ -384,6 +385,15 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             var missingArgoArgs = "Task: 'test-argo-task' workflow_template_name must be specified, this corresponds to an Argo template name.";
             Assert.Contains(missingArgoArgs, errors);
+
+            var invalidArgoArg1 = "Task: 'test-argo-task' value '0.1' provided for argument 'cpu' is not valid. The value needs to be a whole number greater than 0.";
+            Assert.Contains(invalidArgoArg1, errors);
+
+            var invalidArgoArg2 = "Task: 'test-argo-task' value '0.1' provided for argument 'memory_gb' is not valid. The value needs to be a whole number greater than 0.";
+            Assert.Contains(invalidArgoArg2, errors);
+
+            var invalidArgoArg3 = "Task: 'test-argo-task' value '2' provided for argument 'gpu_required' is not valid. The value needs to be 'true' or 'false'.";
+            Assert.Contains(invalidArgoArg3, errors);
 
             var incorrectClinicalReviewValueFormat = $"Invalid Value property on input artifact 'Invalid Value Format' in task: 'test-clinical-review'. Incorrect format.";
             Assert.Contains(incorrectClinicalReviewValueFormat, errors);
