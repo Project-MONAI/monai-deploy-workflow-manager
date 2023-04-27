@@ -22,7 +22,7 @@ namespace Monai.Deploy.WorkflowManager.Services.InformaticsGateway
         /// Checks if a data origin exists with the informatics gateway.
         /// </summary>
         /// <param name="name">Name of the source.</param>
-        /// <returns>bool based on success status or the informatics gateway request.</returns>
+        /// <returns>bool based on success status on the informatics gateway request.</returns>
         Task<bool> OriginExists(string name);
     }
 }
