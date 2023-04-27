@@ -69,7 +69,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Tests.InformaticsGateway
         [Fact]
         public async Task OriginsExist_InvalidSource_ReturnsTrue()
         {
-            var source = "invalid_source";
+            var source = "valid_source";
 
             _httpMessageHandler.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
