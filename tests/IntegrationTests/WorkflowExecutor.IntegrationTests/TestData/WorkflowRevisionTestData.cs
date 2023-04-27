@@ -668,7 +668,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         InformaticsGateway = new InformaticsGateway()
                         {
                             AeTitle = "Static_AE",
-                            DataOrigins = new string[]{"test"},
                             ExportDestinations = new string[]{"test"}
                         }
                     }
@@ -785,7 +784,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         InformaticsGateway = new InformaticsGateway()
                         {
                             AeTitle = "Basic_AE",
-                            DataOrigins = new string[]{"test"},
                             ExportDestinations = new string[]{"test"}
                         }
                     }
@@ -835,7 +833,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         InformaticsGateway = new InformaticsGateway()
                         {
                             AeTitle = "Basic_AE",
-                            DataOrigins = new string[]{"test"},
                             ExportDestinations = new string[]{"test"}
                         }
                     }
@@ -1414,7 +1411,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         InformaticsGateway = new InformaticsGateway()
                         {
                             AeTitle = "Basic_AE",
-                            DataOrigins = new string[]{"test"},
                             ExportDestinations = new string[]{"test"}
                         }
                     }
@@ -2912,7 +2908,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         InformaticsGateway = new InformaticsGateway()
                         {
                             AeTitle = "Static_AE",
-                            DataOrigins = new string[]{"test"},
                             ExportDestinations = new string[]{"test"}
                         }
                     }
