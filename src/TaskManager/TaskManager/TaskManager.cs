@@ -101,13 +101,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             return Task.CompletedTask;
         }
 
-        private void SubscribeToEvents()
-        {
-            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskDispatchRequest, _options.Value.Messaging.Topics.TaskDispatchRequest, TaskDispatchEventReceivedCallback);
-            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskCallbackRequest, _options.Value.Messaging.Topics.TaskCallbackRequest, TaskCallbackEventReceivedCallback);
-            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskCancellationRequest, _options.Value.Messaging.Topics.TaskCancellationRequest, TaskCancelationEventCallback);
-        }
-
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.ServiceStopping(ServiceName);
@@ -119,6 +112,39 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             Status = ServiceStatus.Stopped;
 
             return Task.CompletedTask;
+        }
+
+        private static JsonMessage<TaskUpdateEvent> GenerateUpdateEventMessage<T>(
+            JsonMessage<T> message,
+            string executionId,
+            string workflowInstanceId,
+            string taskId,
+            ExecutionStatus executionStatus,
+            List<Messaging.Common.Storage>? outputs = null)
+        {
+            Guard.Against.Null(message, nameof(message));
+            Guard.Against.Null(executionStatus, nameof(executionStatus));
+
+            var body = new TaskUpdateEvent
+            {
+                CorrelationId = message.CorrelationId,
+                ExecutionId = executionId,
+                Reason = executionStatus.FailureReason,
+                Status = executionStatus.Status,
+                ExecutionStats = executionStatus.Stats,
+                WorkflowInstanceId = workflowInstanceId,
+                TaskId = taskId,
+                Message = executionStatus.Errors,
+                Outputs = outputs ?? new List<Messaging.Common.Storage>(),
+            };
+            return new JsonMessage<TaskUpdateEvent>(body, TaskManagerApplicationId, message.CorrelationId);
+        }
+
+        private void SubscribeToEvents()
+        {
+            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskDispatchRequest, _options.Value.Messaging.Topics.TaskDispatchRequest, TaskDispatchEventReceivedCallback);
+            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskCallbackRequest, _options.Value.Messaging.Topics.TaskCallbackRequest, TaskCallbackEventReceivedCallback);
+            _messageBrokerSubscriberService.SubscribeAsync(_options.Value.Messaging.Topics.TaskCancellationRequest, _options.Value.Messaging.Topics.TaskCancellationRequest, TaskCancelationEventCallback);
         }
 
         private async Task TaskCallbackEventReceivedCallback(MessageReceivedEventArgs args)
@@ -200,8 +226,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 {
                     throw new InvalidOperationException("Task Event data not found.");
                 }
+
                 var taskRunner = typeof(ITaskPlugin).CreateInstance<ITaskPlugin>(serviceProvider: _scope.ServiceProvider, typeString: pluginAssembly, _serviceScopeFactory, taskExecEvent);
                 await taskRunner.HandleTimeout(message.Body.Identity);
+
+                await _taskExecutionStatsRepository.UpdateExecutionStatsAsync(message.Body, message.CorrelationId);
+                AcknowledgeMessage(message);
             }
             catch (Exception ex)
             {
@@ -513,26 +543,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             {
                 _logger.ErrorSendingMessage(message.MessageDescription, ex);
             }
-        }
-
-        private static JsonMessage<TaskUpdateEvent> GenerateUpdateEventMessage<T>(JsonMessage<T> message, string executionId, string WorkflowInstanceId, string taskId, ExecutionStatus executionStatus, List<Messaging.Common.Storage> outputs = null)
-        {
-            Guard.Against.Null(message, nameof(message));
-            Guard.Against.Null(executionStatus, nameof(executionStatus));
-
-            var body = new TaskUpdateEvent
-            {
-                CorrelationId = message.CorrelationId,
-                ExecutionId = executionId,
-                Reason = executionStatus.FailureReason,
-                Status = executionStatus.Status,
-                ExecutionStats = executionStatus.Stats,
-                WorkflowInstanceId = WorkflowInstanceId,
-                TaskId = taskId,
-                Message = executionStatus.Errors,
-                Outputs = outputs ?? new List<Messaging.Common.Storage>(),
-            };
-            return new JsonMessage<TaskUpdateEvent>(body, TaskManagerApplicationId, message.CorrelationId);
         }
 
         //TODO: gh-100 implement retry logic
