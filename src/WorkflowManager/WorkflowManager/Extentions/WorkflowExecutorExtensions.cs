@@ -23,6 +23,7 @@ using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.PayloadListener.Services;
 using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
+using Monai.Deploy.WorkflowManager.Services.InformaticsGateway;
 using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
@@ -51,6 +52,7 @@ namespace Monai.Deploy.WorkflowManager.Services
             services.AddTransient<IPayloadService, PayloadService>();
             services.AddTransient<ITasksService, TasksService>();
             services.AddTransient<IDicomService, DicomService>();
+            services.AddTransient<IInformaticsGatewayService, InformaticsGatewayService>();
 
             services.AddSingleton<IEventPayloadReceiverService, EventPayloadReceiverService>();
             services.AddTransient<IEventPayloadValidator, EventPayloadValidator>();

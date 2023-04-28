@@ -67,6 +67,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     .PostConfigure(options =>
                     {
                     });
+                services.AddOptions<InformaticsGatewayConfiguration>()
+                    .Bind(hostContext.Configuration.GetSection("InformaticsGateway"))
+                    .PostConfigure(options =>
+                    {
+                    });
                 services.AddOptions<MessageBrokerServiceConfiguration>()
                     .Bind(hostContext.Configuration.GetSection("WorkflowManager:messaging"))
                     .PostConfigure(options =>

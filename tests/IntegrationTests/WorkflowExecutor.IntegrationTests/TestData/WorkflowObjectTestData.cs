@@ -56,7 +56,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -115,7 +114,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Basic_AE",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -146,7 +144,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Basic_AE",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -177,7 +174,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Basic_AE",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -208,7 +204,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Over 15 characters",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -270,7 +265,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Basic_AE",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{}
                     }
                 }
@@ -301,7 +295,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Basic_AE",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -332,7 +325,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Basic_AE",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -362,7 +354,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Basic_AE",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -393,7 +384,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Basic_AE",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -424,7 +414,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Basic_AE",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -477,7 +466,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     {
                         AeTitle = "Artifact_AE",
                         ExportDestinations = new string[]{"test"},
-                        DataOrigins = new string[]{"test"},
                     }
                 }
             },
@@ -537,7 +525,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     {
                         AeTitle = "Artifact_AE",
                         ExportDestinations = new string[]{"test"},
-                        DataOrigins = new string[]{"test"},
                     }
                 }
             },
@@ -554,7 +541,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     {
                         AeTitle = "Artifact_AE",
                         ExportDestinations = new string[]{"test"},
-                        DataOrigins = new string[]{"test"},
                     }
                 }
             },
@@ -609,7 +595,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     {
                         AeTitle = "Artifact_AE",
                         ExportDestinations = new string[]{"test"},
-                        DataOrigins = new string[]{"test"},
                     }
                 }
             },
@@ -665,7 +650,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     {
                         AeTitle = "Artifact_AE",
                         ExportDestinations = new string[]{"test"},
-                        DataOrigins = new string[]{"test"},
                     }
                 }
             },
@@ -710,7 +694,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -760,7 +743,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -795,7 +777,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -831,7 +812,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -863,7 +843,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -897,7 +876,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -931,7 +909,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -965,7 +942,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -1019,7 +995,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -1051,7 +1026,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -1113,7 +1087,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -1214,7 +1187,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -1271,7 +1243,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -1376,7 +1347,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -1444,7 +1414,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -1513,7 +1482,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
@@ -1582,7 +1550,6 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     InformaticsGateway = new InformaticsGateway()
                     {
                         AeTitle = "Update",
-                        DataOrigins = new string[]{"test"},
                         ExportDestinations = new string[]{"test"}
                     }
                 }
