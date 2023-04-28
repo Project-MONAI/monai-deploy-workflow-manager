@@ -100,6 +100,25 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             return payload;
         }
 
+        public async Task<bool> UpdateAsync(Payload payload)
+        {
+            Guard.Against.Null(payload, nameof(payload));
+
+            try
+            {
+                var filter = Builders<Payload>.Filter.Eq(p => p.PayloadId, payload.PayloadId);
+                var update = Builders<Payload>.Update.Set(p => p, payload);
+                await _payloadCollection.UpdateOneAsync(filter, update);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.DbUpdatePayloadError(payload.PayloadId, ex);
+                return false;
+            }
+        }
+
         public async Task<bool> UpdateAssociatedWorkflowInstancesAsync(string payloadId, IEnumerable<string> workflowInstances)
         {
             Guard.Against.NullOrEmpty(workflowInstances);

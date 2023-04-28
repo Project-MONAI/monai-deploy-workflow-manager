@@ -22,6 +22,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.WorkflowManager.Common.Exceptions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -163,6 +164,84 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             var result = await PayloadController.GetAsync(payloadId);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+
+            const string expectedInstance = "/payload";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ReturnsAccepted()
+        {
+            var payloadId = Guid.NewGuid().ToString();
+
+            _payloadService.Setup(w => w.DeletePayloadFromStorageAsync(payloadId)).ReturnsAsync(true);
+
+            var result = await PayloadController.DeleteAsync(payloadId);
+
+            Assert.IsType<AcceptedResult>(result);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_InvalidPayloadId_ReturnsProblem()
+        {
+            var payloadId = "invalid";
+
+            var result = await PayloadController.DeleteAsync(payloadId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+
+            const string expectedInstance = "/payload";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_NoPayloadFound_ReturnsProblem()
+        {
+            var payloadId = Guid.NewGuid().ToString();
+
+            _payloadService.Setup(w => w.DeletePayloadFromStorageAsync(payloadId)).ThrowsAsync(new MonaiNotFoundException());
+
+            var result = await PayloadController.DeleteAsync(payloadId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal((int)HttpStatusCode.NotFound, objectResult.StatusCode);
+
+            const string expectedInstance = "/payload";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_PayloadDeletedInProgress_ReturnsProblem()
+        {
+            var payloadId = Guid.NewGuid().ToString();
+
+            _payloadService.Setup(w => w.DeletePayloadFromStorageAsync(payloadId)).ThrowsAsync(new MonaiBadRequestException());
+
+            var result = await PayloadController.DeleteAsync(payloadId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+
+            const string expectedInstance = "/payload";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ErrorThrown_ReturnsProblem()
+        {
+            var payloadId = Guid.NewGuid().ToString();
+
+            _payloadService.Setup(w => w.DeletePayloadFromStorageAsync(payloadId)).ThrowsAsync(new Exception());
+
+            var result = await PayloadController.DeleteAsync(payloadId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
             Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
 
             const string expectedInstance = "/payload";

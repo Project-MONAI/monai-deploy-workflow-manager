@@ -60,5 +60,8 @@ namespace Monai.Deploy.WorkflowManager.Logging
 
         [LoggerMessage(EventId = 800013, Level = LogLevel.Error, Message = "Database call failed in {methodName}.")]
         public static partial void DatabaseException(this ILogger logger, string methodName, Exception ex);
+
+        [LoggerMessage(EventId = 800014, Level = LogLevel.Error, Message = "Failed to update payload: '{payloadId}'.")]
+        public static partial void DbUpdatePayloadError(this ILogger logger, string payloadId, Exception ex);
     }
 }

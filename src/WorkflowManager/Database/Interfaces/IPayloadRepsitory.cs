@@ -45,6 +45,13 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <returns>Count of objects.</returns>
         Task<long> CountAsync();
 
+        /// <summary>
+        /// Updates a payload in the database.
+        /// </summary>
+        /// <param name="payload">The payload to update.</param>
+        /// <returns>The updated payload.</returns>
+        Task<bool> UpdateAsync(Payload payload);
+
         /// Updates a payload in the database.
         /// </summary>
         /// <param name="payloadId"></param>
