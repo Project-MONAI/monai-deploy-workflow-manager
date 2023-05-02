@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Services.InformaticsGateway;
 using Monai.Deploy.WorkflowManager.Validators;
 using Moq;
 using Xunit;
@@ -28,6 +29,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
     public class WorkflowValidatorTests
     {
         private readonly Mock<IWorkflowService> _workflowService;
+        private readonly Mock<IInformaticsGatewayService> _informaticsGatewayService;
         private readonly WorkflowValidator _workflowValidator;
         private readonly Mock<ILogger<WorkflowValidator>> _logger;
 
@@ -36,8 +38,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
             _logger = new Mock<ILogger<WorkflowValidator>>();
 
             _workflowService = new Mock<IWorkflowService>();
+            _informaticsGatewayService = new Mock<IInformaticsGatewayService>();
 
-            _workflowValidator = new WorkflowValidator(_workflowService.Object, _logger.Object);
+            _workflowValidator = new WorkflowValidator(_workflowService.Object, _informaticsGatewayService.Object, _logger.Object);
             _logger = new Mock<ILogger<WorkflowValidator>>();
         }
 
@@ -52,7 +55,8 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                 InformaticsGateway = new InformaticsGateway
                 {
                     AeTitle = "aetitle",
-                    ExportDestinations = new string[] { "oneDestination", "twoDestination", "threeDestination" }
+                    ExportDestinations = new string[] { "oneDestination", "twoDestination", "threeDestination" },
+                    DataOrigins = new string[] { "invalid_origin" }
                 },
                 Tasks = new TaskObject[]
                 {
@@ -343,12 +347,14 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new WorkflowRevision());
+            _informaticsGatewayService.Setup(w => w.OriginExists(It.IsAny<string>()))
+                .ReturnsAsync(false);
 
             var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
             Assert.True(errors.Count > 0);
 
-            Assert.Equal(43, errors.Count);
+            Assert.Equal(44, errors.Count);
 
             var convergingTasksDestinations = "Converging Tasks Destinations in tasks: (test-clinical-review-2, example-task) on task: example-task";
             Assert.Contains(convergingTasksDestinations, errors);
@@ -409,6 +415,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             var nonReviewedTask = "Invalid input artifact 'Non Argo Artifact' in task 'test-clinical-review': Task cannot reference a non-reviewed task artifacts 'rootTask'";
             Assert.Contains(nonReviewedTask, errors);
+
+            var invalidSourceName = "Data origin invalid_origin does not exists. Please review sources configuration management.";
+            Assert.Contains(invalidSourceName, errors);
         }
 
         [Fact]
