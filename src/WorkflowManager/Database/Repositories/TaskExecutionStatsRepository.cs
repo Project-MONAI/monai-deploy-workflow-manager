@@ -31,7 +31,6 @@ namespace Monai.Deploy.WorkflowManager.Database
 {
     public class TaskExecutionStatsRepository : ITaskExecutionStatsRepository
     {
-
         private readonly IMongoCollection<ExecutionStats> _taskExecutionStatsCollection;
         private readonly ILogger<TaskExecutionStatsRepository> _logger;
 
@@ -146,6 +145,7 @@ namespace Monai.Deploy.WorkflowManager.Database
                 _logger.DatabaseException(nameof(CreateAsync), e);
             }
         }
+
         public async Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int PageSize = 10, int PageNumber = 1, string workflowInstanceId = "", string taskId = "")
         {
             startTime = startTime.ToUniversalTime();
@@ -203,6 +203,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             }
             return taskExecutionStats;
         }
+
         public async Task<long> GetStatsStatusCountAsync(DateTime start, DateTime endTime, string status = "", string workflowInstanceId = "", string taskId = "")
         {
             var statusNull = string.IsNullOrWhiteSpace(status);
@@ -216,6 +217,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             (taskIdNull || T.TaskId == taskId) &&
             (statusNull || T.Status == status));
         }
+
         public async Task<long> GetStatsStatusFailedCountAsync(DateTime start, DateTime endTime, string workflowInstanceId = "", string taskId = "")
         {
             var workflowinstanceNull = string.IsNullOrWhiteSpace(workflowInstanceId);

@@ -19,7 +19,7 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Common.Interfaces
 {
-    public interface IPayloadService : IPaginatedApi<Payload>
+    public interface IPayloadService : IPaginatedApi<PayloadDto>
     {
         /// <summary>
         /// Creates a payload and appends patient details.
@@ -36,10 +36,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// <summary>
         /// Gets a list of payloads.
         /// </summary>
-        Task<IList<Payload>> GetAllAsync(int? skip = null,
+        Task<IList<PayloadDto>> GetAllAsync(int? skip = null,
                                          int? limit = null,
                                          string? patientId = "",
                                          string? patientName = "");
+        new Task<IList<PayloadDto>> GetAllAsync(int? skip = null, int? limit = null);
 
         /// <summary>
         /// Deletes a payload by id.

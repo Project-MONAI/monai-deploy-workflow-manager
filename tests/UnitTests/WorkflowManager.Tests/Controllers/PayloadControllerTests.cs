@@ -57,9 +57,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         [Fact]
         public async Task GetListAsync_PayloadsExist_ReturnsList()
         {
-            var payloads = new List<Payload>
+            var payloads = new List<PayloadDto>
             {
-                new Payload
+                new PayloadDto
                 {
                     Id = Guid.NewGuid().ToString(),
                     PayloadId = Guid.NewGuid().ToString(),
@@ -74,7 +74,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
 
-            var responseValue = (PagedResponse<IEnumerable<Payload>>)objectResult.Value;
+            var responseValue = (PagedResponse<IEnumerable<PayloadDto>>)objectResult.Value;
             responseValue.Data.Should().BeEquivalentTo(payloads);
             responseValue.FirstPage.Should().Be("unitTest");
             responseValue.LastPage.Should().Be("unitTest");
