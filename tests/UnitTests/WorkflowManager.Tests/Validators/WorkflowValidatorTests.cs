@@ -340,7 +340,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                         Type = "argo",
                         Description = "Invalid Key Argo Task",
                         Args = {
-                            { "invalid", "key" },
+                            { "invalid_key", "value" },
                             { "workflow_template_name" ,"spot"},
                             { "cpu", "1" },
                             { "memory_gb", "1" },
@@ -436,7 +436,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
             var invalidSourceName = "Data origin invalid_origin does not exists. Please review sources configuration management.";
             Assert.Contains(invalidSourceName, errors);
 
-            var invalidArgoKey = $"Task: 'invalid-key-argo-task' args has invalid keys. Please only specify keys from the following list: workflow_template_name, priority, cpu, memory_gb, gpu_required.";
+            var invalidArgoKey = $"Task: 'invalid-key-argo-task' args has invalid keys: invalid_key. Please only specify keys from the following list: workflow_template_name, priority, cpu, memory_gb, gpu_required.";
             Assert.Contains(invalidArgoKey, errors);
         }
 
