@@ -350,6 +350,13 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
         private void ValidateArgoTask(TaskObject currentTask)
         {
+            var validKeys = new string[] { WorkflowTemplateName, TaskPriorityClassName, Cpu, Memory, GpuRequired };
+            if (currentTask.Args.Keys.Any(k => !validKeys.Contains(k)))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' args has invalid keys. Please only specify keys from the following list: {string.Join(", ", validKeys)}.");
+                return;
+            }
+
             if (!currentTask.Args.ContainsKey(WorkflowTemplateName))
             {
                 Errors.Add($"Task: '{currentTask.Id}' workflow_template_name must be specified{Comma}this corresponds to an Argo template name.");
