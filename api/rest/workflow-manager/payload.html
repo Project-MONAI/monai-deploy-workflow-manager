@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Workflow Manager - Payload APIs | MONAI Deploy Workflow Manager v0.1.10 </title>
+    <title>Workflow Manager - Payload APIs | MONAI Deploy Workflow Manager v0.1.11 </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Workflow Manager - Payload APIs | MONAI Deploy Workflow Manager v0.1.10 ">
+    <meta name="title" content="Workflow Manager - Payload APIs | MONAI Deploy Workflow Manager v0.1.11 ">
     <meta name="generator" content="docfx 2.59.4.0">
     
     <link rel="shortcut icon" href="../../../images/favicon.ico">
@@ -94,14 +94,24 @@
   ~ limitations under the License.
 -->
 
-<p><strong>TEMPLATE</strong></p>
-<h2 id="getpostputdelete-payloads">GET/POST/PUT/DELETE /payloads/</h2>
-<p><em>description</em></p>
+<h2 id="get-payloads">GET /payloads</h2>
+<p>Returns a paginated list of Payloads with additional computed property of payloadStatus.</p>
+<ul>
+<li><p>If any of the workflow Instances status' attached to that payload are “Created” then the payloadStatus would be “In Progress”</p>
+</li>
+<li><p>If all workflow Instances status' attached to that payload are not “Created” then the payloadStatus would be “Complete”</p>
+</li>
+<li><p>If there are no workflow Instances attached to that payload then the payloadStatus would be “Complete”</p>
+</li>
+</ul>
 <h3 id="parameters">Parameters</h3>
-<p><em>parameters</em></p>
+<p>(Query) pageNumber: int</p>
+<p>(Query) pageSize: int</p>
+<p>(Query) maxPageSize: int (default of 10)</p>
+<p>(Query) patientId: string</p>
+<p>(Query) patientName: string</p>
 <h3 id="responses">Responses</h3>
 <p>Response Content Type: JSON</p>
-<p><em>response type</em></p>
 <table>
 <thead>
 <tr>
@@ -112,11 +122,7 @@
 <tbody>
 <tr>
 <td>200</td>
-<td>Service is healthy.</td>
-</tr>
-<tr>
-<td>503</td>
-<td>Service is unhealthy.</td>
+<td>List of payloads.</td>
 </tr>
 <tr>
 <td>500</td>
@@ -125,11 +131,166 @@
 </tbody>
 </table>
 <h3 id="example-request">Example Request</h3>
-<pre><code class="lang-bash">curl --location --request GET 'http://localhost:5000/workflows'
+<pre><code class="lang-bash">curl --location --request GET 'http://localhost:5000/payloads'
 </code></pre>
 <h3 id="example-response">Example Response</h3>
-<pre><code class="lang-json">*sample output*
+<pre><code class="lang-json">{
+  &quot;PageNumber&quot;: 1,
+  &quot;PageSize&quot;: 10,
+  &quot;FirstPage&quot;: &quot;/payload?pageNumber=1&amp;pageSize=10&quot;,
+  &quot;LastPage&quot;: &quot;/payload?pageNumber=1&amp;pageSize=10&quot;,
+  &quot;TotalPages&quot;: 1,
+  &quot;TotalRecords&quot;: 3,
+  &quot;NextPage&quot;: null,
+  &quot;PreviousPage&quot;: null,
+  &quot;Data&quot;:
+    [
+      {
+        &quot;Version&quot;: &quot;1.0.0&quot;,
+        &quot;id&quot;: &quot;3042cac6-b8b8-4f65-a2b2-8ec340652c9b&quot;,
+        &quot;payload_id&quot;: &quot;c5c3636b-81dd-44a9-8c4b-71adec7d47b2&quot;,
+        &quot;workflows&quot;: [&quot;1e7b49f2-a3a2-4ded-b489-86ad9b2da9c8&quot;],
+        &quot;workflow_instance_ids&quot;: [],
+        &quot;file_count&quot;: 50,
+        &quot;correlation_id&quot;: &quot;68ccea88-1f40-4eb3-ad23-7f444ac12910&quot;,
+        &quot;bucket&quot;: &quot;bucket_1&quot;,
+        &quot;calling_aetitle&quot;: &quot;Basic_AE&quot;,
+        &quot;called_aetitle&quot;: &quot;MIG&quot;,
+        &quot;timestamp&quot;: &quot;2023-05-03T12:47:59.046Z&quot;,
+        &quot;files&quot;: [],
+        &quot;patient_details&quot;:
+          {
+            &quot;patient_id&quot;: &quot;732ca351-6267-41e9-a6e8-21b3a74abe7c&quot;,
+            &quot;patient_name&quot;: &quot;Steve Jobs&quot;,
+            &quot;patient_sex&quot;: &quot;male&quot;,
+            &quot;patient_dob&quot;: &quot;1996-02-05T00:00:00Z&quot;,
+            &quot;patient_age&quot;: null,
+            &quot;patient_hospital_id&quot;: null
+          },
+        &quot;payload_status&quot;: &quot;Completed&quot;,
+        &quot;payload_deleted&quot;: 1
+      },
+      {
+        &quot;Version&quot;: &quot;1.0.0&quot;,
+        &quot;id&quot;: &quot;2435a8d7-84f4-407d-9d0e-941bb87b0190&quot;,
+        &quot;payload_id&quot;: &quot;86c0f117-4021-412e-b163-0dc621df672a&quot;,
+        &quot;workflows&quot;: [&quot;3d517d26-118c-4241-beb8-6b51d462c746&quot;],
+        &quot;workflow_instance_ids&quot;: [],
+        &quot;file_count&quot;: 3,
+        &quot;correlation_id&quot;: &quot;1ef12067-0fda-45c6-87b4-bcc4b245e8d9&quot;,
+        &quot;bucket&quot;: &quot;bucket_1&quot;,
+        &quot;calling_aetitle&quot;: &quot;Basic_AE&quot;,
+        &quot;called_aetitle&quot;: &quot;MIG&quot;,
+        &quot;timestamp&quot;: &quot;2023-05-03T12:47:59.046Z&quot;,
+        &quot;files&quot;: [],
+        &quot;patient_details&quot;:
+          {
+            &quot;patient_id&quot;: &quot;dae4a6d1-573d-4a3f-978f-ed056f628de6&quot;,
+            &quot;patient_name&quot;: &quot;Jane Doe&quot;,
+            &quot;patient_sex&quot;: &quot;female&quot;,
+            &quot;patient_dob&quot;: null,
+            &quot;patient_age&quot;: null,
+            &quot;patient_hospital_id&quot;: null
+          },
+        &quot;payload_status&quot;: &quot;Completed&quot;,
+        &quot;payload_deleted&quot;: 1
+      },
+      {
+        &quot;Version&quot;: &quot;1.0.0&quot;,
+        &quot;id&quot;: &quot;39d599bc-6635-4f94-9b55-b72a5b11c849&quot;,
+        &quot;payload_id&quot;: &quot;30a8e0c6-e6c4-458f-aa4d-b224b493d3c0&quot;,
+        &quot;workflows&quot;: [&quot;db52fafe-1035-436a-b4ff-50ab850f5f68&quot;],
+        &quot;workflow_instance_ids&quot;: [],
+        &quot;file_count&quot;: 3,
+        &quot;correlation_id&quot;: &quot;40544d26-b4bb-4f67-b4ae-68ff3a237cf2&quot;,
+        &quot;bucket&quot;: &quot;bucket_2&quot;,
+        &quot;calling_aetitle&quot;: &quot;Basic_AE&quot;,
+        &quot;called_aetitle&quot;: &quot;MIG&quot;,
+        &quot;timestamp&quot;: &quot;2023-05-03T12:47:59.046Z&quot;,
+        &quot;files&quot;: [],
+        &quot;patient_details&quot;:
+          {
+            &quot;patient_id&quot;: null,
+            &quot;patient_name&quot;: null,
+            &quot;patient_sex&quot;: null,
+            &quot;patient_dob&quot;: null,
+            &quot;patient_age&quot;: null,
+            &quot;patient_hospital_id&quot;: null
+          },
+        &quot;payload_status&quot;: &quot;Completed&quot;,
+        &quot;payload_deleted&quot;: 1
+      }
+    ],
+  &quot;Succeeded&quot;: true,
+  &quot;Errors&quot;: null,
+  &quot;Message&quot;: null
+}
 </code></pre>
+<hr>
+<h2 id="get-payloadsid">GET /payloads/{id}</h2>
+<p>Returns specific payload for given id.</p>
+<h3 id="parameters-1">Parameters</h3>
+<p>(Route) id: string - UUID</p>
+<h3 id="responses-1">Responses</h3>
+<p>Response Content Type: JSON</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td>List of payloads.</td>
+</tr>
+<tr>
+<td>400</td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc7807">Problem details</a> Failed to validate id.</td>
+</tr>
+<tr>
+<td>404</td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc7807">Problem details</a> Failed to find payload with payload id.</td>
+</tr>
+<tr>
+<td>500</td>
+<td>Server error. The response will be a <a href="https://datatracker.ietf.org/doc/html/rfc7807">Problem details</a> object with server error details.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="example-request-1">Example Request</h3>
+<pre><code class="lang-bash">curl --location --request GET 'http://localhost:5000/payloads/3042cac6-b8b8-4f65-a2b2-8ec340652c9b'
+</code></pre>
+<h3 id="example-response-1">Example Response</h3>
+<pre><code class="lang-json">{
+  &quot;Version&quot;: &quot;1.0.0&quot;,
+  &quot;id&quot;: &quot;3042cac6-b8b8-4f65-a2b2-8ec340652c9b&quot;,
+  &quot;payload_id&quot;: &quot;c5c3636b-81dd-44a9-8c4b-71adec7d47b2&quot;,
+  &quot;workflows&quot;: [&quot;1e7b49f2-a3a2-4ded-b489-86ad9b2da9c8&quot;],
+  &quot;workflow_instance_ids&quot;: [],
+  &quot;file_count&quot;: 50,
+  &quot;correlation_id&quot;: &quot;68ccea88-1f40-4eb3-ad23-7f444ac12910&quot;,
+  &quot;bucket&quot;: &quot;bucket_1&quot;,
+  &quot;calling_aetitle&quot;: &quot;Basic_AE&quot;,
+  &quot;called_aetitle&quot;: &quot;MIG&quot;,
+  &quot;timestamp&quot;: &quot;2023-05-03T12:47:59.046Z&quot;,
+  &quot;files&quot;: [],
+  &quot;patient_details&quot;:
+    {
+      &quot;patient_id&quot;: &quot;732ca351-6267-41e9-a6e8-21b3a74abe7c&quot;,
+      &quot;patient_name&quot;: &quot;Steve Jobs&quot;,
+      &quot;patient_sex&quot;: &quot;male&quot;,
+      &quot;patient_dob&quot;: &quot;1996-02-05T00:00:00Z&quot;,
+      &quot;patient_age&quot;: null,
+      &quot;patient_hospital_id&quot;: null
+    },
+}
+</code></pre>
+<hr>
+<h2 id="delete-payloadsid">DELETE /payloads/{id}</h2>
+<p>TODO</p>
+<hr>
 </article>
           </div>
           

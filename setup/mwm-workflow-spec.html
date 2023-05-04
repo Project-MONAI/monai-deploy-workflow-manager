@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Clinical Workflow Specification Language | MONAI Deploy Workflow Manager v0.1.10 </title>
+    <title>Clinical Workflow Specification Language | MONAI Deploy Workflow Manager v0.1.11 </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Clinical Workflow Specification Language | MONAI Deploy Workflow Manager v0.1.10 ">
+    <meta name="title" content="Clinical Workflow Specification Language | MONAI Deploy Workflow Manager v0.1.11 ">
     <meta name="generator" content="docfx 2.59.4.0">
     
     <link rel="shortcut icon" href="../images/favicon.ico">
@@ -135,11 +135,7 @@
 </li>
 <li><a href="#task-arguments">Task Arguments</a>
 <ul>
-<li><a href="#argo">Argo</a>
-<ul>
-<li><a href="#resource-request-object">Resource Request Object</a></li>
-</ul>
-</li>
+<li><a href="#argo">Argo</a></li>
 </ul>
 </li>
 <li><a href="#clinical-review">Clinical Review</a></li>
@@ -178,6 +174,7 @@
 <li><a href="#execution-context">Execution Context</a></li>
 <li><a href="#result-metadata--execution-stats---using-dictionary-values">Result Metadata &amp; Execution Stats - Using Dictionary Values</a></li>
 <li><a href="#argo-metadata">Argo Metadata</a></li>
+<li><a href="#handled-exception-metadata">Handled Exception Metadata</a></li>
 <li><a href="#dicom-tags">DICOM Tags</a></li>
 <li><a href="#patient-details-context">Patient Details Context</a></li>
 <li><a href="#workflow-context">Workflow Context</a></li>
@@ -984,7 +981,7 @@ CONTAINS (Valid for integers and strings compared to lists)
 
 NOT_CONTAINS (Valid for integers and strings compared to lists)
 </code></pre>
-<p>more information on conditionals can be found  <a href="guidelines%5Cmwm-conditionals.md">Conditionals Docs</a></p>
+<p>more information on conditionals can be found  <a href="....%5Cguidelines%5Cmwm-conditionals.md">Conditionals Docs</a></p>
 <h3 id="context">Context</h3>
 <p>The workflow metadata is any data that can be used by Evaluators. This includes metadata added by previous tasks, but can also include metadata about the input files (most notably DICOM tags).
 Metadata is available with the <code>context</code> object:</p>
@@ -1115,6 +1112,22 @@ Each execution is represented by an <code>Execution</code> object, which can be 
 <p>If metadata is to be used in a conditional the <code>metadata.json</code> must be present somewhere in the output directory and a valid JSON dictionary. It will automatically be imported if it is in the directory.</p>
 <p>An example format of the metadata.json can be found below:</p>
 <p>execution stats are populated from the argo execution values returned automatically.</p>
+<h4 id="handled-exception-metadata">Handled Exception Metadata</h4>
+<p>Application models can throw handled exceptions, to do this your application model should output the properties &quot;exception&quot; and &quot;exception_message&quot; to the <code>metadata.json</code></p>
+<p>Example...</p>
+<pre><code class="lang-json">{
+  &quot;exception&quot;: &quot;NoDicomFilesException&quot;,
+  &quot;exception_message&quot;: &quot;No dicom files found.&quot;
+}
+</code></pre>
+<p>We recommend your application exits execution once the metadata.json has been written.</p>
+<p>This exception can be used in the workflow task destinations queries for example like the following examples...</p>
+<pre><code class="lang-python">{{ context.executions.task_id.result.exception }} == 'NoDicomFilesException' &amp;&amp; {{ context.executions.task_id.result.exception_message }} == 'No dicom files found.'
+</code></pre>
+<pre><code class="lang-python">{{ context.executions.task_id.result.exception_message }} CONTAINS 'No dicom files'
+</code></pre>
+<pre><code class="lang-python">{{ context.executions.task_id.result.exception }} == NULL
+</code></pre>
 <h4 id="dicom-tags">DICOM Tags</h4>
 <p>When the input data is DICOM, Evaluators can use DICOM tag values in conditional statements.
 DICOM tags are available in <code>context.dicom</code>. The reference for that object is as follows:</p>
