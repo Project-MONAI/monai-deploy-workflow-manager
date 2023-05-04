@@ -65,6 +65,18 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
 
             throw new Exception($"Payload {name} does not exist. Please check and try again!");
         }
+
+        public static ExecutionStatTestData GetExecutionStatsByName(string name)
+        {
+            var executionStatsTestData = ExecutionStatsTestData.TestData.Find(c => c.Name == name);
+
+            if (executionStatsTestData != null)
+            {
+                return executionStatsTestData;
+            }
+
+            throw new Exception($"Execution stat {name} does not exist. Please check and try again!");
+        }
     }
 }
 #pragma warning restore CS8602 // Dereference of a possibly null reference.

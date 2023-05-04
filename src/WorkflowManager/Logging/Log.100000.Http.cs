@@ -64,5 +64,13 @@ namespace Monai.Deploy.WorkflowManager.Logging
 
         [LoggerMessage(EventId = 100014, Level = LogLevel.Error, Message = "Unexpected error occurred in get /workflows/aetitle API.")]
         public static partial void WorkflowGetAeTitleAsyncError(this ILogger logger, Exception ex);
+
+
+        [LoggerMessage(EventId = 100015, Level = LogLevel.Error, Message = "Unexpected error occurred in GET tasks/statsoverview API.")]
+        public static partial void GetStatsOverviewAsyncError(this ILogger logger, Exception ex);
+
+        [LoggerMessage(EventId = 100016, Level = LogLevel.Error, Message = "Unexpected error occurred in GET tasks/stats API.")]
+        public static partial void GetStatsAsyncError(this ILogger logger, Exception ex);
+
     }
 }

@@ -29,7 +29,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Migrations
             var minor = 0;
             var revision = 0;
 
-            var res = (reader.Value as string)?.Split(new char[] { ',' });
+            var res = (reader.Value as string)?.Split(new char[] { ',', '.' });
 
             if (res?.Length == 3)
             {

@@ -31,7 +31,6 @@ using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
-using Monai.Deploy.WorkflowManager.TaskManager.Database;
 using Moq;
 using Xunit;
 
@@ -140,7 +139,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
         private readonly Mock<ITestMetadataRepositoryCallback> _testMetadataRepositoryCallback;
         private readonly Mock<ITaskDispatchEventService> _taskDispatchEventService;
         private readonly CancellationTokenSource _cancellationTokenSource;
-        private readonly Mock<ITaskExecutionStatsRepository> _executionStatsRepo;
 
         public TaskManagerTest()
         {
@@ -153,7 +151,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _messageBrokerSubscriberService = new Mock<IMessageBrokerSubscriberService>();
             _storageAdminService = new Mock<IStorageAdminService>();
             _testRunnerCallback = new Mock<ITestRunnerCallback>();
-            _executionStatsRepo = new Mock<ITaskExecutionStatsRepository>();
 
             _testMetadataRepositoryCallback = new Mock<ITestMetadataRepositoryCallback>();
             _taskDispatchEventService = new Mock<ITaskDispatchEventService>();
@@ -183,9 +180,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             serviceProvider
                 .Setup(x => x.GetService(typeof(ITaskDispatchEventService)))
                 .Returns(_taskDispatchEventService.Object);
-            serviceProvider
-                 .Setup(x => x.GetService(typeof(ITaskExecutionStatsRepository)))
-                 .Returns(_executionStatsRepo.Object);
 
             _serviceScope.Setup(x => x.ServiceProvider).Returns(serviceProvider.Object);
             _logger.Setup(p => p.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
@@ -902,7 +896,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
 
             Assert.True(resetEvent.Wait(5000));
 
-            _executionStatsRepo.Verify(p => p.UpdateExecutionStatsAsync(It.IsAny<TaskUpdateEvent>()), Times.Exactly(2));
         }
 
         private static JsonMessage<TaskCallbackEvent> GenerateTaskCallbackEvent(JsonMessage<TaskDispatchEvent>? taskDispatchEventMessage = null)

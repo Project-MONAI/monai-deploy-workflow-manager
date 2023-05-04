@@ -1,5 +1,5 @@
-/*
- * Copyright 2022 MONAI Consortium
+﻿/*
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
+namespace Monai.Deploy.WorkflowManager.Shared.Filter
 {
-    public static class Helper
+    public class TimeFilter : PaginationFilter
     {
-        public static TaskDispatchTestData GetTaskDispatchByName(string name)
-        {
-            var taskDispatchTestData = TaskDispatchesTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));
+        public DateTime StartTime { get; set; }
 
-            if (taskDispatchTestData != null)
-            {
-                return taskDispatchTestData;
-            }
-
-            throw new Exception($"Task Dispatch {name} does not exist. Please check and try again!");
-        }
+        public DateTime EndTime { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             DataHelper = objectContainer.Resolve<DataHelper>();
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
             _outputHelper = outputHelper;
-            Assertions = new Assertions(objectContainer);
+            Assertions = new Assertions(objectContainer, outputHelper);
         }
 
         private Assertions Assertions { get; }

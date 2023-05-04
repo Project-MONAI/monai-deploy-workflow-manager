@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
+using System;
+
+namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
 
     public class ExecutionStatDTO
     {
-        public ExecutionStatDTO(TaskExecutionStats stats)
+        public ExecutionStatDTO(ExecutionStats stats)
         {
             ExecutionId = stats.ExecutionId;
             StartedAt = stats.StartedUTC;
@@ -32,7 +34,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
         public DateTime StartedAt { get; set; }
         public DateTime FinishedAt { get; set; }
         public double ExecutionDurationSeconds { get; set; }
-        public string Status { get; set; } = TaskStatus.Created.ToString();
+        public string Status { get; set; } = "Created";
     }
 
 }

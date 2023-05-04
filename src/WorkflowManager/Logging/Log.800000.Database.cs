@@ -57,5 +57,8 @@ namespace Monai.Deploy.WorkflowManager.Logging
 
         [LoggerMessage(EventId = 800012, Level = LogLevel.Error, Message = "Failed to update tasks for workflow instance '{workflowInstanceId}'.")]
         public static partial void DbUpdateTasksError(this ILogger logger, string workflowInstanceId, Exception ex);
+
+        [LoggerMessage(EventId = 800013, Level = LogLevel.Error, Message = "Database call failed in {methodName}.")]
+        public static partial void DatabaseException(this ILogger logger, string methodName, Exception ex);
     }
 }

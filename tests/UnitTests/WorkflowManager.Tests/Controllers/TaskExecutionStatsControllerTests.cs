@@ -27,16 +27,15 @@ using Monai.Deploy.WorkflowManager.Shared.Services;
 using Monai.Deploy.WorkflowManager.Shared.Wrappers;
 using Moq;
 using Xunit;
-using Monai.Deploy.WorkflowManager.TaskManager.Filter;
-using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
-using Monai.Deploy.WorkflowManager.TaskManager.Controllers;
-using Monai.Deploy.WorkflowManager.TaskManager.Database;
 using System.Linq;
 using System.Net;
+using Monai.Deploy.WorkflowManager.Database;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.ControllersShared;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Controllers
+namespace Monai.Deploy.WorkflowManager.Test.Controllers
 {
-    public class TaskExecutionStatsControllerTests
+    public class ExecutionStatsControllerTests
     {
         private TaskStatsController StatsController { get; set; }
 
@@ -44,9 +43,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Controllers
         private readonly Mock<ILogger<TaskStatsController>> _logger;
         private readonly Mock<IUriService> _uriService;
         private readonly IOptions<WorkflowManagerOptions> _options;
-        private readonly TaskExecutionStats[] _executionStats;
+        private readonly ExecutionStats[] _executionStats;
 
-        public TaskExecutionStatsControllerTests()
+        public ExecutionStatsControllerTests()
         {
             _options = Options.Create(new WorkflowManagerOptions());
             _repo = new Mock<ITaskExecutionStatsRepository>();
@@ -55,9 +54,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Controllers
 
             StatsController = new TaskStatsController(_options, _uriService.Object, _logger.Object, _repo.Object);
             var startTime = new DateTime(2023, 4, 4);
-            _executionStats = new TaskExecutionStats[]
+            _executionStats = new ExecutionStats[]
     {
-                    new TaskExecutionStats
+                    new ExecutionStats
                     {
                         ExecutionId = Guid.NewGuid().ToString(),
                         StartedUTC = startTime,

@@ -122,11 +122,5 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Logging
 
         [LoggerMessage(EventId = 120, Level = LogLevel.Error, Message = "Recovering connection to storage service:  {reason}.")]
         public static partial void MessagingServiceErrorRecover(this ILogger logger, string reason);
-
-        [LoggerMessage(EventId = 121, Level = LogLevel.Error, Message = "Unexpected error occurred in GET tasks/statsoverview API.")]
-        public static partial void GetStatsOverviewAsyncError(this ILogger logger, Exception ex);
-
-        [LoggerMessage(EventId = 122, Level = LogLevel.Error, Message = "Unexpected error occurred in GET tasks/stats API.")]
-        public static partial void GetStatsAsyncError(this ILogger logger, Exception ex);
     }
 }

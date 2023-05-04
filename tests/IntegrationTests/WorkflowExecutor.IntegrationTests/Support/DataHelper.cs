@@ -19,6 +19,7 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.Models;
 using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
+using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
 
@@ -48,6 +49,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public string PayloadId { get; private set; }
         public string BucketId { get; internal set; }
         public List<WorkflowInstance> SeededWorkflowInstances { get; internal set; }
+        public TaskDispatchEvent TaskDispatchEvent { get; set; }
+        public TaskCallbackEvent TaskCallbackEvent { get; set; }
 
         public DataHelper(RabbitConsumer taskDispatchConsumer, RabbitConsumer exportRequestConsumer, MongoClientUtil mongoClient)
         {
@@ -472,6 +475,33 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public string GetPayloadId(string? payloadId = null)
         {
             return PayloadId = payloadId ?? Guid.NewGuid().ToString();
+        }
+
+        public ExecutionStats GetExecutionStatsTestData(string name)
+        {
+            var taskExecutionStat = ExecutionStatsTestData.TestData.Find(c => c.Name == name);
+
+            if (taskExecutionStat != null)
+            {
+                if (taskExecutionStat.ExecutionStats != null)
+                {
+                    return (taskExecutionStat.ExecutionStats);
+                }
+                else
+                {
+                    throw new Exception($"ExecutionStat {name} does not have any applicable test data, please check and try again!");
+                }
+            }
+            else
+            {
+                throw new Exception($"ExecutionStat {name} does not have any applicable test data, please check and try again!");
+            }
+        }
+
+        public string FormatResponse(string json)
+        {
+            var parsedJson = JsonConvert.DeserializeObject(json);
+            return JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
         public WorkflowTaskArtifactStepDefinitions(ObjectContainer objectContainer, ScenarioContext scenarioContext, ISpecFlowOutputHelper outputHelper)
         {
-            Assertions = new Assertions(objectContainer);
+            Assertions = new Assertions(objectContainer, outputHelper);
             DataHelper = objectContainer.Resolve<DataHelper>();
             _outputHelper = outputHelper;
         }

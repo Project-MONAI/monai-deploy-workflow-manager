@@ -20,17 +20,18 @@ using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.Shared.Wrappers;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class TasksApiStepDefinitions
     {
-        public TasksApiStepDefinitions(ObjectContainer objectContainer)
+        public TasksApiStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             DataHelper = objectContainer.Resolve<DataHelper>();
             ApiHelper = objectContainer.Resolve<ApiHelper>();
-            Assertions = new Assertions(objectContainer);
+            Assertions = new Assertions(objectContainer, outputHelper);
         }
 
         public DataHelper DataHelper { get; }

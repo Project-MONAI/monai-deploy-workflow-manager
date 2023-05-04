@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using Amazon.Runtime.Internal.Transform;
 using Monai.Deploy.Messaging.Events;
 
 namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
