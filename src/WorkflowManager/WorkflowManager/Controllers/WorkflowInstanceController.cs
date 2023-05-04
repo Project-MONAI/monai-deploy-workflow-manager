@@ -78,7 +78,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
         [ProducesResponseType(typeof(IList<WorkflowInstance>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetListAsync([FromQuery] PaginationFilter filter, [FromQuery] string status = null, [FromQuery] string? payloadId = null, [FromQuery] bool disablePagination = false)
+        public async Task<IActionResult> GetListAsync([FromQuery] PaginationFilter filter, [FromQuery] string status = null, [FromQuery] string payloadId = null, [FromQuery] bool disablePagination = false)
         {
             try
             {

@@ -1,5 +1,5 @@
-/*
- * Copyright 2022 MONAI Consortium
+﻿/*
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
+namespace Monai.Deploy.WorkflowManager.Shared.Filter
 {
-    public static class ResourcesKeys
+    public class TimeFilter : PaginationFilter
     {
-        public static readonly ResourcesKey GpuLimit = new() { TaskKey = "gpu_required", ArgoKey = "nvidia.com/gpu" };
+        public DateTime StartTime { get; set; }
 
-        public static readonly ResourcesKey MemoryLimit = new() { TaskKey = "memory_gb", ArgoKey = "memory" };
-
-        public static readonly ResourcesKey CpuLimit = new() { TaskKey = "cpu", ArgoKey = "cpu" };
+        public DateTime EndTime { get; set; }
     }
 }

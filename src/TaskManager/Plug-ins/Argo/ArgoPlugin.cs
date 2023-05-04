@@ -467,7 +467,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 value = bool.TryParse(value, out bool gpuRequired) && gpuRequired ? "1" : "0";
             }
 
-            template.Container.Resources.Limits.Add(key.ArgoKey, value);
+            template.Container.Resources.Limits[key.ArgoKey] = value;
         }
 
         private async Task AddMainWorkflowTemplate(Workflow workflow, CancellationToken cancellationToken)

@@ -19,18 +19,19 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.Shared.Wrappers;
 using Newtonsoft.Json;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class WorkflowApiStepDefinitions
     {
-        public WorkflowApiStepDefinitions(ObjectContainer objectContainer)
+        public WorkflowApiStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             DataHelper = objectContainer.Resolve<DataHelper>();
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
             ApiHelper = objectContainer.Resolve<ApiHelper>();
-            Assertions = new Assertions(objectContainer);
+            Assertions = new Assertions(objectContainer, outputHelper);
         }
 
         private ApiHelper ApiHelper { get; }

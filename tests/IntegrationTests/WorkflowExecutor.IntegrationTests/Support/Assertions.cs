@@ -20,16 +20,19 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
+using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
     public class Assertions
     {
         private static MinioClientUtil? MinioClient { get; set; }
+        private ISpecFlowOutputHelper Output { get; set; }
 
-        public Assertions(ObjectContainer objectContainer)
+        public Assertions(ObjectContainer objectContainer, ISpecFlowOutputHelper output)
         {
             MinioClient = objectContainer.Resolve<MinioClientUtil>();
+            Output = output ?? throw new ArgumentNullException(nameof(output));
         }
 
         public void AssertTaskPayload(List<WorkflowInstance> workflowInstances, TaskExecution? response)
@@ -497,6 +500,38 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             {
                 TotalPages.Should().Be(quotient + 1);
             }
+        }
+
+        public void AssertTaskUpdateEventFromTaskDispatch(TaskUpdateEvent taskUpdateEvent, TaskDispatchEvent taskDispatchEvent, TaskExecutionStatus status)
+        {
+            Output.WriteLine("Asserting details of TaskUpdateEvent with TaskDispatchEvent");
+            taskUpdateEvent.ExecutionId.Should().Be(taskDispatchEvent.ExecutionId);
+            taskUpdateEvent.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId);
+            taskUpdateEvent.Status.Should().Be(status);
+            taskUpdateEvent.TaskId.Should().Be(taskDispatchEvent.TaskId);
+            taskUpdateEvent.WorkflowInstanceId.Should().Be(taskDispatchEvent.WorkflowInstanceId);
+            Output.WriteLine("Details of TaskUpdateEvent matches TaskDispatchEvent");
+        }
+
+        public void AssertExecutionStats(ExecutionStats executionStats, TaskDispatchEvent taskDispatchEvent = null, TaskCallbackEvent taskCallbackEvent = null)
+        {
+            Output.WriteLine("Asserting details of ExecutionStats");
+            if (taskDispatchEvent != null)
+            {
+                executionStats.ExecutionId.Should().Be(taskDispatchEvent.ExecutionId);
+                executionStats.WorkflowInstanceId.Should().Be(taskDispatchEvent.WorkflowInstanceId);
+                executionStats.StartedUTC.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(20));
+                executionStats.TaskId.Should().Be(taskDispatchEvent.TaskId);
+                executionStats.Status.Should().Be("Accepted");
+                executionStats.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId);
+            }
+            else
+            {
+                executionStats.LastUpdatedUTC.Should().BeAfter(executionStats.StartedUTC);
+                executionStats.ExecutionTimeSeconds.Should().BeGreaterThan(0);
+                executionStats.DurationSeconds.Should().BeGreaterThan(0);
+            }
+            Output.WriteLine("Details ExecutionStats are correct");
         }
     }
 }

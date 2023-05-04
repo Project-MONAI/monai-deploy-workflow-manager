@@ -15,8 +15,11 @@
  */
 
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.Storage.API;
+using Monai.Deploy.WorkflowManager.Common.Exceptions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Services;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -33,15 +36,34 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
 
         private readonly Mock<IPayloadRepsitory> _payloadRepository;
         private readonly Mock<IDicomService> _dicomService;
+        private readonly Mock<IServiceScopeFactory> _serviceScopeFactory;
+        private readonly Mock<IServiceProvider> _serviceProvider;
+        private readonly Mock<IServiceScope> _serviceScope;
+        private readonly Mock<IStorageService> _storageService;
         private readonly Mock<ILogger<PayloadService>> _logger;
 
         public PayloadServiceTests()
         {
             _payloadRepository = new Mock<IPayloadRepsitory>();
             _dicomService = new Mock<IDicomService>();
+            _serviceProvider = new Mock<IServiceProvider>();
+            _storageService = new Mock<IStorageService>();
             _logger = new Mock<ILogger<PayloadService>>();
 
-            PayloadService = new PayloadService(_payloadRepository.Object, _dicomService.Object, _logger.Object);
+            _serviceScopeFactory = new Mock<IServiceScopeFactory>();
+            _serviceScope = new Mock<IServiceScope>();
+
+            _serviceScope.Setup(x => x.ServiceProvider).Returns(_serviceProvider.Object);
+
+            _serviceScopeFactory
+                .Setup(x => x.CreateScope())
+                .Returns(_serviceScope.Object);
+
+            _serviceProvider
+                .Setup(x => x.GetService(typeof(IStorageService)))
+                .Returns(_storageService.Object);
+
+            PayloadService = new PayloadService(_payloadRepository.Object, _dicomService.Object, _serviceScopeFactory.Object, _logger.Object);
         }
 
         [Fact]
@@ -202,6 +224,46 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
             var result = await PayloadService.GetAllAsync();
 
             result.Should().BeEquivalentTo(payload);
+        }
+
+        [Fact]
+        public async Task DeletePayloadFromStorageAsync_ReturnsTrue()
+        {
+            var payloadId = Guid.NewGuid().ToString();
+
+            _payloadRepository.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(() => new Payload());
+            _payloadRepository.Setup(p => p.UpdateAsync(It.IsAny<Payload>())).ReturnsAsync(() => true);
+
+            _storageService.Setup(s => s.RemoveObjectsAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), default));
+
+            var result = await PayloadService.DeletePayloadFromStorageAsync(payloadId);
+
+            result.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task DeletePayloadFromStorageAsync_ThrowsMonaiNotFoundException()
+        {
+            var payloadId = Guid.NewGuid().ToString();
+
+#pragma warning disable CS8603 // Possible null reference return.
+            _payloadRepository.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(() => null);
+#pragma warning restore CS8603 // Possible null reference return.
+
+            await Assert.ThrowsAsync<MonaiNotFoundException>(async () => await PayloadService.DeletePayloadFromStorageAsync(payloadId));
+        }
+
+        [Fact]
+        public async Task DeletePayloadFromStorageAsync_ThrowsMonaiBadRequestException()
+        {
+            var payloadId = Guid.NewGuid().ToString();
+
+            _payloadRepository.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(() => new Payload
+            {
+                PayloadDeleted = PayloadDeleted.InProgress
+            });
+
+            await Assert.ThrowsAsync<MonaiBadRequestException>(async () => await PayloadService.DeletePayloadFromStorageAsync(payloadId));
         }
     }
 }

@@ -54,12 +54,12 @@ namespace Monai.Deploy.WorkflowManager.Shared.Wrappers
         /// <summary>
         /// Gets or sets FirstPage.
         /// </summary>
-        public string FirstPage { get; set; }
+        public string? FirstPage { get; set; }
 
         /// <summary>
         /// Gets or sets LastPage.
         /// </summary>
-        public string LastPage { get; set; }
+        public string? LastPage { get; set; }
 
         /// <summary>
         /// Gets or sets TotalPages.
@@ -74,12 +74,12 @@ namespace Monai.Deploy.WorkflowManager.Shared.Wrappers
         /// <summary>
         /// Gets or sets NextPage.
         /// </summary>
-        public string NextPage { get; set; }
+        public string? NextPage { get; set; }
 
         /// <summary>
         /// Gets or sets previousPage.
         /// </summary>
-        public string PreviousPage { get; set; }
+        public string? PreviousPage { get; set; }
 
         public void SetUp(PaginationFilter validFilter, long totalRecords, IUriService uriService, string route)
         {
@@ -94,7 +94,7 @@ namespace Monai.Deploy.WorkflowManager.Shared.Wrappers
             PreviousPage =
                 validFilter.PageNumber - 1 >= 1 && validFilter.PageNumber <= roundedTotalPages
                 ? uriService.GetPageUriString(new PaginationFilter(validFilter.PageNumber - 1, PageSize), route)
-            : null;
+                : null;
 
             FirstPage = uriService.GetPageUriString(new PaginationFilter(1, PageSize), route);
             LastPage = uriService.GetPageUriString(new PaginationFilter(roundedTotalPages, PageSize), route);

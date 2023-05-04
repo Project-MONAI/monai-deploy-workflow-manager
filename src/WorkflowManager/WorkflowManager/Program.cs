@@ -31,6 +31,7 @@ using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Database;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Database.Options;
 using Monai.Deploy.WorkflowManager.Database.Repositories;
@@ -132,11 +133,13 @@ namespace Monai.Deploy.WorkflowManager
 
             // Mongo DB
             services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
+            services.Configure<ExecutionStatsDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
             services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
             services.AddTransient<IWorkflowRepository, WorkflowRepository>();
             services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
             services.AddTransient<IPayloadRepsitory, PayloadRepository>();
             services.AddTransient<ITasksRepository, TasksRepository>();
+            services.AddTransient<ITaskExecutionStatsRepository, TaskExecutionStatsRepository>();
             services.AddMigration(new MongoMigrationSettings
             {
                 ConnectionString = hostContext.Configuration.GetSection("WorkloadManagerDatabase:ConnectionString").Value,
@@ -149,8 +152,6 @@ namespace Monai.Deploy.WorkflowManager
             // MessageBroker
             services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
             services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
-
-            services.AddHostedService(p => p.GetService<DataRetentionService>());
 
             services.AddWorkflowExecutor(hostContext);
 

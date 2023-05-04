@@ -22,7 +22,6 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Shared.Filter;
 using Monai.Deploy.WorkflowManager.Shared.Wrappers;
 using Monai.Deploy.WorkflowManager.Shared.Services;
-using Microsoft.AspNetCore.Routing;
 
 namespace Monai.Deploy.WorkflowManager.ControllersShared
 {
@@ -85,7 +84,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
 
         public StatsPagedResponse<IEnumerable<T>> CreateStatsPagedReponse<T>(IEnumerable<T> pagedData, PaginationFilter validFilter, long totalRecords, IUriService uriService, string route)
         {
-            var response = new StatsPagedResponse<IEnumerable<T>>(pagedData, validFilter.PageNumber, validFilter.PageSize.Value);
+            var response = new StatsPagedResponse<IEnumerable<T>>(pagedData, validFilter.PageNumber, validFilter.PageSize ?? 10);
             response.SetUp(validFilter, totalRecords, uriService, route);
             return response;
         }
