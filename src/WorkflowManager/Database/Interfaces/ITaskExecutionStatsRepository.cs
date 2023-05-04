@@ -69,6 +69,7 @@ namespace Monai.Deploy.WorkflowManager.Database
         /// <param name="status">the status to get count of, or string.empty</param>
         /// <returns>The count of all records in range</returns>
         Task<long> GetStatsStatusCountAsync(DateTime start, DateTime endTime, string status = "", string workflowInstanceId = "", string taskId = "");
+
         /// <summary>
         /// Returns all stats in Failed or PartialFail status.
         /// </summary>

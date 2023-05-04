@@ -49,7 +49,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
         /// <summary>
         /// Initializes a new instance of the <see cref="PayloadsController"/> class.
         /// </summary>
-        /// <param name="payloadService">paylod service to retrieve payloads.</param>
+        /// <param name="payloadService">payload service to retrieve payloads.</param>
         /// <param name="logger">logger.</param>
         /// <param name="uriService">Uri Service.</param>
         /// <param name="options">Workflow Manager options.</param>
@@ -70,7 +70,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
         /// Gets a paged response list of all workflows.
         /// </summary>
         /// <param name="filter">Filters.</param>
-        /// <param name="patientId">Optional paient Id.</param>
+        /// <param name="patientId">Optional patient Id.</param>
         /// <param name="patientName">Optional patient name.</param>
         /// <returns>paged response of subset of all workflows.</returns>
         [HttpGet]

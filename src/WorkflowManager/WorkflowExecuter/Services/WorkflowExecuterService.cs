@@ -738,7 +738,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                     var updateResult = await HandleUpdatingTaskStatus(taskExec, TaskExecutionStatus.Failed);
                     if (updateResult is false)
                     {
-                        _logger.LoadArtifactAndDBFailiure(workflowInstance.PayloadId, taskExec.TaskId, workflowInstance.Id, workflow?.Id);
+                        _logger.LoadArtifactAndDBFailure(workflowInstance.PayloadId, taskExec.TaskId, workflowInstance.Id, workflow?.Id);
                     }
                     throw;
                 }

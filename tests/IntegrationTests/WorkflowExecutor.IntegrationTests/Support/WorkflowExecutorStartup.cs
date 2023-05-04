@@ -107,7 +107,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
                 services.AddTransient<IWorkflowRepository, WorkflowRepository>();
                 services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
-                services.AddTransient<IPayloadRepsitory, PayloadRepository>();
+                services.AddTransient<IPayloadRepository, PayloadRepository>();
                 services.AddTransient<ITasksRepository, TasksRepository>();
                 services.AddTransient<ITaskExecutionStatsRepository, TaskExecutionStatsRepository>();
                 services.AddMigration(new MongoMigrationSettings

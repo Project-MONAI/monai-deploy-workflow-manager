@@ -55,15 +55,15 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             StatsController = new TaskStatsController(_options, _uriService.Object, _logger.Object, _repo.Object);
             var startTime = new DateTime(2023, 4, 4);
             _executionStats = new ExecutionStats[]
-    {
-                    new ExecutionStats
-                    {
-                        ExecutionId = Guid.NewGuid().ToString(),
-                        StartedUTC = startTime,
-                        WorkflowInstanceId= "workflow",
-                        TaskId = "task",
-                    },
-    };
+            {
+                new ExecutionStats
+                {
+                    ExecutionId = Guid.NewGuid().ToString(),
+                    StartedUTC = startTime,
+                    WorkflowInstanceId= "workflow",
+                    TaskId = "task",
+                },
+            };
             _repo.Setup(w => w.GetStatsAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_executionStats);
             _repo.Setup(w => w.GetStatsStatusCountAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_executionStats.Count());
         }
@@ -234,7 +234,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         [Fact]
         public async Task GetStatsAsync_Only_Find_Matching_Results()
         {
-
             var startTime = new DateTime(2023, 4, 4);
             var endTime = new DateTime(2023, 4, 5);
 
@@ -243,8 +242,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             var objectResult = Assert.IsType<OkObjectResult>(result);
             var pagegedResults = objectResult.Value as StatsPagedResponse<IEnumerable<ExecutionStatDTO>>;
             Assert.Equal(1, pagegedResults.TotalRecords);
-
-
         }
     }
 }

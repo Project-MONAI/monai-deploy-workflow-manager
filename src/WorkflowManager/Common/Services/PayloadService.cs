@@ -30,7 +30,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
 {
     public class PayloadService : IPayloadService
     {
-        private readonly IPayloadRepsitory _payloadRepository;
+        private readonly IPayloadRepository _payloadRepository;
+
+        private readonly IWorkflowInstanceRepository _workflowInstanceRepository;
 
         private readonly IDicomService _dicomService;
 
@@ -39,12 +41,14 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
         private readonly ILogger<PayloadService> _logger;
 
         public PayloadService(
-            IPayloadRepsitory payloadRepsitory,
+            IPayloadRepository payloadRepository,
             IDicomService dicomService,
+            IWorkflowInstanceRepository workflowInstanceRepository,
             IServiceScopeFactory serviceScopeFactory,
             ILogger<PayloadService> logger)
         {
-            _payloadRepository = payloadRepsitory ?? throw new ArgumentNullException(nameof(payloadRepsitory));
+            _payloadRepository = payloadRepository ?? throw new ArgumentNullException(nameof(payloadRepository));
+            _workflowInstanceRepository = workflowInstanceRepository ?? throw new ArgumentNullException(nameof(workflowInstanceRepository));
             _dicomService = dicomService ?? throw new ArgumentNullException(nameof(dicomService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
@@ -81,7 +85,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
                     CalledAeTitle = eventPayload.CalledAeTitle,
                     CallingAeTitle = eventPayload.CallingAeTitle,
                     Timestamp = eventPayload.Timestamp,
-                    PatientDetails = patientDetails
+                    PatientDetails = patientDetails,
+                    PayloadDeleted = PayloadDeleted.No,
                 };
 
                 if (await _payloadRepository.CreateAsync(payload))
@@ -109,14 +114,51 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             return await _payloadRepository.GetByIdAsync(payloadId);
         }
 
-        public async Task<IList<Payload>> GetAllAsync(int? skip = null,
+        public async Task<IList<PayloadDto>> GetAllAsync(int? skip = null,
                                                       int? limit = null,
                                                       string? patientId = "",
                                                       string? patientName = "")
-            => await _payloadRepository.GetAllAsync(skip, limit, patientId, patientName);
+            => await CreatePayloadsDto(
+                await _payloadRepository.GetAllAsync(skip, limit, patientId, patientName)
+            );
 
-        public async Task<IList<Payload>> GetAllAsync(int? skip = null, int? limit = null)
-            => await _payloadRepository.GetAllAsync(skip, limit);
+        public async Task<IList<PayloadDto>> GetAllAsync(int? skip = null, int? limit = null)
+            => await CreatePayloadsDto(await _payloadRepository.GetAllAsync(skip, limit));
+
+        private async Task<IList<PayloadDto>> CreatePayloadsDto(IList<Payload> payloads)
+        {
+            var dtos = new List<PayloadDto>();
+            if (payloads is null || payloads.Count == 0)
+            {
+                return dtos;
+            }
+
+            var payloadIds = payloads.Select(payload => payload.Id).ToList();
+
+            var workflowInstances =
+                await _workflowInstanceRepository.GetByPayloadIdsAsync(payloadIds);
+
+            foreach (var payload in payloads)
+            {
+                var payloadDto = new PayloadDto(payload);
+                var wfs = workflowInstances?.Where(wf => wf.PayloadId == payload.Id);
+                if (wfs == null || wfs.Any() is false)
+                {
+                    payloadDto.PayloadStatus = PayloadStatus.Complete;
+                }
+                else if (wfs.Any(wf => wf.Status == Status.Created))
+                {
+                    payloadDto.PayloadStatus = PayloadStatus.InProgress;
+                }
+                else if (wfs.All(wf => wf.Status != Status.Created))
+                {
+                    payloadDto.PayloadStatus = PayloadStatus.Complete;
+                }
+                dtos.Add(payloadDto);
+            }
+
+            return dtos;
+        }
 
         public async Task<long> CountAsync() => await _payloadRepository.CountAsync();
 

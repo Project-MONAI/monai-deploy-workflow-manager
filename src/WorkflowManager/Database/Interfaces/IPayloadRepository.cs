@@ -20,7 +20,7 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Database.Interfaces
 {
-    public interface IPayloadRepsitory
+    public interface IPayloadRepository
     {
         /// <summary>
         /// Creates a payload in the database.

@@ -29,7 +29,7 @@ using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Database.Repositories
 {
-    public class PayloadRepository : RepositoryBase, IPayloadRepsitory
+    public class PayloadRepository : RepositoryBase, IPayloadRepository
     {
         private readonly IMongoCollection<Payload> _payloadCollection;
         private readonly ILogger<PayloadRepository> _logger;

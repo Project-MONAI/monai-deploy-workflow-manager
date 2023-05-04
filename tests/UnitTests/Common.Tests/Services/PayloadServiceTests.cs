@@ -34,7 +34,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
     {
         private IPayloadService PayloadService { get; set; }
 
-        private readonly Mock<IPayloadRepsitory> _payloadRepository;
+        private readonly Mock<IPayloadRepository> _payloadRepository;
+        private readonly Mock<IWorkflowInstanceRepository> _workflowInstanceRepository;
         private readonly Mock<IDicomService> _dicomService;
         private readonly Mock<IServiceScopeFactory> _serviceScopeFactory;
         private readonly Mock<IServiceProvider> _serviceProvider;
@@ -44,7 +45,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
 
         public PayloadServiceTests()
         {
-            _payloadRepository = new Mock<IPayloadRepsitory>();
+            _payloadRepository = new Mock<IPayloadRepository>();
+            _workflowInstanceRepository = new Mock<IWorkflowInstanceRepository>();
             _dicomService = new Mock<IDicomService>();
             _serviceProvider = new Mock<IServiceProvider>();
             _storageService = new Mock<IStorageService>();
@@ -63,7 +65,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
                 .Setup(x => x.GetService(typeof(IStorageService)))
                 .Returns(_storageService.Object);
 
-            PayloadService = new PayloadService(_payloadRepository.Object, _dicomService.Object, _serviceScopeFactory.Object, _logger.Object);
+            PayloadService = new PayloadService(_payloadRepository.Object, _dicomService.Object, _workflowInstanceRepository.Object, _serviceScopeFactory.Object, _logger.Object);
         }
 
         [Fact]
@@ -194,7 +196,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
         public async Task GetByIdAsync_NullId_ReturnsThrowsException() => await Assert.ThrowsAsync<ArgumentNullException>(async () => await PayloadService.GetByIdAsync(null));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         [Fact]
-        public async Task GetAll_ReturnsPayloads()
+        public async Task GetAll_ReturnsCompletedPayloads()
         {
             var patientDetails = new PatientDetails
             {
@@ -204,10 +206,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
                 PatientSex = "male"
             };
 
-            var payload = new List<Payload>
+            var input = new List<Payload>
             {
                 new Payload
                 {
+                    Id = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
                     PatientDetails = patientDetails,
                     Bucket = "bucket",
@@ -219,11 +222,105 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
                 }
             };
 
-            _payloadRepository.Setup(p => p.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(() => payload);
+            var expected = input.Select(payload => new PayloadDto(payload)).ToList();
+            expected.First().PayloadStatus = PayloadStatus.Complete;
 
-            var result = await PayloadService.GetAllAsync();
+            _payloadRepository.Setup(p =>
+                p.GetAllAsync(
+                    It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>())
+                ).ReturnsAsync(() => input);
+            var param = new List<string>() { input.First().Id };
+            _workflowInstanceRepository.Setup(r =>
+                r.GetByPayloadIdsAsync(param)
+                ).ReturnsAsync(() => new List<WorkflowInstance>());
 
-            result.Should().BeEquivalentTo(payload);
+            var result = await PayloadService.GetAllAsync(null, null);
+            result.First().PayloadStatus.Should().Be(PayloadStatus.Complete);
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task GetAll_ReturnsPayloads()
+        {
+            var patientDetails = new PatientDetails
+            {
+                PatientDob = new DateTime(1996, 02, 05),
+                PatientId = Guid.NewGuid().ToString(),
+                PatientName = "Steve",
+                PatientSex = "male"
+            };
+
+            var input = new List<Payload>
+            {
+                new Payload
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    PatientDetails = patientDetails,
+                    Bucket = "bucket",
+                    CalledAeTitle = "aetitle",
+                    CallingAeTitle = "aetitle",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Workflows = new List<string> { Guid.NewGuid().ToString() }
+                },
+                new Payload
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    PatientDetails = patientDetails,
+                    Bucket = "bucket",
+                    CalledAeTitle = "aetitle",
+                    CallingAeTitle = "aetitle",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Workflows = new List<string> { Guid.NewGuid().ToString() }
+                },
+                new Payload
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    PatientDetails = patientDetails,
+                    Bucket = "bucket",
+                    CalledAeTitle = "aetitle",
+                    CallingAeTitle = "aetitle",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Workflows = new List<string> { Guid.NewGuid().ToString() }
+                }
+            };
+
+            var expected = input.Select(payload => new PayloadDto(payload)).ToList();
+            expected[0].PayloadStatus = PayloadStatus.InProgress;
+            expected[1].PayloadStatus = PayloadStatus.Complete;
+            expected[2].PayloadStatus = PayloadStatus.Complete;
+
+            _payloadRepository.Setup(p =>
+                p.GetAllAsync(
+                    It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>())
+                ).ReturnsAsync(() => input);
+            var param = input.Select(i => i.Id).ToList();
+            _workflowInstanceRepository.Setup(r =>
+                r.GetByPayloadIdsAsync(param)
+                ).ReturnsAsync(() =>
+                {
+                    return new List<WorkflowInstance>()
+                    {
+                        new WorkflowInstance()
+                        {
+                            PayloadId = input.First().Id,
+                            Status = Status.Created
+                        },
+                        new WorkflowInstance()
+                        {
+                            PayloadId = input.Skip(1).First().Id,
+                            Status = Status.Succeeded,
+                        }
+                    };
+                });
+
+            var result = await PayloadService.GetAllAsync(null, null);
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]

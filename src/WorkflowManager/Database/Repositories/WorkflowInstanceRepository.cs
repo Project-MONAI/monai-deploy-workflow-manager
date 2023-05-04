@@ -79,6 +79,26 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
         }
 
+        public async Task<IList<WorkflowInstance>> GetByPayloadIdsAsync(List<string> workflowIds)
+        {
+            Guard.Against.NullOrEmpty(workflowIds, nameof(workflowIds));
+
+            try
+            {
+                var filterDef = new FilterDefinitionBuilder<WorkflowInstance>();
+
+                var filter = filterDef.In(x => x.PayloadId, workflowIds);
+                var workflowIstances = await _workflowInstanceCollection.Find(filter).ToListAsync();
+
+                return workflowIstances ?? new List<WorkflowInstance>();
+            }
+            catch (Exception e)
+            {
+                _logger.DbGetWorkflowInstancesError(e);
+                return new List<WorkflowInstance>();
+            }
+        }
+
         public async Task<bool> CreateAsync(IList<WorkflowInstance> workflowInstances)
         {
             Guard.Against.NullOrEmpty(workflowInstances, nameof(workflowInstances));
