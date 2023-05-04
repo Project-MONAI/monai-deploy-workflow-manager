@@ -43,6 +43,7 @@ using Mongo.Migration.Startup;
 using MongoDB.Driver;
 using NLog.Web;
 using Monai.Deploy.WorkflowManager.Shared.Services;
+using Monai.Deploy.WorkflowManager.Database;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 {
@@ -64,6 +65,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             {
                 services.AddOptions<WorkflowManagerOptions>()
                     .Bind(hostContext.Configuration.GetSection("WorkflowManager"))
+                    .PostConfigure(options =>
+                    {
+                    });
+                services.AddOptions<InformaticsGatewayConfiguration>()
+                    .Bind(hostContext.Configuration.GetSection("InformaticsGateway"))
                     .PostConfigure(options =>
                     {
                     });
@@ -99,6 +105,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
                 // Mongo DB
                 services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
+                services.Configure<ExecutionStatsDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
                 services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
                 services.AddMigration(new MongoMigrationSettings
                 {
@@ -109,6 +116,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
                 services.AddTransient<IPayloadRepsitory, PayloadRepository>();
                 services.AddTransient<ITasksRepository, TasksRepository>();
+                services.AddTransient<ITaskExecutionStatsRepository, TaskExecutionStatsRepository>();
 
                 // StorageService - Since mc.exe is unavailable during e2e, skip admin check
                 services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value, HealthCheckOptions.ServiceHealthCheck);

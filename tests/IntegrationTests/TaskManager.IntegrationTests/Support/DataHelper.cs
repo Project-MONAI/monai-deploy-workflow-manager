@@ -16,7 +16,6 @@
 
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events;
-using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
@@ -88,27 +87,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             else
             {
                 throw new Exception($"TaskDispatchEvent {name} does not have any applicable test data, please check and try again!");
-            }
-        }
-
-        public TaskExecutionStats GetExecutionStatsTestData(string name)
-        {
-            var taskExecutionStat = ExecutionStatsTestData.TestData.Find(c => c.Name == name);
-
-            if (taskExecutionStat != null)
-            {
-                if (taskExecutionStat.TaskExecutionStats != null)
-                {
-                    return (taskExecutionStat.TaskExecutionStats);
-                }
-                else
-                {
-                    throw new Exception($"ExecutionStat {name} does not have any applicable test data, please check and try again!");
-                }
-            }
-            else
-            {
-                throw new Exception($"ExecutionStat {name} does not have any applicable test data, please check and try again!");
             }
         }
 

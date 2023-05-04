@@ -16,9 +16,9 @@
 
 using Microsoft.Extensions.Configuration;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Database.Options
+namespace Monai.Deploy.WorkflowManager.Database.Options
 {
-    public class TaskExecutionDatabaseSettings
+    public class ExecutionStatsDatabaseSettings
     {
         [ConfigurationKeyName("ConnectionString")]
         public string ConnectionString { get; set; } = null!;

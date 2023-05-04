@@ -24,7 +24,7 @@ A workflow is a standard template that contains a list of tasks that can be ran 
 
 The first task to be ran, will always be the first task in the list. The next task/tasks to be ran must be listed in the [Task Destinations](#task-destinations) of the task. A workflow requires at least one task.
 
-Workflows can be created or updated via the [Workflow API](https://github.com/Project-MONAI/monai-deploy-workflow-manager/blob/develop/docs/api/rest/workflow.md). 
+Workflows can be created or updated via the [Workflow API](https://github.com/Project-MONAI/monai-deploy-workflow-manager/blob/develop/docs/api/rest/workflow.md).
 
 # Contents
 
@@ -142,7 +142,7 @@ The following is an example of the structure of a workflow.
 The following is an example of a complete workflow:
 ![scenario1](../images/workflow_examples/scenario1.png)
 
-An example of a workflow with two tasks: 
+An example of a workflow with two tasks:
 
 1. Argo task
 2. Export Task
@@ -240,7 +240,7 @@ It also defines the "PROD_PACS" output destination, meaning that it can be used:
 Tasks are the basic building block of a workflow. They are provided as a list - the first Task in the list is executed when the workflow is triggered.
 Subsequent tasks are triggered by the `task_destinations` specified by previous tasks.
 
-# Task Object 
+# Task Object
 
 ### Task Types
 These tasks are borken down into different types:
@@ -292,8 +292,8 @@ The following are examples of the task json structure including required args fo
     ]
   },
   "task_destinations": [
-    { 
-      "name": "export-task-id" 
+    {
+      "name": "export-task-id"
     }
   ]
 }
@@ -364,7 +364,7 @@ Depending of the type of task, the task object may contain additional fields.
 Router tasks don't have additional fields. They are used to contain `task_destinations` so that workflow processing can be directed to the desired next step.
 
 #### Export
-These are task types that allow for artifacts to be exported based on the input artifacts list. This task type should not have Out artifacts listed.  
+These are task types that allow for artifacts to be exported based on the input artifacts list. This task type should not have Out artifacts listed.
 The task also requires these extra attributes:-
 
 | Property | Type | Description |
@@ -403,7 +403,7 @@ Example (output sent to another task if the patient is female, otherwise to PACS
 Export destinations define an external location to which the output of the task can be sent. This will take the form of an event published to a pub/sub service notifying of an available export to a specific destination reference. Most commonly, the export location will be a PACs system and the notification will be picked up by the Monai Informatics Gateway.
 
 #### Plugin
-These are tasks are Named the same as the installed Pluging. 
+These are tasks are Named the same as the installed Pluging.
 The task also requires these extra attributes:-
 
 | Property | Type | Description |
@@ -414,7 +414,7 @@ The task also requires these extra attributes:-
 The args requirements for argo plugin can be found [here](#argo).
 
 ### Task Arguments
-Each task plugin requires specific arguments to be provided in the args dictionary. This allows all task types to support as many additional values as necessary without the need to bloat the workflow spec. 
+Each task plugin requires specific arguments to be provided in the args dictionary. This allows all task types to support as many additional values as necessary without the need to bloat the workflow spec.
 
 #### Argo
 The Argo plugin triggers workflows pre-deployed onto an [Argo workflow server](https://argoproj.github.io/argo-events/).
@@ -425,25 +425,11 @@ The Task's "args" object should contain the following fields:
 
 | Property | Type | Required | Description |
 |------|------|------|------|
-|workflow_template_name|str|Yes|The ID of this workflow as registered on the Argo server.|
-|namespace|str|Yes|The namespace of the argo workflow.|
-|server_url|url|Yes|The URL of the Argo server.|
-|allow_insecure|bool|No|Allow insecure connections to argo from the plug-in.|
-|parameters|dictionary|No|Key value pairs, Argo parameters that will be passed on to the Argo workflow.|
-|priority_class|string|No|The name of a valid Kubernetes priority class to be assigned to the Argo workflow pods|
-|resources|dictionary|No|A resource requests & limits object (see below). These will be applied to the Argo workflow pods|
-
-##### Resource Request Object
-
-Resource request parameters should be included in the task args object dictionary, as a string dictionary. The resources dictionary and all included values below are optional. 
-
-| Property | Type | Description |
-|------|------|------|
-|memory_reservation|str|A valid [Kubernetes memory request value](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-memory).|
-|cpu_reservation|url|A valid [Kubernetes CPU request value](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-cpu).|
-|gpu_limit|dictionary|The number of GPUs to be used by this task.|
-|memory_limit|string|The maximum amount of memory this task may use|
-|cpu_limit|object|The maximum amount of CPU this task may use. See |
+|workflow_template_name|string|Yes|The ID of this workflow as registered on the Argo server.|
+|priority_class|string|No|The name of a valid Kubernetes priority class to be assigned to the Argo workflow pods.|
+|gpu_required|string|No|Whether a GPU is to be used by this task.|
+|memory_gb|string|No|The maximum amount of memory in gigabytes this task may use.|
+|cpu|string|No|The maximum amount of CPU this task may use.|
 
 For more information about Kubernetes requests & limits, see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.
 
@@ -501,7 +487,7 @@ As you can see in the example below, input artifacts require a _value_. This is 
 
 #### DICOM Input
 
-If payload DICOM inputs are to be used in a given task, the value of the input must be `context.input.dicom`. This will to resolve to the `{payloadId}/dcm` folder within Minio / S3. 
+If payload DICOM inputs are to be used in a given task, the value of the input must be `context.input.dicom`. This will to resolve to the `{payloadId}/dcm` folder within Minio / S3.
 
 Example:
 ```json
@@ -700,11 +686,11 @@ The following examples both function the same and act as an AND condition.
 ## Evaluators
 Conditional evaluators are logical statement strings that may be used to determine which tasks are executed. They can make use of the execution context _metadata_ and dicom tags. All conditions must evaluate to true in order for the task to be triggered.
 
- [A detailed breakdown of conditional logic can be found here.](https://github.com/Project-MONAI/monai-deploy-workflow-manager/blob/develop/guidelines/mwm-conditionals.md) 
+ [A detailed breakdown of conditional logic can be found here.](https://github.com/Project-MONAI/monai-deploy-workflow-manager/blob/develop/guidelines/mwm-conditionals.md)
 
 ### Supported Evaulators
 
- 
+
  Conditional evaluators should support evaluating workflow variables against predefined values with the following operators:
 
     < (Valid for integers)
@@ -765,9 +751,9 @@ Example (status):
 
 #### Result Metadata & Execution Stats - Using Dictionary Values
 
-The Result Metadata and Execution Stats are populated by the plugin and are added to the workflow instance once a task is completed to provide some output of a task. Each plugin will have its own implementation to populate the result metadata. 
+The Result Metadata and Execution Stats are populated by the plugin and are added to the workflow instance once a task is completed to provide some output of a task. Each plugin will have its own implementation to populate the result metadata.
 
-Because `result` and `execution_stats` are a dictionary, the section after `context.executions.task_id.result` or  `context.executions.task_id.execution_stats` is the key to be checked in the result/execution_stats dictionary. 
+Because `result` and `execution_stats` are a dictionary, the section after `context.executions.task_id.result` or  `context.executions.task_id.execution_stats` is the key to be checked in the result/execution_stats dictionary.
 
 For conditional statements, the key specified is case sensitive and must match exactly to the key which has been output by the model and saved in the result/execution_stats dictionary.
 
@@ -807,9 +793,9 @@ The result metadata for an Argo task is populated by a `metadata.json` that is i
 }
 ```
 
-If metadata is to be used in a conditional the `metadata.json` must be present somewhere in the output directory and a valid JSON dictionary. It will automatically be imported if it is in the directory. 
+If metadata is to be used in a conditional the `metadata.json` must be present somewhere in the output directory and a valid JSON dictionary. It will automatically be imported if it is in the directory.
 
-An example format of the metadata.json can be found below: 
+An example format of the metadata.json can be found below:
 
 execution stats are populated from the argo execution values returned automatically.
 

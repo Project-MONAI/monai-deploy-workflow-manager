@@ -27,16 +27,15 @@ using Monai.Deploy.WorkflowManager.Shared.Services;
 using Monai.Deploy.WorkflowManager.Shared.Wrappers;
 using Moq;
 using Xunit;
-using Monai.Deploy.WorkflowManager.TaskManager.Filter;
-using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
-using Monai.Deploy.WorkflowManager.TaskManager.Controllers;
-using Monai.Deploy.WorkflowManager.TaskManager.Database;
 using System.Linq;
 using System.Net;
+using Monai.Deploy.WorkflowManager.Database;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.ControllersShared;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Controllers
+namespace Monai.Deploy.WorkflowManager.Test.Controllers
 {
-    public class TaskExecutionStatsControllerTests
+    public class ExecutionStatsControllerTests
     {
         private TaskStatsController StatsController { get; set; }
 
@@ -44,9 +43,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Controllers
         private readonly Mock<ILogger<TaskStatsController>> _logger;
         private readonly Mock<IUriService> _uriService;
         private readonly IOptions<WorkflowManagerOptions> _options;
-        private readonly TaskExecutionStats[] _executionStats;
+        private readonly ExecutionStats[] _executionStats;
 
-        public TaskExecutionStatsControllerTests()
+        public ExecutionStatsControllerTests()
         {
             _options = Options.Create(new WorkflowManagerOptions());
             _repo = new Mock<ITaskExecutionStatsRepository>();
@@ -55,9 +54,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Controllers
 
             StatsController = new TaskStatsController(_options, _uriService.Object, _logger.Object, _repo.Object);
             var startTime = new DateTime(2023, 4, 4);
-            _executionStats = new TaskExecutionStats[]
+            _executionStats = new ExecutionStats[]
     {
-                    new TaskExecutionStats
+                    new ExecutionStats
                     {
                         ExecutionId = Guid.NewGuid().ToString(),
                         StartedUTC = startTime,
@@ -66,7 +65,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Controllers
                     },
     };
             _repo.Setup(w => w.GetStatsAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_executionStats);
-            _repo.Setup(w => w.GetStatsCountAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_executionStats.Count());
+            _repo.Setup(w => w.GetStatsStatusCountAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_executionStats.Count());
         }
 
         [Fact]
@@ -162,9 +161,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Controllers
 
             var result = await StatsController.GetStatsAsync(new TimeFilter { StartTime = startTime, EndTime = endTime }, "workflow", "ta");
 
-            _repo.Verify(v => v.GetStatsCountAsync(
+            _repo.Verify(v => v.GetStatsStatusCountAsync(
                 It.Is<DateTime>(d => d.Equals(startTime)),
                 It.Is<DateTime>(d => d.Equals(endTime)),
+                It.Is<string>(s => s.Equals("")),
                 It.Is<string>(s => s.Equals("workflow")),
                 It.Is<string>(s => s.Equals("ta"))));
         }
@@ -192,9 +192,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Controllers
 
             var result = await StatsController.GetOverviewAsync(startTime, endTime);
 
-            _repo.Verify(v => v.GetStatsCountAsync(
+            _repo.Verify(v => v.GetStatsStatusCountAsync(
                 It.Is<DateTime>(d => d.Equals(startTime)),
                 It.Is<DateTime>(d => d.Equals(endTime)),
+                It.Is<string>(s => s.Equals("")),
                 It.Is<string>(s => s.Equals("")),
                 It.Is<string>(s => s.Equals(""))));
         }

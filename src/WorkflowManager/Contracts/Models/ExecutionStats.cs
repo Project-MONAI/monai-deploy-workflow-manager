@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
+using System;
 using System.ComponentModel.DataAnnotations;
+using Monai.Deploy.WorkflowManager.Contracts.Migrations;
 using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.TaskManager.Migrations;
 using Mongo.Migration.Documents;
 using Mongo.Migration.Documents.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
+namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
     [CollectionLocation("ExecutionStats"), RuntimeVersion("1.0.0")]
-    public class TaskExecutionStats : IDocument
+    public class ExecutionStats : IDocument
     {
         /// <summary>
         /// Gets or sets the ID of the object.
@@ -46,28 +47,28 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
         /// </summary>
         [JsonProperty(PropertyName = "correlation_id")]
         [Required]
-        public string CorrelationId { get; set; }
+        public string CorrelationId { get; set; } = "";
 
         /// <summary>
         /// the workflow Instance that triggered the event
         /// </summary>
         [JsonProperty(PropertyName = "workflow_instance_id")]
         [Required]
-        public string WorkflowInstanceId { get; set; }
+        public string WorkflowInstanceId { get; set; } = "";
 
         /// <summary>
         /// This execution ID
         /// </summary>
         [JsonProperty(PropertyName = "execution_id")]
         [Required]
-        public string ExecutionId { get; set; }
+        public string ExecutionId { get; set; } = "";
 
         /// <summary>
         /// The event Task ID
         /// </summary>
         [Required]
         [JsonProperty(PropertyName = "task_id")]
-        public string TaskId { get; set; }
+        public string TaskId { get; set; } = "";
 
         /// <summary>
         /// Gets or sets the date time that the task started with the plug-in.
@@ -111,23 +112,23 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
             get; set;
         }
 
-        public TaskExecutionStats()
+        public ExecutionStats()
         {
 
         }
 
-        public TaskExecutionStats(TaskDispatchEventInfo dispatchInfo)
+        public ExecutionStats(TaskExecution execution, string correlationId)
         {
-            Guard.Against.Null(dispatchInfo, "dispatchInfo");
-            CorrelationId = dispatchInfo.Event.CorrelationId;
-            WorkflowInstanceId = dispatchInfo.Event.WorkflowInstanceId;
-            ExecutionId = dispatchInfo.Event.ExecutionId;
-            TaskId = dispatchInfo.Event.TaskId;
-            StartedUTC = dispatchInfo.Started.ToUniversalTime();
-            Status = dispatchInfo.Event.Status.ToString();
+            Guard.Against.Null(execution, "dispatchInfo");
+            CorrelationId = correlationId;
+            WorkflowInstanceId = execution.WorkflowInstanceId;
+            ExecutionId = execution.ExecutionId;
+            TaskId = execution.TaskId;
+            StartedUTC = execution.TaskStartTime.ToUniversalTime();
+            Status = execution.Status.ToString();
         }
 
-        public TaskExecutionStats(TaskUpdateEvent taskUpdateEvent)
+        public ExecutionStats(TaskUpdateEvent taskUpdateEvent)
         {
             Guard.Against.Null(taskUpdateEvent, "taskUpdateEvent");
             CorrelationId = taskUpdateEvent.CorrelationId;
@@ -135,6 +136,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
             ExecutionId = taskUpdateEvent.ExecutionId;
             TaskId = taskUpdateEvent.TaskId;
             Status = taskUpdateEvent.Status.ToString();
+        }
+
+        public ExecutionStats(TaskCancellationEvent taskCanceledEvent, string correlationId)
+        {
+            Guard.Against.Null(taskCanceledEvent, "taskCanceledEvent");
+            CorrelationId = correlationId;
+            WorkflowInstanceId = taskCanceledEvent.WorkflowInstanceId;
+            ExecutionId = taskCanceledEvent.ExecutionId;
+            TaskId = taskCanceledEvent.TaskId;
+            Status = TaskExecutionStatus.Failed.ToString();
         }
     }
 }

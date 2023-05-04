@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.ControllersShared;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Database;
+using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.Shared.Filter;
 using Monai.Deploy.WorkflowManager.Shared.Services;
 using Monai.Deploy.WorkflowManager.Shared.Wrappers;
-using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
-using Monai.Deploy.WorkflowManager.TaskManager.Database;
-using Monai.Deploy.WorkflowManager.TaskManager.Filter;
-using Monai.Deploy.WorkflowManager.TaskManager.Logging;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Controllers
+namespace Monai.Deploy.WorkflowManager.ControllersShared
 {
     /// <summary>
     /// Execution stats endpoint.
@@ -61,8 +64,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Controllers
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
+        /// <summary>
+        /// Get an overview of execution stats for a given period.
+        /// </summary>
+        /// <param name="startTime">start time for stats.</param>
+        /// <param name="endTime">endtime for stats.</param>
+        /// <returns>an object with the execution stats.</returns>
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         [HttpGet("statsoverview")]
+
         public async Task<IActionResult> GetOverviewAsync([FromQuery] DateTime startTime, DateTime endTime)
         {
             if (endTime == default)
@@ -78,16 +88,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Controllers
             try
             {
                 var fails = _repository.GetStatsStatusFailedCountAsync(startTime, endTime);
-                var rangeCount = _repository.GetStatsCountAsync(startTime, endTime);
+                var running = _repository.GetStatsStatusCountAsync(startTime, endTime, TaskExecutionStatus.Accepted.ToString());
+                var rangeCount = _repository.GetStatsStatusCountAsync(startTime, endTime);
                 var stats = _repository.GetAverageStats(startTime, endTime);
 
-                await Task.WhenAll(fails, rangeCount, stats);
+                await Task.WhenAll(fails, rangeCount, stats, running);
                 return Ok(new
                 {
                     PeriodStart = startTime,
                     PeriodEnd = endTime,
                     TotalExecutions = (int)rangeCount.Result,
                     TotalFailures = (int)fails.Result,
+                    TotalInprogress = running.Result,
                     AverageTotalExecutionSeconds = Math.Round(stats.Result.avgTotalExecution, 2),
                     AverageArgoExecutionSeconds = Math.Round(stats.Result.avgArgoExecution, 2),
                 });
@@ -99,12 +111,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Controllers
             }
         }
 
+        /// <summary>
+        /// Get execution stats for a given time period.
+        /// </summary>
+        /// <param name="filter">TimeFiler defining start and end times, plus paging options.</param>
+        /// <param name="workflowId">WorkflowId if you want stats just for a given workflow. (both workflowId and TaskId must be given, if you give one).</param>
+        /// <param name="taskId">TaskId if you want stats for a given taskId.(both workflowId and TaskId must be given, if you give one).</param>
+        /// <returns>a paged obect with all the stat details.</returns>
         [ProducesResponseType(typeof(StatsPagedResponse<List<ExecutionStatDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         [HttpGet("stats")]
-        public async Task<IActionResult> GetStatsAsync([FromQuery] TimeFilter filter, string workflowId, string taskId)
+        public async Task<IActionResult> GetStatsAsync([FromQuery] TimeFilter filter, string workflowId = "", string taskId = "")
         {
-
             if ((string.IsNullOrWhiteSpace(workflowId) && string.IsNullOrWhiteSpace(taskId)) is false
               && (string.IsNullOrWhiteSpace(workflowId) || string.IsNullOrWhiteSpace(taskId)))
             {
@@ -130,12 +148,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Controllers
 
             try
             {
-                var allStats = _repository.GetStatsAsync(filter.StartTime, filter.EndTime, pageSize, filter.PageNumber, workflowId, taskId);
-                var fails = _repository.GetStatsStatusFailedCountAsync(filter.StartTime, filter.EndTime, workflowId, taskId);
-                var rangeCount = _repository.GetStatsCountAsync(filter.StartTime, filter.EndTime, workflowId, taskId);
-                var stats = _repository.GetAverageStats(filter.StartTime, filter.EndTime, workflowId, taskId);
+                var allStats = _repository.GetStatsAsync(filter.StartTime, filter.EndTime, pageSize, filter.PageNumber, workflowId ?? string.Empty, taskId ?? string.Empty);
+                var fails = _repository.GetStatsStatusFailedCountAsync(filter.StartTime, filter.EndTime, workflowId ?? string.Empty, taskId ?? string.Empty);
+                var rangeCount = _repository.GetStatsStatusCountAsync(filter.StartTime, filter.EndTime, string.Empty, workflowId ?? string.Empty, taskId ?? string.Empty);
+                var stats = _repository.GetAverageStats(filter.StartTime, filter.EndTime, workflowId ?? string.Empty, taskId ?? string.Empty);
+                var running = _repository.GetStatsStatusCountAsync(filter.StartTime, filter.EndTime, TaskExecutionStatus.Accepted.ToString());
 
-                await Task.WhenAll(allStats, fails, rangeCount, stats);
+                await Task.WhenAll(allStats, fails, rangeCount, stats, running);
 
                 ExecutionStatDTO[] statsDto;
 
@@ -150,6 +169,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Controllers
                 res.PeriodEnd = filter.EndTime;
                 res.TotalExecutions = rangeCount.Result;
                 res.TotalFailures = fails.Result;
+                res.TotalInprogress = running.Result;
                 res.AverageTotalExecutionSeconds = Math.Round(stats.Result.avgTotalExecution, 2);
                 res.AverageArgoExecutionSeconds = Math.Round(stats.Result.avgArgoExecution, 2);
                 return Ok(res);
@@ -159,7 +179,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Controllers
                 _logger.GetStatsAsyncError(e);
                 return Problem($"Unexpected error occurred: {e.Message}", $"tasks/stats", InternalServerError);
             }
-
         }
     }
 }

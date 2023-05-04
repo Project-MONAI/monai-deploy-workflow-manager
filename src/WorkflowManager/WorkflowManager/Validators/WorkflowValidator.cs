@@ -24,6 +24,7 @@ using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Logging;
+using Monai.Deploy.WorkflowManager.Services.InformaticsGateway;
 using Monai.Deploy.WorkflowManager.Shared;
 using MongoDB.Driver.Linq;
 using static Monai.Deploy.WorkflowManager.Shared.ValidationConstants;
@@ -47,9 +48,13 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// Initializes a new instance of the <see cref="WorkflowValidator"/> class.
         /// </summary>
         /// <param name="workflowService">The workflow service.</param>
-        public WorkflowValidator(IWorkflowService workflowService, ILogger<WorkflowValidator> logger)
+        public WorkflowValidator(
+            IWorkflowService workflowService,
+            IInformaticsGatewayService informaticsGatewayService,
+            ILogger<WorkflowValidator> logger)
         {
             WorkflowService = workflowService ?? throw new ArgumentNullException(nameof(workflowService));
+            InformaticsGatewayService = informaticsGatewayService ?? throw new ArgumentNullException(nameof(informaticsGatewayService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -59,6 +64,8 @@ namespace Monai.Deploy.WorkflowManager.Validators
         private List<string> Errors { get; set; } = new List<string>();
 
         private IWorkflowService WorkflowService { get; }
+
+        private IInformaticsGatewayService InformaticsGatewayService { get; }
 
         /// <summary>
         /// used for checking for duplicates, if OrignalName is empty it will be determined as a create
@@ -152,9 +159,9 @@ namespace Monai.Deploy.WorkflowManager.Validators
             {
                 // duplicate destinations
                 var duplicates = destinations
-                .GroupBy(i => i)
-                .Where(g => g.Count() > 1)
-                .Select(g => g.Key);
+                    .GroupBy(i => i)
+                    .Where(g => g.Count() > 1)
+                    .Select(g => g.Key);
 
                 foreach (var dupe in duplicates)
                 {
@@ -236,7 +243,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 Errors.Add("Missing Workflow Version.");
             }
 
-            ValidateInformaticsGateaway(workflow.InformaticsGateway);
+            await ValidateInformaticsGateaway(workflow.InformaticsGateway);
 
             if (workflow.Tasks is null || workflow.Tasks.Any() is false)
             {
@@ -254,7 +261,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void ValidateInformaticsGateaway(InformaticsGateway informaticsGateway)
+        private async Task ValidateInformaticsGateaway(InformaticsGateway informaticsGateway)
         {
             if (informaticsGateway is null)
             {
@@ -266,6 +273,17 @@ namespace Monai.Deploy.WorkflowManager.Validators
             {
                 Errors.Add("AeTitle is required in the InformaticsGateaway section and must be under 16 characters.");
                 return;
+            }
+
+            if (!informaticsGateway.DataOrigins.IsNullOrEmpty())
+            {
+                foreach (var origin in informaticsGateway.DataOrigins)
+                {
+                    if (!await InformaticsGatewayService.OriginExists(origin))
+                    {
+                        Errors.Add($"Data origin {origin} does not exists. Please review sources configuration management.");
+                    }
+                }
             }
         }
 
@@ -337,6 +355,14 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 Errors.Add($"Task: '{currentTask.Id}' workflow_template_name must be specified{Comma}this corresponds to an Argo template name.");
             }
 
+            var validKeys = new string[] { WorkflowTemplateName, TaskPriorityClassName, Cpu, Memory, GpuRequired };
+            var invalidKeys = currentTask.Args.Keys.Where(k => !validKeys.Contains(k));
+            if (invalidKeys.Count() > 0)
+            {
+                Errors.Add($"Task: '{currentTask.Id}' args has invalid keys: {string.Join(", ", invalidKeys)}. Please only specify keys from the following list: {string.Join(", ", validKeys)}.");
+                return;
+            }
+
             if (currentTask.Args.ContainsKey(TaskPriorityClassName))
             {
                 switch (currentTask.Args[TaskPriorityClassName].ToLower())
@@ -347,6 +373,24 @@ namespace Monai.Deploy.WorkflowManager.Validators
                         Errors.Add($"Task: '{currentTask.Id}' TaskPriorityClassName must be one of \"high\"{Comma} \"standard\" or \"low\"");
                         break;
                 }
+            }
+
+            new List<string> { Cpu, Memory }.ForEach(key =>
+            {
+                if (
+                    currentTask.Args.TryGetValue(key, out var val) &&
+                    (string.IsNullOrEmpty(val) ||
+                    (double.TryParse(val, out double parsedVal) && (parsedVal < 1 || Math.Truncate(parsedVal) != parsedVal))))
+                {
+                    Errors.Add($"Task: '{currentTask.Id}' value '{val}' provided for argument '{key}' is not valid. The value needs to be a whole number greater than 0.");
+                }
+            });
+
+            if (
+                currentTask.Args.TryGetValue(GpuRequired, out var gpuRequired) &&
+                (string.IsNullOrEmpty(gpuRequired) || !bool.TryParse(gpuRequired, out var _)))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' value '{gpuRequired}' provided for argument '{GpuRequired}' is not valid. The value needs to be 'true' or 'false'.");
             }
         }
 

@@ -33,6 +33,7 @@ using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Database;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.Storage.Services;
@@ -58,6 +59,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
         private readonly Mock<IWorkflowService> _workflowService;
         private readonly IOptions<WorkflowManagerOptions> _configuration;
         private readonly IOptions<StorageServiceConfiguration> _storageConfiguration;
+        private readonly Mock<ITaskExecutionStatsRepository> _taskExecutionStatsRepository;
         private readonly int _timeoutForTypeTask = 999;
         private readonly int _timeoutForDefault = 966;
 
@@ -69,6 +71,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository = new Mock<IWorkflowInstanceRepository>();
             _workflowInstanceService = new Mock<IWorkflowInstanceService>();
             _messageBrokerPublisherService = new Mock<IMessageBrokerPublisherService>();
+            _taskExecutionStatsRepository = new Mock<ITaskExecutionStatsRepository>();
             _storageService = new Mock<IStorageService>();
             _payloadService = new Mock<IPayloadService>();
             _workflowService = new Mock<IWorkflowService>();
@@ -93,6 +96,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                                                                   _messageBrokerPublisherService.Object,
                                                                   _workflowInstanceService.Object,
                                                                   conditionalParser,
+                                                                  _taskExecutionStatsRepository.Object,
                                                                   _artifactMapper.Object,
                                                                   _storageService.Object,
                                                                   _payloadService.Object);

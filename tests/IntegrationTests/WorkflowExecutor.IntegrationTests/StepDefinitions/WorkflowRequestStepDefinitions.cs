@@ -43,7 +43,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             WorkflowPublisher = objectContainer.Resolve<RabbitPublisher>("WorkflowPublisher");
             TaskDispatchConsumer = objectContainer.Resolve<RabbitConsumer>("TaskDispatchConsumer");
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
-            Assertions = new Assertions(objectContainer);
+            Assertions = new Assertions(objectContainer, outputHelper);
             DataHelper = objectContainer.Resolve<DataHelper>();
             _outputHelper = outputHelper;
             MinioDataSeeding = new MinioDataSeeding(objectContainer.Resolve<MinioClientUtil>(), DataHelper, _outputHelper);

@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Database
+namespace Monai.Deploy.WorkflowManager.Database
 {
     public interface ITaskExecutionStatsRepository
     {
@@ -25,23 +28,30 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
         /// Creates a task dispatch event in the database.
         /// </summary>
         /// <param name="taskDispatchEvent">A TaskDispatchEvent to create.</param>
-        /// <returns>Returns the created TaskDispatchEventInfo.</returns>
-        Task CreateAsync(TaskDispatchEventInfo taskDispatchEventInfo);
+        /// <returns></returns>
+        Task CreateAsync(TaskExecution TaskExecutionInfo, string correlationId);
 
         /// <summary>
-        /// Updates user accounts of a task dispatch event in the database.
+        /// Updates status of a task dispatch event in the database.
         /// </summary>
         /// <param name="taskDispatchEvent">A TaskDispatchEvent to update.</param>
-        /// <returns>Returns the created TaskDispatchEventInfo.</returns>
-        Task UpdateExecutionStatsAsync(TaskUpdateEvent taskUpdateEvent);
+        /// <returns></returns>
+        Task UpdateExecutionStatsAsync(TaskExecution taskUpdateEvent, TaskExecutionStatus? status = null);
+
+        /// <summary>
+        /// Updates status of a task now its been canceled.
+        /// </summary>
+        /// <param name="TaskCanceledException">A TaskCanceledException to update.</param>
+        /// <returns></returns
+        Task UpdateExecutionStatsAsync(TaskCancellationEvent taskCanceledEvent, string correlationId);
 
         /// <summary>
         /// Returns paged entries between the two given dates.
         /// </summary>
         /// <param name="startTime">start of the range.</param>
         /// <param name="endTime">end of the range.</param>
-        /// <returns>a paged view of entried in range</returns>
-        Task<IEnumerable<TaskExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int PageSize = 10, int PageNumber = 1, string workflowInstanceId = "", string taskId = "");
+        /// <returns>a collections of stats</returns>
+        Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int PageSize = 10, int PageNumber = 1, string workflowInstanceId = "", string taskId = "");
 
         /// <summary>
         /// Return the total number of stats between the dates
@@ -49,14 +59,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
         /// <param name="startTime">start of the range.</param>
         /// <param name="endTime">end of the range.</param>
         /// <returns>The count of all records in range</returns>
-        Task<long> GetStatsCountAsync(DateTime startTime, DateTime endTime, string workflowInstanceId = "", string taskId = "");
+        //Task<long> GetStatsCountAsync(DateTime startTime, DateTime endTime, string workflowInstanceId = "", string taskId = "");
 
+        /// <summary>
+        /// Return the count of the entries with this status, or all if no status given
+        /// </summary>
+        /// <param name="start">start of the range.</param>
+        /// <param name="endTime">end of the range.</param>
+        /// <param name="status">the status to get count of, or string.empty</param>
+        /// <returns>The count of all records in range</returns>
+        Task<long> GetStatsStatusCountAsync(DateTime start, DateTime endTime, string status = "", string workflowInstanceId = "", string taskId = "");
         /// <summary>
         /// Returns all stats in Failed or PartialFail status.
         /// </summary>
         /// <param name="startTime">start of the range.</param>
         /// <param name="endTime">end of the range.</param>
-        /// <returns>All stats NOT of that status</returns>
+        /// <returns>All stats that failed or partially failed</returns>
         Task<long> GetStatsStatusFailedCountAsync(DateTime startTime, DateTime endTime, string workflowInstanceId = "", string taskId = "");
 
         /// <summary>

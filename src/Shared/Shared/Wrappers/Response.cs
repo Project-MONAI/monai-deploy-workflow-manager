@@ -54,11 +54,11 @@ namespace Monai.Deploy.WorkflowManager.Shared.Wrappers
         /// <summary>
         /// Gets or sets errors.
         /// </summary>
-        public string[] Errors { get; set; }
+        public string?[] Errors { get; set; }
 
         /// <summary>
         /// Gets or sets message.
         /// </summary>
-        public string Message { get; set; }
+        public string? Message { get; set; }
     }
 }
