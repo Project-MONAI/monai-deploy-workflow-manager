@@ -153,8 +153,6 @@ namespace Monai.Deploy.WorkflowManager
             services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("WorkflowManager:messaging:publisherServiceAssemblyName").Value);
             services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("WorkflowManager:messaging:subscriberServiceAssemblyName").Value);
 
-            services.AddHostedService(p => p.GetService<DataRetentionService>());
-
             services.AddWorkflowExecutor(hostContext);
 
             services.AddHttpContextAccessor();

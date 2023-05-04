@@ -42,6 +42,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
                                          string? patientName = "");
 
         /// <summary>
+        /// Deletes a payload by id.
+        /// </summary>
+        /// <param name="payloadId">payload id to delete.</param>
+        Task<bool> DeletePayloadFromStorageAsync(string payloadId);
+
+        /// <summary>
         /// Updates a payload
         /// </summary>
         /// <param name="payload"></param>
