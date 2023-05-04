@@ -81,6 +81,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             TestExecutionConfig.MongoConfig.WorkflowCollection = "Workflows";
             TestExecutionConfig.MongoConfig.WorkflowInstanceCollection = "WorkflowInstances";
             TestExecutionConfig.MongoConfig.PayloadCollection = "Payloads";
+            TestExecutionConfig.MongoConfig.ExecutionStatsCollection = "ExecutionStats";
 
             TestExecutionConfig.MinioConfig.Endpoint = config.GetValue<string>("WorkflowManager:storage:settings:endpoint");
             TestExecutionConfig.MinioConfig.AccessKey = config.GetValue<string>("WorkflowManager:storage:settings:accessKey");

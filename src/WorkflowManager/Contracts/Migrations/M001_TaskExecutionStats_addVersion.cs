@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
+using System;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Mongo.Migration.Migrations.Document;
 using MongoDB.Bson;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.API.Migrations
+namespace Monai.Deploy.WorkflowManager.Contracts.Migrations
 {
-    public class M001_TaskExecutionStats_addVersion : DocumentMigration<TaskExecutionStats>
+    public class M001_TaskExecutionStats_addVersion : DocumentMigration<ExecutionStats>
     {
         public M001_TaskExecutionStats_addVersion() : base("1.0.0") { }
 

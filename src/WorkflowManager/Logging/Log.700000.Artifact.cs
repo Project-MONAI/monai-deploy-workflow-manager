@@ -37,7 +37,7 @@ namespace Monai.Deploy.WorkflowManager.Logging
         public static partial void MandatoryOutputArtefactsMissingForTask(this ILogger logger, string taskId);
 
         [LoggerMessage(EventId = 700005, Level = LogLevel.Error, Message = "The following payload: {payloadId} in workflow instance {workflowInstanceId} workflow revision {workflowRevisionId} for task {taskId} failed to load artifact and was unable to update DB.")]
-        public static partial void LoadArtifactAndDBFailiure(this ILogger logger, string payloadId, string taskId, string workflowInstanceId, string workflowRevisionId);
+        public static partial void LoadArtifactAndDBFailure(this ILogger logger, string payloadId, string taskId, string workflowInstanceId, string workflowRevisionId);
 
         [LoggerMessage(EventId = 700006, Level = LogLevel.Error, Message = "Task Dispatch failed to resolve output artifacts: PayloadId: {payloadId}, TaskId: {taskId}, WorkflowInstanceId: {workflowInstanceId}, WorkflowRevisionId: {workflowRevisionId}, output artifact object: {pathOutputArtifacts}")]
         public static partial void LogTaskDispatchFailure(this ILogger logger, string payloadId, string taskId, string workflowInstanceId, string workflowRevisionId, string pathOutputArtifacts);

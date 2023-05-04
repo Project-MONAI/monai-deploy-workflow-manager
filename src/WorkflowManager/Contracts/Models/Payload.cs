@@ -26,11 +26,11 @@ using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
-    [CollectionLocation("Payloads"), RuntimeVersion("1.0.0")]
+    [CollectionLocation("Payloads"), RuntimeVersion("1.0.1")]
     public class Payload : IDocument
     {
         [JsonConverter(typeof(DocumentVersionConvert)), BsonSerializer(typeof(DocumentVersionConverBson))]
-        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 0);
+        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 1);
 
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; } = string.Empty;
@@ -62,10 +62,21 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "timestamp")]
         public DateTime Timestamp { get; set; }
 
+        [JsonProperty(PropertyName = "payload_deleted")]
+        public PayloadDeleted PayloadDeleted { get; set; } = PayloadDeleted.No;
+
         [JsonProperty(PropertyName = "files")]
         public IList<BlockStorageInfo> Files { get; set; } = new List<BlockStorageInfo>();
 
         [JsonProperty(PropertyName = "patient_details")]
         public PatientDetails PatientDetails { get; set; } = new PatientDetails();
+    }
+
+    public enum PayloadDeleted
+    {
+        No,
+        Yes,
+        InProgress,
+        Failed
     }
 }

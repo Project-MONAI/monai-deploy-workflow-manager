@@ -371,9 +371,9 @@ public class ArgoPluginTest : ArgoPluginTestBase
             Assert.True(template.Container.Resources?.Limits is not null);
             var value = "";
 
-            Assert.True(template.Container.Resources?.Limits?.TryGetValue("limits.memory", out value));
+            Assert.True(template.Container.Resources?.Limits?.TryGetValue("memory", out value));
             Assert.True(value == "1");
-            Assert.True(template.Container.Resources?.Limits?.TryGetValue("limits.cpu", out value));
+            Assert.True(template.Container.Resources?.Limits?.TryGetValue("cpu", out value));
             Assert.True(value == "1");
             Assert.True(template.Container.Resources?.Limits?.TryGetValue("nvidia.com/gpu", out value));
             Assert.True(value == "1");

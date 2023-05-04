@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
+namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
 {
     public class ExecutionStatTestData
     {
         public string? Name { get; set; }
 
-        public TaskExecutionStats? TaskExecutionStats { get; set; }
+        public ExecutionStats? ExecutionStats { get; set; }
     }
 
     public static class ExecutionStatsTestData
@@ -32,7 +32,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             new ExecutionStatTestData()
             {
                 Name = "Execution_Stats_Task_1_Accepted",
-                TaskExecutionStats = new TaskExecutionStats()
+                ExecutionStats = new ExecutionStats()
                 {
                     Id = Guid.NewGuid(),
                     CorrelationId = "b9b7d802-eb19-45dc-91ec-850b2ac0665c",
@@ -47,7 +47,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             new ExecutionStatTestData()
             {
                 Name = "Execution_Stats_Task_1_Succeeded_1",
-                TaskExecutionStats = new TaskExecutionStats()
+                ExecutionStats = new ExecutionStats()
                 {
                     Id = Guid.NewGuid(),
                     CorrelationId = "a332a1bc-b1fd-4034-9f3f-72da68fa089e",
@@ -65,7 +65,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             new ExecutionStatTestData()
             {
                 Name = "Execution_Stats_Task_1_Succeeded_2",
-                TaskExecutionStats = new TaskExecutionStats()
+                ExecutionStats = new ExecutionStats()
                 {
                     Id = Guid.NewGuid(),
                     CorrelationId = "5d84094c-b0d0-4df6-8298-4201ff75340d",
@@ -83,7 +83,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             new ExecutionStatTestData()
             {
                 Name = "Execution_Stats_Task_1_Succeeded_3",
-                TaskExecutionStats = new TaskExecutionStats()
+                ExecutionStats = new ExecutionStats()
                 {
                     Id = Guid.NewGuid(),
                     CorrelationId = "5d84094c-b0d0-4df6-8298-4201ff75340d",
@@ -102,7 +102,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             new ExecutionStatTestData()
             {
                 Name = "Execution_Stats_Task_1_Failed",
-                TaskExecutionStats = new TaskExecutionStats()
+                ExecutionStats = new ExecutionStats()
                 {
                     Id = Guid.NewGuid(),
                     CorrelationId = "8fda262e-a6dd-46d1-ab8e-592b6442c607",
@@ -120,7 +120,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             new ExecutionStatTestData()
             {
                 Name = "Execution_Stats_Task_2_Succeeded",
-                TaskExecutionStats = new TaskExecutionStats()
+                ExecutionStats = new ExecutionStats()
                 {
                     Id = Guid.NewGuid(),
                     CorrelationId = "8fda262e-a6dd-46d1-ab8e-592b6442c607",

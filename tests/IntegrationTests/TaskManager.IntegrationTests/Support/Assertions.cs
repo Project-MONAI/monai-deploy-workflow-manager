@@ -122,6 +122,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             Output.WriteLine("Details of TaskUpdateEvent matches TaskCallbackEvent");
         }
 
+        private string GetTaskPluginArguments(TaskDispatchEvent taskDispatchEvent, string key)
+        {
+            string? dictValue;
+
+            taskDispatchEvent.TaskPluginArguments.TryGetValue(key, out dictValue);
+
+            return dictValue;
+        }
+
         public void AssertTaskUpdateEventFromTaskDispatch(TaskUpdateEvent taskUpdateEvent, TaskDispatchEvent taskDispatchEvent, TaskExecutionStatus status)
         {
             Output.WriteLine("Asserting details of TaskUpdateEvent with TaskDispatchEvent");
@@ -131,36 +140,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             taskUpdateEvent.TaskId.Should().Be(taskDispatchEvent.TaskId);
             taskUpdateEvent.WorkflowInstanceId.Should().Be(taskDispatchEvent.WorkflowInstanceId);
             Output.WriteLine("Details of TaskUpdateEvent matches TaskDispatchEvent");
-        }
-
-        public void AssertExecutionStats(TaskExecutionStats executionStats, TaskDispatchEvent taskDispatchEvent = null, TaskCallbackEvent taskCallbackEvent = null)
-        {
-            Output.WriteLine("Asserting details of TaskExecutionStats");
-            if (taskDispatchEvent != null)
-            {
-                executionStats.ExecutionId.Should().Be(taskDispatchEvent.ExecutionId);
-                executionStats.WorkflowInstanceId.Should().Be(taskDispatchEvent.WorkflowInstanceId);
-                executionStats.StartedUTC.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(20));
-                executionStats.TaskId.Should().Be(taskDispatchEvent.TaskId);
-                executionStats.Status.Should().Be("Accepted");
-                executionStats.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId);
-            }
-            else
-            {
-                executionStats.LastUpdatedUTC.Should().BeAfter(executionStats.StartedUTC);
-                executionStats.ExecutionTimeSeconds.Should().BeGreaterThan(0);
-                executionStats.DurationSeconds.Should().BeGreaterThan(0);
-            }
-            Output.WriteLine("Details TaskExecutionStats are correct");
-        }
-
-        private string GetTaskPluginArguments(TaskDispatchEvent taskDispatchEvent, string key)
-        {
-            string? dictValue;
-
-            taskDispatchEvent.TaskPluginArguments.TryGetValue(key, out dictValue);
-
-            return dictValue;
         }
     }
 }

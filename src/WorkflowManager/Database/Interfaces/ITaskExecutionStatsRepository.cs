@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
+using Monai.Deploy.WorkflowManager.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Database
+namespace Monai.Deploy.WorkflowManager.Database
 {
     public interface ITaskExecutionStatsRepository
     {
@@ -26,14 +29,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
         /// </summary>
         /// <param name="taskDispatchEvent">A TaskDispatchEvent to create.</param>
         /// <returns></returns>
-        Task CreateAsync(TaskDispatchEventInfo taskDispatchEventInfo);
+        Task CreateAsync(TaskExecution TaskExecutionInfo, string correlationId);
 
         /// <summary>
         /// Updates status of a task dispatch event in the database.
         /// </summary>
         /// <param name="taskDispatchEvent">A TaskDispatchEvent to update.</param>
         /// <returns></returns>
-        Task UpdateExecutionStatsAsync(TaskUpdateEvent taskUpdateEvent);
+        Task UpdateExecutionStatsAsync(TaskExecution taskUpdateEvent, TaskExecutionStatus? status = null);
 
         /// <summary>
         /// Updates status of a task now its been canceled.
@@ -48,7 +51,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
         /// <param name="startTime">start of the range.</param>
         /// <param name="endTime">end of the range.</param>
         /// <returns>a collections of stats</returns>
-        Task<IEnumerable<TaskExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int PageSize = 10, int PageNumber = 1, string workflowInstanceId = "", string taskId = "");
+        Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int PageSize = 10, int PageNumber = 1, string workflowInstanceId = "", string taskId = "");
 
         /// <summary>
         /// Return the total number of stats between the dates
@@ -66,6 +69,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
         /// <param name="status">the status to get count of, or string.empty</param>
         /// <returns>The count of all records in range</returns>
         Task<long> GetStatsStatusCountAsync(DateTime start, DateTime endTime, string status = "", string workflowInstanceId = "", string taskId = "");
+
         /// <summary>
         /// Returns all stats in Failed or PartialFail status.
         /// </summary>

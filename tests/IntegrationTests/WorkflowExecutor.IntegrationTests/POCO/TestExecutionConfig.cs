@@ -63,6 +63,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.POCO
             public static string WorkflowInstanceCollection { get; set; } = string.Empty;
 
             public static string PayloadCollection { get; set; } = string.Empty;
+
+            public static string ExecutionStatsCollection { get; set; } = string.Empty;
         }
 
         public static class MinioConfig

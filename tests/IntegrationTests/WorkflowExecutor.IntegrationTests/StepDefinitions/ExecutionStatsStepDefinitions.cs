@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
+using BoDi;
+using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
 using Polly;
 using Polly.Retry;
 using Snapshooter.NUnit;
+using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class ExecutionStatsStepDefinitions
@@ -35,7 +38,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         {
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
             DataHelper = objectContainer.Resolve<DataHelper>();
-            Assertions = new Assertions(outputHelper);
+            Assertions = new Assertions(objectContainer, outputHelper);
             _outputHelper = outputHelper;
             RetryExecutionStats = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
             ApiHelper = objectContainer.Resolve<ApiHelper>();
@@ -46,7 +49,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         {
             foreach (var name in names)
             {
-                _outputHelper.WriteLine($"Creating TaskExecutionStats with name={name}");
+                _outputHelper.WriteLine($"Creating ExecutionStats with name={name}");
                 var executionStat = DataHelper.GetExecutionStatsTestData(name);
                 MongoClient.CreateExecutionStats(executionStat);
             }
@@ -57,7 +60,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         {
             foreach (var testData in ExecutionStatsTestData.TestData)
             {
-                _outputHelper.WriteLine($"Creating TaskExecutionStats with name={testData.Name}");
+                _outputHelper.WriteLine($"Creating ExecutionStats with name={testData.Name}");
                 var executionStat = DataHelper.GetExecutionStatsTestData(testData.Name);
                 MongoClient.CreateExecutionStats(executionStat);
             }

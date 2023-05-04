@@ -20,7 +20,7 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Database.Interfaces
 {
-    public interface IPayloadRepsitory
+    public interface IPayloadRepository
     {
         /// <summary>
         /// Creates a payload in the database.
@@ -44,6 +44,13 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// </summary>
         /// <returns>Count of objects.</returns>
         Task<long> CountAsync();
+
+        /// <summary>
+        /// Updates a payload in the database.
+        /// </summary>
+        /// <param name="payload">The payload to update.</param>
+        /// <returns>The updated payload.</returns>
+        Task<bool> UpdateAsync(Payload payload);
 
         /// Updates a payload in the database.
         /// </summary>

@@ -32,6 +32,7 @@ using Monai.Deploy.WorkflowManager.Shared.Wrappers;
 using Moq;
 using Xunit;
 using Monai.Deploy.WorkflowManager.Shared.Filter;
+using Monai.Deploy.WorkflowManager.Services.InformaticsGateway;
 
 namespace Monai.Deploy.WorkflowManager.Test.Controllers
 {
@@ -40,6 +41,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         private WorkflowsController WorkflowsController { get; set; }
 
         private readonly Mock<IWorkflowService> _workflowService;
+        private readonly Mock<IInformaticsGatewayService> _informaticsGatewayService;
         private readonly Mock<WorkflowValidator> _workflowValidator;
         private readonly Mock<ILogger<WorkflowsController>> _logger;
         private readonly Mock<ILogger<WorkflowValidator>> _loggerWorkflowValidator;
@@ -50,10 +52,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         {
             _options = Options.Create(new WorkflowManagerOptions { EndpointSettings = new EndpointSettings { MaxPageSize = 99 } });
             _workflowService = new Mock<IWorkflowService>();
+            _informaticsGatewayService = new Mock<IInformaticsGatewayService>();
 
             _logger = new Mock<ILogger<WorkflowsController>>();
             _loggerWorkflowValidator = new Mock<ILogger<WorkflowValidator>>();
-            _workflowValidator = new Mock<WorkflowValidator>(_workflowService.Object, _loggerWorkflowValidator.Object);
+            _workflowValidator = new Mock<WorkflowValidator>(_workflowService.Object, _informaticsGatewayService.Object, _loggerWorkflowValidator.Object);
             _uriService = new Mock<IUriService>();
 
             _logger.Setup(p => p.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
@@ -178,7 +181,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 InformaticsGateway = new InformaticsGateway
                 {
                     AeTitle = "aetitle",
-                    DataOrigins = new[] { "test" },
                     ExportDestinations = new[] { "test" }
                 },
                 Tasks = new TaskObject[]
@@ -286,7 +288,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 InformaticsGateway = new InformaticsGateway()
                 {
                     AeTitle = "Update",
-                    DataOrigins = new string[] { "test" },
                     ExportDestinations = new string[] { "test" }
                 }
             };
@@ -543,7 +544,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 InformaticsGateway = new InformaticsGateway
                 {
                     AeTitle = "aetitle",
-                    DataOrigins = new[] { "test" },
                     ExportDestinations = new[] { "test" }
                 },
                 Tasks = new TaskObject[]
@@ -590,7 +590,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                     InformaticsGateway = new InformaticsGateway
                     {
                         AeTitle = "aetitle",
-                        DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
                     },
                     Tasks = new TaskObject[]
@@ -629,7 +628,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 InformaticsGateway = new InformaticsGateway
                 {
                     AeTitle = "aetitle",
-                    DataOrigins = new[] { "test" },
                     ExportDestinations = new[] { "test" }
                 },
                 Tasks = new TaskObject[]
@@ -676,7 +674,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                     InformaticsGateway = new InformaticsGateway
                     {
                         AeTitle = "aetitle",
-                        DataOrigins = new[] { "test" },
                         ExportDestinations = new[] { "test" }
                     },
                     Tasks = new TaskObject[]
