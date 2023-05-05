@@ -33,6 +33,7 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Logging;
+using Monai.Deploy.WorkflowManager.Database;
 using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 using Newtonsoft.Json;
@@ -337,7 +338,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return await _workflowInstanceRepository.UpdateTaskStatusAsync(taskExecution.WorkflowInstanceId, taskExecution.TaskId, status);
         }
 
-        public async Task UpdateTaskDetails(TaskExecution currentTask, string workflowId, string workflowInstanceId, Dictionary<string, string> executionStats, Dictionary<string, object> metadata, FailureReason failureReason)
+        public async Task UpdateTaskDetails(TaskExecution currentTask, string workflowInstanceId, string workflowId, Dictionary<string, string> executionStats, Dictionary<string, object> metadata, FailureReason failureReason)
         {
             if (executionStats?.IsNullOrEmpty() is false)
             {
