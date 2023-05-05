@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Mongo.Migration.Migrations.Document;
 using MongoDB.Bson;
@@ -35,8 +34,8 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Migrations
             {
                 document.Remove("PayloadDeleted");
             }
-            catch (Exception)
-            {
+            catch
+            {  // can ignore we dont want failures stopping startup !
             }
         }
     }

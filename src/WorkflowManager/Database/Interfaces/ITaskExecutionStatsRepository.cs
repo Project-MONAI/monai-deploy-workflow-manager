@@ -29,21 +29,21 @@ namespace Monai.Deploy.WorkflowManager.Database
         /// </summary>
         /// <param name="taskDispatchEvent">A TaskDispatchEvent to create.</param>
         /// <returns></returns>
-        Task CreateAsync(TaskExecution TaskExecutionInfo, string correlationId);
+        Task CreateAsync(TaskExecution TaskExecutionInfo, string workflowId, string correlationId);
 
         /// <summary>
         /// Updates status of a task dispatch event in the database.
         /// </summary>
         /// <param name="taskDispatchEvent">A TaskDispatchEvent to update.</param>
         /// <returns></returns>
-        Task UpdateExecutionStatsAsync(TaskExecution taskUpdateEvent, TaskExecutionStatus? status = null);
+        Task UpdateExecutionStatsAsync(TaskExecution taskUpdateEvent, string workflowId, TaskExecutionStatus? status = null);
 
         /// <summary>
         /// Updates status of a task now its been canceled.
         /// </summary>
         /// <param name="TaskCanceledException">A TaskCanceledException to update.</param>
         /// <returns></returns
-        Task UpdateExecutionStatsAsync(TaskCancellationEvent taskCanceledEvent, string correlationId);
+        Task UpdateExecutionStatsAsync(TaskCancellationEvent taskCanceledEvent, string workflowId, string correlationId);
 
         /// <summary>
         /// Returns paged entries between the two given dates.
@@ -51,7 +51,7 @@ namespace Monai.Deploy.WorkflowManager.Database
         /// <param name="startTime">start of the range.</param>
         /// <param name="endTime">end of the range.</param>
         /// <returns>a collections of stats</returns>
-        Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int PageSize = 10, int PageNumber = 1, string workflowInstanceId = "", string taskId = "");
+        Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int PageSize = 10, int PageNumber = 1, string workflowId = "", string taskId = "");
 
         /// <summary>
         /// Return the total number of stats between the dates
@@ -59,7 +59,7 @@ namespace Monai.Deploy.WorkflowManager.Database
         /// <param name="startTime">start of the range.</param>
         /// <param name="endTime">end of the range.</param>
         /// <returns>The count of all records in range</returns>
-        //Task<long> GetStatsCountAsync(DateTime startTime, DateTime endTime, string workflowInstanceId = "", string taskId = "");
+        //Task<long> GetStatsCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "");
 
         /// <summary>
         /// Return the count of the entries with this status, or all if no status given
@@ -68,7 +68,7 @@ namespace Monai.Deploy.WorkflowManager.Database
         /// <param name="endTime">end of the range.</param>
         /// <param name="status">the status to get count of, or string.empty</param>
         /// <returns>The count of all records in range</returns>
-        Task<long> GetStatsStatusCountAsync(DateTime start, DateTime endTime, string status = "", string workflowInstanceId = "", string taskId = "");
+        Task<long> GetStatsStatusCountAsync(DateTime start, DateTime endTime, string status = "", string workflowId = "", string taskId = "");
 
         /// <summary>
         /// Returns all stats in Failed or PartialFail status.
@@ -76,7 +76,7 @@ namespace Monai.Deploy.WorkflowManager.Database
         /// <param name="startTime">start of the range.</param>
         /// <param name="endTime">end of the range.</param>
         /// <returns>All stats that failed or partially failed</returns>
-        Task<long> GetStatsStatusFailedCountAsync(DateTime startTime, DateTime endTime, string workflowInstanceId = "", string taskId = "");
+        Task<long> GetStatsStatusFailedCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "");
 
         /// <summary>
         /// Calculates the average exection time for the given range
@@ -84,7 +84,7 @@ namespace Monai.Deploy.WorkflowManager.Database
         /// <param name="startTime">start of the range.</param>
         /// <param name="endTime">end of the range.</param>
         /// <returns>the average exection times in the time range</returns>
-        Task<(double avgTotalExecution, double avgArgoExecution)> GetAverageStats(DateTime startTime, DateTime endTime, string workflowInstanceId = "", string taskId = "");
+        Task<(double avgTotalExecution, double avgArgoExecution)> GetAverageStats(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "");
 
     }
 }
