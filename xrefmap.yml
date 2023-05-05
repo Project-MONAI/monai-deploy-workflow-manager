@@ -1195,6 +1195,48 @@ references:
   commentId: Overload:Monai.Deploy.WorkflowManager.Contracts.Migrations.DocumentVersionConvert.WriteJson
   fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.DocumentVersionConvert.WriteJson
   nameWithType: DocumentVersionConvert.WriteJson
+- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion
+  name: M001_ExecutionStats_addVersion
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.html
+  commentId: T:Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion
+  nameWithType: M001_ExecutionStats_addVersion
+- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.#ctor
+  name: M001_ExecutionStats_addVersion()
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M001_ExecutionStats_addVersion__ctor
+  commentId: M:Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.#ctor
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.M001_ExecutionStats_addVersion()
+  nameWithType: M001_ExecutionStats_addVersion.M001_ExecutionStats_addVersion()
+- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.#ctor*
+  name: M001_ExecutionStats_addVersion
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M001_ExecutionStats_addVersion__ctor_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.#ctor
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.M001_ExecutionStats_addVersion
+  nameWithType: M001_ExecutionStats_addVersion.M001_ExecutionStats_addVersion
+- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.Down(MongoDB.Bson.BsonDocument)
+  name: Down(BsonDocument)
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M001_ExecutionStats_addVersion_Down_MongoDB_Bson_BsonDocument_
+  commentId: M:Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.Down(MongoDB.Bson.BsonDocument)
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.Down(MongoDB.Bson.BsonDocument)
+  nameWithType: M001_ExecutionStats_addVersion.Down(BsonDocument)
+- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.Down*
+  name: Down
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M001_ExecutionStats_addVersion_Down_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.Down
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.Down
+  nameWithType: M001_ExecutionStats_addVersion.Down
+- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.Up(MongoDB.Bson.BsonDocument)
+  name: Up(BsonDocument)
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M001_ExecutionStats_addVersion_Up_MongoDB_Bson_BsonDocument_
+  commentId: M:Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.Up(MongoDB.Bson.BsonDocument)
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.Up(MongoDB.Bson.BsonDocument)
+  nameWithType: M001_ExecutionStats_addVersion.Up(BsonDocument)
+- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.Up*
+  name: Up
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M001_ExecutionStats_addVersion_Up_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.Up
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.Up
+  nameWithType: M001_ExecutionStats_addVersion.Up
 - uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_Payload_addVerion
   name: M001_Payload_addVerion
   href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_Payload_addVerion.html
@@ -1237,48 +1279,6 @@ references:
   commentId: Overload:Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_Payload_addVerion.Up
   fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_Payload_addVerion.Up
   nameWithType: M001_Payload_addVerion.Up
-- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion
-  name: M001_TaskExecutionStats_addVersion
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.html
-  commentId: T:Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion
-  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion
-  nameWithType: M001_TaskExecutionStats_addVersion
-- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.#ctor
-  name: M001_TaskExecutionStats_addVersion()
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M001_TaskExecutionStats_addVersion__ctor
-  commentId: M:Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.#ctor
-  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.M001_TaskExecutionStats_addVersion()
-  nameWithType: M001_TaskExecutionStats_addVersion.M001_TaskExecutionStats_addVersion()
-- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.#ctor*
-  name: M001_TaskExecutionStats_addVersion
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M001_TaskExecutionStats_addVersion__ctor_
-  commentId: Overload:Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.#ctor
-  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.M001_TaskExecutionStats_addVersion
-  nameWithType: M001_TaskExecutionStats_addVersion.M001_TaskExecutionStats_addVersion
-- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.Down(MongoDB.Bson.BsonDocument)
-  name: Down(BsonDocument)
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M001_TaskExecutionStats_addVersion_Down_MongoDB_Bson_BsonDocument_
-  commentId: M:Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.Down(MongoDB.Bson.BsonDocument)
-  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.Down(MongoDB.Bson.BsonDocument)
-  nameWithType: M001_TaskExecutionStats_addVersion.Down(BsonDocument)
-- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.Down*
-  name: Down
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M001_TaskExecutionStats_addVersion_Down_
-  commentId: Overload:Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.Down
-  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.Down
-  nameWithType: M001_TaskExecutionStats_addVersion.Down
-- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.Up(MongoDB.Bson.BsonDocument)
-  name: Up(BsonDocument)
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M001_TaskExecutionStats_addVersion_Up_MongoDB_Bson_BsonDocument_
-  commentId: M:Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.Up(MongoDB.Bson.BsonDocument)
-  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.Up(MongoDB.Bson.BsonDocument)
-  nameWithType: M001_TaskExecutionStats_addVersion.Up(BsonDocument)
-- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.Up*
-  name: Up
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M001_TaskExecutionStats_addVersion_Up_
-  commentId: Overload:Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.Up
-  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_TaskExecutionStats_addVersion.Up
-  nameWithType: M001_TaskExecutionStats_addVersion.Up
 - uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_WorkflowInstance_addVerion
   name: M001_WorkflowInstance_addVerion
   href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_WorkflowInstance_addVerion.html
@@ -1363,6 +1363,48 @@ references:
   commentId: Overload:Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_WorkflowRevision_addVerion.Up
   fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_WorkflowRevision_addVerion.Up
   nameWithType: M001_WorkflowRevision_addVerion.Up
+- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId
+  name: M002_ExecutionStats_addWorkflowId
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.html
+  commentId: T:Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId
+  nameWithType: M002_ExecutionStats_addWorkflowId
+- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.#ctor
+  name: M002_ExecutionStats_addWorkflowId()
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M002_ExecutionStats_addWorkflowId__ctor
+  commentId: M:Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.#ctor
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.M002_ExecutionStats_addWorkflowId()
+  nameWithType: M002_ExecutionStats_addWorkflowId.M002_ExecutionStats_addWorkflowId()
+- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.#ctor*
+  name: M002_ExecutionStats_addWorkflowId
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M002_ExecutionStats_addWorkflowId__ctor_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.#ctor
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.M002_ExecutionStats_addWorkflowId
+  nameWithType: M002_ExecutionStats_addWorkflowId.M002_ExecutionStats_addWorkflowId
+- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.Down(MongoDB.Bson.BsonDocument)
+  name: Down(BsonDocument)
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M002_ExecutionStats_addWorkflowId_Down_MongoDB_Bson_BsonDocument_
+  commentId: M:Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.Down(MongoDB.Bson.BsonDocument)
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.Down(MongoDB.Bson.BsonDocument)
+  nameWithType: M002_ExecutionStats_addWorkflowId.Down(BsonDocument)
+- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.Down*
+  name: Down
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M002_ExecutionStats_addWorkflowId_Down_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.Down
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.Down
+  nameWithType: M002_ExecutionStats_addWorkflowId.Down
+- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.Up(MongoDB.Bson.BsonDocument)
+  name: Up(BsonDocument)
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M002_ExecutionStats_addWorkflowId_Up_MongoDB_Bson_BsonDocument_
+  commentId: M:Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.Up(MongoDB.Bson.BsonDocument)
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.Up(MongoDB.Bson.BsonDocument)
+  nameWithType: M002_ExecutionStats_addWorkflowId.Up(BsonDocument)
+- uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.Up*
+  name: Up
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.html#Monai_Deploy_WorkflowManager_Contracts_Migrations_M002_ExecutionStats_addWorkflowId_Up_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.Up
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.Up
+  nameWithType: M002_ExecutionStats_addWorkflowId.Up
 - uid: Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_Payload_addPayloadDeleted
   name: M002_Payload_addPayloadDeleted
   href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_Payload_addPayloadDeleted.html
@@ -1651,24 +1693,24 @@ references:
   commentId: M:Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.#ctor
   fullName: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.ExecutionStats()
   nameWithType: ExecutionStats.ExecutionStats()
-- uid: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.#ctor(Monai.Deploy.Messaging.Events.TaskCancellationEvent,System.String)
-  name: ExecutionStats(TaskCancellationEvent, String)
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.html#Monai_Deploy_WorkflowManager_Contracts_Models_ExecutionStats__ctor_Monai_Deploy_Messaging_Events_TaskCancellationEvent_System_String_
-  commentId: M:Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.#ctor(Monai.Deploy.Messaging.Events.TaskCancellationEvent,System.String)
-  fullName: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.ExecutionStats(Monai.Deploy.Messaging.Events.TaskCancellationEvent, System.String)
-  nameWithType: ExecutionStats.ExecutionStats(TaskCancellationEvent, String)
-- uid: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.#ctor(Monai.Deploy.Messaging.Events.TaskUpdateEvent)
-  name: ExecutionStats(TaskUpdateEvent)
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.html#Monai_Deploy_WorkflowManager_Contracts_Models_ExecutionStats__ctor_Monai_Deploy_Messaging_Events_TaskUpdateEvent_
-  commentId: M:Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.#ctor(Monai.Deploy.Messaging.Events.TaskUpdateEvent)
-  fullName: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.ExecutionStats(Monai.Deploy.Messaging.Events.TaskUpdateEvent)
-  nameWithType: ExecutionStats.ExecutionStats(TaskUpdateEvent)
-- uid: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.#ctor(Monai.Deploy.WorkflowManager.Contracts.Models.TaskExecution,System.String)
-  name: ExecutionStats(TaskExecution, String)
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.html#Monai_Deploy_WorkflowManager_Contracts_Models_ExecutionStats__ctor_Monai_Deploy_WorkflowManager_Contracts_Models_TaskExecution_System_String_
-  commentId: M:Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.#ctor(Monai.Deploy.WorkflowManager.Contracts.Models.TaskExecution,System.String)
-  fullName: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.ExecutionStats(Monai.Deploy.WorkflowManager.Contracts.Models.TaskExecution, System.String)
-  nameWithType: ExecutionStats.ExecutionStats(TaskExecution, String)
+- uid: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.#ctor(Monai.Deploy.Messaging.Events.TaskCancellationEvent,System.String,System.String)
+  name: ExecutionStats(TaskCancellationEvent, String, String)
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.html#Monai_Deploy_WorkflowManager_Contracts_Models_ExecutionStats__ctor_Monai_Deploy_Messaging_Events_TaskCancellationEvent_System_String_System_String_
+  commentId: M:Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.#ctor(Monai.Deploy.Messaging.Events.TaskCancellationEvent,System.String,System.String)
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.ExecutionStats(Monai.Deploy.Messaging.Events.TaskCancellationEvent, System.String, System.String)
+  nameWithType: ExecutionStats.ExecutionStats(TaskCancellationEvent, String, String)
+- uid: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.#ctor(Monai.Deploy.Messaging.Events.TaskUpdateEvent,System.String)
+  name: ExecutionStats(TaskUpdateEvent, String)
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.html#Monai_Deploy_WorkflowManager_Contracts_Models_ExecutionStats__ctor_Monai_Deploy_Messaging_Events_TaskUpdateEvent_System_String_
+  commentId: M:Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.#ctor(Monai.Deploy.Messaging.Events.TaskUpdateEvent,System.String)
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.ExecutionStats(Monai.Deploy.Messaging.Events.TaskUpdateEvent, System.String)
+  nameWithType: ExecutionStats.ExecutionStats(TaskUpdateEvent, String)
+- uid: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.#ctor(Monai.Deploy.WorkflowManager.Contracts.Models.TaskExecution,System.String,System.String)
+  name: ExecutionStats(TaskExecution, String, String)
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.html#Monai_Deploy_WorkflowManager_Contracts_Models_ExecutionStats__ctor_Monai_Deploy_WorkflowManager_Contracts_Models_TaskExecution_System_String_System_String_
+  commentId: M:Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.#ctor(Monai.Deploy.WorkflowManager.Contracts.Models.TaskExecution,System.String,System.String)
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.ExecutionStats(Monai.Deploy.WorkflowManager.Contracts.Models.TaskExecution, System.String, System.String)
+  nameWithType: ExecutionStats.ExecutionStats(TaskExecution, String, String)
 - uid: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.#ctor*
   name: ExecutionStats
   href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.html#Monai_Deploy_WorkflowManager_Contracts_Models_ExecutionStats__ctor_
@@ -1807,6 +1849,18 @@ references:
   commentId: Overload:Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.Version
   fullName: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.Version
   nameWithType: ExecutionStats.Version
+- uid: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.WorkflowId
+  name: WorkflowId
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.html#Monai_Deploy_WorkflowManager_Contracts_Models_ExecutionStats_WorkflowId
+  commentId: P:Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.WorkflowId
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.WorkflowId
+  nameWithType: ExecutionStats.WorkflowId
+- uid: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.WorkflowId*
+  name: WorkflowId
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.html#Monai_Deploy_WorkflowManager_Contracts_Models_ExecutionStats_WorkflowId_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.WorkflowId
+  fullName: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.WorkflowId
+  nameWithType: ExecutionStats.WorkflowId
 - uid: Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.WorkflowInstanceId
   name: WorkflowInstanceId
   href: api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.html#Monai_Deploy_WorkflowManager_Contracts_Models_ExecutionStats_WorkflowInstanceId
