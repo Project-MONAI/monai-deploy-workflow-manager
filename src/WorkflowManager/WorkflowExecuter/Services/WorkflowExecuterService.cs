@@ -33,7 +33,6 @@ using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.Database;
 using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 using Newtonsoft.Json;
@@ -280,8 +279,6 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return false;
             }
 
-            currentTask.WorkflowInstanceId = workflowInstance.Id;
-
             if (message.Reason == FailureReason.TimedOut && currentTask.Status == TaskExecutionStatus.Failed)
             {
                 _logger.TaskTimedOut(message.TaskId, message.WorkflowInstanceId, currentTask.Timeout);
@@ -306,7 +303,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return false;
             }
 
-            await UpdateTaskDetails(currentTask, workflowInstance.Id, message.ExecutionStats, message.Metadata, message.Reason);
+            await UpdateTaskDetails(currentTask, workflowInstance.Id, workflowInstance.WorkflowId, message.ExecutionStats, message.Metadata, message.Reason);
 
             var previouslyFailed = workflowInstance.Tasks.Any(t => t.Status == TaskExecutionStatus.Failed) || workflowInstance.Status == Status.Failed;
 
@@ -321,7 +318,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             {
                 await UpdateWorkflowInstanceStatus(workflowInstance, message.TaskId, message.Status);
 
-                return await HandleUpdatingTaskStatus(currentTask, message.Status);
+                return await HandleUpdatingTaskStatus(currentTask, workflowInstance.WorkflowId, message.Status);
             }
 
             var isValid = await HandleOutputArtifacts(workflowInstance, message.Outputs, currentTask, workflow);
@@ -334,13 +331,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return await HandleTaskDestinations(workflowInstance, workflow, currentTask, message.CorrelationId);
         }
 
-        private async Task<bool> HandleUpdatingTaskStatus(TaskExecution taskExecution, TaskExecutionStatus status)
+        private async Task<bool> HandleUpdatingTaskStatus(TaskExecution taskExecution, string workflowId, TaskExecutionStatus status)
         {
-            await _taskExecutionStatsRepository.UpdateExecutionStatsAsync(taskExecution, status);
+            await _taskExecutionStatsRepository.UpdateExecutionStatsAsync(taskExecution, workflowId, status);
             return await _workflowInstanceRepository.UpdateTaskStatusAsync(taskExecution.WorkflowInstanceId, taskExecution.TaskId, status);
         }
 
-        public async Task UpdateTaskDetails(TaskExecution currentTask, string workflowInstanceId, Dictionary<string, string> executionStats, Dictionary<string, object> metadata, FailureReason failureReason)
+        public async Task UpdateTaskDetails(TaskExecution currentTask, string workflowId, string workflowInstanceId, Dictionary<string, string> executionStats, Dictionary<string, object> metadata, FailureReason failureReason)
         {
             if (executionStats?.IsNullOrEmpty() is false)
             {
@@ -360,7 +357,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             }
 
             await _workflowInstanceRepository.UpdateTaskAsync(workflowInstanceId, currentTask.TaskId, currentTask);
-            await _taskExecutionStatsRepository.UpdateExecutionStatsAsync(currentTask);
+            await _taskExecutionStatsRepository.UpdateExecutionStatsAsync(currentTask, workflowId);
         }
 
         public async Task<bool> ProcessExportComplete(ExportCompleteEvent message, string correlationId)
@@ -429,7 +426,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             }
 
             task.WorkflowInstanceId = workflowInstance.Id;
-            return await HandleUpdatingTaskStatus(task, status);
+            return await HandleUpdatingTaskStatus(task, workflowInstance.WorkflowId, status);
         }
 
         private async Task<bool> UpdateWorkflowInstanceStatus(WorkflowInstance workflowInstance, string taskId, TaskExecutionStatus currentTaskStatus)
@@ -625,7 +622,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 {
                     continue;
                 }
-                processed &= await HandleUpdatingTaskStatus(taskExec, TaskExecutionStatus.Dispatched);
+                processed &= await HandleUpdatingTaskStatus(taskExec, workflowInstance.WorkflowId, TaskExecutionStatus.Dispatched);
             }
 
             return processed;
@@ -735,7 +732,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 {
                     _logger.LogTaskDispatchFailure(workflowInstance.PayloadId, taskExec.TaskId, workflowInstance.Id, workflow?.Id, JsonConvert.SerializeObject(pathOutputArtifacts));
                     workflowInstance.Tasks.Add(taskExec);
-                    var updateResult = await HandleUpdatingTaskStatus(taskExec, TaskExecutionStatus.Failed);
+                    var updateResult = await HandleUpdatingTaskStatus(taskExec, workflowInstance.WorkflowId, TaskExecutionStatus.Failed);
                     if (updateResult is false)
                     {
                         _logger.LoadArtifactAndDBFailure(workflowInstance.PayloadId, taskExec.TaskId, workflowInstance.Id, workflow?.Id);
@@ -755,9 +752,9 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
                 await _messageBrokerPublisherService.Publish(TaskDispatchRoutingKey, jsonMesssage.ToMessage());
 
-                await _taskExecutionStatsRepository.CreateAsync(taskExec, correlationId);
+                await _taskExecutionStatsRepository.CreateAsync(taskExec, workflowInstance.WorkflowId, correlationId);
 
-                return await HandleUpdatingTaskStatus(taskExec, TaskExecutionStatus.Dispatched);
+                return await HandleUpdatingTaskStatus(taskExec, workflowInstance.WorkflowId, TaskExecutionStatus.Dispatched);
             }
         }
 

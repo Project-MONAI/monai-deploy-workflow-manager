@@ -63,6 +63,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
         public void ExecutionStats_Should_Contain_All_Fields()
         {
             const string workflowId = nameof(workflowId);
+            const string WorkflowInstanceId = nameof(WorkflowInstanceId);
             const string correlationId = nameof(correlationId);
             const string taskId = nameof(taskId);
             const string executionId = nameof(executionId);
@@ -72,16 +73,17 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
             {
                 TaskId = taskId,
                 ExecutionId = executionId,
-                WorkflowInstanceId = workflowId
+                WorkflowInstanceId = WorkflowInstanceId
             };
 
             testObj.TaskStartTime = started;
 
-            var output = new ExecutionStats(testObj, correlationId);
+            var output = new ExecutionStats(testObj, workflowId, correlationId);
 
             Assert.Equal(started, output.StartedUTC);
             Assert.Equal(executionId, output.ExecutionId);
-            Assert.Equal(workflowId, output.WorkflowInstanceId);
+            Assert.Equal(WorkflowInstanceId, output.WorkflowInstanceId);
+            Assert.Equal(workflowId, output.WorkflowId);
             Assert.Equal(correlationId, output.CorrelationId);
             Assert.Equal(taskId, output.TaskId);
         }
@@ -89,6 +91,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
         [Fact]
         public void TaskExecutionStatsRepository_Should_Check_For_Null_Logger()
         {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Assert.Throws<ArgumentNullException>(() => new TaskExecutionStatsRepository(_client.Object, _options, default));
         }
 
@@ -103,14 +106,14 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
         public async Task TaskExecutionStatsRepository_Insert_Should_Check_For_Null_Event()
         {
             var service = new TaskExecutionStatsRepository(_client.Object, _options, _logger.Object);
-            await Assert.ThrowsAsync<ArgumentNullException>(() => service.CreateAsync(default, default));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => service.CreateAsync(default, default, default));
         }
 
         [Fact]
         public async Task TaskExecutionStatsRepository_update_Should_Check_For_Null_Event()
         {
             var service = new TaskExecutionStatsRepository(_client.Object, _options, _logger.Object);
-            await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateExecutionStatsAsync(default));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateExecutionStatsAsync(default, default));
         }
 
         [Fact]
@@ -119,11 +122,12 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
             var service = new TaskExecutionStatsRepository(_client.Object, _options, _logger.Object);
             await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateExecutionStatsAsync(null, "correlationId"));
         }
-
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         [Fact]
         public async Task ExecutionStats_Create_Should_Store_All()
         {
             var correlationId = "correlationId";
+            var workflowId = "workflowId";
             var testStore = new TaskExecution
             {
                 ExecutionId = nameof(TaskDispatchEvent.ExecutionId),
@@ -132,7 +136,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
                 Status = TaskExecutionStatus.Created,
             };
 
-            await _repo.CreateAsync(testStore, correlationId);
+            await _repo.CreateAsync(testStore, workflowId, correlationId);
 
             _collection.Verify(c => c.ReplaceOneAsync(
                 It.IsAny<FilterDefinition<ExecutionStats>>(),
@@ -151,6 +155,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
         public async Task ExecutionStats_Create_Should_Log_On_Exception()
         {
             var correlationId = "correlationId";
+            var workflowId = "workflowId";
             var testStore = new TaskExecution
             {
                 ExecutionId = nameof(TaskDispatchEvent.ExecutionId),
@@ -165,7 +170,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
                 It.IsAny<ReplaceOptions>(),
                 It.IsAny<CancellationToken>())).Throws(new Exception());
 
-            await _repo.CreateAsync(testStore, correlationId);
+            await _repo.CreateAsync(testStore, workflowId, correlationId);
 
             _logger.Verify(l =>
                 l.IsEnabled(LogLevel.Error)
@@ -175,6 +180,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
         [Fact]
         public async Task ExecutionStats_Update_Should_Log_On_Exception()
         {
+            var workflowId = "workflowId";
             var testStore = new TaskExecution
             {
                 ExecutionId = nameof(TaskDispatchEvent.ExecutionId),
@@ -194,7 +200,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
                 It.IsAny<UpdateOptions>(),
                 It.IsAny<CancellationToken>())).Throws(new Exception());
 
-            await _repo.UpdateExecutionStatsAsync(testStore);
+            await _repo.UpdateExecutionStatsAsync(testStore, workflowId);
 
             _logger.Verify(l =>
                 l.IsEnabled(LogLevel.Error)
@@ -204,7 +210,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
         [Fact]
         public async Task ExecutionStats_Update_Should_Update_All()
         {
-
+            var workflowId = "workflowId";
             var testStore = new TaskExecution
             {
                 ExecutionId = nameof(TaskDispatchEvent.ExecutionId),
@@ -218,7 +224,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
                 }
             };
 
-            await _repo.UpdateExecutionStatsAsync(testStore);
+            await _repo.UpdateExecutionStatsAsync(testStore, workflowId);
 
             _collection.Verify(c => c.UpdateOneAsync(
                 It.IsAny<FilterDefinition<ExecutionStats>>(),
@@ -252,13 +258,15 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
             var WorkflowInstanceId = "WorkflowInstanceId";
             var TaskId = "TaskId";
             var ExecutionId = "ExecutionId";
+            var workflowId = "workflowId";
+
             var stats = new ExecutionStats(
                 new TaskCancellationEvent
                 {
                     WorkflowInstanceId = WorkflowInstanceId,
                     TaskId = TaskId,
                     ExecutionId = ExecutionId,
-                }, collerationId);
+                }, workflowId, collerationId);
 
 
             Assert.Equal(collerationId, stats.CorrelationId);
@@ -279,8 +287,9 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
                 TaskId = nameof(TaskDispatchEvent.TaskId),
             };
             var collerationId = "collerationId";
+            var workflowId = "workflowId";
 
-            await _repo.UpdateExecutionStatsAsync(testStore, collerationId);
+            await _repo.UpdateExecutionStatsAsync(testStore, workflowId, collerationId);
 
             _collection.Verify(c => c.UpdateOneAsync(
                 It.IsAny<FilterDefinition<ExecutionStats>>(),

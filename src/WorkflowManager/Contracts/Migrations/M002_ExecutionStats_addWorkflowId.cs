@@ -14,30 +14,27 @@
  * limitations under the License.
  */
 
-using System;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Mongo.Migration.Migrations.Document;
 using MongoDB.Bson;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Migrations
 {
-    public class M001_TaskExecutionStats_addVersion : DocumentMigration<ExecutionStats>
+    public class M002_ExecutionStats_addWorkflowId : DocumentMigration<ExecutionStats>
     {
-        public M001_TaskExecutionStats_addVersion() : base("1.0.0") { }
+        public M002_ExecutionStats_addWorkflowId() : base("1.0.1") { }
 
         public override void Up(BsonDocument document)
         {
-            // empty, but this will make all objects re-saved with a version
+            // empty, but this will make all objects re-saved with a workflowId
         }
         public override void Down(BsonDocument document)
         {
             try
             {
-                document.Remove("Version");
+                document.Remove("WorkflowId");
             }
-            catch (Exception)
-            {
-            }
+            catch { }
         }
     }
 }
