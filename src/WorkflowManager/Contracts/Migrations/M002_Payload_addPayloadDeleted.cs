@@ -34,7 +34,9 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Migrations
             {
                 document.Remove("PayloadDeleted");
             }
-            catch { }// can ignore we dont want failures stopping startup !
+            catch
+            {  // can ignore we dont want failures stopping startup !
+            }
         }
     }
 }

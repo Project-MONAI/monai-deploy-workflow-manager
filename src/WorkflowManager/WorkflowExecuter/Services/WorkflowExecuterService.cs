@@ -280,6 +280,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return false;
             }
 
+            currentTask.WorkflowInstanceId = message.WorkflowInstanceId;
+
             if (message.Reason == FailureReason.TimedOut && currentTask.Status == TaskExecutionStatus.Failed)
             {
                 _logger.TaskTimedOut(message.TaskId, message.WorkflowInstanceId, currentTask.Timeout);
