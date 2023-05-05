@@ -33,7 +33,7 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Migrations
             {
                 document.Remove("Version");
             }
-            catch { }
+            catch { }// can ignore we dont want failures stopping startup !
         }
     }
 }
