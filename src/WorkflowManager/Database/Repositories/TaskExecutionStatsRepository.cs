@@ -76,13 +76,13 @@ namespace Monai.Deploy.WorkflowManager.Database
             }
         }
 
-        public async Task CreateAsync(TaskExecution TaskExecutionInfo, string correlationId)
+        public async Task CreateAsync(TaskExecution TaskExecutionInfo, string workflowId, string correlationId)
         {
             Guard.Against.Null(TaskExecutionInfo, "taskDispatchEventInfo");
 
             try
             {
-                var insertMe = new ExecutionStats(TaskExecutionInfo, correlationId);
+                var insertMe = new ExecutionStats(TaskExecutionInfo, workflowId, correlationId);
 
                 await _taskExecutionStatsCollection.ReplaceOneAsync(doc =>
                      doc.ExecutionId == insertMe.ExecutionId,
@@ -96,14 +96,15 @@ namespace Monai.Deploy.WorkflowManager.Database
             }
         }
 
-        public async Task UpdateExecutionStatsAsync(TaskExecution taskUpdateEvent, TaskExecutionStatus? status = null)
+        public async Task UpdateExecutionStatsAsync(TaskExecution taskUpdateEvent, string workflowId, TaskExecutionStatus? status = null)
         {
             Guard.Against.Null(taskUpdateEvent, "taskUpdateEvent");
             var currentStatus = status ?? taskUpdateEvent.Status;
 
             try
             {
-                var updateMe = ExposeExecutionStats(new ExecutionStats(taskUpdateEvent, ""), taskUpdateEvent);
+                var updateMe = ExposeExecutionStats(new ExecutionStats(taskUpdateEvent, workflowId, ""), taskUpdateEvent);
+
                 var duration = updateMe.CompletedAtUTC == default ? 0 : (updateMe.CompletedAtUTC - updateMe.StartedUTC).TotalMilliseconds / 1000;
                 await _taskExecutionStatsCollection.UpdateOneAsync(o =>
                         o.ExecutionId == updateMe.ExecutionId,
@@ -122,13 +123,14 @@ namespace Monai.Deploy.WorkflowManager.Database
             }
         }
 
-        public async Task UpdateExecutionStatsAsync(TaskCancellationEvent taskCanceledEvent, string correlationId)
+        public async Task UpdateExecutionStatsAsync(TaskCancellationEvent taskCanceledEvent, string workflowId, string correlationId)
         {
             Guard.Against.Null(taskCanceledEvent, "taskCanceledEvent");
 
             try
             {
-                var updateMe = new ExecutionStats(taskCanceledEvent, correlationId);
+                var updateMe = new ExecutionStats(taskCanceledEvent, workflowId, correlationId);
+
                 var duration = updateMe.CompletedAtUTC == default ? 0 : (updateMe.CompletedAtUTC - updateMe.StartedUTC).TotalMilliseconds / 1000;
                 await _taskExecutionStatsCollection.UpdateOneAsync(o =>
                         o.ExecutionId == updateMe.ExecutionId,
@@ -146,17 +148,17 @@ namespace Monai.Deploy.WorkflowManager.Database
             }
         }
 
-        public async Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int PageSize = 10, int PageNumber = 1, string workflowInstanceId = "", string taskId = "")
+        public async Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int PageSize = 10, int PageNumber = 1, string workflowId = "", string taskId = "")
         {
             startTime = startTime.ToUniversalTime();
 
-            var workflowinstanceNull = string.IsNullOrWhiteSpace(workflowInstanceId);
+            var workflowNull = string.IsNullOrWhiteSpace(workflowId);
             var taskIdNull = string.IsNullOrWhiteSpace(taskId);
 
             var result = await _taskExecutionStatsCollection.Find(T =>
              T.StartedUTC >= startTime &&
              T.StartedUTC <= endTime.ToUniversalTime() &&
-             (workflowinstanceNull || T.WorkflowInstanceId == workflowInstanceId) &&
+             (workflowNull || T.WorkflowId == workflowId) &&
              (taskIdNull || T.TaskId == taskId)
              //&&
              //(
@@ -204,29 +206,29 @@ namespace Monai.Deploy.WorkflowManager.Database
             return taskExecutionStats;
         }
 
-        public async Task<long> GetStatsStatusCountAsync(DateTime start, DateTime endTime, string status = "", string workflowInstanceId = "", string taskId = "")
+        public async Task<long> GetStatsStatusCountAsync(DateTime start, DateTime endTime, string status = "", string workflowId = "", string taskId = "")
         {
             var statusNull = string.IsNullOrWhiteSpace(status);
-            var workflowinstanceNull = string.IsNullOrWhiteSpace(workflowInstanceId);
+            var workflowNull = string.IsNullOrWhiteSpace(workflowId);
             var taskIdNull = string.IsNullOrWhiteSpace(taskId);
 
             return await _taskExecutionStatsCollection.CountDocumentsAsync(T =>
             T.StartedUTC >= start.ToUniversalTime() &&
             T.StartedUTC <= endTime.ToUniversalTime() &&
-            (workflowinstanceNull || T.WorkflowInstanceId == workflowInstanceId) &&
+            (workflowNull || T.WorkflowId == workflowId) &&
             (taskIdNull || T.TaskId == taskId) &&
             (statusNull || T.Status == status));
         }
 
-        public async Task<long> GetStatsStatusFailedCountAsync(DateTime start, DateTime endTime, string workflowInstanceId = "", string taskId = "")
+        public async Task<long> GetStatsStatusFailedCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "")
         {
-            var workflowinstanceNull = string.IsNullOrWhiteSpace(workflowInstanceId);
+            var workflowNull = string.IsNullOrWhiteSpace(workflowId);
             var taskIdNull = string.IsNullOrWhiteSpace(taskId);
 
             return await _taskExecutionStatsCollection.CountDocumentsAsync(T =>
-            T.StartedUTC >= start.ToUniversalTime() &&
+            T.StartedUTC >= startTime.ToUniversalTime() &&
             T.StartedUTC <= endTime.ToUniversalTime() &&
-            (workflowinstanceNull || T.WorkflowInstanceId == workflowInstanceId) &&
+            (workflowNull || T.WorkflowId == workflowId) &&
             (taskIdNull || T.TaskId == taskId) &&
             (
                 T.Status == TaskExecutionStatus.Failed.ToString() ||
@@ -234,16 +236,16 @@ namespace Monai.Deploy.WorkflowManager.Database
             ));
         }
 
-        public async Task<(double avgTotalExecution, double avgArgoExecution)> GetAverageStats(DateTime startTime, DateTime endTime, string workflowInstanceId = "", string taskId = "")
+        public async Task<(double avgTotalExecution, double avgArgoExecution)> GetAverageStats(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "")
         {
-            var workflowinstanceNull = string.IsNullOrWhiteSpace(workflowInstanceId);
+            var workflowNull = string.IsNullOrWhiteSpace(workflowId);
             var taskIdNull = string.IsNullOrWhiteSpace(taskId);
 
             var test = await _taskExecutionStatsCollection.Aggregate()
                 .Match(T =>
                 T.StartedUTC >= startTime.ToUniversalTime() &&
                 T.StartedUTC <= endTime.ToUniversalTime() &&
-                (workflowinstanceNull || T.WorkflowInstanceId == workflowInstanceId) &&
+                (workflowNull || T.WorkflowId == workflowId) &&
                 (taskIdNull || T.TaskId == taskId) &&
                 T.Status == TaskExecutionStatus.Succeeded.ToString())
                 .Group(g => new { g.Version }, r => new

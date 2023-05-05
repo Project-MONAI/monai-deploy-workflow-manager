@@ -26,7 +26,7 @@ using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Contracts.Models
 {
-    [CollectionLocation("ExecutionStats"), RuntimeVersion("1.0.0")]
+    [CollectionLocation("ExecutionStats"), RuntimeVersion("1.0.1")]
     public class ExecutionStats : IDocument
     {
         /// <summary>
@@ -40,7 +40,7 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         /// Gets or sets Db version.
         /// </summary>
         [JsonConverter(typeof(DocumentVersionConvert)), BsonSerializer(typeof(DocumentVersionConverBson))]
-        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 0);
+        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 1);
 
         /// <summary>
         /// the correlationId of the event
@@ -48,6 +48,13 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "correlation_id")]
         [Required]
         public string CorrelationId { get; set; } = "";
+
+        /// <summary>
+        /// The id of the workflow
+        /// </summary>
+        [JsonProperty(PropertyName = "workflow_id")]
+        [Required]
+        public string WorkflowId { get; set; } = "";
 
         /// <summary>
         /// the workflow Instance that triggered the event
@@ -117,7 +124,7 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         }
 
-        public ExecutionStats(TaskExecution execution, string correlationId)
+        public ExecutionStats(TaskExecution execution, string workflowId, string correlationId)
         {
             Guard.Against.Null(execution, "dispatchInfo");
             CorrelationId = correlationId;
@@ -126,9 +133,10 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
             TaskId = execution.TaskId;
             StartedUTC = execution.TaskStartTime.ToUniversalTime();
             Status = execution.Status.ToString();
+            WorkflowId = workflowId;
         }
 
-        public ExecutionStats(TaskUpdateEvent taskUpdateEvent)
+        public ExecutionStats(TaskUpdateEvent taskUpdateEvent, string workflowId)
         {
             Guard.Against.Null(taskUpdateEvent, "taskUpdateEvent");
             CorrelationId = taskUpdateEvent.CorrelationId;
@@ -136,9 +144,10 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
             ExecutionId = taskUpdateEvent.ExecutionId;
             TaskId = taskUpdateEvent.TaskId;
             Status = taskUpdateEvent.Status.ToString();
+            WorkflowId = workflowId;
         }
 
-        public ExecutionStats(TaskCancellationEvent taskCanceledEvent, string correlationId)
+        public ExecutionStats(TaskCancellationEvent taskCanceledEvent, string workflowId, string correlationId)
         {
             Guard.Against.Null(taskCanceledEvent, "taskCanceledEvent");
             CorrelationId = correlationId;
@@ -146,6 +155,7 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
             ExecutionId = taskCanceledEvent.ExecutionId;
             TaskId = taskCanceledEvent.TaskId;
             Status = TaskExecutionStatus.Failed.ToString();
+            WorkflowId = workflowId;
         }
     }
 }
