@@ -67,7 +67,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Tests.InformaticsGateway
         }
 
         [Fact]
-        public async Task OriginsExist_InvalidSource_ReturnsTrue()
+        public async Task OriginsExist_ValidSource_ReturnsTrue()
         {
             var source = "valid_source";
 
