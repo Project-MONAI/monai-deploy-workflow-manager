@@ -107,8 +107,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             try
             {
                 var filter = Builders<Payload>.Filter.Eq(p => p.PayloadId, payload.PayloadId);
-                var update = Builders<Payload>.Update.Set(p => p, payload);
-                await _payloadCollection.UpdateOneAsync(filter, update);
+                await _payloadCollection.ReplaceOneAsync(filter, payload);
 
                 return true;
             }
