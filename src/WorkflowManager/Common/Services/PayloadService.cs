@@ -87,6 +87,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
                     Timestamp = eventPayload.Timestamp,
                     PatientDetails = patientDetails,
                     PayloadDeleted = PayloadDeleted.No,
+                    Files = eventPayload.Payload.ToList()
                 };
 
                 if (await _payloadRepository.CreateAsync(payload))
@@ -173,12 +174,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
                 throw new MonaiNotFoundException($"Payload with ID: {payloadId} not found");
             }
 
-            if (payload.PayloadDeleted == PayloadDeleted.InProgress)
+            if (payload.PayloadDeleted == PayloadDeleted.InProgress || payload.PayloadDeleted == PayloadDeleted.Yes)
             {
-                throw new MonaiBadRequestException($"Deletion of files for payload ID: {payloadId} already in progress");
+                throw new MonaiBadRequestException($"Deletion of files for payload ID: {payloadId} already in progress or already deleted");
             }
 
-            // update the payload to in progress before we request deletion form MinIO
+            // update the payload to in progress before we request deletion from storage
             payload.PayloadDeleted = PayloadDeleted.InProgress;
             await _payloadRepository.UpdateAsync(payload);
 
@@ -188,12 +189,19 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             {
                 try
                 {
-                    await _storageService.RemoveObjectsAsync(payload.Bucket, payload.Files.Select(f => f.Path));
+                    // get all objects for the payload in storage to be deleted
+                    var allPayloadObjects = await _storageService.ListObjectsAsync(payload.Bucket, payloadId, true);
+
+                    if (allPayloadObjects.Any())
+                    {
+                        await _storageService.RemoveObjectsAsync(payload.Bucket, allPayloadObjects.Select(o => o.FilePath));
+                    }
+
                     payload.PayloadDeleted = PayloadDeleted.Yes;
                 }
-                catch
+                catch (Exception ex)
                 {
-                    _logger.PayloadUpdateFailed(payloadId);
+                    _logger.PayloadDeleteFailed(payloadId, ex);
                     payload.PayloadDeleted = PayloadDeleted.Failed;
                 }
                 finally
