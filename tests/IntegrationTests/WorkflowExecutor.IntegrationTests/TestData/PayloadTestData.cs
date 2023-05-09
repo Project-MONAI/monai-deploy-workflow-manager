@@ -305,6 +305,54 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+            new PayloadTestData()
+            {
+                Name = "Payload_PayloadDeleted_InProgress",
+                Payload = new Payload()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    Bucket = "bucket_1",
+                    CalledAeTitle = "MIG",
+                    CallingAeTitle = "Basic_AE",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = "c5c3635b-81dd-44a9-8c3b-71adec7d47c6",
+                    Workflows = new List<string> { Guid.NewGuid().ToString() },
+                    FileCount = 50,
+                    PayloadDeleted = PayloadDeleted.InProgress,
+                    PatientDetails = new PatientDetails()
+                    {
+                        PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
+                        PatientId = Guid.NewGuid().ToString(),
+                        PatientName = "Mike Mcgee",
+                        PatientSex = "male"
+                    }
+                }
+            },
+            new PayloadTestData()
+            {
+                Name = "Payload_PayloadDeleted_No",
+                Payload = new Payload()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    Bucket = "bucket_1",
+                    CalledAeTitle = "MIG",
+                    CallingAeTitle = "Basic_AE",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = "d5c3633b-41de-44a9-8c3a-71adec3d47c1",
+                    Workflows = new List<string> { Guid.NewGuid().ToString() },
+                    FileCount = 50,
+                    PayloadDeleted = PayloadDeleted.No,
+                    PatientDetails = new PatientDetails()
+                    {
+                        PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
+                        PatientId = Guid.NewGuid().ToString(),
+                        PatientName = "Mike Mcgee",
+                        PatientSex = "male"
+                    }
+                }
+            }
         };
     }
 }
