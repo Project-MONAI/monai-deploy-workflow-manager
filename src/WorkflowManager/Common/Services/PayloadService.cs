@@ -86,8 +86,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
                     CallingAeTitle = eventPayload.CallingAeTitle,
                     Timestamp = eventPayload.Timestamp,
                     PatientDetails = patientDetails,
-                    PayloadDeleted = PayloadDeleted.No,
-                    Files = eventPayload.Payload.ToList()
+                    PayloadDeleted = PayloadDeleted.No
                 };
 
                 if (await _payloadRepository.CreateAsync(payload))
