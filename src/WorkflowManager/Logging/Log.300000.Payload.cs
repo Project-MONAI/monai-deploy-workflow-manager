@@ -37,5 +37,8 @@ namespace Monai.Deploy.WorkflowManager.Logging
 
         [LoggerMessage(EventId = 300005, Level = LogLevel.Error, Message = "Failed to update payload {payloadId} due to database error.")]
         public static partial void PayloadUpdateFailed(this ILogger logger, string payloadId);
+
+        [LoggerMessage(EventId = 300006, Level = LogLevel.Error, Message = "Failed to delete payload {payloadId} from storage.")]
+        public static partial void PayloadDeleteFailed(this ILogger logger, string payloadId, Exception ex);
     }
 }
