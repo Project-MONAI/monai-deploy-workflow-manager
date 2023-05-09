@@ -346,6 +346,48 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     CallingAeTitle = "Non_Existent_Calling_AE",
                 }
             },
+            new WorkflowRequestTestData
+            {
+                Name = "Called_AET_AIDE_Calling_AET_TEST",
+                WorkflowRequestMessage = new WorkflowRequestMessage
+                {
+                    Bucket = "bucket1",
+                    PayloadId = Guid.NewGuid(),
+                    Workflows = new List<string>() { },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    CalledAeTitle = "AIDE",
+                    CallingAeTitle = "TEST",
+                }
+            },
+            new WorkflowRequestTestData
+            {
+                Name = "Called_AET_AIDE_Calling_AET_PACS1",
+                WorkflowRequestMessage = new WorkflowRequestMessage
+                {
+                    Bucket = "bucket1",
+                    PayloadId = Guid.NewGuid(),
+                    Workflows = new List<string>() { },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    CalledAeTitle = "AIDE",
+                    CallingAeTitle = "PACS1",
+                }
+            },
+            new WorkflowRequestTestData
+            {
+                Name = "Called_AET_AIDE_Calling_AET_PACS2",
+                WorkflowRequestMessage = new WorkflowRequestMessage
+                {
+                    Bucket = "bucket1",
+                    PayloadId = Guid.NewGuid(),
+                    Workflows = new List<string>() { },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    CalledAeTitle = "AIDE",
+                    CallingAeTitle = "PACS2",
+                }
+            },
         };
     }
 }
