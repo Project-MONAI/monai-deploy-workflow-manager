@@ -61,7 +61,7 @@ namespace Monai.Deploy.WorkflowManager.Shared
         /// <summary>
         /// Key for the memory.
         /// </summary>
-        public static readonly string Memory = "memory_gb";
+        public static readonly string Memory = "memory";
 
         /// <summary>
         /// Key for the GPU.

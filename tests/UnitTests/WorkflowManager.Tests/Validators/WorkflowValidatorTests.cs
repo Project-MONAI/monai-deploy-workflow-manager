@@ -209,7 +209,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                         Description = "Test Argo Task",
                         Args = {
                             { "cpu", "0.1" },
-                            { "memory_gb", "0.1" },
+                            { "memory", "0.1" },
                             { "gpu_required", "2" }
                         },
                         TaskDestinations = new TaskDestination[]
@@ -343,7 +343,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                             { "invalid_key", "value" },
                             { "workflow_template_name" ,"spot"},
                             { "cpu", "1" },
-                            { "memory_gb", "1" },
+                            { "memory", "1" },
                             { "gpu_required", "1" }
                         }
                     },
@@ -371,7 +371,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             Assert.True(errors.Count > 0);
 
-            Assert.Equal(46, errors.Count);
+            Assert.Equal(45, errors.Count);
 
             var convergingTasksDestinations = "Converging Tasks Destinations in tasks: (test-clinical-review-2, example-task) on task: example-task";
             Assert.Contains(convergingTasksDestinations, errors);
@@ -412,9 +412,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
             var invalidArgoArg1 = "Task: 'test-argo-task' value '0.1' provided for argument 'cpu' is not valid. The value needs to be a whole number greater than 0.";
             Assert.Contains(invalidArgoArg1, errors);
 
-            var invalidArgoArg2 = "Task: 'test-argo-task' value '0.1' provided for argument 'memory_gb' is not valid. The value needs to be a whole number greater than 0.";
-            Assert.Contains(invalidArgoArg2, errors);
-
             var invalidArgoArg3 = "Task: 'test-argo-task' value '2' provided for argument 'gpu_required' is not valid. The value needs to be 'true' or 'false'.";
             Assert.Contains(invalidArgoArg3, errors);
 
@@ -436,7 +433,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
             var invalidSourceName = "Data origin invalid_origin does not exists. Please review sources configuration management.";
             Assert.Contains(invalidSourceName, errors);
 
-            var invalidArgoKey = $"Task: 'invalid-key-argo-task' args has invalid keys: invalid_key. Please only specify keys from the following list: workflow_template_name, priority, cpu, memory_gb, gpu_required.";
+            var invalidArgoKey = $"Task: 'invalid-key-argo-task' args has invalid keys: invalid_key. Please only specify keys from the following list: workflow_template_name, priority, cpu, memory, gpu_required.";
             Assert.Contains(invalidArgoKey, errors);
         }
 

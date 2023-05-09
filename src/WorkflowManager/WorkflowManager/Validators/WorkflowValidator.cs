@@ -375,16 +375,13 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 }
             }
 
-            new List<string> { Cpu, Memory }.ForEach(key =>
+            if (
+                currentTask.Args.TryGetValue(Cpu, out var val) &&
+                (string.IsNullOrEmpty(val) ||
+                (double.TryParse(val, out double parsedVal) && (parsedVal < 1 || Math.Truncate(parsedVal) != parsedVal))))
             {
-                if (
-                    currentTask.Args.TryGetValue(key, out var val) &&
-                    (string.IsNullOrEmpty(val) ||
-                    (double.TryParse(val, out double parsedVal) && (parsedVal < 1 || Math.Truncate(parsedVal) != parsedVal))))
-                {
-                    Errors.Add($"Task: '{currentTask.Id}' value '{val}' provided for argument '{key}' is not valid. The value needs to be a whole number greater than 0.");
-                }
-            });
+                Errors.Add($"Task: '{currentTask.Id}' value '{val}' provided for argument '{Cpu}' is not valid. The value needs to be a whole number greater than 0.");
+            }
 
             if (
                 currentTask.Args.TryGetValue(GpuRequired, out var gpuRequired) &&

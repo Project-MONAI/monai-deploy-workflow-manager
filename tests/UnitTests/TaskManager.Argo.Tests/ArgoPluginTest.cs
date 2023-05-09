@@ -273,7 +273,7 @@ public class ArgoPluginTest : ArgoPluginTestBase
 
         var message = GenerateTaskDispatchEventWithValidArguments(withoutDefaultArguments);
         message.TaskPluginArguments["gpu_required"] = "true";
-        message.TaskPluginArguments["memory_gb"] = "1";
+        message.TaskPluginArguments["memory"] = "1";
         message.TaskPluginArguments["cpu"] = "1";
         message.TaskPluginArguments["priority"] = "Helo";
         Workflow? submittedArgoTemplate = null;
