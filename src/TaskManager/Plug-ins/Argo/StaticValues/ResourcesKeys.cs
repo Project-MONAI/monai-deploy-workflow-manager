@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
+using static Monai.Deploy.WorkflowManager.Shared.ValidationConstants;
+
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
 {
     public static class ResourcesKeys
     {
-        public static readonly ResourcesKey GpuLimit = new() { TaskKey = "gpu_required", ArgoKey = "nvidia.com/gpu" };
+        public static readonly ResourcesKey GpuLimit = new() { TaskKey = GpuRequired, ArgoKey = "nvidia.com/gpu" };
 
-        public static readonly ResourcesKey MemoryLimit = new() { TaskKey = "memory_gb", ArgoKey = "memory" };
+        public static readonly ResourcesKey MemoryLimit = new() { TaskKey = Memory, ArgoKey = "memory" };
 
-        public static readonly ResourcesKey CpuLimit = new() { TaskKey = "cpu", ArgoKey = "cpu" };
+        public static readonly ResourcesKey CpuLimit = new() { TaskKey = Cpu, ArgoKey = "cpu" };
     }
 }
