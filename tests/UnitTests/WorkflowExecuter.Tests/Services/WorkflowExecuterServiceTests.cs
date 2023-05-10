@@ -143,6 +143,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             };
 
             _workflowRepository.Setup(w => w.GetWorkflowsByAeTitleAsync(It.IsAny<List<string>>())).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetWorkflowsForWorkflowRequestAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(workflows);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflows[0].WorkflowId)).ReturnsAsync(workflows[0]);
             _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
