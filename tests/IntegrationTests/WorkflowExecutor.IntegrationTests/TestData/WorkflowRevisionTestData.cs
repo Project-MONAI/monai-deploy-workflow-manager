@@ -54,7 +54,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Basic_AE"
+                            AeTitle = "MONAI"
                         }
                     }
                 }
@@ -84,7 +84,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Basic_AE"
+                            AeTitle = "MONAI"
                         }
                     }
                 }
@@ -114,7 +114,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Basic_AE_3"
+                            AeTitle = "MONAI"
                         }
                     }
                 }
@@ -181,7 +181,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowRevisionTestData()
             {
-                Name = "Basic_Workflow_Multiple_Revisions_1",
+                Name = "Basic_Workflow_Multiple_Revisions_1", //not to be confused with 'Basic_Workflow_multiple_revisions_1' (lower case)
                 WorkflowRevision = new WorkflowRevision()
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -204,7 +204,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Multi_Revision"
+                            AeTitle = "MONAI"
                         }
                     }
                 }
@@ -234,7 +234,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Multi_Revision"
+                            AeTitle = "MONAI_2"
                         }
                     }
                 }
@@ -331,7 +331,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Multi_Created"
+                            AeTitle = "Multi_Req"
                         }
                     }
                 }
@@ -675,7 +675,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             },
             new WorkflowRevisionTestData()
             {
-                Name = "Basic_Workflow_multiple_revisions_1",
+                Name = "Basic_Workflow_multiple_revisions_1", //not to be confused with 'Basic_Workflow_Multiple_Revisions_1' (upper case)
                 WorkflowRevision = new WorkflowRevision()
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -698,7 +698,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Basic_AE"
+                            AeTitle = "MONAI_2"
                         }
                     }
                 }
@@ -728,7 +728,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {
-                            AeTitle = "Basic_AE"
+                            AeTitle = "MONAI_2"
                         }
                     }
                 }
@@ -3032,6 +3032,98 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         InformaticsGateway = new InformaticsGateway()
                         {
                             AeTitle = "Multi_Rev_New"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Workflow_Called_AET",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Basic workflow 1",
+                        Description = "Basic workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Basic_task",
+                                Description = "Basic Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap(),
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "AIDE"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Workflow_Called_AET_Calling_AET",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Basic workflow 1",
+                        Description = "Basic workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Basic_task",
+                                Description = "Basic Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap(),
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "AIDE",
+                            DataOrigins = new string[] { "PACS1" }
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Workflow_Called_AET_Multi_Calling_AET",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Basic workflow 1",
+                        Description = "Basic workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Basic_task",
+                                Description = "Basic Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap(),
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "AIDE",
+                            DataOrigins = new string[] { "PACS1", "PACS2" }
                         }
                     }
                 }
