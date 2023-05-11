@@ -308,12 +308,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
                     {
                         new WorkflowInstance()
                         {
-                            PayloadId = input.First().Id,
+                            PayloadId = input.First().PayloadId,
                             Status = Status.Created
                         },
                         new WorkflowInstance()
                         {
-                            PayloadId = input.Skip(1).First().Id,
+                            PayloadId = input.Skip(1).First().PayloadId,
                             Status = Status.Succeeded,
                         }
                     };

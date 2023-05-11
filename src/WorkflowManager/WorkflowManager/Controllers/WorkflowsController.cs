@@ -92,7 +92,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
                     validFilter.PageSize);
 
                 var dataTotal = await _workflowService.CountAsync();
-                var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
+                var pagedReponse = CreatePagedResponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
 
                 return Ok(pagedReponse);
             }
@@ -328,7 +328,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
                     validFilter.PageSize);
 
                 var dataTotal = await _workflowService.GetCountByAeTitleAsync(title);
-                var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
+                var pagedReponse = CreatePagedResponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
 
                 return Ok(pagedReponse);
             }

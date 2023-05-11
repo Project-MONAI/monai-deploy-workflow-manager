@@ -141,7 +141,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             foreach (var payload in payloads)
             {
                 var payloadDto = new PayloadDto(payload);
-                var wfs = workflowInstances?.Where(wf => wf.PayloadId == payload.Id);
+                var wfs = workflowInstances?.Where(wf => wf.PayloadId == payload.PayloadId);
                 if (wfs == null || wfs.Any() is false)
                 {
                     payloadDto.PayloadStatus = PayloadStatus.Complete;

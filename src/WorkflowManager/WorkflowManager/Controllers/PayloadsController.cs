@@ -91,7 +91,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
                     patientName);
 
                 var dataTotal = await _payloadService.CountAsync();
-                var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
+                var pagedReponse = CreatePagedResponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
 
                 return Ok(pagedReponse);
             }

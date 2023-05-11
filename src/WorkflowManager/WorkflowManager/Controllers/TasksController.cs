@@ -87,7 +87,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
                     (validFilter.PageNumber - 1) * validFilter.PageSize,
                     validFilter.PageSize);
 
-                var pagedReponse = CreatePagedReponse(pagedData.Tasks.ToList(), validFilter, pagedData.Count, _uriService, route);
+                var pagedReponse = CreatePagedResponse(pagedData.Tasks.ToList(), validFilter, pagedData.Count, _uriService, route);
 
                 return Ok(pagedReponse);
             }
