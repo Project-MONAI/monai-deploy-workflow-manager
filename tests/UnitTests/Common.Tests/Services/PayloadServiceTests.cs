@@ -330,6 +330,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
 
             _payloadRepository.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(() => new Payload());
             _payloadRepository.Setup(p => p.UpdateAsync(It.IsAny<Payload>())).ReturnsAsync(() => true);
+            _workflowInstanceRepository.Setup(r => r.GetByPayloadIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(() => new List<WorkflowInstance>());
 
             _storageService.Setup(s => s.RemoveObjectsAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), default));
 
@@ -351,13 +352,31 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
         }
 
         [Fact]
-        public async Task DeletePayloadFromStorageAsync_ThrowsMonaiBadRequestException()
+        public async Task DeletePayloadFromStorageAsync_ThrowsMonaiBadRequestExceptionWhenDeletionAlreadyInProgress()
         {
             var payloadId = Guid.NewGuid().ToString();
 
             _payloadRepository.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(() => new Payload
             {
                 PayloadDeleted = PayloadDeleted.InProgress
+            });
+
+            await Assert.ThrowsAsync<MonaiBadRequestException>(async () => await PayloadService.DeletePayloadFromStorageAsync(payloadId));
+        }
+
+        [Fact]
+        public async Task DeletePayloadFromStorageAsync_ThrowsMonaiBadRequestExceptionWhenWorkflowInstancesInProgress()
+        {
+            var payloadId = Guid.NewGuid().ToString();
+
+            _payloadRepository.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(() => new Payload());
+            _payloadRepository.Setup(p => p.UpdateAsync(It.IsAny<Payload>())).ReturnsAsync(() => true);
+            _workflowInstanceRepository.Setup(r => r.GetByPayloadIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(() => new List<WorkflowInstance>
+            {
+                new WorkflowInstance
+                {
+                    Status = Status.Created,
+                }
             });
 
             await Assert.ThrowsAsync<MonaiBadRequestException>(async () => await PayloadService.DeletePayloadFromStorageAsync(payloadId));

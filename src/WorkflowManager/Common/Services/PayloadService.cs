@@ -178,6 +178,13 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
                 throw new MonaiBadRequestException($"Deletion of files for payload ID: {payloadId} already in progress or already deleted");
             }
 
+            var workflowInstances = await _workflowInstanceRepository.GetByPayloadIdsAsync(new List<string> { payloadId });
+
+            if (workflowInstances.Any(wf => wf.Status == Status.Created))
+            {
+                throw new MonaiBadRequestException($"Workflows related to payload ID: {payloadId} are currently in progress, deletion cannot be complete.");
+            }
+
             // update the payload to in progress before we request deletion from storage
             payload.PayloadDeleted = PayloadDeleted.InProgress;
             await _payloadRepository.UpdateAsync(payload);
