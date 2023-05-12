@@ -16,6 +16,7 @@
 
 using System.Net;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.WorkflowManager.Common.Exceptions;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Services.InformaticsGateway;
 using Moq;
@@ -42,7 +43,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Tests.InformaticsGateway
 
             httpClientFactory.Setup(w => w.CreateClient(It.IsAny<string>())).Returns(httpClient.Object);
 
-            _options = Options.Create(new InformaticsGatewayConfiguration() { ApiHost = "https://localhost:5010" });
+            _options = Options.Create(new InformaticsGatewayConfiguration() { ApiHost = "https://localhost:5010", Username = "username", Password = "password" });
 
             InformaticsGatewayService = new InformaticsGatewayService(httpClientFactory.Object, _options);
         }
@@ -64,6 +65,14 @@ namespace Monai.Deploy.WorkflowManager.Services.Tests.InformaticsGateway
             var expected = false;
 
             Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public async Task OriginsExist_ExternalServiceError_ThrowsMonaiInternalErrorException()
+        {
+            var source = "any_source";
+
+            await Assert.ThrowsAsync<MonaiInternalServerException>(async () => await InformaticsGatewayService.OriginExists(source));
         }
 
         [Fact]

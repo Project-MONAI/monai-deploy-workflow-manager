@@ -33,6 +33,7 @@ using Moq;
 using Xunit;
 using Monai.Deploy.WorkflowManager.Shared.Filter;
 using Monai.Deploy.WorkflowManager.Services.InformaticsGateway;
+using Monai.Deploy.WorkflowManager.Common.Exceptions;
 
 namespace Monai.Deploy.WorkflowManager.Test.Controllers
 {
@@ -125,6 +126,165 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             var result = await WorkflowsController.GetList(new PaginationFilter());
 
             var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, objectResult.StatusCode);
+
+            const string expectedInstance = "/workflows";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
+
+        [Fact]
+        public async Task CreateAsync_ValidWorkflow_ReturnsWorkflowId()
+        {
+            var newWorkflow = new Workflow
+            {
+                Name = "Workflowname",
+                Description = "Workflowdesc",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    ExportDestinations = new[] { "test" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject {
+                        Id = Guid.NewGuid().ToString(),
+                        Type = "export",
+                        Description = "taskdesc",
+                        Args = new Dictionary<string, string>
+                        {
+                            { "test", "test" }
+                        },
+                        Artifacts = new ArtifactMap
+                        {
+                           Input = new Artifact[]
+                           {
+                               new Artifact
+                               {
+                                   Name = "test",
+                                   Value = "{{ context.input.dicom }}"
+                               }
+                            }
+                        },
+                        ExportDestinations = new ExportDestination[] {
+                            new ExportDestination
+                            {
+                                Name = "test"
+                            }
+                        }
+                    }
+                }
+            };
+
+            var workflowId = Guid.NewGuid().ToString();
+
+            var response = new CreateWorkflowResponse(workflowId);
+
+            _workflowService.Setup(w => w.CreateAsync(newWorkflow)).ReturnsAsync(workflowId);
+
+            var result = await WorkflowsController.CreateAsync(newWorkflow);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal(201, objectResult.StatusCode);
+            objectResult.Value.Should().BeEquivalentTo(response);
+        }
+
+        [Fact]
+        public async Task CreateAsync_InvalidWorkflow_ReturnsBadRequest()
+        {
+            var newWorkflow = new Workflow
+            {
+                Name = "Workflowname",
+                Description = "Workflowdesc",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle"
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject {
+                        Id = Guid.NewGuid().ToString(),
+                        Type = "type",
+                        Description = "taskdesc",
+                        Args = new Dictionary<string, string>
+                        {
+                            { "test", "test" }
+                        }
+                    }
+                }
+            };
+
+            var workflowId = Guid.NewGuid().ToString();
+
+            var response = new CreateWorkflowResponse(workflowId);
+
+            var result = await WorkflowsController.CreateAsync(newWorkflow);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal(400, objectResult.StatusCode);
+
+            const string expectedInstance = "/workflows";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
+
+        [Fact]
+        public async Task CreateAsync_InvalidWorkflow_ReturnsInternalServerError()
+        {
+            var newWorkflow = new Workflow
+            {
+                Name = "Workflowname",
+                Description = "Workflowdesc",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    ExportDestinations = new[] { "test" },
+                    DataOrigins = new string[] { "invalid_origin" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject {
+                        Id = Guid.NewGuid().ToString(),
+                        Type = "export",
+                        Description = "taskdesc",
+                        Args = new Dictionary<string, string>
+                        {
+                            { "test", "test" }
+                        },
+                        Artifacts = new ArtifactMap
+                        {
+                           Input = new Artifact[]
+                           {
+                               new Artifact
+                               {
+                                   Name = "test",
+                                   Value = "{{ context.input.dicom }}"
+                               }
+                            }
+                        },
+                        ExportDestinations = new ExportDestination[] {
+                            new ExportDestination
+                            {
+                                Name = "test"
+                            }
+                        }
+                    }
+                }
+            };
+
+            _informaticsGatewayService.Setup(x => x.OriginExists(It.IsAny<string>()))
+                .ThrowsAsync(new MonaiInternalServerException(
+                    $"An error occured when checking if the origin '{newWorkflow.InformaticsGateway.DataOrigins[0]}' existed.",
+                    new Exception()
+                ));
+
+            var result = await WorkflowsController.CreateAsync(newWorkflow);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
             Assert.Equal(500, objectResult.StatusCode);
 
             const string expectedInstance = "/workflows";
@@ -469,6 +629,52 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Fact]
+        public async Task ValidateAsync_InvalidWorkflow_ReturnsInternalServerError()
+        {
+            var newWorkflow = new Workflow
+            {
+                Name = "Workflowname",
+                Description = "Workflowdesc",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    DataOrigins = new string[] { "test" },
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject {
+                        Id = Guid.NewGuid().ToString(),
+                        Type = "export",
+                        Description = "taskdesc",
+                        Args = new Dictionary<string, string>
+                        {
+                            { "test", "test" }
+                        }
+                    }
+                }
+            };
+            var request = new WorkflowUpdateRequest();
+            request.Workflow = newWorkflow;
+            request.OriginalWorkflowName = newWorkflow.Name + "1";
+
+            _informaticsGatewayService.Setup(x => x.OriginExists(It.IsAny<string>()))
+                .ThrowsAsync(new MonaiInternalServerException(
+                    $"An error occured when checking if the origin '{newWorkflow.InformaticsGateway.DataOrigins[0]}' existed.",
+                    new Exception()
+                ));
+
+            var result = await WorkflowsController.ValidateAsync(request);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal(500, objectResult.StatusCode);
+
+            const string expectedInstance = "/workflows";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
+
+        [Fact]
         public async Task UpdateAsync_InvalidWorkflow_ReturnsBadRequest()
         {
             var newWorkflow = new Workflow
@@ -701,6 +907,79 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             Assert.Equal(201, objectResult.StatusCode);
             objectResult.Value.Should().BeEquivalentTo(response);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_InvalidWorkflow_ReturnsInternalServerException()
+        {
+            var newWorkflow = new Workflow
+            {
+                Name = "Workflowname",
+                Description = "Workflowdesc",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    DataOrigins = new string[] { "test" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject {
+                        Id = Guid.NewGuid().ToString(),
+                        Type = "type",
+                        Description = "taskdesc",
+                        Args = new Dictionary<string, string>
+                        {
+                            { "test", "test" }
+                        }
+                    }
+                }
+            };
+
+            var workflowRevision = new WorkflowRevision
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = Guid.NewGuid().ToString(),
+                Revision = 1,
+                Workflow = new Workflow
+                {
+                    Name = "Workflowname",
+                    Description = "Workflowdesc",
+                    Version = "2",
+                    InformaticsGateway = new InformaticsGateway
+                    {
+                        AeTitle = "aetitle",
+                        DataOrigins = new[] { "test" },
+                        ExportDestinations = new[] { "test" }
+                    },
+                    Tasks = new TaskObject[]
+                        {
+                            new TaskObject {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "type",
+                                Description = "taskdesc"
+                            }
+                        }
+                }
+            };
+            var request = new WorkflowUpdateRequest();
+            request.Workflow = newWorkflow;
+            request.OriginalWorkflowName = newWorkflow.Name + "1";
+
+            _informaticsGatewayService.Setup(x => x.OriginExists(It.IsAny<string>()))
+                .ThrowsAsync(new MonaiInternalServerException(
+                    $"An error occured when checking if the origin '{newWorkflow.InformaticsGateway.DataOrigins[0]}' existed.",
+                    new Exception()
+                ));
+
+            var result = await WorkflowsController.UpdateAsync(request, workflowRevision.WorkflowId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal(500, objectResult.StatusCode);
+
+            const string expectedInstance = "/workflows";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
 
         [Fact]

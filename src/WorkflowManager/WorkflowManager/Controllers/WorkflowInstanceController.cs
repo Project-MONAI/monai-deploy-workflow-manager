@@ -110,7 +110,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
 
                 var dataTotal = await _workflowInstanceService.FilteredCountAsync(parsedStatus, payloadId);
 
-                var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
+                var pagedReponse = CreatePagedResponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
 
                 return Ok(pagedReponse);
             }

@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.WorkflowManager.Common.Exceptions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -92,7 +93,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
                     validFilter.PageSize);
 
                 var dataTotal = await _workflowService.CountAsync();
-                var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
+                var pagedReponse = CreatePagedResponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
 
                 return Ok(pagedReponse);
             }
@@ -152,14 +153,23 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
         {
             var workflow = request.Workflow;
             _workflowValidator.OrignalName = request.OriginalWorkflowName;
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
-            if (errors.Count > 0)
+            try
             {
-                var validationErrors = WorkflowValidator.ErrorsToString(errors);
-                _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+                var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
-                return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", BadRequest);
+                if (errors.Count > 0)
+                {
+                    var validationErrors = WorkflowValidator.ErrorsToString(errors);
+                    _logger.LogDebug($"{nameof(ValidateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+
+                    return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/validate", BadRequest);
+                }
+            }
+            catch (MonaiInternalServerException ex)
+            {
+                _logger.LogDebug($"{nameof(ValidateAsync)} - Internal server error while validating {nameof(workflow)}: {ex.InnerException}");
+                return Problem($"Internal server error while validating {nameof(workflow)}", $"/workflows/validate", InternalServerError);
             }
 
             return StatusCode(StatusCodes.Status204NoContent);
@@ -176,14 +186,22 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateAsync([FromBody] Workflow workflow)
         {
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
-
-            if (errors.Count > 0)
+            try
             {
-                var validationErrors = WorkflowValidator.ErrorsToString(errors);
-                _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+                var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
-                return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", BadRequest);
+                if (errors.Count > 0)
+                {
+                    var validationErrors = WorkflowValidator.ErrorsToString(errors);
+                    _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+
+                    return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", BadRequest);
+                }
+            }
+            catch (MonaiInternalServerException ex)
+            {
+                _logger.LogDebug($"{nameof(CreateAsync)} - Internal server error while validating {nameof(workflow)}: {ex.InnerException}");
+                return Problem($"Internal server error while validating {nameof(workflow)}", $"/workflows", InternalServerError);
             }
 
             try
@@ -222,14 +240,23 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
             }
 
             _workflowValidator.OrignalName = originalName;
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
-            if (errors.Count > 0)
+            try
             {
-                var validationErrors = WorkflowValidator.ErrorsToString(errors);
-                _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+                var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
-                return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/{id}", BadRequest);
+                if (errors.Count > 0)
+                {
+                    var validationErrors = WorkflowValidator.ErrorsToString(errors);
+                    _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+
+                    return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/{id}", BadRequest);
+                }
+            }
+            catch (MonaiInternalServerException ex)
+            {
+                _logger.LogDebug($"{nameof(UpdateAsync)} - Internal server error while validating {nameof(workflow)}: {ex.InnerException}");
+                return Problem($"Internal server error while validating {nameof(workflow)}", $"/workflows/{id}", InternalServerError);
             }
 
             try
@@ -328,7 +355,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
                     validFilter.PageSize);
 
                 var dataTotal = await _workflowService.GetCountByAeTitleAsync(title);
-                var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
+                var pagedReponse = CreatePagedResponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
 
                 return Ok(pagedReponse);
             }

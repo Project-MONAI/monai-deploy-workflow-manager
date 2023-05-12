@@ -67,7 +67,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
         /// <param name="uriService">Uri service.</param>
         /// <param name="route">Route.</param>
         /// <returns>Returns <see cref="PagedResponse{T}"/>.</returns>
-        public PagedResponse<IEnumerable<T>> CreatePagedReponse<T>(IEnumerable<T> pagedData, PaginationFilter validFilter, long totalRecords, IUriService uriService, string route)
+        public PagedResponse<IEnumerable<T>> CreatePagedResponse<T>(IEnumerable<T> pagedData, PaginationFilter validFilter, long totalRecords, IUriService uriService, string route)
         {
             Guard.Against.Null(pagedData);
             Guard.Against.Null(validFilter);
@@ -75,10 +75,10 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
             Guard.Against.Null(uriService);
 
             var pageSize = validFilter.PageSize ?? Options.Value.EndpointSettings.DefaultPageSize;
-            var respose = new PagedResponse<IEnumerable<T>>(pagedData, validFilter.PageNumber, pageSize);
+            var response = new PagedResponse<IEnumerable<T>>(pagedData, validFilter.PageNumber, pageSize);
 
-            respose.SetUp(validFilter, totalRecords, uriService, route);
-            return respose;
+            response.SetUp(validFilter, totalRecords, uriService, route);
+            return response;
         }
 
 

@@ -145,6 +145,15 @@ Scenario: Update workflow where workflow ID does not exist
     Then I will get a 404 response
     And I will receive the error message Failed to find workflow with Id: 52b87b54-a728-4796-9a79-d30867da2a6e
 
+@UpdateWorkflows
+Scenario Outline: Update workflow with invalid data origin
+    Given I have a clinical workflow Basic_Workflow_1
+    And I have an endpoint /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3
+    And I have a body Invalid_Data_Origin
+    When I send a PUT request
+    Then I will get a 500 response
+    And I will receive the error message Internal server error while validating workflow
+
 @AddWorkflows
 Scenario: Add workflow with valid details
     Given I have an endpoint /workflows
@@ -249,6 +258,14 @@ Scenario Outline: Validate workflow with invalid details
     | Invalid_Clinical_Review_Multiple_Argo_Inputs        | Invalid input artifact 'Argo2' in task 'clinical-review': Task cannot reference a non-reviewed task artifacts 'argo-task-2'                                                |
     | Invalid_Clinical_Review_Missing_Notifications       | notifications must be specified                                                                                                                                            |
     | Invalid_Clinical_Review_Invalid_Notifications       | notifications is incorrectly specified                                                                                                                                     |
+
+@ValidateWorkflows
+Scenario: Validate workflow with invalid data origin
+    Given I have an endpoint /workflows/validate
+    And I have a body Invalid_Data_Origin
+    When I send a POST request
+    Then I will get a 500 response
+    And I will receive the error message Internal server error while validating workflow
 
 @DeleteWorkflows
 Scenario: Delete a workflow with one revision
