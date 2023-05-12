@@ -1552,6 +1552,38 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         AeTitle = "Update",
                         ExportDestinations = new string[]{"test"}
                     }
+                },
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_Data_Origin",
+                Workflow = new Workflow()
+                {
+                    Name = "Basic workflow",
+                    Description = "Basic workflow update",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "basic_id_with-legal-chars",
+                            Type = "router",
+                            Description = "Basic Workflow update Task update",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new Artifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        ExportDestinations = new string[]{"test"},
+                        DataOrigins = new string[] { "invalid_source" }
+                    }
                 }
             },
         };
