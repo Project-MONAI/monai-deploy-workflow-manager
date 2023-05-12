@@ -93,7 +93,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         [Fact]
         public async Task GetStatsOverviewAsync_ServiceException_ReturnProblem()
         {
-            _repo.Setup(w => w.GetStatsStatusFailedCountAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
+            _repo.Setup(w => w.GetStatsStatusSucceededCountAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
 
             var result = await StatsController.GetOverviewAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>());
 
@@ -137,6 +137,22 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 It.Is<string>(s => s.Equals("task")))
             );
         }
+
+        [Fact]
+        public async Task GetStatsAsync_Pass_All_Arguments_To_GetStatsStatusSucceededCountAsync_in_Repo()
+        {
+            var startTime = new DateTime(2023, 4, 4);
+            var endTime = new DateTime(2023, 4, 5);
+
+            var result = await StatsController.GetStatsAsync(new TimeFilter { StartTime = startTime, EndTime = endTime }, "workflow", "task");
+
+            _repo.Verify(v => v.GetStatsStatusSucceededCountAsync(
+                It.Is<DateTime>(d => d.Equals(startTime)),
+                It.Is<DateTime>(d => d.Equals(endTime)),
+                It.Is<string>(s => s.Equals("workflow")),
+                It.Is<string>(s => s.Equals("task"))));
+        }
+
 
         [Fact]
         public async Task GetStatsAsync_Pass_All_Arguments_To_GetStatsStatusFailedCountAsync_in_Repo()
@@ -196,6 +212,21 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 It.Is<DateTime>(d => d.Equals(startTime)),
                 It.Is<DateTime>(d => d.Equals(endTime)),
                 It.Is<string>(s => s.Equals("")),
+                It.Is<string>(s => s.Equals("")),
+                It.Is<string>(s => s.Equals(""))));
+        }
+
+        [Fact]
+        public async Task GetOverviewAsync_Pass_All_Arguments_To_GetStatsStatusSucceededCountAsync_in_Repo()
+        {
+            var startTime = new DateTime(2023, 4, 4);
+            var endTime = new DateTime(2023, 4, 5);
+
+            var result = await StatsController.GetOverviewAsync(startTime, endTime);
+
+            _repo.Verify(v => v.GetStatsStatusSucceededCountAsync(
+                It.Is<DateTime>(d => d.Equals(startTime)),
+                It.Is<DateTime>(d => d.Equals(endTime)),
                 It.Is<string>(s => s.Equals("")),
                 It.Is<string>(s => s.Equals(""))));
         }
