@@ -133,6 +133,165 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         }
 
         [Fact]
+        public async Task CreateAsync_ValidWorkflow_ReturnsWorkflowId()
+        {
+            var newWorkflow = new Workflow
+            {
+                Name = "Workflowname",
+                Description = "Workflowdesc",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    ExportDestinations = new[] { "test" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject {
+                        Id = Guid.NewGuid().ToString(),
+                        Type = "export",
+                        Description = "taskdesc",
+                        Args = new Dictionary<string, string>
+                        {
+                            { "test", "test" }
+                        },
+                        Artifacts = new ArtifactMap
+                        {
+                           Input = new Artifact[]
+                           {
+                               new Artifact
+                               {
+                                   Name = "test",
+                                   Value = "{{ context.input.dicom }}"
+                               }
+                            }
+                        },
+                        ExportDestinations = new ExportDestination[] {
+                            new ExportDestination
+                            {
+                                Name = "test"
+                            }
+                        }
+                    }
+                }
+            };
+
+            var workflowId = Guid.NewGuid().ToString();
+
+            var response = new CreateWorkflowResponse(workflowId);
+
+            _workflowService.Setup(w => w.CreateAsync(newWorkflow)).ReturnsAsync(workflowId);
+
+            var result = await WorkflowsController.CreateAsync(newWorkflow);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal(201, objectResult.StatusCode);
+            objectResult.Value.Should().BeEquivalentTo(response);
+        }
+
+        [Fact]
+        public async Task CreateAsync_InvalidWorkflow_ReturnsBadRequest()
+        {
+            var newWorkflow = new Workflow
+            {
+                Name = "Workflowname",
+                Description = "Workflowdesc",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle"
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject {
+                        Id = Guid.NewGuid().ToString(),
+                        Type = "type",
+                        Description = "taskdesc",
+                        Args = new Dictionary<string, string>
+                        {
+                            { "test", "test" }
+                        }
+                    }
+                }
+            };
+
+            var workflowId = Guid.NewGuid().ToString();
+
+            var response = new CreateWorkflowResponse(workflowId);
+
+            var result = await WorkflowsController.CreateAsync(newWorkflow);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal(400, objectResult.StatusCode);
+
+            const string expectedInstance = "/workflows";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
+
+        [Fact]
+        public async Task CreateAsync_InvalidWorkflow_ReturnsInternalServerError()
+        {
+            var newWorkflow = new Workflow
+            {
+                Name = "Workflowname",
+                Description = "Workflowdesc",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    ExportDestinations = new[] { "test" },
+                    DataOrigins = new string[] { "invalid_origin" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject {
+                        Id = Guid.NewGuid().ToString(),
+                        Type = "export",
+                        Description = "taskdesc",
+                        Args = new Dictionary<string, string>
+                        {
+                            { "test", "test" }
+                        },
+                        Artifacts = new ArtifactMap
+                        {
+                           Input = new Artifact[]
+                           {
+                               new Artifact
+                               {
+                                   Name = "test",
+                                   Value = "{{ context.input.dicom }}"
+                               }
+                            }
+                        },
+                        ExportDestinations = new ExportDestination[] {
+                            new ExportDestination
+                            {
+                                Name = "test"
+                            }
+                        }
+                    }
+                }
+            };
+
+            _informaticsGatewayService.Setup(x => x.OriginExists(It.IsAny<string>()))
+                .ThrowsAsync(new MonaiInternalServerException(
+                    $"An error occured when checking if the origin '{newWorkflow.InformaticsGateway.DataOrigins[0]}' existed.",
+                    new Exception()
+                ));
+
+            var result = await WorkflowsController.CreateAsync(newWorkflow);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal(500, objectResult.StatusCode);
+
+            const string expectedInstance = "/workflows";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
+
+        [Fact]
         public async Task ValidateAsync_InvalidWorkflow_ReturnsBadRequest()
         {
             var newWorkflow = new Workflow
@@ -501,7 +660,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             _informaticsGatewayService.Setup(x => x.OriginExists(It.IsAny<string>()))
                 .ThrowsAsync(new MonaiInternalServerException(
-                    $"An error occured when cheking if the origin '{newWorkflow.InformaticsGateway.DataOrigins[0]}' existed.",
+                    $"An error occured when checking if the origin '{newWorkflow.InformaticsGateway.DataOrigins[0]}' existed.",
                     new Exception()
                 ));
 
@@ -809,7 +968,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             _informaticsGatewayService.Setup(x => x.OriginExists(It.IsAny<string>()))
                 .ThrowsAsync(new MonaiInternalServerException(
-                    $"An error occured when cheking if the origin '{newWorkflow.InformaticsGateway.DataOrigins[0]}' existed.",
+                    $"An error occured when checking if the origin '{newWorkflow.InformaticsGateway.DataOrigins[0]}' existed.",
                     new Exception()
                 ));
 
