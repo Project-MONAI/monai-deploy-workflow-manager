@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.Configuration;
-
-namespace Monai.Deploy.WorkflowManager.Configuration
+namespace Monai.Deploy.WorkflowManager.Common.Exceptions
 {
-    public class InformaticsGatewayConfiguration
+    public class MonaiInternalServerException : Exception
     {
-        [ConfigurationKeyName("apiHost")]
-        public string ApiHost { get; set; }
+        public MonaiInternalServerException()
+        {
+        }
 
-        [ConfigurationKeyName("username")]
-        public string Username { get; set; }
+        public MonaiInternalServerException(string message)
+            : base(message)
+        {
+        }
 
-        [ConfigurationKeyName("password")]
-        public string Password { get; set; }
+        public MonaiInternalServerException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
     }
 }

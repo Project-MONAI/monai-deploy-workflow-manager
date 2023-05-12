@@ -1751,6 +1751,7 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.Http": "3.1.0",
+          "Monai.Deploy.WorkflowManager.Common": "1.0.0",
           "Monai.Deploy.WorkflowManager.Configuration": "1.0.0"
         }
       },

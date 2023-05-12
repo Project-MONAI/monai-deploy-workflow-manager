@@ -42,7 +42,7 @@ namespace Monai.Deploy.WorkflowManager.Services.Tests.InformaticsGateway
 
             httpClientFactory.Setup(w => w.CreateClient(It.IsAny<string>())).Returns(httpClient.Object);
 
-            _options = Options.Create(new InformaticsGatewayConfiguration() { ApiHost = "https://localhost:5010" });
+            _options = Options.Create(new InformaticsGatewayConfiguration() { ApiHost = "https://localhost:5010", Username = "username", Password = "password" });
 
             InformaticsGatewayService = new InformaticsGatewayService(httpClientFactory.Object, _options);
         }

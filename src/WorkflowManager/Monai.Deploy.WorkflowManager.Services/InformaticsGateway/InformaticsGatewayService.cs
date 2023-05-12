@@ -15,7 +15,9 @@
  */
 
 using System.Net;
+using System.Net.Http.Headers;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.WorkflowManager.Common.Exceptions;
 using Monai.Deploy.WorkflowManager.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.Services.InformaticsGateway
@@ -31,17 +33,29 @@ namespace Monai.Deploy.WorkflowManager.Services.InformaticsGateway
             _options = options ?? throw new ArgumentNullException(nameof(options));
 
             _httpClient.BaseAddress = new Uri(_options.Value.ApiHost);
+
+            var authenticationString = $"{_options.Value.Username}:{_options.Value.Password}";
+            var base64EncodedAuthenticationString = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(authenticationString));
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64EncodedAuthenticationString);
         }
 
         private readonly HttpClient _httpClient;
 
         private readonly IOptions<InformaticsGatewayConfiguration> _options;
 
-        public async Task<bool> OriginExists(string name)
+        public async Task<bool> OriginExists(string aetitle)
         {
-            var response = await _httpClient.GetAsync($"/config/source/{name}");
+            try
+            {
+                var response = await _httpClient.GetAsync($"/config/source/aetitle/{aetitle}");
 
-            return response.StatusCode == HttpStatusCode.OK;
+                return response.StatusCode == HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                throw new MonaiInternalServerException($"An error occured when cheking if the origin '{aetitle}' existed.", ex);
+            }
         }
     }
 }
