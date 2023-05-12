@@ -42,6 +42,37 @@ Scenario: Get all payloads from API - no payloads
     Then I will get a 200 response
     And I can see no Payloads are returned
 
+@GetPayloads
+Scenario: Get all payloads from API - Workflow Instances Created - PayloadStatus InProgress
+    Given I have an endpoint /payload
+    And I have a payload saved in mongo Payload_PayloadStatus_1
+    And I have a Workflow Instance Workflow_Instance_For_PayloadData_Payload_PayloadStatus_1_1 with no artifacts
+    And I have a Workflow Instance Workflow_Instance_For_PayloadData_Payload_PayloadStatus_1_2 with no artifacts
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see expected Payloads are returned with PayloadStatus InProgress
+
+@GetPayloads
+Scenario: Get all payloads from API - Workflow Instances Succeeded and Failed - PayloadStatus Complete
+    Given I have an endpoint /payload
+    And I have a payload saved in mongo Payload_PayloadStatus_2
+    And I have a Workflow Instance Workflow_Instance_For_PayloadData_Payload_PayloadStatus_2_1 with no artifacts
+    And I have a Workflow Instance Workflow_Instance_For_PayloadData_Payload_PayloadStatus_2_2 with no artifacts
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see expected Payloads are returned with PayloadStatus Complete
+
+@GetPayloads
+Scenario: Get all payloads from API - Workflow Instances Succeeded, Failed, and Created - PayloadStatus InProgress
+    Given I have an endpoint /payload
+    And I have a payload saved in mongo Payload_PayloadStatus_3
+    And I have a Workflow Instance Workflow_Instance_For_PayloadData_Payload_PayloadStatus_3_1 with no artifacts
+    And I have a Workflow Instance Workflow_Instance_For_PayloadData_Payload_PayloadStatus_3_2 with no artifacts
+    And I have a Workflow Instance Workflow_Instance_For_PayloadData_Payload_PayloadStatus_3_3 with no artifacts
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see expected Payloads are returned with PayloadStatus InProgress
+
 @PayloadSearch
 Scenario Outline: Get all payloads from API - Test search query parameters
     Given I have an endpoint /payload/<search_query>
