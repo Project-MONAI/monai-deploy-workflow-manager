@@ -54,7 +54,7 @@ namespace Monai.Deploy.WorkflowManager.Services.InformaticsGateway
             }
             catch (Exception ex)
             {
-                throw new MonaiInternalServerException($"An error occured when cheking if the origin '{aetitle}' existed.", ex);
+                throw new MonaiInternalServerException($"An error occured when checking if the origin '{aetitle}' existed.", ex);
             }
         }
     }
