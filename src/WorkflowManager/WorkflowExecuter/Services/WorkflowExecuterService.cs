@@ -802,6 +802,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 var firstTask = workflow.Workflow.Tasks.First();
 
                 var task = await CreateTaskExecutionAsync(firstTask, workflowInstance, message.Bucket, message.PayloadId.ToString());
+                task.TaskPluginArguments["workflow_name"] = workflow.Workflow.Name;
 
                 tasks.Add(task);
                 if (task.Status == TaskExecutionStatus.Failed)
