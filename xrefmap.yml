@@ -469,6 +469,30 @@ references:
   commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.ApiHost
   fullName: Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.ApiHost
   nameWithType: InformaticsGatewayConfiguration.ApiHost
+- uid: Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.Password
+  name: Password
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.html#Monai_Deploy_WorkflowManager_Configuration_InformaticsGatewayConfiguration_Password
+  commentId: P:Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.Password
+  fullName: Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.Password
+  nameWithType: InformaticsGatewayConfiguration.Password
+- uid: Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.Password*
+  name: Password
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.html#Monai_Deploy_WorkflowManager_Configuration_InformaticsGatewayConfiguration_Password_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.Password
+  fullName: Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.Password
+  nameWithType: InformaticsGatewayConfiguration.Password
+- uid: Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.Username
+  name: Username
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.html#Monai_Deploy_WorkflowManager_Configuration_InformaticsGatewayConfiguration_Username
+  commentId: P:Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.Username
+  fullName: Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.Username
+  nameWithType: InformaticsGatewayConfiguration.Username
+- uid: Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.Username*
+  name: Username
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.html#Monai_Deploy_WorkflowManager_Configuration_InformaticsGatewayConfiguration_Username_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.Username
+  fullName: Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.Username
+  nameWithType: InformaticsGatewayConfiguration.Username
 - uid: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfiguration
   name: MessageBrokerConfiguration
   href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfiguration.html
