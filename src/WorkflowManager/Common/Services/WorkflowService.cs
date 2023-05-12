@@ -54,6 +54,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
         {
             Guard.Against.Null(workflow);
 
+            foreach (var task in workflow.Tasks)
+            {
+                task.Args["workflow_name"] = workflow.Name;
+            }
+
             var id = await _workflowRepository.CreateAsync(workflow);
             _logger.WorkflowCreated(id, workflow.Name);
             return id;
