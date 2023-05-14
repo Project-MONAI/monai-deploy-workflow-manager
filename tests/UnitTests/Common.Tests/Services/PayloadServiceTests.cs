@@ -299,7 +299,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
                 p.GetAllAsync(
                     It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>())
                 ).ReturnsAsync(() => input);
-            var param = input.Select(i => i.Id).ToList();
+            var param = input.Select(i => i.PayloadId).ToList();
             _workflowInstanceRepository.Setup(r =>
                 r.GetByPayloadIdsAsync(param)
                 ).ReturnsAsync(() =>
