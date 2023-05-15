@@ -20,6 +20,7 @@ namespace Monai.Deploy.WorkflowManager.Shared.Wrappers
         public DateTime PeriodStart { get; set; }
         public DateTime PeriodEnd { get; set; }
         public long TotalExecutions { get; set; }
+        public long TotalSucceeded { get; set; }
         public long TotalFailures { get; set; }
         public long TotalInprogress { get; set; }
         public double AverageTotalExecutionSeconds { get; set; }

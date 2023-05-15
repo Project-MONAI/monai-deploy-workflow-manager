@@ -899,7 +899,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             request.Workflow = newWorkflow;
             request.OriginalWorkflowName = newWorkflow.Name + "1";
 
-            _workflowService.Setup(w => w.UpdateAsync(newWorkflow, workflowRevision.WorkflowId)).ReturnsAsync(workflowRevision.WorkflowId);
+            _workflowService.Setup(w => w.UpdateAsync(newWorkflow, workflowRevision.WorkflowId, It.IsAny<bool>())).ReturnsAsync(workflowRevision.WorkflowId);
 
             var result = await WorkflowsController.UpdateAsync(request, workflowRevision.WorkflowId);
 

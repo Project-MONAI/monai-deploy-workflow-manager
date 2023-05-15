@@ -220,6 +220,19 @@ namespace Monai.Deploy.WorkflowManager.Database
             (statusNull || T.Status == status));
         }
 
+        public async Task<long> GetStatsStatusSucceededCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "")
+        {
+            var workflowNull = string.IsNullOrWhiteSpace(workflowId);
+            var taskIdNull = string.IsNullOrWhiteSpace(taskId);
+
+            return await _taskExecutionStatsCollection.CountDocumentsAsync(T =>
+            T.StartedUTC >= startTime.ToUniversalTime() &&
+            T.StartedUTC <= endTime.ToUniversalTime() &&
+            (workflowNull || T.WorkflowId == workflowId) &&
+            (taskIdNull || T.TaskId == taskId) &&
+            T.Status == TaskExecutionStatus.Succeeded.ToString());
+        }
+
         public async Task<long> GetStatsStatusFailedCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "")
         {
             var workflowNull = string.IsNullOrWhiteSpace(workflowId);
