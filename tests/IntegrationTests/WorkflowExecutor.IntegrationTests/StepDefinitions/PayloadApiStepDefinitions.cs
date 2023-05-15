@@ -75,6 +75,33 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             Assertions.AssertPayloadList(DataHelper.Payload, actualPayloads?.Data);
         }
 
+        [Then(@"I can see expected Payloads are returned with PayloadStatus (.*)")]
+        public void ThenICanSeeExpectedPayloadsAreReturnedWithPayloadStatus(string payloadStatus)
+        {
+            PayloadStatus status;
+
+            switch (payloadStatus)
+            {
+                case "InProgress":
+                    status = PayloadStatus.InProgress;
+                    break;
+                case "Complete":
+                    status = PayloadStatus.Complete;
+                    break;
+                default:
+                    throw new Exception($"Invalid payload status '{payloadStatus}'. Must be one of: InProgress, Complete");
+            }
+
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+
+            var actualPayloads = JsonConvert.DeserializeObject<PagedResponse<List<PayloadDto>>>(result);
+            actualPayloads.Should().NotBeNull();
+            Assertions.AssertPayloadListWithPayloadStatus(
+                DataHelper.Payload.Select(p => new PayloadDto(p)).ToList(),
+                actualPayloads?.Data,
+                status);
+        }
+
         [Then(@"Search is working correctly for the (.*) payload")]
         [Then(@"Search is working correctly for the (.*) payloads")]
         public void ThenSearchIsWorkingCorrectlyForThepayloads(int count)
