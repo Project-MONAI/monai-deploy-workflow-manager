@@ -17,6 +17,7 @@
     "periodStart": "2023-01-01T00:00:00",
     "periodEnd": "2023-04-26T15:01:01.0902241+01:00",
     "totalExecutions": 5,
+    "totalSucceeded": 3,
     "totalFailures": 1,
     "totalInprogress": 1,
     "averageTotalExecutionSeconds": 30.0,
