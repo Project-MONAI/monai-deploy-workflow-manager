@@ -281,6 +281,20 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
         }
 
+        public void AssertPayloadListWithPayloadStatus(List<PayloadDto> payload, List<PayloadDto>? actualPayloads, PayloadStatus payloadStatus)
+        {
+            actualPayloads.Should().NotBeNull();
+            actualPayloads?.Count.Should().Be(payload.Count);
+
+            foreach (var p in payload)
+            {
+                var actualPayload = actualPayloads?.FirstOrDefault(x => x.PayloadId.Equals(p.PayloadId));
+
+                AssertPayload(p, actualPayload);
+                actualPayload?.PayloadStatus.Should().Be(payloadStatus);
+            }
+        }
+
         public void AssertPayloadCollection(Payload payloadCollection, PatientDetails patientDetails, WorkflowRequestMessage workflowRequestMessage)
         {
             payloadCollection.PayloadId.Should().Be(workflowRequestMessage.PayloadId.ToString());
