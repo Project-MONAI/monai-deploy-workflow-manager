@@ -133,7 +133,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
                 return dtos;
             }
 
-            var payloadIds = payloads.Select(payload => payload.Id).ToList();
+            var payloadIds = payloads.Select(payload => payload.PayloadId).ToList();
 
             var workflowInstances =
                 await _workflowInstanceRepository.GetByPayloadIdsAsync(payloadIds);

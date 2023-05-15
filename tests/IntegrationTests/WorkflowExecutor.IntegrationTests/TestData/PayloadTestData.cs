@@ -352,6 +352,78 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                         PatientSex = "male"
                     }
                 }
+            },
+            new PayloadTestData()
+            {
+                Name = "Payload_PayloadStatus_1",
+                Payload = new Payload()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    Bucket = "bucket_1",
+                    CalledAeTitle = "MIG",
+                    CallingAeTitle = "Basic_AE",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = "a5c3633b-31dd-44c9-8a1a-71adec3d47c1",
+                    Workflows = new List<string> { Guid.NewGuid().ToString() },
+                    FileCount = 50,
+                    PayloadDeleted = PayloadDeleted.No,
+                    PatientDetails = new PatientDetails()
+                    {
+                        PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
+                        PatientId = Guid.NewGuid().ToString(),
+                        PatientName = "Mike Mcgee",
+                        PatientSex = "male"
+                    }
+                }
+            },
+            new PayloadTestData()
+            {
+                Name = "Payload_PayloadStatus_2",
+                Payload = new Payload()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    Bucket = "bucket_1",
+                    CalledAeTitle = "MIG",
+                    CallingAeTitle = "Basic_AE",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = "a5c3633b-31dd-44c9-8a1a-71adec3d47c2",
+                    Workflows = new List<string> { Guid.NewGuid().ToString() },
+                    FileCount = 50,
+                    PayloadDeleted = PayloadDeleted.No,
+                    PatientDetails = new PatientDetails()
+                    {
+                        PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
+                        PatientId = Guid.NewGuid().ToString(),
+                        PatientName = "Mike Mcgee",
+                        PatientSex = "male"
+                    }
+                }
+            },
+            new PayloadTestData()
+            {
+                Name = "Payload_PayloadStatus_3",
+                Payload = new Payload()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    Bucket = "bucket_1",
+                    CalledAeTitle = "MIG",
+                    CallingAeTitle = "Basic_AE",
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = "a5c3633b-31dd-44c9-8a1a-71adec3d47c3",
+                    Workflows = new List<string> { Guid.NewGuid().ToString() },
+                    FileCount = 50,
+                    PayloadDeleted = PayloadDeleted.No,
+                    PatientDetails = new PatientDetails()
+                    {
+                        PatientDob = new DateTime(1996, 02, 05, 0, 0, 0, kind: DateTimeKind.Utc),
+                        PatientId = Guid.NewGuid().ToString(),
+                        PatientName = "Mike Mcgee",
+                        PatientSex = "male"
+                    }
+                }
             }
         };
     }
