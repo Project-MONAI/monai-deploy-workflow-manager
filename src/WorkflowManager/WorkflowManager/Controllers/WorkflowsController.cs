@@ -269,7 +269,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
                     }
                 }
 
-                var workflowId = await _workflowService.UpdateAsync(workflow, id);
+                var workflowId = await _workflowService.UpdateAsync(workflow, id, workflow.Name != originalName);
 
                 if (workflowId == null)
                 {
