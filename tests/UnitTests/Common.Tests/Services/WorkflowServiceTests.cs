@@ -114,7 +114,7 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowRevision.WorkflowId)).ReturnsAsync(workflowRevision);
             _workflowRepository.Setup(w => w.UpdateAsync(It.IsAny<Workflow>(), workflowRevision)).ReturnsAsync(workflowRevision.WorkflowId);
 
-            var result = await WorkflowService.UpdateAsync(new Workflow(), workflowRevision.WorkflowId);
+            var result = await WorkflowService.UpdateAsync(new Workflow(), workflowRevision.WorkflowId, true);
 
             Assert.Equal(workflowRevision.WorkflowId, result);
         }
