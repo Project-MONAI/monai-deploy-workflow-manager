@@ -72,6 +72,18 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
         }
 
         [Fact]
+        public async Task WorkflowService_CreateAsync_With_ValidReturn()
+        {
+            var expectedResult = "1";
+            _workflowRepository.Setup(w => w.CreateAsync(It.IsAny<Workflow>())).ReturnsAsync(expectedResult);
+            var tasks = new TaskObject[] { new TaskObject() };
+            var result = await WorkflowService.CreateAsync(new Workflow() { Name = "workflow1", Tasks = tasks });
+
+            Assert.Equal(expectedResult, result);
+        }
+
+
+        [Fact]
         public async Task WorkflowService_WorkflowExists_ReturnsWorkflowId()
         {
             var workflowRevision = new WorkflowRevision
