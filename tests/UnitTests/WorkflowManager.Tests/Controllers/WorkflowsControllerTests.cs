@@ -51,13 +51,22 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
         public WorkflowsControllerTests()
         {
-            _options = Options.Create(new WorkflowManagerOptions { EndpointSettings = new EndpointSettings { MaxPageSize = 99 } });
+            _options = Options.Create(
+                new WorkflowManagerOptions
+                {
+                    EndpointSettings = new EndpointSettings
+                    {
+                        MaxPageSize = 99
+                    },
+                    DicomTagsDisallowed = "PatientName,PatientID,IssuerOfPatientID,TypeOfPatientID,IssuerOfPatientIDQualifiersSequence,SourcePatientGroupIdentificationSequence,GroupOfPatientsIdentificationSequence,SubjectRelativePositionInImage,PatientBirthDate,PatientBirthTime,PatientBirthDateInAlternativeCalendar,PatientDeathDateInAlternativeCalendar,PatientAlternativeCalendar,PatientSex,PatientInsurancePlanCodeSequence,PatientPrimaryLanguageCodeSequence,PatientPrimaryLanguageModifierCodeSequence,QualityControlSubject,QualityControlSubjectTypeCodeSequence,StrainDescription,StrainNomenclature,StrainStockNumber,StrainSourceRegistryCodeSequence,StrainStockSequence,StrainSource,StrainAdditionalInformation,StrainCodeSequence,GeneticModificationsSequence,GeneticModificationsDescription,GeneticModificationsNomenclature,GeneticModificationsCodeSequence,OtherPatientIDsRETIRED,OtherPatientNames,OtherPatientIDsSequence,PatientBirthName,PatientAge,PatientSize,PatientSizeCodeSequence,PatientBodyMassIndex,MeasuredAPDimension,MeasuredLateralDimension,PatientWeight,PatientAddress,InsurancePlanIdentificationRETIRED,PatientMotherBirthName,MilitaryRank,BranchOfService,MedicalRecordLocatorRETIRED,ReferencedPatientPhotoSequence,MedicalAlerts,Allergies,CountryOfResidence,RegionOfResidence,PatientTelephoneNumbers,PatientTelecomInformation,EthnicGroup,Occupation,SmokingStatus,AdditionalPatientHistory,PregnancyStatus,LastMenstrualDate,PatientReligiousPreference,PatientSpeciesDescription,PatientSpeciesCodeSequence,PatientSexNeutered,AnatomicalOrientationType,PatientBreedDescription,PatientBreedCodeSequence,BreedRegistrationSequence,BreedRegistrationNumber,BreedRegistryCodeSequence,ResponsiblePerson,ResponsiblePersonRole,ResponsibleOrganization,PatientComments,ExaminedBodyThickness"
+                });
+
             _workflowService = new Mock<IWorkflowService>();
             _informaticsGatewayService = new Mock<IInformaticsGatewayService>();
 
             _logger = new Mock<ILogger<WorkflowsController>>();
             _loggerWorkflowValidator = new Mock<ILogger<WorkflowValidator>>();
-            _workflowValidator = new Mock<WorkflowValidator>(_workflowService.Object, _informaticsGatewayService.Object, _loggerWorkflowValidator.Object);
+            _workflowValidator = new Mock<WorkflowValidator>(_workflowService.Object, _informaticsGatewayService.Object, _loggerWorkflowValidator.Object, _options);
             _uriService = new Mock<IUriService>();
 
             _logger.Setup(p => p.IsEnabled(It.IsAny<LogLevel>())).Returns(true);

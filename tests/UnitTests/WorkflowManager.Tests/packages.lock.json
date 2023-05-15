@@ -134,6 +134,22 @@
           "NETStandard.Library": "1.6.1"
         }
       },
+      "fo-dicom": {
+        "type": "Transitive",
+        "resolved": "5.0.3",
+        "contentHash": "OPkCQ9+X/fvGRokAAgjR8bOpai04qlnNHmq+LsgI+Kyug3yar2zk6IMOSSvPOLgWe0EG9ScdqH44AGKnviH5Rw==",
+        "dependencies": {
+          "Microsoft.Bcl.AsyncInterfaces": "1.1.1",
+          "Microsoft.Extensions.DependencyInjection": "2.2.0",
+          "Microsoft.Extensions.Options": "2.2.0",
+          "Microsoft.Toolkit.HighPerformance": "7.1.2",
+          "System.Buffers": "4.5.1",
+          "System.Text.Encoding.CodePages": "4.6.0",
+          "System.Text.Encodings.Web": "4.7.2",
+          "System.Text.Json": "4.7.2",
+          "System.Threading.Channels": "6.0.0"
+        }
+      },
       "JetBrains.Annotations": {
         "type": "Transitive",
         "resolved": "2021.3.0",
@@ -209,6 +225,11 @@
           "Newtonsoft.Json": "13.0.1",
           "Newtonsoft.Json.Bson": "1.0.2"
         }
+      },
+      "Microsoft.Bcl.AsyncInterfaces": {
+        "type": "Transitive",
+        "resolved": "1.1.1",
+        "contentHash": "yuvf07qFWFqtK3P/MRkEKLhn5r2UbSpVueRziSqj0yJQIKFwG1pq9mOayK3zE5qZCTs0CbrwL9M6R8VwqyGy2w=="
       },
       "Microsoft.CodeCoverage": {
         "type": "Transitive",
@@ -587,6 +608,11 @@
           "Microsoft.TestPlatform.ObjectModel": "17.5.0",
           "Newtonsoft.Json": "13.0.1"
         }
+      },
+      "Microsoft.Toolkit.HighPerformance": {
+        "type": "Transitive",
+        "resolved": "7.1.2",
+        "contentHash": "cezzRky0BUJyYmSrcQUcX8qAv90JfUwCqWEbqfWZLHyeANo9/LWgW6y50pqbyc8r8SPXVsu2GNH98fB3VxrnvA=="
       },
       "Microsoft.Win32.Registry": {
         "type": "Transitive",
@@ -1531,6 +1557,14 @@
           "System.Runtime": "4.3.0"
         }
       },
+      "System.Text.Encoding.CodePages": {
+        "type": "Transitive",
+        "resolved": "4.6.0",
+        "contentHash": "OCUK9C/U97+UheVwo+JE+IUcKySUE3Oe+BcHhVtQrvmKSUFLrUDO8B5zEPRL6mBGbczxZp4w1boSck6/fw4dog==",
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "3.0.0"
+        }
+      },
       "System.Text.Encoding.Extensions": {
         "type": "Transitive",
         "resolved": "4.0.11",
@@ -1570,8 +1604,8 @@
       },
       "System.Threading.Channels": {
         "type": "Transitive",
-        "resolved": "4.7.1",
-        "contentHash": "6akRtHK/wab3246t4p5v3HQrtQk8LboOt5T4dtpNgsp3zvDeM4/Gx8V12t0h+c/W9/enUrilk8n6EQqdQorZAA=="
+        "resolved": "6.0.0",
+        "contentHash": "TY8/9+tI0mNaUMgntOxxaq2ndTkdXqLSxvPmas7XEqOlv9lQtB7wLjYGd756lOaO7Dvb5r/WXhluM+0Xe87v5Q=="
       },
       "System.Threading.Tasks": {
         "type": "Transitive",
@@ -1760,7 +1794,8 @@
         "dependencies": {
           "Ardalis.GuardClauses": "4.0.1",
           "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "6.0.15",
-          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0"
+          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
+          "fo-dicom": "5.0.3"
         }
       },
       "monai.deploy.workflowmanager.storage": {
