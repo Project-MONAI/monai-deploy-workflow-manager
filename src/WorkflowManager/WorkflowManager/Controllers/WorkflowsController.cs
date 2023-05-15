@@ -261,14 +261,6 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
 
             try
             {
-                if (workflow.Name != originalName)
-                {
-                    foreach (var task in workflow.Tasks)
-                    {
-                        task.Args["workflow_name"] = workflow.Name;
-                    }
-                }
-
                 var workflowId = await _workflowService.UpdateAsync(workflow, id, workflow.Name != originalName);
 
                 if (workflowId == null)
