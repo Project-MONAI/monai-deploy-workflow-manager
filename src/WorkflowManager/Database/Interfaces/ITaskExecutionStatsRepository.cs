@@ -71,6 +71,14 @@ namespace Monai.Deploy.WorkflowManager.Database
         Task<long> GetStatsStatusCountAsync(DateTime start, DateTime endTime, string status = "", string workflowId = "", string taskId = "");
 
         /// <summary>
+        /// Returns all stats in Succeeded status.
+        /// </summary>
+        /// <param name="startTime">start of the range.</param>
+        /// <param name="endTime">end of the range.</param>
+        /// <returns>All stats that succeeded</returns>
+        Task<long> GetStatsStatusSucceededCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "");
+
+        /// <summary>
         /// Returns all stats in Failed or PartialFail status.
         /// </summary>
         /// <param name="startTime">start of the range.</param>

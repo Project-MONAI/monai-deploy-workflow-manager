@@ -87,6 +87,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
 
             try
             {
+                var successes = _repository.GetStatsStatusSucceededCountAsync(startTime, endTime);
                 var fails = _repository.GetStatsStatusFailedCountAsync(startTime, endTime);
                 var running = _repository.GetStatsStatusCountAsync(startTime, endTime, TaskExecutionStatus.Accepted.ToString());
                 var rangeCount = _repository.GetStatsStatusCountAsync(startTime, endTime);
@@ -98,6 +99,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
                     PeriodStart = startTime,
                     PeriodEnd = endTime,
                     TotalExecutions = (int)rangeCount.Result,
+                    TotalSucceeded = (int)successes.Result,
                     TotalFailures = (int)fails.Result,
                     TotalInprogress = running.Result,
                     AverageTotalExecutionSeconds = Math.Round(stats.Result.avgTotalExecution, 2),
@@ -149,6 +151,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
             try
             {
                 var allStats = _repository.GetStatsAsync(filter.StartTime, filter.EndTime, pageSize, filter.PageNumber, workflowId ?? string.Empty, taskId ?? string.Empty);
+                var successes = _repository.GetStatsStatusSucceededCountAsync(filter.StartTime, filter.EndTime, workflowId ?? string.Empty, taskId ?? string.Empty);
                 var fails = _repository.GetStatsStatusFailedCountAsync(filter.StartTime, filter.EndTime, workflowId ?? string.Empty, taskId ?? string.Empty);
                 var rangeCount = _repository.GetStatsStatusCountAsync(filter.StartTime, filter.EndTime, string.Empty, workflowId ?? string.Empty, taskId ?? string.Empty);
                 var stats = _repository.GetAverageStats(filter.StartTime, filter.EndTime, workflowId ?? string.Empty, taskId ?? string.Empty);
@@ -168,6 +171,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
                 res.PeriodStart = filter.StartTime;
                 res.PeriodEnd = filter.EndTime;
                 res.TotalExecutions = rangeCount.Result;
+                res.TotalSucceeded = successes.Result;
                 res.TotalFailures = fails.Result;
                 res.TotalInprogress = running.Result;
                 res.AverageTotalExecutionSeconds = Math.Round(stats.Result.avgTotalExecution, 2);
