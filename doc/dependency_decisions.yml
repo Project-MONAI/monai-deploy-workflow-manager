@@ -762,13 +762,6 @@
   - :who: mocsharp
     :why: MICROSOFT .NET LIBRARY License (http://go.microsoft.com/fwlink/?LinkId=329770)
     :versions:
-    - 1.0.1
-    :when: 2022-10-14 23:37:18.028191176 Z
-- - :approve
-  - Microsoft.NETCore.Platforms
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License (http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
     - 1.1.0
     - 2.1.2
     :when: 2022-10-14 23:37:18.412134581 Z
@@ -779,6 +772,13 @@
     :versions:
     - 5.0.0
     :when: 2022-10-14 23:37:18.787826784 Z
+- - :approve
+  - Microsoft.NETCore.Platforms
+  - :who: samrooke
+    :why: MIT (https://github.com/dotnet/corefx/blob/master/LICENSE.TXT)
+    :versions:
+    - 3.0.0
+    :when: 2023-05-17 14:44:00.000000000 Z
 - - :approve
   - Microsoft.NETCore.Targets
   - :who: mocsharp
@@ -1852,20 +1852,16 @@
     :why: MIT (https://github.com/dotnet/corefx/raw/master/LICENSE.TXT)
     :versions:
     - 4.5.0
+    - 4.7.2
+    - 6.0.0
     - 7.0.0
     :when: 2022-10-14 23:38:23.546189380 Z
-- - :approve
-  - System.Text.Encodings.Web
-  - :who: mocsharp
-    :why: MIT (https://github.com/dotnet/corefx/raw/master/LICENSE.TXT)
-    :versions:
-    - 6.0.0
-    :when: 2022-10-14 23:38:23.983268364 Z
 - - :approve
   - System.Text.Json
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/corefx/raw/master/LICENSE.TXT)
     :versions:
+    - 4.7.2
     - 6.0.0
     - 6.0.6
     - 7.0.0
@@ -1905,6 +1901,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 4.7.1
+    - 6.0.0
     :when: 2022-10-14 23:38:26.916570960 Z
 - - :approve
   - System.Threading.Tasks
@@ -2500,6 +2497,14 @@
     :when: 2023-02-02 15:35:00.000000000 Z
 
 - - :approve
+  - System.Text.Encoding.CodePages
+  - :who: samrooke
+    :why: MIT (https://github.com/dotnet/corefx/blob/master/LICENSE.TXT)
+    :versions:
+    - 4.6.0
+    :when: 2023-05-17 14:44:00.000000000 Z
+
+- - :approve
   - System.Collections.NonGeneric
   - :who: neildsouth
     :why: MICROSOFT .NET LIBRARY License (http://go.microsoft.com/fwlink/?LinkId=329770)
@@ -2535,4 +2540,26 @@
     :versions:
     - 6.0.15
     :when: 2023-04-11 13:37:00.000000000 Z
+- - :approve
+  - Microsoft.Bcl.AsyncInterfaces
+  - :who: samrooke
+    :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
+    :versions:
+    - 1.1.1
+    :when: 2023-05-17 14:44:00.000000000 Z
+- - :approve
+  - Microsoft.Toolkit.HighPerformance
+  - :who: samrooke
+    :why: MIT (https://raw.githubusercontent.com/CommunityToolkit/WindowsCommunityToolkit/main/License.md)
+    :versions:
+    - 7.1.2
+    :when: 2023-05-17 14:44:00.000000000 Z
+- - :approve
+  - fo-dicom
+  - :who: samrooke
+    :why: Microsoft Public License (https://github.com/fo-dicom/fo-dicom/raw/development/License.txt)
+    :versions:
+    - 5.0.3
+    :when: 2023-05-17 14:44:00.000000000 Z
+
 

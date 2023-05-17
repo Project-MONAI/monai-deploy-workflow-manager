@@ -17,7 +17,9 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Services.InformaticsGateway;
 using Monai.Deploy.WorkflowManager.Validators;
@@ -33,14 +35,22 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
         private readonly WorkflowValidator _workflowValidator;
         private readonly Mock<ILogger<WorkflowValidator>> _logger;
 
+        private readonly IOptions<WorkflowManagerOptions> _options;
+
         public WorkflowValidatorTests()
         {
             _logger = new Mock<ILogger<WorkflowValidator>>();
 
             _workflowService = new Mock<IWorkflowService>();
             _informaticsGatewayService = new Mock<IInformaticsGatewayService>();
+            _options = Options.Create(
+                new WorkflowManagerOptions
+                {
+                    DicomTagsDisallowed = "PatientName,PatientID,IssuerOfPatientID,TypeOfPatientID,IssuerOfPatientIDQualifiersSequence,SourcePatientGroupIdentificationSequence,GroupOfPatientsIdentificationSequence,SubjectRelativePositionInImage,PatientBirthDate,PatientBirthTime,PatientBirthDateInAlternativeCalendar,PatientDeathDateInAlternativeCalendar,PatientAlternativeCalendar,PatientSex,PatientInsurancePlanCodeSequence,PatientPrimaryLanguageCodeSequence,PatientPrimaryLanguageModifierCodeSequence,QualityControlSubject,QualityControlSubjectTypeCodeSequence,StrainDescription,StrainNomenclature,StrainStockNumber,StrainSourceRegistryCodeSequence,StrainStockSequence,StrainSource,StrainAdditionalInformation,StrainCodeSequence,GeneticModificationsSequence,GeneticModificationsDescription,GeneticModificationsNomenclature,GeneticModificationsCodeSequence,OtherPatientIDsRETIRED,OtherPatientNames,OtherPatientIDsSequence,PatientBirthName,PatientAge,PatientSize,PatientSizeCodeSequence,PatientBodyMassIndex,MeasuredAPDimension,MeasuredLateralDimension,PatientWeight,PatientAddress,InsurancePlanIdentificationRETIRED,PatientMotherBirthName,MilitaryRank,BranchOfService,MedicalRecordLocatorRETIRED,ReferencedPatientPhotoSequence,MedicalAlerts,Allergies,CountryOfResidence,RegionOfResidence,PatientTelephoneNumbers,PatientTelecomInformation,EthnicGroup,Occupation,SmokingStatus,AdditionalPatientHistory,PregnancyStatus,LastMenstrualDate,PatientReligiousPreference,PatientSpeciesDescription,PatientSpeciesCodeSequence,PatientSexNeutered,AnatomicalOrientationType,PatientBreedDescription,PatientBreedCodeSequence,BreedRegistrationSequence,BreedRegistrationNumber,BreedRegistryCodeSequence,ResponsiblePerson,ResponsiblePersonRole,ResponsibleOrganization,PatientComments,ExaminedBodyThickness"
+                }
+            );
 
-            _workflowValidator = new WorkflowValidator(_workflowService.Object, _informaticsGatewayService.Object, _logger.Object);
+            _workflowValidator = new WorkflowValidator(_workflowService.Object, _informaticsGatewayService.Object, _logger.Object, _options);
             _logger = new Mock<ILogger<WorkflowValidator>>();
         }
 
@@ -328,6 +338,10 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                             new TaskDestination
                             {
                                 Name = "invalid-key-argo-task"
+                            },
+                            new TaskDestination
+                            {
+                                Name = "EmailTask_MissingEmailAndRolesArgs"
                             }
                         }
                     },
@@ -358,7 +372,226 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                         Id = "task_de.sc3?",
                         Type = "type",
                         Description = "invalidid",
-                    }
+                    },
+
+                    // email tasks
+                    new TaskObject
+                    {
+                        Id = "EmailTask_MissingEmailAndRolesArgs",
+                        Type = "email",
+                        Args =
+                        {
+                            { "metadata_values", "Status" }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination
+                            {
+                                Name = "EmailTask_MissingMetadataArg"
+                            }
+                        },
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]
+                            {
+                                new Artifact
+                                {
+                                    Name = "ExampleArtifact",
+                                    Value = "{{ context.value.EmailTask_InvalidMetadataValues.artifact.test }}"
+                                },
+                            }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "EmailTask_MissingMetadataArg",
+                        Type = "email",
+                        Args =
+                        {
+                            { "recipient_emails", "test@email.com" },
+                            { "recipient_roles", "admin" }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination
+                            {
+                                Name = "EmailTask_NullEmailArg"
+                            }
+                        },
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]
+                            {
+                                new Artifact
+                                {
+                                    Name = "ExampleArtifact",
+                                    Value = "{{ context.value.EmailTask_InvalidMetadataValues.artifact.test }}"
+                                },
+                            }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "EmailTask_NullEmailArg",
+                        Type = "email",
+                        Args =
+                        {
+                            { "recipient_emails", null },
+                            { "metadata_values", "Status" }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination
+                            {
+                                Name = "EmailTask_NullRolesArg"
+                            }
+                        },
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]
+                            {
+                                new Artifact
+                                {
+                                    Name = "ExampleArtifact",
+                                    Value = "{{ context.value.EmailTask_InvalidMetadataValues.artifact.test }}"
+                                },
+                            }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "EmailTask_NullRolesArg",
+                        Type = "email",
+                        Args =
+                        {
+                            { "recipient_roles", null },
+                            { "metadata_values", "Status" }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination
+                            {
+                                Name = "EmailTask_NullMetadataArg"
+                            }
+                        },
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]
+                            {
+                                new Artifact
+                                {
+                                    Name = "ExampleArtifact",
+                                    Value = "{{ context.value.EmailTask_InvalidMetadataValues.artifact.test }}"
+                                },
+                            }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "EmailTask_NullMetadataArg",
+                        Type = "email",
+                        Args =
+                        {
+                            { "recipient_emails", "test@email.com" },
+                            { "recipient_roles", "admin" },
+                            { "metadata_values", null }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination
+                            {
+                                Name = "EmailTask_InvalidEmailsArg"
+                            }
+                        },
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]
+                            {
+                                new Artifact
+                                {
+                                    Name = "ExampleArtifact",
+                                    Value = "{{ context.value.EmailTask_InvalidMetadataValues.artifact.test }}"
+                                },
+                            }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "EmailTask_InvalidEmailsArg",
+                        Type = "email",
+                        Args =
+                        {
+                            { "recipient_emails", "test.email.com.,invalid.email," },
+                            { "metadata_values", "Status" }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination
+                            {
+                                Name = "EmailTask_DisallowedMetadataValues"
+                            }
+                        },
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]
+                            {
+                                new Artifact
+                                {
+                                    Name = "ExampleArtifact",
+                                    Value = "{{ context.value.EmailTask_InvalidMetadataValues.artifact.test }}"
+                                },
+                            }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "EmailTask_DisallowedMetadataValues",
+                        Type = "email",
+                        Args =
+                        {
+                            { "recipient_emails", "test@email.com" },
+                            { "metadata_values", "PatientID,PatientName" }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination
+                            {
+                                Name = "EmailTask_InvalidMetadataValues"
+                            }
+                        },
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]
+                            {
+                                new Artifact
+                                {
+                                    Name = "ExampleArtifact",
+                                    Value = "{{ context.value.EmailTask_InvalidMetadataValues.artifact.test }}"
+                                },
+                            }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "EmailTask_InvalidMetadataValues",
+                        Type = "email",
+                        Args =
+                        {
+                            { "recipient_emails", "test@email.com" },
+                            { "metadata_values", "InvalidTag1,InvalidTag2" }
+                        },
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]
+                            {
+                                new Artifact
+                                {
+                                    Name = "ExampleArtifact",
+                                    Value = "{{ context.value.EmailTask_InvalidEmailsArg.artifact.test }}"
+                                },
+                            }
+                        }
+                    },
                 }
             };
 
@@ -371,7 +604,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             Assert.True(errors.Count > 0);
 
-            Assert.Equal(45, errors.Count);
+            Assert.Equal(53, errors.Count);
 
             var convergingTasksDestinations = "Converging Tasks Destinations in tasks: (test-clinical-review-2, example-task) on task: example-task";
             Assert.Contains(convergingTasksDestinations, errors);
@@ -435,6 +668,30 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             var invalidArgoKey = $"Task: 'invalid-key-argo-task' args has invalid keys: invalid_key. Please only specify keys from the following list: workflow_template_name, priority, cpu, memory, gpu_required.";
             Assert.Contains(invalidArgoKey, errors);
+
+            var emailMissingEmailAndRolesArgs = "No recipients arguments specified for task EmailTask_MissingEmailAndRolesArgs. Email tasks must specify at least one of the following properties: recipient_emails, recipient_roles";
+            Assert.Contains(emailMissingEmailAndRolesArgs, errors);
+
+            var emailMissingMetadataArg = "Argument 'metadata_values' for task EmailTask_MissingMetadataArg must be specified";
+            Assert.Contains(emailMissingMetadataArg, errors);
+
+            var emailNullEmailsArg = "Argument 'recipient_emails' for task EmailTask_NullEmailArg must be a comma seperated list of email addresses.";
+            Assert.Contains(emailNullEmailsArg, errors);
+
+            var emailNullRolesArg = "Argument 'recipient_roles' for task EmailTask_NullRolesArg must be a comma seperated list of roles.";
+            Assert.Contains(emailNullRolesArg, errors);
+
+            var emailNullMetadataArg = "Argument 'metadata_values' for task EmailTask_NullMetadataArg must be a comma seperated list of DICOM metadata tag names.";
+            Assert.Contains(emailNullMetadataArg, errors);
+
+            var emailInvalidEmailArg = $"Argument 'recipient_emails' for task: EmailTask_InvalidEmailsArg contains email addresses that do not conform to the standard email format:{Environment.NewLine}test.email.com.{Environment.NewLine}invalid.email";
+            Assert.Contains(emailInvalidEmailArg, errors);
+
+            var emailDisallowedMetadataValuesArg = $"Argument 'metadata_values' for task EmailTask_DisallowedMetadataValues contains the following values that are not permitted:{Environment.NewLine}PatientID{Environment.NewLine}PatientName";
+            Assert.Contains(emailDisallowedMetadataValuesArg, errors);
+
+            var emailInvalidMetadataValuesArg = $"Argument 'metadata_values' for task EmailTask_InvalidMetadataValues has the following invalid DICOM tags:{Environment.NewLine}InvalidTag1{Environment.NewLine}InvalidTag2";
+            Assert.Contains(emailInvalidMetadataValuesArg, errors);
         }
 
         [Fact]
