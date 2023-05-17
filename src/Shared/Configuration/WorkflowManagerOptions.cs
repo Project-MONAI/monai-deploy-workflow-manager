@@ -68,6 +68,9 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         [ConfigurationKeyName("minArgoTtlStrategySeconds")]
         public int MinArgoTtlStrategySeconds { get; set; } = 30; // time to get logs before cleanup !
 
+        [ConfigurationKeyName("dicomTagsDisallowed")]
+        public string DicomTagsDisallowed { get; set; } = string.Empty;
+
         public WorkflowManagerOptions()
         {
             Messaging = new MessageBrokerConfiguration();
