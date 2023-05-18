@@ -82,5 +82,11 @@ namespace Monai.Deploy.WorkflowManager.Configuration
         /// </summary>
         [ConfigurationKeyName("aideClinicalReviewCancelation")]
         public string AideClinicalReviewCancelation { get; set; } = "aide.clinical_review.cancellation";
+
+        [ConfigurationKeyName("notificationEmailRequest")]
+        public string NotificationEmailRequest { get; set; } = "aide.notification_email.request";
+
+        [ConfigurationKeyName("notificationEmailCancelation")]
+        public string NotificationEmailCancelation { get; set; } = "aide.notification_email.cancellation";
     }
 }
