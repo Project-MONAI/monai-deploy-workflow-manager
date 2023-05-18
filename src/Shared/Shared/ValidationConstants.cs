@@ -68,6 +68,21 @@ namespace Monai.Deploy.WorkflowManager.Shared
         /// </summary>
         public static readonly string GpuRequired = "gpu_required";
 
+        /// <summary>
+        /// Key for recipient emails.
+        /// </summary>
+        public static readonly string RecipientEmails = "recipient_emails";
+
+        /// <summary>
+        /// Key for recipient roles.
+        /// </summary>
+        public static readonly string RecipientRoles = "recipient_roles";
+
+        /// <summary>
+        /// Key for the metadata values.
+        /// </summary>
+        public static readonly string MetadataValues = "metadata_values";
+
         public enum ModeValues
         {
             QA,
@@ -138,6 +153,11 @@ namespace Monai.Deploy.WorkflowManager.Shared
         public static readonly string DockerTaskType = "docker";
 
         /// <summary>
+        /// Key for the email task type.
+        /// </summary>
+        public static readonly string Email = "email";
+
+        /// <summary>
         /// Valid task types.
         /// </summary>
         public static readonly IReadOnlyList<string> ValidTaskTypes =
@@ -146,7 +166,8 @@ namespace Monai.Deploy.WorkflowManager.Shared
                 ClinicalReviewTaskType,
                 RouterTaskType,
                 ExportTaskType,
-                DockerTaskType
+                DockerTaskType,
+                Email
             };
     }
 }
