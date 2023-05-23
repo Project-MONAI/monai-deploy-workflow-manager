@@ -211,7 +211,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
             _logger.SendEmailRequestMessageSent(_requestQueue);
         }
 
-        public override Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent callbackEvent, CancellationToken cancellationToken = default) => throw new NotImplementedException();
-        public override Task HandleTimeout(string identity) => Task.CompletedTask; // not implemented;
+        public override Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent callbackEvent, CancellationToken cancellationToken = default)
+        {
+            var result = new ExecutionStatus() { Status = TaskExecutionStatus.Succeeded };
+            return Task.FromResult(result);
+        }
+        public override Task HandleTimeout(string identity) => Task.CompletedTask;
     }
 }
