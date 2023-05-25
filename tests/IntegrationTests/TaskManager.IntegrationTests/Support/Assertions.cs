@@ -65,6 +65,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             Output.WriteLine("Details of ClinicalReviewRequestEvent matches TaskDispatchEvent");
         }
 
+        public void AssertEmailEvent(EmailRequestEvent emailRequestEvent, TaskDispatchEvent taskDispatchEvent)
+        {
+            Output.WriteLine("Asserting details of EmailRequestEvent with TaskDispatchEvent");
+            emailRequestEvent.TaskId.Should().Be(taskDispatchEvent.TaskId);
+            emailRequestEvent.WorkflowInstanceId.Should().Be(taskDispatchEvent.WorkflowInstanceId);
+            emailRequestEvent.WorkflowName.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "workflow_name", true));
+            emailRequestEvent.Emails.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "recipient_emails", true));
+            emailRequestEvent.Roles.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "recipient_roles", true));
+            string.Join(',', emailRequestEvent.Metadata.Keys).Should().Be(GetTaskPluginArguments(taskDispatchEvent, "metadata_values"));
+            Output.WriteLine("Details of EmailRequestEvent matches TaskDispatchEvent");
+        }
+
         public void AssertTaskDispatchEventStoredInMongo(List<TaskDispatchEventInfo> storedTaskDispatchEvent, TaskDispatchEvent taskDispatchEvent)
         {
             Output.WriteLine("Asserting details of TaskDispatchEvent stored in Mongo");
@@ -122,13 +134,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             Output.WriteLine("Details of TaskUpdateEvent matches TaskCallbackEvent");
         }
 
-        private string GetTaskPluginArguments(TaskDispatchEvent taskDispatchEvent, string key)
+        private string GetTaskPluginArguments(TaskDispatchEvent taskDispatchEvent, string key, bool emptyIfNull = false)
         {
             string? dictValue;
 
             taskDispatchEvent.TaskPluginArguments.TryGetValue(key, out dictValue);
 
-            return dictValue;
+            return emptyIfNull ? dictValue ?? string.Empty : dictValue;
         }
 
         public void AssertTaskUpdateEventFromTaskDispatch(TaskUpdateEvent taskUpdateEvent, TaskDispatchEvent taskDispatchEvent, TaskExecutionStatus status)

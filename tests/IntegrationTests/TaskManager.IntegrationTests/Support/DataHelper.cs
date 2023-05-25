@@ -25,13 +25,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
     public class DataHelper
     {
         private RetryPolicy<ClinicalReviewRequestEvent> RetryClinincalReview { get; set; }
+        private RetryPolicy<EmailRequestEvent> RetryEmail { get; set; }
         private RetryPolicy<TaskUpdateEvent> RetryTaskUpdate { get; set; }
         private RabbitConsumer TaskUpdateConsumer { get; set; }
         private RabbitConsumer ClinicalReviewConsumer { get; set; }
+        private RabbitConsumer EmailConsumer { get; set; }
         public TaskDispatchEvent TaskDispatchEvent { get; set; }
         public TaskUpdateEvent TaskUpdateEvent { get; set; }
         public TaskCallbackEvent TaskCallbackEvent { get; set; }
         public ClinicalReviewRequestEvent ClinicalReviewRequestEvent { get; set; }
+        public EmailRequestEvent EmailRequestEvent { get; set; }
         private ISpecFlowOutputHelper OutputHelper { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -40,8 +43,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             ClinicalReviewConsumer = objectContainer.Resolve<RabbitConsumer>("ClinicalReviewConsumer") ?? throw new ArgumentNullException(nameof(RabbitConsumer));
+            EmailConsumer = objectContainer.Resolve<RabbitConsumer>("EmailConsumer") ?? throw new ArgumentNullException(nameof(RabbitConsumer));
             TaskUpdateConsumer = objectContainer.Resolve<RabbitConsumer>("TaskUpdateConsumer") ?? throw new ArgumentNullException(nameof(RabbitConsumer));
             RetryClinincalReview = Policy<ClinicalReviewRequestEvent>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+            RetryEmail = Policy<EmailRequestEvent>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             RetryTaskUpdate = Policy<TaskUpdateEvent>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             OutputHelper = objectContainer.Resolve<ISpecFlowOutputHelper>();
         }
@@ -133,6 +138,32 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                 }
 
                 throw new Exception($"TaskUpdateEvent not published for execution id {TaskDispatchEvent?.ExecutionId}");
+            });
+
+            return res;
+        }
+
+        public EmailRequestEvent GetEmailRequestEvent()
+        {
+            OutputHelper.WriteLine($"Retreiving Email Event for taskId {TaskDispatchEvent?.TaskId}");
+
+            var res = RetryEmail.Execute(() =>
+            {
+                var message = EmailConsumer.GetMessage<EmailRequestEvent>();
+
+                if (message != null)
+                {
+                    if (message.TaskId.Equals(TaskDispatchEvent?.TaskId))
+                    {
+                        EmailRequestEvent = message;
+
+                        OutputHelper.WriteLine($"Consumed Email Event for taskId {TaskDispatchEvent?.TaskId}");
+
+                        return EmailRequestEvent;
+                    }
+                }
+
+                throw new Exception($"TaskUpdateEvent not published for taskId {TaskDispatchEvent?.TaskId}");
             });
 
             return res;

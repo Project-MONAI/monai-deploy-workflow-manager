@@ -1920,8 +1920,8 @@
       "monai.deploy.workflowmanager.configuration": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.23, )",
-          "Monai.Deploy.Storage": "[0.2.15, )"
+          "Monai.Deploy.Messaging": "0.1.23",
+          "Monai.Deploy.Storage": "0.2.15"
         }
       },
       "monai.deploy.workflowmanager.shared": {
@@ -1969,9 +1969,18 @@
       "monai.deploy.workflowmanager.taskmanager.docker": {
         "type": "Project",
         "dependencies": {
-          "Docker.DotNet": "[3.125.13, )",
-          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )"
+          "Docker.DotNet": "3.125.13",
+          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0"
+        }
+      },
+      "monai.deploy.workflowmanager.taskmanager.email": {
+        "type": "Project",
+        "dependencies": {
+          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Shared": "1.0.0",
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
+          "fo-dicom": "5.0.3"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.email": {
