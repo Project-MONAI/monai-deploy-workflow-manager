@@ -46,6 +46,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO
 
             public static string ClinicalReviewQueue { get; set; }
 
+            public static string EmailQueue { get; set; }
+
             public static object TaskCancellationQueue { get; set; }
         }
 
