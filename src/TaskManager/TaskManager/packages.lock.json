@@ -1920,31 +1920,31 @@
       "monai.deploy.workflowmanager.configuration": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.23, )",
-          "Monai.Deploy.Storage": "[0.2.15, )"
+          "Monai.Deploy.Messaging": "0.1.23",
+          "Monai.Deploy.Storage": "0.2.15"
         }
       },
       "monai.deploy.workflowmanager.shared": {
         "type": "Project",
         "dependencies": {
-          "Ardalis.GuardClauses": "4.0.1",
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "6.0.15",
-          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
-          "fo-dicom": "5.0.3"
+          "Ardalis.GuardClauses": "[4.0.1, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.15, )",
+          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
+          "fo-dicom": "[5.0.3, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.aideclinicalreview": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
-          "Monai.Deploy.WorkflowManager.Shared": "1.0.0",
-          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0"
+          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Shared": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.22, )",
+          "Monai.Deploy.Messaging": "[0.1.23, )",
           "Mongo.Migration": "[3.1.4, )",
           "MongoDB.Bson": "[2.19.0, )"
         }
@@ -1952,26 +1952,44 @@
       "monai.deploy.workflowmanager.taskmanager.argo": {
         "type": "Project",
         "dependencies": {
-          "KubernetesClient": "10.1.4",
-          "Microsoft.AspNetCore.Mvc.Core": "2.2.5",
-          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
-          "Monai.Deploy.WorkflowManager.Shared": "1.0.0",
-          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0"
+          "KubernetesClient": "[10.1.4, )",
+          "Microsoft.AspNetCore.Mvc.Core": "[2.2.5, )",
+          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Shared": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.database": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
-          "MongoDB.Driver": "2.19.0"
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )",
+          "MongoDB.Driver": "[2.19.0, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.docker": {
         "type": "Project",
         "dependencies": {
-          "Docker.DotNet": "[3.125.13, )",
+          "Docker.DotNet": "3.125.13",
+          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0"
+        }
+      },
+      "monai.deploy.workflowmanager.taskmanager.email": {
+        "type": "Project",
+        "dependencies": {
+          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
+          "Monai.Deploy.WorkflowManager.Shared": "1.0.0",
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "1.0.0",
+          "fo-dicom": "5.0.3"
+        }
+      },
+      "monai.deploy.workflowmanager.taskmanager.email": {
+        "type": "Project",
+        "dependencies": {
           "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )"
+          "Monai.Deploy.WorkflowManager.Shared": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )",
+          "fo-dicom": "[5.0.3, )"
         }
       }
     }

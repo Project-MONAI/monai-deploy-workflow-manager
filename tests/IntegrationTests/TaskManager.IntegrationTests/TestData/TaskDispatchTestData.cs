@@ -1244,6 +1244,148 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                     }
                 }
             },
+            new TaskDispatchTestData
+            {
+                Name = "Task_Dispatch_Email_All",
+                TaskDispatchEvent = new TaskDispatchEvent()
+                {
+                    PayloadId = Guid.NewGuid().ToString(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    ExecutionId = Guid.NewGuid().ToString(),
+                    WorkflowInstanceId = Guid.NewGuid().ToString(),
+                    TaskId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Dispatched,
+                    TaskPluginType = "email",
+                    Inputs = new List<Messaging.Common.Storage>()
+                    {
+                        new Messaging.Common.Storage
+                        {
+                            Name = "series1/07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm",
+                            Endpoint = "//test_1",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test",
+                                AccessToken = "test",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = "//dcm_1"
+                        },
+                    },
+                    IntermediateStorage = new Messaging.Common.Storage
+                    {
+                        Name = "input",
+                        Endpoint = "//test",
+                        Credentials = new Messaging.Common.Credentials()
+                        {
+                            AccessKey = "test1",
+                            AccessToken = "test",
+                        },
+                        Bucket = "bucket1",
+                        RelativeRootPath = "//dcm"
+                    },
+                    TaskPluginArguments = new Dictionary<string, string>()
+                    {
+                        { "recipient_emails", "email@test.com" },
+                        { "recipient_roles", "clinician" },
+                        { "metadata_values", "Modality" },
+                        { "workflow_name", "example_workflow_name" }
+                    }
+                }
+            },
+            new TaskDispatchTestData
+            {
+                Name = "Task_Dispatch_Email_Emails",
+                TaskDispatchEvent = new TaskDispatchEvent()
+                {
+                    PayloadId = Guid.NewGuid().ToString(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    ExecutionId = Guid.NewGuid().ToString(),
+                    WorkflowInstanceId = Guid.NewGuid().ToString(),
+                    TaskId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Dispatched,
+                    TaskPluginType = "email",
+                    Inputs = new List<Messaging.Common.Storage>()
+                    {
+                        new Messaging.Common.Storage
+                        {
+                            Name = "series1/07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm",
+                            Endpoint = "//test_1",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test",
+                                AccessToken = "test",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = "//dcm_1"
+                        },
+                    },
+                    IntermediateStorage = new Messaging.Common.Storage
+                    {
+                        Name = "input",
+                        Endpoint = "//test",
+                        Credentials = new Messaging.Common.Credentials()
+                        {
+                            AccessKey = "test1",
+                            AccessToken = "test",
+                        },
+                        Bucket = "bucket1",
+                        RelativeRootPath = "//dcm"
+                    },
+                    TaskPluginArguments = new Dictionary<string, string>()
+                    {
+                        { "recipient_emails", "email@test.com" },
+                        { "metadata_values", "Modality" },
+                        { "workflow_name", "example_workflow_name" }
+                    }
+                }
+            },
+            new TaskDispatchTestData
+            {
+                Name = "Task_Dispatch_Email_Roles",
+                TaskDispatchEvent = new TaskDispatchEvent()
+                {
+                    PayloadId = Guid.NewGuid().ToString(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    ExecutionId = Guid.NewGuid().ToString(),
+                    WorkflowInstanceId = Guid.NewGuid().ToString(),
+                    TaskId = Guid.NewGuid().ToString(),
+                    Status = TaskExecutionStatus.Dispatched,
+                    TaskPluginType = "email",
+                    Inputs = new List<Messaging.Common.Storage>()
+                    {
+                        new Messaging.Common.Storage
+                        {
+                            Name = "series1/07051db3-3c1d-4bf2-8764-ba45dc918e74.dcm",
+                            Endpoint = "//test_1",
+                            Credentials = new Messaging.Common.Credentials()
+                            {
+                                AccessKey = "test",
+                                AccessToken = "test",
+                            },
+                            Bucket = "bucket1",
+                            RelativeRootPath = "//dcm_1"
+                        },
+                    },
+                    IntermediateStorage = new Messaging.Common.Storage
+                    {
+                        Name = "input",
+                        Endpoint = "//test",
+                        Credentials = new Messaging.Common.Credentials()
+                        {
+                            AccessKey = "test1",
+                            AccessToken = "test",
+                        },
+                        Bucket = "bucket1",
+                        RelativeRootPath = "//dcm"
+                    },
+                    TaskPluginArguments = new Dictionary<string, string>()
+                    {
+                        { "recipient_roles", "clinician" },
+                        { "metadata_values", "Modality" },
+                        { "workflow_name", "example_workflow_name" }
+                    }
+                }
+            }
         };
     }
 }

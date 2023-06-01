@@ -30,11 +30,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             $"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}",
             $"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}",
             $"{TestExecutionConfig.RabbitConfig.ClinicalReviewQueue}",
+            $"{TestExecutionConfig.RabbitConfig.EmailQueue}",
             $"{TestExecutionConfig.RabbitConfig.TaskCancellationQueue}",
             $"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter",
             $"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter",
             $"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter",
             $"{TestExecutionConfig.RabbitConfig.ClinicalReviewQueue}-dead-letter",
+            $"{TestExecutionConfig.RabbitConfig.EmailQueue}-dead-letter",
             $"{TestExecutionConfig.RabbitConfig.TaskCancellationQueue}-dead-letter"
         };
 

@@ -16,9 +16,7 @@
 
 
 using System.Net.Mail;
-using System.Text.Json;
 using Ardalis.GuardClauses;
-using FellowOakDicom.Serialization;
 using FellowOakDicom;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -112,8 +110,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
                 _includeMetadata = Event.TaskPluginArguments[ValidationConstants.MetadataValues].Split(new char[] { ',' }, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             }
         }
-
-
 
         public override async Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken = default)
         {
@@ -226,7 +222,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
             _logger.SendEmailRequestMessageSent(_requestQueue);
         }
 
-        public override Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent callbackEvent, CancellationToken cancellationToken = default) => throw new NotImplementedException();
-        public override Task HandleTimeout(string identity) => Task.CompletedTask; // not implemented;
+        public override Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent callbackEvent, CancellationToken cancellationToken = default)
+        {
+            var result = new ExecutionStatus() { Status = TaskExecutionStatus.Succeeded };
+            return Task.FromResult(result);
+        }
+        public override Task HandleTimeout(string identity) => Task.CompletedTask;
     }
 }

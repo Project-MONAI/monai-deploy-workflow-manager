@@ -81,51 +81,40 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             });
         }
 
-        public async Task AddFileToStorage(string fileLocation, string bucketName, string objectName)
+        public async Task AddFileToStorage(string localPath, string folderPath)
         {
             await RetryPolicy.ExecuteAsync(async () =>
             {
                 try
                 {
-                    FileAttributes fileAttributes = File.GetAttributes(fileLocation);
+                    FileAttributes fileAttributes = File.GetAttributes(localPath);
                     if (fileAttributes.HasFlag(FileAttributes.Directory))
                     {
-                        var files = Directory.GetFiles($"{fileLocation}", "*.*", SearchOption.AllDirectories);
+                        var files = Directory.GetFiles($"{localPath}", "*.*", SearchOption.AllDirectories);
                         foreach (var file in files)
                         {
-                            var relativePath = $"{objectName}/dcm/{Path.GetRelativePath(fileLocation, file)}";
-                            var fileName = Path.GetFileName(file);
-                            byte[] bs = File.ReadAllBytes(file);
-                            using (var filestream = new MemoryStream(bs))
-                            {
-                                var fileInfo = new FileInfo(file);
-                                var metaData = new Dictionary<string, string>
-                                {
-                                            { "Test-Metadata", "Test  Test" }
-                                };
-                                await Client.PutObjectAsync(
-                                    bucketName,
-                                    relativePath,
-                                    file,
-                                    "application/octet-stream",
-                                    metaData);
-                            }
+                            var relativePath = Path.Combine(folderPath, Path.GetRelativePath(localPath, file));
+                            await Client.PutObjectAsync(
+                                TestExecutionConfig.MinioConfig.Bucket,
+                                relativePath.Replace("\\", "/"),
+                                file,
+                                "application/octet-stream");
                         }
                     }
                     else
                     {
-                        byte[] bs = File.ReadAllBytes(fileLocation);
+                        var bs = File.ReadAllBytes(localPath);
                         using (MemoryStream filestream = new MemoryStream(bs))
                         {
-                            FileInfo fileInfo = new FileInfo(fileLocation);
+                            FileInfo fileInfo = new FileInfo(localPath);
                             var metaData = new Dictionary<string, string>
-                        {
-                                    { "Test-Metadata", "Test  Test" }
-                        };
+                            {
+                                { "Test-Metadata", "Test  Test" }
+                            };
                             await Client.PutObjectAsync(
-                                bucketName,
-                                objectName,
-                                fileLocation,
+                                TestExecutionConfig.MinioConfig.Bucket,
+                                folderPath,
+                                localPath,
                                 "application/octet-stream",
                                 metaData);
                         }

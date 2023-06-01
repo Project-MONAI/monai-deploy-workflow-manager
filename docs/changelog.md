@@ -17,6 +17,8 @@
 
 # Changelog
 
+Added a new Email plugin, this pulls together information and sends a Message (rabbitmq) to a queue for processing via an external application (for the actual sending)
+
 Renamed the (Generated) Argo client to ArgoGeneratedClient, added a new ArgoClient using just the methods used by this codebase.
 
 Enhanced the ArgoClient -> Argo_Get_WorkflowLogsAsync method to decode the json better and make the logs extracted from Argo more readable.

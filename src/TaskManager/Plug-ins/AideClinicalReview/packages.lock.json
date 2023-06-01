@@ -733,25 +733,25 @@
       "monai.deploy.workflowmanager.configuration": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.23, )",
-          "Monai.Deploy.Storage": "[0.2.15, )"
+          "Monai.Deploy.Messaging": "0.1.23",
+          "Monai.Deploy.Storage": "0.2.15"
         }
       },
       "monai.deploy.workflowmanager.shared": {
         "type": "Project",
         "dependencies": {
-          "Ardalis.GuardClauses": "4.0.1",
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "6.0.15",
-          "Monai.Deploy.WorkflowManager.Configuration": "1.0.0",
-          "fo-dicom": "5.0.3"
+          "Ardalis.GuardClauses": "[4.0.1, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.15, )",
+          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
+          "fo-dicom": "[5.0.3, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.22, )",
-          "Mongo.Migration": "[3.1.4, )",
-          "MongoDB.Bson": "[2.19.0, )"
+          "Monai.Deploy.Messaging": "0.1.23",
+          "Mongo.Migration": "3.1.4",
+          "MongoDB.Bson": "2.19.0"
         }
       }
     }
