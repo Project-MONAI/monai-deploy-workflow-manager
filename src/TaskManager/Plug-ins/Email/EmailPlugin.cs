@@ -153,14 +153,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
                 return metadata;
             }
 
-            var allFiles = await _storageService.ListObjectsAsync(path, bucketName);
+            var allFiles = await _storageService.ListObjectsAsync(bucketName, path, true);
             foreach (var file in allFiles)
             {
+                if (file.FilePath.EndsWith(".json", StringComparison.InvariantCultureIgnoreCase)) continue;
                 Guard.Against.NullOrWhiteSpace(bucketName);
                 Guard.Against.NullOrWhiteSpace(path);
 
                 // load file from Minio !
-                var fileStream = await _storageService.GetObjectAsync(bucketName, $"{file.FilePath}/{file.Filename}");
+                var fileStream = await _storageService.GetObjectAsync(bucketName, $"{file.FilePath}");
                 try
                 {
                     var dcmFile = DicomFile.Open(fileStream);
