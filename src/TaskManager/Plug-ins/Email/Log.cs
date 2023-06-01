@@ -39,5 +39,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
 
         [LoggerMessage(EventId = 6, Level = LogLevel.Debug, Message = "No Metadata requested in event")]
         public static partial void NoMetaDataRequested(this ILogger logger);
+
+        [LoggerMessage(EventId = 7, Level = LogLevel.Debug, Message = "Error Getting Metadata requested for file: {fileName} message:{message} ")]
+        public static partial void ErrorGettingMetaData(this ILogger logger, string fileName, string message);
     }
 }
