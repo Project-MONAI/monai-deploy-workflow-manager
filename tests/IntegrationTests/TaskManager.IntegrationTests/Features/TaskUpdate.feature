@@ -19,13 +19,11 @@ Integration tests for testing TaskUpdateEvents from TaskManager
 
 @TaskDispatch_TaskUpdate
 Scenario: TaskUpdateEvent is published with status Accepted after receiving a valid TaskDispatchEvent
-	Given I have a bucket in MinIO bucket1
 	When A Task Dispatch event is published Task_Dispatch_Accepted
     Then A Task Update event with status Accepted is published with Task Dispatch details
 
 @TaskDispatch_TaskUpdate
 Scenario Outline: TaskUpdateEvent is published with status Failed after receiving an invalid TaskDispatchEvent
-    Given I have a bucket in MinIO bucket1
     When A Task Dispatch event is published <TaskDispatchEvent>
     Then A Task Update event with status Failed is published with Task Dispatch details
     Examples:
@@ -35,12 +33,10 @@ Scenario Outline: TaskUpdateEvent is published with status Failed after receivin
     | Task_Dispatch_Invalid_PayloadId_Missing            |
     | Task_Dispatch_Invalid_TaskId_Missing               |
     | Task_Dispatch_Invalid_TaskPluginType_NotSupported  |
-    | Task_Dispatch_Clinical_Review_WorkflowName_Missing |
 
 @Ignore
 @TaskCallback_TaskUpdate
 Scenario Outline: TaskUpdateEvent is published with correct status upon receiving a valid TaskCallbackEvent
-    Given I have a bucket in MinIO bucket1
     And I have Task Dispatch Info saved in Mongo Task_Dispatch_Basic_Clinical_Review
     When A Task Callback event is published <taskCallbackEvent>
     Then A Task Update event with status <status> is published with Task Callback details

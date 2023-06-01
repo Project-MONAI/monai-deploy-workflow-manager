@@ -89,7 +89,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         /// </summary>
         public static readonly IReadOnlyList<string> RequiredParameters =
             new List<string> {
-                WorkflowName,
                 ReviewedTaskId,
                 ApplicationName,
                 ApplicationVersion,

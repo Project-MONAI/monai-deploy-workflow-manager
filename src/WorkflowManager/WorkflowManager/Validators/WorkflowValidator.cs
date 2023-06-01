@@ -17,15 +17,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
+using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.Services.InformaticsGateway;
-using Monai.Deploy.WorkflowManager.Shared;
+using Monai.Deploy.WorkflowManager.Shared.Utilities;
 using MongoDB.Driver.Linq;
 using static Monai.Deploy.WorkflowManager.Shared.ValidationConstants;
 
@@ -42,6 +45,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         public static readonly string Separator = ";";
         private const string Comma = ", ";
         private readonly ILogger<WorkflowValidator> _logger;
+        private readonly IOptions<WorkflowManagerOptions> _options;
         public static readonly string TaskPriorityClassName = "priority";
 
         /// <summary>
@@ -51,11 +55,13 @@ namespace Monai.Deploy.WorkflowManager.Validators
         public WorkflowValidator(
             IWorkflowService workflowService,
             IInformaticsGatewayService informaticsGatewayService,
-            ILogger<WorkflowValidator> logger)
+            ILogger<WorkflowValidator> logger,
+            IOptions<WorkflowManagerOptions> options)
         {
             WorkflowService = workflowService ?? throw new ArgumentNullException(nameof(workflowService));
             InformaticsGatewayService = informaticsGatewayService ?? throw new ArgumentNullException(nameof(informaticsGatewayService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         /// <summary>
@@ -305,7 +311,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         {
             if (ValidTaskTypes.Contains(currentTask.Type.ToLower()) is false)
             {
-                Errors.Add($"Task: '{currentTask.Id}' has an invalid type{Comma}please specify: {string.Join(Comma, ValidationConstants.ValidTaskTypes)}");
+                Errors.Add($"Task: '{currentTask.Id}' has an invalid type{Comma}please specify: {string.Join(Comma, ValidTaskTypes)}");
                 return;
             }
 
@@ -319,6 +325,11 @@ namespace Monai.Deploy.WorkflowManager.Validators
             if (currentTask.Type.Equals(ClinicalReviewTaskType, StringComparison.OrdinalIgnoreCase) is true)
             {
                 ValidateClinicalReviewTask(tasks, currentTask);
+            }
+
+            if (currentTask.Type.Equals(Email, StringComparison.OrdinalIgnoreCase) is true)
+            {
+                ValidateEmailTask(currentTask);
             }
         }
 
@@ -430,6 +441,101 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 {
                     Errors.Add($"Invalid input artifact '{inputArtifact.Name}' in task '{currentTask.Id}': Task cannot reference a non-reviewed task artifacts '{referencedId}'");
                 }
+            }
+        }
+
+        private void ValidateEmailTask(TaskObject currentTask)
+        {
+            var emailsSpecified = currentTask.Args.ContainsKey(RecipientEmails);
+            var rolesSpecified = currentTask.Args.ContainsKey(RecipientRoles);
+            if (!emailsSpecified && !rolesSpecified)
+            {
+                Errors.Add($"No recipients arguments specified for task {currentTask.Id}. Email tasks must specify at least one of the following properties: {RecipientEmails}, {RecipientRoles}");
+                return;
+            }
+
+            if (emailsSpecified)
+            {
+                var emails = currentTask.Args[RecipientEmails] ?? string.Empty;
+                var formattedEmails = emails.Split(',').Where(e => !string.IsNullOrWhiteSpace(e.Trim()));
+
+                if (!formattedEmails.Any())
+                {
+                    Errors.Add($"Argument '{RecipientEmails}' for task {currentTask.Id} must be a comma seperated list of email addresses.");
+                    return;
+                }
+
+                var invalidEmails = new List<string>();
+
+                foreach (var email in formattedEmails)
+                {
+                    if (email.EndsWith("."))
+                    {
+                        invalidEmails.Add(email);
+                        continue;
+                    }
+
+                    try
+                    {
+                        var addr = new MailAddress(email);
+                        if (addr.Address != email)
+                        {
+                            invalidEmails.Add(email);
+                        }
+                    }
+                    catch
+                    {
+                        invalidEmails.Add(email);
+                    }
+                }
+
+                if (invalidEmails.Any())
+                {
+                    Errors.Add($"Argument '{RecipientEmails}' for task: {currentTask.Id} contains email addresses that do not conform to the standard email format:{Environment.NewLine}{string.Join(Environment.NewLine, invalidEmails)}");
+                }
+            }
+
+            if (rolesSpecified)
+            {
+                var roles = currentTask.Args[RecipientRoles] ?? string.Empty;
+                var formattedRoles = roles.Split(',').Where(r => !string.IsNullOrWhiteSpace(r.Trim()));
+
+                if (!formattedRoles.Any())
+                {
+                    Errors.Add($"Argument '{RecipientRoles}' for task {currentTask.Id} must be a comma seperated list of roles.");
+                    return;
+                }
+            }
+
+            if (!currentTask.Args.ContainsKey(MetadataValues))
+            {
+                Errors.Add($"Argument '{MetadataValues}' for task {currentTask.Id} must be specified");
+                return;
+            }
+
+            var metadataValues = currentTask.Args[MetadataValues] ?? string.Empty;
+            var formattedMetadataValues = metadataValues.Split(',').Where(m => !string.IsNullOrWhiteSpace(m.Trim()));
+
+            if (!formattedMetadataValues.Any())
+            {
+                Errors.Add($"Argument '{MetadataValues}' for task {currentTask.Id} must be a comma seperated list of DICOM metadata tag names.");
+                return;
+            }
+
+            var disallowedTags = _options.Value.DicomTagsDisallowed.Split(',').Select(t => t.Trim());
+            var intersect = formattedMetadataValues.Intersect(disallowedTags);
+
+            if (intersect.Any())
+            {
+                Errors.Add($"Argument '{MetadataValues}' for task {currentTask.Id} contains the following values that are not permitted:{Environment.NewLine}{string.Join(Environment.NewLine, intersect)}");
+                return;
+            }
+
+            var (valid, invalidTags) = DicomTagUtilities.DicomTagsValid(formattedMetadataValues);
+
+            if (!valid)
+            {
+                Errors.Add($"Argument '{MetadataValues}' for task {currentTask.Id} has the following invalid DICOM tags:{Environment.NewLine}{string.Join(Environment.NewLine, invalidTags)}");
             }
         }
 

@@ -41,7 +41,6 @@ using Microsoft.AspNetCore.Http;
 using Monai.Deploy.WorkflowManager.Shared.Services;
 using Microsoft.AspNetCore.Builder;
 
-
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
     public class Program
