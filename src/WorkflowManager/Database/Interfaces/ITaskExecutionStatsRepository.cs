@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -27,54 +28,60 @@ namespace Monai.Deploy.WorkflowManager.Database
         /// <summary>
         /// Creates a task dispatch event in the database.
         /// </summary>
-        /// <param name="taskDispatchEvent">A TaskDispatchEvent to create.</param>
+        /// <param name="TaskExecutionInfo"></param>
+        /// <param name="workflowId">workflow id.</param>
+        /// <param name="correlationId">task id.</param>
         /// <returns></returns>
         Task CreateAsync(TaskExecution TaskExecutionInfo, string workflowId, string correlationId);
 
         /// <summary>
         /// Updates status of a task dispatch event in the database.
         /// </summary>
-        /// <param name="taskDispatchEvent">A TaskDispatchEvent to update.</param>
+        /// <param name="taskUpdateEvent"></param>
+        /// <param name="workflowId">workflow id.</param>
+        /// <param name="status">task id.</param>
         /// <returns></returns>
         Task UpdateExecutionStatsAsync(TaskExecution taskUpdateEvent, string workflowId, TaskExecutionStatus? status = null);
 
         /// <summary>
         /// Updates status of a task now its been canceled.
         /// </summary>
-        /// <param name="TaskCanceledException">A TaskCanceledException to update.</param>
-        /// <returns></returns
+        /// <param name="taskCanceledEvent">A TaskCanceledException to update.</param>
+        /// <param name="workflowId">workflow id.</param>
+        /// <param name="correlationId">task id.</param>
+        /// <returns></returns>
         Task UpdateExecutionStatsAsync(TaskCancellationEvent taskCanceledEvent, string workflowId, string correlationId);
 
         /// <summary>
-        /// Returns paged entries between the two given dates.
+        /// Returns paged entries between the two given dates
         /// </summary>
         /// <param name="startTime">start of the range.</param>
         /// <param name="endTime">end of the range.</param>
+        /// <param name="PageSize"></param>
+        /// <param name="PageNumber"></param>
+        /// <param name="workflowId">optional workflow id.</param>
+        /// <param name="taskId">optional task id.</param>
         /// <returns>a collections of stats</returns>
         Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int PageSize = 10, int PageNumber = 1, string workflowId = "", string taskId = "");
 
         /// <summary>
-        /// Return the total number of stats between the dates
+        /// Return the count of the entries with this status, or all if no status given.
         /// </summary>
         /// <param name="startTime">start of the range.</param>
         /// <param name="endTime">end of the range.</param>
-        /// <returns>The count of all records in range</returns>
-        //Task<long> GetStatsCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "");
-
-        /// <summary>
-        /// Return the count of the entries with this status, or all if no status given
-        /// </summary>
-        /// <param name="start">start of the range.</param>
-        /// <param name="endTime">end of the range.</param>
         /// <param name="status">the status to get count of, or string.empty</param>
+        /// <param name="workflowId">optional workflow id.</param>
+        /// <param name="taskId">optional task id.</param>
         /// <returns>The count of all records in range</returns>
-        Task<long> GetStatsStatusCountAsync(DateTime start, DateTime endTime, string status = "", string workflowId = "", string taskId = "");
+        Task<long> GetStatsStatusCountAsync(DateTime startTime, DateTime endTime, string status = "", string workflowId = "", string taskId = "");
 
         /// <summary>
         /// Returns all stats in Succeeded status.
         /// </summary>
         /// <param name="startTime">start of the range.</param>
         /// <param name="endTime">end of the range.</param>
+        /// <param name="workflowId">optional workflow id.</param>
+        /// <param name="taskId">optional task id.</param>
         /// <returns>All stats that succeeded</returns>
         Task<long> GetStatsStatusSucceededCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "");
 
@@ -83,16 +90,43 @@ namespace Monai.Deploy.WorkflowManager.Database
         /// </summary>
         /// <param name="startTime">start of the range.</param>
         /// <param name="endTime">end of the range.</param>
+        /// <param name="workflowId">optional workflow id.</param>
+        /// <param name="taskId">optional task id.</param>
         /// <returns>All stats that failed or partially failed</returns>
         Task<long> GetStatsStatusFailedCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "");
 
         /// <summary>
-        /// Calculates the average exection time for the given range
+        /// Returns total ran executions status that have ran to completion. (not dispatched, created, accepted)
         /// </summary>
         /// <param name="startTime">start of the range.</param>
         /// <param name="endTime">end of the range.</param>
-        /// <returns>the average exection times in the time range</returns>
+        /// <param name="workflowId">optional workflow id.</param>
+        /// <param name="taskId">optional task id.</param>
+        /// <returns>All stats that failed or partially failed</returns>
+        Task<long> GetStatsTotalRanExecutionsCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "");
+
+
+        /// <summary>
+        /// Calculates the average execution time for the given range
+        /// </summary>
+        /// <param name="startTime">start of the range.</param>
+        /// <param name="endTime">end of the range.</param>
+        /// <param name="workflowId">optional workflow id.</param>
+        /// <param name="taskId">optional task id.</param>
+        /// <returns>the average execution times in the time range</returns>
         Task<(double avgTotalExecution, double avgArgoExecution)> GetAverageStats(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "");
 
+
+        /// <summary>
+        /// Return the total number of stats between the dates with optional status filter.
+        /// </summary>
+        /// <param name="startTime">start of the range.</param>
+        /// <param name="endTime">end of the range.</param>
+        /// <param name="statusFilter"></param>
+        /// <param name="workflowId">optional workflow id.</param>
+        /// <param name="taskId">optional task id.</param>
+        /// <returns>The count of all records in range</returns>
+        /// <summary>
+        Task<long> GetStatsCountAsync(DateTime startTime, DateTime endTime, Expression<Func<ExecutionStats, bool>>? statusFilter = null, string workflowId = "", string taskId = "");
     }
 }

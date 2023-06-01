@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
@@ -159,14 +160,7 @@ namespace Monai.Deploy.WorkflowManager.Database
              T.StartedUTC >= startTime &&
              T.StartedUTC <= endTime.ToUniversalTime() &&
              (workflowNull || T.WorkflowId == workflowId) &&
-             (taskIdNull || T.TaskId == taskId)
-             //&&
-             //(
-             //    T.Status == TaskExecutionStatus.Succeeded.ToString()
-             //    || T.Status == TaskExecutionStatus.Failed.ToString()
-             //    || T.Status == TaskExecutionStatus.PartialFail.ToString()
-             // )
-             )
+             (taskIdNull || T.TaskId == taskId))
                 .Limit(PageSize)
                 .Skip((PageNumber - 1) * PageSize)
                 .ToListAsync();
@@ -187,66 +181,86 @@ namespace Monai.Deploy.WorkflowManager.Database
                 var statKeys = taskUpdateEvent.ExecutionStats.Keys.Where(v => v.StartsWith("podStartTime") || v.StartsWith("podFinishTime"));
                 if (statKeys.Any())
                 {
-                    var start = DateTime.Now;
-                    var end = new DateTime();
-                    foreach (var statKey in statKeys)
-                    {
-                        if (statKey.Contains("StartTime") && DateTime.TryParse(taskUpdateEvent.ExecutionStats[statKey], out var startTime))
-                        {
-                            start = (startTime < start ? startTime : start);
-                        }
-                        else if (DateTime.TryParse(taskUpdateEvent.ExecutionStats[statKey], out var endTime))
-                        {
-                            end = (endTime > end ? endTime : start);
-                        }
-                    }
-                    taskExecutionStats.ExecutionTimeSeconds = (end - start).TotalMilliseconds / 1000;
+                    CalculatePodExecutionTime(taskExecutionStats, taskUpdateEvent, statKeys);
                 }
             }
             return taskExecutionStats;
         }
 
-        public async Task<long> GetStatsStatusCountAsync(DateTime start, DateTime endTime, string status = "", string workflowId = "", string taskId = "")
+        /// <summary>
+        /// Calculates and sets ExecutionStats ExecutionTimeSeconds 
+        /// </summary>
+        /// <param name="taskExecutionStats"></param>
+        /// <param name="taskUpdateEvent"></param>
+        /// <param name="statKeys"></param>
+        private static void CalculatePodExecutionTime(ExecutionStats taskExecutionStats, TaskExecution taskUpdateEvent, IEnumerable<string> statKeys)
         {
-            var statusNull = string.IsNullOrWhiteSpace(status);
+            var start = DateTime.Now;
+            var end = new DateTime();
+            foreach (var statKey in statKeys)
+            {
+                if (statKey.Contains("StartTime") && DateTime.TryParse(taskUpdateEvent.ExecutionStats[statKey], out var startTime))
+                {
+                    start = (startTime < start ? startTime : start);
+                }
+                else if (DateTime.TryParse(taskUpdateEvent.ExecutionStats[statKey], out var endTime))
+                {
+                    end = (endTime > end ? endTime : start);
+                }
+            }
+            taskExecutionStats.ExecutionTimeSeconds = (end - start).TotalMilliseconds / 1000;
+        }
+
+        public async Task<long> GetStatsStatusCountAsync(DateTime startTime, DateTime endTime, string status = "", string workflowId = "", string taskId = "")
+        {
+            Expression<Func<ExecutionStats, bool>>? statusFilter = null;
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                statusFilter = t => t.Status == status;
+            }
+            return await GetStatsCountAsync(startTime, endTime, statusFilter, workflowId, taskId);
+        }
+
+        public async Task<long> GetStatsCountAsync(DateTime startTime, DateTime endTime, Expression<Func<ExecutionStats, bool>>? statusFilter = null, string workflowId = "", string taskId = "")
+        {
             var workflowNull = string.IsNullOrWhiteSpace(workflowId);
             var taskIdNull = string.IsNullOrWhiteSpace(taskId);
 
-            return await _taskExecutionStatsCollection.CountDocumentsAsync(T =>
-            T.StartedUTC >= start.ToUniversalTime() &&
-            T.StartedUTC <= endTime.ToUniversalTime() &&
-            (workflowNull || T.WorkflowId == workflowId) &&
-            (taskIdNull || T.TaskId == taskId) &&
-            (statusNull || T.Status == status));
+            var builder = Builders<ExecutionStats>.Filter;
+            var filter = builder.Empty;
+
+            filter &= builder.Where(t => t.StartedUTC == startTime.ToUniversalTime());
+            filter &= builder.Where(t => t.StartedUTC == endTime.ToUniversalTime());
+            filter &= builder.Where(t => workflowNull || t.WorkflowId == workflowId);
+            filter &= builder.Where(t => taskIdNull || t.TaskId == taskId);
+            if (statusFilter is not null)
+            {
+                filter &= builder.Where(statusFilter);
+            }
+
+            return await _taskExecutionStatsCollection.CountDocumentsAsync(filter);
+        }
+
+        public async Task<long> GetStatsTotalRanExecutionsCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "")
+        {
+            var dispatched = TaskExecutionStatus.Dispatched.ToString();
+            var created = TaskExecutionStatus.Created.ToString();
+            var accepted = TaskExecutionStatus.Accepted.ToString();
+            Expression<Func<ExecutionStats, bool>> statusFilter = t => t.Status != dispatched && t.Status != created && t.Status != accepted;
+
+            return await GetStatsCountAsync(startTime, endTime, statusFilter, workflowId, taskId);
         }
 
         public async Task<long> GetStatsStatusSucceededCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "")
         {
-            var workflowNull = string.IsNullOrWhiteSpace(workflowId);
-            var taskIdNull = string.IsNullOrWhiteSpace(taskId);
-
-            return await _taskExecutionStatsCollection.CountDocumentsAsync(T =>
-            T.StartedUTC >= startTime.ToUniversalTime() &&
-            T.StartedUTC <= endTime.ToUniversalTime() &&
-            (workflowNull || T.WorkflowId == workflowId) &&
-            (taskIdNull || T.TaskId == taskId) &&
-            T.Status == TaskExecutionStatus.Succeeded.ToString());
+            Expression<Func<ExecutionStats, bool>> statusFilter = t => t.Status == TaskExecutionStatus.Succeeded.ToString();
+            return await GetStatsCountAsync(startTime, endTime, statusFilter, workflowId, taskId);
         }
 
         public async Task<long> GetStatsStatusFailedCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "")
         {
-            var workflowNull = string.IsNullOrWhiteSpace(workflowId);
-            var taskIdNull = string.IsNullOrWhiteSpace(taskId);
-
-            return await _taskExecutionStatsCollection.CountDocumentsAsync(T =>
-            T.StartedUTC >= startTime.ToUniversalTime() &&
-            T.StartedUTC <= endTime.ToUniversalTime() &&
-            (workflowNull || T.WorkflowId == workflowId) &&
-            (taskIdNull || T.TaskId == taskId) &&
-            (
-                T.Status == TaskExecutionStatus.Failed.ToString() ||
-                T.Status == TaskExecutionStatus.PartialFail.ToString()
-            ));
+            Expression<Func<ExecutionStats, bool>> statusFilter = t => t.Status == TaskExecutionStatus.Failed.ToString() || t.Status == TaskExecutionStatus.PartialFail.ToString();
+            return await GetStatsCountAsync(startTime, endTime, statusFilter, workflowId, taskId);
         }
 
         public async Task<(double avgTotalExecution, double avgArgoExecution)> GetAverageStats(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "")
