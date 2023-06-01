@@ -126,8 +126,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
                 var metadata = new Dictionary<string, string>();
                 if (Event.Inputs.Any())
                 {
-                    // only process the first input for now
-                    metadata = await GetRawMetaFromFile($"{Event.Inputs.First().RelativeRootPath}/{Event.Inputs.First().Name}", Event.Inputs.First().Bucket);
+                    foreach (var input in Event.Inputs)
+                    {
+                        metadata = await AddRawMetaFromFile(metadata, $"{input.RelativeRootPath}", input.Bucket);
+                    }
                 }
 
                 var emailRequest = GenerateEmailRequestEventMessage(metadata);
@@ -143,39 +145,53 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
             }
         }
 
-        private async Task<Dictionary<string, string>?> GetRawMetaFromFile(string path, string bucketName)
+        private async Task<Dictionary<string, string>> AddRawMetaFromFile(Dictionary<string, string> metadata, string path, string bucketName)
         {
             if (_includeMetadata is null || _includeMetadata.Count() == 0)
             {
                 _logger.NoMetaDataRequested();
-                return null;
+                return metadata;
             }
-            // load file from Minio !
-            Guard.Against.NullOrWhiteSpace(bucketName);
-            Guard.Against.NullOrWhiteSpace(path);
 
-            var fileStream = await _storageService.GetObjectAsync(bucketName, path);
-            var dcmFile = DicomFile.Open(fileStream);
-
-            var output = new Dictionary<string, string>();
-            foreach (var item in _includeMetadata)
+            var allFiles = await _storageService.ListObjectsAsync(bucketName, path, true);
+            foreach (var file in allFiles)
             {
-                DicomTag tag;
+                if (file.FilePath.EndsWith(".json", StringComparison.InvariantCultureIgnoreCase)) continue;
+                Guard.Against.NullOrWhiteSpace(bucketName);
+                Guard.Against.NullOrWhiteSpace(path);
+
+                // load file from Minio !
+                var fileStream = await _storageService.GetObjectAsync(bucketName, $"{file.FilePath}");
                 try
                 {
-                    tag = DicomDictionary.Default[item];
+                    var dcmFile = DicomFile.Open(fileStream);
+
+                    foreach (var item in _includeMetadata)
+                    {
+                        if (metadata.ContainsKey(item)) continue;
+
+                        DicomTag tag;
+                        try
+                        {
+                            tag = DicomDictionary.Default[item];
+                        }
+                        catch (Exception)
+                        {
+                            tag = DicomTag.Parse(item);
+                        }
+                        if (tag is not null)
+                        {
+                            metadata.Add(item, dcmFile.Dataset.GetString(tag));
+                        }
+                    }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    tag = DicomTag.Parse(item);
-                }
-                if (tag is not null)
-                {
-                    output.Add(item, dcmFile.Dataset.GetString(tag));
+                    _logger?.ErrorGettingMetaData($"{file.FilePath}/{file.Filename}", ex.Message);
                 }
             }
 
-            return output;
+            return metadata;
         }
 
         private JsonMessage<EmailRequestEvent> GenerateEmailRequestEventMessage(Dictionary<string, string>? metadata)
