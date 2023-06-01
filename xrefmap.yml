@@ -631,6 +631,30 @@ references:
   commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.ExportRequestPrefix
   fullName: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.ExportRequestPrefix
   nameWithType: MessageBrokerConfigurationKeys.ExportRequestPrefix
+- uid: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.NotificationEmailCancelation
+  name: NotificationEmailCancelation
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.html#Monai_Deploy_WorkflowManager_Configuration_MessageBrokerConfigurationKeys_NotificationEmailCancelation
+  commentId: P:Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.NotificationEmailCancelation
+  fullName: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.NotificationEmailCancelation
+  nameWithType: MessageBrokerConfigurationKeys.NotificationEmailCancelation
+- uid: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.NotificationEmailCancelation*
+  name: NotificationEmailCancelation
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.html#Monai_Deploy_WorkflowManager_Configuration_MessageBrokerConfigurationKeys_NotificationEmailCancelation_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.NotificationEmailCancelation
+  fullName: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.NotificationEmailCancelation
+  nameWithType: MessageBrokerConfigurationKeys.NotificationEmailCancelation
+- uid: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.NotificationEmailRequest
+  name: NotificationEmailRequest
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.html#Monai_Deploy_WorkflowManager_Configuration_MessageBrokerConfigurationKeys_NotificationEmailRequest
+  commentId: P:Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.NotificationEmailRequest
+  fullName: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.NotificationEmailRequest
+  nameWithType: MessageBrokerConfigurationKeys.NotificationEmailRequest
+- uid: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.NotificationEmailRequest*
+  name: NotificationEmailRequest
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.html#Monai_Deploy_WorkflowManager_Configuration_MessageBrokerConfigurationKeys_NotificationEmailRequest_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.NotificationEmailRequest
+  fullName: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.NotificationEmailRequest
+  nameWithType: MessageBrokerConfigurationKeys.NotificationEmailRequest
 - uid: Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.TaskCallbackRequest
   name: TaskCallbackRequest
   href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.html#Monai_Deploy_WorkflowManager_Configuration_MessageBrokerConfigurationKeys_TaskCallbackRequest
@@ -997,6 +1021,18 @@ references:
   commentId: F:Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.DatabaseConnectionStringKey
   fullName: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.DatabaseConnectionStringKey
   nameWithType: WorkflowManagerOptions.DatabaseConnectionStringKey
+- uid: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.DicomTagsDisallowed
+  name: DicomTagsDisallowed
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html#Monai_Deploy_WorkflowManager_Configuration_WorkflowManagerOptions_DicomTagsDisallowed
+  commentId: P:Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.DicomTagsDisallowed
+  fullName: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.DicomTagsDisallowed
+  nameWithType: WorkflowManagerOptions.DicomTagsDisallowed
+- uid: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.DicomTagsDisallowed*
+  name: DicomTagsDisallowed
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html#Monai_Deploy_WorkflowManager_Configuration_WorkflowManagerOptions_DicomTagsDisallowed_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.DicomTagsDisallowed
+  fullName: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.DicomTagsDisallowed
+  nameWithType: WorkflowManagerOptions.DicomTagsDisallowed
 - uid: Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.Messaging
   name: Messaging
   href: api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html#Monai_Deploy_WorkflowManager_Configuration_WorkflowManagerOptions_Messaging
