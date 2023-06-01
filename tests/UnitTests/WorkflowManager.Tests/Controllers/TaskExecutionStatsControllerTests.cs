@@ -66,7 +66,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             };
             _repo.Setup(w => w.GetStatsAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_executionStats);
             _repo.Setup(w => w.GetStatsStatusCountAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_executionStats.Count());
-            _repo.Setup(w => w.GetStatsTotalRanExecutionsCountAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_executionStats.Count());
+            _repo.Setup(w => w.GetStatsTotalCompleteExecutionsCountAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_executionStats.Count());
         }
 
         [Fact]

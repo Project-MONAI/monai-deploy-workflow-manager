@@ -158,12 +158,11 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
 
                 var fails = _repository.GetStatsStatusFailedCountAsync(filter.StartTime, filter.EndTime, workflowId, taskId);
 
-                var rangeCount = _repository.GetStatsTotalRanExecutionsCountAsync(filter.StartTime, filter.EndTime, workflowId, taskId);
+                var rangeCount = _repository.GetStatsTotalCompleteExecutionsCountAsync(filter.StartTime, filter.EndTime, workflowId, taskId);
 
                 var stats = _repository.GetAverageStats(filter.StartTime, filter.EndTime, workflowId, taskId);
 
                 var running = _repository.GetStatsStatusCountAsync(filter.StartTime, filter.EndTime, TaskExecutionStatus.Accepted.ToString(), workflowId, taskId);
-
 
                 await Task.WhenAll(allStats, fails, rangeCount, stats, running);
 

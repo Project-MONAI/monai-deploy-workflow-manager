@@ -241,7 +241,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             return await _taskExecutionStatsCollection.CountDocumentsAsync(filter);
         }
 
-        public async Task<long> GetStatsTotalRanExecutionsCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "")
+        public async Task<long> GetStatsTotalCompleteExecutionsCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "")
         {
             var dispatched = TaskExecutionStatus.Dispatched.ToString();
             var created = TaskExecutionStatus.Created.ToString();

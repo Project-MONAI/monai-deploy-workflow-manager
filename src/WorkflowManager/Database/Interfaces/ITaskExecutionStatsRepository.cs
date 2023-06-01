@@ -103,7 +103,7 @@ namespace Monai.Deploy.WorkflowManager.Database
         /// <param name="workflowId">optional workflow id.</param>
         /// <param name="taskId">optional task id.</param>
         /// <returns>All stats that failed or partially failed</returns>
-        Task<long> GetStatsTotalRanExecutionsCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "");
+        Task<long> GetStatsTotalCompleteExecutionsCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "");
 
 
         /// <summary>
