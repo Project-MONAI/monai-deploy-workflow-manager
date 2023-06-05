@@ -189,7 +189,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
                             {
                                 tag = DicomTag.Parse(item);
                             }
-                            catch (Exception) { }
+                            catch (Exception)
+                            {
+                                //empty on purpose
+                            }
                         }
                         if (tag is not null)
                         {
@@ -201,7 +204,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
                             else
                             {
                                 metadata.Add(item, new List<string> { value });
-                            };
+                            }
                         }
                     }
                 }
