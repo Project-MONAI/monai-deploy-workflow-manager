@@ -123,7 +123,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
 
             try
             {
-                var metadata = new Dictionary<string, string>();
+                var metadata = new Dictionary<string, List<string>>();
                 if (Event.Inputs.Any())
                 {
                     foreach (var input in Event.Inputs)
@@ -132,7 +132,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
                     }
                 }
 
-                var emailRequest = GenerateEmailRequestEventMessage(metadata);
+                var emailRequest = GenerateEmailRequestEventMessage(FlattenMeta(metadata));
                 await SendEmailRequestEvent(emailRequest).ConfigureAwait(false);
 
                 return new ExecutionStatus { Status = TaskExecutionStatus.Accepted, FailureReason = FailureReason.None, Stats = new Dictionary<string, string> { { "IdentityKey", emailRequest.Body.Id.ToString() } } };
@@ -145,7 +145,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
             }
         }
 
-        private async Task<Dictionary<string, string>> AddRawMetaFromFile(Dictionary<string, string> metadata, string path, string bucketName)
+        private static Dictionary<string, string> FlattenMeta(Dictionary<string, List<string>> input)
+        {
+            var values = new Dictionary<string, string>();
+            foreach (var key in input.Keys)
+            {
+                values.Add(key, string.Join(",", input[key].Distinct()));
+            }
+            return values;
+        }
+
+        private async Task<Dictionary<string, List<string>>> AddRawMetaFromFile(Dictionary<string, List<string>> metadata, string path, string bucketName)
         {
             if (_includeMetadata is null || _includeMetadata.Count() == 0)
             {
@@ -168,7 +178,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
 
                     foreach (var item in _includeMetadata)
                     {
-                        if (metadata.ContainsKey(item)) continue;
+                        var values = new List<string>();
+                        if (metadata.ContainsKey(item)) values = metadata[item];
 
                         DicomTag tag;
                         try
@@ -181,7 +192,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
                         }
                         if (tag is not null)
                         {
-                            metadata.Add(item, dcmFile.Dataset.GetString(tag));
+                            values.Add(dcmFile.Dataset.GetString(tag).Trim());
+                            metadata.Add(item, values);
                         }
                     }
                 }
