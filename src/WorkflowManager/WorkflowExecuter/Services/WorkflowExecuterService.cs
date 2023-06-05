@@ -743,6 +743,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                     AttachPatientMetaData(taskExec, payload.PatientDetails);
                 }
 
+                taskExec.TaskPluginArguments["workflow_name"] = workflow!.Workflow!.Name;
                 _logger.LogGeneralTaskDispatchInformation(workflowInstance.PayloadId, taskExec.TaskId, workflowInstance.Id, workflow?.Id, JsonConvert.SerializeObject(pathOutputArtifacts));
                 var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(taskExec, workflowInstance, pathOutputArtifacts, correlationId, _storageConfiguration);
                 var jsonMesssage = new JsonMessage<TaskDispatchEvent>(taskDispatchEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, taskDispatchEvent.CorrelationId, Guid.NewGuid().ToString());
