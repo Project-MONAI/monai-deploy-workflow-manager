@@ -66,6 +66,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             };
             _repo.Setup(w => w.GetStatsAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_executionStats);
             _repo.Setup(w => w.GetStatsStatusCountAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_executionStats.Count());
+            _repo.Setup(w => w.GetStatsTotalCompleteExecutionsCountAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_executionStats.Count());
         }
 
         [Fact]
@@ -180,7 +181,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             _repo.Verify(v => v.GetStatsStatusCountAsync(
                 It.Is<DateTime>(d => d.Equals(startTime)),
                 It.Is<DateTime>(d => d.Equals(endTime)),
-                It.Is<string>(s => s.Equals("")),
+                It.Is<string>(s => s.Equals("Accepted")),
                 It.Is<string>(s => s.Equals("workflow")),
                 It.Is<string>(s => s.Equals("ta"))));
         }
