@@ -178,22 +178,30 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
 
                     foreach (var item in _includeMetadata)
                     {
-                        var values = new List<string>();
-                        if (metadata.ContainsKey(item)) values = metadata[item];
-
-                        DicomTag tag;
+                        DicomTag? tag = null;
                         try
                         {
                             tag = DicomDictionary.Default[item];
                         }
                         catch (Exception)
                         {
-                            tag = DicomTag.Parse(item);
+                            try
+                            {
+                                tag = DicomTag.Parse(item);
+                            }
+                            catch (Exception) { }
                         }
                         if (tag is not null)
                         {
-                            values.Add(dcmFile.Dataset.GetString(tag).Trim());
-                            metadata.Add(item, values);
+                            var value = dcmFile.Dataset.GetString(tag).Trim();
+                            if (metadata.ContainsKey(item))
+                            {
+                                metadata[item].Add(value);
+                            }
+                            else
+                            {
+                                metadata.Add(item, new List<string> { value });
+                            };
                         }
                     }
                 }
