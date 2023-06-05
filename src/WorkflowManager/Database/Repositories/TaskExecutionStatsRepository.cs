@@ -229,8 +229,8 @@ namespace Monai.Deploy.WorkflowManager.Database
             var builder = Builders<ExecutionStats>.Filter;
             var filter = builder.Empty;
 
-            filter &= builder.Where(t => t.StartedUTC == startTime.ToUniversalTime());
-            filter &= builder.Where(t => t.StartedUTC == endTime.ToUniversalTime());
+            filter &= builder.Where(t => t.StartedUTC >= startTime.ToUniversalTime());
+            filter &= builder.Where(t => t.StartedUTC <= endTime.ToUniversalTime());
             filter &= builder.Where(t => workflowNull || t.WorkflowId == workflowId);
             filter &= builder.Where(t => taskIdNull || t.TaskId == taskId);
             if (statusFilter is not null)
