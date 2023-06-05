@@ -130,7 +130,7 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
             {
                 // both not empty but one is !
                 _logger.LogDebug($"{nameof(GetStatsAsync)} - Failed to validate WorkflowId or TaskId");
-                return Problem($"Failed to validate ids, not a valid guid", $"tasks/stats/", BadRequest);
+                return Problem("Failed to validate ids, not a valid guid", "tasks/stats/", BadRequest);
             }
 
             if (filter.EndTime == default)
@@ -150,12 +150,19 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
 
             try
             {
-                var allStats = _repository.GetStatsAsync(filter.StartTime, filter.EndTime, pageSize, filter.PageNumber, workflowId ?? string.Empty, taskId ?? string.Empty);
-                var successes = _repository.GetStatsStatusSucceededCountAsync(filter.StartTime, filter.EndTime, workflowId ?? string.Empty, taskId ?? string.Empty);
-                var fails = _repository.GetStatsStatusFailedCountAsync(filter.StartTime, filter.EndTime, workflowId ?? string.Empty, taskId ?? string.Empty);
-                var rangeCount = _repository.GetStatsStatusCountAsync(filter.StartTime, filter.EndTime, string.Empty, workflowId ?? string.Empty, taskId ?? string.Empty);
-                var stats = _repository.GetAverageStats(filter.StartTime, filter.EndTime, workflowId ?? string.Empty, taskId ?? string.Empty);
-                var running = _repository.GetStatsStatusCountAsync(filter.StartTime, filter.EndTime, TaskExecutionStatus.Accepted.ToString());
+                workflowId ??= string.Empty;
+                taskId ??= string.Empty;
+                var allStats = _repository.GetStatsAsync(filter.StartTime, filter.EndTime, pageSize, filter.PageNumber, workflowId, taskId);
+
+                var successes = _repository.GetStatsStatusSucceededCountAsync(filter.StartTime, filter.EndTime, workflowId, taskId);
+
+                var fails = _repository.GetStatsStatusFailedCountAsync(filter.StartTime, filter.EndTime, workflowId, taskId);
+
+                var rangeCount = _repository.GetStatsTotalCompleteExecutionsCountAsync(filter.StartTime, filter.EndTime, workflowId, taskId);
+
+                var stats = _repository.GetAverageStats(filter.StartTime, filter.EndTime, workflowId, taskId);
+
+                var running = _repository.GetStatsStatusCountAsync(filter.StartTime, filter.EndTime, TaskExecutionStatus.Accepted.ToString(), workflowId, taskId);
 
                 await Task.WhenAll(allStats, fails, rangeCount, stats, running);
 

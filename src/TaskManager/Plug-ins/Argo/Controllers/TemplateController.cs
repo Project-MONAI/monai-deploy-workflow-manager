@@ -56,7 +56,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers
 
             if (string.IsNullOrWhiteSpace(value2))
             {
-                return BadRequest("No file recieved");
+                return BadRequest("No file received");
             }
             WorkflowTemplate? workflowTemplate = null;
             try
