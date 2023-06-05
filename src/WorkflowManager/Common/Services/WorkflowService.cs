@@ -54,11 +54,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
         {
             Guard.Against.Null(workflow);
 
-            foreach (var task in workflow.Tasks)
-            {
-                task.Args["workflow_name"] = workflow.Name;
-            }
-
             var id = await _workflowRepository.CreateAsync(workflow);
             _logger.WorkflowCreated(id, workflow.Name);
             return id;
@@ -74,14 +69,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
             if (existingWorkflow is null)
             {
                 return null;
-            }
-
-            if (isUpdateToWorkflowName)
-            {
-                foreach (var task in workflow.Tasks)
-                {
-                    task.Args["workflow_name"] = workflow.Name;
-                }
             }
 
             var result = await _workflowRepository.UpdateAsync(workflow, existingWorkflow);
