@@ -23,7 +23,7 @@ namespace Monai.Deploy.WorkflowManager.Shared.Utilities
     {
         public static DicomTag GetDicomTagByName(string tag)
         {
-            return DicomDictionary.Default[tag] ?? DicomDictionary.Default[Regex.Replace(tag, @"\s+", "")];
+            return DicomDictionary.Default[tag] ?? DicomDictionary.Default[Regex.Replace(tag, @"\s+", "", RegexOptions.None, TimeSpan.FromSeconds(1))];
         }
 
         public static (bool valid, IList<string> invalidTags) DicomTagsValid(IEnumerable<string> dicomTags)
