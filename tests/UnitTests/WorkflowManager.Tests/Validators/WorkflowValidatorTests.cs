@@ -15,6 +15,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -720,6 +721,100 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             var error4 = "Workflow does not contain Tasks, please review Workflow.";
             Assert.Contains(error4, errors);
+        }
+
+        //"metadata_values": "Study Instance UID, Series Instance UID"
+        [Fact]
+        public async Task ValidateWorkflow_ValidateWorkflow_WithPluginArgs_ReturnsNoErrors()
+        {
+            var workflow = new Workflow
+            {
+                Name = "Workflowname1",
+                Description = "Workflowdesc1",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    ExportDestinations = new string[] { "oneDestination", "twoDestination", "threeDestination" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject
+                    {
+                        Id = "rootTask",
+                        Type = "router",
+                        Description = "TestDesc",
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination
+                            {
+                                Name = "EmailTask"
+                            }
+                        },
+                        ExportDestinations = new ExportDestination[]
+                        {
+                            new ExportDestination { Name = "oneDestination" },
+                            new ExportDestination { Name = "twoDestination" },
+                        },
+                        Artifacts = new ArtifactMap
+                        {
+                            Output = new Artifact[]
+                            {
+                                new Artifact
+                                {
+                                    Name = "non_unique_artifact",
+                                    Mandatory = true,
+                                    Value = "Example Value"
+                                }
+                            }
+                        }
+                    },
+
+                    #region SuccessfulTasksPath
+
+                    new TaskObject
+                    {
+
+                        Id = "EmailTask",
+                        Type = "email",
+                        Description = "Email plugin Task 1",
+                        Artifacts = new ArtifactMap{ Input = new Artifact[] {
+                                new Artifact
+                                {
+                                    Name = "ExampleArtifact",
+                                    Value = "{{ context.value.EmailTask_InvalidEmailsArg.artifact.test }}"
+                                },
+                        } },
+                        Args = new Dictionary<string, string>{
+                            { "metadata_values", "Study Instance UID, Series Instance UID"},
+                            { "workflow_name", "Workflow Name"},
+                            { "recipient_emails", "neil.south@blah.com"}
+                        },
+                        TaskDestinations = new TaskDestination[] {
+                            new TaskDestination
+                            {
+                                Name = "taskdesc2"
+                            }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "taskdesc2",
+                        Type = "router",
+                        Description = "TestDesc",
+                        TaskDestinations = Array.Empty<TaskDestination>()
+                    }
+                    #endregion SuccessfulTasksPath
+                }
+            };
+
+            _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
+
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+
+            Assert.True(errors.Count == 0);
+
         }
 
         [Fact]
