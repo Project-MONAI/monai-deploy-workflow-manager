@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Text.RegularExpressions;
 using FellowOakDicom;
 
 namespace Monai.Deploy.WorkflowManager.Shared.Utilities
@@ -22,7 +23,7 @@ namespace Monai.Deploy.WorkflowManager.Shared.Utilities
     {
         public static DicomTag GetDicomTagByName(string tag)
         {
-            return DicomDictionary.Default[tag];
+            return DicomDictionary.Default[tag] ?? DicomDictionary.Default[Regex.Replace(tag, @"\s+", "")];
         }
 
         public static (bool valid, IList<string> invalidTags) DicomTagsValid(IEnumerable<string> dicomTags)
