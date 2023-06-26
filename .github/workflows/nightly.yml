@@ -80,7 +80,7 @@ jobs:
 
       - name: Anchore Container Scan
         id: anchore-scan
-        uses: anchore/scan-action@v3.3.5
+        uses: anchore/scan-action@v3.3.6
         with:
           image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           fail-build: true
