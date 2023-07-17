@@ -34,7 +34,7 @@
   <ItemGroup>
     <PackageReference Include="KubernetesClient" Version="10.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="6.0.15">
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="6.0.20">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
