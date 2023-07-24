@@ -44,7 +44,7 @@ namespace Monai.Deploy.WorkflowManager.Shared.Wrappers
         /// <summary>
         /// Gets or sets Data.
         /// </summary>
-        public T Data { get; set; }
+        public T? Data { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether response has succeeded.
@@ -54,7 +54,7 @@ namespace Monai.Deploy.WorkflowManager.Shared.Wrappers
         /// <summary>
         /// Gets or sets errors.
         /// </summary>
-        public string?[] Errors { get; set; }
+        public string?[] Errors { get; set; } = Array.Empty<string>();
 
         /// <summary>
         /// Gets or sets message.

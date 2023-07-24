@@ -150,6 +150,11 @@ namespace Monai.Deploy.WorkflowManager.Shared
         /// <summary>
         /// Key for the export task type.
         /// </summary>
+        public static readonly string ExternalAppTaskType = "external-app";
+
+        /// <summary>
+        /// Key for the export task type.
+        /// </summary>
         public static readonly string DockerTaskType = "docker";
 
         /// <summary>
@@ -167,7 +172,8 @@ namespace Monai.Deploy.WorkflowManager.Shared
                 RouterTaskType,
                 ExportTaskType,
                 DockerTaskType,
-                Email
+                Email,
+                ExternalAppTaskType
             };
     }
 }

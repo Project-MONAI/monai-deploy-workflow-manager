@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.23" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.24-rc0005" />
     <PackageReference Include="Monai.Deploy.Storage" Version="0.2.15" />
   </ItemGroup>
 

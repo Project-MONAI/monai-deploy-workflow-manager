@@ -15,6 +15,7 @@
  */
 
 using Ardalis.GuardClauses;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.Configuration;
@@ -24,21 +25,21 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 {
     public class GenerateTaskUpdateEventParams
     {
-        public string CorrelationId { get; set; }
+        public string CorrelationId { get; set; } = "";
 
-        public string ExecutionId { get; set; }
+        public string ExecutionId { get; set; } = "";
 
-        public string WorkflowInstanceId { get; set; }
+        public string WorkflowInstanceId { get; set; } = "";
 
-        public string TaskId { get; set; }
+        public string TaskId { get; set; } = "";
 
         public FailureReason FailureReason { get; set; }
 
         public TaskExecutionStatus TaskExecutionStatus { get; set; }
 
-        public Dictionary<string, string> Stats { get; set; }
+        public Dictionary<string, string> Stats { get; set; } = new();
 
-        public string Errors { get; set; }
+        public string Errors { get; set; } = "";
     }
 
     public static class EventMapper
@@ -170,7 +171,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             };
         }
 
-        public static ExportRequestEvent ToExportRequestEvent(IList<string> dicomImages, string[] exportDestinations, string taskId, string workflowInstanceId, string correlationId)
+        public static ExportRequestEvent ToExportRequestEvent(
+            IList<string> dicomImages,
+            string[] exportDestinations,
+            string taskId,
+            string workflowInstanceId,
+            string correlationId,
+            ExportRequestType exportRequestType = ExportRequestType.None)
         {
             Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));
             Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
@@ -184,7 +191,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 ExportTaskId = taskId,
                 CorrelationId = correlationId,
                 Files = dicomImages,
-                Destinations = exportDestinations
+                Destinations = exportDestinations,
+                ExportRequest = exportRequestType
             };
         }
     }

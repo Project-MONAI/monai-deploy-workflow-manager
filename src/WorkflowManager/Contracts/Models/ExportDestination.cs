@@ -21,6 +21,6 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
     public class ExportDestination
     {
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
     }
 }
