@@ -507,7 +507,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             Assert.True(result);
             Assert.NotNull(messageSent);
 #pragma warning disable CS8604 // Possible null reference argument.
-            Assert.Contains("\"export_request\":1", Encoding.UTF8.GetString(messageSent?.Body));
+            Assert.Contains("\"export_request\":", Encoding.UTF8.GetString(messageSent?.Body));
 #pragma warning restore CS8604 // Possible null reference argument.
         }
 

@@ -2336,7 +2336,8 @@
     :versions:
     - 0.1.21
     - 0.1.23
-    :when: 2022-12-15 21:43:10.781625468 Z
+    - 0.1.24-rc0005
+    :when: 2023-07-27 21:43:10.781625468 Z
 - - :approve
   - Monai.Deploy.Messaging.RabbitMQ
   - :who: samrooke
@@ -2344,7 +2345,8 @@
     :versions:
     - 0.1.21
     - 0.1.23
-    :when: 2022-12-15 21:43:20.975488411 Z
+    - 0.1.24-rc0005
+    :when: 2023-07-27 21:43:20.975488411 Z
 - - :approve
   - Monai.Deploy.Storage
   - :who: neildsouth
