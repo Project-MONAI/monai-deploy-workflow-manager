@@ -2428,7 +2428,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                         {
                             new TaskObject {
                                 Id = Guid.NewGuid().ToString(),
-                                Type = "external-app",
+                                Type = "remote_app_execution",
                                 Description = "taskdesc",
                                 Artifacts = new ArtifactMap
                                 {

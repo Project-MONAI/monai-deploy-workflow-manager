@@ -150,7 +150,7 @@ namespace Monai.Deploy.WorkflowManager.Shared
         /// <summary>
         /// Key for the export task type.
         /// </summary>
-        public static readonly string ExternalAppTaskType = "external-app";
+        public static readonly string ExternalAppTaskType = "remote_app_execution";
 
         /// <summary>
         /// Key for the export task type.
