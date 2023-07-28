@@ -476,7 +476,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             if (emailsSpecified)
             {
                 var emails = currentTask.Args[RecipientEmails] ?? string.Empty;
-                var formattedEmails = emails.Split(',').Where(e => !string.IsNullOrWhiteSpace(e.Trim()));
+                var formattedEmails = emails.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
                 if (!formattedEmails.Any())
                 {
@@ -517,7 +517,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             if (rolesSpecified)
             {
                 var roles = currentTask.Args[RecipientRoles] ?? string.Empty;
-                var formattedRoles = roles.Split(',').Where(r => !string.IsNullOrWhiteSpace(r.Trim()));
+                var formattedRoles = roles.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
                 if (!formattedRoles.Any())
                 {
@@ -533,7 +533,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
 
             var metadataValues = currentTask.Args[MetadataValues] ?? string.Empty;
-            var formattedMetadataValues = metadataValues.Split(',').Where(m => !string.IsNullOrWhiteSpace(m.Trim()));
+            var formattedMetadataValues = metadataValues.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
             if (!formattedMetadataValues.Any())
             {
@@ -541,7 +541,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 return;
             }
 
-            var disallowedTags = _options.Value.DicomTagsDisallowed.Split(',').Select(t => t.Trim());
+            var disallowedTags = _options.Value.DicomTagsDisallowed.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             var intersect = formattedMetadataValues.Intersect(disallowedTags);
 
             if (intersect.Any())

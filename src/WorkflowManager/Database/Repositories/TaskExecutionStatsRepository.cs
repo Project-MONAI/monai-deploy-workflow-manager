@@ -151,16 +151,11 @@ namespace Monai.Deploy.WorkflowManager.Database
 
         public async Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int PageSize = 10, int PageNumber = 1, string workflowId = "", string taskId = "")
         {
-            startTime = startTime.ToUniversalTime();
+            CreateFilter(startTime, endTime, workflowId, taskId, out var builder, out var filter);
 
-            var workflowNull = string.IsNullOrWhiteSpace(workflowId);
-            var taskIdNull = string.IsNullOrWhiteSpace(taskId);
+            filter &= builder.Where(GetExecutedTasksFilter());
 
-            var result = await _taskExecutionStatsCollection.Find(T =>
-             T.StartedUTC >= startTime &&
-             T.StartedUTC <= endTime.ToUniversalTime() &&
-             (workflowNull || T.WorkflowId == workflowId) &&
-             (taskIdNull || T.TaskId == taskId))
+            var result = await _taskExecutionStatsCollection.Find(filter)
                 .Limit(PageSize)
                 .Skip((PageNumber - 1) * PageSize)
                 .ToListAsync();
@@ -223,16 +218,8 @@ namespace Monai.Deploy.WorkflowManager.Database
 
         public async Task<long> GetStatsCountAsync(DateTime startTime, DateTime endTime, Expression<Func<ExecutionStats, bool>>? statusFilter = null, string workflowId = "", string taskId = "")
         {
-            var workflowNull = string.IsNullOrWhiteSpace(workflowId);
-            var taskIdNull = string.IsNullOrWhiteSpace(taskId);
+            CreateFilter(startTime, endTime, workflowId, taskId, out var builder, out var filter);
 
-            var builder = Builders<ExecutionStats>.Filter;
-            var filter = builder.Empty;
-
-            filter &= builder.Where(t => t.StartedUTC >= startTime.ToUniversalTime());
-            filter &= builder.Where(t => t.StartedUTC <= endTime.ToUniversalTime());
-            filter &= builder.Where(t => workflowNull || t.WorkflowId == workflowId);
-            filter &= builder.Where(t => taskIdNull || t.TaskId == taskId);
             if (statusFilter is not null)
             {
                 filter &= builder.Where(statusFilter);
@@ -241,6 +228,33 @@ namespace Monai.Deploy.WorkflowManager.Database
             return await _taskExecutionStatsCollection.CountDocumentsAsync(filter);
         }
 
+        private static void CreateFilter(DateTime startTime, DateTime endTime, string workflowId, string taskId, out FilterDefinitionBuilder<ExecutionStats> builder, out FilterDefinition<ExecutionStats> filter)
+        {
+            var workflowNull = string.IsNullOrWhiteSpace(workflowId);
+            var taskIdNull = string.IsNullOrWhiteSpace(taskId);
+
+            builder = Builders<ExecutionStats>.Filter;
+            filter = builder.Empty;
+            filter &= builder.Where(t => t.StartedUTC >= startTime.ToUniversalTime());
+            filter &= builder.Where(t => t.StartedUTC <= endTime.ToUniversalTime());
+            filter &= builder.Where(t => workflowNull || t.WorkflowId == workflowId);
+            filter &= builder.Where(t => taskIdNull || t.TaskId == taskId);
+        }
+
+        /// <summary>
+        /// Gets filter for tasks that have ran to completion.
+        /// </summary>
+        /// <returns></returns>
+        public static Expression<Func<ExecutionStats, bool>> GetExecutedTasksFilter()
+        {
+            var dispatched = TaskExecutionStatus.Dispatched.ToString();
+            var created = TaskExecutionStatus.Created.ToString();
+            var accepted = TaskExecutionStatus.Accepted.ToString();
+
+            return t => t.Status != dispatched && t.Status != created && t.Status != accepted;
+        }
+
+
         public async Task<long> GetStatsTotalCompleteExecutionsCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "")
         {
             var dispatched = TaskExecutionStatus.Dispatched.ToString();
@@ -248,7 +262,7 @@ namespace Monai.Deploy.WorkflowManager.Database
             var accepted = TaskExecutionStatus.Accepted.ToString();
             Expression<Func<ExecutionStats, bool>> statusFilter = t => t.Status != dispatched && t.Status != created && t.Status != accepted;
 
-            return await GetStatsCountAsync(startTime, endTime, statusFilter, workflowId, taskId);
+            return await GetStatsCountAsync(startTime, endTime, GetExecutedTasksFilter(), workflowId, taskId);
         }
 
         public async Task<long> GetStatsStatusSucceededCountAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "")
@@ -265,16 +279,11 @@ namespace Monai.Deploy.WorkflowManager.Database
 
         public async Task<(double avgTotalExecution, double avgArgoExecution)> GetAverageStats(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "")
         {
-            var workflowNull = string.IsNullOrWhiteSpace(workflowId);
-            var taskIdNull = string.IsNullOrWhiteSpace(taskId);
+            CreateFilter(startTime, endTime, workflowId, taskId, out var builder, out var filter);
+            filter &= builder.Where(t => t.Status == TaskExecutionStatus.Succeeded.ToString());
 
             var test = await _taskExecutionStatsCollection.Aggregate()
-                .Match(T =>
-                T.StartedUTC >= startTime.ToUniversalTime() &&
-                T.StartedUTC <= endTime.ToUniversalTime() &&
-                (workflowNull || T.WorkflowId == workflowId) &&
-                (taskIdNull || T.TaskId == taskId) &&
-                T.Status == TaskExecutionStatus.Succeeded.ToString())
+                .Match(filter)
                 .Group(g => new { g.Version }, r => new
                 {
                     avgTotalExecution = r.Average(x => (x.DurationSeconds)),
