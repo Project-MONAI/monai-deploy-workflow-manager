@@ -242,7 +242,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
                 // it take sometime for the Argo job to be in the final state after emitting the callback event.
                 var retryCount = 30;
-                while (workflow.Status.Phase.Equals(Strings.ArgoPhaseRunning, StringComparison.OrdinalIgnoreCase) && retryCount-- > 0)
+                while (workflow!.Status.Phase.Equals(Strings.ArgoPhaseRunning, StringComparison.OrdinalIgnoreCase) && retryCount-- > 0)
                 {
                     await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
                     workflow = await client.Argo_GetWorkflowAsync(_namespace, identity, null, null, cancellationToken).ConfigureAwait(false);
@@ -305,7 +305,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private Dictionary<string, string> GetExecutuionStats(Workflow workflow)
         {
-            Guard.Against.Null(workflow);
+            Guard.Against.Null(workflow, nameof(workflow));
 
             TimeSpan? duration = null;
             if (workflow.Status?.StartedAt is not null && workflow.Status?.FinishedAt is not null)
@@ -362,11 +362,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             try
             {
 #pragma warning disable CA2254 // Template should be a static expression
-                var logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "init");
+                var logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "init") ?? "";
                 _logger.ArgoLog(logs);
-                logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "wait");
+                logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "wait") ?? "";
                 _logger.ArgoLog(logs);
-                logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "main");
+                logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "main") ?? "";
                 _logger.ArgoLog(logs);
 #pragma warning restore CA2254 // Template should be a static expression
             }
@@ -431,7 +431,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         /// <param name="cancellationToken"></param>
         private void ProcessTaskPluginArguments(Workflow workflow)
         {
-            Guard.Against.Null(workflow);
+            Guard.Against.Null(workflow, nameof(workflow));
             var priorityClassName = Event.GetTaskPluginArgumentsParameter(Keys.TaskPriorityClassName) ?? "standard";
 
             foreach (var template in workflow.Spec.Templates)
@@ -446,8 +446,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private void AddLimit(Template2 template, ResourcesKey key)
         {
-            Guard.Against.Null(template);
-            Guard.Against.Null(key);
+            Guard.Against.Null(template, nameof(template));
+            Guard.Against.Null(key, nameof(key));
             if (template.Container is null || !Event.TaskPluginArguments.TryGetValue(key.TaskKey, out var value) || string.IsNullOrWhiteSpace(value))
             {
                 return;
@@ -932,7 +932,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     throw new InvalidOperationException(mess);
                 }
 
-                return await client.Argo_CreateWorkflowTemplateAsync(_namespace, templateCreateRequest, new CancellationToken()).ConfigureAwait(false);
+                return await client.Argo_CreateWorkflowTemplateAsync(_namespace, templateCreateRequest!, new CancellationToken()).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

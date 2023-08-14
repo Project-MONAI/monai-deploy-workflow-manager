@@ -89,7 +89,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
         public void EmailPlugin_ThrowsWhenMissingLogger()
         {
             var message = GenerateTaskDispatchEvent();
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Assert.Throws<ArgumentNullException>(() => new EmailPlugin(_serviceScopeFactory.Object, null, _options, message));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
         [Fact(DisplayName = "Throws when missing required option")]
@@ -103,7 +105,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
         public void EmailPlugin_ThrowsWhenMissingScope()
         {
             var message = GenerateTaskDispatchEvent();
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Assert.Throws<ArgumentNullException>(() => new EmailPlugin(null, _logger.Object, _options, message));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
         [Fact(DisplayName = "Throws when missing required EventMessage")]
@@ -175,7 +179,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
         {
             var messageEvent = GenerateTaskDispatchEvent();
             messageEvent.TaskPluginArguments.Add(ValidationConstants.RecipientEmails, "fred@fred.com");
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             Message messageResult = default;
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             _messageBrokerPublisherService.Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
                 .Callback((string topic, Message jsonMessage) =>
                 {
@@ -229,7 +235,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
 
         private string ToJson(DicomFile dicomFile, bool validateDicom)
         {
-            Guard.Against.Null(dicomFile);
+            Guard.Against.Null(dicomFile, nameof(dicomFile));
 
             var options = new JsonSerializerOptions();
             options.Converters.Add(new DicomJsonConverter(

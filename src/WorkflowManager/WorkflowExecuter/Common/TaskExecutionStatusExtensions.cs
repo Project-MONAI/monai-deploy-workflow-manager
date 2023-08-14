@@ -23,8 +23,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
     {
         public static bool IsTaskExecutionStatusUpdateValid(this TaskExecutionStatus newStatus, TaskExecutionStatus oldStatus)
         {
-            Guard.Against.Null(newStatus);
-            Guard.Against.Null(oldStatus);
+            Guard.Against.Null(newStatus, nameof(newStatus));
+            Guard.Against.Null(oldStatus, nameof(oldStatus));
 
             return newStatus switch
             {

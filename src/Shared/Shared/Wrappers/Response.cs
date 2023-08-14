@@ -54,7 +54,7 @@ namespace Monai.Deploy.WorkflowManager.Shared.Wrappers
         /// <summary>
         /// Gets or sets errors.
         /// </summary>
-        public string?[] Errors { get; set; } = Array.Empty<string>();
+        public string[]? Errors { get; set; } = Array.Empty<string>();
 
         /// <summary>
         /// Gets or sets message.

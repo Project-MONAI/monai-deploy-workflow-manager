@@ -15,7 +15,6 @@
  */
 
 using Ardalis.GuardClauses;
-using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.Configuration;
@@ -177,23 +176,26 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             string taskId,
             string workflowInstanceId,
             string correlationId,
-            ExportRequestType exportRequestType = ExportRequestType.None)
+            List<string>? plugins = null)
         {
+            plugins ??= new List<string>();
+
             Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));
             Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
             Guard.Against.NullOrWhiteSpace(correlationId, nameof(correlationId));
             Guard.Against.NullOrEmpty(dicomImages, nameof(dicomImages));
             Guard.Against.NullOrEmpty(exportDestinations, nameof(exportDestinations));
 
-            return new ExportRequestEvent
+            var request = new ExportRequestEvent
             {
                 WorkflowInstanceId = workflowInstanceId,
                 ExportTaskId = taskId,
                 CorrelationId = correlationId,
                 Files = dicomImages,
-                Destinations = exportDestinations,
-                ExportRequest = exportRequestType
+                Destinations = exportDestinations
             };
+            request.PluginAssemblies.AddRange(plugins);
+            return request;
         }
     }
 }

@@ -19,7 +19,6 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
-using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.API;
@@ -49,6 +48,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         private readonly IMessageBrokerPublisherService _messageBrokerPublisherService;
         private readonly IConditionalParameterParser _conditionalParameterParser;
         private readonly ITaskExecutionStatsRepository _taskExecutionStatsRepository;
+        private readonly List<string> _migExternalAppPlugins;
         private readonly IArtifactMapper _artifactMapper;
         private readonly IStorageService _storageService;
         private readonly IPayloadService _payloadService;
@@ -89,6 +89,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             _defaultPerTaskTypeTimeoutMinutes = configuration.Value.PerTaskTypeTimeoutMinutes;
             TaskDispatchRoutingKey = configuration.Value.Messaging.Topics.TaskDispatchRequest;
             TaskTimeoutRoutingKey = configuration.Value.Messaging.Topics.AideClinicalReviewCancelation;
+            _migExternalAppPlugins = configuration.Value.MigExternalAppPlugins;
             ExportRequestRoutingKey = $"{configuration.Value.Messaging.Topics.ExportRequestPrefix}.{configuration.Value.Messaging.DicomAgents.ScuAgentName}";
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -253,8 +254,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
         public async Task<bool> ProcessTaskUpdate(TaskUpdateEvent message)
         {
-            Guard.Against.Null(message);
-            Guard.Against.Null(message.WorkflowInstanceId);
+            Guard.Against.Null(message, nameof(message));
+            Guard.Against.Null(message.WorkflowInstanceId, nameof(message.WorkflowInstanceId));
 
             var workflowInstance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId);
 
@@ -401,7 +402,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                     return false;
                 }
 
-                if (message.ExportRequest == ExportRequestType.None)
+          //      if (message.ExportRequest == ExportRequestType.None)
                 {
                     return await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
                 }
@@ -467,11 +468,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
         }
         private async Task HandleExternalAppAsync(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId)
         {
-            await HandleDicomExportAsync(workflow, workflowInstance, task, correlationId, ExportRequestType.ExternalProcessing).ConfigureAwait(false);
+            var plugins = _migExternalAppPlugins;
+            await HandleDicomExportAsync(workflow, workflowInstance, task, correlationId, plugins).ConfigureAwait(false);
         }
 
-        private async Task HandleDicomExportAsync(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId, ExportRequestType exportRequestType = ExportRequestType.None)
+        private async Task HandleDicomExportAsync(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId, List<string>? plugins = null)
         {
+            plugins ??= new List<string>();
             var exportList = workflow.Workflow?.Tasks?.FirstOrDefault(t => t.Id == task.TaskId)?.ExportDestinations.Select(e => e.Name).ToArray();
 
             var artifactValues = GetDicomExports(workflow, task, exportList);
@@ -506,7 +509,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 return;
             }
 
-            await DispatchDicomExport(workflowInstance, task, exportList, artifactValues, correlationId, exportRequestType);
+            await DispatchDicomExport(workflowInstance, task, exportList, artifactValues, correlationId, plugins);
         }
 
         private string[] GetDicomExports(WorkflowRevision workflow, TaskExecution task, string[]? exportDestinations)
@@ -537,14 +540,14 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             return new List<string>(task.InputArtifacts.Values).ToArray();
         }
 
-        private async Task<bool> DispatchDicomExport(WorkflowInstance workflowInstance, TaskExecution task, string[]? exportDestinations, string[] artifactValues, string correlationId, ExportRequestType exportRequestType = ExportRequestType.None)
+        private async Task<bool> DispatchDicomExport(WorkflowInstance workflowInstance, TaskExecution task, string[]? exportDestinations, string[] artifactValues, string correlationId, List<string> plugins)
         {
             if (exportDestinations is null || !exportDestinations.Any())
             {
                 return false;
             }
 
-            await ExportRequest(workflowInstance, task, exportDestinations, artifactValues, correlationId, exportRequestType);
+            await ExportRequest(workflowInstance, task, exportDestinations, artifactValues, correlationId, plugins);
             return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Dispatched);
         }
 
@@ -772,9 +775,9 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             }
         }
 
-        private async Task<bool> ExportRequest(WorkflowInstance workflowInstance, TaskExecution taskExec, string[] exportDestinations, IList<string> dicomImages, string correlationId, ExportRequestType exportRequestType = ExportRequestType.None)
+        private async Task<bool> ExportRequest(WorkflowInstance workflowInstance, TaskExecution taskExec, string[] exportDestinations, IList<string> dicomImages, string correlationId, List<string> plugins)
         {
-            var exportRequestEvent = EventMapper.ToExportRequestEvent(dicomImages, exportDestinations, taskExec.TaskId, workflowInstance.Id, correlationId, exportRequestType);
+            var exportRequestEvent = EventMapper.ToExportRequestEvent(dicomImages, exportDestinations, taskExec.TaskId, workflowInstance.Id, correlationId, plugins);
             var jsonMesssage = new JsonMessage<ExportRequestEvent>(exportRequestEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, exportRequestEvent.CorrelationId, Guid.NewGuid().ToString());
 
             await _messageBrokerPublisherService.Publish(ExportRequestRoutingKey, jsonMesssage.ToMessage());
@@ -841,7 +844,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                                                   string? payloadId = null,
                                                   string? previousTaskId = null)
         {
-            Guard.Against.Null(workflowInstance);
+            Guard.Against.Null(workflowInstance, nameof(workflowInstance));
 
             var workflowInstanceId = workflowInstance.Id;
 
@@ -849,12 +852,12 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
 
             payloadId ??= workflowInstance.PayloadId;
 
-            Guard.Against.Null(task);
-            Guard.Against.NullOrWhiteSpace(task.Type);
-            Guard.Against.NullOrWhiteSpace(task.Id);
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId);
-            Guard.Against.NullOrWhiteSpace(bucketName);
-            Guard.Against.NullOrWhiteSpace(payloadId);
+            Guard.Against.Null(task, nameof(task));
+            Guard.Against.NullOrWhiteSpace(task.Type, nameof(task.Type));
+            Guard.Against.NullOrWhiteSpace(task.Id, nameof(task.Id));
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            Guard.Against.NullOrWhiteSpace(bucketName, nameof(bucketName));
+            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
 
             var executionId = Guid.NewGuid().ToString();
             var newTaskArgs = GetTaskArgs(task, workflowInstance);

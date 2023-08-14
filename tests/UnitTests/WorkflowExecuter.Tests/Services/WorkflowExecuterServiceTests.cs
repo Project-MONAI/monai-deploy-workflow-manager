@@ -25,7 +25,6 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
-using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.API;
@@ -742,6 +741,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 }
             };
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var workflowsInstance = new List<WorkflowInstance>
             {
                 new WorkflowInstance
@@ -762,6 +762,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                     }
                 }
             };
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             _workflowRepository.Setup(w => w.GetByWorkflowsIdsAsync(new List<string> { workflowId1.ToString(), workflowId2.ToString() })).ReturnsAsync(workflows);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowId1)).ReturnsAsync(workflows[0]);
@@ -2487,8 +2488,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 WorkflowInstanceId = workflowInstanceId,
                 ExportTaskId = "pizza",
                 Status = ExportStatus.Success,
-                Message = "This is a message",
-                ExportRequest = ExportRequestType.None
+                Message = "This is a message"
             };
 
             var workflowId = Guid.NewGuid().ToString();
@@ -2586,8 +2586,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                 WorkflowInstanceId = workflowInstanceId,
                 ExportTaskId = "pizza",
                 Status = ExportStatus.Success,
-                Message = "This is a message",
-                ExportRequest = ExportRequestType.ExternalProcessing
+                Message = "This is a message"
             };
 
             var workflowId = Guid.NewGuid().ToString();
