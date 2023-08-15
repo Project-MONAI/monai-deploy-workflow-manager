@@ -50,7 +50,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var response = JsonConvert.DeserializeObject<PagedResponse<IList<TaskExecution>>>(result);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             Assert.AreEqual(number, response?.Data.Count);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
     }
 }

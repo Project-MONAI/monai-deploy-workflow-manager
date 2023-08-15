@@ -23,6 +23,10 @@ using Monai.Deploy.WorkflowManager.TaskManager.Logging;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Services
 {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable SA1600
     public class TaskDispatchEventService : ITaskDispatchEventService
     {
         private readonly ITaskDispatchEventRepository _taskDispatchEventRepository;
@@ -69,7 +73,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services
             return await _taskDispatchEventRepository.GetByTaskExecutionIdAsync(taskExecutionId).ConfigureAwait(false);
         }
 
-        public async Task<TaskDispatchEventInfo> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEvent, Dictionary<string, string> pluginArgs)
+        public async Task<TaskDispatchEventInfo?> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEvent, Dictionary<string, string> pluginArgs)
         {
             Guard.Against.Null(taskDispatchEvent, nameof(taskDispatchEvent));
             Guard.Against.Null(pluginArgs, nameof(pluginArgs));
@@ -85,3 +89,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services
         }
     }
 }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning restore SA1600

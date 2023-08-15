@@ -21,6 +21,7 @@
     <RootNamespace>Monai.Deploy.WorkflowManager.Test</RootNamespace>
     <CodeAnalysisRuleSet>..\..\..\StyleCop.Analyzers.ruleset</CodeAnalysisRuleSet>
     <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

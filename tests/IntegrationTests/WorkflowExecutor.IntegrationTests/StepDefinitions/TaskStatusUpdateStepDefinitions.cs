@@ -164,7 +164,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"Clinical Review Metadata is added to workflow instance")]
         public void ClinicalReviewMetadataIsAddedtoWorkflowInstance()
         {
-
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
             RetryPolicy.Execute(() =>
             {
                 _outputHelper.WriteLine($"Retrieving workflow instance by id={DataHelper.TaskUpdateEvent.WorkflowInstanceId}");
@@ -320,5 +321,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 });
             }
         }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
     }
 }

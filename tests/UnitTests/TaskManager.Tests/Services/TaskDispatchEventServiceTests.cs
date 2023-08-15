@@ -31,7 +31,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Services
     {
         private readonly Mock<ILogger<TaskDispatchEventService>> _logger;
         private readonly Mock<ITaskDispatchEventRepository> _taskDispatchEventRepository;
-
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
         public TaskDispatchEventServiceTests()
         {
             _logger = new Mock<ILogger<TaskDispatchEventService>>();
@@ -103,3 +105,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Services
         }
     }
 }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.

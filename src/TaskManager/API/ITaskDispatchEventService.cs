@@ -46,6 +46,6 @@ namespace Monai.Deploy.TaskManager.API
         /// <param name="taskDispatchEvent">A TaskDispatchEvent to update.</param>
         /// <param name="pluginArgs">The plugin arguments to update.</param>
         /// <returns>Returns the updated TaskDispatchEventInfo.</returns>
-        Task<TaskDispatchEventInfo> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEvent, Dictionary<string, string> pluginArgs);
+        Task<TaskDispatchEventInfo?> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEvent, Dictionary<string, string> pluginArgs);
     }
 }

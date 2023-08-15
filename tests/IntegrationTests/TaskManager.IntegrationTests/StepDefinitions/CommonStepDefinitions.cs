@@ -46,7 +46,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         public async Task GivenIHaveAnInputDICOMFileSavedInMinIO(string name)
         {
             var taskDispatch = DataHelper.GetTaskDispatchTestData(name);
-            var localPath = Path.Combine(GetDirectory(), "DICOMs", "dcm");
+            var localPath = Path.Combine(GetDirectory() ?? string.Empty, "DICOMs", "dcm");
             await MinioClient.AddFileToStorage(localPath, taskDispatch.Inputs.First().RelativeRootPath);
         }
 
@@ -117,7 +117,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
             _outputHelper.WriteLine($"Successfully published TaskDispatchEvent with name={name}");
         }
 
-        private string GetDirectory()
+        private string? GetDirectory()
         {
             return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }

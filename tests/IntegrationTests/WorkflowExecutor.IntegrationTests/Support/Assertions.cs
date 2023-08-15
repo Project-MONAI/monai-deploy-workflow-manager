@@ -401,7 +401,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         private static void GetPropertyValues<T>(T? Response, Type? responseType, out ICollection<Payload> data, out object? totalPages, out object? pageSize, out object? totalRecords, out object? pageNumber)
         {
+#pragma warning disable CS8601 // Possible null reference assignment.
             data = responseType?.GetProperty("Data")?.GetValue(Response, null) as ICollection<Payload>;
+#pragma warning restore CS8601 // Possible null reference assignment.
             totalPages = responseType?.GetProperty("TotalPages")?.GetValue(Response, null);
             pageSize = responseType?.GetProperty("PageSize")?.GetValue(Response, null);
             totalRecords = responseType?.GetProperty("TotalRecords")?.GetValue(Response, null);
@@ -528,7 +530,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             Output.WriteLine("Details of TaskUpdateEvent matches TaskDispatchEvent");
         }
 
-        public void AssertExecutionStats(ExecutionStats executionStats, TaskDispatchEvent taskDispatchEvent = null, TaskCallbackEvent taskCallbackEvent = null)
+        public void AssertExecutionStats(ExecutionStats executionStats, TaskDispatchEvent? taskDispatchEvent = null, TaskCallbackEvent taskCallbackEvent = null)
         {
             Output.WriteLine("Asserting details of ExecutionStats");
             if (taskDispatchEvent != null)

@@ -22,6 +22,7 @@ using Polly.Retry;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 {
+#pragma warning disable CS0618 // Type or member is obsolete
     public class MinioClientUtil
     {
         private AsyncRetryPolicy RetryPolicy { get; set; }
@@ -68,6 +69,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                     else
                     {
                         await Client.MakeBucketAsync(bucketName);
+
                     }
                 }
                 catch (Exception e)
@@ -75,7 +77,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                     Console.WriteLine($"[Bucket]  Exception: {e}");
                     if (e.Message != "MinIO API responded with message=Your previous request to create the named bucket succeeded and you already own it.")
                     {
-                        throw e;
+                        throw;
                     }
                 }
             });
@@ -87,7 +89,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             {
                 try
                 {
-                    FileAttributes fileAttributes = File.GetAttributes(localPath);
+                    var fileAttributes = File.GetAttributes(localPath);
                     if (fileAttributes.HasFlag(FileAttributes.Directory))
                     {
                         var files = Directory.GetFiles($"{localPath}", "*.*", SearchOption.AllDirectories);
@@ -154,3 +156,4 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
         }
     }
 }
+#pragma warning restore CS0618 // Type or member is obsolete

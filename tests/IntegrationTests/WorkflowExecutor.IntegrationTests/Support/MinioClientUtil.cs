@@ -47,6 +47,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             {
                 try
                 {
+#pragma warning disable CS0618 // Type or member is obsolete
                     if (await Client.BucketExistsAsync(bucketName))
                     {
                         try
@@ -71,6 +72,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     {
                         await Client.MakeBucketAsync(bucketName);
                     }
+
                 }
                 catch (Exception e)
                 {
@@ -214,4 +216,5 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }).ConfigureAwait(false);
         }
     }
+#pragma warning restore CS0618 // Type or member is obsolete
 }

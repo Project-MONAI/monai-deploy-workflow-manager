@@ -21,7 +21,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
     [Binding]
     public class ApiHelper
     {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public ApiHelper(HttpClient httpClient)
+
         {
             Client = httpClient;
         }
@@ -60,7 +62,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         public void AddQueryParams(Dictionary<string, string> dict)
         {
+#pragma warning disable CS8604 // Possible null reference argument.
             var builder = new UriBuilder(Request.RequestUri);
+#pragma warning restore CS8604 // Possible null reference argument.
             var query = HttpUtility.ParseQueryString(builder.Query);
             foreach (var kv in dict)
             {
@@ -69,4 +73,5 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             SetUrl(new Uri(builder.ToString() + "?" + query.ToString()));
         }
     }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

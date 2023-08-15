@@ -101,7 +101,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"I will get a health check response status message (.*)")]
         public async Task ThenIWillGetAHealthCheckResponseMessage(string expectedMessage)
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var contentMessage = await ApiHelper.Response?.Content.ReadAsStringAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             contentMessage.Should().NotBeNull();
             var response = JsonConvert.DeserializeObject<HealthCheckResponse>(contentMessage);
             response.Should().NotBeNull();

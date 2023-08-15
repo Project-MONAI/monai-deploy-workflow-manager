@@ -16,7 +16,9 @@
 
 using System.Web;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 {
     [Binding]
@@ -27,9 +29,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             Client = httpClient;
         }
 
-        public HttpResponseMessage Response { get; private set; }
+        public HttpResponseMessage? Response { get; private set; }
 
-        public HttpRequestMessage Request { get; set; }
+        public HttpRequestMessage? Request { get; set; }
 
         public HttpClient Client { get; }
 
@@ -71,3 +73,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
         }
     }
 }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.

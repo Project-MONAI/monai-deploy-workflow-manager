@@ -63,7 +63,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             RetryMongo.Execute(() =>
             {
-                WorkflowRevisionCollection.DeleteOne(x => x.Id.Equals(id));
+                WorkflowRevisionCollection.DeleteOne(x => x.Id!.Equals(id));
             });
         }
 

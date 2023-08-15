@@ -44,13 +44,13 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support
             {
                 OutputHelper.WriteLine($"folderName not specified. Seeding Minio with objects from **/DICOMs/full_patient_metadata/dcm");
 
-                localPath = Path.Combine(GetDirectory(), "DICOMs", "full_patient_metadata", "dcm");
+                localPath = Path.Combine(GetDirectory() ?? "", "DICOMs", "full_patient_metadata", "dcm");
             }
             else
             {
                 OutputHelper.WriteLine($"Seeding Minio with artifacts from **/DICOMs/{folderName}/dcm");
 
-                localPath = Path.Combine(GetDirectory(), "DICOMs", folderName, "dcm");
+                localPath = Path.Combine(GetDirectory() ?? "", "DICOMs", folderName, "dcm");
             }
 
             OutputHelper.WriteLine($"Seeding objects to {TestExecutionConfig.MinioConfig.Bucket}/{payloadId}/dcm");
@@ -66,13 +66,13 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support
             {
                 OutputHelper.WriteLine($"folderName not specified. Seeding Minio with objects from **/DICOMs/output_metadata/dcm");
 
-                localPath = Path.Combine(GetDirectory(), "DICOMs", "output_metadata", "dcm");
+                localPath = Path.Combine(GetDirectory() ?? "", "DICOMs", "output_metadata", "dcm");
             }
             else
             {
                 OutputHelper.WriteLine($"Seeding Minio with objects from **/DICOMs/{folderName}/dcm");
 
-                localPath = Path.Combine(GetDirectory(), "DICOMs", folderName, "dcm");
+                localPath = Path.Combine(GetDirectory() ?? "", "DICOMs", folderName, "dcm");
             }
 
             OutputHelper.WriteLine($"Seeding objects to {TestExecutionConfig.MinioConfig.Bucket}/{payloadId}/workflows/{workflowInstanceId}/{executionId}/");
@@ -80,7 +80,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support
             OutputHelper.WriteLine($"Objects seeded");
         }
 
-        private string GetDirectory()
+        private string? GetDirectory()
         {
             return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }

@@ -43,15 +43,32 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// Separator when joining errors in single string.
         /// </summary>
         public static readonly string Separator = ";";
+
+        /// <summary>
+        /// the name of the class for priority.
+        /// </summary>
+        public static readonly string TaskPriorityClassName = "priority";
+
         private const string Comma = ", ";
         private readonly ILogger<WorkflowValidator> _logger;
         private readonly IOptions<WorkflowManagerOptions> _options;
-        public static readonly string TaskPriorityClassName = "priority";
+
+        /// <summary>
+        /// Gets or sets errors from workflow validation.
+        /// </summary>
+        private List<string> Errors { get; set; } = new List<string>();
+
+        private IWorkflowService WorkflowService { get; }
+
+        private IInformaticsGatewayService InformaticsGatewayService { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowValidator"/> class.
         /// </summary>
         /// <param name="workflowService">The workflow service.</param>
+        /// <param name="informaticsGatewayService">service fot the MIG.</param>
+        /// <param name="logger">the logger to use.</param>
+        /// <param name="options">options.</param>
         public WorkflowValidator(
             IWorkflowService workflowService,
             IInformaticsGatewayService informaticsGatewayService,
@@ -65,16 +82,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         }
 
         /// <summary>
-        /// Gets or sets errors from workflow validation.
-        /// </summary>
-        private List<string> Errors { get; set; } = new List<string>();
-
-        private IWorkflowService WorkflowService { get; }
-
-        private IInformaticsGatewayService InformaticsGatewayService { get; }
-
-        /// <summary>
-        /// used for checking for duplicates, if OrignalName is empty it will be determined as a create
+        /// Gets the original name, used for checking for duplicates, if OrignalName is empty it will be determined as a create
         /// workflow attempt and check for duplicates or if this is not equal to workflow template it will
         /// check for duplicates.
         /// if workflow name is same as original name then we response user is updating workflow some other way
@@ -86,7 +94,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// Returns single string of errors.
         /// </summary>
         /// <param name="errors">List of errors.</param>
-        /// <returns></returns>
+        /// <returns>string.</returns>
         public static string ErrorsToString(List<string> errors)
         {
             return string.Join(Separator, errors);
@@ -112,8 +120,6 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// - Unreferenced tasks other than root task.
         /// </summary>
         /// <param name="workflow">Workflow to validate.</param>
-        /// <param name="checkForDuplicates">Check for duplicates.</param>
-        /// <param name="isUpdate">Used to check for duplicate name if it is a new workflow.</param>
         /// <returns>if any validation errors are produced while validating workflow.</returns>
         public async Task<List<string>> ValidateWorkflow(Workflow workflow)
         {
@@ -198,6 +204,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
                 return diff.Count;
             }
+
             return 0;
         }
 
@@ -619,7 +626,6 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
 
             ValidateInputs(currentTask);
-
         }
 
         private void ValidateExternalAppTask(Workflow workflow, TaskObject currentTask)

@@ -34,12 +34,15 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
 {
     public class EventPayloadReceiverServiceTests
     {
-        private IEventPayloadReceiverService _eventPayloadReceiverService;
-        private Mock<IEventPayloadValidator> _mockEventPayloadValidator;
-        private Mock<ILogger<EventPayloadReceiverService>> _mockLogger;
-        private Mock<IMessageBrokerSubscriberService> _mockMessageBrokerSubscriberService;
-        private Mock<IWorkflowExecuterService> _workflowExecuterService;
-        private Mock<IPayloadService> _payloadService;
+        private IEventPayloadReceiverService? _eventPayloadReceiverService;
+        private Mock<IEventPayloadValidator>? _mockEventPayloadValidator;
+        private Mock<ILogger<EventPayloadReceiverService>>? _mockLogger;
+        private Mock<IMessageBrokerSubscriberService>? _mockMessageBrokerSubscriberService;
+        private Mock<IWorkflowExecuterService>? _workflowExecuterService;
+        private Mock<IPayloadService>? _payloadService;
+
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
 
         [SetUp]
         public void Setup()
@@ -289,4 +292,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
             return new MessageReceivedEventArgs(jsonMessage.ToMessage(), CancellationToken.None);
         }
     }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 }

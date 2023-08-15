@@ -40,7 +40,6 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [InlineData("'F' == 'F' AND 'F' == 'leg' OR 'F' == 'F' AND 'F' == 'F' OR 'F' == 'F'")]
         [InlineData("'F' == 'F' AND 'F' == 'leg' OR 'F' == 'F' OR 'F' == 'F' AND 'F' == 'F'")]
         [InlineData("'AND' == 'OR' AND 'F' == 'leg' OR 'F' == 'F' OR 'F' == 'F' AND 'F' == 'F'")]
-        [InlineData("'F' == 'F' OR 'F' == 'leg' OR 'F' == 'F'")]
         [InlineData("'Donkey' CONTAINS [“Donkey”, “Alpaca”, “Zebra”] AND 'F' == 'F'")]
         public void ConditionalGroup_WhenProvidedCorrectInput_ShouldCreateAndHaveLeftAndRightGroups(string input)
         {

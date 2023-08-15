@@ -36,10 +36,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             clinicalReviewRequestEvent.ExecutionId.Should().Be(taskDispatchEvent.ExecutionId);
             clinicalReviewRequestEvent.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId);
             clinicalReviewRequestEvent.TaskId.Should().Be(taskDispatchEvent.TaskId);
-            clinicalReviewRequestEvent.PatientMetadata.PatientId.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_id"));
-            clinicalReviewRequestEvent.PatientMetadata.PatientName.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_name"));
-            clinicalReviewRequestEvent.PatientMetadata.PatientSex.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_sex"));
-            clinicalReviewRequestEvent.PatientMetadata.PatientDob.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_dob"));
+            clinicalReviewRequestEvent.PatientMetadata!.PatientId.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_id"));
+            clinicalReviewRequestEvent.PatientMetadata!.PatientName.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_name"));
+            clinicalReviewRequestEvent.PatientMetadata!.PatientSex.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_sex"));
+            clinicalReviewRequestEvent.PatientMetadata!.PatientDob.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_dob"));
 
             if (Boolean.TryParse(GetTaskPluginArguments(taskDispatchEvent, "notifications"), out bool result))
             {
@@ -134,11 +134,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             Output.WriteLine("Details of TaskUpdateEvent matches TaskCallbackEvent");
         }
 
-        private string GetTaskPluginArguments(TaskDispatchEvent taskDispatchEvent, string key, bool emptyIfNull = false)
+        private string? GetTaskPluginArguments(TaskDispatchEvent taskDispatchEvent, string key, bool emptyIfNull = false)
         {
-            string? dictValue;
-
-            taskDispatchEvent.TaskPluginArguments.TryGetValue(key, out dictValue);
+            taskDispatchEvent.TaskPluginArguments.TryGetValue(key, out var dictValue);
 
             return emptyIfNull ? dictValue ?? string.Empty : dictValue;
         }

@@ -35,7 +35,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         private readonly Mock<ILogger<TemplateController>> _tempLogger;
         private readonly Mock<ILogger<ArgoPlugin>> _argoLogger;
 
-        private TemplateController TemplateController { get; set; }
+        private TemplateController? TemplateController { get; set; }
 
         public TemplateControllerTests()
         {

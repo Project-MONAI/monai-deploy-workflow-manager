@@ -664,11 +664,12 @@ public class ArgoPluginTest : ArgoPluginTestBase
         var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
 
         Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         Assert.Equal(MessageGeneratorContainerCpuLimit, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).Container.Resources.Limits["cpu"]);
         Assert.Equal(MessageGeneratorContainerMemoryLimit, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).Container.Resources.Limits["memory"]);
         Assert.Equal(expectedPodSpecPatch, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).PodSpecPatch);
     }
-
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
     [Theory(DisplayName = "TTL gets extended if too short")]
     [InlineData(31, 31, 29)]
     [InlineData(1, null, null)]

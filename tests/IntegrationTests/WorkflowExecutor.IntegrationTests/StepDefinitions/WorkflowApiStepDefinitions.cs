@@ -44,7 +44,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var workflowRevisions = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowRevision>>>(result);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
             Assertions.AssertWorkflowList(DataHelper.WorkflowRevisions, workflowRevisions.Data);
+
         }
 
         [Then(@"Pagination is working correctly for the (.*) workflow")]
@@ -84,5 +87,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             var workflowRevisions = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowRevision>>>(result);
             workflowRevisions?.Data.Should().BeNullOrEmpty();
         }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
     }
 }

@@ -252,7 +252,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
         }
 
         [Fact]
-        public async Task ExecutionStats_New_TaskCancellationEvent_Should_initialize()
+        public void ExecutionStats_New_TaskCancellationEvent_Should_initialize()
         {
             var collerationId = "colleration";
             var WorkflowInstanceId = "WorkflowInstanceId";

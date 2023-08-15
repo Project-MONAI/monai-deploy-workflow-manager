@@ -40,7 +40,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         private IModel Channel { get; set; }
 
-        public T GetMessage<T>()
+        public T? GetMessage<T>()
         {
             var basicGetResult = Channel.BasicGet(Queue.QueueName, true);
 

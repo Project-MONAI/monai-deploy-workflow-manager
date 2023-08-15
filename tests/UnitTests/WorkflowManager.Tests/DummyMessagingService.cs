@@ -28,12 +28,12 @@ namespace Monai.Deploy.WorkflowManager.Tests
 {
     internal class DummyMessageSubscriberHealtCheck : SubscriberServiceHealthCheckRegistrationBase
     {
-        public override IHealthChecksBuilder Configure(IHealthChecksBuilder builder, HealthStatus? failureStatus = null, IEnumerable<string> tags = null, TimeSpan? timeout = null) => builder;
+        public override IHealthChecksBuilder Configure(IHealthChecksBuilder builder, HealthStatus? failureStatus = null, IEnumerable<string>? tags = null, TimeSpan? timeout = null) => builder;
     }
 
     internal class DummyMessagePublisherHealtCheck : PublisherServiceHealthCheckRegistrationBase
     {
-        public override IHealthChecksBuilder Configure(IHealthChecksBuilder builder, HealthStatus? failureStatus = null, IEnumerable<string> tags = null, TimeSpan? timeout = null) => builder;
+        public override IHealthChecksBuilder Configure(IHealthChecksBuilder builder, HealthStatus? failureStatus = null, IEnumerable<string>? tags = null, TimeSpan? timeout = null) => builder;
     }
 
     internal class DummyMessagePublisherRegistrar : PublisherServiceRegistrationBase
@@ -50,7 +50,7 @@ namespace Monai.Deploy.WorkflowManager.Tests
     {
         public string Name => "Dummy Messaging Service";
 
-        public event ConnectionErrorHandler OnConnectionError;
+        public event ConnectionErrorHandler? OnConnectionError;
 
         public void Acknowledge(MessageBase message) => throw new NotImplementedException();
 

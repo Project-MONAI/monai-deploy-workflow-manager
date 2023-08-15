@@ -48,7 +48,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         private readonly Mock<ILogger<WorkflowValidator>> _loggerWorkflowValidator;
         private readonly Mock<IUriService> _uriService;
         private readonly IOptions<WorkflowManagerOptions> _options;
-
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
         public WorkflowsControllerTests()
         {
             _options = Options.Create(
@@ -1232,4 +1234,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             Assert.Equal(200, objectResult.StatusCode);
         }
     }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 }

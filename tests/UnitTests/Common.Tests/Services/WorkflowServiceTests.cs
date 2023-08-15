@@ -42,6 +42,7 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
         [Fact]
         public async Task WorkflowService_NullWorkflow_ThrowsException()
         {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             await Assert.ThrowsAsync<ArgumentNullException>(() => WorkflowService.UpdateAsync(null, null));
         }
 
@@ -154,3 +155,4 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
         }
     }
 }
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.

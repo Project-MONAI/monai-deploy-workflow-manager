@@ -24,7 +24,6 @@ using Monai.Deploy.Security.Authentication.Extensions;
 using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo;
-using Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers;
 using Monai.Deploy.WorkflowManager.TaskManager.Docker;
 using Monai.Deploy.WorkflowManager.TaskManager.Services;
 using NLog;
@@ -49,6 +48,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Extensions
             Guard.Against.Null(hostContext, nameof(hostContext));
 
             services.AddTransient<IMonaiServiceLocator, MonaiServiceLocator>();
+
             // TODO: the plug-in dependencies need to be injected dynamically similar to how storage lib is loaded
             services.AddSingleton<IArgoProvider, ArgoProvider>();
             services.AddSingleton<IKubernetesProvider, KubernetesProvider>();
@@ -77,7 +77,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Extensions
             return services;
         }
 
-        private static void CheckAddControllerPlugins(this IServiceCollection services, IConfiguration Configuration, Logger logger)
+        private static void CheckAddControllerPlugins(this IServiceCollection services, IConfiguration configuration, Logger logger)
         {
             var numberAdded = 0;
             var allFiles = Directory.GetFiles(".", "*.dll");
@@ -95,7 +95,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Extensions
             if (numberAdded > 0)
             {
                 services.AddOptions<AuthenticationOptions>()
-                    .Bind(Configuration.GetSection("MonaiDeployAuthentication"));
+                    .Bind(configuration.GetSection("MonaiDeployAuthentication"));
                 services.AddMonaiAuthentication();
             }
         }

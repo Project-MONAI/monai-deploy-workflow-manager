@@ -41,13 +41,16 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private DataHelper DataHelper { get; }
         private readonly ISpecFlowOutputHelper _outputHelper;
         private MongoClientUtil MongoClient { get; set; }
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
 
         [Then(@"I can see expected workflow instances are returned")]
         public void ThenICanSeeExpectedWorkflowInstancesAreReturned()
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var actualWorkflowInstances = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowInstance>>>(result);
+#pragma warning disable CS8604 // Possible null reference argument.
             Assertions.AssertWorkflowInstanceList(DataHelper.WorkflowInstances, actualWorkflowInstances.Data);
+
         }
 
         [Then(@"I can see expected workflow instance is returned")]
@@ -199,6 +202,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
             var task = updatedWorkflowInstance.Tasks.FirstOrDefault(i => i.TaskId.Equals(taskId));
             task.AcknowledgedTaskErrors.Should().BeCloseTo(DateTime.UtcNow, new TimeSpan(50000000));
+
         }
 
         [Then(@"I can see the workflow Instance (.*) error is acknowledged")]
@@ -242,3 +246,5 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         }
     }
 }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8604 // Possible null reference argument.

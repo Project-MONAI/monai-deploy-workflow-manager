@@ -91,7 +91,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
             var message = GenerateTaskDispatchEvent();
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Assert.Throws<ArgumentNullException>(() => new EmailPlugin(_serviceScopeFactory.Object, null, _options, message));
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
         [Fact(DisplayName = "Throws when missing required option")]
@@ -105,7 +104,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
         public void EmailPlugin_ThrowsWhenMissingScope()
         {
             var message = GenerateTaskDispatchEvent();
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Assert.Throws<ArgumentNullException>(() => new EmailPlugin(null, _logger.Object, _options, message));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
@@ -114,7 +112,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
         public void EmailPlugin_ThrowsWhenMissingMessage()
         {
             var message = GenerateTaskDispatchEvent();
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Assert.Throws<ArgumentNullException>(() => new EmailPlugin(_serviceScopeFactory.Object, _logger.Object, _options, null));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
         [Fact(DisplayName = "Throws when missing required attribute")]
@@ -192,7 +192,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
             var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
 
             _messageBrokerPublisherService.Verify(m => m.Publish(It.IsAny<string>(), It.IsAny<Message>()), Times.Once);
-            Assert.Contains("fred@fred.com", System.Text.Encoding.UTF8.GetString(messageResult.Body));
+            Assert.Contains("fred@fred.com", System.Text.Encoding.UTF8.GetString(messageResult!.Body));
         }
 
         //[Fact(DisplayName = "Should_Log_If_No_Metadata_Found")]

@@ -121,12 +121,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
                     if (string.IsNullOrEmpty(DataHelper.TaskUpdateEvent.ExecutionId))
                     {
+#pragma warning disable CS8604 // Possible null reference argument.
                         Assertions.AssertTaskDispatchEvent(taskDispatchEvent, workflowInstance, workflowRevision, DataHelper.WorkflowRequestMessage, null);
                     }
                     else
                     {
                         Assertions.AssertTaskDispatchEvent(taskDispatchEvent, workflowInstance, workflowRevision, null, DataHelper.TaskUpdateEvent);
                     }
+#pragma warning restore CS8604 // Possible null reference argument.
                 }
             });
         }

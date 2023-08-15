@@ -40,7 +40,9 @@ namespace Monai.Deploy.InformaticsGateway.Test.Services.Http
             });
 
             var svc = new MonaiHealthCheck(_monaiServiceLocator.Object);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             var result = await svc.CheckHealthAsync(null);
+
             Assert.Equal(HealthStatus.Healthy, result.Status);
         }
 
@@ -79,5 +81,6 @@ namespace Monai.Deploy.InformaticsGateway.Test.Services.Http
             Assert.Equal(ServiceStatus.Cancelled, result.Data["B"]);
             Assert.Equal(ServiceStatus.Stopped, result.Data["C"]);
         }
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 }

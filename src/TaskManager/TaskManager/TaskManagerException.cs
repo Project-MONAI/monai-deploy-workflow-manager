@@ -19,22 +19,27 @@ using System.Runtime.Serialization;
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
     [Serializable]
+#pragma warning disable SA1600 // Elements should be documented
     internal class TaskManagerException : Exception
     {
         public TaskManagerException()
         {
         }
 
-        public TaskManagerException(string? message) : base(message)
+        public TaskManagerException(string? message)
+            : base(message)
         {
         }
 
-        public TaskManagerException(string? message, Exception? innerException) : base(message, innerException)
+        public TaskManagerException(string? message, Exception? innerException)
+            : base(message, innerException)
         {
         }
 
-        protected TaskManagerException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected TaskManagerException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
+#pragma warning restore SA1600 // Elements should be documented
     }
 }

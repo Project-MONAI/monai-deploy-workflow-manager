@@ -23,6 +23,9 @@ using Polly.Retry;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
     /// <summary>
     /// Hooks class for setting up the integration tests.
     /// </summary>
@@ -45,7 +48,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         public static RabbitConsumer? EmailConsumer { get; private set; }
         private static MinioClientUtil? MinioClient { get; set; }
         private static MongoClientUtil? MongoClient { get; set; }
-        public static AsyncRetryPolicy RetryPolicy { get; private set; }
+        public static AsyncRetryPolicy? RetryPolicy { get; private set; }
         private IObjectContainer ObjectContainer { get; set; }
         private static HttpClient? HttpClient { get; set; }
         private static WebApplicationFactory<Program>? WebApplicationFactory { get; set; }
@@ -177,3 +180,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         }
     }
 }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.

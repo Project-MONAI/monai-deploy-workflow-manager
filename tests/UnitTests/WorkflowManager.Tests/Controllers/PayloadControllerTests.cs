@@ -73,8 +73,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             var result = await PayloadController.GetAllAsync(new PaginationFilter());
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
-
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             var responseValue = (PagedResponse<IEnumerable<PayloadDto>>)objectResult.Value;
+
             responseValue.Data.Should().BeEquivalentTo(payloads);
             responseValue.FirstPage.Should().Be("unitTest");
             responseValue.LastPage.Should().Be("unitTest");
@@ -248,4 +251,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
     }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 }

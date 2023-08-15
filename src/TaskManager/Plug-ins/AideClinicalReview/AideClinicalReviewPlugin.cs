@@ -206,7 +206,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             }
             catch (Exception ex)
             {
-                _logger.ErrorSendingMessage(_queueName, ex);
+                _logger.ErrorSendingMessage(_queueName ?? "no queue name", ex);
 
                 return new ExecutionStatus { Status = TaskExecutionStatus.Failed, FailureReason = FailureReason.PluginError, Errors = ex.Message };
             }
@@ -220,9 +220,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
                 ExecutionId = Event.ExecutionId,
                 WorkflowInstanceId = Event.WorkflowInstanceId,
                 TaskId = Event.TaskId,
-                ReviewedTaskId = _reviewedTaskId,
-                ReviewedExecutionId = _reviewedExecutionId,
-                WorkflowName = _workflowName,
+                ReviewedTaskId = _reviewedTaskId ?? string.Empty,
+                ReviewedExecutionId = _reviewedExecutionId ?? string.Empty,
+                WorkflowName = _workflowName ?? string.Empty,
                 Notifications = _notifications,
                 Files = Event.Inputs,
                 ReviewerRoles = _reviewerRoles,
@@ -237,9 +237,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
                 },
                 ApplicationMetadata = new Dictionary<string, string>
                 {
-                    { Keys.ApplicationName, _applicationName },
-                    { Keys.ApplicationVersion, _applicationVersion },
-                    { Keys.Mode, _mode },
+                    { Keys.ApplicationName, _applicationName ?? string.Empty },
+                    { Keys.ApplicationVersion, _applicationVersion ?? string.Empty},
+                    { Keys.Mode, _mode ?? string.Empty },
                 }
             }, TaskManagerApplicationId, Event.CorrelationId);
         }
@@ -249,7 +249,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             Guard.Against.Null(message, nameof(message));
 
             var queue = _queueName ?? _options.Value.Messaging.Topics.AideClinicalReviewRequest;
-            _logger.SendClinicalReviewRequestMessage(queue, _workflowName);
+            _logger.SendClinicalReviewRequestMessage(queue, _workflowName ?? string.Empty);
             await _messageBrokerPublisherService.Publish(queue, message.ToMessage()).ConfigureAwait(false);
             _logger.SendClinicalReviewRequestMessageSent(queue);
         }
@@ -290,7 +290,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
                 executionStatus == TaskExecutionStatus.Succeeded ? "Accepted" : "Rejected",
                 DateTime.UtcNow.ToLongDateString(),
                 userId,
-                _applicationName,
+                _applicationName ?? string.Empty,
                 reason,
                 message);
 

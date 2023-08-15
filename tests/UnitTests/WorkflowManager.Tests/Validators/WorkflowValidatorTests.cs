@@ -17,10 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FellowOakDicom.Imaging.Reconstruction;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Interfaces;
 using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
@@ -60,6 +58,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
         [Fact]
         public async Task ValidateWorkflow_ValidatesAWorkflow_ReturnsErrorsAndHasCorrectValidationResultsAsync()
         {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             var workflow = new Workflow
             {
                 Name = "Workflowname1",
@@ -597,6 +596,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                     },
                 }
             };
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new WorkflowRevision());
@@ -810,6 +810,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                 }
             };
 
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
 
@@ -1262,5 +1263,6 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
 
             Assert.Single(errors);
         }
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
     }
 }

@@ -46,7 +46,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         private readonly Mock<ILogger<WorkflowInstanceController>> _logger;
         private readonly Mock<IUriService> _uriService;
         private readonly IOptions<WorkflowManagerOptions> _options;
-
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
         public WorkflowsInstanceControllerTests()
         {
             _options = Options.Create(new WorkflowManagerOptions());
@@ -398,12 +400,14 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         public async Task TaskGetFailedAsync_GivenGetAllFailedAsyncReturnsThrowsException_ReturnsInternalServiceError()
         {
             _workflowInstanceService.Setup(w => w.GetAllFailedAsync()).ThrowsAsync(new Exception());
-;
+
             var result = await WorkflowInstanceController.GetFailedAsync();
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             objectResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+
             var responseValue = (ProblemDetails)objectResult.Value;
+
             responseValue.Status.Should().Be((int)HttpStatusCode.InternalServerError);
 
             var problemMessage = "Unexpected error occurred.";
@@ -419,8 +423,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 It.Is<EventId>(eventId => eventId.Id == 100006),
                 It.Is<It.IsAnyType>((@object, @type) => @object.ToString() == expectedErrorMessage),
                 It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
     }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 }
