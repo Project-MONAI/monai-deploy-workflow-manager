@@ -267,7 +267,6 @@ namespace TaskManager.Docker.Tests
         [Fact(DisplayName = "GetStatus - when contianer status is unknown expect failure status")]
         public async Task GetStatus_WhenContainerStatusIsUnknown_ExpectFalureStatus()
         {
-            var tryCount = 0;
             _dockerClient.Setup(p => p.Containers.InspectContainerAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
                     new ContainerInspectResponse
@@ -297,7 +296,6 @@ namespace TaskManager.Docker.Tests
         [Fact(DisplayName = "GetStatus - when contianer is killed or dead expect failure status")]
         public async Task GetStatus_WhenContainerIsKilledOrDead_ExpectFalureStatus()
         {
-            var tryCount = 0;
             _dockerClient.Setup(p => p.Containers.InspectContainerAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
                     new ContainerInspectResponse
@@ -327,7 +325,6 @@ namespace TaskManager.Docker.Tests
         [Fact(DisplayName = "GetStatus - when Docker is unavailable expect failure status")]
         public async Task GetStatus_WhenDockerIsDown_ExpectFalureStatus()
         {
-            var tryCount = 0;
             _dockerClient.Setup(p => p.Containers.InspectContainerAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("error"));
 

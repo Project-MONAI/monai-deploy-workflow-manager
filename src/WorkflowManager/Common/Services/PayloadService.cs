@@ -119,7 +119,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
                                                       string? patientId = "",
                                                       string? patientName = "")
             => await CreatePayloadsDto(
-                await _payloadRepository.GetAllAsync(skip, limit, patientId, patientName)
+                await _payloadRepository.GetAllAsync(skip, limit, patientId ?? string.Empty, patientName ?? string.Empty)
             );
 
         public async Task<IList<PayloadDto>> GetAllAsync(int? skip = null, int? limit = null)

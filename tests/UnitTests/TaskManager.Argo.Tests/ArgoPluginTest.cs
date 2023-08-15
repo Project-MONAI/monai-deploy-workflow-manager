@@ -471,7 +471,6 @@ public class ArgoPluginTest : ArgoPluginTestBase
         Assert.NotNull(objNodeInfo);
 #pragma warning disable CS8604 // Possible null reference argument.
         var nodeInfo = ValiateCanConvertToDictionary(objNodeInfo);
-#pragma warning restore CS8604 // Possible null reference argument.
 
         Assert.Equal(7, nodeInfo.Values.Count);
         Assert.Equal("{\"id\":\"firstId\"}", nodeInfo["nodes.first"]);
@@ -1173,3 +1172,4 @@ public class ArgoPluginTest : ArgoPluginTestBase
                        It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
                        It.IsAny<CancellationToken>()));
 }
+#pragma warning restore CS8604 // Possible null reference argument.

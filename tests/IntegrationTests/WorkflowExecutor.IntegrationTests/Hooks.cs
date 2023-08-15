@@ -108,6 +108,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         [BeforeTestRun(Order = 1)]
         public static async Task CheckWorkflowConsumerStarted()
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             await RetryPolicy.ExecuteAsync(async () =>
             {
                 var response = await WorkflowExecutorStartup.GetQueueStatus(HttpClient, TestExecutionConfig.RabbitConfig.VirtualHost, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
@@ -178,3 +179,4 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         }
     }
 }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.

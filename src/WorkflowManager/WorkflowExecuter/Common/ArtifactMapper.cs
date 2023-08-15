@@ -98,7 +98,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
                 var suffix = GetArtifactSuffix(artifact.Value);
 
-                var mappedArtifact = await ConvertVariableStringToPath(artifact, variableString, workflowInstanceId, payloadId, bucketId, shouldExistYet, suffix);
+                var mappedArtifact = await ConvertVariableStringToPath(artifact, variableString ?? string.Empty, workflowInstanceId, payloadId, bucketId, shouldExistYet, suffix);
 
                 if (mappedArtifact.Equals(default(KeyValuePair<string, string>)) is false)
                 {
@@ -132,7 +132,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             return variableStrings[1];
         }
 
-        private static bool TrimArtifactVariable(string valueString, out string variableString)
+        private static bool TrimArtifactVariable(string valueString, out string? variableString)
         {
             var variableStrings = valueString.Split(" ");
 
@@ -148,7 +148,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             return true;
         }
 
-        private async Task<KeyValuePair<string, string>> ConvertVariableStringToPath(Artifact artifact, string variableString, string workflowInstanceId, string payloadId, string bucketId, bool shouldExistYet, string suffix = "")
+        private async Task<KeyValuePair<string, string>> ConvertVariableStringToPath(Artifact artifact, string variableString, string workflowInstanceId, string payloadId, string bucketId, bool shouldExistYet, string? suffix = "")
         {
             _logger.ConvertingVariableStringToPath(variableString);
             if (variableString.StartsWith("context.input.dicom", StringComparison.InvariantCultureIgnoreCase))

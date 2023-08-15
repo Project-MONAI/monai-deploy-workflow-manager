@@ -52,10 +52,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 #pragma warning disable CS8604 // Possible null reference argument.
                     taskExecution.Should().BeEquivalentTo<TaskExecution>(response);
                     return;
-#pragma warning restore CS8604 // Possible null reference argument.
                 }
             }
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             throw new Exception($"TaskId={response.TaskId} was not found in any workflow instances");
         }
 
@@ -81,6 +81,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
         }
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         public void AssertInputArtifactsForWorkflowInstance(TaskObject workflowRevisionTask, string payloadId, TaskExecution workflowInstanceTask, TaskExecution previousTaskExecution = null)
         {
             foreach (var workflowArtifact in workflowRevisionTask.Artifacts.Input)
@@ -549,3 +550,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         }
     }
 }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.

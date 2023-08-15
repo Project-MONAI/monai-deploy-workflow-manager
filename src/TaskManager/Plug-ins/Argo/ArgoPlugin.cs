@@ -348,8 +348,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                         {
                             preprend = Strings.ExitHookTemplateSendTemplateName;
                         }
+#pragma warning disable CS8604 // Possible null reference argument.
                         stats.Add($"{preprend}podStartTime{podcount}", item.Value.StartedAt is not null ? item.Value.StartedAt.ToString() : "");
                         stats.Add($"{preprend}podFinishTime{podcount++}", item.Value.FinishedAt is not null ? item.Value.FinishedAt.ToString() : "");
+#pragma warning restore CS8604 // Possible null reference argument.
                     }
                 }
             }
@@ -370,9 +372,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 _logger.ArgoLog(logs);
 #pragma warning restore CA2254 // Template should be a static expression
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                int we = 0;
+                // swallow execption on purpose.
             }
         }
 
@@ -533,7 +535,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             workflow.Spec.Templates.Add(exitHookTemplate.GenerateCallbackMessageTemplate(artifact));
         }
 
-        private async Task<WorkflowTemplate> LoadWorkflowTemplate(string workflowTemplateName)
+        private async Task<WorkflowTemplate?> LoadWorkflowTemplate(string workflowTemplateName)
         {
             Guard.Against.NullOrWhiteSpace(workflowTemplateName, nameof(workflowTemplateName));
 

@@ -63,10 +63,12 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
                 {
                     Name = "AeTitleIndex"
                 };
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 var model = new CreateIndexModel<WorkflowRevision>(
                     Builders<WorkflowRevision>.IndexKeys.Ascending(s => s.Workflow.InformaticsGateway.AeTitle),
                     options
                     );
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
                 await _workflowCollection.Indexes.CreateOneAsync(model);
             }

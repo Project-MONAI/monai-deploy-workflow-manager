@@ -170,7 +170,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                     }
                     _logger.ContentTypeForFile(objectName, contentType);
                     using var stream = _fileSystem.File.OpenRead(file);
-                    await storageService.PutObjectAsync(destination.Bucket, objectName, stream, stream.Length, contentType, null, cancellationToken).ConfigureAwait(false);
+                    await storageService.PutObjectAsync(destination.Bucket, objectName, stream, stream.Length, contentType, new Dictionary<string, string>(), cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {

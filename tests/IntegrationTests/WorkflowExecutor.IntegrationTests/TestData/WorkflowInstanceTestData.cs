@@ -36,6 +36,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             var id = Guid.NewGuid().ToString();
             var payloadId = Guid.NewGuid().ToString();
             var executionId = Guid.NewGuid().ToString();
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             return new WorkflowInstance()
             {
                 Id = id,
@@ -2216,3 +2217,4 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
 }
 #pragma warning restore CS8601 // Possible null reference assignment.
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.

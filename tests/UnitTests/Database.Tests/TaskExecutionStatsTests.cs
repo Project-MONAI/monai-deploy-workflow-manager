@@ -40,7 +40,9 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
         //private readonly Mock<ITaskDispatchEventService> _taskDispatchEventService;
         private readonly CancellationTokenSource _cancellationTokenSource;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public TaskExecutionStatsTests()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
         }
 

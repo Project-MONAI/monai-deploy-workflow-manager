@@ -25,7 +25,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         Task<Workflow?> Argo_GetWorkflowAsync(string argoNamespace, string name, string? getOptions_resourceVersion, string? fields, CancellationToken cancellationToken);
 
-        Task<WorkflowTemplate?> Argo_GetWorkflowTemplateAsync(string argoNamespace, string name, string getOptions_resourceVersion);
+        Task<WorkflowTemplate?> Argo_GetWorkflowTemplateAsync(string argoNamespace, string name, string? getOptions_resourceVersion);
 
         Task<Workflow> Argo_StopWorkflowAsync(string argoNamespace, string name, WorkflowStopRequest body);
 

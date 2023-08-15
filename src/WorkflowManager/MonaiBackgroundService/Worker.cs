@@ -80,7 +80,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
 
                     await PublishTimeoutUpdateEvent(task, correlationId, task.WorkflowInstanceId).ConfigureAwait(false); // -> task manager
 
-                    await PublishCancellationEvent(task, correlationId, (string)identity ?? task.ExecutionId, task.WorkflowInstanceId).ConfigureAwait(false); // -> workflow executor
+                    await PublishCancellationEvent(task, correlationId, identity as string ?? task.ExecutionId, task.WorkflowInstanceId).ConfigureAwait(false); // -> workflow executor
                 }
             }
             catch (Exception e)
