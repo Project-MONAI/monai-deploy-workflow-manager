@@ -21,7 +21,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using FluentAssertions;
+using FluentAssertions.Equivalency;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
@@ -41,6 +43,7 @@ using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
 using Moq;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
@@ -77,7 +80,18 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             _payloadService = new Mock<IPayloadService>();
             _workflowService = new Mock<IWorkflowService>();
 
-            _configuration = Options.Create(new WorkflowManagerOptions() { TaskTimeoutMinutes = _timeoutForDefault, PerTaskTypeTimeoutMinutes = new Dictionary<string, double> { { "taskType", _timeoutForTypeTask } }, Messaging = new MessageBrokerConfiguration { Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch", ExportRequestPrefix = "md.export.request" }, DicomAgents = new DicomAgentConfiguration { DicomWebAgentName = "monaidicomweb" } } });
+            _configuration = Options.Create(new WorkflowManagerOptions()
+            {
+                TaskTimeoutMinutes = _timeoutForDefault,
+                PerTaskTypeTimeoutMinutes = new Dictionary<string, double> { { "taskType", _timeoutForTypeTask } },
+                Messaging = new MessageBrokerConfiguration
+                {
+                    Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch", ExportRequestPrefix = "md.export.request" },
+                    DicomAgents = new DicomAgentConfiguration { DicomWebAgentName = "monaidicomweb" }
+                },
+                MigExternalAppPlugins = new List<string> { { "examplePlugin" } }
+            });
+
             _storageConfiguration = Options.Create(new StorageServiceConfiguration() { Settings = new Dictionary<string, string> { { "bucket", "testbucket" }, { "endpoint", "localhost" }, { "securedConnection", "False" } } });
 
             var dicom = new Mock<IDicomService>();
@@ -506,7 +520,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             Assert.True(result);
             Assert.NotNull(messageSent);
 #pragma warning disable CS8604 // Possible null reference argument.
-            Assert.Contains("\"export_request\":", Encoding.UTF8.GetString(messageSent?.Body));
+            var body = Encoding.UTF8.GetString(messageSent?.Body);
+            var exportMessageBody = JsonConvert.DeserializeObject<ExportRequestEvent>(body);
+            Assert.Empty(exportMessageBody!.PluginAssemblies);
 #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -1992,7 +2008,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             var exportEvent = new ExportCompleteEvent
             {
                 WorkflowInstanceId = workflowInstanceId,
-                ExportTaskId = "pizza",
+                ExportTaskId = "pizza1",
                 Status = ExportStatus.Success,
                 Message = "This is a message"
             };
@@ -2016,8 +2032,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                     Tasks = new TaskObject[]
                     {
                         new TaskObject {
-                            Id = "pizza",
-                            Type = "type",
+                            Id = "pizza1",
+                            Type = ValidationConstants.ExportTaskType,
                             Description = "taskdesc",
                             TaskDestinations = new TaskDestination[]
                             {
@@ -2057,8 +2073,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                     {
                         new TaskExecution
                         {
-                            TaskId = "pizza",
-                            Status = TaskExecutionStatus.Created
+                            TaskId = "pizza1",
+                            Status = TaskExecutionStatus.Created,
+                            TaskType=ValidationConstants.ExportTaskType
                         }
                         //,
                         //new TaskExecution
@@ -2473,7 +2490,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
             Assert.True(result);
             Assert.NotNull(messageSent);
 #pragma warning disable CS8604 // Possible null reference argument.
-            Assert.Contains("\"export_request\":1", Encoding.UTF8.GetString(messageSent?.Body));
+            var body = Encoding.UTF8.GetString(messageSent?.Body);
+            var exportMessageBody = JsonConvert.DeserializeObject<ExportRequestEvent>(body);
+            Assert.NotEmpty(exportMessageBody!.PluginAssemblies);
 #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -2511,7 +2530,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                     {
                         new TaskObject {
                             Id = "pizza",
-                            Type = "type",
+                            Type = ValidationConstants.ExportTaskType,
                             Description = "taskdesc",
                             TaskDestinations = new TaskDestination[]
                             {
@@ -2552,7 +2571,8 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                         new TaskExecution
                         {
                             TaskId = "pizza",
-                            Status = TaskExecutionStatus.Created
+                            Status = TaskExecutionStatus.Created,
+                            TaskType = ValidationConstants.ExportTaskType
                         }
                         //,
                         //new TaskExecution
@@ -2609,7 +2629,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                     {
                         new TaskObject {
                             Id = "pizza",
-                            Type = "type",
+                            Type = ValidationConstants.ExportTaskType,
                             Description = "taskdesc",
                             TaskDestinations = new TaskDestination[]
                             {

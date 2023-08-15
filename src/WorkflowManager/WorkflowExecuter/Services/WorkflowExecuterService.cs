@@ -402,21 +402,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                     return false;
                 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          //      if (message.ExportRequest == ExportRequestType.None)
+                if (string.Compare(task.TaskType, ValidationConstants.ExportTaskType, true) == 0)
                 {
                     return await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
                 }

@@ -38,20 +38,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IMessageBrokerPublisherService _messageBrokerPublisherService;
 
-        private string _patientId = string.Empty;
-        private string _patientName = string.Empty;
-        private string _patientSex = string.Empty;
-        private string _patientDob = string.Empty;
-        private string _patientAge = string.Empty;
-        private string _patientHospitalId = string.Empty;
+        private string? _patientId;
+        private string? _patientName;
+        private string? _patientSex;
+        private string? _patientDob;
+        private string? _patientAge;
+        private string? _patientHospitalId;
         private string? _queueName = null;
-        private string _workflowName = string.Empty;
+        private string? _workflowName;
         private bool _notifications;
-        private string _reviewedTaskId = string.Empty;
-        private string _applicationName = string.Empty;
-        private string _mode = string.Empty;
-        private string _applicationVersion = string.Empty;
-        private string _reviewedExecutionId = string.Empty;
+        private string? _reviewedTaskId;
+        private string? _applicationName;
+        private string? _mode;
+        private string? _applicationVersion;
+        private string? _reviewedExecutionId;
         private string[] _reviewerRoles = Array.Empty<string>();
 
         public AideClinicalReviewPlugin(
