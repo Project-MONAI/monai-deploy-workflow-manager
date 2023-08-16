@@ -16,7 +16,7 @@
 
 using Monai.Deploy.Storage.API;
 
-namespace Monai.Deploy.WorkflowManager.Common.Extensions
+namespace Monai.Deploy.Common.Miscellaneous.Extensions
 {
     public static class FileExtensions
     {

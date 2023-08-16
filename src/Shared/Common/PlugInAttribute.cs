@@ -1,5 +1,5 @@
-/*
- * Copyright 2023 MONAI Consortium
+﻿/*
+ * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.Shared.Filter;
-
-namespace Monai.Deploy.WorkflowManager.Shared.Services
+namespace Monai.Deploy.Common.Miscellaneous
 {
-    /// <summary>
-    /// Uri Serivce.
-    /// </summary>
-    public interface IUriService
+    [AttributeUsage(AttributeTargets.Assembly)]
+    public class PlugInAttribute : Attribute
     {
-        /// <summary>
-        /// Gets Relative Uri path with filters as a string.
-        /// </summary>
-        /// <param name="filter">Filters.</param>
-        /// <param name="route">Route.</param>
-        /// <returns>Relative Uri string.</returns>
-        public string GetPageUriString(PaginationFilter filter, string route);
+        public PlugInAttribute() { }
+
     }
 }

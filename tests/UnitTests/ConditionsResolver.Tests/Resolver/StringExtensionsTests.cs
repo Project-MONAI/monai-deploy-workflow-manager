@@ -15,10 +15,10 @@
  */
 
 using System;
-using Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions;
+using Monai.Deploy.Common.ConditionsResolver.Extensions;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
+namespace Monai.Deploy.Common.ConditionsResolver.Tests.Resolver
 {
     public class StringExtensionsTests
     {

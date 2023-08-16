@@ -15,10 +15,10 @@
  */
 
 using BoDi;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.Common.IntegrationTests.Support;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.Common.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class WorkflowTaskArtifactStepDefinitions

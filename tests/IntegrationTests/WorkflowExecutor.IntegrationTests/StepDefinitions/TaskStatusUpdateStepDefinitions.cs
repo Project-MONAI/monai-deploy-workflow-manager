@@ -17,13 +17,13 @@
 using BoDi;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support;
+using Monai.Deploy.Common.IntegrationTests.Support;
+using Monai.Deploy.Common.WorkflowExecutor.IntegrationTests.Support;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.Common.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class TaskStatusUpdateStepDefinitions

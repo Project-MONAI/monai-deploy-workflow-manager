@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager
+namespace Monai.Deploy.Common.TaskManager
 {
     public class ApplicationPartsLogger : IHostedService
     {

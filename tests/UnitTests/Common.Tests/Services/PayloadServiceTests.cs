@@ -19,16 +19,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.WorkflowManager.Common.Exceptions;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Common.Services;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Storage.Services;
+using Monai.Deploy.Common.Miscellaneous.Exceptions;
+using Monai.Deploy.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.Common.Miscellaneous.Services;
+using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.Common.Database.Interfaces;
+using Monai.Deploy.Common.Storage.Services;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
+namespace Monai.Deploy.Common.Miscellaneous.Tests.Services
 {
     public class PayloadServiceTests
     {

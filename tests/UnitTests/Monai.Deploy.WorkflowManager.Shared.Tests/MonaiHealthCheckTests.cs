@@ -15,7 +15,7 @@
  */
 
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Monai.Deploy.WorkflowManager.Shared;
+using Monai.Deploy.Common.Miscellaneous;
 using Moq;
 
 namespace Monai.Deploy.InformaticsGateway.Test.Services.Http

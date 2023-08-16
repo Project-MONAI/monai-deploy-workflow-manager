@@ -17,12 +17,12 @@
 using System.Reactive.Linq;
 using Minio;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
+using Monai.Deploy.Common.IntegrationTests.POCO;
 using Polly;
 using Polly.Retry;
 using File = System.IO.File;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
+namespace Monai.Deploy.Common.IntegrationTests.Support
 {
     public class MinioClientUtil
     {

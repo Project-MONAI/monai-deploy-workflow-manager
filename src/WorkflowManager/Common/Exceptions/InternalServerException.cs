@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.Common.Exceptions
+namespace Monai.Deploy.Common.Miscellaneous.Exceptions
 {
     public class MonaiInternalServerException : Exception
     {

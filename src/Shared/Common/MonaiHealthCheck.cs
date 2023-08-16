@@ -16,7 +16,7 @@
 
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace Monai.Deploy.WorkflowManager.Shared
+namespace Monai.Deploy.Common.Miscellaneous
 {
     public class MonaiHealthCheck : IHealthCheck
     {

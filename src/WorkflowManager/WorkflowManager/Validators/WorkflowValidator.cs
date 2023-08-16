@@ -22,17 +22,17 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Common.Extensions;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.Services.InformaticsGateway;
-using Monai.Deploy.WorkflowManager.Shared.Utilities;
+using Monai.Deploy.Common.Configuration;
+using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.Common.Logging;
+using Monai.Deploy.Common.Miscellaneous.Extensions;
+using Monai.Deploy.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.Common.Miscellaneous.Utilities;
+using Monai.Deploy.Common.Services.InformaticsGateway;
 using MongoDB.Driver.Linq;
-using static Monai.Deploy.WorkflowManager.Shared.ValidationConstants;
+using static Monai.Deploy.Common.Miscellaneous.ValidationConstants;
 
-namespace Monai.Deploy.WorkflowManager.Validators
+namespace Monai.Deploy.Common.Validators
 {
     /// <summary>
     /// Workflow Validator used for validating workflows.
@@ -69,7 +69,9 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// <param name="informaticsGatewayService">service fot the MIG.</param>
         /// <param name="logger">the logger to use.</param>
         /// <param name="options">options.</param>
+#pragma warning disable SA1201 // Elements should appear in the correct order
         public WorkflowValidator(
+
             IWorkflowService workflowService,
             IInformaticsGatewayService informaticsGatewayService,
             ILogger<WorkflowValidator> logger,
@@ -80,7 +82,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
-
+#pragma warning restore SA1201 // Elements should appear in the correct order
         /// <summary>
         /// Gets the original name, used for checking for duplicates, if OrignalName is empty it will be determined as a create
         /// workflow attempt and check for duplicates or if this is not equal to workflow template it will

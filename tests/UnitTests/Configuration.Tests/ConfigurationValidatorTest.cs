@@ -20,7 +20,7 @@ using Monai.Deploy.InformaticsGateway.SharedTest;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Configuration.Tests
+namespace Monai.Deploy.Common.Configuration.Tests
 {
     public class ConfigurationValidatorTest
     {

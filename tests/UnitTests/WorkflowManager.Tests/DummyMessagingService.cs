@@ -24,7 +24,7 @@ using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Messages;
 
-namespace Monai.Deploy.WorkflowManager.Tests
+namespace Monai.Deploy.Common.Tests
 {
     internal class DummyMessageSubscriberHealtCheck : SubscriberServiceHealthCheckRegistrationBase
     {

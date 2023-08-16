@@ -20,14 +20,14 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.Logging;
+using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.Common.Database.Interfaces;
+using Monai.Deploy.Common.Database.Options;
+using Monai.Deploy.Common.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace Monai.Deploy.WorkflowManager.Database.Repositories
+namespace Monai.Deploy.Common.Database.Repositories
 {
     public class PayloadRepository : RepositoryBase, IPayloadRepository
     {

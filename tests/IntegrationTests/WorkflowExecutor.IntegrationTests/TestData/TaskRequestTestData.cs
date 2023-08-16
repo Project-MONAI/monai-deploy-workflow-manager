@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.Models;
+using Monai.Deploy.Common.Models;
 
-namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
+namespace Monai.Deploy.Common.WorkflowExecutor.IntegrationTests.TestData
 {
     public class TaskRequestTestData
     {

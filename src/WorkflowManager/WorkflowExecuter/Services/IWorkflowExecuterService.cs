@@ -15,9 +15,9 @@
  */
 
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.Common.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
+namespace Monai.Deploy.Common.WorkfowExecuter.Services
 {
     public interface IWorkflowExecuterService
     {

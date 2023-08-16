@@ -21,9 +21,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.Common.Configuration;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers
+namespace Monai.Deploy.Common.TaskManager.Argo.Controllers
 {
     [ApiController]
     [Authorize]

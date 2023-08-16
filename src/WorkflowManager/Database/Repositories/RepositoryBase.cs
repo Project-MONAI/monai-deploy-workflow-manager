@@ -20,7 +20,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 
-namespace Monai.Deploy.WorkflowManager.Database.Repositories
+namespace Monai.Deploy.Common.Database.Repositories
 {
     public abstract class RepositoryBase
     {

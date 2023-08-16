@@ -20,7 +20,7 @@ using Argo;
 using Ardalis.GuardClauses;
 
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
+namespace Monai.Deploy.Common.TaskManager.Argo
 {
     public class ArgoClient : BaseArgoClient, IArgoClient
     {

@@ -18,12 +18,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
-using Monai.Deploy.WorkflowManager.Shared;
+using Monai.Deploy.Common.Services.DataRetentionService;
+using Monai.Deploy.Common.Miscellaneous;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Test.Services.Http
+namespace Monai.Deploy.Common.Test.Services.Http
 {
     public class DataRetentionServiceTest : IDisposable
     {

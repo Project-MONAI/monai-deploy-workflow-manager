@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
+using Monai.Deploy.Common.TaskManager.API.Models;
 
 namespace Monai.Deploy.TaskManager.API
 {

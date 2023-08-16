@@ -16,14 +16,14 @@
 
 using System.Net;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Common.Exceptions;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Services.InformaticsGateway;
+using Monai.Deploy.Common.Miscellaneous.Exceptions;
+using Monai.Deploy.Common.Configuration;
+using Monai.Deploy.Common.Services.InformaticsGateway;
 using Moq;
 using Moq.Protected;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Services.Tests.InformaticsGateway
+namespace Monai.Deploy.Common.Services.Tests.InformaticsGateway
 {
     public class InformaticsGatewayServiceTests
     {

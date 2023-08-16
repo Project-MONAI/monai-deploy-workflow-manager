@@ -77,8 +77,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj" />
-    <ProjectReference Include="..\..\Shared\Shared\Monai.Deploy.WorkflowManager.Shared.csproj" />
+    <ProjectReference Include="..\..\Shared\Common\Monai.Deploy.Shared.Common.csproj" />
+    <ProjectReference Include="..\..\Shared\Configuration\Monai.Deploy.Shared.Configuration.csproj" />
     <ProjectReference Include="..\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />
     <ProjectReference Include="..\Database\Monai.Deploy.WorkflowManager.TaskManager.Database.csproj" />
     <ProjectReference Include="..\Plug-ins\AideClinicalReview\Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.csproj" />

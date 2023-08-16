@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
+using Monai.Deploy.Common.TaskManager.IntegrationTests.POCO;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
+namespace Monai.Deploy.Common.TaskManager.IntegrationTests.Support
 {
     public static class RabbitConnectionFactory
     {

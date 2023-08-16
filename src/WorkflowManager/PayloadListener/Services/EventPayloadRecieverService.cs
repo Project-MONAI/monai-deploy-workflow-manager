@@ -18,12 +18,12 @@ using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
-using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
+using Monai.Deploy.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.Common.Logging;
+using Monai.Deploy.Common.PayloadListener.Validators;
+using Monai.Deploy.Common.WorkfowExecuter.Services;
 
-namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
+namespace Monai.Deploy.Common.PayloadListener.Services
 {
     public class EventPayloadReceiverService : IEventPayloadReceiverService
     {

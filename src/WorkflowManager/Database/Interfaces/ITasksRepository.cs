@@ -16,9 +16,9 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.Common.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.Database.Interfaces
+namespace Monai.Deploy.Common.Database.Interfaces
 {
     public interface ITasksRepository
     {

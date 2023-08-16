@@ -22,13 +22,13 @@ using Argo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.WorkflowManager.TaskManager.Argo;
-using Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers;
-using Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests;
+using Monai.Deploy.Common.TaskManager.Argo;
+using Monai.Deploy.Common.TaskManager.Argo.Controllers;
+using Monai.Deploy.Common.TaskManager.Argo.Tests;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Test.Controllers
+namespace Monai.Deploy.Common.Test.Controllers
 {
     public class TemplateControllerTests : ArgoPluginTestBase
     {

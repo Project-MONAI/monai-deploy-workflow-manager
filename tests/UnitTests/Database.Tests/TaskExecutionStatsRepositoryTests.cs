@@ -21,14 +21,14 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Options;
+using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.Common.Database.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Database.Tests
+namespace Monai.Deploy.Common.Database.Tests
 {
     public class TaskExecutionStatsRepositoryTests
     {

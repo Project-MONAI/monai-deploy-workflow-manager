@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.TaskManager
+namespace Monai.Deploy.Common.TaskManager
 {
 #pragma warning disable SA1600 // Elements should be documented
     public static class PluginStrings

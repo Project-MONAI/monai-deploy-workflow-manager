@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Monai.Deploy.WorkflowManager.Shared.Wrappers
+namespace Monai.Deploy.Common.Miscellaneous.Wrappers
 {
     public class StatsPagedResponse<T> : PagedResponse<T>
     {

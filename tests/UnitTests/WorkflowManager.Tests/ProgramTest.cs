@@ -19,7 +19,7 @@ using System.IO;
 using System.Reflection;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Tests
+namespace Monai.Deploy.Common.Tests
 {
     public class ProgramTest
     {

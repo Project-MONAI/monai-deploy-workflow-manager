@@ -18,7 +18,7 @@ using Mongo.Migration.Documents;
 using MongoDB.Bson.Serialization;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Migrations
+namespace Monai.Deploy.Common.TaskManager.Migrations
 {
     public class DocumentVersionConvert : JsonConverter
     {

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.Common.Contracts.Models;
 using Mongo.Migration.Migrations.Document;
 using MongoDB.Bson;
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Migrations
+namespace Monai.Deploy.Common.Contracts.Migrations
 {
     public class M001_ExecutionStats_addVersion : DocumentMigration<ExecutionStats>
     {

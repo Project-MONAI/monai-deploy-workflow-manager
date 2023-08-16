@@ -16,7 +16,7 @@
 
 using RabbitMQ.Client;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
+namespace Monai.Deploy.Common.IntegrationTests.Support
 {
     [Binding]
     public class MessageReceiver : DefaultBasicConsumer

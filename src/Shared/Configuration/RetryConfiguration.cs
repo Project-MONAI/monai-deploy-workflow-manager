@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 
-namespace Monai.Deploy.WorkflowManager.Configuration
+namespace Monai.Deploy.Common.Configuration
 {
     public class RetryConfiguration
     {

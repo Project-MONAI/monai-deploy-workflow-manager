@@ -21,11 +21,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.TaskManager.API;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
+using Monai.Deploy.Common.Configuration;
+using Monai.Deploy.Common.TaskManager.API.Models;
 using Moq;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
+namespace Monai.Deploy.Common.TaskManager.Argo.Tests
 {
     public class ArgoPluginTestBase
     {

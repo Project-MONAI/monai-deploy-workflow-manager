@@ -15,12 +15,12 @@
  */
 
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
+using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.Common.IntegrationTests.POCO;
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8601 // Possible null reference assignment.
 
-namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
+namespace Monai.Deploy.Common.WorkflowExecutor.IntegrationTests.TestData
 {
     public class WorkflowInstanceTestData
     {

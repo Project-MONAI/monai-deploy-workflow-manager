@@ -17,7 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Monai.Deploy.WorkflowManager.Configuration.Exceptions
+namespace Monai.Deploy.Common.Configuration.Exceptions
 {
     /// <summary>
     /// Represnets an exception based upon invalid configuration.

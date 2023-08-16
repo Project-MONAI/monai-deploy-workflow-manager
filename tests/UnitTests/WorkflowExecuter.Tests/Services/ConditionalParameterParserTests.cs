@@ -19,14 +19,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Storage.Services;
+using Monai.Deploy.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.Common.ConditionsResolver.Parser;
+using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.Common.Storage.Services;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
+namespace Monai.Deploy.Common.WorkflowExecuter.Tests.Services
 {
     public class ConditionalParameterParserTests
     {

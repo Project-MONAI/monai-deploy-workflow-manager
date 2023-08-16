@@ -16,7 +16,7 @@
 
 using System;
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Models
+namespace Monai.Deploy.Common.Contracts.Models
 {
     public interface ISoftDeleteable
     {

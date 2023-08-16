@@ -15,10 +15,10 @@
  */
 
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.WorkflowManager.Common.Extensions;
+using Monai.Deploy.Common.Miscellaneous.Extensions;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Common.Tests.Extensions
+namespace Monai.Deploy.Common.Miscellaneous.Tests.Extensions
 {
     public class FileExtensionsTests
     {

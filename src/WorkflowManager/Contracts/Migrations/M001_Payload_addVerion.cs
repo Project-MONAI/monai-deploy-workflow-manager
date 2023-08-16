@@ -13,11 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.Common.Contracts.Models;
 using Mongo.Migration.Migrations.Document;
 using MongoDB.Bson;
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Migrations
+namespace Monai.Deploy.Common.Contracts.Migrations
 {
     public class M001_Payload_addVerion : DocumentMigration<Payload>
     {

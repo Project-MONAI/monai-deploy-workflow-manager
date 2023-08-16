@@ -17,7 +17,7 @@
 using Monai.Deploy.Messaging.Messages;
 using RabbitMQ.Client;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
+namespace Monai.Deploy.Common.TaskManager.IntegrationTests.Support
 {
     public class RabbitPublisher
     {

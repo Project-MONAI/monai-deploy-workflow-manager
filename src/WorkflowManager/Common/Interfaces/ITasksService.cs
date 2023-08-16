@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.Common.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.Common.Interfaces
+namespace Monai.Deploy.Common.Miscellaneous.Interfaces
 {
     public interface ITasksService
     {

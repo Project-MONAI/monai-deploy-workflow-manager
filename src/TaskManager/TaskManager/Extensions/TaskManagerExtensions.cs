@@ -22,13 +22,13 @@ using Microsoft.Extensions.Hosting;
 using Monai.Deploy.Security.Authentication.Configurations;
 using Monai.Deploy.Security.Authentication.Extensions;
 using Monai.Deploy.TaskManager.API;
-using Monai.Deploy.WorkflowManager.Shared;
-using Monai.Deploy.WorkflowManager.TaskManager.Argo;
-using Monai.Deploy.WorkflowManager.TaskManager.Docker;
-using Monai.Deploy.WorkflowManager.TaskManager.Services;
+using Monai.Deploy.Common.Miscellaneous;
+using Monai.Deploy.Common.TaskManager.Argo;
+using Monai.Deploy.Common.TaskManager.Docker;
+using Monai.Deploy.Common.TaskManager.Services;
 using NLog;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Extensions
+namespace Monai.Deploy.Common.TaskManager.Extensions
 {
     /// <summary>
     ///  Sets up task manager service collection.

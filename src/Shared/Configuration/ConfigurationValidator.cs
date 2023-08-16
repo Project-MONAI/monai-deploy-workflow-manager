@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Monai.Deploy.WorkflowManager.Configuration
+namespace Monai.Deploy.Common.Configuration
 {
     /// <summary>
     /// Validates configuration based on application requirements and DICOM VR requirements.

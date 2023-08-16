@@ -17,12 +17,12 @@
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
-using Monai.Deploy.WorkflowManager.TaskManager.Database.Options;
-using Monai.Deploy.WorkflowManager.TaskManager.Logging;
+using Monai.Deploy.Common.TaskManager.API.Models;
+using Monai.Deploy.Common.TaskManager.Database.Options;
+using Monai.Deploy.Common.TaskManager.Logging;
 using MongoDB.Driver;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Database
+namespace Monai.Deploy.Common.TaskManager.Database
 {
     public class TaskDispatchEventRepository : ITaskDispatchEventRepository
     {

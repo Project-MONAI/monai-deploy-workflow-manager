@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.Shared
-{
-    public interface IMonaiServiceLocator
-    {
-        IEnumerable<IMonaiService> GetMonaiServices();
+using Monai.Deploy.Common.Miscellaneous;
 
-        Dictionary<string, ServiceStatus> GetServiceStatus();
+namespace Monai.Deploy.Common.Miscellaneous
+{
+    public interface IMonaiService
+    {
+        ServiceStatus Status { get; set; }
+        string ServiceName { get; }
     }
 }

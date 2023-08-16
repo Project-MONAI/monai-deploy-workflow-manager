@@ -16,10 +16,10 @@
 
 using FluentAssertions;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events;
-using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
+using Monai.Deploy.Common.TaskManager.AideClinicalReview.Events;
+using Monai.Deploy.Common.TaskManager.API.Models;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
+namespace Monai.Deploy.Common.TaskManager.IntegrationTests.Support
 {
     public class Assertions
     {

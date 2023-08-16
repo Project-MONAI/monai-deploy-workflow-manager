@@ -20,13 +20,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Database.Options;
+using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.Common.Database.Interfaces;
+using Monai.Deploy.Common.Database.Options;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-namespace Monai.Deploy.WorkflowManager.Database.Repositories
+namespace Monai.Deploy.Common.Database.Repositories
 {
     public class WorkflowRepository : RepositoryBase, IWorkflowRepository
     {

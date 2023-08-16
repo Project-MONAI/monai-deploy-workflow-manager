@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.Shared
+namespace Monai.Deploy.Common.Miscellaneous
 {
     public static class ValidationConstants
     {

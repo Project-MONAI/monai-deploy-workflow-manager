@@ -15,9 +15,9 @@
  */
 
 using Microsoft.AspNetCore.WebUtilities;
-using Monai.Deploy.WorkflowManager.Shared.Filter;
+using Monai.Deploy.Common.Miscellaneous.Filter;
 
-namespace Monai.Deploy.WorkflowManager.Shared.Services
+namespace Monai.Deploy.Common.Miscellaneous.Services
 {
     /// <summary>
     /// Uri Service.

@@ -25,13 +25,13 @@ using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Shared;
-using Monai.Deploy.WorkflowManager.TaskManager.API;
+using Monai.Deploy.Common.Configuration;
+using Monai.Deploy.Common.Miscellaneous;
+using Monai.Deploy.Common.TaskManager.API;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Tests
+namespace Monai.Deploy.Common.TaskManager.AideClinicalReview.Tests
 {
     public class AideClinicalReviewPluginTests
     {

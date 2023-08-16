@@ -18,9 +18,9 @@ using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.Common.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
+namespace Monai.Deploy.Common.WorkfowExecuter.Common
 {
     public class GenerateTaskUpdateEventParams
     {

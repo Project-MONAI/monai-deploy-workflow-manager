@@ -16,7 +16,7 @@
 
 using Monai.Deploy.Messaging.Events;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.API
+namespace Monai.Deploy.Common.TaskManager.API
 {
     public class ExecutionStatus
     {

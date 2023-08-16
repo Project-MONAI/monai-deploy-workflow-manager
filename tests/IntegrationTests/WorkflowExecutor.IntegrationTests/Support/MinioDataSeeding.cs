@@ -15,11 +15,11 @@
  */
 
 using System.Reflection;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.Common.IntegrationTests.POCO;
+using Monai.Deploy.Common.IntegrationTests.Support;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support
+namespace Monai.Deploy.Common.WorkflowExecutor.IntegrationTests.Support
 {
     public class MinioDataSeeding
     {

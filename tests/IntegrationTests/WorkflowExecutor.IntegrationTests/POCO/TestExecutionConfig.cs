@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.POCO
+namespace Monai.Deploy.Common.IntegrationTests.POCO
 {
     internal static class TestExecutionConfig
     {

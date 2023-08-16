@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService.Logging
+namespace Monai.Deploy.Common.MonaiBackgroundService.Logging
 {
     public static partial class Log
     {

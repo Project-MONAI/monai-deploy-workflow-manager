@@ -21,16 +21,16 @@ using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.PayloadListener.Services;
-using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
-using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
+using Monai.Deploy.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.Common.Configuration;
+using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.Common.PayloadListener.Services;
+using Monai.Deploy.Common.PayloadListener.Validators;
+using Monai.Deploy.Common.WorkfowExecuter.Services;
 using Moq;
 using NUnit.Framework;
 
-namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Services
+namespace Monai.Deploy.Common.PayloadListener.Tests.Services
 {
     public class EventPayloadReceiverServiceTests
     {

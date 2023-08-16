@@ -16,7 +16,7 @@
 
 using k8s;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
+namespace Monai.Deploy.Common.TaskManager.Argo
 {
     public interface IKubernetesProvider
     {

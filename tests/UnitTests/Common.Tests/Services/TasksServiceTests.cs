@@ -16,14 +16,14 @@
 
 using FluentAssertions;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Common.Services;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
+using Monai.Deploy.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.Common.Miscellaneous.Services;
+using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.Common.Database.Interfaces;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Test.Services
+namespace Monai.Deploy.Common.Test.Services
 {
     public class TasksServiceTests
     {

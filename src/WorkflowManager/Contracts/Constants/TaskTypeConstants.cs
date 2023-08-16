@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Constants
+namespace Monai.Deploy.Common.Contracts.Constants
 {
     public static class TaskTypeConstants
     {

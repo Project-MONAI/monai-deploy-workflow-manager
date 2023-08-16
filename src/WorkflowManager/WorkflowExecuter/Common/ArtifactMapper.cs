@@ -17,11 +17,11 @@
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Logging;
+using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.Common.Database.Interfaces;
+using Monai.Deploy.Common.Logging;
 
-namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
+namespace Monai.Deploy.Common.WorkfowExecuter.Common
 {
     public class ArtifactMapper : IArtifactMapper
     {

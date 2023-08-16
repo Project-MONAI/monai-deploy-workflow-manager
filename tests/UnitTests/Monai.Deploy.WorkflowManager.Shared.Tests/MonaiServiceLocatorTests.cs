@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.Shared;
+using Monai.Deploy.Common.Miscellaneous;
 using Moq;
 
 namespace Monai.Deploy.InformaticsGateway.Test.Repositories

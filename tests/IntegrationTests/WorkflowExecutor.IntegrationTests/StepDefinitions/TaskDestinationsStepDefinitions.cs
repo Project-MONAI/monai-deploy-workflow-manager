@@ -15,12 +15,12 @@
  */
 
 using BoDi;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.Common.IntegrationTests.Support;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.Common.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class TaskDestinationsStepDefinitions

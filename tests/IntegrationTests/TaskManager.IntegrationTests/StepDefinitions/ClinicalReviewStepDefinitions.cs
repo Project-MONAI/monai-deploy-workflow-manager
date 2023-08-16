@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
+using Monai.Deploy.Common.TaskManager.IntegrationTests.Support;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.Common.TaskManager.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class ClinicalReviewStepDefinitions

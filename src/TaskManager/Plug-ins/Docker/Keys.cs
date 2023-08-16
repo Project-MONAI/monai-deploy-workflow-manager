@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
+namespace Monai.Deploy.Common.TaskManager.Docker
 {
     internal static class Keys
     {

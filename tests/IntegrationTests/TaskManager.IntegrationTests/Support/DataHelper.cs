@@ -15,12 +15,12 @@
  */
 
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events;
+using Monai.Deploy.Common.TaskManager.AideClinicalReview.Events;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
+namespace Monai.Deploy.Common.TaskManager.IntegrationTests.Support
 {
     public class DataHelper
     {

@@ -29,23 +29,23 @@ using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.Database.Repositories;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
-using Monai.Deploy.WorkflowManager.Services;
-using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
-using Monai.Deploy.WorkflowManager.Services.Http;
-using Monai.Deploy.WorkflowManager.Validators;
+using Monai.Deploy.Common.Configuration;
+using Monai.Deploy.Common.Database.Interfaces;
+using Monai.Deploy.Common.Database.Options;
+using Monai.Deploy.Common.Database.Repositories;
+using Monai.Deploy.Common.IntegrationTests.POCO;
+using Monai.Deploy.Common.Services.DataRetentionService;
+using Monai.Deploy.Common.Services.Http;
+using Monai.Deploy.Common.Validators;
 using Mongo.Migration.Startup.DotNetCore;
 using Mongo.Migration.Startup;
 using MongoDB.Driver;
 using NLog.Web;
-using Monai.Deploy.WorkflowManager.Shared.Services;
-using Monai.Deploy.WorkflowManager.Database;
+using Monai.Deploy.Common.Database;
+using Monai.Deploy.Common.Extensions;
+using Monai.Deploy.Common.Miscellaneous.Services;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
+namespace Monai.Deploy.Common.IntegrationTests.Support
 {
     public static class WorkflowExecutorStartup
     {

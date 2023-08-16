@@ -19,7 +19,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace Monai.Deploy.WorkflowManager.Test.SharedTest
+namespace Monai.Deploy.Common.Test.SharedTest
 {
     [ExcludeFromCodeCoverage]
     public static class VerifyLogExtension

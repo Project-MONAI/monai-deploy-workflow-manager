@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Constants
+namespace Monai.Deploy.Common.ConditionsResolver.Constants
 {
     public static class ParameterConstants
     {

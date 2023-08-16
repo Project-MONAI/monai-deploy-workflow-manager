@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-using Monai.Deploy.WorkflowManager.Shared.Filter;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Filter
+namespace Monai.Deploy.Common.Miscellaneous.Filter
 {
     public class TimeFilter : PaginationFilter
     {

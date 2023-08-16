@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using static Monai.Deploy.WorkflowManager.Shared.ValidationConstants;
+using static Monai.Deploy.Common.Miscellaneous.ValidationConstants;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
+namespace Monai.Deploy.Common.TaskManager.Argo.StaticValues
 {
     public static class ResourcesKeys
     {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Models
+namespace Monai.Deploy.Common.Contracts.Models
 {
     public enum Status
     {

@@ -16,13 +16,13 @@
 
 using System;
 using System.Collections.Generic;
-using Monai.Deploy.WorkflowManager.Contracts.Migrations;
+using Monai.Deploy.Common.Contracts.Migrations;
 using Mongo.Migration.Documents;
 using Mongo.Migration.Documents.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Models
+namespace Monai.Deploy.Common.Contracts.Models
 {
     [CollectionLocation("WorkflowInstances"), RuntimeVersion("1.0.0")]
     public class WorkflowInstance : IDocument

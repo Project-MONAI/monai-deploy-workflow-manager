@@ -16,7 +16,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Docker.Logging
+namespace Monai.Deploy.Common.TaskManager.Docker.Logging
 {
     public static partial class Log
     {

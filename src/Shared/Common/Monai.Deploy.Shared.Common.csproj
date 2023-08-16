@@ -18,7 +18,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>Monai.Deploy.WorkflowManager.Shared</RootNamespace>
+    <RootNamespace>Monai.Deploy.WorkflowManager.Common</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -53,7 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj" />
+    <ProjectReference Include="..\Configuration\Monai.Deploy.Shared.Configuration.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

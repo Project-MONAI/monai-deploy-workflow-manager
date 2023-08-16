@@ -23,14 +23,14 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Storage.Constants;
-using Monai.Deploy.WorkflowManager.Storage.Services;
+using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.Common.Storage.Constants;
+using Monai.Deploy.Common.Storage.Services;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Storage.Tests.Services
+namespace Monai.Deploy.Common.Storage.Tests.Services
 {
     public class DicomServiceTests
     {

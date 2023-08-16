@@ -16,13 +16,13 @@
 
 using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.TaskManager.Migrations;
+using Monai.Deploy.Common.TaskManager.Migrations;
 using Mongo.Migration.Documents;
 using Mongo.Migration.Documents.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
+namespace Monai.Deploy.Common.TaskManager.API.Models
 {
     [CollectionLocation("TaskDispatchEvents"), RuntimeVersion("1.0.0")]
     public class TaskDispatchEventInfo : IDocument

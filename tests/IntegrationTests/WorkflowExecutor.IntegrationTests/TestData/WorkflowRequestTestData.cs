@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
+using Monai.Deploy.Common.IntegrationTests.Models;
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
+namespace Monai.Deploy.Common.WorkflowExecutor.IntegrationTests.TestData
 {
     public class WorkflowRequestTestData
     {

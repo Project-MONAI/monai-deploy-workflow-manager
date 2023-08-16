@@ -17,7 +17,7 @@
 using Microsoft.Extensions.Configuration;
 using Monai.Deploy.Messaging.Configuration;
 
-namespace Monai.Deploy.WorkflowManager.Configuration
+namespace Monai.Deploy.Common.Configuration
 {
     public class MessageBrokerConfiguration : MessageBrokerServiceConfiguration
     {

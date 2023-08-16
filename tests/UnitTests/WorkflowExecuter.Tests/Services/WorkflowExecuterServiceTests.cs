@@ -21,9 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 using FluentAssertions;
-using FluentAssertions.Equivalency;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
@@ -31,22 +29,22 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.WorkflowManager.Common.Extensions;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Shared;
-using Monai.Deploy.WorkflowManager.Storage.Services;
-using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
-using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
+using Monai.Deploy.Common.Miscellaneous.Extensions;
+using Monai.Deploy.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.Common.ConditionsResolver.Parser;
+using Monai.Deploy.Common.Configuration;
+using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.Common.Database;
+using Monai.Deploy.Common.Database.Interfaces;
+using Monai.Deploy.Common.Storage.Services;
+using Monai.Deploy.Common.WorkfowExecuter.Common;
+using Monai.Deploy.Common.WorkfowExecuter.Services;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
+using Monai.Deploy.Common.Miscellaneous;
 
-namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
+namespace Monai.Deploy.Common.WorkflowExecuter.Tests.Services
 {
     public class WorkflowExecuterServiceTests
     {

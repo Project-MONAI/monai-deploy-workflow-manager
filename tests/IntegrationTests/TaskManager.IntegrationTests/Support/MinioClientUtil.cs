@@ -16,11 +16,11 @@
 
 using System.Reactive.Linq;
 using Minio;
-using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
+using Monai.Deploy.Common.TaskManager.IntegrationTests.POCO;
 using Polly;
 using Polly.Retry;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
+namespace Monai.Deploy.Common.TaskManager.IntegrationTests.Support
 {
 #pragma warning disable CS0618 // Type or member is obsolete
     public class MinioClientUtil

@@ -17,9 +17,9 @@
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.TaskManager.API;
+using Monai.Deploy.Common.TaskManager.API;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin.Repositories
+namespace Monai.Deploy.Common.TaskManager.TestPlugin.Repositories
 {
     public sealed class TestPluginRepository : MetadataRepositoryBase
     {

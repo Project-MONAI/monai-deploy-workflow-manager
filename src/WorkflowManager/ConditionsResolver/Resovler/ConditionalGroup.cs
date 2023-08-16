@@ -16,9 +16,9 @@
 
 using System.Text.RegularExpressions;
 using Ardalis.GuardClauses;
-using Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions;
+using Monai.Deploy.Common.ConditionsResolver.Extensions;
 
-namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
+namespace Monai.Deploy.Common.ConditionsResolver.Resolver
 {
     public class ConditionalGroup
     {

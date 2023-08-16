@@ -22,7 +22,7 @@ using Moq;
 
 #pragma warning disable CS8620 // Disable "CS8620
 
-namespace Monai.Deploy.WorkflowManager.SharedTest
+namespace Monai.Deploy.Common.SharedTest
 {
     [ExcludeFromCodeCoverage]
     public static class VerifyLogExtension

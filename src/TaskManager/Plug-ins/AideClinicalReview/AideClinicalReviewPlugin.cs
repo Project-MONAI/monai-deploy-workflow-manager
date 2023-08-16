@@ -21,14 +21,14 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Shared;
-using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events;
-using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Logging;
-using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Models;
-using Monai.Deploy.WorkflowManager.TaskManager.API;
+using Monai.Deploy.Common.Configuration;
+using Monai.Deploy.Common.Miscellaneous;
+using Monai.Deploy.Common.TaskManager.AideClinicalReview.Events;
+using Monai.Deploy.Common.TaskManager.AideClinicalReview.Logging;
+using Monai.Deploy.Common.TaskManager.AideClinicalReview.Models;
+using Monai.Deploy.Common.TaskManager.API;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
+namespace Monai.Deploy.Common.TaskManager.AideClinicalReview
 {
     public class AideClinicalReviewPlugin : TaskPluginBase
     {

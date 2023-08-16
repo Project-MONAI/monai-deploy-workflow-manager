@@ -26,19 +26,19 @@ using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.S3Policy.Policies;
 using Monai.Deploy.TaskManager.API;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Shared;
-using Monai.Deploy.WorkflowManager.TaskManager.API;
-using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
-using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
-using Monai.Deploy.WorkflowManager.TaskManager.Logging;
+using Monai.Deploy.Common.Configuration;
+using Monai.Deploy.Common.Miscellaneous;
+using Monai.Deploy.Common.TaskManager.API;
+using Monai.Deploy.Common.TaskManager.API.Extensions;
+using Monai.Deploy.Common.TaskManager.API.Models;
+using Monai.Deploy.Common.TaskManager.Logging;
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8604 // Possible null reference argument.
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning disable SA1600 // Elements should be documented
 #pragma warning disable SA1201 // Elements should be documented
-namespace Monai.Deploy.WorkflowManager.TaskManager
+namespace Monai.Deploy.Common.TaskManager
 {
     public class TaskManager : IHostedService, IDisposable, IMonaiService
     {

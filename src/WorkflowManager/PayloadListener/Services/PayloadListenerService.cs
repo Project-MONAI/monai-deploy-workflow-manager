@@ -20,11 +20,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.Shared;
+using Monai.Deploy.Common.Configuration;
+using Monai.Deploy.Common.Logging;
+using Monai.Deploy.Common.Miscellaneous;
 
-namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
+namespace Monai.Deploy.Common.PayloadListener.Services
 {
     public class PayloadListenerService : IHostedService, IMonaiService, IDisposable
     {

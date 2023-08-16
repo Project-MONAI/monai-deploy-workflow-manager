@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,36 +14,38 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.Shared
+namespace Monai.Deploy.Common.Miscellaneous
 {
-    /// <summary>
-    /// Defines the state of a running service.
-    /// </summary>
-    public enum ServiceStatus
+    public static class PatientKeys
     {
         /// <summary>
-        /// Unknown - default, during start up.
+        /// Key for the patient id.
         /// </summary>
-        Unknown,
+        public static readonly string PatientId = "patient_id";
 
         /// <summary>
-        /// Service is stopped.
+        /// Key for the patient name.
         /// </summary>
-        Stopped,
+        public static readonly string PatientName = "patient_name";
 
         /// <summary>
-        /// Service is running.
+        /// Key for the patient sex.
         /// </summary>
-        Running,
+        public static readonly string PatientSex = "patient_sex";
 
         /// <summary>
-        /// Service has been cancelled by a cancellation token.
+        /// Key for the patient dob.
         /// </summary>
-        Cancelled,
+        public static readonly string PatientDob = "patient_dob";
 
         /// <summary>
-        /// Service has been disposed by the host container.
+        /// Key for the patient age.
         /// </summary>
-        Disposed,
+        public static readonly string PatientAge = "patient_age";
+
+        /// <summary>
+        /// Key for the patient hospital id.
+        /// </summary>
+        public static readonly string PatientHospitalId = "patient_hospital_id";
     }
 }

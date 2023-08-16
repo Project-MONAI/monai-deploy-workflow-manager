@@ -26,7 +26,7 @@ using Moq.Protected;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
+namespace Monai.Deploy.Common.TaskManager.Argo.Tests
 {
     public class ArgoProviderTest
     {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO
+namespace Monai.Deploy.Common.TaskManager.IntegrationTests.POCO
 {
     internal class HealthCheckResponse
     {

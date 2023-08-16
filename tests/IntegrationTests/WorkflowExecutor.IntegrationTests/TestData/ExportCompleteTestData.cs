@@ -16,7 +16,7 @@
 
 using Monai.Deploy.Messaging.Events;
 
-namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
+namespace Monai.Deploy.Common.WorkflowExecutor.IntegrationTests.TestData
 {
     public class ExportCompleteTestData
     {

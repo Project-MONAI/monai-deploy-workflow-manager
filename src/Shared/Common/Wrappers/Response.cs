@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.Shared.Wrappers
+namespace Monai.Deploy.Common.Miscellaneous.Wrappers
 {
     /// <summary>
     /// Response object.

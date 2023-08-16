@@ -66,7 +66,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManage
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{37A19144-CEA5-47A2-9FFD-22C522E8B895}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Configuration", "Shared\Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj", "{DD11E3E8-1D6F-47F9-98A7-5D2CC7A53C43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.Shared.Configuration", "Shared\Configuration\Monai.Deploy.Shared.Configuration.csproj", "{DD11E3E8-1D6F-47F9-98A7-5D2CC7A53C43}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.MonaiBackgroundService", "WorkflowManager\MonaiBackgroundService\Monai.Deploy.WorkflowManager.MonaiBackgroundService.csproj", "{93F4FE97-120C-44DC-9B21-69FB7EAB5846}"
 EndProject
@@ -75,8 +75,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.TaskManager.Docker", "TaskManager\Plug-ins\Docker\Monai.Deploy.WorkflowManager.TaskManager.Docker.csproj", "{47C31FB9-C862-4770-83B6-E2DDF260CC67}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.TaskManager.Docker.Tests", "..\tests\UnitTests\TaskManager.Docker.Tests\Monai.Deploy.WorkflowManager.TaskManager.Docker.Tests.csproj", "{BF6569A1-1A5A-4358-9C02-1A6A5F0FBFD9}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Shared", "Shared\Shared\Monai.Deploy.WorkflowManager.Shared.csproj", "{81E3F943-B992-4C81-AA09-A17C05081236}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.Shared.Tests", "..\tests\UnitTests\Monai.Deploy.WorkflowManager.Shared.Tests\Monai.Deploy.WorkflowManager.Shared.Tests.csproj", "{C853A9E3-C53D-4B1A-BFDA-228689A8C94C}"
 EndProject
@@ -89,6 +87,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.TaskManager.Email", "TaskManager\Plug-ins\Email\Monai.Deploy.WorkflowManager.TaskManager.Email.csproj", "{72DFDA92-0689-41D7-B3F1-9D41D5AA276E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.TaskManager.Email.Tests", "..\tests\UnitTests\TaskManager.Email.Tests\Monai.Deploy.WorkflowManager.TaskManager.Email.Tests.csproj", "{0F0D6868-366E-47FB-B059-F1176562CC15}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.Shared.Common", "Shared\Common\Monai.Deploy.Shared.Common.csproj", "{8BB67FED-E81A-4EC9-9167-C9F313D96C12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -224,10 +224,6 @@ Global
 		{BF6569A1-1A5A-4358-9C02-1A6A5F0FBFD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF6569A1-1A5A-4358-9C02-1A6A5F0FBFD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF6569A1-1A5A-4358-9C02-1A6A5F0FBFD9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{81E3F943-B992-4C81-AA09-A17C05081236}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{81E3F943-B992-4C81-AA09-A17C05081236}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{81E3F943-B992-4C81-AA09-A17C05081236}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{81E3F943-B992-4C81-AA09-A17C05081236}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C853A9E3-C53D-4B1A-BFDA-228689A8C94C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C853A9E3-C53D-4B1A-BFDA-228689A8C94C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C853A9E3-C53D-4B1A-BFDA-228689A8C94C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -252,6 +248,10 @@ Global
 		{0F0D6868-366E-47FB-B059-F1176562CC15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F0D6868-366E-47FB-B059-F1176562CC15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F0D6868-366E-47FB-B059-F1176562CC15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BB67FED-E81A-4EC9-9167-C9F313D96C12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BB67FED-E81A-4EC9-9167-C9F313D96C12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BB67FED-E81A-4EC9-9167-C9F313D96C12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BB67FED-E81A-4EC9-9167-C9F313D96C12}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -290,13 +290,13 @@ Global
 		{EFECF826-B036-4689-B223-D791CD2C0F10} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{47C31FB9-C862-4770-83B6-E2DDF260CC67} = {541C5347-5D7D-44B7-95D3-B6FB3D9EB955}
 		{BF6569A1-1A5A-4358-9C02-1A6A5F0FBFD9} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
-		{81E3F943-B992-4C81-AA09-A17C05081236} = {37A19144-CEA5-47A2-9FFD-22C522E8B895}
 		{C853A9E3-C53D-4B1A-BFDA-228689A8C94C} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{75A4AEDA-0386-4B2D-9DBA-BC9AE733660E} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{526FF10C-1C7F-4C26-8E8A-D7ACD65F5467} = {AC5B198A-C3F2-4AD2-B532-E71B4630BDD5}
 		{0D40F7D6-3747-4280-8EB3-9F3A18AC1125} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
 		{72DFDA92-0689-41D7-B3F1-9D41D5AA276E} = {541C5347-5D7D-44B7-95D3-B6FB3D9EB955}
 		{0F0D6868-366E-47FB-B059-F1176562CC15} = {71DDEE7B-E213-4E39-A7F4-4646783A27F7}
+		{8BB67FED-E81A-4EC9-9167-C9F313D96C12} = {37A19144-CEA5-47A2-9FFD-22C522E8B895}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC0D56C8-D8CB-45CE-B528-F3DCF86D63ED}

@@ -16,9 +16,9 @@
 
 using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.Common.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
+namespace Monai.Deploy.Common.PayloadListener.Extensions
 {
     public static class ValidationExtensions
     {

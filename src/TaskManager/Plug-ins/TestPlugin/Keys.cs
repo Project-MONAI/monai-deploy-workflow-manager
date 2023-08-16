@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin
+namespace Monai.Deploy.Common.TaskManager.TestPlugin
 {
     internal static class Keys
     {

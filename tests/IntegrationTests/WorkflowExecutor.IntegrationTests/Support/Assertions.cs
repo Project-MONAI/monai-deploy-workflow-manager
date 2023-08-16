@@ -17,12 +17,12 @@
 using System.Web;
 using BoDi;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
+using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.Common.IntegrationTests.Models;
+using Monai.Deploy.Common.IntegrationTests.POCO;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
+namespace Monai.Deploy.Common.IntegrationTests.Support
 {
     public class Assertions
     {
