@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Shared\Common\Monai.Deploy.Shared.Common.csproj" />
+    <ProjectReference Include="..\..\..\src\Common\Miscellaneous\Monai.Deploy.Common.Miscellaneous.csproj" />
     <ProjectReference Include="..\..\..\src\TaskManager\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />
     <ProjectReference Include="..\..\..\src\TaskManager\TaskManager\Monai.Deploy.WorkflowManager.TaskManager.csproj" />
     <ProjectReference Include="..\..\..\src\WorkflowManager\Contracts\Monai.Deploy.WorkflowManager.Contracts.csproj" />

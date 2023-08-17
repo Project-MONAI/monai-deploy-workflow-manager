@@ -1192,20 +1192,20 @@
         "resolved": "13.0.1",
         "contentHash": "E1e/xFXB+Cbn7pLVlr+8E3nemEitIReVgmAMMMveADvZvXGuSGHP+1Cg6oA+SUfwXHfaXLQn4STCaPKtdIJkWA=="
       },
-      "monai.deploy.shared.common": {
-        "type": "Project",
-        "dependencies": {
-          "Ardalis.GuardClauses": "[4.1.1, )",
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.20, )",
-          "Monai.Deploy.Shared.Configuration": "[1.0.0, )",
-          "fo-dicom": "[5.0.3, )"
-        }
-      },
-      "monai.deploy.shared.configuration": {
+      "monai.deploy.common.configuration": {
         "type": "Project",
         "dependencies": {
           "Monai.Deploy.Messaging": "[0.1.24, )",
           "Monai.Deploy.Storage": "[0.2.15, )"
+        }
+      },
+      "monai.deploy.common.miscellaneous": {
+        "type": "Project",
+        "dependencies": {
+          "Ardalis.GuardClauses": "[4.1.1, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.20, )",
+          "Monai.Deploy.Common.Configuration": "[1.0.0, )",
+          "fo-dicom": "[5.0.3, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.api": {

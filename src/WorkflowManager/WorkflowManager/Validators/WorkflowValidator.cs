@@ -71,7 +71,6 @@ namespace Monai.Deploy.Common.Validators
         /// <param name="options">options.</param>
 #pragma warning disable SA1201 // Elements should appear in the correct order
         public WorkflowValidator(
-
             IWorkflowService workflowService,
             IInformaticsGatewayService informaticsGatewayService,
             ILogger<WorkflowValidator> logger,
@@ -82,7 +81,9 @@ namespace Monai.Deploy.Common.Validators
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
+
 #pragma warning restore SA1201 // Elements should appear in the correct order
+
         /// <summary>
         /// Gets the original name, used for checking for duplicates, if OrignalName is empty it will be determined as a create
         /// workflow attempt and check for duplicates or if this is not equal to workflow template it will

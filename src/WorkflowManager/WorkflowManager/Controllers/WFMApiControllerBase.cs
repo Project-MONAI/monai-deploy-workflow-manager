@@ -17,7 +17,6 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.Shared.ControllersShared;
 using Monai.Deploy.Common.Configuration;
 
 namespace Monai.Deploy.Common.ControllersShared

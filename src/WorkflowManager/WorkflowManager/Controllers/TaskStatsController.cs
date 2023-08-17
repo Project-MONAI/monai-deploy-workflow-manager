@@ -22,7 +22,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Common.Configuration;
 using Monai.Deploy.Common.Contracts.Models;
 using Monai.Deploy.Common.Database;
@@ -30,7 +29,7 @@ using Monai.Deploy.Common.Logging;
 using Monai.Deploy.Common.Miscellaneous.Filter;
 using Monai.Deploy.Common.Miscellaneous.Services;
 using Monai.Deploy.Common.Miscellaneous.Wrappers;
-using Monai.Deploy.Shared.ControllersShared;
+using Monai.Deploy.Messaging.Events;
 
 namespace Monai.Deploy.Common.ControllersShared
 {

@@ -53,7 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Configuration\Monai.Deploy.Shared.Configuration.csproj" />
+    <ProjectReference Include="..\Configuration\Monai.Deploy.Common.Configuration.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

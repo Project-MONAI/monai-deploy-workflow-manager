@@ -23,7 +23,7 @@ using Monai.Deploy.Common.Configuration;
 using Monai.Deploy.Common.Miscellaneous.Filter;
 using Monai.Deploy.Common.Miscellaneous.Services;
 
-namespace Monai.Deploy.Shared.ControllersShared
+namespace Monai.Deploy.Common.ControllersShared
 {
     /// <summary>
     /// Base Api Controller.
