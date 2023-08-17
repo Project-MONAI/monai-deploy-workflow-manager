@@ -16,12 +16,12 @@
 
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Common.TaskManager.API.Models;
-using Monai.Deploy.Common.TaskManager.Database;
-using Monai.Deploy.Common.TaskManager.Logging;
+using Monai.Deploy.TaskManager.API.Models;
+using Monai.Deploy.TaskManager.Database;
+using Monai.Deploy.TaskManager.Logging;
 using Monai.Deploy.TaskManager.API;
 
-namespace Monai.Deploy.Common.TaskManager.Services
+namespace Monai.Deploy.TaskManager.Services
 {
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8604 // Possible null reference argument.

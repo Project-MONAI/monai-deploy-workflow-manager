@@ -27,7 +27,7 @@ using Monai.Deploy.Common.Miscellaneous;
 using Monai.Deploy.Security.Authentication.Extensions;
 using Newtonsoft.Json.Converters;
 
-namespace Monai.Deploy.Common.TaskManager.Services.Http
+namespace Monai.Deploy.TaskManager.Services.Http
 {
     /// <summary>
     /// Http Api Endpoint Startup Class.

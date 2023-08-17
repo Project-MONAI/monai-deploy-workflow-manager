@@ -17,7 +17,7 @@
 using System.Diagnostics;
 using System.Runtime.Serialization;
 
-namespace Monai.Deploy.Common.TaskManager.API
+namespace Monai.Deploy.TaskManager.API
 {
     [Serializable, DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
     public class InvalidTaskException : Exception

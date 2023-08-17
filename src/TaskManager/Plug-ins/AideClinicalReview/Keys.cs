@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.Common.TaskManager.AideClinicalReview
+namespace Monai.Deploy.TaskManager.AideClinicalReview
 {
     public class Keys
     {

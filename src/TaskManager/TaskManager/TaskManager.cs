@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Reflection;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,10 +22,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Common.Configuration;
 using Monai.Deploy.Common.Miscellaneous;
-using Monai.Deploy.Common.TaskManager.API;
-using Monai.Deploy.Common.TaskManager.API.Extensions;
-using Monai.Deploy.Common.TaskManager.API.Models;
-using Monai.Deploy.Common.TaskManager.Logging;
+using Monai.Deploy.TaskManager.API;
+using Monai.Deploy.TaskManager.API.Extensions;
+using Monai.Deploy.TaskManager.API.Models;
+using Monai.Deploy.TaskManager.Logging;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
@@ -38,7 +39,7 @@ using Monai.Deploy.TaskManager.API;
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning disable SA1600 // Elements should be documented
 #pragma warning disable SA1201 // Elements should be documented
-namespace Monai.Deploy.Common.TaskManager
+namespace Monai.Deploy.TaskManager
 {
     public class TaskManager : IHostedService, IDisposable, IMonaiService
     {
@@ -463,6 +464,9 @@ namespace Monai.Deploy.Common.TaskManager
             }
             catch (Exception ex)
             {
+                var ass = Assembly.Load("Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview");
+                var types = ass.GetTypes().ToArray();
+
                 _logger.UnsupportedRunner(pluginAssembly, ex);
                 await HandleMessageExceptionTaskUpdate(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, ex.Message, false).ConfigureAwait(false);
                 taskRunner?.Dispose();

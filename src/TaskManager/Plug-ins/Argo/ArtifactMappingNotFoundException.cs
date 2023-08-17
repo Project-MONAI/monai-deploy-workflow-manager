@@ -16,7 +16,7 @@
 
 using System.Runtime.Serialization;
 
-namespace Monai.Deploy.Common.TaskManager.Argo
+namespace Monai.Deploy.TaskManager.Argo
 {
     [Serializable]
     public class ArtifactMappingNotFoundException : Exception

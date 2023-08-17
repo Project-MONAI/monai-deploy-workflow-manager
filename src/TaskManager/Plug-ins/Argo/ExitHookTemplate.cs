@@ -17,10 +17,10 @@
 using Argo;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Common.Configuration;
-using Monai.Deploy.Common.TaskManager.Argo.StaticValues;
+using Monai.Deploy.TaskManager.Argo.StaticValues;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.Common.TaskManager.Argo
+namespace Monai.Deploy.TaskManager.Argo
 {
     internal sealed class ExitHookTemplate
     {

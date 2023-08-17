@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.Common.TaskManager
+namespace Monai.Deploy.TaskManager
 {
     internal static class Strings
     {

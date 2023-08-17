@@ -23,7 +23,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Common.Configuration;
 
-namespace Monai.Deploy.Common.TaskManager.Argo.Controllers
+namespace Monai.Deploy.TaskManager.Argo.Controllers
 {
     [ApiController]
     [Authorize]

@@ -179,6 +179,11 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         {
             Host?.StopAsync();
         }
+        [AfterTestRun(Order = 2)]
+        public static void RemoveQueues()
+        {
+            RabbitConnectionFactory.DeleteAllQueues();
+        }
     }
 }
 #pragma warning restore CS8602 // Dereference of a possibly null reference.

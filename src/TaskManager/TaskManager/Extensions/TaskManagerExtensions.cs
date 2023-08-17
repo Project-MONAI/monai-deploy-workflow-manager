@@ -20,15 +20,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Monai.Deploy.Common.Miscellaneous;
-using Monai.Deploy.Common.TaskManager.Argo;
-using Monai.Deploy.Common.TaskManager.Docker;
-using Monai.Deploy.Common.TaskManager.Services;
+using Monai.Deploy.TaskManager.Argo;
+using Monai.Deploy.TaskManager.Docker;
+using Monai.Deploy.TaskManager.Services;
 using Monai.Deploy.Security.Authentication.Configurations;
 using Monai.Deploy.Security.Authentication.Extensions;
 using Monai.Deploy.TaskManager.API;
 using NLog;
 
-namespace Monai.Deploy.Common.TaskManager.Extensions
+namespace Monai.Deploy.TaskManager.Extensions
 {
     /// <summary>
     ///  Sets up task manager service collection.

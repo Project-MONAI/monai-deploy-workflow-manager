@@ -21,11 +21,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.Common.TaskManager.AideClinicalReview.Repositories;
+using Monai.Deploy.TaskManager.AideClinicalReview.Repositories;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.Common.TaskManager.AideClinicalReview.Tests.Repositories
+namespace Monai.Deploy.TaskManager.AideClinicalReview.Tests.Repositories
 {
     public class AideClinicalReviewMetadataRepositoryTests
     {

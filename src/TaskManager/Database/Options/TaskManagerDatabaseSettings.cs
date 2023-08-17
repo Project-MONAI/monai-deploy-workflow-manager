@@ -16,7 +16,7 @@
 
 using Microsoft.Extensions.Configuration;
 
-namespace Monai.Deploy.Common.TaskManager.Database.Options
+namespace Monai.Deploy.TaskManager.Database.Options
 {
     public class TaskManagerDatabaseSettings
     {

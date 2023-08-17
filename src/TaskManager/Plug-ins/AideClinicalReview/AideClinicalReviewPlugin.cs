@@ -23,12 +23,12 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Common.Configuration;
 using Monai.Deploy.Common.Miscellaneous;
-using Monai.Deploy.Common.TaskManager.AideClinicalReview.Events;
-using Monai.Deploy.Common.TaskManager.AideClinicalReview.Logging;
-using Monai.Deploy.Common.TaskManager.AideClinicalReview.Models;
-using Monai.Deploy.Common.TaskManager.API;
+using Monai.Deploy.TaskManager.AideClinicalReview.Events;
+using Monai.Deploy.TaskManager.AideClinicalReview.Logging;
+using Monai.Deploy.TaskManager.AideClinicalReview.Models;
+using Monai.Deploy.TaskManager.API;
 
-namespace Monai.Deploy.Common.TaskManager.AideClinicalReview
+namespace Monai.Deploy.TaskManager.AideClinicalReview
 {
     public class AideClinicalReviewPlugin : TaskPluginBase
     {

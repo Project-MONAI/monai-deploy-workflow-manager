@@ -17,6 +17,7 @@
 using System.Text;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 
 namespace Monai.Deploy.Common.IntegrationTests.Support
 {
@@ -24,11 +25,31 @@ namespace Monai.Deploy.Common.IntegrationTests.Support
     {
         public RabbitConsumer(IModel channel, string exchange, string routingKey)
         {
+            var arguments = new Dictionary<string, object>()
+                {
+                    { "x-queue-type", "quorum" },
+                    { "x-delivery-limit", Deliverylimit },
+                    { "x-dead-letter-exchange", DeadLetterExchange }
+                };
+
+            var deadLetterQueue = $"{RoutingKey}-dead-letter";
+
+            var deadLetterExists = QueueExists(deadLetterQueue);
+            if (deadLetterExists.exists == false)
+            {
+                channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
+            }
+
             Exchange = exchange;
             RoutingKey = routingKey;
             Channel = channel;
-            Queue = Channel.QueueDeclare(queue: routingKey, durable: true, exclusive: false, autoDelete: false);
+            Queue = Channel.QueueDeclare(queue: routingKey, durable: true, exclusive: false, autoDelete: false, arguments);
             Channel.QueueBind(Queue.QueueName, Exchange, RoutingKey);
+            if (!string.IsNullOrEmpty(deadLetterQueue))
+            {
+                channel.QueueBind(deadLetterQueue, DeadLetterExchange, RoutingKey);
+            }
+
             Channel.ExchangeDeclare(Exchange, ExchangeType.Topic, durable: true);
         }
 
@@ -39,6 +60,10 @@ namespace Monai.Deploy.Common.IntegrationTests.Support
         private string RoutingKey { get; set; }
 
         private IModel Channel { get; set; }
+
+        private string DeadLetterExchange { get; set; } = "monaideploy-dead-letter";
+
+        private int Deliverylimit { get; set; } = 5;
 
         public T? GetMessage<T>()
         {
@@ -59,6 +84,28 @@ namespace Monai.Deploy.Common.IntegrationTests.Support
         public void CloseConnection()
         {
             Channel.Close();
+        }
+        private (bool exists, bool accessable) QueueExists(string queueName)
+        {
+            var testChannel = RabbitConnectionFactory.GetRabbitConnection();
+
+            try
+            {
+                var testRun = testChannel!.QueueDeclarePassive(queue: queueName);
+            }
+            catch (OperationInterruptedException operationInterruptedException)
+            {
+                ///RabbitMQ node that hosts the previously created dead-letter queue is unavailable
+                if (operationInterruptedException.Message.Contains("down or inaccessible"))
+                {
+                    return (true, false);
+                }
+                else
+                {
+                    return (false, true);
+                }
+            }
+            return (true, true);
         }
     }
 }

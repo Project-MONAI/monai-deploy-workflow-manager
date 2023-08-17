@@ -29,8 +29,8 @@ using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Common.SharedTest;
-using Monai.Deploy.Common.TaskManager.API;
-using Monai.Deploy.Common.TaskManager.Argo.StaticValues;
+using Monai.Deploy.TaskManager.API;
+using Monai.Deploy.TaskManager.Argo.StaticValues;
 using Moq;
 using Moq.Language.Flow;
 using Newtonsoft.Json;
@@ -38,7 +38,7 @@ using Xunit;
 using YamlDotNet.Serialization;
 using Options = Microsoft.Extensions.Options.Options;
 
-namespace Monai.Deploy.Common.TaskManager.Argo.Tests;
+namespace Monai.Deploy.TaskManager.Argo.Tests;
 
 public class ArgoPluginTest : ArgoPluginTestBase
 {

@@ -22,10 +22,10 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.Common.Configuration;
-using Monai.Deploy.Common.TaskManager.API.Models;
+using Monai.Deploy.TaskManager.API.Models;
 using Moq;
 
-namespace Monai.Deploy.Common.TaskManager.Argo.Tests
+namespace Monai.Deploy.TaskManager.Argo.Tests
 {
     public class ArgoPluginTestBase
     {

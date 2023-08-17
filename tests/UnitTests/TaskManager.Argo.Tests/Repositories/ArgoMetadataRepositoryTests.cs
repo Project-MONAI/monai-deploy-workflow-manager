@@ -21,11 +21,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.Common.TaskManager.Argo.Repositories;
+using Monai.Deploy.TaskManager.Argo.Repositories;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.Common.TaskManager.Argo.Tests.Repositories
+namespace Monai.Deploy.TaskManager.Argo.Tests.Repositories
 {
     public class ArgoMetadataRepositoryTests
     {

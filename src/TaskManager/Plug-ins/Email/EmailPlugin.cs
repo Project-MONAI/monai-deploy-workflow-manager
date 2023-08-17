@@ -24,12 +24,12 @@ using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Common.Configuration;
-using Monai.Deploy.Common.TaskManager.API;
+using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.Common.Miscellaneous;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Monai.Deploy.Common.TaskManager.Email
+namespace Monai.Deploy.TaskManager.Email
 {
     public class EmailPlugin : TaskPluginBase
     {
@@ -162,8 +162,17 @@ namespace Monai.Deploy.Common.TaskManager.Email
                 _logger.NoMetaDataRequested();
                 return metadata;
             }
+            List<VirtualFileInfo> allFiles;
+            try
+            {
+                allFiles = (List<VirtualFileInfo>)await _storageService.ListObjectsAsync(bucketName, path, true);
+            }
+            catch (Exception ex)
+            {
+                var mess = ex.Message;
+                throw;
+            }
 
-            var allFiles = await _storageService.ListObjectsAsync(bucketName, path, true);
             foreach (var file in allFiles)
             {
                 if (file.FilePath.EndsWith(".json", StringComparison.InvariantCultureIgnoreCase)) continue;

@@ -17,7 +17,7 @@
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 
-namespace Monai.Deploy.Common.TaskManager.Logging
+namespace Monai.Deploy.TaskManager.Logging
 {
     public static partial class Log
     {

@@ -16,10 +16,10 @@
 
 using System.ComponentModel.DataAnnotations;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.Common.TaskManager.AideClinicalReview.Models;
+using Monai.Deploy.TaskManager.AideClinicalReview.Models;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.Common.TaskManager.AideClinicalReview.Events
+namespace Monai.Deploy.TaskManager.AideClinicalReview.Events
 {
     public class ClinicalReviewRequestEvent : EventBase
     {

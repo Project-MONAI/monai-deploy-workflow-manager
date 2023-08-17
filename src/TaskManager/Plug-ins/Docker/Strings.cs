@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.Common.TaskManager.Docker
+namespace Monai.Deploy.TaskManager.Docker
 {
     internal static class Strings
     {

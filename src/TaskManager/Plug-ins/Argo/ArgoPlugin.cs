@@ -26,15 +26,15 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.Common.Configuration;
 using Monai.Deploy.Common.Miscellaneous;
-using Monai.Deploy.Common.TaskManager.API;
-using Monai.Deploy.Common.TaskManager.API.Extensions;
-using Monai.Deploy.Common.TaskManager.API.Models;
-using Monai.Deploy.Common.TaskManager.Argo.Logging;
-using Monai.Deploy.Common.TaskManager.Argo.StaticValues;
+using Monai.Deploy.TaskManager.API;
+using Monai.Deploy.TaskManager.API.Extensions;
+using Monai.Deploy.TaskManager.API.Models;
+using Monai.Deploy.TaskManager.Argo.Logging;
+using Monai.Deploy.TaskManager.Argo.StaticValues;
 using Newtonsoft.Json;
 
 [assembly: PlugIn()]
-namespace Monai.Deploy.Common.TaskManager.Argo
+namespace Monai.Deploy.TaskManager.Argo
 {
     public sealed class ArgoPlugin : TaskPluginBase, IAsyncDisposable
     {

@@ -16,7 +16,7 @@
 
 using Monai.Deploy.Messaging.Events;
 
-namespace Monai.Deploy.Common.TaskManager.IntegrationTests
+namespace Monai.Deploy.TaskManager.IntegrationTests
 {
     public class TaskCallbackTestData
     {

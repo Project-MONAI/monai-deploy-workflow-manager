@@ -22,9 +22,9 @@ using Argo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Common.TaskManager.Argo;
-using Monai.Deploy.Common.TaskManager.Argo.Controllers;
-using Monai.Deploy.Common.TaskManager.Argo.Tests;
+using Monai.Deploy.TaskManager.Argo;
+using Monai.Deploy.TaskManager.Argo.Controllers;
+using Monai.Deploy.TaskManager.Argo.Tests;
 using Moq;
 using Xunit;
 

@@ -17,7 +17,7 @@
 using Argo;
 
 
-namespace Monai.Deploy.Common.TaskManager.Argo
+namespace Monai.Deploy.TaskManager.Argo
 {
     public interface IArgoClient
     {

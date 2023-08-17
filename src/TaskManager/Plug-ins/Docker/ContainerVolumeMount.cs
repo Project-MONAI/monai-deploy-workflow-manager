@@ -16,7 +16,7 @@
 
 using Ardalis.GuardClauses;
 
-namespace Monai.Deploy.Common.TaskManager.Docker
+namespace Monai.Deploy.TaskManager.Docker
 {
     public class ContainerVolumeMount
     {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.Common.TaskManager.Argo.StaticValues
+namespace Monai.Deploy.TaskManager.Argo.StaticValues
 {
     internal static class Keys
     {

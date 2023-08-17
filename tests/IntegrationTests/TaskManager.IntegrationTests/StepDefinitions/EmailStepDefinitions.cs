@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.Common.TaskManager.IntegrationTests.Support;
+using Monai.Deploy.TaskManager.IntegrationTests.Support;
 
-namespace Monai.Deploy.Common.TaskManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.TaskManager.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class EmailStepDefinitions

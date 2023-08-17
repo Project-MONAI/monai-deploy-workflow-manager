@@ -22,10 +22,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.Common.TaskManager.API;
-using Monai.Deploy.Common.TaskManager.Docker.Logging;
+using Monai.Deploy.TaskManager.API;
+using Monai.Deploy.TaskManager.Docker.Logging;
 
-namespace Monai.Deploy.Common.TaskManager.Docker
+namespace Monai.Deploy.TaskManager.Docker
 {
     public class DockerPlugin : TaskPluginBase
     {

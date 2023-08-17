@@ -16,12 +16,12 @@
 
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
-using Monai.Deploy.Common.TaskManager.IntegrationTests.POCO;
-using Monai.Deploy.Common.TaskManager.IntegrationTests.Support;
+using Monai.Deploy.TaskManager.IntegrationTests.POCO;
+using Monai.Deploy.TaskManager.IntegrationTests.Support;
 using Polly;
 using Polly.Retry;
 
-namespace Monai.Deploy.Common.TaskManager.IntegrationTests
+namespace Monai.Deploy.TaskManager.IntegrationTests
 {
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8604 // Possible null reference argument.

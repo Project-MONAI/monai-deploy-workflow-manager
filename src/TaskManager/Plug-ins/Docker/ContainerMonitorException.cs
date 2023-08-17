@@ -16,7 +16,7 @@
 
 using System.Runtime.Serialization;
 
-namespace Monai.Deploy.Common.TaskManager.Docker
+namespace Monai.Deploy.TaskManager.Docker
 {
     [Serializable]
     internal class ContainerMonitorException : Exception

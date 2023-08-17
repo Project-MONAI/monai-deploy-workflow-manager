@@ -16,7 +16,7 @@
 
 using static Monai.Deploy.Common.Miscellaneous.ValidationConstants;
 
-namespace Monai.Deploy.Common.TaskManager.Argo.StaticValues
+namespace Monai.Deploy.TaskManager.Argo.StaticValues
 {
     public static class ResourcesKeys
     {

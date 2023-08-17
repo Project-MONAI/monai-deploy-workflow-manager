@@ -16,7 +16,7 @@
 
 using Monai.Deploy.Messaging.Events;
 
-namespace Monai.Deploy.Common.TaskManager.API
+namespace Monai.Deploy.TaskManager.API
 {
     public interface ITaskPlugin : IDisposable
     {

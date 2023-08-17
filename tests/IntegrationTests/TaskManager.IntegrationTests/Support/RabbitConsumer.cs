@@ -18,7 +18,7 @@ using System.Text;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 
-namespace Monai.Deploy.Common.TaskManager.IntegrationTests.Support
+namespace Monai.Deploy.TaskManager.IntegrationTests.Support
 {
     public class RabbitConsumer
     {

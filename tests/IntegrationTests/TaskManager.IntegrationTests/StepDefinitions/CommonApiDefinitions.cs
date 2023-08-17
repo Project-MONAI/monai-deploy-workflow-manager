@@ -16,12 +16,12 @@
 
 using System.Net;
 using FluentAssertions;
-using Monai.Deploy.Common.TaskManager.IntegrationTests.POCO;
-using Monai.Deploy.Common.TaskManager.IntegrationTests.Support;
+using Monai.Deploy.TaskManager.IntegrationTests.POCO;
+using Monai.Deploy.TaskManager.IntegrationTests.Support;
 using Newtonsoft.Json;
 using Snapshooter.NUnit;
 
-namespace Monai.Deploy.Common.TaskManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.TaskManager.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class CommonApiDefinitions

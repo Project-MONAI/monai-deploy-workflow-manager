@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-using Monai.Deploy.Common.TaskManager.API.Models;
+using Monai.Deploy.TaskManager.API.Models;
 using Mongo.Migration.Migrations.Document;
 using MongoDB.Bson;
 
-namespace Monai.Deploy.Common.TaskManager.Migrations
+namespace Monai.Deploy.TaskManager.Migrations
 {
     public class M001_TaskDispatchEventInfo_addVerion : DocumentMigration<TaskDispatchEventInfo>
     {

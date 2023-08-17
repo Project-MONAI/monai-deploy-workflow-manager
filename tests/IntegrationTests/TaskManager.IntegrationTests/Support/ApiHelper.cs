@@ -19,7 +19,7 @@ using Monai.Deploy.Common.IntegrationTests.Support;
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8604 // Possible null reference argument.
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-namespace Monai.Deploy.Common.TaskManager.IntegrationTests.Support
+namespace Monai.Deploy.TaskManager.IntegrationTests.Support
 {
     [Binding]
     public class ApiHelper

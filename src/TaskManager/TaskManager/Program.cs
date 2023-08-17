@@ -26,10 +26,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Common.Configuration;
 using Monai.Deploy.Common.Miscellaneous.Services;
-using Monai.Deploy.Common.TaskManager.Database;
-using Monai.Deploy.Common.TaskManager.Database.Options;
-using Monai.Deploy.Common.TaskManager.Extensions;
-using Monai.Deploy.Common.TaskManager.Services.Http;
+using Monai.Deploy.TaskManager.Database;
+using Monai.Deploy.TaskManager.Database.Options;
+using Monai.Deploy.TaskManager.Extensions;
+using Monai.Deploy.TaskManager.Services.Http;
 using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Storage;
@@ -41,7 +41,7 @@ using NLog;
 using NLog.LayoutRenderers;
 using NLog.Web;
 
-namespace Monai.Deploy.Common.TaskManager
+namespace Monai.Deploy.TaskManager
 {
     /// <summary>
     /// Main entry point for TaskManager.
