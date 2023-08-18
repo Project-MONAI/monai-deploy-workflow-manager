@@ -201,8 +201,8 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
         public async Task<IList<WorkflowRevision>> GetWorkflowsForWorkflowRequestAsync(string calledAeTitle, string callingAeTitle)
         {
-            Guard.Against.NullOrEmpty(calledAeTitle);
-            Guard.Against.NullOrEmpty(callingAeTitle);
+            Guard.Against.NullOrEmpty(calledAeTitle, nameof(calledAeTitle));
+            Guard.Against.NullOrEmpty(callingAeTitle, nameof(callingAeTitle));
 
             var wfs = await _workflowCollection
                 .Find(x =>
@@ -221,7 +221,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
         public async Task<string> CreateAsync(Workflow workflow)
         {
-            Guard.Against.Null(workflow);
+            Guard.Against.Null(workflow, nameof(workflow));
 
             var workflowRevision = new WorkflowRevision
             {
@@ -258,7 +258,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
         public async Task<DateTime> SoftDeleteWorkflow(WorkflowRevision workflow)
         {
-            Guard.Against.Null(workflow);
+            Guard.Against.Null(workflow, nameof(workflow));
 
             var deletedTimeStamp = DateTime.UtcNow;
 

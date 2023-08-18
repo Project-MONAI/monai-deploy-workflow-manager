@@ -1,18 +1,18 @@
 ﻿/*
- * Copyright 2022 MONAI Consortium
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright 2022 MONAI Consortium
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 using System;
 using System.Collections.Generic;
@@ -144,9 +144,9 @@ namespace Monai.Deploy.WorkflowManager.Validators
             var destinations = new List<string>();
             foreach (var task in workflow.Tasks)
             {
-                ValidateTaskArtifacts(task);
+                ValidateTaskOutputArtifacts(task);
 
-                TaskTypeSpecificValidation(workflow.Tasks, task);
+                TaskTypeSpecificValidation(workflow, task);
 
                 if (task.TaskDestinations.Any(td => td.Name == firstTaskId))
                 {
@@ -179,6 +179,28 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
+        private int CheckDestinationInMigDestinations(TaskObject task, InformaticsGateway gateway)
+        {
+            var taskDestinationNames = task.ExportDestinations.Select(td => td.Name);
+            if (taskDestinationNames.Any() && (gateway.ExportDestinations?.IsNullOrEmpty() ?? true))
+            {
+                Errors.Add("InformaticsGateway ExportDestinations destinations can not be null with an Export Task.");
+                return 1;
+            }
+
+            var diff = taskDestinationNames.Except(gateway.ExportDestinations).ToList();
+            if (!diff.IsNullOrEmpty())
+            {
+                foreach (var missingDestination in diff)
+                {
+                    Errors.Add($"Task: '{task.Id}' export_destination: '{missingDestination}' must be registered in the informatics_gateway object.");
+                }
+
+                return diff.Count;
+            }
+            return 0;
+        }
+
         private void ValidateExportDestinations(Workflow workflow)
         {
             if (workflow.Tasks.Any() is false)
@@ -188,21 +210,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
             foreach (var task in workflow.Tasks.Where(task => task.ExportDestinations.IsNullOrEmpty() is false))
             {
-                var taskExportDestinationNames = task.ExportDestinations.Select(td => td.Name);
-                if (taskExportDestinationNames.Any() && (workflow.InformaticsGateway?.ExportDestinations?.IsNullOrEmpty() ?? true))
-                {
-                    Errors.Add("InformaticsGateway ExportDestinations destinations can not be null with an Export Task.");
-                    return;
-                }
-
-                var diff = taskExportDestinationNames.Except(workflow.InformaticsGateway?.ExportDestinations).ToList();
-                if (!diff.IsNullOrEmpty())
-                {
-                    foreach (var missingDestination in diff)
-                    {
-                        Errors.Add($"Task: '{task.Id}' export_destination: '{missingDestination}' must be registered in the informatics_gateway object.");
-                    }
-                }
+                CheckDestinationInMigDestinations(task, workflow.InformaticsGateway);
             }
         }
 
@@ -293,7 +301,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void ValidateTaskArtifacts(TaskObject currentTask)
+        private void ValidateTaskOutputArtifacts(TaskObject currentTask)
         {
             if (currentTask.Artifacts != null && currentTask.Artifacts.Output.IsNullOrEmpty() is false)
             {
@@ -307,8 +315,9 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void TaskTypeSpecificValidation(TaskObject[] tasks, TaskObject currentTask)
+        private void TaskTypeSpecificValidation(Workflow workflow, TaskObject currentTask)
         {
+            var tasks = workflow.Tasks;
             if (ValidTaskTypes.Contains(currentTask.Type.ToLower()) is false)
             {
                 Errors.Add($"Task: '{currentTask.Id}' has an invalid type{Comma}please specify: {string.Join(Comma, ValidTaskTypes)}");
@@ -316,6 +325,16 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
 
             ValidateInputs(currentTask);
+
+            if (currentTask.Type.Equals(ExportTaskType, StringComparison.OrdinalIgnoreCase) is true)
+            {
+                ValidateExportTask(workflow, currentTask);
+            }
+
+            if (currentTask.Type.Equals(ExternalAppTaskType, StringComparison.OrdinalIgnoreCase) is true)
+            {
+                ValidateExternalAppTask(workflow, currentTask);
+            }
 
             if (currentTask.Type.Equals(ArgoTaskType, StringComparison.OrdinalIgnoreCase) is true)
             {
@@ -457,7 +476,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             if (emailsSpecified)
             {
                 var emails = currentTask.Args[RecipientEmails] ?? string.Empty;
-                var formattedEmails = emails.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                var formattedEmails = emails.Split(',').Where(e => !string.IsNullOrWhiteSpace(e.Trim()));
 
                 if (!formattedEmails.Any())
                 {
@@ -498,7 +517,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             if (rolesSpecified)
             {
                 var roles = currentTask.Args[RecipientRoles] ?? string.Empty;
-                var formattedRoles = roles.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                var formattedRoles = roles.Split(',').Where(r => !string.IsNullOrWhiteSpace(r.Trim()));
 
                 if (!formattedRoles.Any())
                 {
@@ -514,7 +533,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
 
             var metadataValues = currentTask.Args[MetadataValues] ?? string.Empty;
-            var formattedMetadataValues = metadataValues.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            var formattedMetadataValues = metadataValues.Split(',').Where(m => !string.IsNullOrWhiteSpace(m.Trim()));
 
             if (!formattedMetadataValues.Any())
             {
@@ -522,7 +541,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 return;
             }
 
-            var disallowedTags = _options.Value.DicomTagsDisallowed.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            var disallowedTags = _options.Value.DicomTagsDisallowed.Split(',').Select(t => t.Trim());
             var intersect = formattedMetadataValues.Intersect(disallowedTags);
 
             if (intersect.Any())
@@ -582,6 +601,48 @@ namespace Monai.Deploy.WorkflowManager.Validators
             if (reviewedTask.Type.Equals(ArgoTaskType, StringComparison.OrdinalIgnoreCase) is false)
             {
                 Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id: '{currentTask.Args[ReviewedTaskId]}' does not reference an Argo task.");
+            }
+        }
+
+        private void ValidateExportTask(Workflow workflow, TaskObject currentTask)
+        {
+            if (currentTask.ExportDestinations.Any() is false)
+            {
+                Errors.Add($"Task: '{currentTask.Id}' does not contain a destination.");
+            }
+
+            CheckDestinationInMigDestinations(currentTask, workflow.InformaticsGateway);
+
+            if (currentTask.ExportDestinations.Count() != currentTask.ExportDestinations.Select(t => t.Name).Distinct().Count())
+            {
+                Errors.Add($"Task: '{currentTask.Id}' contains duplicate destinations.");
+            }
+
+            ValidateInputs(currentTask);
+
+        }
+
+        private void ValidateExternalAppTask(Workflow workflow, TaskObject currentTask)
+        {
+            if (currentTask.ExportDestinations.Any() is false)
+            {
+                Errors.Add($"Task: '{currentTask.Id}' does not contain a destination.");
+            }
+
+            CheckDestinationInMigDestinations(currentTask, workflow.InformaticsGateway);
+
+            if (currentTask.ExportDestinations.Count() != currentTask.ExportDestinations.Select(t => t.Name).Distinct().Count())
+            {
+                Errors.Add($"Task: '{currentTask.Id}' contains duplicate destinations.");
+            }
+
+            ValidateTaskOutputArtifacts(currentTask);
+
+            if (currentTask.Artifacts == null
+                || currentTask.Artifacts.Output.IsNullOrEmpty()
+                || (currentTask.Artifacts.Output.Select(a => a.Name).Any() is false))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' must contain at lease a single output.");
             }
         }
     }

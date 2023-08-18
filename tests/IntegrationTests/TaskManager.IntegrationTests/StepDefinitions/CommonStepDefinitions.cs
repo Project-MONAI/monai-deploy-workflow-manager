@@ -15,6 +15,7 @@
  */
 
 using System.Reflection;
+using Monai.Deploy.Common.TaskManager.IntegrationTests.Support;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Models;

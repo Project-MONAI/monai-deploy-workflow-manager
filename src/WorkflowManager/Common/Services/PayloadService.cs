@@ -60,7 +60,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
 
         public async Task<Payload?> CreateAsync(WorkflowRequestEvent eventPayload)
         {
-            Guard.Against.Null(eventPayload);
+            Guard.Against.Null(eventPayload, nameof(eventPayload));
 
             try
             {
@@ -109,7 +109,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
 
         public async Task<Payload> GetByIdAsync(string payloadId)
         {
-            Guard.Against.NullOrWhiteSpace(payloadId);
+            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
 
             return await _payloadRepository.GetByIdAsync(payloadId);
         }
@@ -164,7 +164,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
 
         public async Task<bool> DeletePayloadFromStorageAsync(string payloadId)
         {
-            Guard.Against.NullOrWhiteSpace(payloadId);
+            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
 
             var payload = await GetByIdAsync(payloadId);
 

@@ -8,6 +8,7 @@
     - 3.7.100.14
     - 3.7.100.25
     - 3.7.105.20
+    - 3.7.200.13
     :when: 2022-10-14 23:36:39.233755632 Z
 - - :approve
   - AWSSDK.SecurityToken
@@ -18,6 +19,7 @@
     - 3.7.100.14
     - 3.7.100.25
     - 3.7.101.26
+    - 3.7.201.9
     :when: 2022-10-14 23:36:39.628260680 Z
 - - :approve
   - Ardalis.GuardClauses
@@ -25,6 +27,7 @@
     :why: MIT (https://github.com/ardalis/GuardClauses.Analyzers/raw/master/LICENSE)
     :versions:
     - 4.0.1
+    - 4.1.1
     :when: 2022-10-14 23:36:39.999308652 Z
 - - :approve
   - AutoFixture
@@ -399,6 +402,8 @@
     :versions:
     - 6.0.1
     - 7.0.0
+    - 2.2.0
+    - 3.1.0
     :when: 2022-10-14 23:37:00.596541774 Z
 - - :approve
   - Microsoft.Extensions.Configuration.Abstractions
@@ -414,6 +419,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 3.0.0
+    - 3.1.0
     - 2.2.0
     - 7.0.3
     :when: 2022-10-14 23:37:01.366955631 Z
@@ -469,6 +475,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
+    - 3.1.0
     - 6.0.0
     - 6.0.1
     - 2.2.0
@@ -506,6 +513,7 @@
     - 6.0.12
     - 6.0.14
     - 6.0.15
+    - 6.0.21
     :when: 2022-10-14 23:37:05.589288760 Z
 - - :approve
   - Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions
@@ -515,6 +523,7 @@
     - 6.0.12
     - 6.0.14
     - 6.0.15
+    - 6.0.21
     :when: 2022-10-14 23:37:05.963687838 Z
 - - :approve
   - Microsoft.Extensions.FileProviders.Abstractions
@@ -585,6 +594,8 @@
     :versions:
     - 6.0.0
     - 7.0.0
+    - 2.2.0
+    - 3.1.0
     :when: 2022-10-14 23:37:09.454044811 Z
 - - :approve
   - Microsoft.Extensions.Logging.Abstractions
@@ -593,6 +604,7 @@
     :versions:
     - 6.0.2
     - 2.0.0
+    - 6.0.4
     - 7.0.0
     :when: 2022-10-14 23:37:09.821156462 Z
 - - :approve
@@ -851,6 +863,7 @@
     :versions:
     - 4.0.6
     - 4.0.7
+    - 5.0.0
     :when: 2022-10-14 23:37:22.726827733 Z
 - - :approve
   - Moq
@@ -923,6 +936,7 @@
     :why: BSD-3-Clause (https://github.com/App-vNext/Polly/raw/main/LICENSE.txt)
     :versions:
     - 7.2.3
+    - 7.2.4
     :when: 2022-10-14 23:37:30.185774702 Z
 - - :approve
   - RabbitMQ.Client
@@ -930,6 +944,7 @@
     :why: Apache-2.0 (https://github.com/rabbitmq/rabbitmq-dotnet-client/raw/main/LICENSE-APACHE2)
     :versions:
     - 6.4.0
+    - 6.5.0
     :when: 2022-10-14 23:37:30.555988654 Z
 - - :approve
   - Serilog
@@ -1195,7 +1210,15 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 5.0.0
+    - 4.3.0
     :when: 2022-10-14 23:37:45.155805918 Z
+- - :approve
+  - System.ComponentModel
+  - :who: nsouth
+    :why: MICROSOFT .NET LIBRARY License (http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2023-8-18 08:53:45.155805918 Z
 - - :approve
   - System.Configuration.ConfigurationManager
   - :who: mocsharp
@@ -1382,6 +1405,13 @@
     - 4.3.0
     :when: 2022-10-14 23:37:55.295846123 Z
 - - :approve
+  - System.IO.Hashing
+  - :who: nsouth
+    :why: MIT
+    :versions:
+    - 7.0.0
+    :when: 2023-8-18 08:53:55.295846123 Z
+- - :approve
   - System.IdentityModel.Tokens.Jwt
   - :who: mocsharp
     :why: MIT (https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/raw/dev/LICENSE.txt)
@@ -1425,6 +1455,7 @@
     :why: MIT (https://github.com/dotnet/corefx/raw/master/LICENSE.TXT)
     :versions:
     - 4.5.4
+    - 4.5.5
     :when: 2022-10-14 23:37:58.271685148 Z
 - - :approve
   - System.Net.Http
@@ -1902,6 +1933,7 @@
     :versions:
     - 4.7.1
     - 6.0.0
+    - 7.0.0
     :when: 2022-10-14 23:38:26.916570960 Z
 - - :approve
   - System.Threading.Tasks
@@ -2336,6 +2368,7 @@
     :versions:
     - 0.1.21
     - 0.1.23
+    - 0.1.25
     :when: 2022-12-15 21:43:10.781625468 Z
 - - :approve
   - Monai.Deploy.Messaging.RabbitMQ
@@ -2344,6 +2377,7 @@
     :versions:
     - 0.1.21
     - 0.1.23
+    - 0.1.25
     :when: 2022-12-15 21:43:20.975488411 Z
 - - :approve
   - Monai.Deploy.Storage
@@ -2353,6 +2387,7 @@
     - 0.2.10
     - 0.2.13
     - 0.2.15
+    - 0.2.18
     :when: 2022-11-02 21:43:46.964761113 Z
 - - :approve
   - Monai.Deploy.Storage.MinIO
@@ -2362,6 +2397,7 @@
     - 0.2.10
     - 0.2.13
     - 0.2.15
+    - 0.2.18
     :when: 2022-11-02 21:43:57.620687413 Z
 - - :approve
   - Monai.Deploy.Storage.S3Policy
@@ -2371,6 +2407,7 @@
     - 0.2.10
     - 0.2.13
     - 0.2.15
+    - 0.2.18
     :when: 2022-11-02 21:44:06.994266372 Z
 - - :approve
   - MongoDB.Bson
@@ -2553,6 +2590,7 @@
     :why: MIT (https://raw.githubusercontent.com/CommunityToolkit/WindowsCommunityToolkit/main/License.md)
     :versions:
     - 7.1.2
+    - 8.1.0
     :when: 2023-05-17 14:44:00.000000000 Z
 - - :approve
   - fo-dicom
@@ -2561,5 +2599,11 @@
     :versions:
     - 5.0.3
     :when: 2023-05-17 14:44:00.000000000 Z
-
+- - :approve
+  - CommunityToolkit.HighPerformance
+  - :who: nsouth
+    :why: MIT
+    :versions:
+    - 8.1.0
+    :when: 2023-08-18 09:09:00.000000000 Z
 

@@ -249,6 +249,7 @@ These tasks are borken down into different types:
 | ---- | ------- |
 | Router | A task to control the flow through a workflow |
 | Export | A task to trigger the exporting of data |
+| External App | A task to trigger execution of an external app |
 | `Plugin_Name` | A task which has a matching Plugin installed & enabled |
 
 
@@ -401,6 +402,11 @@ Example (output sent to another task if the patient is female, otherwise to PACS
 ```
 
 Export destinations define an external location to which the output of the task can be sent. This will take the form of an event published to a pub/sub service notifying of an available export to a specific destination reference. Most commonly, the export location will be a PACs system and the notification will be picked up by the Monai Informatics Gateway.
+
+#### External App
+These are task types that allow for execution of external apps and in 
+structure are identical to the Export type above.
+
 
 #### Plugin
 These are tasks are Named the same as the installed Pluging.

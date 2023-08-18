@@ -229,7 +229,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
 
         private string ToJson(DicomFile dicomFile, bool validateDicom)
         {
-            Guard.Against.Null(dicomFile);
+            Guard.Against.Null(dicomFile, nameof(dicomFile));
 
             var options = new JsonSerializerOptions();
             options.Converters.Add(new DicomJsonConverter(
