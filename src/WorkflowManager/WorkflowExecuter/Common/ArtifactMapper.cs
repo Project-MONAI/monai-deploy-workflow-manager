@@ -75,16 +75,16 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
         public async Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet = true)
         {
-            Guard.Against.Null(artifacts);
-            Guard.Against.NullOrWhiteSpace(payloadId);
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId);
+            Guard.Against.Null(artifacts, nameof(artifacts));
+            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
 
             var artifactPathDictionary = new Dictionary<string, string>();
 
             foreach (var artifact in artifacts)
             {
-                Guard.Against.NullOrWhiteSpace(artifact.Value);
-                Guard.Against.NullOrWhiteSpace(artifact.Name);
+                Guard.Against.NullOrWhiteSpace(artifact.Value, nameof(artifact.Value));
+                Guard.Against.NullOrWhiteSpace(artifact.Name, nameof(artifact.Name));
 
                 if (!TrimArtifactVariable(artifact.Value, out var variableString))
                 {

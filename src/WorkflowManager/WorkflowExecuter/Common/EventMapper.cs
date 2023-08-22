@@ -170,15 +170,16 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             };
         }
 
-        public static ExportRequestEvent ToExportRequestEvent(IList<string> dicomImages, string[] exportDestinations, string taskId, string workflowInstanceId, string correlationId)
+        public static ExportRequestEvent ToExportRequestEvent(IList<string> dicomImages, string[] exportDestinations, string taskId, string workflowInstanceId, string correlationId, List<string>? plugins = null)
         {
             Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));
             Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
             Guard.Against.NullOrWhiteSpace(correlationId, nameof(correlationId));
             Guard.Against.NullOrEmpty(dicomImages, nameof(dicomImages));
             Guard.Against.NullOrEmpty(exportDestinations, nameof(exportDestinations));
+            plugins ??= new List<string>();
 
-            return new ExportRequestEvent
+            var Event = new ExportRequestEvent
             {
                 WorkflowInstanceId = workflowInstanceId,
                 ExportTaskId = taskId,
@@ -186,6 +187,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 Files = dicomImages,
                 Destinations = exportDestinations
             };
+            Event.PluginAssemblies.AddRange(plugins);
+            return Event;
         }
     }
 }

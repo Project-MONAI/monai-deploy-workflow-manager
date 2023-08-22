@@ -305,7 +305,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private Dictionary<string, string> GetExecutuionStats(Workflow workflow)
         {
-            Guard.Against.Null(workflow);
+            Guard.Against.Null(workflow, nameof(workflow));
 
             TimeSpan? duration = null;
             if (workflow.Status?.StartedAt is not null && workflow.Status?.FinishedAt is not null)
@@ -431,7 +431,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         /// <param name="cancellationToken"></param>
         private void ProcessTaskPluginArguments(Workflow workflow)
         {
-            Guard.Against.Null(workflow);
+            Guard.Against.Null(workflow, nameof(workflow));
             var priorityClassName = Event.GetTaskPluginArgumentsParameter(Keys.TaskPriorityClassName) ?? "standard";
 
             foreach (var template in workflow.Spec.Templates)
@@ -446,8 +446,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private void AddLimit(Template2 template, ResourcesKey key)
         {
-            Guard.Against.Null(template);
-            Guard.Against.Null(key);
+            Guard.Against.Null(template, nameof(template));
+            Guard.Against.Null(key, nameof(key));
             if (template.Container is null || !Event.TaskPluginArguments.TryGetValue(key.TaskKey, out var value) || string.IsNullOrWhiteSpace(value))
             {
                 return;

@@ -57,7 +57,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _options = options ?? throw new ArgumentNullException(nameof(options));
 
-            Guard.Against.Null(serviceScopeFactory);
+            Guard.Against.Null(serviceScopeFactory, nameof(serviceScopeFactory));
             _scope = serviceScopeFactory.CreateScope();
 
             _messageBrokerPublisherService = _scope.ServiceProvider.GetService<IMessageBrokerPublisherService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerPublisherService));
@@ -167,8 +167,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
             foreach (var file in allFiles)
             {
                 if (file.FilePath.EndsWith(".json", StringComparison.InvariantCultureIgnoreCase)) continue;
-                Guard.Against.NullOrWhiteSpace(bucketName);
-                Guard.Against.NullOrWhiteSpace(path);
+                Guard.Against.NullOrWhiteSpace(bucketName, nameof(bucketName));
+                Guard.Against.NullOrWhiteSpace(path, nameof(path));
 
                 // load file from Minio !
                 var fileStream = await _storageService.GetObjectAsync(bucketName, $"{file.FilePath}");
