@@ -74,39 +74,18 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-<<<<<<< HEAD
-        "requested": "[0.1.24, )",
-        "resolved": "0.1.24",
-        "contentHash": "UMo/v9XBEvtiB6AvmW7QXS0DimlACajDyqX04QjIDOEs2B/NirRaXQ1ny+Ru/baw/G//lK4N8uGLUkYb4MF05Q==",
-        "dependencies": {
-          "Ardalis.GuardClauses": "4.1.1",
-          "Microsoft.Extensions.Configuration": "6.0.1",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.20",
-          "Microsoft.Extensions.Logging": "6.0.0",
-=======
         "requested": "[0.1.25, )",
         "resolved": "0.1.25",
         "contentHash": "CllF1ANCwDV0ACbTU63SGxPPmgsivWP8dxgstAHvwo29w5TUs6PDCc8GcyVDTUO5Yl7/vsifdwcs3P/cYBe69w==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.1.1",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.21",
->>>>>>> origin/develop
           "Newtonsoft.Json": "13.0.3",
           "System.IO.Abstractions": "17.2.3"
         }
       },
       "Monai.Deploy.Messaging.RabbitMQ": {
         "type": "Direct",
-<<<<<<< HEAD
-        "requested": "[0.1.24, )",
-        "resolved": "0.1.24",
-        "contentHash": "qxPcI/h8YD9beEaLwbHetF4af7sEOpgmf8ojKuaB9B4U13MaInzw7JB0vS51AQ9fNZMtT0MaEnQRl28pkRzB/Q==",
-        "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.24",
-          "Polly": "7.2.4",
-          "RabbitMQ.Client": "6.5.0",
-          "System.Collections.Concurrent": "4.3.0"
-=======
         "requested": "[0.1.25, )",
         "resolved": "0.1.25",
         "contentHash": "p/Si1XzNUiTdN1gYFKxYy9w/bVzOYooK9DEW7JJs8D8Sghzkvh0GyWV3vUO9dVkEcU0oT5HmZ4x+nz8BzAkz6g==",
@@ -114,7 +93,6 @@
           "Monai.Deploy.Messaging": "0.1.25",
           "Polly": "7.2.4",
           "RabbitMQ.Client": "6.5.0"
->>>>>>> origin/develop
         }
       },
       "Monai.Deploy.Security": {
@@ -633,17 +611,10 @@
       },
       "Microsoft.Extensions.Diagnostics.HealthChecks": {
         "type": "Transitive",
-<<<<<<< HEAD
-        "resolved": "6.0.20",
-        "contentHash": "/uw/4EXx+tOWiqTVNbO0ooaFrrp06h68hI7XhOKyHRp7rdUi7SNmIsj0CCNE6PyZanfnQDwhNyaxG25u2HWpjg==",
-        "dependencies": {
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "6.0.20",
-=======
         "resolved": "6.0.21",
         "contentHash": "1Qf/tEg6IlzbvCxrc+pZE+ZGrajBdB/+V2+abeAu6lg8wXGHmO8JtnrNqwc5svSbcz3udxinUPyH3vw6ZujKbg==",
         "dependencies": {
           "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "6.0.21",
->>>>>>> origin/develop
           "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.4",
           "Microsoft.Extensions.Options": "6.0.0"
@@ -651,13 +622,8 @@
       },
       "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": {
         "type": "Transitive",
-<<<<<<< HEAD
-        "resolved": "6.0.20",
-        "contentHash": "qWT4ldcOylWZa+GXFePyAJSQ9d/gWzKIL2KdFCkudZpzMjeTUPpqMhIwZdJNvCupi/ercnUT3Ru1RI/rWwX8aA=="
-=======
         "resolved": "6.0.21",
         "contentHash": "5FSA1euCRtbRqVgTn2ahgCG9Cy29UQXAZMCJLUlrQQaC5rko0+d/aq9SiFGIDP7cvoWUsatrlNdfc6UyOMV5aA=="
->>>>>>> origin/develop
       },
       "Microsoft.Extensions.FileProviders.Abstractions": {
         "type": "Transitive",
@@ -1329,53 +1295,6 @@
         "type": "Transitive",
         "resolved": "4.5.5",
         "contentHash": "XIWiDvKPXaTveaB7HVganDlOCRoj03l+jrwNvcge/t8vhGYKvqV+dMv6G4SAX2NoNmN0wZfVPTAlFwZcZvVOUw=="
-<<<<<<< HEAD
-      },
-      "System.Net.Http": {
-        "type": "Transitive",
-        "resolved": "4.3.4",
-        "contentHash": "aOa2d51SEbmM+H+Csw7yJOuNZoHkrP2XnAurye5HWYgGVVU54YZDvsLUYRv6h18X3sPnjNCANmN7ZhIPiqMcjA==",
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.1",
-          "System.Collections": "4.3.0",
-          "System.Diagnostics.Debug": "4.3.0",
-          "System.Diagnostics.DiagnosticSource": "4.3.0",
-          "System.Diagnostics.Tracing": "4.3.0",
-          "System.Globalization": "4.3.0",
-          "System.Globalization.Extensions": "4.3.0",
-          "System.IO": "4.3.0",
-          "System.IO.FileSystem": "4.3.0",
-          "System.Net.Primitives": "4.3.0",
-          "System.Resources.ResourceManager": "4.3.0",
-          "System.Runtime": "4.3.0",
-          "System.Runtime.Extensions": "4.3.0",
-          "System.Runtime.Handles": "4.3.0",
-          "System.Runtime.InteropServices": "4.3.0",
-          "System.Security.Cryptography.Algorithms": "4.3.0",
-          "System.Security.Cryptography.Encoding": "4.3.0",
-          "System.Security.Cryptography.OpenSsl": "4.3.0",
-          "System.Security.Cryptography.Primitives": "4.3.0",
-          "System.Security.Cryptography.X509Certificates": "4.3.0",
-          "System.Text.Encoding": "4.3.0",
-          "System.Threading": "4.3.0",
-          "System.Threading.Tasks": "4.3.0",
-          "runtime.native.System": "4.3.0",
-          "runtime.native.System.Net.Http": "4.3.0",
-          "runtime.native.System.Security.Cryptography.OpenSsl": "4.3.2"
-        }
-      },
-      "System.Net.Primitives": {
-        "type": "Transitive",
-        "resolved": "4.3.1",
-        "contentHash": "OHzPhSme78BbmLe9UBxHM69ZYjClS5URuhce6Ta4ikiLgaUGiG/X84fZpI6zy7CsUH5R9cYzI2tv9dWPqdTkUg==",
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.1",
-          "Microsoft.NETCore.Targets": "1.1.3",
-          "System.Runtime": "4.3.1",
-          "System.Runtime.Handles": "4.3.0"
-        }
-=======
->>>>>>> origin/develop
       },
       "System.ObjectModel": {
         "type": "Transitive",
@@ -1673,26 +1592,16 @@
       "monai.deploy.common.configuration": {
         "type": "Project",
         "dependencies": {
-<<<<<<< HEAD
-          "Monai.Deploy.Messaging": "[0.1.24, )",
-          "Monai.Deploy.Storage": "[0.2.15, )"
-=======
           "Monai.Deploy.Messaging": "[0.1.25, )",
           "Monai.Deploy.Storage": "[0.2.18, )"
->>>>>>> origin/develop
         }
       },
       "monai.deploy.common.miscellaneous": {
         "type": "Project",
         "dependencies": {
           "Ardalis.GuardClauses": "[4.1.1, )",
-<<<<<<< HEAD
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.20, )",
-          "Monai.Deploy.Common.Configuration": "[1.0.0, )",
-=======
           "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.21, )",
-          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
->>>>>>> origin/develop
+          "Monai.Deploy.Common.Configuration": "[1.0.0, )",
           "fo-dicom": "[5.0.3, )"
         }
       },
@@ -1707,11 +1616,7 @@
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-<<<<<<< HEAD
-          "Monai.Deploy.Messaging": "[0.1.24, )",
-=======
           "Monai.Deploy.Messaging": "[0.1.25, )",
->>>>>>> origin/develop
           "Mongo.Migration": "[3.1.4, )",
           "MongoDB.Bson": "[2.19.0, )"
         }
@@ -1737,24 +1642,15 @@
         "type": "Project",
         "dependencies": {
           "Docker.DotNet": "[3.125.13, )",
-<<<<<<< HEAD
           "Monai.Deploy.Common.Configuration": "[1.0.0, )",
-=======
-          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
->>>>>>> origin/develop
           "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.email": {
         "type": "Project",
         "dependencies": {
-<<<<<<< HEAD
           "Monai.Deploy.Common.Configuration": "[1.0.0, )",
           "Monai.Deploy.Common.Miscellaneous": "[1.0.0, )",
-=======
-          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Shared": "[1.0.0, )",
->>>>>>> origin/develop
           "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )",
           "fo-dicom": "[5.0.3, )"
         }

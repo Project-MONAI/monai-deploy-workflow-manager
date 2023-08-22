@@ -15,8 +15,6 @@
  */
 
 using System.Globalization;
-using System.Reflection.Metadata.Ecma335;
-using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -490,11 +488,6 @@ namespace Monai.Deploy.Common.WorkfowExecuter.Services
             await HandleDicomExportAsync(workflow, workflowInstance, task, correlationId, plugins).ConfigureAwait(false);
         }
 
-        private async Task HandleExternalAppAsync(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId)
-        {
-            var plugins = _migExternalAppPlugins;
-            await HandleDicomExportAsync(workflow, workflowInstance, task, correlationId, plugins).ConfigureAwait(false);
-        }
         private async Task HandleDicomExportAsync(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId, List<string>? plugins = null)
         {
             plugins ??= new List<string>();

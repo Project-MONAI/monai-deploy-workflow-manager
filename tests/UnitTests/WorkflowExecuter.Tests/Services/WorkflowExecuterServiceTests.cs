@@ -24,29 +24,25 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.WorkflowManager.Common.Extensions;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.ConditionsResolver.Parser;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Database.Repositories;
-using Monai.Deploy.WorkflowManager.Shared;
-using Monai.Deploy.WorkflowManager.Storage.Services;
-using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
-using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
+using Monai.Deploy.Common.WorkfowExecuter.Services;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
 using Message = Monai.Deploy.Messaging.Messages.Message;
 using Monai.Deploy.Common.Miscellaneous;
+using Monai.Deploy.Common.Database.Interfaces;
+using Monai.Deploy.Common.WorkfowExecuter.Common;
+using Monai.Deploy.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.Common.Configuration;
+using Monai.Deploy.Common.Database;
+using Monai.Deploy.Common.Storage.Services;
+using Monai.Deploy.Common.Miscellaneous.Extensions;
+using Monai.Deploy.Common.ConditionsResolver.Parser;
+using Monai.Deploy.Common.Contracts.Models;
 
 namespace Monai.Deploy.Common.WorkflowExecuter.Tests.Services
 {
@@ -120,7 +116,7 @@ namespace Monai.Deploy.Common.WorkflowExecuter.Tests.Services
         }
 
         [Fact]
-        public async Task WorkflowExecuterService_Throw_If_No_Config()
+        public void WorkflowExecuterService_Throw_If_No_Config()
         {
             var dicom = new Mock<IDicomService>();
             var logger = new Mock<ILogger<ConditionalParameterParser>>();
@@ -148,7 +144,7 @@ namespace Monai.Deploy.Common.WorkflowExecuter.Tests.Services
         }
 
         [Fact]
-        public async Task WorkflowExecuterService_Throw_If_No_Storage_Config()
+        public void WorkflowExecuterService_Throw_If_No_Storage_Config()
         {
             var dicom = new Mock<IDicomService>();
             var logger = new Mock<ILogger<ConditionalParameterParser>>();

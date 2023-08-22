@@ -17,8 +17,8 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Monai.Deploy.Common.TaskManager.IntegrationTests.Support;
-using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
-using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
+using Monai.Deploy.TaskManager.IntegrationTests.POCO;
+using Monai.Deploy.TaskManager.IntegrationTests.Support;
 using Polly;
 using Polly.Retry;
 

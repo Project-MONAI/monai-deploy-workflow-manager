@@ -4,23 +4,12 @@
     "net6.0": {
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-<<<<<<< HEAD
-        "requested": "[0.1.24, )",
-        "resolved": "0.1.24",
-        "contentHash": "UMo/v9XBEvtiB6AvmW7QXS0DimlACajDyqX04QjIDOEs2B/NirRaXQ1ny+Ru/baw/G//lK4N8uGLUkYb4MF05Q==",
-        "dependencies": {
-          "Ardalis.GuardClauses": "4.1.1",
-          "Microsoft.Extensions.Configuration": "6.0.1",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.20",
-          "Microsoft.Extensions.Logging": "6.0.0",
-=======
         "requested": "[0.1.25, )",
         "resolved": "0.1.25",
         "contentHash": "CllF1ANCwDV0ACbTU63SGxPPmgsivWP8dxgstAHvwo29w5TUs6PDCc8GcyVDTUO5Yl7/vsifdwcs3P/cYBe69w==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.1.1",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.21",
->>>>>>> origin/develop
           "Newtonsoft.Json": "13.0.3",
           "System.IO.Abstractions": "17.2.3"
         }
@@ -149,17 +138,10 @@
       },
       "Microsoft.Extensions.Diagnostics.HealthChecks": {
         "type": "Transitive",
-<<<<<<< HEAD
-        "resolved": "6.0.20",
-        "contentHash": "/uw/4EXx+tOWiqTVNbO0ooaFrrp06h68hI7XhOKyHRp7rdUi7SNmIsj0CCNE6PyZanfnQDwhNyaxG25u2HWpjg==",
-        "dependencies": {
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "6.0.20",
-=======
         "resolved": "6.0.21",
         "contentHash": "1Qf/tEg6IlzbvCxrc+pZE+ZGrajBdB/+V2+abeAu6lg8wXGHmO8JtnrNqwc5svSbcz3udxinUPyH3vw6ZujKbg==",
         "dependencies": {
           "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "6.0.21",
->>>>>>> origin/develop
           "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.4",
           "Microsoft.Extensions.Options": "6.0.0"
@@ -167,13 +149,8 @@
       },
       "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": {
         "type": "Transitive",
-<<<<<<< HEAD
-        "resolved": "6.0.20",
-        "contentHash": "qWT4ldcOylWZa+GXFePyAJSQ9d/gWzKIL2KdFCkudZpzMjeTUPpqMhIwZdJNvCupi/ercnUT3Ru1RI/rWwX8aA=="
-=======
         "resolved": "6.0.21",
         "contentHash": "5FSA1euCRtbRqVgTn2ahgCG9Cy29UQXAZMCJLUlrQQaC5rko0+d/aq9SiFGIDP7cvoWUsatrlNdfc6UyOMV5aA=="
->>>>>>> origin/develop
       },
       "Microsoft.Extensions.FileProviders.Abstractions": {
         "type": "Transitive",

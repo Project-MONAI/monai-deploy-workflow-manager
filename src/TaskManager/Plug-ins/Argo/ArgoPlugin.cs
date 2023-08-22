@@ -26,7 +26,6 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.Common.Configuration;
 using Monai.Deploy.Common.Miscellaneous;
-using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.TaskManager.API.Extensions;
 using Monai.Deploy.TaskManager.API.Models;
 using Monai.Deploy.TaskManager.Argo.Logging;

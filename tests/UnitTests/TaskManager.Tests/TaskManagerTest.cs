@@ -30,7 +30,6 @@ using Monai.Deploy.Storage.S3Policy.Policies;
 using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.Common.Configuration;
 using Monai.Deploy.Common.Miscellaneous;
-using Monai.Deploy.TaskManager.API;
 using Moq;
 using Xunit;
 

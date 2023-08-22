@@ -22,10 +22,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Common.Configuration;
 using Monai.Deploy.Common.Miscellaneous;
-using Monai.Deploy.TaskManager.API;
-using Monai.Deploy.TaskManager.API.Extensions;
-using Monai.Deploy.TaskManager.API.Models;
-using Monai.Deploy.TaskManager.Logging;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
@@ -33,6 +29,9 @@ using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.S3Policy.Policies;
 using Monai.Deploy.TaskManager.API;
+using Monai.Deploy.TaskManager.API.Extensions;
+using Monai.Deploy.TaskManager.API.Models;
+using Monai.Deploy.TaskManager.Logging;
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8604 // Possible null reference argument.

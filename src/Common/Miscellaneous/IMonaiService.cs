@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.Common.Miscellaneous;
-
 namespace Monai.Deploy.Common.Miscellaneous
 {
     public interface IMonaiService

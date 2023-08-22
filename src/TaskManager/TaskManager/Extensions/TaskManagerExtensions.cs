@@ -20,12 +20,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Monai.Deploy.Common.Miscellaneous;
-using Monai.Deploy.TaskManager.Argo;
-using Monai.Deploy.TaskManager.Docker;
-using Monai.Deploy.TaskManager.Services;
 using Monai.Deploy.Security.Authentication.Configurations;
 using Monai.Deploy.Security.Authentication.Extensions;
 using Monai.Deploy.TaskManager.API;
+using Monai.Deploy.TaskManager.Argo;
+using Monai.Deploy.TaskManager.Docker;
+using Monai.Deploy.TaskManager.Services;
 using NLog;
 
 namespace Monai.Deploy.TaskManager.Extensions

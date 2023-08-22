@@ -16,10 +16,10 @@
 
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
+using Monai.Deploy.TaskManager.API;
 using Monai.Deploy.TaskManager.API.Models;
 using Monai.Deploy.TaskManager.Database;
 using Monai.Deploy.TaskManager.Logging;
-using Monai.Deploy.TaskManager.API;
 
 namespace Monai.Deploy.TaskManager.Services
 {
