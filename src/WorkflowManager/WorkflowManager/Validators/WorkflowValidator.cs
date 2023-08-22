@@ -182,13 +182,13 @@ namespace Monai.Deploy.WorkflowManager.Validators
         private int CheckDestinationInMigDestinations(TaskObject task, InformaticsGateway gateway)
         {
             var taskDestinationNames = task.ExportDestinations.Select(td => td.Name);
-            if (taskDestinationNames.Any() && (gateway.ExportDestinations?.IsNullOrEmpty() ?? true))
+            if (taskDestinationNames.Any() && (gateway?.ExportDestinations?.IsNullOrEmpty() ?? true))
             {
                 Errors.Add("InformaticsGateway ExportDestinations destinations can not be null with an Export Task.");
                 return 1;
             }
 
-            var diff = taskDestinationNames.Except(gateway.ExportDestinations).ToList();
+            var diff = taskDestinationNames.Except(gateway?.ExportDestinations).ToList();
             if (!diff.IsNullOrEmpty())
             {
                 foreach (var missingDestination in diff)

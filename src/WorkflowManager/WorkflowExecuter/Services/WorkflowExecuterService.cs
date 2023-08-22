@@ -15,6 +15,8 @@
  */
 
 using System.Globalization;
+using System.Reflection.Metadata.Ecma335;
+using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -109,6 +111,23 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
             Guard.Against.Null(message, nameof(message));
 
             using var loggerScope = _logger.BeginScope($"correlationId={message.CorrelationId}, payloadId={payload.PayloadId}");
+
+            // for external App executions then workflowInstanceId will be supplied and we can continue the workflow from that task.
+            if (string.IsNullOrWhiteSpace(message.WorkflowInstanceId) is false)
+            {
+                var instance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId);
+                if (instance is not null)
+                {
+                    var task = instance.Tasks.First(t => t.TaskId == message.TaskId);
+                    if (task is not null)
+                    {
+                        var workflow = await _workflowRepository.GetByWorkflowIdAsync(instance.WorkflowId);
+                        await HandleTaskDestinations(instance, workflow, task, message.CorrelationId);
+                        return true;
+                    }
+                }
+            }
+
             var processed = true;
             List<WorkflowRevision>? workflows;
 
@@ -627,6 +646,13 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Services
                 if (string.Equals(taskExec!.TaskType, TaskTypeConstants.ExportTask, StringComparison.InvariantCultureIgnoreCase))
                 {
                     await HandleDicomExportAsync(workflow, workflowInstance, taskExec!, correlationId);
+
+                    continue;
+                }
+
+                if (string.Equals(taskExec!.TaskType, TaskTypeConstants.ExternalAppTask, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    await HandleExternalAppAsync(workflow, workflowInstance, taskExec!, correlationId);
 
                     continue;
                 }
