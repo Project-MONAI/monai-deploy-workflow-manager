@@ -1,18 +1,18 @@
 ﻿/*
- * Copyright 2022 MONAI Consortium
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright 2022 MONAI Consortium
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 using System;
 using System.Collections.Generic;
@@ -188,27 +188,22 @@ namespace Monai.Deploy.Common.Validators
             }
         }
 
-        private int CheckDestinationInMigDestinations(TaskObject task, InformaticsGateway gateway)
+        private void CheckDestinationInMigDestinations(TaskObject task, InformaticsGateway gateway)
         {
             var taskDestinationNames = task.ExportDestinations.Select(td => td.Name);
-            if (taskDestinationNames.Any() && (gateway.ExportDestinations?.IsNullOrEmpty() ?? true))
+            if (taskDestinationNames.Any() && (gateway?.ExportDestinations?.IsNullOrEmpty() ?? true))
             {
                 Errors.Add("InformaticsGateway ExportDestinations destinations can not be null with an Export Task.");
-                return 1;
             }
 
-            var diff = taskDestinationNames.Except(gateway.ExportDestinations).ToList();
+            var diff = taskDestinationNames.Except(gateway?.ExportDestinations).ToList();
             if (!diff.IsNullOrEmpty())
             {
                 foreach (var missingDestination in diff)
                 {
                     Errors.Add($"Task: '{task.Id}' export_destination: '{missingDestination}' must be registered in the informatics_gateway object.");
                 }
-
-                return diff.Count;
             }
-
-            return 0;
         }
 
         private void ValidateExportDestinations(Workflow workflow)
@@ -486,7 +481,7 @@ namespace Monai.Deploy.Common.Validators
             if (emailsSpecified)
             {
                 var emails = currentTask.Args[RecipientEmails] ?? string.Empty;
-                var formattedEmails = emails.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                var formattedEmails = emails.Split(',').Where(e => !string.IsNullOrWhiteSpace(e.Trim()));
 
                 if (!formattedEmails.Any())
                 {
@@ -527,7 +522,7 @@ namespace Monai.Deploy.Common.Validators
             if (rolesSpecified)
             {
                 var roles = currentTask.Args[RecipientRoles] ?? string.Empty;
-                var formattedRoles = roles.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                var formattedRoles = roles.Split(',').Where(r => !string.IsNullOrWhiteSpace(r.Trim()));
 
                 if (!formattedRoles.Any())
                 {
@@ -543,7 +538,7 @@ namespace Monai.Deploy.Common.Validators
             }
 
             var metadataValues = currentTask.Args[MetadataValues] ?? string.Empty;
-            var formattedMetadataValues = metadataValues.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            var formattedMetadataValues = metadataValues.Split(',').Where(m => !string.IsNullOrWhiteSpace(m.Trim()));
 
             if (!formattedMetadataValues.Any())
             {
@@ -551,7 +546,7 @@ namespace Monai.Deploy.Common.Validators
                 return;
             }
 
-            var disallowedTags = _options.Value.DicomTagsDisallowed.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            var disallowedTags = _options.Value.DicomTagsDisallowed.Split(',').Select(t => t.Trim());
             var intersect = formattedMetadataValues.Intersect(disallowedTags);
 
             if (intersect.Any())

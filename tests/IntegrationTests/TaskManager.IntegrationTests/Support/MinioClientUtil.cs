@@ -20,7 +20,7 @@ using Monai.Deploy.TaskManager.IntegrationTests.POCO;
 using Polly;
 using Polly.Retry;
 
-namespace Monai.Deploy.TaskManager.IntegrationTests.Support
+namespace Monai.Deploy.Common.TaskManager.IntegrationTests.Support
 {
 #pragma warning disable CS0618 // Type or member is obsolete
     public class MinioClientUtil
@@ -46,7 +46,7 @@ namespace Monai.Deploy.TaskManager.IntegrationTests.Support
             {
                 try
                 {
-                    if (await Client.BucketExistsAsync(bucketName))
+                    if (await Client.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucketName)))
                     {
                         try
                         {
@@ -59,7 +59,7 @@ namespace Monai.Deploy.TaskManager.IntegrationTests.Support
                             var objs = await Client.ListObjectsAsync(listArgs).ToList();
                             foreach (var obj in objs)
                             {
-                                await Client.RemoveObjectAsync(bucketName, obj.Key);
+                                await Client.RemoveObjectAsync(new RemoveObjectArgs().WithBucket(bucketName).WithObject(obj.Key));
                             }
                         }
                         catch (Exception)
@@ -68,7 +68,7 @@ namespace Monai.Deploy.TaskManager.IntegrationTests.Support
                     }
                     else
                     {
-                        await Client.MakeBucketAsync(bucketName);
+                        await Client.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucketName));
 
                     }
                 }
@@ -97,10 +97,11 @@ namespace Monai.Deploy.TaskManager.IntegrationTests.Support
                         {
                             var relativePath = Path.Combine(folderPath, Path.GetRelativePath(localPath, file));
                             await Client.PutObjectAsync(
-                                TestExecutionConfig.MinioConfig.Bucket,
-                                relativePath.Replace("\\", "/"),
-                                file,
-                                "application/octet-stream");
+                                new PutObjectArgs()
+                                .WithBucket(TestExecutionConfig.MinioConfig.Bucket)
+                                .WithObject(relativePath.Replace("\\", "/"))
+                                .WithFileName(file)
+                                .WithContentType("application/octet-stream"));
                         }
                     }
                     else
@@ -114,11 +115,12 @@ namespace Monai.Deploy.TaskManager.IntegrationTests.Support
                                 { "Test-Metadata", "Test  Test" }
                             };
                             await Client.PutObjectAsync(
-                                TestExecutionConfig.MinioConfig.Bucket,
-                                folderPath,
-                                localPath,
-                                "application/octet-stream",
-                                metaData);
+                                                                new PutObjectArgs()
+                                .WithBucket(TestExecutionConfig.MinioConfig.Bucket)
+                                .WithObject(folderPath)
+                                .WithFileName(localPath)
+                                .WithContentType("application/octet-stream")
+                                .WithHeaders(metaData));
                         }
                     }
                 }
@@ -131,27 +133,27 @@ namespace Monai.Deploy.TaskManager.IntegrationTests.Support
 
         public async Task GetFile(string bucketName, string objectName, string fileName)
         {
-            await Client.GetObjectAsync(bucketName, objectName, fileName);
+            await Client.GetObjectAsync(new GetObjectArgs().WithBucket(bucketName).WithObject(objectName).WithFile(fileName));
         }
 
         public async Task DeleteBucket(string bucketName)
         {
-            bool found = await Client.BucketExistsAsync(bucketName);
+            bool found = await Client.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucketName));
             if (found)
             {
                 await RetryPolicy.ExecuteAsync(async () =>
                 {
-                    await Client.RemoveBucketAsync(bucketName);
+                    await Client.RemoveBucketAsync(new RemoveBucketArgs().WithBucket(bucketName));
                 });
             }
         }
 
         public async Task RemoveObjects(string bucketName, string objectName)
         {
-            bool found = await Client.BucketExistsAsync(bucketName);
+            bool found = await Client.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucketName));
             if (found)
             {
-                await Client.RemoveObjectAsync(bucketName, objectName);
+                await Client.RemoveObjectAsync(new RemoveObjectArgs().WithBucket(bucketName).WithObject(objectName));
             }
         }
     }

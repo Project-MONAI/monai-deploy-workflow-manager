@@ -185,6 +185,7 @@ namespace Monai.Deploy.Common.WorkfowExecuter.Common
             Guard.Against.NullOrWhiteSpace(correlationId, nameof(correlationId));
             Guard.Against.NullOrEmpty(dicomImages, nameof(dicomImages));
             Guard.Against.NullOrEmpty(exportDestinations, nameof(exportDestinations));
+            plugins ??= new List<string>();
 
             var request = new ExportRequestEvent
             {
