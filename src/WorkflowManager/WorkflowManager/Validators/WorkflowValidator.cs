@@ -179,13 +179,12 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private int CheckDestinationInMigDestinations(TaskObject task, InformaticsGateway gateway)
+        private void CheckDestinationInMigDestinations(TaskObject task, InformaticsGateway gateway)
         {
             var taskDestinationNames = task.ExportDestinations.Select(td => td.Name);
             if (taskDestinationNames.Any() && (gateway?.ExportDestinations?.IsNullOrEmpty() ?? true))
             {
                 Errors.Add("InformaticsGateway ExportDestinations destinations can not be null with an Export Task.");
-                return 1;
             }
 
             var diff = taskDestinationNames.Except(gateway?.ExportDestinations).ToList();
@@ -195,10 +194,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
                 {
                     Errors.Add($"Task: '{task.Id}' export_destination: '{missingDestination}' must be registered in the informatics_gateway object.");
                 }
-
-                return diff.Count;
             }
-            return 0;
         }
 
         private void ValidateExportDestinations(Workflow workflow)
@@ -619,7 +615,6 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
 
             ValidateInputs(currentTask);
-
         }
 
         private void ValidateExternalAppTask(Workflow workflow, TaskObject currentTask)

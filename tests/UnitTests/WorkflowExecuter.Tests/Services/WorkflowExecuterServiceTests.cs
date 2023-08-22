@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
@@ -36,6 +37,7 @@ using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Database;
 using Monai.Deploy.WorkflowManager.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Database.Repositories;
 using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.Storage.Services;
 using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
@@ -43,6 +45,7 @@ using Monai.Deploy.WorkflowManager.WorkfowExecuter.Services;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
+using Message = Monai.Deploy.Messaging.Messages.Message;
 
 namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 {
@@ -113,6 +116,60 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
                                                                   _artifactMapper.Object,
                                                                   _storageService.Object,
                                                                   _payloadService.Object);
+        }
+
+        [Fact]
+        public async Task WorkflowExecuterService_Throw_If_No_Config()
+        {
+            var dicom = new Mock<IDicomService>();
+            var logger = new Mock<ILogger<ConditionalParameterParser>>();
+
+            var conditionalParser = new ConditionalParameterParser(logger.Object,
+                                                       dicom.Object,
+                                                       _workflowInstanceService.Object,
+                                                       _payloadService.Object,
+                                                       _workflowService.Object);
+
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            Assert.Throws<ArgumentNullException>(() => new WorkflowExecuterService(_logger.Object,
+                                                                  null,
+                                                                  _storageConfiguration,
+                                                                  _workflowRepository.Object,
+                                                                  _workflowInstanceRepository.Object,
+                                                                  _messageBrokerPublisherService.Object,
+                                                                  _workflowInstanceService.Object,
+                                                                  conditionalParser,
+                                                                  _taskExecutionStatsRepository.Object,
+                                                                  _artifactMapper.Object,
+                                                                  _storageService.Object,
+                                                                  _payloadService.Object));
+
+        }
+
+        [Fact]
+        public async Task WorkflowExecuterService_Throw_If_No_Storage_Config()
+        {
+            var dicom = new Mock<IDicomService>();
+            var logger = new Mock<ILogger<ConditionalParameterParser>>();
+
+            var conditionalParser = new ConditionalParameterParser(logger.Object,
+                                                       dicom.Object,
+                                                       _workflowInstanceService.Object,
+                                                       _payloadService.Object,
+                                                       _workflowService.Object);
+
+            Assert.Throws<ArgumentNullException>(() => new WorkflowExecuterService(_logger.Object,
+                                                                  _configuration,
+                                                                  null,
+                                                                  _workflowRepository.Object,
+                                                                  _workflowInstanceRepository.Object,
+                                                                  _messageBrokerPublisherService.Object,
+                                                                  _workflowInstanceService.Object,
+                                                                  conditionalParser,
+                                                                  _taskExecutionStatsRepository.Object,
+                                                                  _artifactMapper.Object,
+                                                                  _storageService.Object,
+                                                                  _payloadService.Object));
         }
 
         [Fact]
@@ -2685,5 +2742,114 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecuter.Tests.Services
 
             response.Should().BeTrue();
         }
+
+        [Fact]
+        public async Task ProcessPayload_With_WorkflowInstanceId_Continues()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var correlationId = Guid.NewGuid().ToString();
+
+            var exportEvent = new ExportCompleteEvent
+            {
+                WorkflowInstanceId = workflowInstanceId,
+                ExportTaskId = "pizza",
+                Status = ExportStatus.Success,
+                Message = "This is a message"
+            };
+
+            var workflowId = Guid.NewGuid().ToString();
+
+            var workflow = new WorkflowRevision
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = workflowId,
+                Revision = 1,
+                Workflow = new Workflow
+                {
+                    Name = "Workflowname2",
+                    Description = "Workflowdesc2",
+                    Version = "1",
+                    InformaticsGateway = new InformaticsGateway
+                    {
+                        AeTitle = "aetitle"
+                    },
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject {
+                            Id = "pizza",
+                            Type = ValidationConstants.ExportTaskType,
+                            Description = "taskdesc",
+                            TaskDestinations = new TaskDestination[]
+                            {
+                                new TaskDestination
+                                {
+                                    Name = "coffee"
+                                },
+                                new TaskDestination
+                                {
+                                    Name = "doughnuts"
+                                }
+                            }
+                        },
+                        new TaskObject {
+                            Id = "coffee",
+                            Type = "type",
+                            Description = "taskdesc"
+                        },
+                        new TaskObject {
+                            Id = "doughnuts",
+                            Type = "type",
+                            Description = "taskdesc",
+                        }
+                    }
+                }
+            };
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = "pizza",
+                            Status = TaskExecutionStatus.Created
+                        },
+                        new TaskExecution
+                        {
+                            TaskId = "coffee",
+                            Status = TaskExecutionStatus.Created
+                        }
+                    }
+            };
+
+            var payload = new Payload { PatientDetails = new PatientDetails { } };
+
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(payload);
+
+            var mess = new WorkflowRequestEvent { WorkflowInstanceId = workflowInstance.Id, TaskId = "coffee" };
+
+
+            var response = await WorkflowExecuterService.ProcessPayload(mess, payload);
+
+            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.TaskDispatchRequest, It.IsAny<Message>()), Times.Exactly(0));
+            _taskExecutionStatsRepository.Verify(w => w.UpdateExecutionStatsAsync(It.IsAny<TaskExecution>(), workflowId, TaskExecutionStatus.Succeeded));
+            _workflowInstanceRepository.Verify(w => w.UpdateTaskStatusAsync(workflowInstanceId, "coffee", TaskExecutionStatus.Succeeded));
+
+            response.Should().BeTrue();
+
+            _workflowRepository.Verify(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>()), Times.Never());
+            _workflowRepository.Verify(w => w.GetWorkflowsForWorkflowRequestAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
     }
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 }
