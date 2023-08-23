@@ -21,21 +21,21 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Contracts.Responses;
-using Monai.Deploy.WorkflowManager.ControllersShared;
-using Monai.Deploy.WorkflowManager.Shared.Services;
-using Monai.Deploy.WorkflowManager.Validators;
-using Monai.Deploy.WorkflowManager.Shared.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Responses;
+using Monai.Deploy.WorkflowManager.Common.ControllersShared;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.Validators;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
 using Moq;
 using Xunit;
-using Monai.Deploy.WorkflowManager.Shared.Filter;
-using Monai.Deploy.WorkflowManager.Services.InformaticsGateway;
-using Monai.Deploy.WorkflowManager.Common.Exceptions;
+using Monai.Deploy.WorkflowManager.Common.Services.InformaticsGateway;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Exceptions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
 
-namespace Monai.Deploy.WorkflowManager.Test.Controllers
+namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
 {
     public class WorkflowsControllerTests
     {
@@ -48,7 +48,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         private readonly Mock<ILogger<WorkflowValidator>> _loggerWorkflowValidator;
         private readonly Mock<IUriService> _uriService;
         private readonly IOptions<WorkflowManagerOptions> _options;
-
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
         public WorkflowsControllerTests()
         {
             _options = Options.Create(
@@ -1232,4 +1234,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             Assert.Equal(200, objectResult.StatusCode);
         }
     }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 }

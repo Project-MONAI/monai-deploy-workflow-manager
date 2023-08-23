@@ -28,7 +28,7 @@ using k8s.Models;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.SharedTest;
+using Monai.Deploy.WorkflowManager.Common.SharedTest;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
 using Moq;
@@ -471,7 +471,6 @@ public class ArgoPluginTest : ArgoPluginTestBase
         Assert.NotNull(objNodeInfo);
 #pragma warning disable CS8604 // Possible null reference argument.
         var nodeInfo = ValiateCanConvertToDictionary(objNodeInfo);
-#pragma warning restore CS8604 // Possible null reference argument.
 
         Assert.Equal(7, nodeInfo.Values.Count);
         Assert.Equal("{\"id\":\"firstId\"}", nodeInfo["nodes.first"]);
@@ -665,11 +664,12 @@ public class ArgoPluginTest : ArgoPluginTestBase
         var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
 
         Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         Assert.Equal(MessageGeneratorContainerCpuLimit, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).Container.Resources.Limits["cpu"]);
         Assert.Equal(MessageGeneratorContainerMemoryLimit, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).Container.Resources.Limits["memory"]);
         Assert.Equal(expectedPodSpecPatch, _submittedArgoTemplate?.Spec.Templates.FirstOrDefault(p => p.Name == Strings.ExitHookTemplateSendTemplateName).PodSpecPatch);
     }
-
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
     [Theory(DisplayName = "TTL gets extended if too short")]
     [InlineData(31, 31, 29)]
     [InlineData(1, null, null)]
@@ -1173,3 +1173,4 @@ public class ArgoPluginTest : ArgoPluginTestBase
                        It.IsAny<IReadOnlyDictionary<string, IReadOnlyList<string>>>(),
                        It.IsAny<CancellationToken>()));
 }
+#pragma warning restore CS8604 // Possible null reference argument.

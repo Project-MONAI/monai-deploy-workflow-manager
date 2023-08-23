@@ -20,7 +20,7 @@ using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
 using Polly;
 using Polly.Retry;
 
-namespace Monai.Deploy.Common.TaskManager.IntegrationTests.Support
+namespace Monai.Deploy.WorkflowManager.Common.TaskManager.IntegrationTests.Support
 {
 #pragma warning disable CS0618 // Type or member is obsolete
     public class MinioClientUtil

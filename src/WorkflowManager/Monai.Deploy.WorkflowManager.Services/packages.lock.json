@@ -713,7 +713,7 @@
           "Monai.Deploy.WorkflowManager.Storage": "[1.0.0, )"
         }
       },
-      "monai.deploy.workflowmanager.configuration": {
+      "monai.deploy.workflowmanager.common.configuration": {
         "type": "Project",
         "dependencies": {
           "Monai.Deploy.Messaging": "[0.1.25, )",

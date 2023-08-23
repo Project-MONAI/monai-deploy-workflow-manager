@@ -36,8 +36,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Shared\Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj" />
-		<ProjectReference Include="..\..\Shared\Shared\Monai.Deploy.WorkflowManager.Shared.csproj" />
+		<ProjectReference Include="..\..\Common\Configuration\Monai.Deploy.WorkflowManager.Common.Configuration.csproj" />
+		<ProjectReference Include="..\..\Common\Miscellaneous\Monai.Deploy.WorkflowManager.Common.Miscellaneous.csproj" />
 		<ProjectReference Include="..\Common\Monai.Deploy.WorkflowManager.Common.csproj" />
 		<ProjectReference Include="..\ConditionsResolver\Monai.Deploy.WorkflowManager.ConditionsResolver.csproj" />
 		<ProjectReference Include="..\Contracts\Monai.Deploy.WorkflowManager.Contracts.csproj" />

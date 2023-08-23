@@ -20,7 +20,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
     {
         public static TaskDispatchTestData GetTaskDispatchByName(string name)
         {
-            var taskDispatchTestData = TaskDispatchesTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));
+            var taskDispatchTestData = TaskDispatchesTestData.TestData.FirstOrDefault(c => c.Name!.Contains(name));
 
             if (taskDispatchTestData != null)
             {

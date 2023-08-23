@@ -18,27 +18,27 @@ using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
+namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
 {
     public class GenerateTaskUpdateEventParams
     {
-        public string CorrelationId { get; set; }
+        public string CorrelationId { get; set; } = "";
 
-        public string ExecutionId { get; set; }
+        public string ExecutionId { get; set; } = "";
 
-        public string WorkflowInstanceId { get; set; }
+        public string WorkflowInstanceId { get; set; } = "";
 
-        public string TaskId { get; set; }
+        public string TaskId { get; set; } = "";
 
         public FailureReason FailureReason { get; set; }
 
         public TaskExecutionStatus TaskExecutionStatus { get; set; }
 
-        public Dictionary<string, string> Stats { get; set; }
+        public Dictionary<string, string> Stats { get; set; } = new();
 
-        public string Errors { get; set; }
+        public string Errors { get; set; } = "";
     }
 
     public static class EventMapper
@@ -170,16 +170,23 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             };
         }
 
-        public static ExportRequestEvent ToExportRequestEvent(IList<string> dicomImages, string[] exportDestinations, string taskId, string workflowInstanceId, string correlationId, List<string>? plugins = null)
+        public static ExportRequestEvent ToExportRequestEvent(
+            IList<string> dicomImages,
+            string[] exportDestinations,
+            string taskId,
+            string workflowInstanceId,
+            string correlationId,
+            List<string>? plugins = null)
         {
+            plugins ??= new List<string>();
+
             Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));
             Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
             Guard.Against.NullOrWhiteSpace(correlationId, nameof(correlationId));
             Guard.Against.NullOrEmpty(dicomImages, nameof(dicomImages));
             Guard.Against.NullOrEmpty(exportDestinations, nameof(exportDestinations));
-            plugins ??= new List<string>();
 
-            var Event = new ExportRequestEvent
+            var request = new ExportRequestEvent
             {
                 WorkflowInstanceId = workflowInstanceId,
                 ExportTaskId = taskId,
@@ -187,8 +194,8 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
                 Files = dicomImages,
                 Destinations = exportDestinations
             };
-            Event.PluginAssemblies.AddRange(plugins);
-            return Event;
+            request.PluginAssemblies.AddRange(plugins);
+            return request;
         }
     }
 }

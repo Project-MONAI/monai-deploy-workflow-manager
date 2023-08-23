@@ -31,8 +31,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
         private string Exchange { get; set; }
 
         private string RoutingKey { get; set; }
-
-        public T GetMessage<T>()
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+        public T? GetMessage<T>()
         {
             using (var channel = RabbitConnectionFactory.Connection?.CreateModel())
             {
@@ -55,4 +57,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             return default;
         }
     }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 }

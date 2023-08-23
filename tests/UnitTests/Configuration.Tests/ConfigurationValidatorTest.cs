@@ -16,11 +16,11 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.InformaticsGateway.SharedTest;
+using Monai.Deploy.WorkflowManager.SharedTest;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Configuration.Tests
+namespace Monai.Deploy.WorkflowManager.Common.Configuration.Tests
 {
     public class ConfigurationValidatorTest
     {

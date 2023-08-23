@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
+namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Resolver
 {
     /// <summary>
     /// Group Keywords or Operators

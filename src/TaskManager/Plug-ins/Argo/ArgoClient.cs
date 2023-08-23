@@ -40,7 +40,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         }
 
-        public async Task<Workflow> Argo_GetWorkflowAsync(string argoNamespace, string name, string getOptions_resourceVersion, string fields, CancellationToken cancellationToken)
+        public async Task<Workflow?> Argo_GetWorkflowAsync(string argoNamespace, string name, string? getOptions_resourceVersion, string? fields, CancellationToken cancellationToken)
         {
             Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
             Guard.Against.Null(name, nameof(name));
@@ -91,7 +91,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             return await SendRequest<Workflow>(content, urlBuilder, Method, new CancellationToken()).ConfigureAwait(false);
         }
 
-        public async Task<WorkflowTemplate> Argo_GetWorkflowTemplateAsync(string argoNamespace, string name, string getOptions_resourceVersion)
+        public async Task<WorkflowTemplate?> Argo_GetWorkflowTemplateAsync(string argoNamespace, string name, string? getOptions_resourceVersion)
         {
             Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
             Guard.Against.Null(name, nameof(name));
@@ -116,7 +116,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             return await GetRequest<Version>(urlBuilder).ConfigureAwait(false);
         }
 
-        public async Task<string?> Argo_Get_WorkflowLogsAsync(string argoNamespace, string name, string podName, string logOptions_container)
+        public async Task<string?> Argo_Get_WorkflowLogsAsync(string argoNamespace, string name, string? podName, string logOptions_container)
         {
             Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
             Guard.Against.Null(name, nameof(name));
@@ -124,7 +124,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflows/{argoNamespace}/{name}/log?");
 
-            if (podName != null)
+            if (string.IsNullOrWhiteSpace(podName) is false)
             {
                 urlBuilder.Append(Uri.EscapeDataString("podName") + "=").Append(Uri.EscapeDataString(ConvertToString(podName, CultureInfo.InvariantCulture))).Append('&');
             }
@@ -385,7 +385,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             if (response == null || response.Content == null)
             {
-                return new ObjectResponseResult<string>(default, string.Empty);
+                return new ObjectResponseResult<string>(string.Empty, string.Empty);
             }
 
             try
@@ -398,7 +398,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 var jsonBody = $"[{string.Join(",", rows)}]";
 
                 var typedBody = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<ArgoLogEntryResult>>(jsonBody);
-                var outputLogs = string.Join("\n", typedBody.Select(b => b.Result.Content));
+                var outputLogs = string.Join("\n", typedBody?.Select(b => b.Result.Content) ?? Array.Empty<string>());
                 return new ObjectResponseResult<string>(outputLogs, string.Empty);
 
             }

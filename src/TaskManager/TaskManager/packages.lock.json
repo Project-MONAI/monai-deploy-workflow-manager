@@ -1589,27 +1589,27 @@
         "resolved": "0.6.2",
         "contentHash": "jPao/LdUNLUz8rn3H1D8W7wQbZsRZM0iayvWI4xGejJg3XJHT56gcmYdgmCGPdJF1UEBqUjucCRrFB+4HbJsbw=="
       },
-      "monai.deploy.workflowmanager.configuration": {
+      "Monai.Deploy.WorkflowManager.Common.configuration": {
         "type": "Project",
         "dependencies": {
           "Monai.Deploy.Messaging": "[0.1.25, )",
           "Monai.Deploy.Storage": "[0.2.18, )"
         }
       },
-      "monai.deploy.workflowmanager.shared": {
+      "Monai.Deploy.WorkflowManager.Common.miscellaneous": {
         "type": "Project",
         "dependencies": {
           "Ardalis.GuardClauses": "[4.1.1, )",
           "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.21, )",
-          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
           "fo-dicom": "[5.0.3, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.aideclinicalreview": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Shared": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Miscellaneous": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )"
         }
       },
@@ -1626,8 +1626,8 @@
         "dependencies": {
           "KubernetesClient": "[10.1.4, )",
           "Microsoft.AspNetCore.Mvc.Core": "[2.2.5, )",
-          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Shared": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Miscellaneous": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )"
         }
       },
@@ -1642,15 +1642,15 @@
         "type": "Project",
         "dependencies": {
           "Docker.DotNet": "[3.125.13, )",
-          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.taskmanager.email": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Shared": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Miscellaneous": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )",
           "fo-dicom": "[5.0.3, )"
         }

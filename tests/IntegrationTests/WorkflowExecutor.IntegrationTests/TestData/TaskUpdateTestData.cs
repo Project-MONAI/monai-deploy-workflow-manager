@@ -16,7 +16,7 @@
 
 using Monai.Deploy.Messaging.Events;
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.TestData
 {
     public class TaskUpdateTestData
     {

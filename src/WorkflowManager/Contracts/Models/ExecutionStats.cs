@@ -16,7 +16,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using Monai.Deploy.WorkflowManager.Contracts.Migrations;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Migrations;
 using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
 using Mongo.Migration.Documents;
@@ -24,7 +24,7 @@ using Mongo.Migration.Documents.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Models
+namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
     [CollectionLocation("ExecutionStats"), RuntimeVersion("1.0.1")]
     public class ExecutionStats : IDocument

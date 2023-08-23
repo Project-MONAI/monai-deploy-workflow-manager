@@ -42,7 +42,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                     { "CreationDateTime", message.CreationDateTime.ToString("o") }
                 };
 
-                var properties = channel.CreateBasicProperties();
+                var properties = channel!.CreateBasicProperties();
                 properties.Persistent = true;
                 properties.ContentType = message.ContentType;
                 properties.MessageId = message.MessageId;

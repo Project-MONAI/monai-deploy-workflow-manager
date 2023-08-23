@@ -20,11 +20,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.Shared;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 
-namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
+namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
 {
     public class PayloadListenerService : IHostedService, IMonaiService, IDisposable
     {
@@ -105,7 +105,6 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             _messageSubscriber.SubscribeAsync(ExportCompleteRoutingKey, ExportCompleteRoutingKey, OnExportCompleteReceivedCallback);
             _logger.EventSubscription(ServiceName, ExportCompleteRoutingKey);
         }
-
         private async Task OnWorkflowRequestReceivedCallbackAsync(MessageReceivedEventArgs eventArgs)
         {
 

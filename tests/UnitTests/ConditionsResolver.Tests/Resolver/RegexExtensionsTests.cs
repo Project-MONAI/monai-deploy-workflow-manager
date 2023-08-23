@@ -16,10 +16,10 @@
 
 using System;
 using System.Text.RegularExpressions;
-using Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions;
+using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Extensions;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
+namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Tests.Resolver
 {
     public class RegexExtensionsTests
     {

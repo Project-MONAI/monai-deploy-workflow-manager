@@ -16,7 +16,7 @@
 
 using Argo;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
 using Newtonsoft.Json;
 

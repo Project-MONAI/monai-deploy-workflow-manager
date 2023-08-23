@@ -19,13 +19,13 @@ using System.Text;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.Storage.Constants;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.Storage.Constants;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Monai.Deploy.WorkflowManager.Storage.Services
+namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 {
     public class DicomService : IDicomService
     {

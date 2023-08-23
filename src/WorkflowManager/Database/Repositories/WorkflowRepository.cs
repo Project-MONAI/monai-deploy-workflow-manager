@@ -20,13 +20,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Database.Options;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Database.Options;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-namespace Monai.Deploy.WorkflowManager.Database.Repositories
+namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 {
     public class WorkflowRepository : RepositoryBase, IWorkflowRepository
     {
@@ -63,10 +63,12 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
                 {
                     Name = "AeTitleIndex"
                 };
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 var model = new CreateIndexModel<WorkflowRevision>(
                     Builders<WorkflowRevision>.IndexKeys.Ascending(s => s.Workflow.InformaticsGateway.AeTitle),
                     options
                     );
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
                 await _workflowCollection.Indexes.CreateOneAsync(model);
             }

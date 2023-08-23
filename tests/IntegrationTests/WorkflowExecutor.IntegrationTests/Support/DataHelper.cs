@@ -15,17 +15,17 @@
  */
 
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
-using Monai.Deploy.WorkflowManager.Models;
-using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Models;
+using Monai.Deploy.WorkflowManager.Common.Models;
+using Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.TestData;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
 {
     public class DataHelper
     {
@@ -52,7 +52,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         public TaskDispatchEvent TaskDispatchEvent { get; set; }
         public TaskCallbackEvent TaskCallbackEvent { get; set; }
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public DataHelper(RabbitConsumer taskDispatchConsumer, RabbitConsumer exportRequestConsumer, MongoClientUtil mongoClient)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             ExportRequestConsumer = exportRequestConsumer;
             TaskDispatchConsumer = taskDispatchConsumer;

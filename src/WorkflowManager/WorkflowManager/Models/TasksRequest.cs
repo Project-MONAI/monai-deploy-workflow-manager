@@ -16,7 +16,7 @@
 
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkflowManager.Models
+namespace Monai.Deploy.WorkflowManager.Common.Models
 {
     /// <summary>
     /// TasksRequest model.

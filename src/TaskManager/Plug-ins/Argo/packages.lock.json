@@ -1180,19 +1180,19 @@
         "resolved": "13.0.1",
         "contentHash": "E1e/xFXB+Cbn7pLVlr+8E3nemEitIReVgmAMMMveADvZvXGuSGHP+1Cg6oA+SUfwXHfaXLQn4STCaPKtdIJkWA=="
       },
-      "monai.deploy.workflowmanager.configuration": {
+      "Monai.Deploy.WorkflowManager.Common.configuration": {
         "type": "Project",
         "dependencies": {
           "Monai.Deploy.Messaging": "[0.1.25, )",
           "Monai.Deploy.Storage": "[0.2.18, )"
         }
       },
-      "monai.deploy.workflowmanager.shared": {
+      "Monai.Deploy.WorkflowManager.Common.miscellaneous": {
         "type": "Project",
         "dependencies": {
           "Ardalis.GuardClauses": "[4.1.1, )",
           "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.21, )",
-          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
           "fo-dicom": "[5.0.3, )"
         }
       },

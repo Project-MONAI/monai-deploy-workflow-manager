@@ -23,9 +23,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
     {
         Task<Workflow> Argo_CreateWorkflowAsync(string argoNamespace, WorkflowCreateRequest body, CancellationToken cancellationToken);
 
-        Task<Workflow> Argo_GetWorkflowAsync(string argoNamespace, string name, string getOptions_resourceVersion, string fields, CancellationToken cancellationToken);
+        Task<Workflow?> Argo_GetWorkflowAsync(string argoNamespace, string name, string? getOptions_resourceVersion, string? fields, CancellationToken cancellationToken);
 
-        Task<WorkflowTemplate> Argo_GetWorkflowTemplateAsync(string argoNamespace, string name, string getOptions_resourceVersion);
+        Task<WorkflowTemplate?> Argo_GetWorkflowTemplateAsync(string argoNamespace, string name, string? getOptions_resourceVersion);
 
         Task<Workflow> Argo_StopWorkflowAsync(string argoNamespace, string name, WorkflowStopRequest body);
 
@@ -33,7 +33,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         Task<Version?> Argo_GetVersionAsync();
 
-        Task<string?> Argo_Get_WorkflowLogsAsync(string argoNamespace, string name, string podName, string logOptions_container);
+        Task<string?> Argo_Get_WorkflowLogsAsync(string argoNamespace, string name, string? podName, string logOptions_container);
 
         Task<WorkflowTemplate> Argo_CreateWorkflowTemplateAsync(string argoNamespace, WorkflowTemplateCreateRequest body, CancellationToken cancellationToken);
 

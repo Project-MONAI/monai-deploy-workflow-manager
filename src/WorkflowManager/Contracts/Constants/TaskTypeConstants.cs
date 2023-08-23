@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Constants
+namespace Monai.Deploy.WorkflowManager.Common.Contracts.Constants
 {
     public static class TaskTypeConstants
     {
@@ -23,6 +23,5 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Constants
         public const string ExportTask = "export";
 
         public const string ExternalAppTask = "remote_app_execution";
-
     }
 }

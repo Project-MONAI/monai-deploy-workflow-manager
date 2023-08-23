@@ -21,7 +21,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Controllers
 {

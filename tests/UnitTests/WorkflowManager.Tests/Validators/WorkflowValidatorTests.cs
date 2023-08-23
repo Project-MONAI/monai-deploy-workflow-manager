@@ -20,16 +20,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Services.InformaticsGateway;
-using Monai.Deploy.WorkflowManager.Validators;
-using MongoDB.Driver.Linq;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Services.InformaticsGateway;
+using Monai.Deploy.WorkflowManager.Common.Validators;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Test.Validators
+namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
 {
     public class WorkflowValidatorTests
     {
@@ -60,6 +59,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
         [Fact]
         public async Task ValidateWorkflow_ValidatesAWorkflow_ReturnsErrorsAndHasCorrectValidationResultsAsync()
         {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             var workflow = new Workflow
             {
                 Name = "Workflowname1",
@@ -597,6 +597,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                     },
                 }
             };
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new WorkflowRevision());
@@ -810,6 +811,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                 }
             };
 
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
 

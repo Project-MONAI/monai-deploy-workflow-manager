@@ -28,14 +28,14 @@ using Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Test.Controllers
+namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
 {
     public class TemplateControllerTests : ArgoPluginTestBase
     {
         private readonly Mock<ILogger<TemplateController>> _tempLogger;
         private readonly Mock<ILogger<ArgoPlugin>> _argoLogger;
 
-        private TemplateController TemplateController { get; set; }
+        private TemplateController? TemplateController { get; set; }
 
         public TemplateControllerTests()
         {

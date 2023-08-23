@@ -23,10 +23,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.TaskManager.API;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Shared;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
@@ -242,7 +241,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
                 // it take sometime for the Argo job to be in the final state after emitting the callback event.
                 var retryCount = 30;
-                while (workflow.Status.Phase.Equals(Strings.ArgoPhaseRunning, StringComparison.OrdinalIgnoreCase) && retryCount-- > 0)
+                while (workflow!.Status.Phase.Equals(Strings.ArgoPhaseRunning, StringComparison.OrdinalIgnoreCase) && retryCount-- > 0)
                 {
                     await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
                     workflow = await client.Argo_GetWorkflowAsync(_namespace, identity, null, null, cancellationToken).ConfigureAwait(false);
@@ -348,8 +347,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                         {
                             preprend = Strings.ExitHookTemplateSendTemplateName;
                         }
+#pragma warning disable CS8604 // Possible null reference argument.
                         stats.Add($"{preprend}podStartTime{podcount}", item.Value.StartedAt is not null ? item.Value.StartedAt.ToString() : "");
                         stats.Add($"{preprend}podFinishTime{podcount++}", item.Value.FinishedAt is not null ? item.Value.FinishedAt.ToString() : "");
+#pragma warning restore CS8604 // Possible null reference argument.
                     }
                 }
             }
@@ -362,17 +363,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             try
             {
 #pragma warning disable CA2254 // Template should be a static expression
-                var logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "init");
+                var logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "init") ?? "";
                 _logger.ArgoLog(logs);
-                logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "wait");
+                logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "wait") ?? "";
                 _logger.ArgoLog(logs);
-                logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "main");
+                logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "main") ?? "";
                 _logger.ArgoLog(logs);
 #pragma warning restore CA2254 // Template should be a static expression
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                int we = 0;
+                // swallow execption on purpose.
             }
         }
 
@@ -533,7 +534,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             workflow.Spec.Templates.Add(exitHookTemplate.GenerateCallbackMessageTemplate(artifact));
         }
 
-        private async Task<WorkflowTemplate> LoadWorkflowTemplate(string workflowTemplateName)
+        private async Task<WorkflowTemplate?> LoadWorkflowTemplate(string workflowTemplateName)
         {
             Guard.Against.NullOrWhiteSpace(workflowTemplateName, nameof(workflowTemplateName));
 
@@ -932,7 +933,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     throw new InvalidOperationException(mess);
                 }
 
-                return await client.Argo_CreateWorkflowTemplateAsync(_namespace, templateCreateRequest, new CancellationToken()).ConfigureAwait(false);
+                return await client.Argo_CreateWorkflowTemplateAsync(_namespace, templateCreateRequest!, new CancellationToken()).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

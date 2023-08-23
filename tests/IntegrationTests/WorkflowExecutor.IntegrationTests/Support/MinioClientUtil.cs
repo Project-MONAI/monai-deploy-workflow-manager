@@ -17,12 +17,12 @@
 using System.Reactive.Linq;
 using Minio;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO;
 using Polly;
 using Polly.Retry;
 using File = System.IO.File;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
 {
     public class MinioClientUtil
     {
@@ -71,6 +71,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     {
                         await Client.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucketName));
                     }
+
                 }
                 catch (Exception e)
                 {
@@ -216,4 +217,5 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }).ConfigureAwait(false);
         }
     }
+#pragma warning restore CS0618 // Type or member is obsolete
 }

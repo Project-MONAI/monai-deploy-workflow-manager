@@ -1995,15 +1995,14 @@
           "Monai.Deploy.Security": "[0.1.3, )",
           "Monai.Deploy.Storage": "[0.2.18, )",
           "Monai.Deploy.Storage.MinIO": "[0.2.18, )",
-          "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Miscellaneous": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Database": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Logging": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.MonaiBackgroundService": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.PayloadListener": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Services": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Shared": "[1.0.0, )",
           "Mongo.Migration": "[3.1.4, )",
           "NLog": "[5.1.2, )",
           "NLog.Web.AspNetCore": "[5.2.2, )",
@@ -2019,6 +2018,22 @@
           "Monai.Deploy.WorkflowManager.Storage": "[1.0.0, )"
         }
       },
+      "monai.deploy.workflowmanager.common.configuration": {
+        "type": "Project",
+        "dependencies": {
+          "Monai.Deploy.Messaging": "[0.1.25, )",
+          "Monai.Deploy.Storage": "[0.2.18, )"
+        }
+      },
+      "monai.deploy.workflowmanager.common.miscellaneous": {
+        "type": "Project",
+        "dependencies": {
+          "Ardalis.GuardClauses": "[4.1.1, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.21, )",
+          "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
+          "fo-dicom": "[5.0.3, )"
+        }
+      },
       "monai.deploy.workflowmanager.conditionsresolver": {
         "type": "Project",
         "dependencies": {
@@ -2026,13 +2041,6 @@
           "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Database": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Storage": "[1.0.0, )"
-        }
-      },
-      "monai.deploy.workflowmanager.configuration": {
-        "type": "Project",
-        "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.25, )",
-          "Monai.Deploy.Storage": "[0.2.18, )"
         }
       },
       "monai.deploy.workflowmanager.contracts": {
@@ -2068,11 +2076,10 @@
       "monai.deploy.workflowmanager.payloadlistener": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Miscellaneous": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Logging": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Shared": "[1.0.0, )",
           "Monai.Deploy.WorkloadManager.WorkfowExecuter": "[1.0.0, )"
         }
       },
@@ -2081,16 +2088,7 @@
         "dependencies": {
           "Microsoft.Extensions.Http": "[3.1.0, )",
           "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )"
-        }
-      },
-      "monai.deploy.workflowmanager.shared": {
-        "type": "Project",
-        "dependencies": {
-          "Ardalis.GuardClauses": "[4.1.1, )",
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.21, )",
-          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
-          "fo-dicom": "[5.0.3, )"
+          "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.storage": {
@@ -2105,12 +2103,12 @@
         "type": "Project",
         "dependencies": {
           "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Miscellaneous": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.ConditionsResolver": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Configuration": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Database": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Logging": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Shared": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Storage": "[1.0.0, )"
         }
       }

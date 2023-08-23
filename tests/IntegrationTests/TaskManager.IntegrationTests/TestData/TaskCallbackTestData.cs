@@ -24,7 +24,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 
         public TaskCallbackEvent? TaskCallbackEvent { get; set; }
     }
-
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
     public static class TaskCallbacksTestData
     {
         public static List<TaskCallbackTestData> TestData = new List<TaskCallbackTestData>()
@@ -172,3 +174,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         };
     }
 }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.

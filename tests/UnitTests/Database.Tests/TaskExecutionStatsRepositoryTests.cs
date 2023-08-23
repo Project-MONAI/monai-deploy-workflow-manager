@@ -21,14 +21,14 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Options;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Database.Tests
+namespace Monai.Deploy.WorkflowManager.Common.Database.Tests
 {
     public class TaskExecutionStatsRepositoryTests
     {
@@ -252,7 +252,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Tests
         }
 
         [Fact]
-        public async Task ExecutionStats_New_TaskCancellationEvent_Should_initialize()
+        public void ExecutionStats_New_TaskCancellationEvent_Should_initialize()
         {
             var collerationId = "colleration";
             var WorkflowInstanceId = "WorkflowInstanceId";
