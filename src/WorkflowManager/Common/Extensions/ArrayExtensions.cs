@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.Common.Miscellaneous.Extensions
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions
 {
     public static class ArrayExtensions
     {

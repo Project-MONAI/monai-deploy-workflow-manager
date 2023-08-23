@@ -18,11 +18,11 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.Common.PayloadListener.Validators;
+using Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators;
 using Moq;
 using NUnit.Framework;
 
-namespace Monai.Deploy.Common.PayloadListener.Tests.Validators
+namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 {
     public class EventPayloadValidatorTests
     {

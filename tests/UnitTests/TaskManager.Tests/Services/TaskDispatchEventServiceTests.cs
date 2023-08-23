@@ -19,13 +19,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.TaskManager.API.Models;
-using Monai.Deploy.TaskManager.Database;
-using Monai.Deploy.TaskManager.Services;
+using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
+using Monai.Deploy.WorkflowManager.TaskManager.Database;
+using Monai.Deploy.WorkflowManager.TaskManager.Services;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.TaskManager.Tests.Services
+namespace Monai.Deploy.WorkflowManager.TaskManager.Tests.Services
 {
     public class TaskDispatchEventServiceTests
     {

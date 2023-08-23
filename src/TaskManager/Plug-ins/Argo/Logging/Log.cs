@@ -16,7 +16,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace Monai.Deploy.TaskManager.Argo.Logging
+namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging
 {
     public static partial class Log
     {

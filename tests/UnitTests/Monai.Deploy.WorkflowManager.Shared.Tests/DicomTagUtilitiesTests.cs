@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.Common.Miscellaneous.Utilities;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Utilities;
 
-namespace Monai.Deploy.Common.Miscellaneous.Tests
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests
 {
     public class DicomTagUtilitiesTests
     {

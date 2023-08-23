@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.Common.WorkfowExecuter.Common
+namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
 {
     public interface IArtifactMapper
     {

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.Common.Miscellaneous.Interfaces;
-using Monai.Deploy.Common.Contracts.Models;
-using Monai.Deploy.Common.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 
-namespace Monai.Deploy.Common.Miscellaneous.Services
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 {
     public class TasksService : ITasksService
     {

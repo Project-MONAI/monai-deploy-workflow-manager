@@ -17,13 +17,13 @@
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.Common.Miscellaneous.Exceptions;
-using Monai.Deploy.Common.Miscellaneous.Interfaces;
-using Monai.Deploy.Common.Contracts.Models;
-using Monai.Deploy.Common.Database.Interfaces;
-using Monai.Deploy.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Exceptions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Logging;
 
-namespace Monai.Deploy.Common.Miscellaneous.Services
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 {
     public class WorkflowInstanceService : IWorkflowInstanceService, IPaginatedApi<WorkflowInstance>
     {

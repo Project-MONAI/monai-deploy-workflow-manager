@@ -16,7 +16,7 @@
 
 using System.Runtime.Serialization;
 
-namespace Monai.Deploy.TaskManager
+namespace Monai.Deploy.WorkflowManager.TaskManager
 {
     [Serializable]
 #pragma warning disable SA1600 // Elements should be documented

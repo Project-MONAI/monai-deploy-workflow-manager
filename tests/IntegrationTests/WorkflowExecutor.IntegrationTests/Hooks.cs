@@ -17,8 +17,8 @@
 using BoDi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Monai.Deploy.Common.IntegrationTests.POCO;
-using Monai.Deploy.Common.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;

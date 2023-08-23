@@ -15,10 +15,10 @@
  */
 
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.Common.WorkfowExecuter.Common;
+using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common;
 using Xunit;
 
-namespace Monai.Deploy.Common.WorkflowExecuter.Tests.Common
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Common
 {
     public class TaskExecutionStatusExtensions
     {

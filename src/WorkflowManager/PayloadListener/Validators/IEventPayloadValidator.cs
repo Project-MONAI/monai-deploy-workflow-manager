@@ -16,7 +16,7 @@
 
 using Monai.Deploy.Messaging.Events;
 
-namespace Monai.Deploy.Common.PayloadListener.Validators
+namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators
 {
     public interface IEventPayloadValidator
     {

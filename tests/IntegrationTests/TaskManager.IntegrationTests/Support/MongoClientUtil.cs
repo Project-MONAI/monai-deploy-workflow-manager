@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.TaskManager.API.Models;
-using Monai.Deploy.TaskManager.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
+using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
 using MongoDB.Driver;
 using Polly;
 using Polly.Retry;
 
-namespace Monai.Deploy.TaskManager.IntegrationTests.Support
+namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 {
     public class MongoClientUtil
     {

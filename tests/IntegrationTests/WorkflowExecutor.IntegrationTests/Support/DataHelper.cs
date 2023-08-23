@@ -15,17 +15,17 @@
  */
 
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.Common.Contracts.Models;
-using Monai.Deploy.Common.IntegrationTests.Models;
-using Monai.Deploy.Common.Models;
-using Monai.Deploy.Common.WorkflowExecutor.IntegrationTests.TestData;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Models;
+using Monai.Deploy.WorkflowManager.Common.Models;
+using Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.TestData;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 
-namespace Monai.Deploy.Common.IntegrationTests.Support
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
 {
     public class DataHelper
     {

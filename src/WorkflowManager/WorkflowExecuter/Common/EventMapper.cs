@@ -18,9 +18,9 @@ using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.Common.WorkfowExecuter.Common
+namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
 {
     public class GenerateTaskUpdateEventParams
     {
@@ -185,7 +185,6 @@ namespace Monai.Deploy.Common.WorkfowExecuter.Common
             Guard.Against.NullOrWhiteSpace(correlationId, nameof(correlationId));
             Guard.Against.NullOrEmpty(dicomImages, nameof(dicomImages));
             Guard.Against.NullOrEmpty(exportDestinations, nameof(exportDestinations));
-            plugins ??= new List<string>();
 
             var request = new ExportRequestEvent
             {

@@ -20,15 +20,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.Common.Miscellaneous.Interfaces;
-using Monai.Deploy.Common.Configuration;
-using Monai.Deploy.Common.Contracts.Models;
-using Monai.Deploy.Common.Services.InformaticsGateway;
-using Monai.Deploy.Common.Validators;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Services.InformaticsGateway;
+using Monai.Deploy.WorkflowManager.Common.Validators;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.Common.Test.Validators
+namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
 {
     public class WorkflowValidatorTests
     {

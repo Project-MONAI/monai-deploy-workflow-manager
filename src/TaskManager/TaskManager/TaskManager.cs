@@ -20,25 +20,25 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.Common.Configuration;
-using Monai.Deploy.Common.Miscellaneous;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.S3Policy.Policies;
-using Monai.Deploy.TaskManager.API;
-using Monai.Deploy.TaskManager.API.Extensions;
-using Monai.Deploy.TaskManager.API.Models;
-using Monai.Deploy.TaskManager.Logging;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
+using Monai.Deploy.WorkflowManager.TaskManager.API;
+using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
+using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
+using Monai.Deploy.WorkflowManager.TaskManager.Logging;
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8604 // Possible null reference argument.
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning disable SA1600 // Elements should be documented
 #pragma warning disable SA1201 // Elements should be documented
-namespace Monai.Deploy.TaskManager
+namespace Monai.Deploy.WorkflowManager.TaskManager
 {
     public class TaskManager : IHostedService, IDisposable, IMonaiService
     {

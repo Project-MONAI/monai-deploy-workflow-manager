@@ -17,9 +17,9 @@ using System.Net.Http.Headers;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
-using Monai.Deploy.TaskManager.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
 
-namespace Monai.Deploy.TaskManager.IntegrationTests.Support
+namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 {
     public static class WebAppFactory
     {

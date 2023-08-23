@@ -15,11 +15,11 @@
  */
 
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.TaskManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
 using Polly;
 using Polly.Retry;
 
-namespace Monai.Deploy.TaskManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class TaskUpdateStepDefinitions

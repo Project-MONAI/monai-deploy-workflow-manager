@@ -16,7 +16,7 @@
 
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.Common.IntegrationTests.Models
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Models
 {
     public class WorkflowRequestMessage
     {

@@ -15,10 +15,10 @@
  */
 
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Monai.Deploy.Common.Miscellaneous;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Moq;
 
-namespace Monai.Deploy.InformaticsGateway.Test.Services.Http
+namespace Monai.Deploy.WorkflowManager.Test.Services.Http
 {
     public class MonaiHealthCheckTests
     {

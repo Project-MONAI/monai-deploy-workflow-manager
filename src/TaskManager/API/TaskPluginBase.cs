@@ -16,7 +16,7 @@
 
 using Monai.Deploy.Messaging.Events;
 
-namespace Monai.Deploy.TaskManager.API
+namespace Monai.Deploy.WorkflowManager.TaskManager.API
 {
     public abstract class TaskPluginBase : ITaskPlugin
     {

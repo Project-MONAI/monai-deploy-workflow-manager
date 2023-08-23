@@ -17,9 +17,9 @@
 using Ardalis.GuardClauses;
 using IdentityModel.Client;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.TaskManager.Argo.Logging;
+using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
 
-namespace Monai.Deploy.TaskManager.Argo
+namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
 #pragma warning disable CA1054 // URI-like parameters should not be strings
 

@@ -18,7 +18,7 @@ using System.Reflection;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Monai.Deploy.TaskManager.API.Extensions
+namespace Monai.Deploy.WorkflowManager.TaskManager.API.Extensions
 {
     public static class TypeExtensions
     {

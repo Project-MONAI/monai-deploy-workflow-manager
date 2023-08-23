@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.Common.Miscellaneous.Interfaces
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces
 {
     public interface IWorkflowService : IPaginatedApi<WorkflowRevision>
     {

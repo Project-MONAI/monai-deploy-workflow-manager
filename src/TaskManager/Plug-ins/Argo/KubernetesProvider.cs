@@ -16,9 +16,9 @@
 
 using k8s;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.TaskManager.Argo.Logging;
+using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
 
-namespace Monai.Deploy.TaskManager.Argo
+namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
     public class KubernetesProvider : IKubernetesProvider
     {

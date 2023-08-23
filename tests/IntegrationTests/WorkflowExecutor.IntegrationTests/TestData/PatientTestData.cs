@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.Common.WorkflowExecutor.IntegrationTests.TestData
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.TestData
 {
     public class PatientTestData
     {

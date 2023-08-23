@@ -16,7 +16,7 @@
 
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.TaskManager.AideClinicalReview.Models
+namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Models
 {
     public class PatientMetadata
     {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.TaskManager.Argo
+namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
     public static class Strings
     {

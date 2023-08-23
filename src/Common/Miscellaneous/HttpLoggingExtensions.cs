@@ -18,7 +18,7 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Monai.Deploy.Common.Miscellaneous
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
 {
     public static class HttpLoggingExtensions
     {

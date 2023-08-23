@@ -16,7 +16,7 @@
 
 using System;
 
-namespace Monai.Deploy.Common.Contracts.Models
+namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
 
     public class ExecutionStatDTO

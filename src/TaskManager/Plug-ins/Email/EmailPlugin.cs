@@ -23,13 +23,13 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.Common.Configuration;
-using Monai.Deploy.TaskManager.API;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.Common.Miscellaneous;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Monai.Deploy.TaskManager.Email
+namespace Monai.Deploy.WorkflowManager.TaskManager.Email
 {
     public class EmailPlugin : TaskPluginBase
     {

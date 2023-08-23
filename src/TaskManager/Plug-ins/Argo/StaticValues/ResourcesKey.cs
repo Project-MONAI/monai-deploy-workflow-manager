@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.TaskManager.Argo.StaticValues
+namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
 {
     public struct ResourcesKey
     {

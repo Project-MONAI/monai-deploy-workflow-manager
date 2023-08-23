@@ -25,7 +25,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.API;
 
-namespace Monai.Deploy.Common.Tests
+namespace Monai.Deploy.WorkflowManager.Common.Tests
 {
     internal class DummyStorageRegistrar : ServiceRegistrationBase
     {

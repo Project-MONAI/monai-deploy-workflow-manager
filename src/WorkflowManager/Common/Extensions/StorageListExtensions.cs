@@ -16,7 +16,7 @@
 
 using Ardalis.GuardClauses;
 
-namespace Monai.Deploy.Common.Miscellaneous.Extensions
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions
 {
     public static class StorageListExtensions
     {

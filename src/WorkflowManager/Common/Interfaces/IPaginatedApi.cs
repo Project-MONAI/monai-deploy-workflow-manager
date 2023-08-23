@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.Common.Miscellaneous.Interfaces
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces
 {
     public interface IPaginatedApi<T>
     {

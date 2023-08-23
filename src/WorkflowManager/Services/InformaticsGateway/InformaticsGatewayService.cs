@@ -17,10 +17,10 @@
 using System.Net;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.Common.Miscellaneous.Exceptions;
-using Monai.Deploy.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Exceptions;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
 
-namespace Monai.Deploy.Common.Services.InformaticsGateway
+namespace Monai.Deploy.WorkflowManager.Common.Services.InformaticsGateway
 {
     public class InformaticsGatewayService : IInformaticsGatewayService
     {

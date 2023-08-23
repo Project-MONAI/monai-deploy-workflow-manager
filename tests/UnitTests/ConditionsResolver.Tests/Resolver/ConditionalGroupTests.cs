@@ -15,10 +15,10 @@
  */
 
 using System;
-using Monai.Deploy.Common.ConditionsResolver.Resolver;
+using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Resolver;
 using Xunit;
 
-namespace Monai.Deploy.Common.ConditionsResolver.Tests.Resolver
+namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Tests.Resolver
 {
     public class ConditionalGroupTests
     {

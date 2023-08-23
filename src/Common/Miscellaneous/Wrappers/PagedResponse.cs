@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.Common.Miscellaneous.Services;
-using Monai.Deploy.Common.Miscellaneous.Filter;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
 
-namespace Monai.Deploy.Common.Miscellaneous.Wrappers
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers
 {
     /// <summary>
     /// Paged Response for use with paginations.

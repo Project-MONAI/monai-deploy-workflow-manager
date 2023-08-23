@@ -15,7 +15,7 @@
  */
 using Microsoft.Extensions.Configuration;
 
-namespace Monai.Deploy.Common.Configuration
+namespace Monai.Deploy.WorkflowManager.Common.Configuration
 {
     public class PagedOptions
     {

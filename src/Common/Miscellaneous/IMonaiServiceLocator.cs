@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.Common.Miscellaneous
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
 {
     public interface IMonaiServiceLocator
     {

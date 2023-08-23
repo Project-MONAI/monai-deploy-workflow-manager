@@ -16,7 +16,7 @@
 
 using Monai.Deploy.Messaging.Events;
 
-namespace Monai.Deploy.TaskManager.IntegrationTests
+namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 {
     public class TaskDispatchTestData
     {

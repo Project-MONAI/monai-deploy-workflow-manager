@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.Common.Miscellaneous.Filter;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
 
-namespace Monai.Deploy.Common.Miscellaneous.Services
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 {
     /// <summary>
     /// Uri Serivce.

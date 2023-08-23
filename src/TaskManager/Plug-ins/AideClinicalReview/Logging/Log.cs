@@ -16,7 +16,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace Monai.Deploy.TaskManager.AideClinicalReview.Logging
+namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Logging
 {
     public static partial class Log
     {

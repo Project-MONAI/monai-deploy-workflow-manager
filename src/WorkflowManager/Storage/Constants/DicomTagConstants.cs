@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.Common.Storage.Constants
+namespace Monai.Deploy.WorkflowManager.Common.Storage.Constants
 {
     public static class DicomTagConstants
     {

@@ -16,9 +16,9 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
 
-namespace Monai.Deploy.Common.ControllersShared
+namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
 {
     /// <summary>
     /// Base authenticated api controller base.

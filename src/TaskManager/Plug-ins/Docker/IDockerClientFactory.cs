@@ -16,7 +16,7 @@
 
 using Docker.DotNet;
 
-namespace Monai.Deploy.TaskManager.Docker
+namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 {
     public interface IDockerClientFactory
     {

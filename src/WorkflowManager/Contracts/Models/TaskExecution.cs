@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using Monai.Deploy.Messaging.Events;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.Common.Contracts.Models
+namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
     public class TaskExecution
     {

@@ -19,13 +19,13 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.Common.Miscellaneous.Services;
-using Monai.Deploy.Common.Configuration;
-using Monai.Deploy.Common.Contracts.Models;
-using Monai.Deploy.Common.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Moq;
 
-namespace Monai.Deploy.Common.MonaiBackgroundService.Tests
+namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService.Tests
 {
     public class WorkerTests
     {

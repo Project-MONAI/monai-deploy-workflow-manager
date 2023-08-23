@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.Common.Services.InformaticsGateway
+namespace Monai.Deploy.WorkflowManager.Common.Services.InformaticsGateway
 {
     public interface IInformaticsGatewayService
     {

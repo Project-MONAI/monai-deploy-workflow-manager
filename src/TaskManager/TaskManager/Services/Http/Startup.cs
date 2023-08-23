@@ -23,11 +23,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Monai.Deploy.Common.Miscellaneous;
 using Monai.Deploy.Security.Authentication.Extensions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Newtonsoft.Json.Converters;
 
-namespace Monai.Deploy.TaskManager.Services.Http
+namespace Monai.Deploy.WorkflowManager.TaskManager.Services.Http
 {
     /// <summary>
     /// Http Api Endpoint Startup Class.

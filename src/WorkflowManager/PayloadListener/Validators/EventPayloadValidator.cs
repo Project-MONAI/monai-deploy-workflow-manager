@@ -18,10 +18,10 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.Common.Logging;
-using Monai.Deploy.Common.PayloadListener.Extensions;
+using Monai.Deploy.WorkflowManager.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.PayloadListener.Extensions;
 
-namespace Monai.Deploy.Common.PayloadListener.Validators
+namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators
 {
     public class EventPayloadValidator : IEventPayloadValidator
     {

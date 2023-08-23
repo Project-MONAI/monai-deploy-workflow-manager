@@ -18,9 +18,9 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.TaskManager.API;
+using Monai.Deploy.WorkflowManager.TaskManager.API;
 
-namespace Monai.Deploy.TaskManager.TestPlugin
+namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin
 {
     public class TestPlugin : TaskPluginBase
     {

@@ -45,7 +45,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Common\Miscellaneous\Monai.Deploy.Common.Miscellaneous.csproj" />
+    <ProjectReference Include="..\..\..\src\Common\Miscellaneous\Monai.Deploy.WorkflowManager.Common.Miscellaneous.csproj" />
+    <ProjectReference Include="..\..\..\src\WorkflowManager\Services\Monai.Deploy.WorkflowManager.Services.csproj" />
     <ProjectReference Include="..\..\..\src\WorkflowManager\WorkflowManager\Monai.Deploy.WorkflowManager.csproj" />
   </ItemGroup>
 

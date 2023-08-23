@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.TaskManager.IntegrationTests
+namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 {
     public static class Helper
     {

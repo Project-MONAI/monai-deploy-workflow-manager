@@ -15,14 +15,14 @@
  */
 
 using BoDi;
-using Monai.Deploy.Common.Contracts.Models;
-using Monai.Deploy.Common.IntegrationTests.Support;
-using Monai.Deploy.Common.Miscellaneous.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.Common.WorkflowExecutor.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class TasksApiStepDefinitions

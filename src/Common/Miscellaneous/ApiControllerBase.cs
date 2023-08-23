@@ -18,12 +18,12 @@ using System.Net;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.Common.Miscellaneous.Wrappers;
-using Monai.Deploy.Common.Configuration;
-using Monai.Deploy.Common.Miscellaneous.Filter;
-using Monai.Deploy.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
 
-namespace Monai.Deploy.Common.ControllersShared
+namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
 {
     /// <summary>
     /// Base Api Controller.

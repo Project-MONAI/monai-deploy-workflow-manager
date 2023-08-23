@@ -16,7 +16,7 @@
 
 using System.Web;
 
-namespace Monai.Deploy.Common.IntegrationTests.Support
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
 {
     [Binding]
     public class ApiHelper

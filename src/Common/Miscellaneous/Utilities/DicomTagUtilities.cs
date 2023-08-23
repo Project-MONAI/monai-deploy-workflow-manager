@@ -17,7 +17,7 @@
 using System.Text.RegularExpressions;
 using FellowOakDicom;
 
-namespace Monai.Deploy.Common.Miscellaneous.Utilities
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Utilities
 {
     public static class DicomTagUtilities
     {

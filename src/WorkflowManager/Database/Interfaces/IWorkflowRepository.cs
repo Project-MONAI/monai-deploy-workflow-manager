@@ -18,9 +18,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.Common.Database.Interfaces
+namespace Monai.Deploy.WorkflowManager.Common.Database.Interfaces
 {
     public interface IWorkflowRepository
     {

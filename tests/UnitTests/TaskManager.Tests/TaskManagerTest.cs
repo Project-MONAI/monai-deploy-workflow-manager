@@ -27,13 +27,13 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.S3Policy.Policies;
-using Monai.Deploy.TaskManager.API;
-using Monai.Deploy.Common.Configuration;
-using Monai.Deploy.Common.Miscellaneous;
+using Monai.Deploy.WorkflowManager.TaskManager.API;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.TaskManager.Tests
+namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
 {
     public interface ITestRunnerCallback
     {

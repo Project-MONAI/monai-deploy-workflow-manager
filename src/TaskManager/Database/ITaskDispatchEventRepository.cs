@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.TaskManager.API.Models;
+using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 
-namespace Monai.Deploy.TaskManager.Database
+namespace Monai.Deploy.WorkflowManager.TaskManager.Database
 {
     public interface ITaskDispatchEventRepository
     {

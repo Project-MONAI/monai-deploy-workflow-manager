@@ -17,9 +17,9 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
 
-namespace Monai.Deploy.Common.ControllersShared
+namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
 {
     /// <summary>
     /// Base Api Controller.

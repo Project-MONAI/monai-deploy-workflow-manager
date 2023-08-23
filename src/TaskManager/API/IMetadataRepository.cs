@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.TaskManager.API
+namespace Monai.Deploy.WorkflowManager.TaskManager.API
 {
     public interface IMetadataRepository : IDisposable
     {

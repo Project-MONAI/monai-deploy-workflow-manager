@@ -16,7 +16,7 @@
 
 using Ardalis.GuardClauses;
 
-namespace Monai.Deploy.Common.Miscellaneous
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
 {
     public class MonaiServiceLocator : IMonaiServiceLocator
     {

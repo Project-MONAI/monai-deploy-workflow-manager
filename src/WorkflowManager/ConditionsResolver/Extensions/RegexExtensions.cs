@@ -16,7 +16,7 @@
 
 using System.Text.RegularExpressions;
 
-namespace Monai.Deploy.Common.ConditionsResolver.Extensions
+namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Extensions
 {
     public static class RegexExtensions
     {

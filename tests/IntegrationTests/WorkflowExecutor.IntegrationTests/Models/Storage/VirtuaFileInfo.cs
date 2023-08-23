@@ -16,7 +16,7 @@
 
 using Ardalis.GuardClauses;
 
-namespace Monai.Deploy.Common.WorkflowExecutor.IntegrationTests.Models.Storage
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.Models.Storage
 {
     /// <summary>
     /// Represents a file stored on the virtual storage device.

@@ -26,17 +26,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.Common.Miscellaneous.Interfaces;
-using Monai.Deploy.Common.Configuration;
-using Monai.Deploy.Common.Contracts.Models;
-using Monai.Deploy.Common.ControllersShared;
-using Monai.Deploy.Common.Miscellaneous.Services;
-using Monai.Deploy.Common.Miscellaneous.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.ControllersShared;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
 using Moq;
 using Xunit;
-using Monai.Deploy.Common.Miscellaneous.Filter;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
 
-namespace Monai.Deploy.Common.Test.Controllers
+namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
 {
     public class WorkflowsInstanceControllerTests
     {

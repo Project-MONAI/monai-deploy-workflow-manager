@@ -23,13 +23,13 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.Common.Contracts.Models;
-using Monai.Deploy.Common.Database.Interfaces;
-using Monai.Deploy.Common.WorkfowExecuter.Common;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.Common.WorkflowExecuter.Tests.Common
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Common
 {
     public class ArtifactMapperTests
     {

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.Common.ConditionsResolver.Parser
+namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser
 {
     public interface IConditionalParameterParser
     {

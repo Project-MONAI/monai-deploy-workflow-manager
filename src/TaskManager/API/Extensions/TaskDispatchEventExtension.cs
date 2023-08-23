@@ -17,7 +17,7 @@
 using Monai.Deploy.Messaging.Events;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.TaskManager.API.Extensions
+namespace Monai.Deploy.WorkflowManager.TaskManager.API.Extensions
 {
     public static class TaskDispatchEventExtension
     {

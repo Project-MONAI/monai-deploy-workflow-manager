@@ -18,7 +18,7 @@ using System.Globalization;
 using System.Runtime.Serialization;
 using Ardalis.GuardClauses;
 
-namespace Monai.Deploy.TaskManager.API
+namespace Monai.Deploy.WorkflowManager.TaskManager.API
 {
     public static class ServiceNotFoundExceptionGuardExtension
     {

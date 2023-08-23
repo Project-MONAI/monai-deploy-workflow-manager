@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Monai.Deploy.Common.Miscellaneous.Wrappers
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers
 {
     public class StatsPagedResponse<T> : PagedResponse<T>
     {
@@ -30,9 +30,5 @@ namespace Monai.Deploy.Common.Miscellaneous.Wrappers
         {
 
         }
-        //public StatsPagedResponse(PagedResponse<T> paged) : base(paged.Data, paged.PageNumber, paged.PageSize)
-        //{
-        //    int re = 0;
-        //}
     }
 }

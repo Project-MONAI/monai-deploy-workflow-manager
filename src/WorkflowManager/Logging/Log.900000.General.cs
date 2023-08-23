@@ -16,7 +16,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace Monai.Deploy.Common.Logging
+namespace Monai.Deploy.WorkflowManager.Common.Logging
 {
     public static partial class Log
     {

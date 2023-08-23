@@ -26,8 +26,8 @@ using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.Common.Configuration;
-using Monai.Deploy.TaskManager.Docker;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.TaskManager.Docker;
 using Moq;
 using Credentials = Monai.Deploy.Messaging.Common.Credentials;
 

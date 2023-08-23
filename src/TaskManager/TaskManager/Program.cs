@@ -24,16 +24,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Common.Configuration;
-using Monai.Deploy.Common.Miscellaneous.Services;
 using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.TaskManager.Database;
-using Monai.Deploy.TaskManager.Database.Options;
-using Monai.Deploy.TaskManager.Extensions;
-using Monai.Deploy.TaskManager.Services.Http;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.TaskManager.Database;
+using Monai.Deploy.WorkflowManager.TaskManager.Database.Options;
+using Monai.Deploy.WorkflowManager.TaskManager.Extensions;
+using Monai.Deploy.WorkflowManager.TaskManager.Services.Http;
 using Mongo.Migration.Startup;
 using Mongo.Migration.Startup.DotNetCore;
 using MongoDB.Driver;
@@ -41,7 +41,7 @@ using NLog;
 using NLog.LayoutRenderers;
 using NLog.Web;
 
-namespace Monai.Deploy.TaskManager
+namespace Monai.Deploy.WorkflowManager.TaskManager
 {
     /// <summary>
     /// Main entry point for TaskManager.

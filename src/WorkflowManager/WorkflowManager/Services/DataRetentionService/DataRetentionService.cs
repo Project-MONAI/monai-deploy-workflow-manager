@@ -19,10 +19,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Common.Logging;
-using Monai.Deploy.Common.Miscellaneous;
+using Monai.Deploy.WorkflowManager.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 
-namespace Monai.Deploy.Common.Services.DataRetentionService
+namespace Monai.Deploy.WorkflowManager.Common.Services.DataRetentionService
 {
     public class DataRetentionService : IHostedService, IDisposable, IMonaiService
     {

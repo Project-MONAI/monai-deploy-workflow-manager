@@ -18,7 +18,7 @@ using System.IO.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Monai.Deploy.Storage.Configuration;
 
-namespace Monai.Deploy.Common.Configuration
+namespace Monai.Deploy.WorkflowManager.Common.Configuration
 {
     public class StorageConfiguration : StorageServiceConfiguration
     {

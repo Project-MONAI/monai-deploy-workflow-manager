@@ -15,13 +15,13 @@
  */
 
 using System.Reflection;
-using Monai.Deploy.Common.TaskManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.TaskManager.IntegrationTests.Support;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.TaskManager.API.Models;
-using Monai.Deploy.TaskManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
+using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
 
-namespace Monai.Deploy.TaskManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class CommonStepDefinitions

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.TaskManager.AideClinicalReview
+namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 {
     public static class Strings
     {

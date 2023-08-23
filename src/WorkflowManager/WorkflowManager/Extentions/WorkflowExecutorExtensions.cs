@@ -18,18 +18,18 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Common.ConditionsResolver.Parser;
-using Monai.Deploy.Common.Miscellaneous;
-using Monai.Deploy.Common.Miscellaneous.Interfaces;
-using Monai.Deploy.Common.Miscellaneous.Services;
-using Monai.Deploy.Common.PayloadListener.Services;
-using Monai.Deploy.Common.PayloadListener.Validators;
-using Monai.Deploy.Common.Services.InformaticsGateway;
-using Monai.Deploy.Common.Storage.Services;
-using Monai.Deploy.Common.WorkfowExecuter.Common;
-using Monai.Deploy.Common.WorkfowExecuter.Services;
+using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.PayloadListener.Services;
+using Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators;
+using Monai.Deploy.WorkflowManager.Common.Services.InformaticsGateway;
+using Monai.Deploy.WorkflowManager.Common.Storage.Services;
+using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common;
+using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services;
 
-namespace Monai.Deploy.Common.Extensions
+namespace Monai.Deploy.WorkflowManager.Common.Extensions
 {
     /// <summary>
     ///  Sets up workflow executor service collection.

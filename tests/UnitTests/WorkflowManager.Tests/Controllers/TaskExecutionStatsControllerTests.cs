@@ -21,19 +21,19 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.Common.Configuration;
-using Monai.Deploy.Common.Miscellaneous.Filter;
-using Monai.Deploy.Common.Miscellaneous.Services;
-using Monai.Deploy.Common.Miscellaneous.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
 using Moq;
 using Xunit;
 using System.Linq;
 using System.Net;
-using Monai.Deploy.Common.Database;
-using Monai.Deploy.Common.Contracts.Models;
-using Monai.Deploy.Common.ControllersShared;
+using Monai.Deploy.WorkflowManager.Common.Database;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.ControllersShared;
 
-namespace Monai.Deploy.Common.Test.Controllers
+namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
 {
     public class ExecutionStatsControllerTests
     {

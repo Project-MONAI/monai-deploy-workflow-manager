@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.Common.Miscellaneous.Filter
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter
 {
     /// <summary>
     /// Pagination Filter class.

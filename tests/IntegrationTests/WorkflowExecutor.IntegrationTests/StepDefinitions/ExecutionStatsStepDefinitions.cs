@@ -15,14 +15,14 @@
  */
 
 using BoDi;
-using Monai.Deploy.Common.IntegrationTests.Support;
-using Monai.Deploy.Common.WorkflowExecutor.IntegrationTests.TestData;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.TestData;
 using Polly;
 using Polly.Retry;
 using Snapshooter.NUnit;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.Common.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class ExecutionStatsStepDefinitions

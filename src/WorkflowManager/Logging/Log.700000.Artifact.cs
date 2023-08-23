@@ -15,9 +15,9 @@
  */
 
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.Common.Logging
+namespace Monai.Deploy.WorkflowManager.Common.Logging
 {
     public static partial class Log
     {

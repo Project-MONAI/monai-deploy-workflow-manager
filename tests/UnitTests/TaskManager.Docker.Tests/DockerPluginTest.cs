@@ -22,9 +22,9 @@ using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.Common.SharedTest;
-using Monai.Deploy.TaskManager.API;
-using Monai.Deploy.TaskManager.Docker;
+using Monai.Deploy.WorkflowManager.Common.SharedTest;
+using Monai.Deploy.WorkflowManager.TaskManager.API;
+using Monai.Deploy.WorkflowManager.TaskManager.Docker;
 using Moq;
 using Credentials = Monai.Deploy.Messaging.Common.Credentials;
 

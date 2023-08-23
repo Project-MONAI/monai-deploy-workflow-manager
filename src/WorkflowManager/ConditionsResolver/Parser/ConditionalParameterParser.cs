@@ -18,15 +18,15 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Common.Miscellaneous.Interfaces;
-using Monai.Deploy.Common.ConditionsResolver.Constants;
-using Monai.Deploy.Common.ConditionsResolver.Extensions;
-using Monai.Deploy.Common.ConditionsResolver.Resolver;
-using Monai.Deploy.Common.Contracts.Models;
-using Monai.Deploy.Common.Logging;
-using Monai.Deploy.Common.Storage.Services;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Constants;
+using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Extensions;
+using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Resolver;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.Storage.Services;
 
-namespace Monai.Deploy.Common.ConditionsResolver.Parser
+namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser
 {
     public enum ParameterContext
     {

@@ -25,11 +25,11 @@ using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.Common.Configuration;
-using Monai.Deploy.TaskManager.API;
-using Monai.Deploy.TaskManager.Docker.Logging;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.TaskManager.API;
+using Monai.Deploy.WorkflowManager.TaskManager.Docker.Logging;
 
-namespace Monai.Deploy.TaskManager.Docker
+namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 {
     public interface IContainerStatusMonitor
     {

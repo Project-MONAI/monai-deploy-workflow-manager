@@ -15,11 +15,11 @@
  */
 
 
-using Monai.Deploy.Common.Miscellaneous.Filter;
-using Monai.Deploy.Common.Miscellaneous.Services;
-using Monai.Deploy.Common.Miscellaneous.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
 
-namespace Monai.Deploy.Common.Miscellaneous.Tests
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests
 {
     public class UriServiceTests
     {

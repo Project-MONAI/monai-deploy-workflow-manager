@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.Common.Miscellaneous.Extensions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions;
 using Xunit;
 
-namespace Monai.Deploy.Common.Miscellaneous.Tests.Extensions
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Extensions
 {
     public class CollectionExtensionsTests
     {
