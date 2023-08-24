@@ -24,7 +24,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Monai.Deploy.Security.Authentication.Extensions;
-using Monai.Deploy.WorkflowManager.Shared;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Newtonsoft.Json.Converters;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Services.Http

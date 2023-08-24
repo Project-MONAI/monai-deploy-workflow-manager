@@ -20,8 +20,8 @@ using k8s;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.TaskManager.API;
-using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.TaskManager.API;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Moq;
 

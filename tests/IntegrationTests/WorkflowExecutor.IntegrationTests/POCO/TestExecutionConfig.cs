@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.POCO
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO
 {
     internal static class TestExecutionConfig
     {
@@ -40,9 +40,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.POCO
 
             public static string TaskCallbackQueue { get; set; } = string.Empty;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
             public static string ExportCompleteQueue { get; set; }
-            public static string ExportRequestQueue { get; set; }
 
+            public static string ExportRequestQueue { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
             public static string TaskUpdateQueue { get; set; } = string.Empty;
         }
 

@@ -21,6 +21,7 @@
     <RootNamespace>Monai.Deploy.WorkflowManager.Test</RootNamespace>
     <CodeAnalysisRuleSet>..\..\..\StyleCop.Analyzers.ruleset</CodeAnalysisRuleSet>
     <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -44,7 +45,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Shared\Shared\Monai.Deploy.WorkflowManager.Shared.csproj" />
+    <ProjectReference Include="..\..\..\src\Common\Miscellaneous\Monai.Deploy.WorkflowManager.Common.Miscellaneous.csproj" />
+    <ProjectReference Include="..\..\..\src\WorkflowManager\Services\Monai.Deploy.WorkflowManager.Services.csproj" />
     <ProjectReference Include="..\..\..\src\WorkflowManager\WorkflowManager\Monai.Deploy.WorkflowManager.csproj" />
   </ItemGroup>
 

@@ -23,10 +23,10 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.WorkflowManager.Shared;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Email
@@ -57,7 +57,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _options = options ?? throw new ArgumentNullException(nameof(options));
 
-            Guard.Against.Null(serviceScopeFactory);
+            Guard.Against.Null(serviceScopeFactory, nameof(serviceScopeFactory));
             _scope = serviceScopeFactory.CreateScope();
 
             _messageBrokerPublisherService = _scope.ServiceProvider.GetService<IMessageBrokerPublisherService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerPublisherService));
@@ -162,13 +162,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
                 _logger.NoMetaDataRequested();
                 return metadata;
             }
+            List<VirtualFileInfo> allFiles;
+            try
+            {
+                allFiles = (List<VirtualFileInfo>)await _storageService.ListObjectsAsync(bucketName, path, true);
+            }
+            catch (Exception ex)
+            {
+                var mess = ex.Message;
+                throw;
+            }
 
-            var allFiles = await _storageService.ListObjectsAsync(bucketName, path, true);
             foreach (var file in allFiles)
             {
                 if (file.FilePath.EndsWith(".json", StringComparison.InvariantCultureIgnoreCase)) continue;
-                Guard.Against.NullOrWhiteSpace(bucketName);
-                Guard.Against.NullOrWhiteSpace(path);
+                Guard.Against.NullOrWhiteSpace(bucketName, nameof(bucketName));
+                Guard.Against.NullOrWhiteSpace(path, nameof(path));
 
                 // load file from Minio !
                 var fileStream = await _storageService.GetObjectAsync(bucketName, $"{file.FilePath}");

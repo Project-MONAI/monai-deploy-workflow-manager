@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Shared\Shared\Monai.Deploy.WorkflowManager.Shared.csproj" />
+    <ProjectReference Include="..\..\..\src\Common\Miscellaneous\Monai.Deploy.WorkflowManager.Common.Miscellaneous.csproj" />
   </ItemGroup>
 
 </Project>

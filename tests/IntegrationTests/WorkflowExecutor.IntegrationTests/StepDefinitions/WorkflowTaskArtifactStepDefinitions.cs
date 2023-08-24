@@ -15,10 +15,10 @@
  */
 
 using BoDi;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class WorkflowTaskArtifactStepDefinitions
@@ -71,7 +71,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
                     if (seededTask == null)
                     {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                         var workflowTask = workflowRevision.Workflow.Tasks.First(x => x.Id.Equals(task.TaskId));
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
                         Assertions.AssertInputArtifactsForWorkflowInstance(workflowTask, PayloadId, task);
                     }

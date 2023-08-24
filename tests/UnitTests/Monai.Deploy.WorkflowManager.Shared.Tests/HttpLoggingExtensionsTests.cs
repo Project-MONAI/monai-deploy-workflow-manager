@@ -19,8 +19,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Moq;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 
-namespace Monai.Deploy.WorkflowManager.Shared.Tests
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests
 {
     public class HttpLoggingExtensionsTests
     {

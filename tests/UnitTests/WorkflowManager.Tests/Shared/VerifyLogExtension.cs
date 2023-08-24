@@ -19,11 +19,14 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace Monai.Deploy.WorkflowManager.Test.SharedTest
+namespace Monai.Deploy.WorkflowManager.Common.Test.SharedTest
 {
     [ExcludeFromCodeCoverage]
     public static class VerifyLogExtension
     {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
         public static Mock<ILogger> VerifyLoggingMessageEndsWith(this Mock<ILogger> logger, string expectedMessage, LogLevel expectedLogLevel = LogLevel.Debug, Times? times = null)
         {
             times ??= Times.Once();
@@ -36,7 +39,7 @@ namespace Monai.Deploy.WorkflowManager.Test.SharedTest
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((v, t) => state(v, t)),
                     It.IsAny<Exception>(),
-                    It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), (Times)times);
+                    It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)), (Times)times);
             return logger;
         }
 
@@ -52,7 +55,7 @@ namespace Monai.Deploy.WorkflowManager.Test.SharedTest
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((v, t) => state(v, t)),
                     It.IsAny<Exception>(),
-                    It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), (Times)times);
+                    It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)), (Times)times);
             return logger;
         }
 
@@ -68,7 +71,7 @@ namespace Monai.Deploy.WorkflowManager.Test.SharedTest
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((v, t) => state(v, t)),
                     It.IsAny<Exception>(),
-                    It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), (Times)times);
+                    It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)), (Times)times);
             return logger;
         }
 
@@ -84,7 +87,7 @@ namespace Monai.Deploy.WorkflowManager.Test.SharedTest
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((v, t) => state(v, t)),
                     It.IsAny<Exception>(),
-                    It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), (Times)times);
+                    It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)), (Times)times);
             return logger;
         }
 
@@ -98,7 +101,7 @@ namespace Monai.Deploy.WorkflowManager.Test.SharedTest
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((v, t) => true),
                     It.IsAny<Exception>(),
-                    It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), (Times)times);
+                    It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)), (Times)times);
 
             return logger;
         }
@@ -115,7 +118,7 @@ namespace Monai.Deploy.WorkflowManager.Test.SharedTest
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((v, t) => state(v, t)),
                     It.IsAny<Exception>(),
-                    It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), (Times)times);
+                    It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)), (Times)times);
             return logger;
         }
 
@@ -129,9 +132,12 @@ namespace Monai.Deploy.WorkflowManager.Test.SharedTest
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((v, t) => true),
                     It.IsAny<Exception>(),
-                    It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), (Times)times);
+                    It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)), (Times)times);
 
             return logger;
         }
     }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 }

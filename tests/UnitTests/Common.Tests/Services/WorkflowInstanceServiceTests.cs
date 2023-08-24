@@ -17,11 +17,11 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Common.Exceptions;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Common.Services;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Exceptions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Moq;
 using Xunit;
 
@@ -45,6 +45,7 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
         [Fact]
         public async Task UpdateExportCompleteMetadataAsync_NullWorkflowInstanceId_ThrowsException()
         {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             await Assert.ThrowsAsync<ArgumentNullException>(() => WorkflowInstanceService.UpdateExportCompleteMetadataAsync(null, "45435436", new Dictionary<string, FileExportStatus>()));
         }
 
@@ -122,11 +123,13 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
                 }
             };
 
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(value: null);
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
 
             await Assert.ThrowsAsync<MonaiNotFoundException>(() => WorkflowInstanceService.AcknowledgeTaskError(workflowInstance.Id, workflowInstance.Tasks.First().ExecutionId));
         }
-
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         [Fact]
         public async Task AcknowledgeTaskError_WorkflowNotFailed_ThrowsBadRequestException()
         {

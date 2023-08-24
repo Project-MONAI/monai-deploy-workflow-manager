@@ -53,7 +53,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 
         public TaskCallbackEvent GetTaskCallbackTestData(string name)
         {
-            var taskCallback = TaskCallbacksTestData.TestData.FirstOrDefault(c => c.Name.Equals(name));
+            var taskCallback = TaskCallbacksTestData.TestData.FirstOrDefault(c => c.Name!.Equals(name));
 
             if (taskCallback != null)
             {
@@ -75,7 +75,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 
         public TaskDispatchEvent GetTaskDispatchTestData(string name)
         {
-            var taskDispatch = TaskDispatchesTestData.TestData.FirstOrDefault(c => c.Name.Equals(name));
+            var taskDispatch = TaskDispatchesTestData.TestData.FirstOrDefault(c => c.Name!.Equals(name));
 
             if (taskDispatch != null)
             {

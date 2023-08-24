@@ -61,10 +61,10 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
-    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.15" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.23" />
-    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.15" />
-    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.23" />
+    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.18" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.25" />
+    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.18" />
+    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.25" />
     <PackageReference Include="Monai.Deploy.Security" Version="0.1.3" />
     <PackageReference Include="Mongo.Migration" Version="3.1.4" />
     <PackageReference Include="NLog" Version="5.1.2" />
@@ -77,8 +77,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Configuration\Monai.Deploy.WorkflowManager.Configuration.csproj" />
-    <ProjectReference Include="..\..\Shared\Shared\Monai.Deploy.WorkflowManager.Shared.csproj" />
+    <ProjectReference Include="..\..\Common\Configuration\Monai.Deploy.WorkflowManager.Common.Configuration.csproj" />
+    <ProjectReference Include="..\..\Common\Miscellaneous\Monai.Deploy.WorkflowManager.Common.Miscellaneous.csproj" />
+    <ProjectReference Include="..\..\Common\Miscellaneous\Monai.Deploy.WorkflowManager.Common.Miscellaneous.csproj" />
     <ProjectReference Include="..\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />
     <ProjectReference Include="..\Database\Monai.Deploy.WorkflowManager.TaskManager.Database.csproj" />
     <ProjectReference Include="..\Plug-ins\AideClinicalReview\Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.csproj" />

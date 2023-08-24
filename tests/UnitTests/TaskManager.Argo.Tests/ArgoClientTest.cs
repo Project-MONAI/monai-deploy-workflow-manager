@@ -231,6 +231,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
         }
 
         [Fact(DisplayName = "DecodeLogs")]
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task DecodeLogs()
         {
             var result = BaseArgoClient.DecodeLogs("");
@@ -241,6 +242,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
         [Fact(DisplayName = "ConvertToString")]
         public async Task ConvertToString()
         {
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
             //bool
             var result = ArgoClient.ConvertToString(true, CultureInfo.InvariantCulture);
             Assert.Equal("true", result);
@@ -250,7 +252,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
             Assert.Equal("0", result);
 
             //enum
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             result = ArgoClient.ConvertToString(null, CultureInfo.InvariantCulture);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             Assert.Equal("", result);
 
 

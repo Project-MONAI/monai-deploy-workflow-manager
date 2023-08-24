@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO;
 using MongoDB.Driver;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
 {
     public class MongoClientUtil
     {
@@ -63,7 +63,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             RetryMongo.Execute(() =>
             {
-                WorkflowRevisionCollection.DeleteOne(x => x.Id.Equals(id));
+                WorkflowRevisionCollection.DeleteOne(x => x.Id!.Equals(id));
             });
         }
 

@@ -24,12 +24,12 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Moq;
 using Xunit;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.WorkflowManager.Shared;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
@@ -89,6 +89,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
         public void EmailPlugin_ThrowsWhenMissingLogger()
         {
             var message = GenerateTaskDispatchEvent();
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Assert.Throws<ArgumentNullException>(() => new EmailPlugin(_serviceScopeFactory.Object, null, _options, message));
         }
 
@@ -104,13 +105,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
         {
             var message = GenerateTaskDispatchEvent();
             Assert.Throws<ArgumentNullException>(() => new EmailPlugin(null, _logger.Object, _options, message));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
         [Fact(DisplayName = "Throws when missing required EventMessage")]
         public void EmailPlugin_ThrowsWhenMissingMessage()
         {
             var message = GenerateTaskDispatchEvent();
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Assert.Throws<ArgumentNullException>(() => new EmailPlugin(_serviceScopeFactory.Object, _logger.Object, _options, null));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
         [Fact(DisplayName = "Throws when missing required attribute")]
@@ -175,7 +179,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
         {
             var messageEvent = GenerateTaskDispatchEvent();
             messageEvent.TaskPluginArguments.Add(ValidationConstants.RecipientEmails, "fred@fred.com");
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             Message messageResult = default;
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             _messageBrokerPublisherService.Setup(p => p.Publish(It.IsAny<string>(), It.IsAny<Message>()))
                 .Callback((string topic, Message jsonMessage) =>
                 {
@@ -186,7 +192,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
             var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
 
             _messageBrokerPublisherService.Verify(m => m.Publish(It.IsAny<string>(), It.IsAny<Message>()), Times.Once);
-            Assert.Contains("fred@fred.com", System.Text.Encoding.UTF8.GetString(messageResult.Body));
+            Assert.Contains("fred@fred.com", System.Text.Encoding.UTF8.GetString(messageResult!.Body));
         }
 
         //[Fact(DisplayName = "Should_Log_If_No_Metadata_Found")]
@@ -229,7 +235,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
 
         private string ToJson(DicomFile dicomFile, bool validateDicom)
         {
-            Guard.Against.Null(dicomFile);
+            Guard.Against.Null(dicomFile, nameof(dicomFile));
 
             var options = new JsonSerializerOptions();
             options.Converters.Add(new DicomJsonConverter(

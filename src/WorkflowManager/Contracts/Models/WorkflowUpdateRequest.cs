@@ -16,14 +16,14 @@
 
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Models
+namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
     public class WorkflowUpdateRequest
     {
         [JsonProperty(PropertyName = "original_workflow_name")]
-        public string OriginalWorkflowName { get; set; }
+        public string OriginalWorkflowName { get; set; } = "";
 
         [JsonProperty(PropertyName = "workflow")]
-        public Workflow Workflow { get; set; }
+        public Workflow Workflow { get; set; } = new();
     }
 }

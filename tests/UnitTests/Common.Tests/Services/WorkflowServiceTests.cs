@@ -15,10 +15,10 @@
  */
 
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Common.Services;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Moq;
 using Xunit;
 
@@ -42,6 +42,7 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
         [Fact]
         public async Task WorkflowService_NullWorkflow_ThrowsException()
         {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             await Assert.ThrowsAsync<ArgumentNullException>(() => WorkflowService.UpdateAsync(null, null));
         }
 
@@ -154,3 +155,4 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
         }
     }
 }
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.

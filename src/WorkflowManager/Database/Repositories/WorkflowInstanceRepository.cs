@@ -22,15 +22,14 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.Logging;
-using MongoDB.Bson;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Database.Options;
+using Monai.Deploy.WorkflowManager.Common.Logging;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-namespace Monai.Deploy.WorkflowManager.Database.Repositories
+namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 {
     public class WorkflowInstanceRepository : RepositoryBase, IWorkflowInstanceRepository
     {

@@ -22,18 +22,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Common.Exceptions;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Contracts.Responses;
-using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.Shared.Filter;
-using Monai.Deploy.WorkflowManager.Shared.Services;
-using Monai.Deploy.WorkflowManager.Shared.Wrappers;
-using Monai.Deploy.WorkflowManager.Validators;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Responses;
+using Monai.Deploy.WorkflowManager.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Exceptions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Validators;
 
-namespace Monai.Deploy.WorkflowManager.ControllersShared
+namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
 {
     /// <summary>
     /// Workflows Controller.
@@ -324,10 +324,10 @@ namespace Monai.Deploy.WorkflowManager.ControllersShared
         }
 
         /// <summary>
-        ///
+        /// Get by AE Title.
         /// </summary>
-        /// <param name="title"></param>
-        /// <param name="filter"></param>
+        /// <param name="title">The AE title.</param>
+        /// <param name="filter">The filter.</param>
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         [HttpGet("aetitle/{title}")]
         [ProducesResponseType(typeof(WorkflowRevision), StatusCodes.Status200OK)]

@@ -16,7 +16,7 @@
 
 using Monai.Deploy.Messaging.Events;
 
-namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.TestData
 {
     public class ExportCompleteTestData
     {
@@ -34,6 +34,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                 Name = "Export_Complete_Message_for_export_multi_dest_2_Succeeded",
                 ExportCompleteEvent = new ExportCompleteEvent()
                 {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                     WorkflowInstanceId = Helper.GetWorkflowInstanceByName("Workflow_Instance_for_export_multi_dest_2").WorkflowInstance.Id,
                     ExportTaskId = Helper.GetWorkflowByName("Workflow_Revision_for_export_multi_dest_2").WorkflowRevision.Workflow.Tasks[1].Id,
                     Status = ExportStatus.Success,
@@ -89,3 +90,4 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
          };
     }
 }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.

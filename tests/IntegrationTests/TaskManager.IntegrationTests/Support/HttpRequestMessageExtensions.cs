@@ -17,7 +17,7 @@
 using System.Net.Http.Formatting;
 using System.Text;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
 {
     public static class HttpRequestMessageExtensions
     {

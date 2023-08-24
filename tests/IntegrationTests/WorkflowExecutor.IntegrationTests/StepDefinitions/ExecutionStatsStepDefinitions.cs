@@ -15,14 +15,14 @@
  */
 
 using BoDi;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.TestData;
 using Polly;
 using Polly.Retry;
 using Snapshooter.NUnit;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class ExecutionStatsStepDefinitions
@@ -33,7 +33,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private Assertions Assertions { get; set; }
         private RetryPolicy RetryExecutionStats { get; set; }
         private ApiHelper ApiHelper { get; set; }
-
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
         public ExecutionStatsStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
@@ -141,5 +142,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             return commaSeparatedList.Split(",").Select(t => t.Trim()).ToList();
         }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
     }
 }

@@ -30,17 +30,17 @@ using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Database;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.Database.Repositories;
-using Monai.Deploy.WorkflowManager.MonaiBackgroundService;
-using Monai.Deploy.WorkflowManager.Services;
-using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
-using Monai.Deploy.WorkflowManager.Services.Http;
-using Monai.Deploy.WorkflowManager.Shared.Services;
-using Monai.Deploy.WorkflowManager.Validators;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Database;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Database.Options;
+using Monai.Deploy.WorkflowManager.Common.Database.Repositories;
+using Monai.Deploy.WorkflowManager.Common.Extensions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService;
+using Monai.Deploy.WorkflowManager.Common.Services.DataRetentionService;
+using Monai.Deploy.WorkflowManager.Common.Services.Http;
+using Monai.Deploy.WorkflowManager.Common.Validators;
 using Mongo.Migration.Startup;
 using Mongo.Migration.Startup.DotNetCore;
 using MongoDB.Driver;
@@ -48,7 +48,7 @@ using NLog;
 using NLog.LayoutRenderers;
 using NLog.Web;
 
-namespace Monai.Deploy.WorkflowManager
+namespace Monai.Deploy.WorkflowManager.Common
 {
 #pragma warning disable SA1600 // Elements should be documented
 

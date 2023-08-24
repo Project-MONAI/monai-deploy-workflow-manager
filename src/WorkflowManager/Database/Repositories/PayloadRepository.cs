@@ -20,14 +20,14 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.Logging;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Database.Options;
+using Monai.Deploy.WorkflowManager.Common.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace Monai.Deploy.WorkflowManager.Database.Repositories
+namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 {
     public class PayloadRepository : RepositoryBase, IPayloadRepository
     {
@@ -69,7 +69,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
         }
 
-        public async Task<IList<Payload>> GetAllAsync(int? skip = null, int? limit = null, string patientId = "", string patientName = "")
+        public async Task<IList<Payload>> GetAllAsync(int? skip = null, int? limit = null, string? patientId = "", string? patientName = "")
         {
             var builder = Builders<Payload>.Filter;
             var filter = builder.Empty;
@@ -91,7 +91,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
         public async Task<Payload> GetByIdAsync(string payloadId)
         {
-            Guard.Against.NullOrWhiteSpace(payloadId);
+            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
 
             var payload = await _payloadCollection
                 .Find(x => x.PayloadId == payloadId)
@@ -120,8 +120,8 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
         public async Task<bool> UpdateAssociatedWorkflowInstancesAsync(string payloadId, IEnumerable<string> workflowInstances)
         {
-            Guard.Against.NullOrEmpty(workflowInstances);
-            Guard.Against.NullOrWhiteSpace(payloadId);
+            Guard.Against.NullOrEmpty(workflowInstances, nameof(workflowInstances));
+            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
 
             try
             {

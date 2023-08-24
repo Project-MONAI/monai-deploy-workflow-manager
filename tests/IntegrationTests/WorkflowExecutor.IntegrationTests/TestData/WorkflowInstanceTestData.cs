@@ -15,12 +15,12 @@
  */
 
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO;
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8601 // Possible null reference assignment.
 
-namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.TestData
 {
     public class WorkflowInstanceTestData
     {
@@ -36,6 +36,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             var id = Guid.NewGuid().ToString();
             var payloadId = Guid.NewGuid().ToString();
             var executionId = Guid.NewGuid().ToString();
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             return new WorkflowInstance()
             {
                 Id = id,
@@ -2216,3 +2217,4 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
 }
 #pragma warning restore CS8601 // Possible null reference assignment.
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.

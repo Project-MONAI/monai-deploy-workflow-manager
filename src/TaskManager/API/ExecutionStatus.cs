@@ -38,6 +38,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
         /// <summary>
         /// Contains various stats
         /// </summary>
-        public Dictionary<string, string> Stats { get; set; }
+        public Dictionary<string, string> Stats { get; set; } = new();
     }
 }

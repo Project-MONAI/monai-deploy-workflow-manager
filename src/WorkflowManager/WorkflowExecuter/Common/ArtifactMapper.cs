@@ -17,11 +17,11 @@
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Logging;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Logging;
 
-namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
+namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
 {
     public class ArtifactMapper : IArtifactMapper
     {
@@ -75,16 +75,16 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
         public async Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet = true)
         {
-            Guard.Against.Null(artifacts);
-            Guard.Against.NullOrWhiteSpace(payloadId);
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId);
+            Guard.Against.Null(artifacts, nameof(artifacts));
+            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
 
             var artifactPathDictionary = new Dictionary<string, string>();
 
             foreach (var artifact in artifacts)
             {
-                Guard.Against.NullOrWhiteSpace(artifact.Value);
-                Guard.Against.NullOrWhiteSpace(artifact.Name);
+                Guard.Against.NullOrWhiteSpace(artifact.Value, nameof(artifact.Value));
+                Guard.Against.NullOrWhiteSpace(artifact.Name, nameof(artifact.Name));
 
                 if (!TrimArtifactVariable(artifact.Value, out var variableString))
                 {
@@ -98,7 +98,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
 
                 var suffix = GetArtifactSuffix(artifact.Value);
 
-                var mappedArtifact = await ConvertVariableStringToPath(artifact, variableString, workflowInstanceId, payloadId, bucketId, shouldExistYet, suffix);
+                var mappedArtifact = await ConvertVariableStringToPath(artifact, variableString ?? string.Empty, workflowInstanceId, payloadId, bucketId, shouldExistYet, suffix);
 
                 if (mappedArtifact.Equals(default(KeyValuePair<string, string>)) is false)
                 {
@@ -132,7 +132,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             return variableStrings[1];
         }
 
-        private static bool TrimArtifactVariable(string valueString, out string variableString)
+        private static bool TrimArtifactVariable(string valueString, out string? variableString)
         {
             var variableStrings = valueString.Split(" ");
 
@@ -148,7 +148,7 @@ namespace Monai.Deploy.WorkflowManager.WorkfowExecuter.Common
             return true;
         }
 
-        private async Task<KeyValuePair<string, string>> ConvertVariableStringToPath(Artifact artifact, string variableString, string workflowInstanceId, string payloadId, string bucketId, bool shouldExistYet, string suffix = "")
+        private async Task<KeyValuePair<string, string>> ConvertVariableStringToPath(Artifact artifact, string variableString, string workflowInstanceId, string payloadId, string bucketId, bool shouldExistYet, string? suffix = "")
         {
             _logger.ConvertingVariableStringToPath(variableString);
             if (variableString.StartsWith("context.input.dicom", StringComparison.InvariantCultureIgnoreCase))

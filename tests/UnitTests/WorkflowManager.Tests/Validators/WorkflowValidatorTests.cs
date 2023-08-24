@@ -16,18 +16,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Services.InformaticsGateway;
-using Monai.Deploy.WorkflowManager.Validators;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Services.InformaticsGateway;
+using Monai.Deploy.WorkflowManager.Common.Validators;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Test.Validators
+namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
 {
     public class WorkflowValidatorTests
     {
@@ -58,6 +59,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
         [Fact]
         public async Task ValidateWorkflow_ValidatesAWorkflow_ReturnsErrorsAndHasCorrectValidationResultsAsync()
         {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             var workflow = new Workflow
             {
                 Name = "Workflowname1",
@@ -595,6 +597,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                     },
                 }
             };
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new WorkflowRevision());
@@ -808,6 +811,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
                 }
             };
 
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
 
@@ -1015,6 +1019,498 @@ namespace Monai.Deploy.WorkflowManager.Test.Validators
             var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
             Assert.Empty(errors);
+        }
+
+        [Fact]
+        public async Task ValidateWorkflow_ExportAppWithoutDestination_ReturnsErrors()
+        {
+            var workflow = new Workflow
+            {
+                Name = "Workflowname1",
+                Description = "Workflowdesc1",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    ExportDestinations = new string[] { "oneDestination", "twoDestination", "threeDestination" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject
+                    {
+                        Id = "rootTask",
+                        Type = "router",
+                        Description = "TestDesc",
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]{
+                                new Artifact
+                                {
+                                    Name = "non_unique_artifact",
+                                    Value = "Example Value"
+                                }
+                            }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination{ Name = "externalTask" }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "externalTask",
+                        Type = "remote_app_execution",
+                        //ExportDestinations = new ExportDestination[]
+                        //{
+                        //    new ExportDestination { Name = "oneDestination" }
+                        //},
+                        Artifacts = new ArtifactMap()
+                        {
+                            Input = new Artifact[]
+                            {
+                                new Artifact { Name = "output", Value = "{{ context.executions.artifact_task_1.artifacts.output }}" },
+                            },
+                        }
+                    }
+                }
+            };
+
+            _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
+
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+
+            Assert.NotEmpty(errors);
+        }
+
+        [Fact]
+        public async Task ValidateWorkflow_ExportAppWithSameDestinationTwice_ReturnsErrors()
+        {
+            var workflow = new Workflow
+            {
+                Name = "Workflowname1",
+                Description = "Workflowdesc1",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    ExportDestinations = new string[] { "oneDestination", "twoDestination", "threeDestination" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject
+                    {
+                        Id = "rootTask",
+                        Type = "router",
+                        Description = "TestDesc",
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]{
+                                new Artifact
+                                {
+                                    Name = "non_unique_artifact",
+                                    Value = "Example Value"
+                                }
+                            }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination{ Name = "externalTask" }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "externalTask",
+                        Type = "remote_app_execution",
+                        ExportDestinations = new ExportDestination[]
+                        {
+                            new ExportDestination { Name = "oneDestination" },
+                            new ExportDestination { Name = "oneDestination" }
+                        },
+                        Artifacts = new ArtifactMap()
+                        {
+                            Input = new Artifact[]
+                            {
+                                new Artifact { Name = "output", Value = "{{ context.executions.artifact_task_1.artifacts.output }}" },
+                            },
+                        }
+                    }
+                }
+            };
+
+            _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
+
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+
+            Assert.NotEmpty(errors);
+        }
+
+        [Fact]
+        public async Task ValidateWorkflow_ExportAppWithInputs_ReturnsErrors()
+        {
+            var workflow = new Workflow
+            {
+                Name = "Workflowname1",
+                Description = "Workflowdesc1",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    ExportDestinations = new string[] { "oneDestination", "twoDestination", "threeDestination" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject
+                    {
+                        Id = "rootTask",
+                        Type = "router",
+                        Description = "TestDesc",
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]{
+                                new Artifact
+                                {
+                                    Name = "non_unique_artifact",
+                                    Value = "Example Value"
+                                }
+                            }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination{ Name = "externalTask" }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "externalTask",
+                        Type = "remote_app_execution",
+                        ExportDestinations = new ExportDestination[]
+                        {
+                            new ExportDestination { Name = "oneDestination" }
+                        },
+                        Artifacts = new ArtifactMap()
+                        {
+                        }
+                    }
+                }
+            };
+
+            _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
+
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+
+            Assert.NotEmpty(errors);
+        }
+        [Fact]
+        public async Task ValidateWorkflow_ExportAppWithOutputs_ReturnsErrors()
+        {
+            var workflow = new Workflow
+            {
+                Name = "Workflowname1",
+                Description = "Workflowdesc1",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    ExportDestinations = new string[] { "oneDestination", "twoDestination", "threeDestination" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject
+                    {
+                        Id = "rootTask",
+                        Type = "router",
+                        Description = "TestDesc",
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]{
+                                new Artifact
+                                {
+                                    Name = "non_unique_artifact",
+                                    Value = "Example Value"
+                                }
+                            }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination{ Name = "externalTask" }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "externalTask",
+                        Type = "remote_app_execution",
+                        ExportDestinations = new ExportDestination[]
+                        {
+                            new ExportDestination { Name = "oneDestination" }
+                        },
+                        Artifacts = new ArtifactMap()
+                        {
+                            Input = new Artifact[]
+                            {
+                                new Artifact { Name = "output", Value = "{{ context.executions.artifact_task_1.artifacts.output }}" },
+                            },
+                        }
+                    }
+                }
+            };
+
+            _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
+
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+
+            Assert.Single(errors);
+        }
+
+
+        [Fact]
+        public async Task ValidateWorkflow_Converging_Tasks_ReturnsErrors()
+        {
+            var workflow = new Workflow
+            {
+                Name = "Workflowname1",
+                Description = "Workflowdesc1",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    ExportDestinations = new string[] { "oneDestination", "twoDestination", "threeDestination" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject
+                    {
+                        Id = "rootTask",
+                        Type = "router",
+                        Description = "TestDesc",
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]{
+                                new Artifact
+                                {
+                                    Name = "non_unique_artifact",
+                                    Value = "Example Value"
+                                }
+                            }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination{ Name = "externalTask" }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "externalTask",
+                        Type = "export",
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination { Name = "rootTask" }
+                        },
+                        Artifacts = new ArtifactMap()
+                        {
+                            Input = new Artifact[]
+                            {
+                                new Artifact { Name = "output", Value = "{{ context.executions.artifact_task_1.artifacts.output }}" },
+                            },
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "externalTask2",
+                        Type = "router",
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination{ Name = "rootTask"}
+                        },
+                        Artifacts = new ArtifactMap()
+                        {
+                            Input = new Artifact[]
+                            {
+                                new Artifact { Name = "output", Value = "{{ context.executions.artifact_task_1.artifacts.output }}" },
+                            },
+                        }
+                    }
+                }
+            };
+
+            _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
+
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+
+            Assert.NotEmpty(errors.Where(e => e.Contains("Converging Tasks")));
+        }
+        [Fact]
+        public async Task ValidateWorkflow_Duplicate_TaskIds_ReturnsErrors()
+        {
+            var workflow = new Workflow
+            {
+                Name = "Workflowname1",
+                Description = "Workflowdesc1",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    ExportDestinations = new string[] { "oneDestination", "twoDestination", "threeDestination" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject
+                    {
+                        Id = "rootTask",
+                        Type = "router",
+                        Description = "TestDesc",
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]{
+                                new Artifact
+                                {
+                                    Name = "non_unique_artifact",
+                                    Value = "Example Value"
+                                }
+                            }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination{ Name = "externalTask" }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "rootTask",
+                        Type = "router",
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination { Name = "rootTask" }
+                        },
+                        Artifacts = new ArtifactMap()
+                        {
+                        }
+                    }
+                }
+            };
+
+            _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
+
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+
+            Assert.NotEmpty(errors.Where(e => e.Contains("Found duplicate task")));
+        }
+        [Fact]
+        public async Task ValidateWorkflow_No_InformaticsGateway_On_export_Task_ReturnsErrors()
+        {
+            var workflow = new Workflow
+            {
+                Name = "Workflowname1",
+                Description = "Workflowdesc1",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle"
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject
+                    {
+                        Id = "rootTask",
+                        Type = "export",
+                        Description = "TestDesc",
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]{
+                                new Artifact
+                                {
+                                    Name = "non_unique_artifact",
+                                    Value = "Example Value"
+                                }
+                            }
+                        },
+                        ExportDestinations = new ExportDestination[]
+                        {
+                            new ExportDestination { Name = "oneDestination" }
+                        },
+                    },
+                }
+            };
+
+            _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
+
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+
+            Assert.NotEmpty(errors.Where(e => e.Contains("InformaticsGateway ExportDestinations destinations can not be null")));
+        }
+        [Fact]
+        public async Task ValidateWorkflow_InformaticsGateway_No_AETitle_ReturnsErrors()
+        {
+            var workflow = new Workflow
+            {
+                Name = "Workflowname1",
+                Description = "Workflowdesc1",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                },
+                Tasks = new TaskObject[]
+                {
+                }
+            };
+
+            _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
+
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+
+            Assert.NotEmpty(errors.Where(e => e.Contains("AeTitle is required in the InformaticsGateaway section")));
+        }
+
+        [Fact]
+        public async Task ValidateWorkflow_No_name_Or_Values_On_Inputs_ReturnsErrors()
+        {
+            var workflow = new Workflow
+            {
+                Name = "Workflowname1",
+                Description = "Workflowdesc1",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject
+                    {
+                        Id = "rootTask",
+                        Type = "export",
+                        Description = "TestDesc",
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[]{
+                                new Artifact
+                                {
+                                    Name = "",
+                                    Value = ""
+                                }
+                            }
+                        },
+                        ExportDestinations = new ExportDestination[]
+                        {
+                            new ExportDestination { Name = "oneDestination" }
+                        },
+                    },
+                }
+            };
+
+            _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
+
+            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+
+            Assert.NotEmpty(errors.Where(e => e.Contains("Input Artifacts must have a Name")));
+            Assert.NotEmpty(errors.Where(e => e.Contains("Input Artifacts must have a Value")));
         }
     }
 }

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.Common.Extensions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Common.Tests.Extensions
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Extensions
 {
     public class CollectionExtensionsTests
     {
@@ -104,7 +104,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Extensions
             Dictionary<string, string>? dict1 = null;
             var dict2 = new Dictionary<string, string>() { { "two", "b" } };
 
-            var ex = Assert.Throws<ArgumentNullException>(() => dict1.Append(dict2));
+            var ex = Assert.Throws<ArgumentNullException>(() => dict1!.Append(dict2));
             Assert.Equal("Value cannot be null. (Parameter 'array')", ex.Message);
         }
     }
