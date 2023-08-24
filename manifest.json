@@ -18,7 +18,7 @@
       "output": {
         ".html": {
           "relative_path": "api/rest/task-manager/argo-template.html",
-          "hash": "xTRyUXoHyoetYS9WP9qRh7OozdqCZxQ/aHzf25o643s="
+          "hash": "MJQVveI2JU4/YyGkdZEF8s0ZrjvbLa/BDJwVZJZSufs="
         }
       },
       "is_incremental": false,
@@ -30,7 +30,7 @@
       "output": {
         ".html": {
           "relative_path": "api/rest/task-manager/health.html",
-          "hash": "PTdfV26hpiPEegTvjgmAUCWR8FwctUCVqy4nUHI3T/w="
+          "hash": "L+Mnvz/cp+AgfYCRysAZF3s2QvIwBr5HVZUHJL/lsKc="
         }
       },
       "is_incremental": false,
@@ -42,7 +42,7 @@
       "output": {
         ".html": {
           "relative_path": "api/rest/workflow-manager/health.html",
-          "hash": "qAz+6aZmr8JI9GrqNY0JxM1BfNr9gZ3ZUwxWbDZye4o="
+          "hash": "Hb7CwChWGDgyicQmlM2++cv/HJeacmfHm43SWPVKs24="
         }
       },
       "is_incremental": false,
@@ -54,7 +54,7 @@
       "output": {
         ".html": {
           "relative_path": "api/rest/workflow-manager/payload.html",
-          "hash": "3n+VXk4E6gDtk0Gv2MNJnT9vS6XRRm8sIRhE6q+vbLU="
+          "hash": "AKBefYKjQh4be0crJoKJl0B0lXl7evdVMFjCWjtIvjg="
         }
       },
       "is_incremental": false,
@@ -66,7 +66,7 @@
       "output": {
         ".html": {
           "relative_path": "api/rest/workflow-manager/task.html",
-          "hash": "zGFu914IgV6ZyQ+GUfclG/+xWte9qXyx4UhEtG/r3vE="
+          "hash": "znN/9B7QuRk4594ng2ZyUcwQg7+E7H6amZoW1DkxvE8="
         }
       },
       "is_incremental": false,
@@ -78,7 +78,7 @@
       "output": {
         ".html": {
           "relative_path": "api/rest/workflow-manager/workflow-instance.html",
-          "hash": "WIxfTgG/kkUvRfKV7YBVktm1hoSAZgcHF5HNPbJ7rhg="
+          "hash": "/0a9g/bbS2WfV1RifL0ViMheEnuM5s8Bk+t2+CMawH4="
         }
       },
       "is_incremental": false,
@@ -90,7 +90,7 @@
       "output": {
         ".html": {
           "relative_path": "api/rest/workflow-manager/workflow.html",
-          "hash": "9MT3GORK+u0DZje47gEJdwXYiYwbAIS0/7mqHFKgmfw="
+          "hash": "k2dPRLT9wkapiI7Sg0BXPoSlH3fNW3rFTXOMu7Ox+lM="
         }
       },
       "is_incremental": false,
@@ -102,7 +102,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "Z6mgcSOsW34h6omdanrWtGPg2AwTaafH5MDqJZAtXDM="
+          "hash": "xO546gK/QL3ImTOhKOP4VMJAk/vKXoAK9FJlMS8HM4g="
         }
       },
       "is_incremental": false,
@@ -114,7 +114,7 @@
       "output": {
         ".html": {
           "relative_path": "changelog.html",
-          "hash": "S/Xniji8UKPt6nMlQb1C6ovZ0jHFT2OMgpi8l8zwQTE="
+          "hash": "k16v5wdo4BY+6nnGUS3Zu4hWKQ0Xm0lW21FyEiOnnOY="
         }
       },
       "is_incremental": false,
@@ -126,7 +126,7 @@
       "output": {
         ".html": {
           "relative_path": "compliance/third-party-licenses.html",
-          "hash": "gXyvsY8BsZ4mLtvSjqV0B96Qeju1M9hKrOJaAEr7d2U="
+          "hash": "49KflxNuV6PJyJ3+9c358iLplNiVp4omZ3lnBUQZu/4="
         }
       },
       "is_incremental": false,
@@ -194,7 +194,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "nBVH4sNUBCAePMm5rURDUTeovWI6TQhR6PfjnMFDdh0="
+          "hash": "2MUkjGa/UQrdHX8WjJMCeiMQJOhQc2OpZdRyRh15B7E="
         }
       },
       "is_incremental": false,
@@ -202,11 +202,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.TaskManager.API.ITaskDispatchEventService.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Constants.TaskTypeConstants.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.TaskManager.API.ITaskDispatchEventService.html",
-          "hash": "kyZcw5NySqyyNvOmiW3xkg1MrBv1lj9ANAXD4jOFjdE="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Constants.TaskTypeConstants.html",
+          "hash": "HCVul8/EquPBJEoLhd0zvZt47Cc4i2upE5j8V8ipESw="
         }
       },
       "is_incremental": false,
@@ -214,11 +214,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.TaskManager.API.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Constants.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.TaskManager.API.html",
-          "hash": "VfD2B4Dmh5JQMbRERnz+HVmjYhUK2gbfDh18bCpUIAc="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Constants.html",
+          "hash": "fufsh7ioSAGWqO6xiLwu6PhfkgUH9MJ9Nte1HJ3EAnY="
         }
       },
       "is_incremental": false,
@@ -226,11 +226,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.ArgoCallbackConfiguration.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.DocumentVersionConverBson.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.ArgoCallbackConfiguration.html",
-          "hash": "jfmphQZG+3zebRw/qutPOl7Z5+Wz/1kwaSsLkZCQZuQ="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.DocumentVersionConverBson.html",
+          "hash": "+mS/6viR1J2fq+m96Ia5WJrFux1566n7nybhLbxfZ/o="
         }
       },
       "is_incremental": false,
@@ -238,11 +238,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.ArgoPluginArguments.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.DocumentVersionConvert.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.ArgoPluginArguments.html",
-          "hash": "C59ithz50p2DnH6Y4/ocBhUrv3udzIT53WrJ5eFL76Q="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.DocumentVersionConvert.html",
+          "hash": "txf89LHYv/W4vyGMBrsZJ2RxPIqUAN4e4HsDXKJXMkI="
         }
       },
       "is_incremental": false,
@@ -250,11 +250,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.BackgroundServiceSettings.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M001_ExecutionStats_addVersion.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.BackgroundServiceSettings.html",
-          "hash": "1NUmMVGhTr1xlLq0qOtr+hIl3f+qXl+H7nOIrNMsxnE="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M001_ExecutionStats_addVersion.html",
+          "hash": "UjkY8wTWzrqaO/cSLbGgOhP1Ff+3uCuJjxrgkpEpkC4="
         }
       },
       "is_incremental": false,
@@ -262,11 +262,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.ConfigurationValidator.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M001_Payload_addVerion.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.ConfigurationValidator.html",
-          "hash": "ln75baKk2i8YhaTUhz2XxxVQoaVsbO3D/kq3/CgHMNY="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M001_Payload_addVerion.html",
+          "hash": "md1o7zdEAyWmQ+ArjeocZieqRukW05WGka52xj7RwKE="
         }
       },
       "is_incremental": false,
@@ -274,11 +274,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.DicomAgentConfiguration.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M001_WorkflowInstance_addVerion.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.DicomAgentConfiguration.html",
-          "hash": "CiR1/meqorx9L8jVp5cXPtJXHWQcGX0tYqwYv0xkIog="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M001_WorkflowInstance_addVerion.html",
+          "hash": "r6CUGSNnEj29hvrIfC2VMv1Qk9rWhPZRFOyTQJXlvSg="
         }
       },
       "is_incremental": false,
@@ -286,11 +286,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.EndpointSettings.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M001_WorkflowRevision_addVerion.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.EndpointSettings.html",
-          "hash": "4UhSwyTnKl9c6YqenNeyYdT172/3hcKwd/bTZfmLzm4="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M001_WorkflowRevision_addVerion.html",
+          "hash": "STdBPZ1wIpuX6OtcuL0KtAfMauqq48F7rLXIfsZ/42o="
         }
       },
       "is_incremental": false,
@@ -298,11 +298,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.Exceptions.ConfigurationException.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.Exceptions.ConfigurationException.html",
-          "hash": "p9AMpvZZwnBXCtCRIywsmrLi7n3YDDFYwkBHdX80xjY="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.html",
+          "hash": "ubuWNIWNo3ZjYNUDYmtL4uJqP1aATiY2WZrIFclorME="
         }
       },
       "is_incremental": false,
@@ -310,11 +310,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.Exceptions.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M002_Payload_addPayloadDeleted.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.Exceptions.html",
-          "hash": "rf4KhJO69Wl2/PeGgrRuVgMq32xBpbN2EKkUkHiGNxs="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M002_Payload_addPayloadDeleted.html",
+          "hash": "enYOuC11SFbywtmgSbI/0nwOBVdvhk03iDgW1wYpacE="
         }
       },
       "is_incremental": false,
@@ -322,11 +322,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.InformaticsGatewayConfiguration.html",
-          "hash": "tuljq8iQyGK7dZFT0kRnY0Jn+PAsptZfWSfqmtEV2y8="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.html",
+          "hash": "4OijyzZcKvsh8T4+HOptWBizOhsXj245lm00N1yaPwA="
         }
       },
       "is_incremental": false,
@@ -334,11 +334,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfiguration.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.Artifact.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfiguration.html",
-          "hash": "FVXQhamNV8WgVsfee5xKfvadJiiTgImtWeOcwmFOMAg="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.Artifact.html",
+          "hash": "HsQwCZwuL5Zb36kaa1wmet2qXx8lJBKTqw10o/amA/M="
         }
       },
       "is_incremental": false,
@@ -346,11 +346,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.ArtifactMap.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.MessageBrokerConfigurationKeys.html",
-          "hash": "SdplcEo8sJJpyji0R1OB18cChuDhyFHScShhGCGLv2g="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.ArtifactMap.html",
+          "hash": "I+zlQYsWyqnyEHnSUSNkTNXB9FbPl7xS1jVtYD5tgqc="
         }
       },
       "is_incremental": false,
@@ -358,11 +358,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.PagedOptions.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.DicomValue.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.PagedOptions.html",
-          "hash": "qmV6Lw7YjeZGgY0ggk6gpYLZoqD5jbS4/P2vzEjV8g4="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.DicomValue.html",
+          "hash": "s/kYQ0Whhm3UhsEMq1zNvDSsEHveHdUG80CZbDWf/1k="
         }
       },
       "is_incremental": false,
@@ -370,11 +370,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.RetryConfiguration.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.ExecutionStatDTO.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.RetryConfiguration.html",
-          "hash": "TiajA6kQEzFcdMju0T2cQ1fYxp2fiK0mYfrAaHaTt5A="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.ExecutionStatDTO.html",
+          "hash": "Wo0S0hn7qTWoQs1KBVGEQZW6/KTnWwfM/CUQvlbLuoI="
         }
       },
       "is_incremental": false,
@@ -382,11 +382,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.StorageConfiguration.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.ExecutionStats.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.StorageConfiguration.html",
-          "hash": "uzPjjvV17clMzlm1jgBoq8gJVQaUrYe8npayh7UBM2U="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.ExecutionStats.html",
+          "hash": "LUi8kRlwTMcMoy9uYgEqHvf4QRsHBPJI7W8OSF5FBOU="
         }
       },
       "is_incremental": false,
@@ -394,11 +394,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.TaskManagerConfiguration.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.ExportDestination.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.TaskManagerConfiguration.html",
-          "hash": "4w8VZURi/RPpcLJMYp9krLfNhDp/fsbG/gYJB8Wg9Rk="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.ExportDestination.html",
+          "hash": "vkNRf7GciZxLTosJaRtOAgjZJ/57za98PIzN5yl2fJs="
         }
       },
       "is_incremental": false,
@@ -406,11 +406,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.ISoftDeleteable.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.WorkflowManagerOptions.html",
-          "hash": "eOPrbMxWbxqt1Uhk2wMopIAd+gJyhMtxSGV7y6ggEIw="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.ISoftDeleteable.html",
+          "hash": "an9uMU01ZECRwXj4UPbSTuPs0X9IY+1uNFPJfY2qqQI="
         }
       },
       "is_incremental": false,
@@ -418,11 +418,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Configuration.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.InformaticsGateway.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Configuration.html",
-          "hash": "oZIkE7qlEKh+vq3Qf8UXbZ7+VB/zNIWL8OY2HWaX2TM="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.InformaticsGateway.html",
+          "hash": "8xiXhSrklPkAJZ6hZPr6Hyf6pWaKUvpnNSTiOUhiSKw="
         }
       },
       "is_incremental": false,
@@ -430,11 +430,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Constants.TaskTypeConstants.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.PatientDetails.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Constants.TaskTypeConstants.html",
-          "hash": "6YQOTnIyLRZTYpbyjD8C3fAyoSm0r+Q1ZScl6SONgwE="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.PatientDetails.html",
+          "hash": "yT2kG1MokxGmW1kFuwtY6DDKz8DQRIWitfnohOTb9pI="
         }
       },
       "is_incremental": false,
@@ -442,11 +442,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Constants.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Constants.html",
-          "hash": "B6mGmUa3lu/tTw35TPeS+9g5TVZZ1NogCdu/elN4zgQ="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.html",
+          "hash": "zfnI+/g5PBbK2mpw9HFfHGKRSIMp1bu1pnd+A+HCIhI="
         }
       },
       "is_incremental": false,
@@ -454,11 +454,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.DocumentVersionConverBson.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.PayloadDeleted.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.DocumentVersionConverBson.html",
-          "hash": "BE+zkaakf0ixhSFizr/OJQE/MRubBcZPJ9qsZCYqz4w="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.PayloadDeleted.html",
+          "hash": "fQA09wuN1qBn6UXD9/w53hE0+zgdGL/CagKwxSOvwk8="
         }
       },
       "is_incremental": false,
@@ -466,11 +466,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.DocumentVersionConvert.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.PayloadDto.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.DocumentVersionConvert.html",
-          "hash": "VH5l5u7VwOiZook+DDvA2jVC15fWpCp1tiyzLyQqsbc="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.PayloadDto.html",
+          "hash": "khCXmaMFnpHlVVwXohjQp6ZhI7YZRDCLuitwsw4bl+w="
         }
       },
       "is_incremental": false,
@@ -478,11 +478,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.PayloadStatus.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_ExecutionStats_addVersion.html",
-          "hash": "vyRDFKw6HU8t7AdHWYlU1yLD73jDO72Akix4QFtfh7w="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.PayloadStatus.html",
+          "hash": "mdRMWsEWhSslIiV+il0j5XUjc4ZVfkF914k/O8g3A6U="
         }
       },
       "is_incremental": false,
@@ -490,11 +490,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_Payload_addVerion.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.Status.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_Payload_addVerion.html",
-          "hash": "U3RooREAtF8p4iOjnrZv1yUOzyMi/FQuG630CMGD0nw="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.Status.html",
+          "hash": "yqBSlaXYb+E6hwUIHKfHeQj45zY9AZYC5dpUDxxAMks="
         }
       },
       "is_incremental": false,
@@ -502,11 +502,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_WorkflowInstance_addVerion.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.TaskDestination.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_WorkflowInstance_addVerion.html",
-          "hash": "kpFTHfxTA42DZ1nA2T51rY19wJ0zp6GF8FFMIx/62mc="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.TaskDestination.html",
+          "hash": "qW2KActjDd3LYv6z/qQ1jOrKBL6KSS+xaQXnaIcHmd4="
         }
       },
       "is_incremental": false,
@@ -514,11 +514,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_WorkflowRevision_addVerion.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.TaskExecution.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M001_WorkflowRevision_addVerion.html",
-          "hash": "jyTuZOIzGrnSjVKQ2/uOl0yTRSQZnFlLZ6vkfC+Oj8M="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.TaskExecution.html",
+          "hash": "jktXTTf/6ov4nW+e6zHUIu0X6bkwbIOEencla8GqizE="
         }
       },
       "is_incremental": false,
@@ -526,11 +526,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.TaskObject.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_ExecutionStats_addWorkflowId.html",
-          "hash": "EC/DOi/i5kV+gKn4c+v65U/D/9xj8vUnXqnoe6prCyk="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.TaskObject.html",
+          "hash": "Vmhoe/uh4Jk0udZxy1rGUC8t+InH4eAbXH4EPvlx/nE="
         }
       },
       "is_incremental": false,
@@ -538,11 +538,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_Payload_addPayloadDeleted.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.Workflow.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.M002_Payload_addPayloadDeleted.html",
-          "hash": "IlJsANCx08UjowG8Z5Mc/vQdOxnHFPz5wGuBRTD5M3I="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.Workflow.html",
+          "hash": "tOWvKlt4iDcJnnGMmFS1nB9DCoSO6U3N/IcyQmsuMZ0="
         }
       },
       "is_incremental": false,
@@ -550,11 +550,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.WorkflowInstance.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Migrations.html",
-          "hash": "ING8Cr7lgYgEwzpcY2Qg1LtLhHIiBftHEen06Dg9QnI="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.WorkflowInstance.html",
+          "hash": "mA7815RdbBexlPM+qhsCFXSmuVle6Qz4LzBdGwYouQ4="
         }
       },
       "is_incremental": false,
@@ -562,11 +562,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.Artifact.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.WorkflowRevision.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.Artifact.html",
-          "hash": "RUPdrMAJOcBirIqz9gcOwBOgqz1wcd0sxCxvJNG6gMI="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.WorkflowRevision.html",
+          "hash": "xvHhMhI+4h3z7dY9Znjqo7WZ9GhPbg3l1priGe77xWU="
         }
       },
       "is_incremental": false,
@@ -574,11 +574,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ArtifactMap.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.WorkflowUpdateRequest.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ArtifactMap.html",
-          "hash": "2yuM/fA+2Z5B9dF3+auZ7rybZqlECvdWSNjWJcUUfE4="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.WorkflowUpdateRequest.html",
+          "hash": "t2YmLwq4F8r/PE5azTw0+KwRULe/wwFqbWFr5/t9QFI="
         }
       },
       "is_incremental": false,
@@ -586,11 +586,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.DicomValue.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.DicomValue.html",
-          "hash": "7SxJIXyxbUzkzQArM0Zy6n+qVCbxPtkp9vwSgvn32rU="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.html",
+          "hash": "WdauP2qGnHMX+eEtJ6tWIZSRUGjpH/gWuzbeJoZ4yWI="
         }
       },
       "is_incremental": false,
@@ -598,11 +598,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStatDTO.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Responses.CreateWorkflowResponse.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStatDTO.html",
-          "hash": "yPYqr7yCKqdXQCidCUtVY7n14PWOSSOxHO4cuumV5eI="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Responses.CreateWorkflowResponse.html",
+          "hash": "2QMfBMu3DouTYfUedRyOlHQH17Mvaqw8xZW4hBemfPk="
         }
       },
       "is_incremental": false,
@@ -610,239 +610,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.yml",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Responses.yml",
       "output": {
         ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ExecutionStats.html",
-          "hash": "KCgNCkqR1kBggXzQgzxxNnCjRNSXtLkGJ19WEk/kJbA="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ExportDestination.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ExportDestination.html",
-          "hash": "ipTF1idGF/yI9k8Sii+ndqeHejMRuccjG6IVcyzS+O0="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ISoftDeleteable.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.ISoftDeleteable.html",
-          "hash": "R0nqfUx+kLcVlQ8xOHXc2gC5KikaPa90HinQwFVV9NY="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.InformaticsGateway.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.InformaticsGateway.html",
-          "hash": "1hVRJwhhJYk+GzObsmyLAtcWlDbsSuShcdUcgrefJlY="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.PatientDetails.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.PatientDetails.html",
-          "hash": "pWeTpgPpLJDxjS8INia4pwwSaArgnB+Fat371xltw8Q="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.Payload.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.Payload.html",
-          "hash": "+vjxIJyR/SkdH+0XqAdmrivjw4gOkNW4x8kP5wt7Ed4="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.PayloadDeleted.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.PayloadDeleted.html",
-          "hash": "XBiWYipa6SZtGIjQ3LGIFSEuF7f3h8LCMFtiLhiDtGU="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.PayloadDto.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.PayloadDto.html",
-          "hash": "9lVjD9BUi3VfeOn+Gd7yhS4AViwDtlXbipa3kXepv7Y="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.PayloadStatus.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.PayloadStatus.html",
-          "hash": "0J39QjxmjHX8/XTOXOJqhIIue2exksQ8lAW77om5O4Y="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.Status.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.Status.html",
-          "hash": "r5cWnZ0fXMFpxHkupuZbJdU3WRf2gutxJ06RX3dovbY="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.TaskDestination.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.TaskDestination.html",
-          "hash": "8XaTI9DC6dUoOZdvJEYkkjACxOAyOAaTWyGjwnRhsaA="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.TaskExecution.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.TaskExecution.html",
-          "hash": "zI9nC82q8uhwc9V29Mzb8Q/X4ubnWnm/UZllClx+M7U="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.TaskObject.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.TaskObject.html",
-          "hash": "4yB+et7dwbcfQplTxEzux2piY1e8k0jHlxlw/yvJyAQ="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.Workflow.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.Workflow.html",
-          "hash": "BWHrlpHtZ58m47TiJ8+ab3vdJTU+yMcFMdDp+IXwb/A="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.WorkflowInstance.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.WorkflowInstance.html",
-          "hash": "lNIUtgpj7jryxa3RCzeQb0OI6NHi89huein3Wmxmuts="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.WorkflowRevision.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.WorkflowRevision.html",
-          "hash": "W3ZdxkpDq6e9x1GbVYI2Eu0E4BPsLccr+u9P2+6++nQ="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.WorkflowUpdateRequest.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.WorkflowUpdateRequest.html",
-          "hash": "EhqqmDC+eCIJfklsB8JfE4rnR8MOqqibwErlAE2qdm4="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Models.html",
-          "hash": "K4sjYfS/o5DwX2wY+tJKkguvgS+dtW9mkuRVcvn9Ck8="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Responses.CreateWorkflowResponse.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Responses.CreateWorkflowResponse.html",
-          "hash": "ttzRkFPGiw8Zb1DcjavTJSUpiFLmnA2HHiU/hvnIjb4="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Responses.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Contracts.Responses.html",
-          "hash": "ztmqKZGDDA6hMxE6iQycCbChrfiDn7wqCPDtuZPIrLo="
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Responses.html",
+          "hash": "hEbmXtF29Y1w0UydH9Ra/7ndwydeZkzjp+t/3ETmbc0="
         }
       },
       "is_incremental": false,
@@ -854,7 +626,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.ExecutionStatus.html",
-          "hash": "RND9olxP68oEeCkytu0GY+y4QLyCNCebpgDOc/HLM0Q="
+          "hash": "kySmNiFbl1+CiFbCeVC7W4B77gRqwBTEGnPkHgXCOJM="
         }
       },
       "is_incremental": false,
@@ -866,7 +638,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Extensions.TaskDispatchEventExtension.html",
-          "hash": "seS+M7jDRzy2sgEDz+TiK8/QKvW1WWg28ox9tys3/Po="
+          "hash": "7G01tWSmO8zzkUpsUecuJB3+2Ohwt02aDyxiK5qfsEA="
         }
       },
       "is_incremental": false,
@@ -878,7 +650,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Extensions.TypeExtensions.html",
-          "hash": "TKObgKkanx85UqCvMXb9kyiqe9y5qw82kZhhok+PeRk="
+          "hash": "1lvfkRGbM84IhldTStPlPdvuEFU4Ss7nF4m48LQu5CE="
         }
       },
       "is_incremental": false,
@@ -890,7 +662,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Extensions.html",
-          "hash": "ZZlXDB0uUQySxEEReoiL3wjTa6M5N9RsfXWxM0xhz0A="
+          "hash": "XcjTKzESRH080ag6lydW7JeFA4/VbOG+/V4SCUZ9Rg4="
         }
       },
       "is_incremental": false,
@@ -902,7 +674,19 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.IMetadataRepository.html",
-          "hash": "BJWenGVsoxLvocpbs+wyL4TDjOMuW1L0opYelQnd5Do="
+          "hash": "h5F+99RYJhLj5PTI7zV4W4GVjuAC4RD7qdYW3CtZcDE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.ITaskDispatchEventService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.ITaskDispatchEventService.html",
+          "hash": "j7B1wX7Wn4XAg4RdqRrZUZ2xuCYDBejQFHHXnYKwPMI="
         }
       },
       "is_incremental": false,
@@ -914,7 +698,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.ITaskPlugin.html",
-          "hash": "NSb8G1rJlQiFyyDOICrvsOpbeXpzDenSbHmY3gTwMLk="
+          "hash": "Z9cTCrHnzQTXbe715z0r2cD1ZpXWaX8Hir5VbgTAjXs="
         }
       },
       "is_incremental": false,
@@ -926,7 +710,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.InvalidTaskException.html",
-          "hash": "yAl8u9kVdAAj8+B2Hy9vqhtBN/7nhictrMznZAmBKrA="
+          "hash": "6cZin/z/AbO54V0PSCfm9wxPLiVSSkBFlNVHUYr5zZM="
         }
       },
       "is_incremental": false,
@@ -938,7 +722,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.MetadataRepositoryBase.html",
-          "hash": "RFYT1R/iv27CHDcHOL60ozQPfWdEeuy3lOTvPVKELTA="
+          "hash": "gIc7LpBziuJk35ll/jEhs4UpNmEpO7mq0XaKcG7Hgcs="
         }
       },
       "is_incremental": false,
@@ -950,7 +734,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.TaskDispatchEventInfo.html",
-          "hash": "Dboi99Q7mVLvXAgrsxNwjBJjPfV5R5LmTLHD28XXc24="
+          "hash": "lMN+STVLIumJ0DhTOZ7LNEWmUG000Tw8si0+KOXiwic="
         }
       },
       "is_incremental": false,
@@ -962,7 +746,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.Models.html",
-          "hash": "gIU0HASQVVRbp/q6BcgWLkkD1kpa/VddlaY3kUvRlZ0="
+          "hash": "hRpcq1TqxY+Nb3ybPSPsbmq/5nZsupCeb3CYPaE68eI="
         }
       },
       "is_incremental": false,
@@ -974,7 +758,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.ServiceNotFoundException.html",
-          "hash": "Y3CXSZh6YKfeS6S4ELUBc3XcgA3e6COM1V6PTUKtfKY="
+          "hash": "yTD1xRIEYkeDGgZ9pN4hZPeCWvaoQXdtj/9YdD1weaw="
         }
       },
       "is_incremental": false,
@@ -986,7 +770,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.ServiceNotFoundExceptionGuardExtension.html",
-          "hash": "0vyfhaAZE939yhxu/uuQ5/IyZJQSVF64wkacjV5hG9s="
+          "hash": "On+m8zj2on/zUwEIWyBRQ/VodpGrEtvmssySk1SoXp8="
         }
       },
       "is_incremental": false,
@@ -998,7 +782,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.TaskPluginBase.html",
-          "hash": "mVQ530N52J7eMq+r8U6Ksqxoy00Y97JiZOuyq3k1Spo="
+          "hash": "mMevZ+i0SnWqsIJ5gMqgp8HMkMMkU+5EbVn36TQKxFI="
         }
       },
       "is_incremental": false,
@@ -1010,7 +794,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.API.html",
-          "hash": "qIM5EYObMsthLsNPnm7A0T7On4JuQrpvcTZELU9tX6Y="
+          "hash": "a0X8p27LSvBONuZJpXEp2ZYFdAad7gkJe1aYwxvuvoQ="
         }
       },
       "is_incremental": false,
@@ -1022,7 +806,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.Migrations.DocumentVersionConverBson.html",
-          "hash": "nhxrXzgFMm1PKbYeqNg9aadt70Y8KvCGG4GNiu97RNo="
+          "hash": "1NjMg4glIBxbe6knKRAdnqIpxReelZ3Pfzs1SUD8c/k="
         }
       },
       "is_incremental": false,
@@ -1034,7 +818,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.Migrations.DocumentVersionConvert.html",
-          "hash": "Aj3ZJu4mdOeW8VF5hVQCW+0e1qKuRFGzjj2Q+TXB2Bg="
+          "hash": "VIzOdpMfdUwxup8zIyy+i9cfR0kxJ+zRTu9ohJUaY2g="
         }
       },
       "is_incremental": false,
@@ -1046,7 +830,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.Migrations.M001_TaskDispatchEventInfo_addVerion.html",
-          "hash": "CHPpnUOJn2llQdeP4M7DlvKscI+5K+vrceOwhf73ZAQ="
+          "hash": "wFaOLtZQAUY3STqcNqkHyjjgcy50W6SY9jcHIVKVMmc="
         }
       },
       "is_incremental": false,
@@ -1058,7 +842,7 @@
       "output": {
         ".html": {
           "relative_path": "api/dotnet/Monai.Deploy.WorkflowManager.TaskManager.Migrations.html",
-          "hash": "tYpeP+pBbf6hV/mNi4pOdqqVrx4wgZmv3/vDHxtipn0="
+          "hash": "I5s6VEkujXJUP5jHLc6Sl5muHDDDJuZTOlCyEUeJmkw="
         }
       },
       "is_incremental": false,
@@ -1070,7 +854,7 @@
       "output": {
         ".html": {
           "relative_path": "setup/schema.html",
-          "hash": "XKQL3R7Z/+tkktUdeHjYQKF3YdOSBoNgPFDPTxX08vY="
+          "hash": "Dd4k/rrd63BzJd7NQLXQSbORei+BZQ8JtXRcxVHIzeg="
         }
       },
       "is_incremental": false,
@@ -1082,7 +866,7 @@
       "output": {
         ".html": {
           "relative_path": "setup/setup.html",
-          "hash": "vuZGZDcK2Xa5lM+k47UadvjGRpnyHYgNpCTa5vzTffY="
+          "hash": "AZC93MuG1FSE9Ni/kdjJiy+U7DStHV1hjNBpRwERuco="
         }
       },
       "is_incremental": false,
@@ -1136,7 +920,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 72,
+          "total_file_count": 54,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {
