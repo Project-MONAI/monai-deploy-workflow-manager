@@ -17,12 +17,12 @@
 using System.Web;
 using BoDi;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Models;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
 {
     public class Assertions
     {
@@ -52,10 +52,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 #pragma warning disable CS8604 // Possible null reference argument.
                     taskExecution.Should().BeEquivalentTo<TaskExecution>(response);
                     return;
-#pragma warning restore CS8604 // Possible null reference argument.
                 }
             }
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             throw new Exception($"TaskId={response.TaskId} was not found in any workflow instances");
         }
 
@@ -81,6 +81,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }
         }
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         public void AssertInputArtifactsForWorkflowInstance(TaskObject workflowRevisionTask, string payloadId, TaskExecution workflowInstanceTask, TaskExecution previousTaskExecution = null)
         {
             foreach (var workflowArtifact in workflowRevisionTask.Artifacts.Input)
@@ -400,7 +401,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         private static void GetPropertyValues<T>(T? Response, Type? responseType, out ICollection<Payload> data, out object? totalPages, out object? pageSize, out object? totalRecords, out object? pageNumber)
         {
+#pragma warning disable CS8601 // Possible null reference assignment.
             data = responseType?.GetProperty("Data")?.GetValue(Response, null) as ICollection<Payload>;
+#pragma warning restore CS8601 // Possible null reference assignment.
             totalPages = responseType?.GetProperty("TotalPages")?.GetValue(Response, null);
             pageSize = responseType?.GetProperty("PageSize")?.GetValue(Response, null);
             totalRecords = responseType?.GetProperty("TotalRecords")?.GetValue(Response, null);
@@ -527,7 +530,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             Output.WriteLine("Details of TaskUpdateEvent matches TaskDispatchEvent");
         }
 
-        public void AssertExecutionStats(ExecutionStats executionStats, TaskDispatchEvent taskDispatchEvent = null, TaskCallbackEvent taskCallbackEvent = null)
+        public void AssertExecutionStats(ExecutionStats executionStats, TaskDispatchEvent? taskDispatchEvent = null, TaskCallbackEvent taskCallbackEvent = null)
         {
             Output.WriteLine("Asserting details of ExecutionStats");
             if (taskDispatchEvent != null)
@@ -549,3 +552,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         }
     }
 }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.

@@ -17,7 +17,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
+namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Resolver
 {
     public sealed class Conditional
     {

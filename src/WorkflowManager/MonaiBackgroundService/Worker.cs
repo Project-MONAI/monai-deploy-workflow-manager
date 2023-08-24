@@ -17,14 +17,14 @@
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.MonaiBackgroundService.Logging;
-using Monai.Deploy.WorkflowManager.WorkfowExecuter.Common;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService.Logging;
+using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common;
 
-namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
+namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService
 {
     public class Worker : BackgroundService
     {
@@ -80,7 +80,7 @@ namespace Monai.Deploy.WorkflowManager.MonaiBackgroundService
 
                     await PublishTimeoutUpdateEvent(task, correlationId, task.WorkflowInstanceId).ConfigureAwait(false); // -> task manager
 
-                    await PublishCancellationEvent(task, correlationId, (string)identity ?? task.ExecutionId, task.WorkflowInstanceId).ConfigureAwait(false); // -> workflow executor
+                    await PublishCancellationEvent(task, correlationId, identity as string ?? task.ExecutionId, task.WorkflowInstanceId).ConfigureAwait(false); // -> workflow executor
                 }
             }
             catch (Exception e)

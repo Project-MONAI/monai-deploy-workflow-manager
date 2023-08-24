@@ -16,7 +16,7 @@
 
 using Ardalis.GuardClauses;
 
-namespace Monai.Deploy.WorkflowManager.Common.Extensions
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions
 {
     /// <summary>
     /// Set of useful extensions for collections.
@@ -42,7 +42,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Extensions
         /// <param name="otherArray"></param>
         public static void Append<TKey, TValue>(this Dictionary<TKey, TValue> array, Dictionary<TKey, TValue> otherArray) where TKey : notnull
         {
-            Guard.Against.Null(array);
+            Guard.Against.Null(array, nameof(array));
             if (otherArray.IsNullOrEmpty())
             {
                 return;

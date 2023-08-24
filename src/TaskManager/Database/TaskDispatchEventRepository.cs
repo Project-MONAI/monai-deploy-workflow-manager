@@ -110,10 +110,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
             }
         }
 
-        public async Task<TaskDispatchEventInfo> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEventInfo, Dictionary<string, string> pluginArgs)
+        public async Task<TaskDispatchEventInfo?> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEventInfo, Dictionary<string, string> pluginArgs)
         {
-            Guard.Against.Null(taskDispatchEventInfo);
-            Guard.Against.Null(pluginArgs);
+            Guard.Against.Null(taskDispatchEventInfo, nameof(taskDispatchEventInfo));
+            Guard.Against.Null(pluginArgs, nameof(pluginArgs));
 
             try
             {

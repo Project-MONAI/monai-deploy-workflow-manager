@@ -25,7 +25,7 @@ using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.Docker.Logging;
 
@@ -170,7 +170,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                     }
                     _logger.ContentTypeForFile(objectName, contentType);
                     using var stream = _fileSystem.File.OpenRead(file);
-                    await storageService.PutObjectAsync(destination.Bucket, objectName, stream, stream.Length, contentType, null, cancellationToken).ConfigureAwait(false);
+                    await storageService.PutObjectAsync(destination.Bucket, objectName, stream, stream.Length, contentType, new Dictionary<string, string>(), cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {

@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#pragma warning disable IDE0005 // Using directive is unnecessary.
 using System;
+#pragma warning restore IDE0005 // Using directive is unnecessary.
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Moq;
 
 #pragma warning disable CS8620 // Disable "CS8620
 
-namespace Monai.Deploy.WorkflowManager.SharedTest
+namespace Monai.Deploy.WorkflowManager.Common.SharedTest
 {
     [ExcludeFromCodeCoverage]
     public static class VerifyLogExtension
     {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         public static Mock<ILogger> VerifyLoggingMessageEndsWith(this Mock<ILogger> logger, string expectedMessage, LogLevel expectedLogLevel = LogLevel.Debug, Times? times = null)
         {
             times ??= Times.Once();
@@ -136,6 +138,5 @@ namespace Monai.Deploy.WorkflowManager.SharedTest
             return logger;
         }
     }
-
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 }

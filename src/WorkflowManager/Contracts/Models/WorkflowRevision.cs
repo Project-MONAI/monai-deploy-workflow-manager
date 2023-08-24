@@ -15,13 +15,13 @@
  */
 
 using System;
-using Monai.Deploy.WorkflowManager.Contracts.Migrations;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Migrations;
 using Mongo.Migration.Documents;
 using Mongo.Migration.Documents.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Models
+namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
     [CollectionLocation("Workflows"), RuntimeVersion("1.0.0")]
     public class WorkflowRevision : ISoftDeleteable, IDocument

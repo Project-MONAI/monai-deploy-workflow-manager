@@ -20,11 +20,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.Shared;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 
-namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
+namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
 {
     public class PayloadListenerService : IHostedService, IMonaiService, IDisposable
     {
@@ -96,66 +96,59 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 
         private void SetupPolling()
         {
-            _messageSubscriber.Subscribe(WorkflowRequestRoutingKey, WorkflowRequestRoutingKey, OnWorkflowRequestReceivedCallback);
+            _messageSubscriber.SubscribeAsync(WorkflowRequestRoutingKey, WorkflowRequestRoutingKey, OnWorkflowRequestReceivedCallbackAsync);
             _logger.EventSubscription(ServiceName, WorkflowRequestRoutingKey);
 
-            _messageSubscriber.Subscribe(TaskStatusUpdateRoutingKey, TaskStatusUpdateRoutingKey, OnTaskUpdateStatusReceivedCallback);
+            _messageSubscriber.SubscribeAsync(TaskStatusUpdateRoutingKey, TaskStatusUpdateRoutingKey, OnTaskUpdateStatusReceivedCallback);
             _logger.EventSubscription(ServiceName, TaskStatusUpdateRoutingKey);
 
-            _messageSubscriber.Subscribe(ExportCompleteRoutingKey, ExportCompleteRoutingKey, OnExportCompleteReceivedCallback);
+            _messageSubscriber.SubscribeAsync(ExportCompleteRoutingKey, ExportCompleteRoutingKey, OnExportCompleteReceivedCallback);
             _logger.EventSubscription(ServiceName, ExportCompleteRoutingKey);
         }
-
-        private void OnWorkflowRequestReceivedCallback(MessageReceivedEventArgs eventArgs)
+        private async Task OnWorkflowRequestReceivedCallbackAsync(MessageReceivedEventArgs eventArgs)
         {
-            Task.Run(async () =>
-            {
-                using var loggerScope = _logger.BeginScope(new Dictionary<string, object>
-                {
-                    ["correlationId"] = eventArgs.Message.CorrelationId,
-                    ["source"] = eventArgs.Message.ApplicationId,
-                    ["messageId"] = eventArgs.Message.MessageId,
-                    ["messageDescription"] = eventArgs.Message.MessageDescription,
-                });
 
-                _logger.WorkflowRequestReceived();
-                await _eventPayloadListenerService.ReceiveWorkflowPayload(eventArgs);
-            }).ConfigureAwait(false);
+            using var loggerScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["correlationId"] = eventArgs.Message.CorrelationId,
+                ["source"] = eventArgs.Message.ApplicationId,
+                ["messageId"] = eventArgs.Message.MessageId,
+                ["messageDescription"] = eventArgs.Message.MessageDescription,
+            });
+
+            _logger.WorkflowRequestReceived();
+            await _eventPayloadListenerService.ReceiveWorkflowPayload(eventArgs);
         }
 
-        private void OnTaskUpdateStatusReceivedCallback(MessageReceivedEventArgs eventArgs)
+        private async Task OnTaskUpdateStatusReceivedCallback(MessageReceivedEventArgs eventArgs)
         {
-            Task.Run(async () =>
+            using var loggerScope = _logger.BeginScope(new Dictionary<string, object>
             {
-                using var loggerScope = _logger.BeginScope(new Dictionary<string, object>
-                {
-                    ["correlationId"] = eventArgs.Message.CorrelationId,
-                    ["source"] = eventArgs.Message.ApplicationId,
-                    ["messageId"] = eventArgs.Message.MessageId,
-                    ["messageDescription"] = eventArgs.Message.MessageDescription,
-                });
+                ["correlationId"] = eventArgs.Message.CorrelationId,
+                ["source"] = eventArgs.Message.ApplicationId,
+                ["messageId"] = eventArgs.Message.MessageId,
+                ["messageDescription"] = eventArgs.Message.MessageDescription,
+            });
 
-                _logger.TaskUpdateReceived();
-                await _eventPayloadListenerService.TaskUpdatePayload(eventArgs);
-            }).ConfigureAwait(false);
+            _logger.TaskUpdateReceived();
+            await _eventPayloadListenerService.TaskUpdatePayload(eventArgs);
         }
 
-        private void OnExportCompleteReceivedCallback(MessageReceivedEventArgs eventArgs)
+        private async Task OnExportCompleteReceivedCallback(MessageReceivedEventArgs eventArgs)
         {
-            Task.Run(async () =>
+            using var loggerScope = _logger.BeginScope(new Dictionary<string, object>
             {
-                using var loggerScope = _logger.BeginScope(new Dictionary<string, object>
-                {
-                    ["correlationId"] = eventArgs.Message.CorrelationId,
-                    ["source"] = eventArgs.Message.ApplicationId,
-                    ["messageId"] = eventArgs.Message.MessageId,
-                    ["messageDescription"] = eventArgs.Message.MessageDescription,
-                });
+                ["correlationId"] = eventArgs.Message.CorrelationId,
+                ["source"] = eventArgs.Message.ApplicationId,
+                ["messageId"] = eventArgs.Message.MessageId,
+                ["messageDescription"] = eventArgs.Message.MessageDescription,
+            });
 
-                _logger.ExportCompleteReceived();
-                await _eventPayloadListenerService.ExportCompletePayload(eventArgs);
-            }).ConfigureAwait(false);
+            _logger.ExportCompleteReceived();
+            await _eventPayloadListenerService.ExportCompletePayload(eventArgs);
+
         }
+
 
         protected virtual void Dispose(bool disposing)
         {

@@ -15,7 +15,6 @@
  */
 
 using Ardalis.GuardClauses;
-using Argo;
 using IdentityModel.Client;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
@@ -45,7 +44,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             var httpClient = _httpClientFactory.CreateClient(ClientName);
 
-            Guard.Against.Null(httpClient);
+            Guard.Against.Null(httpClient, nameof(httpClient));
 
             if (apiToken is not null)
             {

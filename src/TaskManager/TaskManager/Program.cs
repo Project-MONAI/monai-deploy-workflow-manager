@@ -16,7 +16,9 @@
 
 using System.IO.Abstractions;
 using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,43 +28,38 @@ using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.WorkflowManager.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
 using Monai.Deploy.WorkflowManager.TaskManager.Database;
 using Monai.Deploy.WorkflowManager.TaskManager.Database.Options;
 using Monai.Deploy.WorkflowManager.TaskManager.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.Services.Http;
-using Mongo.Migration.Startup.DotNetCore;
 using Mongo.Migration.Startup;
+using Mongo.Migration.Startup.DotNetCore;
 using MongoDB.Driver;
 using NLog;
 using NLog.LayoutRenderers;
 using NLog.Web;
-using Microsoft.AspNetCore.Http;
-using Monai.Deploy.WorkflowManager.Shared.Services;
-using Microsoft.AspNetCore.Builder;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
+    /// <summary>
+    /// Main entry point for TaskManager.
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Program"/> class.
+        /// </summary>
         protected Program()
-        { }
-
-        private static void Main(string[] args)
         {
-            var version = typeof(Program).Assembly;
-            var assemblyVersionNumber = version.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0.1";
-
-            var logger = ConfigureNLog(assemblyVersionNumber);
-            logger.Info($"Initializing MONAI Deploy Task Manager v{assemblyVersionNumber}");
-
-            var host = CreateHostBuilder(args).Build();
-            host.Run();
-            logger.Info("MONAI Deploy Deploy Task Manager shutting down.");
-
-            NLog.LogManager.Shutdown();
         }
 
+        /// <summary>
+        /// standard host builder construction.
+        /// </summary>
+        /// <param name="args">args passed in to the runtime.</param>
+        /// <returns>host builder.</returns>
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
@@ -94,6 +91,21 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 })
 
                 .UseNLog();
+
+        private static void Main(string[] args)
+        {
+            var version = typeof(Program).Assembly;
+            var assemblyVersionNumber = version.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0.1";
+
+            var logger = ConfigureNLog(assemblyVersionNumber);
+            logger.Info($"Initializing MONAI Deploy Task Manager v{assemblyVersionNumber}");
+
+            var host = CreateHostBuilder(args).Build();
+            host.Run();
+            logger.Info("MONAI Deploy Deploy Task Manager shutting down.");
+
+            NLog.LogManager.Shutdown();
+        }
 
         private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
         {

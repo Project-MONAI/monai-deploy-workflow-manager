@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.Storage.Services
+namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 {
     public interface IDicomService
     {

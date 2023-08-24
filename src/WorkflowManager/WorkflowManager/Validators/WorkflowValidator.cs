@@ -1,18 +1,18 @@
 ﻿/*
- * Copyright 2022 MONAI Consortium
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright 2022 MONAI Consortium
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 using System;
 using System.Collections.Generic;
@@ -22,17 +22,17 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Common.Extensions;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.Services.InformaticsGateway;
-using Monai.Deploy.WorkflowManager.Shared.Utilities;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Utilities;
+using Monai.Deploy.WorkflowManager.Common.Services.InformaticsGateway;
 using MongoDB.Driver.Linq;
-using static Monai.Deploy.WorkflowManager.Shared.ValidationConstants;
+using static Monai.Deploy.WorkflowManager.Common.Miscellaneous.ValidationConstants;
 
-namespace Monai.Deploy.WorkflowManager.Validators
+namespace Monai.Deploy.WorkflowManager.Common.Validators
 {
     /// <summary>
     /// Workflow Validator used for validating workflows.
@@ -43,15 +43,33 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// Separator when joining errors in single string.
         /// </summary>
         public static readonly string Separator = ";";
+
+        /// <summary>
+        /// the name of the class for priority.
+        /// </summary>
+        public static readonly string TaskPriorityClassName = "priority";
+
         private const string Comma = ", ";
         private readonly ILogger<WorkflowValidator> _logger;
         private readonly IOptions<WorkflowManagerOptions> _options;
-        public static readonly string TaskPriorityClassName = "priority";
+
+        /// <summary>
+        /// Gets or sets errors from workflow validation.
+        /// </summary>
+        private List<string> Errors { get; set; } = new List<string>();
+
+        private IWorkflowService WorkflowService { get; }
+
+        private IInformaticsGatewayService InformaticsGatewayService { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowValidator"/> class.
         /// </summary>
         /// <param name="workflowService">The workflow service.</param>
+        /// <param name="informaticsGatewayService">service fot the MIG.</param>
+        /// <param name="logger">the logger to use.</param>
+        /// <param name="options">options.</param>
+#pragma warning disable SA1201 // Elements should appear in the correct order
         public WorkflowValidator(
             IWorkflowService workflowService,
             IInformaticsGatewayService informaticsGatewayService,
@@ -64,17 +82,10 @@ namespace Monai.Deploy.WorkflowManager.Validators
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        /// <summary>
-        /// Gets or sets errors from workflow validation.
-        /// </summary>
-        private List<string> Errors { get; set; } = new List<string>();
-
-        private IWorkflowService WorkflowService { get; }
-
-        private IInformaticsGatewayService InformaticsGatewayService { get; }
+#pragma warning restore SA1201 // Elements should appear in the correct order
 
         /// <summary>
-        /// used for checking for duplicates, if OrignalName is empty it will be determined as a create
+        /// Gets the original name, used for checking for duplicates, if OrignalName is empty it will be determined as a create
         /// workflow attempt and check for duplicates or if this is not equal to workflow template it will
         /// check for duplicates.
         /// if workflow name is same as original name then we response user is updating workflow some other way
@@ -86,7 +97,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// Returns single string of errors.
         /// </summary>
         /// <param name="errors">List of errors.</param>
-        /// <returns></returns>
+        /// <returns>string.</returns>
         public static string ErrorsToString(List<string> errors)
         {
             return string.Join(Separator, errors);
@@ -112,8 +123,6 @@ namespace Monai.Deploy.WorkflowManager.Validators
         /// - Unreferenced tasks other than root task.
         /// </summary>
         /// <param name="workflow">Workflow to validate.</param>
-        /// <param name="checkForDuplicates">Check for duplicates.</param>
-        /// <param name="isUpdate">Used to check for duplicate name if it is a new workflow.</param>
         /// <returns>if any validation errors are produced while validating workflow.</returns>
         public async Task<List<string>> ValidateWorkflow(Workflow workflow)
         {
@@ -144,9 +153,9 @@ namespace Monai.Deploy.WorkflowManager.Validators
             var destinations = new List<string>();
             foreach (var task in workflow.Tasks)
             {
-                ValidateTaskArtifacts(task);
+                ValidateTaskOutputArtifacts(task);
 
-                TaskTypeSpecificValidation(workflow.Tasks, task);
+                TaskTypeSpecificValidation(workflow, task);
 
                 if (task.TaskDestinations.Any(td => td.Name == firstTaskId))
                 {
@@ -179,6 +188,24 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
+        private void CheckDestinationInMigDestinations(TaskObject task, InformaticsGateway gateway)
+        {
+            var taskDestinationNames = task.ExportDestinations.Select(td => td.Name);
+            if (taskDestinationNames.Any() && (gateway?.ExportDestinations?.IsNullOrEmpty() ?? true))
+            {
+                Errors.Add("InformaticsGateway ExportDestinations destinations can not be null with an Export Task.");
+            }
+
+            var diff = taskDestinationNames.Except(gateway?.ExportDestinations).ToList();
+            if (!diff.IsNullOrEmpty())
+            {
+                foreach (var missingDestination in diff)
+                {
+                    Errors.Add($"Task: '{task.Id}' export_destination: '{missingDestination}' must be registered in the informatics_gateway object.");
+                }
+            }
+        }
+
         private void ValidateExportDestinations(Workflow workflow)
         {
             if (workflow.Tasks.Any() is false)
@@ -188,21 +215,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
 
             foreach (var task in workflow.Tasks.Where(task => task.ExportDestinations.IsNullOrEmpty() is false))
             {
-                var taskExportDestinationNames = task.ExportDestinations.Select(td => td.Name);
-                if (taskExportDestinationNames.Any() && (workflow.InformaticsGateway?.ExportDestinations?.IsNullOrEmpty() ?? true))
-                {
-                    Errors.Add("InformaticsGateway ExportDestinations destinations can not be null with an Export Task.");
-                    return;
-                }
-
-                var diff = taskExportDestinationNames.Except(workflow.InformaticsGateway?.ExportDestinations).ToList();
-                if (!diff.IsNullOrEmpty())
-                {
-                    foreach (var missingDestination in diff)
-                    {
-                        Errors.Add($"Task: '{task.Id}' export_destination: '{missingDestination}' must be registered in the informatics_gateway object.");
-                    }
-                }
+                CheckDestinationInMigDestinations(task, workflow.InformaticsGateway);
             }
         }
 
@@ -257,7 +270,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
 
             var taskIds = workflow.Tasks.Select(t => t.Id);
-            var pattern = new Regex(@"^[a-zA-Z0-9-_]+$");
+            var pattern = new Regex(@"^[a-zA-Z0-9-_]+$", RegexOptions.None, matchTimeout: TimeSpan.FromSeconds(2));
             foreach (var taskId in taskIds)
             {
                 if (pattern.IsMatch(taskId) is false)
@@ -293,7 +306,7 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void ValidateTaskArtifacts(TaskObject currentTask)
+        private void ValidateTaskOutputArtifacts(TaskObject currentTask)
         {
             if (currentTask.Artifacts != null && currentTask.Artifacts.Output.IsNullOrEmpty() is false)
             {
@@ -307,8 +320,9 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
         }
 
-        private void TaskTypeSpecificValidation(TaskObject[] tasks, TaskObject currentTask)
+        private void TaskTypeSpecificValidation(Workflow workflow, TaskObject currentTask)
         {
+            var tasks = workflow.Tasks;
             if (ValidTaskTypes.Contains(currentTask.Type.ToLower()) is false)
             {
                 Errors.Add($"Task: '{currentTask.Id}' has an invalid type{Comma}please specify: {string.Join(Comma, ValidTaskTypes)}");
@@ -316,6 +330,16 @@ namespace Monai.Deploy.WorkflowManager.Validators
             }
 
             ValidateInputs(currentTask);
+
+            if (currentTask.Type.Equals(ExportTaskType, StringComparison.OrdinalIgnoreCase) is true)
+            {
+                ValidateExportTask(workflow, currentTask);
+            }
+
+            if (currentTask.Type.Equals(ExternalAppTaskType, StringComparison.OrdinalIgnoreCase) is true)
+            {
+                ValidateExternalAppTask(workflow, currentTask);
+            }
 
             if (currentTask.Type.Equals(ArgoTaskType, StringComparison.OrdinalIgnoreCase) is true)
             {
@@ -582,6 +606,47 @@ namespace Monai.Deploy.WorkflowManager.Validators
             if (reviewedTask.Type.Equals(ArgoTaskType, StringComparison.OrdinalIgnoreCase) is false)
             {
                 Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id: '{currentTask.Args[ReviewedTaskId]}' does not reference an Argo task.");
+            }
+        }
+
+        private void ValidateExportTask(Workflow workflow, TaskObject currentTask)
+        {
+            if (currentTask.ExportDestinations.Any() is false)
+            {
+                Errors.Add($"Task: '{currentTask.Id}' does not contain a destination.");
+            }
+
+            CheckDestinationInMigDestinations(currentTask, workflow.InformaticsGateway);
+
+            if (currentTask.ExportDestinations.Count() != currentTask.ExportDestinations.Select(t => t.Name).Distinct().Count())
+            {
+                Errors.Add($"Task: '{currentTask.Id}' contains duplicate destinations.");
+            }
+
+            ValidateInputs(currentTask);
+        }
+
+        private void ValidateExternalAppTask(Workflow workflow, TaskObject currentTask)
+        {
+            if (currentTask.ExportDestinations.Any() is false)
+            {
+                Errors.Add($"Task: '{currentTask.Id}' does not contain a destination.");
+            }
+
+            CheckDestinationInMigDestinations(currentTask, workflow.InformaticsGateway);
+
+            if (currentTask.ExportDestinations.Count() != currentTask.ExportDestinations.Select(t => t.Name).Distinct().Count())
+            {
+                Errors.Add($"Task: '{currentTask.Id}' contains duplicate destinations.");
+            }
+
+            ValidateTaskOutputArtifacts(currentTask);
+
+            if (currentTask.Artifacts == null
+                || currentTask.Artifacts.Output.IsNullOrEmpty()
+                || (currentTask.Artifacts.Output.Select(a => a.Name).Any() is false))
+            {
+                Errors.Add($"Task: '{currentTask.Id}' must contain at lease a single output.");
             }
         }
     }

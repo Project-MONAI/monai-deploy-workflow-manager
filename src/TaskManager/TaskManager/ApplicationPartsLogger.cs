@@ -45,8 +45,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             var controllers = controllerFeature.Controllers.Select(x => x.Name);
 
             // Log the application parts and controllers
-            _logger.LogInformation("Found the following application parts: '{ApplicationParts}' with the following controllers: '{Controllers}'",
-                string.Join(", ", applicationParts), string.Join(", ", controllers));
+            _logger.LogInformation(
+                "Found the following application parts: '{ApplicationParts}' with the following controllers: '{Controllers}'",
+                string.Join(", ", applicationParts),
+                string.Join(", ", controllers));
 
             return Task.CompletedTask;
         }

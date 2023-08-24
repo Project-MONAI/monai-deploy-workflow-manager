@@ -18,16 +18,16 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
+using Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators;
 using Moq;
 using NUnit.Framework;
 
-namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
+namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 {
     public class EventPayloadValidatorTests
     {
-        private IEventPayloadValidator _eventPayloadValidator;
-        private Mock<ILogger<EventPayloadValidator>> _mockLogger;
+        private IEventPayloadValidator? _eventPayloadValidator;
+        private Mock<ILogger<EventPayloadValidator>>? _mockLogger;
 
         [SetUp]
         public void Setup()
@@ -41,7 +41,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                _eventPayloadValidator.ValidateWorkflowRequest(null);
+                _eventPayloadValidator!.ValidateWorkflowRequest(null);
             });
         }
 
@@ -50,7 +50,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
             message.CalledAeTitle = "abcdefghijklmnop";
-            var result = _eventPayloadValidator.ValidateWorkflowRequest(message);
+            var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
         }
@@ -59,8 +59,8 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         public void ValidateWorkflowRequest_WorkflowRequestMessageWithCallingAETitleIsNull_ReturnsValidatonFalse()
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
-            message.CalledAeTitle = null;
-            var result = _eventPayloadValidator.ValidateWorkflowRequest(message);
+            message.CalledAeTitle = string.Empty;
+            var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
         }
@@ -70,7 +70,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
             message.CalledAeTitle = " ";
-            var result = _eventPayloadValidator.ValidateWorkflowRequest(message);
+            var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
         }
@@ -80,7 +80,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
             message.CalledAeTitle = String.Empty;
-            var result = _eventPayloadValidator.ValidateWorkflowRequest(message);
+            var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
         }
@@ -90,7 +90,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
             message.CalledAeTitle = "abcdefghijklmnop";
-            var result = _eventPayloadValidator.ValidateWorkflowRequest(message);
+            var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
         }
@@ -99,8 +99,8 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         public void ValidateWorkflowRequest_WorkflowRequestMessageWithCalledAETitleIsNull_ReturnsValidatonFalse()
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
-            message.CalledAeTitle = null;
-            var result = _eventPayloadValidator.ValidateWorkflowRequest(message);
+            message.CalledAeTitle = string.Empty;
+            var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
         }
@@ -110,7 +110,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
             message.CalledAeTitle = " ";
-            var result = _eventPayloadValidator.ValidateWorkflowRequest(message);
+            var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
         }
@@ -120,7 +120,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
             message.CalledAeTitle = " ";
-            var result = _eventPayloadValidator.ValidateWorkflowRequest(message);
+            var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
         }
@@ -131,7 +131,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
             message.Workflows = new List<string> { "" };
 
-            var result = _eventPayloadValidator.ValidateWorkflowRequest(message);
+            var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
         }
@@ -142,7 +142,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
             message.Workflows = new List<string> { "123", "234", "345", "456" };
 
-            var result = _eventPayloadValidator.ValidateWorkflowRequest(message);
+            var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsTrue(result);
         }
@@ -162,7 +162,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
                 CorrelationId = Guid.NewGuid().ToString()
             };
 
-            var result = _eventPayloadValidator.ValidateTaskUpdate(updateEvent);
+            var result = _eventPayloadValidator!.ValidateTaskUpdate(updateEvent);
 
             Assert.IsTrue(result);
         }
@@ -182,7 +182,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
                 CorrelationId = Guid.NewGuid().ToString()
             };
 
-            var result = _eventPayloadValidator.ValidateTaskUpdate(updateEvent);
+            var result = _eventPayloadValidator!.ValidateTaskUpdate(updateEvent);
 
             Assert.IsFalse(result);
         }
@@ -192,7 +192,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                _eventPayloadValidator.ValidateTaskUpdate(null);
+                _eventPayloadValidator!.ValidateTaskUpdate(null);
             });
         }
 
@@ -207,7 +207,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
                 Message = "This is a message"
             };
 
-            var result = _eventPayloadValidator.ValidateExportComplete(exportEvent);
+            var result = _eventPayloadValidator!.ValidateExportComplete(exportEvent);
 
             Assert.IsTrue(result);
         }
@@ -223,7 +223,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
                 Message = "This is a message"
             };
 
-            var result = _eventPayloadValidator.ValidateExportComplete(exportEvent);
+            var result = _eventPayloadValidator!.ValidateExportComplete(exportEvent);
 
             Assert.IsFalse(result);
         }
@@ -233,7 +233,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Tests.Validators
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                _eventPayloadValidator.ValidateExportComplete(null);
+                _eventPayloadValidator!.ValidateExportComplete(null);
             });
         }
 

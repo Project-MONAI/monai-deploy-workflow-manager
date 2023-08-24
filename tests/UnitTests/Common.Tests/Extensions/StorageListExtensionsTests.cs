@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.Common.Extensions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Common.Tests.Extensions
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Extensions
 {
     public class StorageListExtensionsTests
     {
