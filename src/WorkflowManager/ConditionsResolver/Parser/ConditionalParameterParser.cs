@@ -51,7 +51,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser
         private readonly IPayloadService _payloadService;
         private readonly IWorkflowService _workflowService;
 
-        private readonly Regex _squigglyBracketsRegex = new Regex(@"\{{(.*?)\}}");
+        private readonly Regex _squigglyBracketsRegex = new(@"\{{(.*?)\}}", RegexOptions.None, matchTimeout: TimeSpan.FromSeconds(2));
 
         private WorkflowInstance? _workflowInstance = null;
         private string? _workflowInstanceId = null;

@@ -38,13 +38,13 @@ namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Resolver
 
         public int GroupedLogical { get; set; } = 1;
 
-        public Regex FindAnds { get; } = new Regex(@"([\s]and[\s]|[\s]AND[\s]|[\s]And[\s])");
+        public Regex FindAnds { get; } = new(@"([\s]and[\s]|[\s]AND[\s]|[\s]And[\s])", RegexOptions.None, matchTimeout: TimeSpan.FromSeconds(2));
 
-        public Regex FindOrs { get; } = new Regex(@"([\s]or[\s]|[\s]OR[\s]|[\s]Or[\s])");
+        public Regex FindOrs { get; } = new(@"([\s]or[\s]|[\s]OR[\s]|[\s]Or[\s])", RegexOptions.None, matchTimeout: TimeSpan.FromSeconds(2));
 
-        public Regex FindBrackets { get; } = new Regex(@"((?<!\[)\()");
+        public Regex FindBrackets { get; } = new(@"((?<!\[)\()", RegexOptions.None, matchTimeout: TimeSpan.FromSeconds(2));
 
-        public Regex FindCloseBrackets { get; } = new Regex(@"((?<!\[)\))");
+        public Regex FindCloseBrackets { get; } = new(@"((?<!\[)\))", RegexOptions.None, matchTimeout: TimeSpan.FromSeconds(2));
 
         private string[] ParseOrs(string input) => FindOrs.SplitOnce(input);
 

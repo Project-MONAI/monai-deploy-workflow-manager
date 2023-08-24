@@ -270,7 +270,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
             }
 
             var taskIds = workflow.Tasks.Select(t => t.Id);
-            var pattern = new Regex(@"^[a-zA-Z0-9-_]+$");
+            var pattern = new Regex(@"^[a-zA-Z0-9-_]+$", RegexOptions.None, matchTimeout: TimeSpan.FromSeconds(2));
             foreach (var taskId in taskIds)
             {
                 if (pattern.IsMatch(taskId) is false)
