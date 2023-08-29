@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Monai.Deploy.Messaging.Common;
+using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Migrations;
 using Mongo.Migration.Documents;
 using Mongo.Migration.Documents.Attributes;
@@ -26,11 +27,11 @@ using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
-    [CollectionLocation("Payloads"), RuntimeVersion("1.0.1")]
+    [CollectionLocation("Payloads"), RuntimeVersion("1.0.3")]
     public class Payload : IDocument
     {
         [JsonConverter(typeof(DocumentVersionConvert)), BsonSerializer(typeof(DocumentVersionConverBson))]
-        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 1);
+        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 3);
 
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; } = string.Empty;
@@ -53,12 +54,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
         [JsonProperty(PropertyName = "bucket")]
         public string Bucket { get; set; } = string.Empty;
 
-        [JsonProperty(PropertyName = "calling_aetitle")]
-        public string CallingAeTitle { get; set; } = string.Empty;
-
-        [JsonProperty(PropertyName = "called_aetitle")]
-        public string CalledAeTitle { get; set; } = string.Empty;
-
         [JsonProperty(PropertyName = "timestamp")]
         public DateTime Timestamp { get; set; }
 
@@ -70,6 +65,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 
         [JsonProperty(PropertyName = "patient_details")]
         public PatientDetails PatientDetails { get; set; } = new PatientDetails();
+
+        public DataOrigin DataTrigger { get; set; } = new DataOrigin { DataService = DataService.DIMSE };
     }
 
     public enum PayloadDeleted

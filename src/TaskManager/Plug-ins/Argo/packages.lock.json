@@ -527,8 +527,8 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Transitive",
-        "resolved": "0.1.25",
-        "contentHash": "CllF1ANCwDV0ACbTU63SGxPPmgsivWP8dxgstAHvwo29w5TUs6PDCc8GcyVDTUO5Yl7/vsifdwcs3P/cYBe69w==",
+        "resolved": "1.0.0",
+        "contentHash": "Xr1V3ZrSJByfUP4w+aiOAqC7Uzt1GqRXj35qSTQs9C1oI4gCiBN4wnre0SSvoA7vHQNZPGWNWXtiqbI7Cov3Mg==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.1.1",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.21",
@@ -1180,14 +1180,14 @@
         "resolved": "13.0.1",
         "contentHash": "E1e/xFXB+Cbn7pLVlr+8E3nemEitIReVgmAMMMveADvZvXGuSGHP+1Cg6oA+SUfwXHfaXLQn4STCaPKtdIJkWA=="
       },
-      "Monai.Deploy.WorkflowManager.Common.configuration": {
+      "monai.deploy.workflowmanager.common.configuration": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.25, )",
+          "Monai.Deploy.Messaging": "[1.0.0, )",
           "Monai.Deploy.Storage": "[0.2.18, )"
         }
       },
-      "Monai.Deploy.WorkflowManager.Common.miscellaneous": {
+      "monai.deploy.workflowmanager.common.miscellaneous": {
         "type": "Project",
         "dependencies": {
           "Ardalis.GuardClauses": "[4.1.1, )",
@@ -1199,7 +1199,7 @@
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.25, )",
+          "Monai.Deploy.Messaging": "[1.0.0, )",
           "Mongo.Migration": "[3.1.4, )",
           "MongoDB.Bson": "[2.19.0, )"
         }

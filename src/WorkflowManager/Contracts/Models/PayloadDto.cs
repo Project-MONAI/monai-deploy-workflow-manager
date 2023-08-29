@@ -31,8 +31,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
             FileCount = payload.FileCount;
             CorrelationId = payload.CorrelationId;
             Bucket = payload.Bucket;
-            CallingAeTitle = payload.CallingAeTitle;
-            CalledAeTitle = payload.CalledAeTitle;
+            DataTrigger = payload.DataTrigger;
             Timestamp = payload.Timestamp;
             Files = payload.Files;
             PatientDetails = payload.PatientDetails;

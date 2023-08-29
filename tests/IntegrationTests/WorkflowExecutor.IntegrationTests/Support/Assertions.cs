@@ -300,8 +300,8 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
         {
             payloadCollection.PayloadId.Should().Be(workflowRequestMessage.PayloadId.ToString());
             payloadCollection.Bucket.Should().Be(workflowRequestMessage.Bucket);
-            payloadCollection.CallingAeTitle.Should().Be(workflowRequestMessage.CallingAeTitle);
-            payloadCollection.CalledAeTitle.Should().Be(workflowRequestMessage.CalledAeTitle);
+            payloadCollection.DataTrigger.Source.Should().Be(workflowRequestMessage.DataTrigger.Source);
+            payloadCollection.DataTrigger.Destination.Should().Be(workflowRequestMessage.DataTrigger.Destination);
             payloadCollection.CorrelationId.Should().Be(workflowRequestMessage.CorrelationId);
             payloadCollection.Timestamp.Should().BeCloseTo(DateTime.UtcNow, precision: TimeSpan.FromMinutes(1));
             payloadCollection.PatientDetails.Should().BeEquivalentTo(patientDetails, options => options.Excluding(x => x.PatientDob));

@@ -2364,22 +2364,24 @@
     :when: 2022-10-21 05:32:02.785856125 Z
 - - :approve
   - Monai.Deploy.Messaging
-  - :who: samrooke
+  - :who: neildsouth
     :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
     - 0.1.21
     - 0.1.23
     - 0.1.25
-    :when: 2022-12-15 21:43:10.781625468 Z
+    - 1.0.0
+    :when: 2023-29-08 21:43:10.781625468 Z
 - - :approve
   - Monai.Deploy.Messaging.RabbitMQ
-  - :who: samrooke
+  - :who: neildsouth
     :why: Apache-2.0 (https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
     :versions:
     - 0.1.21
     - 0.1.23
     - 0.1.25
-    :when: 2022-12-15 21:43:20.975488411 Z
+    - 1.0.0
+    :when: 2023-29-08 21:43:20.975488411 Z
 - - :approve
   - Monai.Deploy.Storage
   - :who: neildsouth

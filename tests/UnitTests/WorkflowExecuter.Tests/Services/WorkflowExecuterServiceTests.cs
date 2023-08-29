@@ -175,8 +175,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow
             };
@@ -231,8 +230,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Workflows = new List<string>
@@ -317,8 +315,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Workflows = new List<string>
@@ -413,8 +410,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Workflows = new List<string>
@@ -496,8 +492,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Workflows = new List<string>
@@ -586,8 +581,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Workflows = new List<string>
@@ -659,8 +653,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Workflows = new List<string>
@@ -745,8 +738,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 PayloadId = Guid.NewGuid(),
@@ -2467,8 +2459,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Workflows = new List<string>

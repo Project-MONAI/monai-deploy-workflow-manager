@@ -70,9 +70,9 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[0.1.25, )",
-        "resolved": "0.1.25",
-        "contentHash": "CllF1ANCwDV0ACbTU63SGxPPmgsivWP8dxgstAHvwo29w5TUs6PDCc8GcyVDTUO5Yl7/vsifdwcs3P/cYBe69w==",
+        "requested": "[1.0.0, )",
+        "resolved": "1.0.0",
+        "contentHash": "Xr1V3ZrSJByfUP4w+aiOAqC7Uzt1GqRXj35qSTQs9C1oI4gCiBN4wnre0SSvoA7vHQNZPGWNWXtiqbI7Cov3Mg==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.1.1",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.21",
@@ -82,11 +82,11 @@
       },
       "Monai.Deploy.Messaging.RabbitMQ": {
         "type": "Direct",
-        "requested": "[0.1.25, )",
-        "resolved": "0.1.25",
-        "contentHash": "p/Si1XzNUiTdN1gYFKxYy9w/bVzOYooK9DEW7JJs8D8Sghzkvh0GyWV3vUO9dVkEcU0oT5HmZ4x+nz8BzAkz6g==",
+        "requested": "[1.0.0, )",
+        "resolved": "1.0.0",
+        "contentHash": "1UiWYO+EjNZSFrL/SUElqmBo3TktG+XiCXm8oyXheEWz/CuZS2hhepYB4BDz7XAohUqt2/Hv7wpLiaauiaIFZg==",
         "dependencies": {
-          "Monai.Deploy.Messaging": "0.1.25",
+          "Monai.Deploy.Messaging": "1.0.0",
           "Polly": "7.2.4",
           "RabbitMQ.Client": "6.5.0"
         }
@@ -1182,28 +1182,28 @@
         "resolved": "0.6.2",
         "contentHash": "jPao/LdUNLUz8rn3H1D8W7wQbZsRZM0iayvWI4xGejJg3XJHT56gcmYdgmCGPdJF1UEBqUjucCRrFB+4HbJsbw=="
       },
-      "Monai.Deploy.WorkflowManager.Common.configuration": {
-        "type": "Project",
-        "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.25, )",
-          "Monai.Deploy.Storage": "[0.2.18, )"
-        }
-      },
-      "Monai.Deploy.WorkflowManager.Common.miscellaneous": {
-        "type": "Project",
-        "dependencies": {
-          "Ardalis.GuardClauses": "[4.1.1, )",
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.21, )",
-          "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
-          "fo-dicom": "[5.0.3, )"
-        }
-      },
       "monai.deploy.workflowmanager.common": {
         "type": "Project",
         "dependencies": {
           "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Database": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Storage": "[1.0.0, )"
+        }
+      },
+      "monai.deploy.workflowmanager.common.configuration": {
+        "type": "Project",
+        "dependencies": {
+          "Monai.Deploy.Messaging": "[1.0.0, )",
+          "Monai.Deploy.Storage": "[0.2.18, )"
+        }
+      },
+      "monai.deploy.workflowmanager.common.miscellaneous": {
+        "type": "Project",
+        "dependencies": {
+          "Ardalis.GuardClauses": "[4.1.1, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "[6.0.21, )",
+          "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
+          "fo-dicom": "[5.0.3, )"
         }
       },
       "monai.deploy.workflowmanager.conditionsresolver": {
@@ -1218,7 +1218,7 @@
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.25, )",
+          "Monai.Deploy.Messaging": "[1.0.0, )",
           "Mongo.Migration": "[3.1.4, )",
           "MongoDB.Bson": "[2.19.0, )"
         }
@@ -1259,8 +1259,8 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.Http": "[3.1.0, )",
-          "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )"
+          "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.storage": {
@@ -1274,9 +1274,9 @@
       "monai.deploy.workloadmanager.workfowexecuter": {
         "type": "Project",
         "dependencies": {
+          "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Common.Miscellaneous": "[1.0.0, )",
-          "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.ConditionsResolver": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Database": "[1.0.0, )",
