@@ -135,7 +135,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
             }
             else
             {
-                var result = await _workflowRepository.GetWorkflowsForWorkflowRequestAsync(message.CalledAeTitle, message.CallingAeTitle);
+                var result = await _workflowRepository.GetWorkflowsForWorkflowRequestAsync(message.DataTrigger.Destination, message.DataTrigger.Source);
                 workflows = new List<WorkflowRevision>(result);
             }
 

@@ -82,8 +82,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
                     FileCount = eventPayload.FileCount,
                     CorrelationId = eventPayload.CorrelationId,
                     Bucket = eventPayload.Bucket,
-                    CalledAeTitle = eventPayload.CalledAeTitle,
-                    CallingAeTitle = eventPayload.CallingAeTitle,
+                    DataTrigger = eventPayload.DataTrigger,
                     Timestamp = eventPayload.Timestamp,
                     PatientDetails = patientDetails,
                     PayloadDeleted = PayloadDeleted.No

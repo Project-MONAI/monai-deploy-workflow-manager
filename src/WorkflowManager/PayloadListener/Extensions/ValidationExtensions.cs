@@ -30,8 +30,8 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Extensions
 
             var valid = true;
 
-            valid &= IsAeTitleValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.CallingAeTitle, validationErrors);
-            valid &= IsAeTitleValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.CalledAeTitle, validationErrors);
+            valid &= IsAeTitleValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.DataTrigger.Source, validationErrors);
+            valid &= IsAeTitleValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.DataTrigger.Destination, validationErrors);
             valid &= IsBucketValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.Bucket, validationErrors);
             valid &= IsCorrelationIdValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.CorrelationId, validationErrors);
             valid &= IsPayloadIdValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.PayloadId.ToString(), validationErrors);
