@@ -54,12 +54,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
         [JsonProperty(PropertyName = "bucket")]
         public string Bucket { get; set; } = string.Empty;
 
-        //[JsonProperty(PropertyName = "calling_aetitle")]
-        //public string CallingAeTitle { get; set; } = string.Empty;
-
-        //[JsonProperty(PropertyName = "called_aetitle")]
-        //public string CalledAeTitle { get; set; } = string.Empty;
-
         [JsonProperty(PropertyName = "timestamp")]
         public DateTime Timestamp { get; set; }
 

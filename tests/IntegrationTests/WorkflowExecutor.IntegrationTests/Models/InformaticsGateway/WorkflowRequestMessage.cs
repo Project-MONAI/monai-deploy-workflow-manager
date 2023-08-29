@@ -39,7 +39,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Models
 
         [JsonProperty(PropertyName = "trigger")]
         [JsonPropertyName("trigger")]
-        public DataOrigin DataTrigger { get; set; }
+        public DataOrigin DataTrigger { get; set; } = new DataOrigin { DataService = DataService.DIMSE };
 
         [JsonProperty(PropertyName = "timestamp")]
         public DateTime Timestamp { get; set; }
