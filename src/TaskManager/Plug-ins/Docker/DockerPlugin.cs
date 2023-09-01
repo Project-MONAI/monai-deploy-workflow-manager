@@ -22,6 +22,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.API;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.Docker.Logging;
 
@@ -109,7 +110,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             ContainerVolumeMount intermediateVolumeMount;
             List<ContainerVolumeMount> outputVolumeMounts;
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["correlationId"] = Event.CorrelationId,
                 ["workflowInstanceId"] = Event.WorkflowInstanceId,

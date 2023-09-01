@@ -25,6 +25,7 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Exceptions;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
@@ -141,7 +142,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
                 return Problem($"Failed to validate {nameof(id)}, not a valid GUID", $"{ENDPOINT}{id}", BadRequest);
             }
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["workflowId"] = id,
             });
@@ -219,7 +220,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
                 return Problem($"Failed to validate {nameof(executionId)}, not a valid GUID", $"/workflows/{id}/executions/{executionId}/acknowledge", BadRequest);
             }
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["workflowId"] = id,
                 ["executionId"] = executionId,

@@ -108,7 +108,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
         private async Task OnWorkflowRequestReceivedCallbackAsync(MessageReceivedEventArgs eventArgs)
         {
 
-            using var loggerScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggerScope = _logger.BeginScope(new Common.Miscellaneous.LoggingDataDictionary<string, object>
             {
                 ["correlationId"] = eventArgs.Message.CorrelationId,
                 ["source"] = eventArgs.Message.ApplicationId,
@@ -122,7 +122,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
 
         private async Task OnTaskUpdateStatusReceivedCallback(MessageReceivedEventArgs eventArgs)
         {
-            using var loggerScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggerScope = _logger.BeginScope(new Common.Miscellaneous.LoggingDataDictionary<string, object>
             {
                 ["correlationId"] = eventArgs.Message.CorrelationId,
                 ["source"] = eventArgs.Message.ApplicationId,
@@ -136,7 +136,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
 
         private async Task OnExportCompleteReceivedCallback(MessageReceivedEventArgs eventArgs)
         {
-            using var loggerScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggerScope = _logger.BeginScope(new Common.Miscellaneous.LoggingDataDictionary<string, object>
             {
                 ["correlationId"] = eventArgs.Message.CorrelationId,
                 ["source"] = eventArgs.Message.ApplicationId,
