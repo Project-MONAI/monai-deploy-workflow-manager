@@ -347,8 +347,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                             preprend = Strings.ExitHookTemplateSendTemplateName;
                         }
 #pragma warning disable CS8604 // Possible null reference argument.
-                        stats.Add($"{preprend}podStartTime{podcount}", item.Value.StartedAt is not null ? item.Value.StartedAt.ToString() : "");
-                        stats.Add($"{preprend}podFinishTime{podcount++}", item.Value.FinishedAt is not null ? item.Value.FinishedAt.ToString() : "");
+                        stats.Add($"{preprend}podStartTime{podcount}", item.Value.StartedAt?.UtcDateTime.ToString("u") ?? string.Empty);
+                        stats.Add($"{preprend}podFinishTime{podcount++}", item.Value.FinishedAt?.UtcDateTime.ToString("u") ?? string.Empty);
 #pragma warning restore CS8604 // Possible null reference argument.
                     }
                 }

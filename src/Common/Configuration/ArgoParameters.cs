@@ -123,7 +123,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Configuration
         /// </summary>
         public static readonly IReadOnlyList<string> RequiredParameters =
             new List<string> {
-                BaseUrl,
                 WorkflowTemplateName
             };
 

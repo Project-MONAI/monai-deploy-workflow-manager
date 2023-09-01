@@ -506,9 +506,9 @@ public class ArgoPluginTest : ArgoPluginTestBase
                         Message = Strings.ArgoPhaseSucceeded,
                         Nodes = new Dictionary<string, NodeStatus>
                         {
-                            { "first", new NodeStatus { Id = "firstId" ,Type="Pod" ,Name="", StartedAt = new DateTime(2023,3,3) , FinishedAt = new DateTime(2023,3,3,8,0,32)} },
-                            { "second", new NodeStatus { Id = "secondId",Type="Pod" ,Name = $"node-{Strings.ExitHookTemplateSendTemplateName}"  , StartedAt = new DateTime(2023,3,4) , FinishedAt = new DateTime(2023,3,4,8,0,32)} },
-                            { "third", new NodeStatus { Id = "thirdId" ,Type="Pod" ,Name="", StartedAt = new DateTime(2023,3,4) , FinishedAt = new DateTime(2023,3,4,8,0,32)}  },
+                            { "first", new NodeStatus { Id = "firstId" ,Type="Pod" ,Name="", StartedAt = DateTime.SpecifyKind(new DateTime(2023,3,3), DateTimeKind.Utc) , FinishedAt = DateTime.SpecifyKind(new DateTime(2023,3,3,8,0,32), DateTimeKind.Utc)} },
+                            { "second", new NodeStatus { Id = "secondId",Type="Pod" ,Name = $"node-{Strings.ExitHookTemplateSendTemplateName}"  , StartedAt = DateTime.SpecifyKind(new DateTime(2023,3,4), DateTimeKind.Utc) , FinishedAt = DateTime.SpecifyKind(new DateTime(2023,3,4,8,0,32), DateTimeKind.Utc)} },
+                            { "third", new NodeStatus { Id = "thirdId" ,Type="Pod" ,Name="", StartedAt = DateTime.SpecifyKind(new DateTime(2023,3,4) , DateTimeKind.Utc), FinishedAt = DateTime.SpecifyKind(new DateTime(2023,3,4,8,0,32), DateTimeKind.Utc)}  },
                         }
                     }
                 };
@@ -528,7 +528,7 @@ public class ArgoPluginTest : ArgoPluginTestBase
         Assert.True(nodeInfo.ContainsKey("podStartTime0"));
         Assert.True(nodeInfo.ContainsKey("podFinishTime0"));
         Assert.True(nodeInfo.ContainsKey("send-messagepodFinishTime1"));
-        Assert.Equal("03/03/2023 08:00:32 +00:00", nodeInfo["podFinishTime0"]);
+        Assert.Equal("2023-03-03 08:00:32Z", nodeInfo["podFinishTime0"]);
 
         ArgoClient.Verify(p => p.Argo_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
     }
