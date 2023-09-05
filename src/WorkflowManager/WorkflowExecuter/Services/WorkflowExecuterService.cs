@@ -813,7 +813,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
             var exportRequestEvent = EventMapper.GenerateTaskCancellationEvent("", taskExec.ExecutionId, workflowInstance.Id, taskExec.TaskId, FailureReason.TimedOut, "Timed out");
             var jsonMesssage = new JsonMessage<TaskCancellationEvent>(exportRequestEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, correlationId, Guid.NewGuid().ToString());
 
-            _logger.TaskTimedOut(taskExec.TaskId);
+            _logger.TaskTimedOut(taskExec.TaskId, workflowInstance.Id, taskExec.Timeout);
             await _messageBrokerPublisherService.Publish(TaskTimeoutRoutingKey, jsonMesssage.ToMessage());
             return true;
         }

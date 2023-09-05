@@ -105,8 +105,5 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
 
         [LoggerMessage(EventId = 210007, Level = LogLevel.Information, Message = "Exporting to MIG task Id {taskid}, export destination {destination} number of files {fileCount} Mig data plugins {plugins}.")]
         public static partial void LogMigExport(this ILogger logger, string taskid, string destination, int fileCount, string plugins);
-
-        [LoggerMessage(EventId = 210008, Level = LogLevel.Information, Message = "Request canceld due to timeout taskId{taskid}.")]
-        public static partial void TaskTimedOut(this ILogger logger, string taskid);
     }
 }
