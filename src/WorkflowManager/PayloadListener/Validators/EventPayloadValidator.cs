@@ -36,7 +36,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators
         {
             Guard.Against.Null(payload, nameof(payload));
 
-            using var loggingScope = Logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = Logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["correlationId"] = payload.CorrelationId,
                 ["payloadId"] = payload.PayloadId,
@@ -71,7 +71,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators
         {
             Guard.Against.Null(payload, nameof(payload));
 
-            using var loggingScope = Logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = Logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["correlationId"] = payload.CorrelationId,
                 ["executionId"] = payload.ExecutionId,
@@ -95,7 +95,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators
         {
             Guard.Against.Null(payload, nameof(payload));
 
-            using var loggingScope = Logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = Logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["workflowInstanceId"] = payload.WorkflowInstanceId,
                 ["exportTaskId"] = payload.ExportTaskId,

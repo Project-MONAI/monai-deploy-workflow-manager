@@ -17,7 +17,6 @@
 using Argo;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Configuration;
-using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
@@ -42,13 +41,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             _messagingEndpoint = options.Messaging.ArgoCallback.ArgoCallbackOverrideEnabled ?
                 options.Messaging.ArgoCallback.ArgoRabbitOverrideEndpoint :
-                options.Messaging.PublisherSettings[Keys.MessagingEndpoint];
+                options.Messaging.PublisherSettings[ArgoParameters.MessagingEndpoint];
 
-            _messagingUsername = options.Messaging.PublisherSettings[Keys.MessagingUsername];
-            _messagingPassword = options.Messaging.PublisherSettings[Keys.MessagingPassword];
+            _messagingUsername = options.Messaging.PublisherSettings[ArgoParameters.MessagingUsername];
+            _messagingPassword = options.Messaging.PublisherSettings[ArgoParameters.MessagingPassword];
             _messagingTopic = options.Messaging.Topics.TaskCallbackRequest;
-            _messagingExchange = options.Messaging.PublisherSettings[Keys.MessagingExchange];
-            _messagingVhost = options.Messaging.PublisherSettings[Keys.MessagingVhost];
+            _messagingExchange = options.Messaging.PublisherSettings[ArgoParameters.MessagingExchange];
+            _messagingVhost = options.Messaging.PublisherSettings[ArgoParameters.MessagingVhost];
             _messageId = Guid.NewGuid();
             _messageFileName = $"{_messageId}.json";
         }

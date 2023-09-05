@@ -670,7 +670,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
             var invalidSourceName = "Data origin invalid_origin does not exists. Please review sources configuration management.";
             Assert.Contains(invalidSourceName, errors);
 
-            var invalidArgoKey = $"Task: 'invalid-key-argo-task' args has invalid keys: invalid_key. Please only specify keys from the following list: workflow_template_name, priority, cpu, memory, gpu_required.";
+            var invalidArgoKey = $"Task: 'invalid-key-argo-task' args has invalid keys: invalid_key. Please only specify keys from the following list: {string.Join(", ", ArgoParameters.VaildParameters)}.";
             Assert.Contains(invalidArgoKey, errors);
 
             var emailMissingEmailAndRolesArgs = "No recipients arguments specified for task EmailTask_MissingEmailAndRolesArgs. Email tasks must specify at least one of the following properties: recipient_emails, recipient_roles";

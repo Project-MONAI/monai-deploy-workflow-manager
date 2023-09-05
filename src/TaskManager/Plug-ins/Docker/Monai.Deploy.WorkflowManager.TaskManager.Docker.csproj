@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Configuration\Monai.Deploy.WorkflowManager.Common.Configuration.csproj" />
+    <ProjectReference Include="..\..\..\Common\Miscellaneous\Monai.Deploy.WorkflowManager.Common.Miscellaneous.csproj" />
     <ProjectReference Include="..\..\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />
     <PackageReference Include="Docker.DotNet" Version="3.125.13" />
   </ItemGroup>

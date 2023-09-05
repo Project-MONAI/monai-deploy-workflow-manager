@@ -57,7 +57,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
             {
                 var requestEvent = message.Message.ConvertTo<WorkflowRequestEvent>();
 
-                using var loggingScope = (Logger.BeginScope(new Dictionary<string, object>
+                using var loggingScope = (Logger.BeginScope(new LoggingDataDictionary<string, object>
                 {
                     ["correlationId"] = requestEvent.CorrelationId,
                     ["workflowId"] = requestEvent.Workflows.FirstOrDefault()
@@ -105,7 +105,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
             {
                 var payload = message.Message.ConvertTo<TaskUpdateEvent>();
 
-                using var loggerScope = Logger.BeginScope(new Dictionary<string, object>
+                using var loggerScope = Logger.BeginScope(new LoggingDataDictionary<string, object>
                 {
                     ["correlationId"] = payload.CorrelationId,
                     ["workflowInstanceId"] = payload.WorkflowInstanceId,
@@ -143,7 +143,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
             {
                 var payload = message.Message.ConvertTo<ExportCompleteEvent>();
 
-                using var loggerScope = Logger.BeginScope(new Dictionary<string, object> { ["workflowInstanceId"] = payload.WorkflowInstanceId });
+                using var loggerScope = Logger.BeginScope(new LoggingDataDictionary<string, object> { ["workflowInstanceId"] = payload.WorkflowInstanceId });
 
                 if (!PayloadValidator.ValidateExportComplete(payload))
                 {
