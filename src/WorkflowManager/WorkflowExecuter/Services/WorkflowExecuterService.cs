@@ -89,7 +89,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
             _defaultPerTaskTypeTimeoutMinutes = configuration.Value.PerTaskTypeTimeoutMinutes;
             TaskDispatchRoutingKey = configuration.Value.Messaging.Topics.TaskDispatchRequest;
             TaskTimeoutRoutingKey = configuration.Value.Messaging.Topics.AideClinicalReviewCancelation;
-            _migExternalAppPlugins = configuration.Value.MigExternalAppPlugins;
+            _migExternalAppPlugins = configuration.Value.MigExternalAppPlugins.ToList();
             ExportRequestRoutingKey = $"{configuration.Value.Messaging.Topics.ExportRequestPrefix}.{configuration.Value.Messaging.DicomAgents.ScuAgentName}";
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -482,6 +482,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
 
             return true;
         }
+
         private async Task HandleExternalAppAsync(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId)
         {
             var plugins = _migExternalAppPlugins;
@@ -524,7 +525,6 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
 
                 return;
             }
-
             await DispatchDicomExport(workflowInstance, task, exportList, artifactValues, correlationId, plugins);
         }
 
@@ -563,6 +563,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
                 return false;
             }
 
+            _logger.LogMigExport(task.TaskId, string.Join(",", exportDestinations), artifactValues.Length, string.Join(",", plugins));
             await ExportRequest(workflowInstance, task, exportDestinations, artifactValues, correlationId, plugins);
             return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Dispatched);
         }
@@ -812,6 +813,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
             var exportRequestEvent = EventMapper.GenerateTaskCancellationEvent("", taskExec.ExecutionId, workflowInstance.Id, taskExec.TaskId, FailureReason.TimedOut, "Timed out");
             var jsonMesssage = new JsonMessage<TaskCancellationEvent>(exportRequestEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, correlationId, Guid.NewGuid().ToString());
 
+            _logger.TaskTimedOut(taskExec.TaskId);
             await _messageBrokerPublisherService.Publish(TaskTimeoutRoutingKey, jsonMesssage.ToMessage());
             return true;
         }

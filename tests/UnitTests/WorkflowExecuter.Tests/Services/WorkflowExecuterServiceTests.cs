@@ -87,8 +87,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                     Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch", ExportRequestPrefix = "md.export.request" },
                     DicomAgents = new DicomAgentConfiguration { DicomWebAgentName = "monaidicomweb" }
                 },
-                MigExternalAppPlugins = new List<string> { { "examplePlugin" } }
-            });
+                MigExternalAppPlugins = new List<string> { { "examplePlugin" } }.ToArray()
+            }) ;
 
             _storageConfiguration = Options.Create(new StorageServiceConfiguration() { Settings = new Dictionary<string, string> { { "bucket", "testbucket" }, { "endpoint", "localhost" }, { "securedConnection", "False" } } });
 
