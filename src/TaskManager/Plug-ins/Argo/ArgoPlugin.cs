@@ -432,7 +432,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         private void ProcessTaskPluginArguments(Workflow workflow)
         {
             Guard.Against.Null(workflow, nameof(workflow));
-            var priorityClassName = Event.GetTaskPluginArgumentsParameter(ArgoParameters.TaskPriorityClassName) ?? "standard";
+            var priorityClassName = Event.GetTaskPluginArgumentsParameter(ArgoParameters.TaskPriorityClassName) ?? _options.Value.TaskManager.ArgoPluginArguments.TaskPriorityClass;
 
             foreach (var template in workflow.Spec.Templates)
             {

@@ -100,6 +100,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
             Options.Value.TaskManager.ArgoPluginArguments.MessageGeneratorContainerMemoryLimit = MessageGeneratorContainerMemoryLimit;
             Options.Value.TaskManager.ArgoPluginArguments.MessageSenderContainerCpuLimit = MessageSenderContainerCpuLimit;
             Options.Value.TaskManager.ArgoPluginArguments.MessageSenderContainerMemoryLimit = MessageSenderContainerMemoryLimit;
+            Options.Value.TaskManager.ArgoPluginArguments.TaskPriorityClass = "standard";
         }
     }
 }
