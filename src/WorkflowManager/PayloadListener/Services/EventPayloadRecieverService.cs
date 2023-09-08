@@ -22,6 +22,8 @@ using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Logging;
 using Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators;
 using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services;
+using Monai.Deploy.WorkflowManager.Logging;
+using Log = Monai.Deploy.WorkflowManager.Logging.Log;
 
 namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
 {
@@ -67,7 +69,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
 
                 if (!validation)
                 {
-                    Logger.WorkflowRequestRejectValidationError(message.Message.MessageId);
+                    Log.WorkflowRequestRejectValidationError(Logger, message.Message.MessageId);
                     _messageSubscriber.Reject(message.Message, false);
 
                     return;
@@ -76,7 +78,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
                 var payload = await PayloadService.CreateAsync(requestEvent);
                 if (payload is null)
                 {
-                    Logger.WorkflowRequestRequeuePayloadCreateError(message.Message.MessageId);
+                    Log.WorkflowRequestRequeuePayloadCreateError(Logger, message.Message.MessageId);
                     await _messageSubscriber.RequeueWithDelay(message.Message);
 
                     return;
@@ -84,7 +86,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
 
                 if (!await WorkflowExecuterService.ProcessPayload(requestEvent, payload))
                 {
-                    Logger.WorkflowRequestRequeuePayloadProcessError(message.Message.MessageId);
+                    Log.WorkflowRequestRequeuePayloadProcessError(Logger, message.Message.MessageId);
                     await _messageSubscriber.RequeueWithDelay(message.Message);
 
                     return;
@@ -94,7 +96,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
             }
             catch (Exception e)
             {
-                Logger.WorkflowRequestRequeueUnknownError(message.Message.MessageId, e);
+                Log.WorkflowRequestRequeueUnknownError(Logger, message.Message.MessageId, e);
                 await _messageSubscriber.RequeueWithDelay(message.Message);
             }
         }
@@ -114,7 +116,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
 
                 if (!PayloadValidator.ValidateTaskUpdate(payload))
                 {
-                    Logger.TaskUpdateRejectValiationError(message.Message.MessageId);
+                    Log.TaskUpdateRejectValiationError(Logger, message.Message.MessageId);
                     _messageSubscriber.Reject(message.Message, false);
 
                     return;
@@ -123,7 +125,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
                 var processTaskUpdateResult = await WorkflowExecuterService.ProcessTaskUpdate(payload);
                 if (!processTaskUpdateResult && payload.Reason != FailureReason.TimedOut)
                 {
-                    Logger.TaskUpdateRequeueProcessingError(message.Message.MessageId);
+                    Log.TaskUpdateRequeueProcessingError(Logger, message.Message.MessageId);
                     await _messageSubscriber.RequeueWithDelay(message.Message);
                     return;
                 }
@@ -132,7 +134,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
             }
             catch (Exception e)
             {
-                Logger.TaskUpdateRequeueUnknownError(message.Message.MessageId, e);
+                Log.TaskUpdateRequeueUnknownError(Logger, message.Message.MessageId, e);
                 await _messageSubscriber.RequeueWithDelay(message.Message);
             }
         }
@@ -147,7 +149,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
 
                 if (!PayloadValidator.ValidateExportComplete(payload))
                 {
-                    Logger.ExportCompleteRejectValiationError(message.Message.MessageId);
+                    Log.ExportCompleteRejectValiationError(Logger, message.Message.MessageId);
                     _messageSubscriber.Reject(message.Message, false);
 
                     return;
@@ -155,7 +157,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
 
                 if (!await WorkflowExecuterService.ProcessExportComplete(payload, message.Message.CorrelationId))
                 {
-                    Logger.ExportCompleteRequeueProcessingError(message.Message.MessageId);
+                    Log.ExportCompleteRequeueProcessingError(Logger, message.Message.MessageId);
 
                     await _messageSubscriber.RequeueWithDelay(message.Message);
 
@@ -166,7 +168,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
             }
             catch (Exception e)
             {
-                Logger.ExportCompleteRequeueUnknownError(message.Message.MessageId, e);
+                Log.ExportCompleteRequeueUnknownError(Logger, message.Message.MessageId, e);
                 await _messageSubscriber.RequeueWithDelay(message.Message);
             }
         }

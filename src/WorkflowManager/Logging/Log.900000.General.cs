@@ -20,26 +20,26 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
 {
     public static partial class Log
     {
-        [LoggerMessage(EventId = 900000, Level = LogLevel.Trace, Message = "{ServiceName} started.")]
+        [LoggerMessage(EventId = 900000, Level = LogLevel.Trace, Message = "{serviceName} started.")]
         public static partial void ServiceStarted(this ILogger logger, string serviceName);
 
-        [LoggerMessage(EventId = 900001, Level = LogLevel.Trace, Message = "{ServiceName} starting.")]
+        [LoggerMessage(EventId = 900001, Level = LogLevel.Trace, Message = "{serviceName} starting.")]
         public static partial void ServiceStarting(this ILogger logger, string serviceName);
 
-        [LoggerMessage(EventId = 900002, Level = LogLevel.Trace, Message = "{ServiceName} is stopping.")]
+        [LoggerMessage(EventId = 900002, Level = LogLevel.Trace, Message = "{serviceName} is stopping.")]
         public static partial void ServiceStopping(this ILogger logger, string serviceName);
 
-        [LoggerMessage(EventId = 900003, Level = LogLevel.Information, Message = "Waiting for {ServiceName} to stop.")]
+        [LoggerMessage(EventId = 900003, Level = LogLevel.Information, Message = "Waiting for {serviceName} to stop.")]
         public static partial void ServiceStopPending(this ILogger logger, string serviceName);
 
-        [LoggerMessage(EventId = 900004, Level = LogLevel.Warning, Message = "{ServiceName} canceled.")]
+        [LoggerMessage(EventId = 900004, Level = LogLevel.Warning, Message = "{serviceName} canceled.")]
         public static partial void ServiceCancelled(this ILogger logger, string serviceName);
 
-        [LoggerMessage(EventId = 900005, Level = LogLevel.Warning, Message = "{ServiceName} canceled.")]
+        [LoggerMessage(EventId = 900005, Level = LogLevel.Warning, Message = "{serviceName} canceled.")]
         public static partial void ServiceCancelledWithException(this ILogger logger, string serviceName, Exception ex);
 
-        [LoggerMessage(EventId = 900006, Level = LogLevel.Trace, Message = "{ServiceName} Worker completed in: {Elapsed_millis} milliseconds.")]
-        public static partial void ServiceCompleted(this ILogger logger, string serviceName, int elapsed_millis);
+        [LoggerMessage(EventId = 900006, Level = LogLevel.Trace, Message = "{serviceName} Worker completed in: {elapsedMillis} milliseconds.")]
+        public static partial void ServiceCompleted(this ILogger logger, string serviceName, int elapsedMillis);
 
         [LoggerMessage(EventId = 900007, Level = LogLevel.Error, Message = "Recovering connection to storage service:  {reason}.")]
         public static partial void MessagingServiceErrorRecover(this ILogger logger, string reason);

@@ -21,8 +21,8 @@ using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.Logging;
-using Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService.Logging;
 using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common;
+using Monai.Deploy.WorkflowManager.MonaiBackgroundService.Logging;
 
 namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService
 {
@@ -71,8 +71,8 @@ namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService
         {
             try
             {
-                var (Tasks, _) = await _tasksService.GetAllAsync();
-                foreach (var task in Tasks.Where(t => t.TimeoutInterval != 0 && t.Timeout < DateTime.UtcNow))
+                var (tasks, _) = await _tasksService.GetAllAsync();
+                foreach (var task in tasks.Where(t => t.TimeoutInterval != 0 && t.Timeout < DateTime.UtcNow))
                 {
                     task.ResultMetadata.TryGetValue(JobIdentity, out var identity);
 

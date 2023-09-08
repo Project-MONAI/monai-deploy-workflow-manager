@@ -23,6 +23,8 @@ using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.WorkflowManager.Common.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Logging;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
+using Monai.Deploy.WorkflowManager.Logging;
+using Log = Monai.Deploy.WorkflowManager.Logging.Log;
 
 namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
 {
@@ -97,13 +99,13 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
         private void SetupPolling()
         {
             _messageSubscriber.SubscribeAsync(WorkflowRequestRoutingKey, WorkflowRequestRoutingKey, OnWorkflowRequestReceivedCallbackAsync);
-            _logger.EventSubscription(ServiceName, WorkflowRequestRoutingKey);
+            Log.EventSubscription(_logger, ServiceName, WorkflowRequestRoutingKey);
 
             _messageSubscriber.SubscribeAsync(TaskStatusUpdateRoutingKey, TaskStatusUpdateRoutingKey, OnTaskUpdateStatusReceivedCallback);
-            _logger.EventSubscription(ServiceName, TaskStatusUpdateRoutingKey);
+            Log.EventSubscription(_logger, ServiceName, TaskStatusUpdateRoutingKey);
 
             _messageSubscriber.SubscribeAsync(ExportCompleteRoutingKey, ExportCompleteRoutingKey, OnExportCompleteReceivedCallback);
-            _logger.EventSubscription(ServiceName, ExportCompleteRoutingKey);
+            Log.EventSubscription(_logger, ServiceName, ExportCompleteRoutingKey);
         }
         private async Task OnWorkflowRequestReceivedCallbackAsync(MessageReceivedEventArgs eventArgs)
         {
@@ -116,7 +118,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
                 ["messageDescription"] = eventArgs.Message.MessageDescription,
             });
 
-            _logger.WorkflowRequestReceived();
+            Log.WorkflowRequestReceived(_logger);
             await _eventPayloadListenerService.ReceiveWorkflowPayload(eventArgs);
         }
 
@@ -130,7 +132,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
                 ["messageDescription"] = eventArgs.Message.MessageDescription,
             });
 
-            _logger.TaskUpdateReceived();
+            Log.TaskUpdateReceived(_logger);
             await _eventPayloadListenerService.TaskUpdatePayload(eventArgs);
         }
 
@@ -144,7 +146,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
                 ["messageDescription"] = eventArgs.Message.MessageDescription,
             });
 
-            _logger.ExportCompleteReceived();
+            Log.ExportCompleteReceived(_logger);
             await _eventPayloadListenerService.ExportCompletePayload(eventArgs);
 
         }
