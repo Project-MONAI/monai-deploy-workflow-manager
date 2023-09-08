@@ -18,10 +18,10 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Common.Logging;
-using Monai.Deploy.WorkflowManager.Common.PayloadListener.Extensions;
+using Monai.Deploy.WorkflowManager.PayloadListener.Extensions;
+using Log = Monai.Deploy.WorkflowManager.Logging.Log;
 
-namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators
+namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
 {
     public class EventPayloadValidator : IEventPayloadValidator
     {
@@ -47,7 +47,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators
 
             if (!payloadValid)
             {
-                Logger.FailedToValidateWorkflowRequestEvent(string.Join(Environment.NewLine, validationErrors));
+                Log.FailedToValidateWorkflowRequestEvent(Logger, string.Join(Environment.NewLine, validationErrors));
             }
 
             valid &= payloadValid;
@@ -58,7 +58,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators
 
                 if (!workflowValid)
                 {
-                    Logger.FailedToValidateWorkflowRequestEvent("Workflow id is empty string");
+                    Log.FailedToValidateWorkflowRequestEvent(Logger, "Workflow id is empty string");
                 }
 
                 valid &= workflowValid;
@@ -84,7 +84,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators
             }
             catch (MessageValidationException e)
             {
-                Logger.FailedToValidateTaskUpdateEvent(e);
+                Log.FailedToValidateTaskUpdateEvent(Logger, e);
                 return false;
             }
 
@@ -107,7 +107,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators
             }
             catch (MessageValidationException e)
             {
-                Logger.FailedToValidateExportCompleteEvent(e);
+                Log.FailedToValidateExportCompleteEvent(Logger, e);
 
                 return false;
             }

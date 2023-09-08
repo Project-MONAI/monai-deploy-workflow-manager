@@ -47,8 +47,10 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Tests
             _dbase = new Mock<IMongoDatabase>();
             _collection = new Mock<IMongoCollection<ExecutionStats>>();
 
-            var IndexDoc = new BsonDocument(new Dictionary<string, string> { { "name", "ExecutionStatsIndex" } });
-            var indexList = Task.FromResult(new List<BsonDocument>() { IndexDoc });
+            var indexDoc = new BsonDocument(new Dictionary<string, string> { { "name", "ExecutionStatsIndex" } });
+            var indexList = Task.FromResult(new List<BsonDocument> { indexDoc });
+
+            Assert.NotNull(indexList);
 
             var cursor = new Mock<IAsyncCursor<BsonDocument>>();
 
@@ -63,7 +65,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Tests
         public void ExecutionStats_Should_Contain_All_Fields()
         {
             const string workflowId = nameof(workflowId);
-            const string WorkflowInstanceId = nameof(WorkflowInstanceId);
+            const string workflowInstanceId = nameof(workflowInstanceId);
             const string correlationId = nameof(correlationId);
             const string taskId = nameof(taskId);
             const string executionId = nameof(executionId);
@@ -73,7 +75,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Tests
             {
                 TaskId = taskId,
                 ExecutionId = executionId,
-                WorkflowInstanceId = WorkflowInstanceId
+                WorkflowInstanceId = workflowInstanceId
             };
 
             testObj.TaskStartTime = started;
@@ -82,7 +84,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Tests
 
             Assert.Equal(started, output.StartedUTC);
             Assert.Equal(executionId, output.ExecutionId);
-            Assert.Equal(WorkflowInstanceId, output.WorkflowInstanceId);
+            Assert.Equal(workflowInstanceId, output.WorkflowInstanceId);
             Assert.Equal(workflowId, output.WorkflowId);
             Assert.Equal(correlationId, output.CorrelationId);
             Assert.Equal(taskId, output.TaskId);
@@ -255,24 +257,24 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Tests
         public void ExecutionStats_New_TaskCancellationEvent_Should_initialize()
         {
             var collerationId = "colleration";
-            var WorkflowInstanceId = "WorkflowInstanceId";
-            var TaskId = "TaskId";
-            var ExecutionId = "ExecutionId";
+            var workflowInstanceId = "WorkflowInstanceId";
+            var taskId = "TaskId";
+            var executionId = "ExecutionId";
             var workflowId = "workflowId";
 
             var stats = new ExecutionStats(
                 new TaskCancellationEvent
                 {
-                    WorkflowInstanceId = WorkflowInstanceId,
-                    TaskId = TaskId,
-                    ExecutionId = ExecutionId,
+                    WorkflowInstanceId = workflowInstanceId,
+                    TaskId = taskId,
+                    ExecutionId = executionId,
                 }, workflowId, collerationId);
 
 
             Assert.Equal(collerationId, stats.CorrelationId);
-            Assert.Equal(WorkflowInstanceId, stats.WorkflowInstanceId);
-            Assert.Equal(TaskId, stats.TaskId);
-            Assert.Equal(ExecutionId, stats.ExecutionId);
+            Assert.Equal(workflowInstanceId, stats.WorkflowInstanceId);
+            Assert.Equal(taskId, stats.TaskId);
+            Assert.Equal(executionId, stats.ExecutionId);
             Assert.Equal(TaskExecutionStatus.Failed.ToString(), stats.Status);
         }
 

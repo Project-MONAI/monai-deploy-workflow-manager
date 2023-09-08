@@ -818,6 +818,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             }
         }
 
+        // ReSharper disable once InconsistentNaming
         private async Task<string> GenerateK8sSecretFrom(Messaging.Common.Storage storage, CancellationToken cancellationToken)
         {
             Guard.Against.Null(storage, nameof(storage));

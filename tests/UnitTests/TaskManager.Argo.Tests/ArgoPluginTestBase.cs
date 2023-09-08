@@ -36,6 +36,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
         protected readonly Mock<IKubernetes> KubernetesClient;
         protected readonly Mock<ITaskDispatchEventService> TaskDispatchEventService;
         protected readonly IOptions<WorkflowManagerOptions> Options;
+        // ReSharper disable once InconsistentNaming
         protected readonly Mock<ICoreV1Operations> K8sCoreOperations;
         protected readonly Mock<IArgoProvider> ArgoProvider;
         protected readonly int ArgoTtlStatergySeconds = 360;

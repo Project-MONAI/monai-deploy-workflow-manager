@@ -52,8 +52,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
             _dicomService = dicomService ?? throw new ArgumentNullException(nameof(dicomService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            var _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
-            var scope = _serviceScopeFactory.CreateScope();
+            var scopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
+            var scope = scopeFactory.CreateScope();
 
             _storageService = scope.ServiceProvider.GetService<IStorageService>() ?? throw new ArgumentNullException(nameof(IStorageService));
         }

@@ -80,19 +80,19 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
         }
 
         [Then(@"All results have correct (.*) and (.*)")]
-        public void AllResultsHaveExpectedStatusOrPayloadId(int? expected_status, string? expected_payloadId)
+        public void AllResultsHaveExpectedStatusOrPayloadId(int? expectedStatus, string? expectedPayloadId)
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var deserializedResult = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowInstance>>>(result);
 
             Action<WorkflowInstance> func = wi => { };
-            if (string.IsNullOrWhiteSpace(expected_payloadId) is false)
+            if (string.IsNullOrWhiteSpace(expectedPayloadId) is false)
             {
-                func += wi => wi.PayloadId.Should().Be(expected_payloadId);
+                func += wi => wi.PayloadId.Should().Be(expectedPayloadId);
             }
-            if (expected_status is not null)
+            if (expectedStatus is not null)
             {
-                func += wi => wi.Status.Should().Be((Status)expected_status);
+                func += wi => wi.Status.Should().Be((Status)expectedStatus);
             }
 
             deserializedResult.Should().NotBeNull();

@@ -40,6 +40,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
     [Route("workflowinstances")]
     public class WorkflowInstanceController : AuthenticatedApiControllerBase
     {
+        // ReSharper disable once InconsistentNaming
         private const string ENDPOINT = "/workflowinstances/";
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IWorkflowInstanceService _workflowInstanceService;

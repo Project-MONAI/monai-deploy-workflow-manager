@@ -34,13 +34,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflows/{argoNamespace}");
 
-            var Method = "POST";
+            var method = "POST";
             var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
-            return await SendRequest<Workflow>(content, urlBuilder, Method, cancellationToken).ConfigureAwait(false);
+            return await SendRequest<Workflow>(content, urlBuilder, method, cancellationToken).ConfigureAwait(false);
 
         }
 
-        public async Task<Workflow?> Argo_GetWorkflowAsync(string argoNamespace, string name, string? getOptions_resourceVersion, string? fields, CancellationToken cancellationToken)
+        public async Task<Workflow?> Argo_GetWorkflowAsync(string argoNamespace,
+            string name,
+            string? getOptionsResourceVersion,
+            string? fields,
+            CancellationToken cancellationToken)
         {
             Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
             Guard.Against.Null(name, nameof(name));
@@ -48,9 +52,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflows/{argoNamespace}/{name}?");
 
-            if (getOptions_resourceVersion != null)
+            if (getOptionsResourceVersion != null)
             {
-                urlBuilder.Append(Uri.EscapeDataString("getOptions.resourceVersion") + "=").Append(Uri.EscapeDataString(ConvertToString(getOptions_resourceVersion, CultureInfo.InvariantCulture))).Append('&');
+                urlBuilder.Append(Uri.EscapeDataString("getOptions.resourceVersion") + "=").Append(Uri.EscapeDataString(ConvertToString(getOptionsResourceVersion, CultureInfo.InvariantCulture))).Append('&');
             }
             if (fields != null)
             {
@@ -71,9 +75,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflows/{argoNamespace}/{name}/stop");
 
-            var Method = "PUT";
+            const string method = "PUT";
             var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
-            return await SendRequest<Workflow>(content, urlBuilder, Method, new CancellationToken()).ConfigureAwait(false);
+            return await SendRequest<Workflow>(content, urlBuilder, method, new CancellationToken()).ConfigureAwait(false);
 
         }
 
@@ -86,12 +90,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflows/{argoNamespace}/{name}/terminate");
 
-            var Method = "PUT";
+            const string method = "PUT";
             var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
-            return await SendRequest<Workflow>(content, urlBuilder, Method, new CancellationToken()).ConfigureAwait(false);
+            return await SendRequest<Workflow>(content, urlBuilder, method, new CancellationToken()).ConfigureAwait(false);
         }
 
-        public async Task<WorkflowTemplate?> Argo_GetWorkflowTemplateAsync(string argoNamespace, string name, string? getOptions_resourceVersion)
+        public async Task<WorkflowTemplate?> Argo_GetWorkflowTemplateAsync(string argoNamespace, string name, string? getOptionsResourceVersion)
         {
             Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
             Guard.Against.Null(name, nameof(name));
@@ -99,9 +103,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflow-templates/{argoNamespace}/{name}?");
 
-            if (getOptions_resourceVersion != null)
+            if (getOptionsResourceVersion != null)
             {
-                urlBuilder.Append(Uri.EscapeDataString("getOptions.resourceVersion") + "=").Append(Uri.EscapeDataString(ConvertToString(getOptions_resourceVersion, CultureInfo.InvariantCulture))).Append('&');
+                urlBuilder.Append(Uri.EscapeDataString("getOptions.resourceVersion") + "=").Append(Uri.EscapeDataString(ConvertToString(getOptionsResourceVersion, CultureInfo.InvariantCulture))).Append('&');
             }
             urlBuilder.Length--;
 
@@ -116,7 +120,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             return await GetRequest<Version>(urlBuilder).ConfigureAwait(false);
         }
 
-        public async Task<string?> Argo_Get_WorkflowLogsAsync(string argoNamespace, string name, string? podName, string logOptions_container)
+        public async Task<string?> Argo_Get_WorkflowLogsAsync(string argoNamespace, string name, string? podName, string logOptionsContainer)
         {
             Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
             Guard.Against.Null(name, nameof(name));
@@ -128,9 +132,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             {
                 urlBuilder.Append(Uri.EscapeDataString("podName") + "=").Append(Uri.EscapeDataString(ConvertToString(podName, CultureInfo.InvariantCulture))).Append('&');
             }
-            if (logOptions_container != null)
+            if (logOptionsContainer != null)
             {
-                urlBuilder.Append(Uri.EscapeDataString("logOptions.container") + "=").Append(Uri.EscapeDataString(ConvertToString(logOptions_container, CultureInfo.InvariantCulture))).Append('&');
+                urlBuilder.Append(Uri.EscapeDataString("logOptions.container") + "=").Append(Uri.EscapeDataString(ConvertToString(logOptionsContainer, CultureInfo.InvariantCulture))).Append('&');
             }
 
             urlBuilder.Length--;
@@ -152,8 +156,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             var stringBody = Newtonsoft.Json.JsonConvert.SerializeObject(body);
             var content = new StringContent(stringBody);
 
-            var _logger = NLog.LogManager.GetCurrentClassLogger();
-            _logger.Debug($"Sending content to Argo :{stringBody}");
+            var logger = NLog.LogManager.GetCurrentClassLogger();
+            logger.Debug($"Sending content to Argo :{stringBody.Replace(Environment.NewLine, "")}");
             return await SendRequest<WorkflowTemplate>(content, urlBuilder, method, cancellationToken).ConfigureAwait(false);
         }
 
@@ -250,22 +254,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
                 try
                 {
-                    var headers = Enumerable.ToDictionary(response.Headers, h_ => h_.Key, h_ => h_.Value);
+                    var headers = Enumerable.ToDictionary(response.Headers, h => h.Key, h => h.Value);
                     if (response.Content != null && response.Content.Headers != null)
                     {
-                        foreach (var item_ in response.Content.Headers)
-                            headers[item_.Key] = item_.Value;
+                        foreach (var item in response.Content.Headers)
+                            headers[item.Key] = item.Value;
                     }
 
                     var status = (int)response.StatusCode;
                     if (status == 200)
                     {
-                        var objectResponse_ = await ReadObjectResponseAsync<T>(response, headers).ConfigureAwait(false);
-                        if (objectResponse_.Object == null)
+                        var objectResponse = await ReadObjectResponseAsync<T>(response, headers).ConfigureAwait(false);
+                        if (objectResponse.Object == null)
                         {
-                            throw new ApiException("Response was null which was not expected.", status, objectResponse_.Text, headers, null);
+                            throw new ApiException("Response was null which was not expected.", status, objectResponse.Text, headers, null);
                         }
-                        return objectResponse_.Object;
+                        return objectResponse.Object;
                     }
                     else
                     {
@@ -296,34 +300,34 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
                 try
                 {
-                    var headers_ = Enumerable.ToDictionary(response.Headers, h_ => h_.Key, h_ => h_.Value);
+                    var headers = Enumerable.ToDictionary(response.Headers, h => h.Key, h => h.Value);
                     if (response.Content != null && response.Content.Headers != null)
                     {
-                        foreach (var item_ in response.Content.Headers)
-                            headers_[item_.Key] = item_.Value;
+                        foreach (var item in response.Content.Headers)
+                            headers[item.Key] = item.Value;
                     }
 
                     var status = (int)response.StatusCode;
                     if (status == 200)
                     {
-                        ObjectResponseResult<T?> objectResponse_;
+                        ObjectResponseResult<T?> objectResponse;
 
-                        objectResponse_ = await ReadObjectResponseAsync<T>(response, headers_, isLogs).ConfigureAwait(false);
+                        objectResponse = await ReadObjectResponseAsync<T>(response, headers, isLogs).ConfigureAwait(false);
 
-                        if (objectResponse_.Object == null)
+                        if (objectResponse.Object == null)
                         {
-                            throw new ApiException("Response was null which was not expected.", status, objectResponse_.Text, headers_, null);
+                            throw new ApiException("Response was null which was not expected.", status, objectResponse.Text, headers, null);
                         }
-                        return objectResponse_.Object;
+                        return objectResponse.Object;
                     }
                     else
                     {
-                        var objectResponse_ = await ReadObjectResponseAsync<Error>(response, headers_, false).ConfigureAwait(false);
-                        if (objectResponse_.Object == null)
+                        var objectResponse = await ReadObjectResponseAsync<Error>(response, headers, false).ConfigureAwait(false);
+                        if (objectResponse.Object == null)
                         {
-                            throw new ApiException("Response was null which was not expected.", status, objectResponse_.Text, headers_, null);
+                            throw new ApiException("Response was null which was not expected.", status, objectResponse.Text, headers, null);
                         }
-                        throw new ApiException<Error>("An unexpected error response.", status, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        throw new ApiException<Error>("An unexpected error response.", status, objectResponse.Text, headers, objectResponse.Object, null);
                     }
                 }
                 finally
