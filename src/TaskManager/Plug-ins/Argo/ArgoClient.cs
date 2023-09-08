@@ -300,7 +300,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
                 try
                 {
-                    var headers = Enumerable.ToDictionary(response.Headers, h => h.Key, h => h.Value) ?? throw new ArgumentNullException("Enumerable.ToDictionary(response.Headers, h_ => h_.Key, h_ => h_.Value)");
+                    var headers = Enumerable.ToDictionary(response.Headers, h => h.Key, h => h.Value);
                     if (response.Content != null && response.Content.Headers != null)
                     {
                         foreach (var item in response.Content.Headers)
