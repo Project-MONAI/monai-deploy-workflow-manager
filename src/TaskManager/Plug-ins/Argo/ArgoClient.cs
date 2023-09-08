@@ -157,7 +157,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             var content = new StringContent(stringBody);
 
             var logger = NLog.LogManager.GetCurrentClassLogger();
-            logger.Debug($"Sending content to Argo :{stringBody}");
+            logger.Debug($"Sending content to Argo :{stringBody.Replace(Environment.NewLine, "")}");
             return await SendRequest<WorkflowTemplate>(content, urlBuilder, method, cancellationToken).ConfigureAwait(false);
         }
 
