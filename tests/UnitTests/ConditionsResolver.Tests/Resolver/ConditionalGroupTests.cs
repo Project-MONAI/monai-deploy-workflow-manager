@@ -15,7 +15,7 @@
  */
 
 using System;
-using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Resolver;
+using Monai.Deploy.WorkflowManager.ConditionsResolver.Resovler;
 using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Tests.Resolver
@@ -40,7 +40,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Tests.Resolver
         [InlineData("'F' == 'F' AND 'F' == 'leg' OR 'F' == 'F' AND 'F' == 'F' OR 'F' == 'F'")]
         [InlineData("'F' == 'F' AND 'F' == 'leg' OR 'F' == 'F' OR 'F' == 'F' AND 'F' == 'F'")]
         [InlineData("'AND' == 'OR' AND 'F' == 'leg' OR 'F' == 'F' OR 'F' == 'F' AND 'F' == 'F'")]
-        [InlineData("'Donkey' CONTAINS [“Donkey”, “Alpaca”, “Zebra”] AND 'F' == 'F'")]
+        [InlineData("'Donkey' CONTAINS [�Donkey�, �Alpaca�, �Zebra�] AND 'F' == 'F'")]
         public void ConditionalGroup_WhenProvidedCorrectInput_ShouldCreateAndHaveLeftAndRightGroups(string input)
         {
             var conditionalGroup = ConditionalGroup.Create(input);
@@ -51,13 +51,13 @@ namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Tests.Resolver
         [Theory]
         [InlineData(true, "'F' == 'F'")]
         [InlineData(false, "'F' == 'leg'")]
-        [InlineData(true, "'Donkey' CONTAINS [“Donkey”, “Alpaca”, “Zebra”]")]
-        [InlineData(true, "'lillie' contains [“jack”, “lillie”, “neil”]")]
-        [InlineData(false, "'Donkey' CONTAINS [“aDonkeya”, “Alpaca”, “Zebra”]")]
-        [InlineData(true, "[“Donkey”, “Alpaca”, “Zebra”] CONTAINS 'Donkey'")]
-        [InlineData(false, "[“Donkey”, “Alpaca”, “Zebra”] CONTAINS 'Betty'")]
-        [InlineData(false, "'Donkey' NOT_CONTAINS [“Donkey”, “Alpaca”, “Zebra”]")]
-        [InlineData(false, "'Donkey' not_contains [“Donkey”, “Alpaca”, “Zebra”]")]
+        [InlineData(true, "'Donkey' CONTAINS [�Donkey�, �Alpaca�, �Zebra�]")]
+        [InlineData(true, "'lillie' contains [�jack�, �lillie�, �neil�]")]
+        [InlineData(false, "'Donkey' CONTAINS [�aDonkeya�, �Alpaca�, �Zebra�]")]
+        [InlineData(true, "[�Donkey�, �Alpaca�, �Zebra�] CONTAINS 'Donkey'")]
+        [InlineData(false, "[�Donkey�, �Alpaca�, �Zebra�] CONTAINS 'Betty'")]
+        [InlineData(false, "'Donkey' NOT_CONTAINS [�Donkey�, �Alpaca�, �Zebra�]")]
+        [InlineData(false, "'Donkey' not_contains [�Donkey�, �Alpaca�, �Zebra�]")]
         [InlineData(true, "'' == NULL")]
         [InlineData(true, "'Lillie' == 'lillie '")]
         [InlineData(true, "'Lillie' == 'lillie'")]
