@@ -2,12 +2,6 @@
   "version": 1,
   "dependencies": {
     "net6.0": {
-      "Ardalis.GuardClauses": {
-        "type": "Direct",
-        "requested": "[4.1.1, )",
-        "resolved": "4.1.1",
-        "contentHash": "+UcJ2s+gf2wMNrwadCaHZV2DMcGgBU1t22A+jm40P4MHQRLy9hcleGy5xdVWd4dXZPa5Vlp4TG5xU2rhoDYrBA=="
-      },
       "fo-dicom": {
         "type": "Direct",
         "requested": "[5.1.1, )",
@@ -27,11 +21,10 @@
           "System.Threading.Channels": "6.0.0"
         }
       },
-      "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": {
-        "type": "Direct",
-        "requested": "[6.0.22, )",
-        "resolved": "6.0.22",
-        "contentHash": "yvz+0r3qAt6gNEKlGSBO1BXMhtD3Tt8yzU59dHASolpwlSHvgqy0tEP6KXn3MPoKlPr0CiAHUdzOwYSoljzRSg=="
+      "Ardalis.GuardClauses": {
+        "type": "Transitive",
+        "resolved": "4.1.1",
+        "contentHash": "+UcJ2s+gf2wMNrwadCaHZV2DMcGgBU1t22A+jm40P4MHQRLy9hcleGy5xdVWd4dXZPa5Vlp4TG5xU2rhoDYrBA=="
       },
       "AWSSDK.Core": {
         "type": "Transitive",
@@ -93,6 +86,11 @@
           "Microsoft.Extensions.Logging.Abstractions": "6.0.4",
           "Microsoft.Extensions.Options": "6.0.0"
         }
+      },
+      "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": {
+        "type": "Transitive",
+        "resolved": "6.0.21",
+        "contentHash": "5FSA1euCRtbRqVgTn2ahgCG9Cy29UQXAZMCJLUlrQQaC5rko0+d/aq9SiFGIDP7cvoWUsatrlNdfc6UyOMV5aA=="
       },
       "Microsoft.Extensions.FileProviders.Abstractions": {
         "type": "Transitive",
