@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Filter;
-using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.Services;
-using Monai.Deploy.WorkflowManager.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Exceptions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
 
-namespace Monai.Deploy.WorkflowManager.Controllers
+namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
 {
     /// <summary>
     /// Payloads Controller.
@@ -48,7 +49,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="PayloadsController"/> class.
         /// </summary>
-        /// <param name="payloadService">paylod service to retrieve payloads.</param>
+        /// <param name="payloadService">payload service to retrieve payloads.</param>
         /// <param name="logger">logger.</param>
         /// <param name="uriService">Uri Service.</param>
         /// <param name="options">Workflow Manager options.</param>
@@ -69,7 +70,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         /// Gets a paged response list of all workflows.
         /// </summary>
         /// <param name="filter">Filters.</param>
-        /// <param name="patientId">Optional paient Id.</param>
+        /// <param name="patientId">Optional patient Id.</param>
         /// <param name="patientName">Optional patient name.</param>
         /// <returns>paged response of subset of all workflows.</returns>
         [HttpGet]
@@ -90,7 +91,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                     patientName);
 
                 var dataTotal = await _payloadService.CountAsync();
-                var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
+                var pagedReponse = CreatePagedResponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
 
                 return Ok(pagedReponse);
             }
@@ -133,6 +134,47 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 }
 
                 return Ok(payload);
+            }
+            catch (Exception e)
+            {
+                _logger.PayloadGetAsyncError(id, e);
+                return Problem($"Unexpected error occurred: {e.Message}", $"/payload/{nameof(id)}", InternalServerError);
+            }
+        }
+
+        /// <summary>
+        /// Delete a payload by ID.
+        /// </summary>
+        /// <param name="id">The payload id.</param>
+        /// <returns>Boolean status of the success of the delete request.</returns>
+        [Route("{id}")]
+        [HttpDelete]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status202Accepted)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteAsync([FromRoute] string id)
+        {
+            if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
+            {
+                _logger.LogDebug($"{nameof(DeleteAsync)} - Failed to validate {nameof(id)}");
+
+                return Problem($"Failed to validate {nameof(id)}, not a valid guid", $"/payload/{id}", BadRequest);
+            }
+
+            try
+            {
+                return Accepted(await _payloadService.DeletePayloadFromStorageAsync(id));
+            }
+            catch (MonaiBadRequestException e)
+            {
+                _logger.PayloadGetAsyncError(id, e);
+                return Problem(e.Message, $"/payload/{nameof(id)}", BadRequest);
+            }
+            catch (MonaiNotFoundException e)
+            {
+                _logger.PayloadGetAsyncError(id, e);
+                return Problem(e.Message, $"/payload/{nameof(id)}", NotFound);
             }
             catch (Exception e)
             {

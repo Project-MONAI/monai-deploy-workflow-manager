@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 
 using BoDi;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using Monai.Deploy.WorkflowManager.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class WorkflowInstancesApiStepDefinitions
@@ -32,7 +32,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             DataHelper = objectContainer.Resolve<DataHelper>();
             ApiHelper = objectContainer.Resolve<ApiHelper>();
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
-            Assertions = new Assertions(objectContainer);
+            Assertions = new Assertions(objectContainer, outputHelper);
             _outputHelper = outputHelper;
         }
 
@@ -41,13 +41,16 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private DataHelper DataHelper { get; }
         private readonly ISpecFlowOutputHelper _outputHelper;
         private MongoClientUtil MongoClient { get; set; }
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
 
         [Then(@"I can see expected workflow instances are returned")]
         public void ThenICanSeeExpectedWorkflowInstancesAreReturned()
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var actualWorkflowInstances = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowInstance>>>(result);
+#pragma warning disable CS8604 // Possible null reference argument.
             Assertions.AssertWorkflowInstanceList(DataHelper.WorkflowInstances, actualWorkflowInstances.Data);
+
         }
 
         [Then(@"I can see expected workflow instance is returned")]
@@ -77,19 +80,19 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         }
 
         [Then(@"All results have correct (.*) and (.*)")]
-        public void AllResultsHaveExpectedStatusOrPayloadId(int? expected_status, string? expected_payloadId)
+        public void AllResultsHaveExpectedStatusOrPayloadId(int? expectedStatus, string? expectedPayloadId)
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var deserializedResult = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowInstance>>>(result);
 
             Action<WorkflowInstance> func = wi => { };
-            if (string.IsNullOrWhiteSpace(expected_payloadId) is false)
+            if (string.IsNullOrWhiteSpace(expectedPayloadId) is false)
             {
-                func += wi => wi.PayloadId.Should().Be(expected_payloadId);
+                func += wi => wi.PayloadId.Should().Be(expectedPayloadId);
             }
-            if (expected_status is not null)
+            if (expectedStatus is not null)
             {
-                func += wi => wi.Status.Should().Be((Status)expected_status);
+                func += wi => wi.Status.Should().Be((Status)expectedStatus);
             }
 
             deserializedResult.Should().NotBeNull();
@@ -199,6 +202,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
             var task = updatedWorkflowInstance.Tasks.FirstOrDefault(i => i.TaskId.Equals(taskId));
             task.AcknowledgedTaskErrors.Should().BeCloseTo(DateTime.UtcNow, new TimeSpan(50000000));
+
         }
 
         [Then(@"I can see the workflow Instance (.*) error is acknowledged")]
@@ -242,3 +246,5 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         }
     }
 }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8604 // Possible null reference argument.

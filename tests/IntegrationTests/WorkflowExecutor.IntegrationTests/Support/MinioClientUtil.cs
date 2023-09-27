@@ -17,12 +17,12 @@
 using System.Reactive.Linq;
 using Minio;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO;
 using Polly;
 using Polly.Retry;
 using File = System.IO.File;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
 {
     public class MinioClientUtil
     {
@@ -47,7 +47,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             {
                 try
                 {
-                    if (await Client.BucketExistsAsync(bucketName))
+                    if (await Client.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucketName)))
                     {
                         try
                         {
@@ -60,7 +60,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                             var objs = await Client.ListObjectsAsync(listArgs).ToList();
                             foreach (var obj in objs)
                             {
-                                await Client.RemoveObjectAsync(bucketName, obj.Key);
+                                await Client.RemoveObjectAsync(new RemoveObjectArgs().WithBucket(bucketName).WithObject(obj.Key));
                             }
                         }
                         catch (Exception)
@@ -69,8 +69,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     }
                     else
                     {
-                        await Client.MakeBucketAsync(bucketName);
+                        await Client.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucketName));
                     }
+
                 }
                 catch (Exception e)
                 {
@@ -106,11 +107,12 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                                             { "Test-Metadata", "Test  Test" }
                                 };
                                 await Client.PutObjectAsync(
-                                    TestExecutionConfig.MinioConfig.Bucket,
-                                    relativePath,
-                                    file,
-                                    "application/octet-stream",
-                                    metaData);
+                                new PutObjectArgs()
+                                    .WithBucket(TestExecutionConfig.MinioConfig.Bucket)
+                                    .WithObject(relativePath)
+                                    .WithFileName(file)
+                                    .WithContentType("application/octet-stream")
+                                    .WithHeaders(metaData));
                             }
                         }
                     }
@@ -125,11 +127,12 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                                     { "Test-Metadata", "Test  Test" }
                         };
                             await Client.PutObjectAsync(
-                                TestExecutionConfig.MinioConfig.Bucket,
-                                folderPath,
-                                localPath,
-                                "application/octet-stream",
-                                metaData);
+                                new PutObjectArgs()
+                                .WithBucket(TestExecutionConfig.MinioConfig.Bucket)
+                                .WithObject(folderPath)
+                                .WithFileName(localPath)
+                                .WithContentType("application/octet-stream")
+                                .WithHeaders(metaData));
                         }
                     }
                 }
@@ -142,7 +145,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         public async Task GetFile(string bucketName, string objectName, string fileName)
         {
-            await Client.GetObjectAsync(bucketName, objectName, fileName);
+            await Client.GetObjectAsync(new GetObjectArgs().WithBucket(bucketName).WithObject(objectName).WithFile(fileName));
         }
 
         public async Task<bool> CheckFileExists(string bucketName, string objectName)
@@ -163,21 +166,21 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
         public async Task DeleteBucket(string bucketName)
         {
-            bool found = await Client.BucketExistsAsync(bucketName);
+            bool found = await Client.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucketName));
             if (found)
             {
                 await RetryPolicy.ExecuteAsync(async () =>
                 {
-                    await Client.RemoveBucketAsync(bucketName);
+                    await Client.RemoveBucketAsync(new RemoveBucketArgs().WithBucket(bucketName));
                 });
             }
         }
 
         public async Task RemoveObjects(string bucketName, string objectName)
         {
-            if (await Client.BucketExistsAsync(bucketName))
+            if (await Client.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucketName)))
             {
-                await Client.RemoveObjectAsync(bucketName, objectName);
+                await Client.RemoveObjectAsync(new RemoveObjectArgs().WithBucket(bucketName).WithObject(objectName));
             }
         }
 
@@ -214,4 +217,5 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             }).ConfigureAwait(false);
         }
     }
+#pragma warning restore CS0618 // Type or member is obsolete
 }

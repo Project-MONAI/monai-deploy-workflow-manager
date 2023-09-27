@@ -16,6 +16,7 @@
 
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
+#pragma warning disable SA1600 // Elements should be documented
     public static class PluginStrings
     {
         // note not to be confused with the ApplicationId Monai.Deploy.WorkflowManager.TaskManager.Argo
@@ -26,3 +27,4 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         public static readonly IReadOnlyList<string> PlugsRequiresPermanentAccoutns = new List<string>() { Argo, Docker };
     }
 }
+#pragma warning restore SA1600 // Elements should be documented

@@ -17,12 +17,22 @@
 using System;
 using System.Collections.Generic;
 using Monai.Deploy.Messaging.Common;
+using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Migrations;
+using Mongo.Migration.Documents;
+using Mongo.Migration.Documents.Attributes;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Models
+namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
-    public class Payload
+    [CollectionLocation("Payloads"), RuntimeVersion("1.0.3")]
+    public class Payload : IDocument
     {
+        [JsonConverter(typeof(DocumentVersionConvert)), BsonSerializer(typeof(DocumentVersionConverBson))]
+        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 3);
+
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; } = string.Empty;
 
@@ -44,19 +54,26 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
         [JsonProperty(PropertyName = "bucket")]
         public string Bucket { get; set; } = string.Empty;
 
-        [JsonProperty(PropertyName = "calling_aetitle")]
-        public string CallingAeTitle { get; set; } = string.Empty;
-
-        [JsonProperty(PropertyName = "called_aetitle")]
-        public string CalledAeTitle { get; set; } = string.Empty;
-
         [JsonProperty(PropertyName = "timestamp")]
         public DateTime Timestamp { get; set; }
+
+        [JsonProperty(PropertyName = "payload_deleted")]
+        public PayloadDeleted PayloadDeleted { get; set; } = PayloadDeleted.No;
 
         [JsonProperty(PropertyName = "files")]
         public IList<BlockStorageInfo> Files { get; set; } = new List<BlockStorageInfo>();
 
         [JsonProperty(PropertyName = "patient_details")]
         public PatientDetails PatientDetails { get; set; } = new PatientDetails();
+
+        public DataOrigin DataTrigger { get; set; } = new DataOrigin { DataService = DataService.DIMSE };
+    }
+
+    public enum PayloadDeleted
+    {
+        No,
+        Yes,
+        InProgress,
+        Failed
     }
 }

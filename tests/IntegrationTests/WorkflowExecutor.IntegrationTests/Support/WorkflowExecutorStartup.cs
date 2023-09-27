@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,19 +29,23 @@ using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Storage;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.Database.Repositories;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
-using Monai.Deploy.WorkflowManager.Services;
-using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
-using Monai.Deploy.WorkflowManager.Services.Http;
-using Monai.Deploy.WorkflowManager.Validators;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Database.Options;
+using Monai.Deploy.WorkflowManager.Common.Database.Repositories;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.Common.Services.DataRetentionService;
+using Monai.Deploy.WorkflowManager.Common.Services.Http;
+using Monai.Deploy.WorkflowManager.Common.Validators;
+using Mongo.Migration.Startup.DotNetCore;
+using Mongo.Migration.Startup;
 using MongoDB.Driver;
 using NLog.Web;
+using Monai.Deploy.WorkflowManager.Common.Database;
+using Monai.Deploy.WorkflowManager.Common.Extensions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
 {
     public static class WorkflowExecutorStartup
     {
@@ -61,6 +65,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             {
                 services.AddOptions<WorkflowManagerOptions>()
                     .Bind(hostContext.Configuration.GetSection("WorkflowManager"))
+                    .PostConfigure(options =>
+                    {
+                    });
+                services.AddOptions<InformaticsGatewayConfiguration>()
+                    .Bind(hostContext.Configuration.GetSection("InformaticsGateway"))
                     .PostConfigure(options =>
                     {
                     });
@@ -86,9 +95,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
                 services.AddSingleton<DataRetentionService>();
 
-#pragma warning disable CS8603 // Possible null reference return.
-                services.AddHostedService<DataRetentionService>(p => p.GetService<DataRetentionService>());
-#pragma warning restore CS8603 // Possible null reference return.
+                services.AddHostedService(p => p.GetService<DataRetentionService>());
 
                 // Services
                 services.AddTransient<IFileSystem, FileSystem>();
@@ -96,11 +103,18 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
                 // Mongo DB
                 services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
+                services.Configure<ExecutionStatsDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
                 services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
                 services.AddTransient<IWorkflowRepository, WorkflowRepository>();
                 services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
-                services.AddTransient<IPayloadRepsitory, PayloadRepository>();
+                services.AddTransient<IPayloadRepository, PayloadRepository>();
                 services.AddTransient<ITasksRepository, TasksRepository>();
+                services.AddTransient<ITaskExecutionStatsRepository, TaskExecutionStatsRepository>();
+                services.AddMigration(new MongoMigrationSettings
+                {
+                    ConnectionString = hostContext.Configuration.GetSection("WorkloadManagerDatabase:ConnectionString").Value,
+                    Database = hostContext.Configuration.GetSection("WorkloadManagerDatabase:DatabaseName").Value,
+                });
 
                 // StorageService - Since mc.exe is unavailable during e2e, skip admin check
                 services.AddMonaiDeployStorageService(hostContext.Configuration.GetSection("WorkflowManager:storage:serviceAssemblyName").Value, HealthCheckOptions.ServiceHealthCheck);

@@ -16,9 +16,9 @@
 
 using System.Text.RegularExpressions;
 using Ardalis.GuardClauses;
-using Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions;
+using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Extensions;
 
-namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
+namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resovler
 {
     public class ConditionalGroup
     {
@@ -38,13 +38,13 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
         public int GroupedLogical { get; set; } = 1;
 
-        public Regex FindAnds { get; } = new Regex(@"([\s]and[\s]|[\s]AND[\s]|[\s]And[\s])");
+        public Regex FindAnds { get; } = new(@"([\s]and[\s]|[\s]AND[\s]|[\s]And[\s])", RegexOptions.None, matchTimeout: TimeSpan.FromSeconds(2));
 
-        public Regex FindOrs { get; } = new Regex(@"([\s]or[\s]|[\s]OR[\s]|[\s]Or[\s])");
+        public Regex FindOrs { get; } = new(@"([\s]or[\s]|[\s]OR[\s]|[\s]Or[\s])", RegexOptions.None, matchTimeout: TimeSpan.FromSeconds(2));
 
-        public Regex FindBrackets { get; } = new Regex(@"((?<!\[)\()");
+        public Regex FindBrackets { get; } = new(@"((?<!\[)\()", RegexOptions.None, matchTimeout: TimeSpan.FromSeconds(2));
 
-        public Regex FindCloseBrackets { get; } = new Regex(@"((?<!\[)\))");
+        public Regex FindCloseBrackets { get; } = new(@"((?<!\[)\))", RegexOptions.None, matchTimeout: TimeSpan.FromSeconds(2));
 
         private string[] ParseOrs(string input) => FindOrs.SplitOnce(input);
 
@@ -82,7 +82,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
         public void Parse(string input, int groupedLogicalParent = 0)
         {
-            Guard.Against.NullOrEmpty(input);
+            Guard.Against.NullOrEmpty(input, nameof(input));
 
             var foundOpenBrackets = FindBrackets.Matches(input);
             var foundClosingBrackets = FindCloseBrackets.Matches(input);
@@ -127,7 +127,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
         public void ParseBrackets(string input)
         {
-            Guard.Against.NullOrWhiteSpace(input);
+            Guard.Against.NullOrWhiteSpace(input, nameof(input));
 
             var foundAnds = FindAnds.Matches(input);
             var foundOrs = FindOrs.Matches(input);
@@ -169,7 +169,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
         private void ParseComplex(string input)
         {
-            Guard.Against.NullOrWhiteSpace(input);
+            Guard.Against.NullOrWhiteSpace(input, nameof(input));
 
             var foundBrackets = FindBrackets.Matches(input);
 
@@ -299,7 +299,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
 
         public static ConditionalGroup Create(string input, int groupedLogicalParent = 0)
         {
-            Guard.Against.NullOrEmpty(input);
+            Guard.Against.NullOrEmpty(input, nameof(input));
             var conditionalGroup = new ConditionalGroup();
             if (groupedLogicalParent == 0)
             {

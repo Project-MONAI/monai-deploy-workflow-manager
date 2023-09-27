@@ -1,0 +1,73 @@
+﻿/*
+ * Copyright 2023 MONAI Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+{
+    "periodStart": "2023-01-01T00:00:00",
+    "periodEnd": "2023-04-26T15:01:01.0902241+01:00",
+    "totalExecutions": 5,
+    "totalSucceeded": 3,
+    "totalFailures": 1,
+    "totalInprogress": 1,
+    "averageTotalExecutionSeconds": 30.0,
+    "averageArgoExecutionSeconds": 30.0,
+    "pageNumber": 1,
+    "pageSize": 10,
+    "firstPage": "/tasks/stats?pageNumber=1&pageSize=10",
+    "lastPage": "/tasks/stats?pageNumber=1&pageSize=10",
+    "totalPages": 1,
+    "totalRecords": 5,
+    "nextPage": null,
+    "previousPage": null,
+    "data": [
+        {
+            "executionId": "9f545b20-abf6-4c70-b64e-52c68ece8e37",
+            "startedAt": "2023-02-25T14:01:00.58Z",
+            "finishedAt": "2023-02-25T15:00:30.58Z",
+            "executionDurationSeconds": 30.0,
+            "status": "Succeeded"
+        },
+        {
+            "executionId": "83c734a4-a511-46ad-9384-7dbf54a2c696",
+            "startedAt": "2023-02-25T14:01:00.58Z",
+            "finishedAt": "2023-02-25T15:00:30.58Z",
+            "executionDurationSeconds": 30.0,
+            "status": "Succeeded"
+        },
+        {
+            "executionId": "73127fd4-20cb-42c1-8138-01db8b0d35d6",
+            "startedAt": "2023-02-25T14:01:00.58Z",
+            "finishedAt": "2023-02-25T15:00:30.58Z",
+            "executionDurationSeconds": 30.0,
+            "status": "Failed"
+        },
+        {
+            "executionId": "83c734a4-a511-46ad-9384-7dbf54a2c696",
+            "startedAt": "2023-03-27T14:01:00.58Z",
+            "finishedAt": "2023-03-27T15:00:30.58Z",
+            "executionDurationSeconds": 30.0,
+            "status": "Succeeded"
+        },
+        {
+            "executionId": "6c9993a8-639d-4a68-b689-d59e26b187e8",
+            "startedAt": "2023-04-26T14:01:00.58Z",
+            "finishedAt": "0001-01-01T00:00:00Z",
+            "executionDurationSeconds": 0.0,
+            "status": "Accepted"
+        }
+    ],
+    "succeeded": true,
+    "errors": null,
+    "message": null
+}

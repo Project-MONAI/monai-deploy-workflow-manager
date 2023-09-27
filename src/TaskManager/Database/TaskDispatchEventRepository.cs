@@ -41,7 +41,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var mongoDatabase = client.GetDatabase(databaseSettings.Value.DatabaseName);
-            _taskDispatchEventCollection = mongoDatabase.GetCollection<TaskDispatchEventInfo>(databaseSettings.Value.TaskDispatchEventCollectionName);
+            _taskDispatchEventCollection = mongoDatabase.GetCollection<TaskDispatchEventInfo>("TaskDispatchEvents");
         }
 
         public async Task<TaskDispatchEventInfo?> CreateAsync(TaskDispatchEventInfo taskDispatchEventInfo)
@@ -110,10 +110,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
             }
         }
 
-        public async Task<TaskDispatchEventInfo> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEventInfo, Dictionary<string, string> pluginArgs)
+        public async Task<TaskDispatchEventInfo?> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEventInfo, Dictionary<string, string> pluginArgs)
         {
-            Guard.Against.Null(taskDispatchEventInfo);
-            Guard.Against.Null(pluginArgs);
+            Guard.Against.Null(taskDispatchEventInfo, nameof(taskDispatchEventInfo));
+            Guard.Against.Null(pluginArgs, nameof(pluginArgs));
 
             try
             {

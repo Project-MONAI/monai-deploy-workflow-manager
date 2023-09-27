@@ -29,7 +29,9 @@ jobs:
             image: ghcr.io/project-monai/monai-deploy-workflow-manager
           - dockerfile: TaskManager.Dockerfile
             image: ghcr.io/project-monai/monai-deploy-task-manager
-    env: 
+          - dockerfile: CallbackApp.Dockerfile
+            image: ghcr.io/project-monai/monai-deploy-task-manager-callback
+    env:
       REGISTRY: ghcr.io
     permissions:
       packages: write
@@ -53,7 +55,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v4.1.1
+        uses: docker/metadata-action@v4.4.0
         with:
           images: ${{ matrix.image }}
           tags: |
@@ -61,7 +63,7 @@ jobs:
             type=raw,value=develop-nightly-${{ steps.date.outputs.date }}
 
       - name: Build and Push Container Image for ${{ matrix.feature }}
-        uses: docker/build-push-action@v3.2.0
+        uses: docker/build-push-action@v4.0.0
         with:
           context: .
           push: true
@@ -78,7 +80,7 @@ jobs:
 
       - name: Anchore Container Scan
         id: anchore-scan
-        uses: anchore/scan-action@v3.3.2
+        uses: anchore/scan-action@v3.3.5
         with:
           image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           fail-build: true

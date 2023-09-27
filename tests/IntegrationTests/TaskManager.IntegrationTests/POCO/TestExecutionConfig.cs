@@ -20,64 +20,70 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO
     {
         public static class RabbitConfig
         {
-            public static string Host { get; set; }
+            public static string? Host { get; set; }
 
             public static int WebPort { get; set; } = 15672;
 
             public static int Port { get; set; } = 5672;
 
-            public static string User { get; set; }
+            public static string? User { get; set; }
 
-            public static string Password { get; set; }
+            public static string? Password { get; set; }
 
-            public static string Exchange { get; set; }
+            public static string? Exchange { get; set; }
 
-            public static string VirtualHost { get; set; }
+            public static string? VirtualHost { get; set; }
 
-            public static string WorkflowRequestQueue { get; set; }
+            public static string? WorkflowRequestQueue { get; set; }
 
-            public static string TaskDispatchQueue { get; set; }
+            public static string? TaskDispatchQueue { get; set; }
 
-            public static string TaskCallbackQueue { get; set; }
+            public static string? TaskCallbackQueue { get; set; }
 
-            public static string WorkflowCompleteQueue { get; set; }
+            public static string? WorkflowCompleteQueue { get; set; }
 
-            public static string TaskUpdateQueue { get; set; }
+            public static string? TaskUpdateQueue { get; set; }
 
-            public static string ClinicalReviewQueue { get; set; }
+            public static string? ClinicalReviewQueue { get; set; }
+
+            public static string? EmailQueue { get; set; }
+
+            public static object? TaskCancellationQueue { get; set; }
         }
 
         public static class ApiConfig
         {
-            public static string TaskManagerBaseUrl { get; set; }
+            public static string? TaskManagerBaseUrl { get; set; }
         }
 
         public static class MongoConfig
         {
-            public static string ConnectionString { get; set; }
+            public static string? ConnectionString { get; set; }
 
             public static int Port { get; set; }
 
-            public static string User { get; set; }
+            public static string? User { get; set; }
 
-            public static string Password { get; set; }
+            public static string? Password { get; set; }
 
-            public static string Database { get; set; }
+            public static string? Database { get; set; }
 
-            public static string TaskDispatchEventCollection { get; set; }
+            public static string? TaskDispatchEventCollection { get; set; }
+
+            public static string? ExecutionStatsCollection { get; set; }
         }
 
         public static class MinioConfig
         {
-            public static string Endpoint { get; set; }
+            public static string? Endpoint { get; set; }
 
-            public static string AccessKey { get; set; }
+            public static string? AccessKey { get; set; }
 
-            public static string AccessToken { get; set; }
+            public static string? AccessToken { get; set; }
 
-            public static string Bucket { get; set; }
+            public static string? Bucket { get; set; }
 
-            public static string Region { get; set; }
+            public static string? Region { get; set; }
         }
     }
 }

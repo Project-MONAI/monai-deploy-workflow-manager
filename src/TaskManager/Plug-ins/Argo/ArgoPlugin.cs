@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,15 +23,15 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.TaskManager.API;
-using Monai.Deploy.WorkflowManager.Configuration;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
-using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
 using Newtonsoft.Json;
 
+[assembly: PlugIn()]
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
     public sealed class ArgoPlugin : TaskPluginBase, IAsyncDisposable
@@ -45,7 +45,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         private readonly ILogger<ArgoPlugin> _logger;
         private readonly ITaskDispatchEventService _taskDispatchEventService;
         private int? _activeDeadlineSeconds;
-        private string _namespace;
+        private string _namespace = "argo";
         private string _baseUrl = null!;
         private bool _allowInsecure = true;
         private string? _apiToken;
@@ -70,13 +70,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _options = options ?? throw new ArgumentNullException(nameof(options));
 
-            ValidateEvent();
-            Initialize();
+            _baseUrl = _options.Value.TaskManager.ArgoPluginArguments.ServerUrl;
+
+            if (taskDispatchEvent.Inputs.Count != 0 ||
+                taskDispatchEvent.Outputs.Count != 0 ||
+                taskDispatchEvent.ExecutionId != "")
+            {
+                ValidateEvent();
+                Initialize();
+            }
         }
 
         private void Initialize()
         {
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["correlationId"] = Event.CorrelationId,
                 ["workflowInstanceId"] = Event.WorkflowInstanceId,
@@ -85,54 +92,54 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 ["payloadId"] = Event.PayloadId
             });
 
-            if (Event.TaskPluginArguments.ContainsKey(Keys.TimeoutSeconds) &&
-                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[Keys.TimeoutSeconds]) &&
-                int.TryParse(Event.TaskPluginArguments[Keys.TimeoutSeconds], out var result))
+            if (Event.TaskPluginArguments.ContainsKey(ArgoParameters.TimeoutSeconds) &&
+                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[ArgoParameters.TimeoutSeconds]) &&
+                int.TryParse(Event.TaskPluginArguments[ArgoParameters.TimeoutSeconds], out var result))
             {
                 _activeDeadlineSeconds = result;
             }
 
-            if (Event.TaskPluginArguments.ContainsKey(Keys.ArgoApiToken) &&
-                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[Keys.ArgoApiToken]))
+            if (Event.TaskPluginArguments.ContainsKey(ArgoParameters.ArgoApiToken) &&
+                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[ArgoParameters.ArgoApiToken]))
             {
-                _apiToken = Event.TaskPluginArguments[Keys.ArgoApiToken];
+                _apiToken = Event.TaskPluginArguments[ArgoParameters.ArgoApiToken];
             }
 
             bool updateEvent = false;
 
-            if (Event.TaskPluginArguments.ContainsKey(Keys.Namespace) &&
-                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[Keys.Namespace]))
+            if (Event.TaskPluginArguments.ContainsKey(ArgoParameters.Namespace) &&
+                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[ArgoParameters.Namespace]))
             {
-                _namespace = Event.TaskPluginArguments[Keys.Namespace];
+                _namespace = Event.TaskPluginArguments[ArgoParameters.Namespace];
             }
             else
             {
                 _namespace = Strings.DefaultNamespace;
-                Event.TaskPluginArguments.Add(Keys.Namespace, _namespace);
+                Event.TaskPluginArguments.Add(ArgoParameters.Namespace, _namespace);
                 updateEvent = true;
             }
 
-            if (Event.TaskPluginArguments.ContainsKey(Keys.AllowInsecureseUrl) &&
-                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[Keys.AllowInsecureseUrl]))
+            if (Event.TaskPluginArguments.ContainsKey(ArgoParameters.AllowInsecureseUrl) &&
+                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[ArgoParameters.AllowInsecureseUrl]))
             {
-                _allowInsecure = string.Compare("true", Event.TaskPluginArguments[Keys.AllowInsecureseUrl], true) == 0;
+                _allowInsecure = string.Compare("true", Event.TaskPluginArguments[ArgoParameters.AllowInsecureseUrl], true) == 0;
             }
             else
             {
                 _allowInsecure = true;
-                Event.TaskPluginArguments.Add(Keys.AllowInsecureseUrl, "true");
+                Event.TaskPluginArguments.Add(ArgoParameters.AllowInsecureseUrl, "true");
                 updateEvent = true;
             }
 
-            if (Event.TaskPluginArguments.ContainsKey(Keys.BaseUrl) &&
-                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[Keys.BaseUrl]))
+            if (Event.TaskPluginArguments.ContainsKey(ArgoParameters.BaseUrl) &&
+                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[ArgoParameters.BaseUrl]))
             {
-                _baseUrl = Event.TaskPluginArguments[Keys.BaseUrl];
+                _baseUrl = Event.TaskPluginArguments[ArgoParameters.BaseUrl];
             }
             else
             {
                 _baseUrl = _options.Value.TaskManager.ArgoPluginArguments.ServerUrl;
-                Event.TaskPluginArguments.Add(Keys.BaseUrl, _baseUrl);
+                Event.TaskPluginArguments.Add(ArgoParameters.BaseUrl, _baseUrl);
                 updateEvent = true;
             }
 
@@ -153,10 +160,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             if (Event.TaskPluginArguments is null || Event.TaskPluginArguments.Count == 0)
             {
-                throw new InvalidTaskException($"Required parameters to execute Argo workflow are missing: {string.Join(',', Keys.RequiredParameters)}");
+                throw new InvalidTaskException($"Required parameters to execute Argo workflow are missing: {string.Join(',', ArgoParameters.RequiredParameters)}");
             }
 
-            foreach (var key in Keys.RequiredParameters)
+            foreach (var key in ArgoParameters.RequiredParameters)
             {
                 if (!Event.TaskPluginArguments.ContainsKey(key) &&
                     string.IsNullOrWhiteSpace(Event.TaskPluginArguments[key]))
@@ -165,7 +172,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 }
             }
 
-            foreach (var key in Keys.RequiredSettings)
+            foreach (var key in ArgoParameters.RequiredSettings)
             {
                 if (!_options.Value.Messaging.PublisherSettings.ContainsKey(key))
                 {
@@ -173,16 +180,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 }
             }
 
-            if (Event.TaskPluginArguments.ContainsKey(Keys.BaseUrl) &&
-                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[Keys.BaseUrl]) && !Uri.IsWellFormedUriString(Event.TaskPluginArguments[Keys.BaseUrl], UriKind.Absolute))
+            if (Event.TaskPluginArguments.ContainsKey(ArgoParameters.BaseUrl) &&
+                !string.IsNullOrWhiteSpace(Event.TaskPluginArguments[ArgoParameters.BaseUrl]) && !Uri.IsWellFormedUriString(Event.TaskPluginArguments[ArgoParameters.BaseUrl], UriKind.Absolute))
             {
-                throw new InvalidTaskException($"The value '{Event.TaskPluginArguments[Keys.BaseUrl]}' provided for '{Keys.BaseUrl}' is not a valid URI.");
+                throw new InvalidTaskException($"The value '{Event.TaskPluginArguments[ArgoParameters.BaseUrl]}' provided for '{ArgoParameters.BaseUrl}' is not a valid URI.");
             }
         }
 
         public override async Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken = default)
         {
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["correlationId"] = Event.CorrelationId,
                 ["workflowInstanceId"] = Event.WorkflowInstanceId,
@@ -233,7 +240,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
                 // it take sometime for the Argo job to be in the final state after emitting the callback event.
                 var retryCount = 30;
-                while (workflow.Status.Phase.Equals(Strings.ArgoPhaseRunning, StringComparison.OrdinalIgnoreCase) && retryCount-- > 0)
+                while (workflow!.Status.Phase.Equals(Strings.ArgoPhaseRunning, StringComparison.OrdinalIgnoreCase) && retryCount-- > 0)
                 {
                     await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
                     workflow = await client.Argo_GetWorkflowAsync(_namespace, identity, null, null, cancellationToken).ConfigureAwait(false);
@@ -296,7 +303,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private Dictionary<string, string> GetExecutuionStats(Workflow workflow)
         {
-            Guard.Against.Null(workflow);
+            Guard.Against.Null(workflow, nameof(workflow));
 
             TimeSpan? duration = null;
             if (workflow.Status?.StartedAt is not null && workflow.Status?.FinishedAt is not null)
@@ -326,10 +333,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             if (workflow.Status.Nodes is not null)
             {
+                var podcount = 0;
+                var preprend = "";
                 foreach (var item in workflow.Status.Nodes)
                 {
                     var json = JsonConvert.SerializeObject(item.Value, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     stats.Add($"nodes.{item.Key}", json);
+
+                    if (item.Value is not null && item.Value.Type == "Pod")
+                    {
+                        if (item.Value.Name.EndsWith(Strings.ExitHookTemplateSendTemplateName))
+                        {
+                            preprend = Strings.ExitHookTemplateSendTemplateName;
+                        }
+#pragma warning disable CS8604 // Possible null reference argument.
+                        stats.Add($"{preprend}podStartTime{podcount}", item.Value.StartedAt?.UtcDateTime.ToString("u") ?? string.Empty);
+                        stats.Add($"{preprend}podFinishTime{podcount++}", item.Value.FinishedAt?.UtcDateTime.ToString("u") ?? string.Empty);
+#pragma warning restore CS8604 // Possible null reference argument.
+                    }
                 }
             }
 
@@ -341,17 +362,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             try
             {
 #pragma warning disable CA2254 // Template should be a static expression
-                var logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "init");
+                var logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "init") ?? "";
                 _logger.ArgoLog(logs);
-                logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "wait");
+                logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "wait") ?? "";
                 _logger.ArgoLog(logs);
-                logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "main");
+                logs = await client.Argo_Get_WorkflowLogsAsync(_namespace, identity, null, "main") ?? "";
                 _logger.ArgoLog(logs);
 #pragma warning restore CA2254 // Template should be a static expression
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                int we = 0;
+                // swallow execption on purpose.
             }
         }
 
@@ -364,7 +385,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 Kind = Strings.KindWorkflow,
                 Metadata = new ObjectMeta()
                 {
-                    GenerateName = $"md-{Event.TaskPluginArguments![Keys.WorkflowTemplateName]}-",
+                    GenerateName = $"md-{Event.TaskPluginArguments![ArgoParameters.WorkflowTemplateName]}-",
                     Labels = new Dictionary<string, string>
                     {
                         { Strings.TaskIdLabelSelectorName, Event.TaskId! },
@@ -395,7 +416,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             _logger.ArgoWorkflowTemplateGenerated(workflow.Metadata.GenerateName);
             var workflowJson = JsonConvert.SerializeObject(workflow, Formatting.Indented);
-            workflowJson = workflowJson.Replace(_options.Value.Messaging.PublisherSettings[Keys.MessagingPassword], "*****");
+            workflowJson = workflowJson.Replace(_options.Value.Messaging.PublisherSettings[ArgoParameters.MessagingPassword], "*****");
 
             _logger.ArgoWorkflowTemplateJson(workflow.Metadata.GenerateName, workflowJson);
 
@@ -410,50 +431,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         /// <param name="cancellationToken"></param>
         private void ProcessTaskPluginArguments(Workflow workflow)
         {
-            Guard.Against.Null(workflow);
-
-            var resources = Event.GetTaskPluginArgumentsParameter<Dictionary<string, string>>(Keys.ArgoResource);
-            var priorityClassName = Event.GetTaskPluginArgumentsParameter(Keys.TaskPriorityClassName);
-            var argoParameters = Event.GetTaskPluginArgumentsParameter<Dictionary<string, string>>(Keys.ArgoParameters);
-
-            if (argoParameters is not null)
-            {
-                foreach (var item in argoParameters)
-                {
-                    if (workflow.Spec.Arguments is null)
-                    {
-                        workflow.Spec.Arguments = new Arguments();
-                    }
-
-                    if (workflow.Spec.Arguments.Parameters is null)
-                    {
-                        workflow.Spec.Arguments.Parameters = new List<Parameter>();
-                    }
-
-                    workflow.Spec.Arguments.Parameters.Add(new Parameter() { Name = item.Key, Value = item.Value });
-                }
-            }
+            Guard.Against.Null(workflow, nameof(workflow));
+            var priorityClassName = Event.GetTaskPluginArgumentsParameter(ArgoParameters.TaskPriorityClassName) ?? _options.Value.TaskManager.ArgoPluginArguments.TaskPriorityClass;
 
             foreach (var template in workflow.Spec.Templates)
             {
-                AddLimit(resources, template, ResourcesKeys.CpuLimit);
-                AddLimit(resources, template, ResourcesKeys.MemoryLimit);
-                AddRequest(resources, template, ResourcesKeys.CpuReservation);
-                AddRequest(resources, template, ResourcesKeys.MemoryReservation);
-                AddRequest(resources, template, ResourcesKeys.GpuLimit);
-
-                if (priorityClassName is not null)
-                {
-                    template.PriorityClassName = priorityClassName;
-                }
+                AddLimit(template, ArgoParameters.ResourcesKeys.CpuLimit);
+                AddLimit(template, ArgoParameters.ResourcesKeys.MemoryLimit);
+                AddLimit(template, ArgoParameters.ResourcesKeys.GpuLimit);
+                template.PriorityClassName = priorityClassName;
             }
+            workflow.Spec.PodPriorityClassName = priorityClassName;
         }
 
-        private static void AddLimit(Dictionary<string, string>? resources, Template2 template, ResourcesKey key)
+        private void AddLimit(Template2 template, ArgoParameters.ResourcesKey key)
         {
-            Guard.Against.Null(template);
-            Guard.Against.Null(key);
-            if (template.Container is null || resources is null || !resources.TryGetValue(key.TaskKey, out var value))
+            Guard.Against.Null(template, nameof(template));
+            Guard.Against.Null(key, nameof(key));
+            if (template.Container is null || !Event.TaskPluginArguments.TryGetValue(key.TaskKey, out var value) || string.IsNullOrWhiteSpace(value))
             {
                 return;
             }
@@ -466,39 +461,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 template.Container.Resources.Limits = new Dictionary<string, string>();
             }
 
-            template.Container.Resources.Limits.Add(key.ArgoKey, value);
-        }
-
-        private static void AddRequest(Dictionary<string, string>? resources, Template2 template, ResourcesKey key)
-        {
-            Guard.Against.Null(template);
-            Guard.Against.Null(key);
-            if (template.Container is null || resources is null || !resources.TryGetValue(key.TaskKey, out var value) || string.IsNullOrWhiteSpace(value))
+            // Convert true / false value to 0 or 1 for number of GPU
+            if (key.TaskKey == ArgoParameters.ResourcesKeys.GpuLimit.TaskKey)
             {
-                return;
+                value = bool.TryParse(value, out bool gpuRequired) && gpuRequired ? "1" : "0";
             }
 
-            if (template.Container.Resources is null)
-            {
-                template.Container.Resources = new ResourceRequirements();
-            }
-            if (template.Container.Resources.Requests is null)
-            {
-                template.Container.Resources.Requests = new Dictionary<string, string>();
-            }
-
-            template.Container.Resources.Requests.Add(key.ArgoKey, value);
+            template.Container.Resources.Limits[key.ArgoKey] = value;
         }
 
         private async Task AddMainWorkflowTemplate(Workflow workflow, CancellationToken cancellationToken)
         {
             Guard.Against.Null(workflow, nameof(workflow));
 
-            var workflowTemplate = await LoadWorkflowTemplate(Event.TaskPluginArguments![Keys.WorkflowTemplateName]).ConfigureAwait(false);
+            var workflowTemplate = await LoadWorkflowTemplate(Event.TaskPluginArguments![ArgoParameters.WorkflowTemplateName]).ConfigureAwait(false);
 
             if (workflowTemplate is null)
             {
-                throw new TemplateNotFoundException(Event.TaskPluginArguments![Keys.WorkflowTemplateName]);
+                throw new TemplateNotFoundException(Event.TaskPluginArguments![ArgoParameters.WorkflowTemplateName]);
             }
             var mainTemplateSteps = new Template2()
             {
@@ -538,15 +518,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     {
                         new WorkflowStep()
                         {
-                            Name = Strings.ExitHookTemplateGenerateTemplateName,
-                            Template = Strings.ExitHookTemplateGenerateTemplateName,
-                        }
-                    },
-
-                    new ParallelSteps()
-                    {
-                        new WorkflowStep()
-                        {
                             Name = Strings.ExitHookTemplateSendTemplateName,
                             Template = Strings.ExitHookTemplateSendTemplateName,
                         }
@@ -559,11 +530,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             var artifact = await CreateArtifact(temporaryStore, cancellationToken).ConfigureAwait(false);
 
             var exitHookTemplate = new ExitHookTemplate(_options.Value, Event);
-            workflow.Spec.Templates.Add(exitHookTemplate.GenerateMessageTemplate(artifact));
-            workflow.Spec.Templates.Add(exitHookTemplate.GenerateSendTemplate(artifact));
+            workflow.Spec.Templates.Add(exitHookTemplate.GenerateCallbackMessageTemplate(artifact));
         }
 
-        private async Task<WorkflowTemplate> LoadWorkflowTemplate(string workflowTemplateName)
+        private async Task<WorkflowTemplate?> LoadWorkflowTemplate(string workflowTemplateName)
         {
             Guard.Against.NullOrWhiteSpace(workflowTemplateName, nameof(workflowTemplateName));
 
@@ -618,16 +588,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         {
             if (workflow.Spec.TtlStrategy is null)
             {
-                workflow.Spec.TtlStrategy = new TTLStrategy { SecondsAfterCompletion = _options.Value.ArgoTtlStatergySeconds };
+                workflow.Spec.TtlStrategy = new TTLStrategy
+                {
+                    SecondsAfterSuccess = _options.Value.ArgoTtlStrategySuccessSeconds,
+                    SecondsAfterFailure = _options.Value.ArgoTtlStrategyFailureSeconds
+                };
             }
             else
             {
                 if (workflow.Spec.TtlStrategy.SecondsAfterCompletion.HasValue)
-                    workflow.Spec.TtlStrategy.SecondsAfterCompletion = Math.Max(_options.Value.MinArgoTtlStatergySeconds, workflow.Spec.TtlStrategy.SecondsAfterCompletion.Value);
+                    workflow.Spec.TtlStrategy.SecondsAfterCompletion = Math.Max(_options.Value.MinArgoTtlStrategySeconds, workflow.Spec.TtlStrategy.SecondsAfterCompletion.Value);
                 if (workflow.Spec.TtlStrategy.SecondsAfterSuccess.HasValue)
-                    workflow.Spec.TtlStrategy.SecondsAfterSuccess = Math.Max(_options.Value.MinArgoTtlStatergySeconds, workflow.Spec.TtlStrategy.SecondsAfterSuccess.Value);
+                    workflow.Spec.TtlStrategy.SecondsAfterSuccess = Math.Max(_options.Value.MinArgoTtlStrategySeconds, workflow.Spec.TtlStrategy.SecondsAfterSuccess.Value);
                 if (workflow.Spec.TtlStrategy.SecondsAfterFailure.HasValue)
-                    workflow.Spec.TtlStrategy.SecondsAfterFailure = Math.Max(_options.Value.MinArgoTtlStatergySeconds, workflow.Spec.TtlStrategy.SecondsAfterFailure.Value);
+                    workflow.Spec.TtlStrategy.SecondsAfterFailure = Math.Max(_options.Value.MinArgoTtlStrategySeconds, workflow.Spec.TtlStrategy.SecondsAfterFailure.Value);
             }
             RemovePodGCStratergy(workflow);
         }
@@ -844,6 +818,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             }
         }
 
+        // ReSharper disable once InconsistentNaming
         private async Task<string> GenerateK8sSecretFrom(Messaging.Common.Storage storage, CancellationToken cancellationToken)
         {
             Guard.Against.Null(storage, nameof(storage));
@@ -939,6 +914,46 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 Name = identity,
                 Namespace = _namespace
             });
+        }
+
+        public async Task<WorkflowTemplate> CreateArgoTemplate(string template)
+        {
+            try
+            {
+                WorkflowTemplateCreateRequest? templateCreateRequest = null;
+                var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
+                try
+                {
+                    templateCreateRequest = JsonConvert.DeserializeObject<WorkflowTemplateCreateRequest>(template);
+                }
+                catch (JsonReaderException ex)
+                {
+                    _logger.ErrorDeserializingWorkflowTemplateCreateRequest(ex.Message, ex);
+                    var mess = ex.Message;
+                    throw new InvalidOperationException(mess);
+                }
+
+                return await client.Argo_CreateWorkflowTemplateAsync(_namespace, templateCreateRequest!, new CancellationToken()).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorCreatingWorkflowTemplate(ex);
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteArgoTemplate(string templateName)
+        {
+            try
+            {
+                var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
+                return await client.Argo_DeleteWorkflowTemplateAsync(_namespace, templateName, new CancellationToken()).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorDeletingWorkflowTemplate(ex);
+                throw;
+            }
         }
     }
 }

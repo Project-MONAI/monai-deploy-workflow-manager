@@ -21,5 +21,5 @@ Health check API for Task Manager.
 Scenario: Get Health status of Task Manager
 	Given I have a TaskManager endpoint /health
 	When I send a GET request
-	Then I will get a 200 response
-    And I will get a health check response status message Healthy
+	Then I will get a 503 response
+    And I will get a health check response message

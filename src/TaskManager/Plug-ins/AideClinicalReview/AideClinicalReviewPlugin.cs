@@ -21,8 +21,8 @@ using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Shared;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Logging;
 using Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Models;
@@ -38,20 +38,21 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IMessageBrokerPublisherService _messageBrokerPublisherService;
 
-        private string _patientId;
-        private string _patientName;
-        private string _patientSex;
-        private string _patientDob;
-        private string _patientAge;
-        private string _patientHospitalId;
-        private string _queueName;
-        private string _workflowName;
-        private string _reviewedTaskId;
-        private string _applicationName;
-        private string _mode;
-        private string _applicationVersion;
-        private string _reviewedExecutionId;
-        private string[] _reviewerRoles;
+        private string? _patientId;
+        private string? _patientName;
+        private string? _patientSex;
+        private string? _patientDob;
+        private string? _patientAge;
+        private string? _patientHospitalId;
+        private string? _queueName = null;
+        private string? _workflowName;
+        private bool _notifications;
+        private string? _reviewedTaskId;
+        private string? _applicationName;
+        private string? _mode;
+        private string? _applicationVersion;
+        private string? _reviewedExecutionId;
+        private string[] _reviewerRoles = Array.Empty<string>();
 
         public AideClinicalReviewPlugin(
             IServiceScopeFactory serviceScopeFactory,
@@ -85,6 +86,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             if (Event.TaskPluginArguments.ContainsKey(Keys.WorkflowName))
             {
                 _workflowName = Event.TaskPluginArguments[Keys.WorkflowName];
+            }
+
+            if (Event.TaskPluginArguments.ContainsKey(Keys.Notifications) && Boolean.TryParse(Event.TaskPluginArguments[Keys.Notifications], out var result))
+            {
+                _notifications = result;
+            }
+            else
+            {
+                _notifications = true;
             }
 
             if (Event.TaskPluginArguments.ContainsKey(Keys.ReviewedExecutionId))
@@ -179,7 +189,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 
         public override async Task<ExecutionStatus> ExecuteTask(CancellationToken cancellationToken = default)
         {
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["correlationId"] = Event.CorrelationId,
                 ["workflowInstanceId"] = Event.WorkflowInstanceId,
@@ -196,7 +206,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             }
             catch (Exception ex)
             {
-                _logger.ErrorSendingMessage(_queueName, ex);
+                _logger.ErrorSendingMessage(_queueName ?? "no queue name", ex);
 
                 return new ExecutionStatus { Status = TaskExecutionStatus.Failed, FailureReason = FailureReason.PluginError, Errors = ex.Message };
             }
@@ -210,9 +220,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
                 ExecutionId = Event.ExecutionId,
                 WorkflowInstanceId = Event.WorkflowInstanceId,
                 TaskId = Event.TaskId,
-                ReviewedTaskId = _reviewedTaskId,
-                ReviewedExecutionId = _reviewedExecutionId,
-                WorkflowName = _workflowName,
+                ReviewedTaskId = _reviewedTaskId ?? string.Empty,
+                ReviewedExecutionId = _reviewedExecutionId ?? string.Empty,
+                WorkflowName = _workflowName ?? string.Empty,
+                Notifications = _notifications,
                 Files = Event.Inputs,
                 ReviewerRoles = _reviewerRoles,
                 PatientMetadata = new PatientMetadata
@@ -226,9 +237,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
                 },
                 ApplicationMetadata = new Dictionary<string, string>
                 {
-                    { Keys.ApplicationName, _applicationName },
-                    { Keys.ApplicationVersion, _applicationVersion },
-                    { Keys.Mode, _mode },
+                    { Keys.ApplicationName, _applicationName ?? string.Empty },
+                    { Keys.ApplicationVersion, _applicationVersion ?? string.Empty},
+                    { Keys.Mode, _mode ?? string.Empty },
                 }
             }, TaskManagerApplicationId, Event.CorrelationId);
         }
@@ -238,7 +249,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             Guard.Against.Null(message, nameof(message));
 
             var queue = _queueName ?? _options.Value.Messaging.Topics.AideClinicalReviewRequest;
-            _logger.SendClinicalReviewRequestMessage(queue, _workflowName);
+            _logger.SendClinicalReviewRequestMessage(queue, _workflowName ?? string.Empty);
             await _messageBrokerPublisherService.Publish(queue, message.ToMessage()).ConfigureAwait(false);
             _logger.SendClinicalReviewRequestMessageSent(queue);
         }
@@ -279,7 +290,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
                 executionStatus == TaskExecutionStatus.Succeeded ? "Accepted" : "Rejected",
                 DateTime.UtcNow.ToLongDateString(),
                 userId,
-                _applicationName,
+                _applicationName ?? string.Empty,
                 reason,
                 message);
 

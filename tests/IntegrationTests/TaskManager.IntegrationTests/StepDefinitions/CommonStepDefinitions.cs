@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using System.Reflection;
+using Monai.Deploy.WorkflowManager.Common.TaskManager.IntegrationTests.Support;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
@@ -41,12 +43,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
             _outputHelper = outputHelper;
         }
 
-        [Given(@"I have a bucket in MinIO (.*)")]
-        public async Task GivenIHaveABucketInMinIO(string name)
+        [Given(@"I have an input DICOM file saved in MinIO for TaskDispatch (.*)")]
+        public async Task GivenIHaveAnInputDICOMFileSavedInMinIO(string name)
         {
-            _outputHelper.WriteLine($"Creating bucket {name}");
-            await MinioClient.CreateBucket(name);
-            _outputHelper.WriteLine($"{name} bucket created");
+            var taskDispatch = DataHelper.GetTaskDispatchTestData(name);
+            var localPath = Path.Combine(GetDirectory() ?? string.Empty, "DICOMs", "dcm");
+            await MinioClient.AddFileToStorage(localPath, taskDispatch.Inputs.First().RelativeRootPath);
         }
 
         [Then(@"A Task Callback event is published (.*)")]
@@ -114,6 +116,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
 
             TaskDispatchPublisher.PublishMessage(message.ToMessage());
             _outputHelper.WriteLine($"Successfully published TaskDispatchEvent with name={name}");
+        }
+
+        private string? GetDirectory()
+        {
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
     }
 }

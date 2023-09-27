@@ -15,16 +15,23 @@
  */
 
 using System;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Migrations;
+using Mongo.Migration.Documents;
+using Mongo.Migration.Documents.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Models
+namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
-    public class WorkflowRevision : ISoftDeleteable
+    [CollectionLocation("Workflows"), RuntimeVersion("1.0.0")]
+    public class WorkflowRevision : ISoftDeleteable, IDocument
     {
         [BsonId]
         [JsonProperty(PropertyName = "id")]
         public string? Id { get; set; }
+
+        [JsonConverter(typeof(DocumentVersionConvert)), BsonSerializer(typeof(DocumentVersionConverBson))]
+        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 0);
 
         [JsonProperty(PropertyName = "workflow_id")]
         public string WorkflowId { get; set; } = string.Empty;
@@ -40,5 +47,6 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Models
 
         [JsonIgnore]
         public bool IsDeleted { get => Deleted is not null; }
+
     }
 }

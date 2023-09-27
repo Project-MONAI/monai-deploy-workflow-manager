@@ -18,15 +18,15 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.ConditionsResolver.Constants;
-using Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions;
-using Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.Storage.Services;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Constants;
+using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Extensions;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.Storage.Services;
+using Monai.Deploy.WorkflowManager.ConditionsResolver.Resovler;
 
-namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
+namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser
 {
     public enum ParameterContext
     {
@@ -51,7 +51,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
         private readonly IPayloadService _payloadService;
         private readonly IWorkflowService _workflowService;
 
-        private readonly Regex _squigglyBracketsRegex = new Regex(@"\{{(.*?)\}}");
+        private readonly Regex _squigglyBracketsRegex = new(@"\{{(.*?)\}}", RegexOptions.None, matchTimeout: TimeSpan.FromSeconds(2));
 
         private WorkflowInstance? _workflowInstance = null;
         private string? _workflowInstanceId = null;
@@ -97,8 +97,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 
         public bool TryParse(string[] conditions, WorkflowInstance workflowInstance, out string resolvedConditional)
         {
-            Guard.Against.NullOrEmpty(conditions);
-            Guard.Against.Null(workflowInstance);
+            Guard.Against.NullOrEmpty(conditions, nameof(conditions));
+            Guard.Against.Null(workflowInstance, nameof(workflowInstance));
 
             var joinedConditions = conditions.CombineConditionString();
             return TryParse(joinedConditions, workflowInstance, out resolvedConditional);
@@ -106,8 +106,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 
         public bool TryParse(string conditions, WorkflowInstance workflowInstance, out string resolvedConditional)
         {
-            Guard.Against.NullOrEmpty(conditions);
-            Guard.Against.Null(workflowInstance);
+            Guard.Against.NullOrEmpty(conditions, nameof(conditions));
+            Guard.Against.Null(workflowInstance, nameof(workflowInstance));
             resolvedConditional = string.Empty;
 
             try
@@ -127,8 +127,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 
         public string ResolveParameters(string conditions, WorkflowInstance workflowInstance)
         {
-            Guard.Against.NullOrEmpty(conditions);
-            Guard.Against.Null(workflowInstance);
+            Guard.Against.NullOrEmpty(conditions, nameof(conditions));
+            Guard.Against.Null(workflowInstance, nameof(workflowInstance));
 
             WorkflowInstance = workflowInstance;
             return ResolveParameters(conditions, workflowInstance.Id);
@@ -222,7 +222,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
         /// </returns>
         private (string? Result, ParameterContext Context) ResolveMatch(string value)
         {
-            Guard.Against.NullOrWhiteSpace(value);
+            Guard.Against.NullOrWhiteSpace(value, nameof(value));
 
             value = value.Substring(2, value.Length - 4).Trim();
 
@@ -252,8 +252,8 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Parser
 
         private (string? Result, ParameterContext Context) ResolveDicom(string value)
         {
-            Guard.Against.NullOrWhiteSpace(value);
-            Guard.Against.Null(WorkflowInstance);
+            Guard.Against.NullOrWhiteSpace(value, nameof(value));
+            Guard.Against.Null(WorkflowInstance, nameof(WorkflowInstance));
 
             var subValue = value.Trim().Substring(ContextDicomSeries.Length, value.Length - ContextDicomSeries.Length);
             var valueArr = subValue.Split('\'');

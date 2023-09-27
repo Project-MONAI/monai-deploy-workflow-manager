@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,16 +26,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Controllers;
-using Monai.Deploy.WorkflowManager.Services;
-using Monai.Deploy.WorkflowManager.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.ControllersShared;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
 using Moq;
 using Xunit;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
 
-namespace Monai.Deploy.WorkflowManager.Test.Controllers
+namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
 {
     public class WorkflowsInstanceControllerTests
     {
@@ -45,7 +46,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         private readonly Mock<ILogger<WorkflowInstanceController>> _logger;
         private readonly Mock<IUriService> _uriService;
         private readonly IOptions<WorkflowManagerOptions> _options;
-
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
         public WorkflowsInstanceControllerTests()
         {
             _options = Options.Create(new WorkflowManagerOptions());
@@ -82,13 +85,13 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<Status?>(), It.IsAny<string>())).ReturnsAsync(() => workflowsInstances);
             _workflowInstanceService.Setup(w => w.FilteredCountAsync(It.IsAny<Status?>(), It.IsAny<string>())).ReturnsAsync(workflowsInstances.Count);
-            _uriService.Setup(s => s.GetPageUriString(It.IsAny<Filter.PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
+            _uriService.Setup(s => s.GetPageUriString(It.IsAny<PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
-            var result = await WorkflowInstanceController.GetListAsync(new Filter.PaginationFilter());
+            var result = await WorkflowInstanceController.GetListAsync(new PaginationFilter());
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
 
-            var responseValue = (PagedResponse<List<WorkflowInstance>>)objectResult.Value;
+            var responseValue = (PagedResponse<IEnumerable<WorkflowInstance>>)objectResult.Value;
             responseValue.Data.Should().BeEquivalentTo(workflowsInstances);
             responseValue.FirstPage.Should().Be("unitTest");
             responseValue.LastPage.Should().Be("unitTest");
@@ -127,7 +130,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<Status?>(), It.IsAny<string>())).ReturnsAsync(() => workflowsInstances);
 
-            var result = await WorkflowInstanceController.GetListAsync(new Filter.PaginationFilter(), null, null, true);
+            var result = await WorkflowInstanceController.GetListAsync(new PaginationFilter(), null, null, true);
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
 
@@ -139,7 +142,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         public async Task GetListAsync_InvalidPayloadId_Returns400()
         {
             var expectedErrorMessage = "Failed to validate payloadId, not a valid guid";
-            var result = await WorkflowInstanceController.GetListAsync(new Filter.PaginationFilter(), null, "invalid", true);
+            var result = await WorkflowInstanceController.GetListAsync(new PaginationFilter(), null, "invalid", true);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
 
@@ -156,7 +159,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<Status>(), It.IsAny<string>())).ThrowsAsync(new Exception());
             _workflowInstanceService.Setup(w => w.CountAsync()).ReturnsAsync(0);
 
-            var result = await WorkflowInstanceController.GetListAsync(new Filter.PaginationFilter());
+            var result = await WorkflowInstanceController.GetListAsync(new PaginationFilter());
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
@@ -397,12 +400,14 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         public async Task TaskGetFailedAsync_GivenGetAllFailedAsyncReturnsThrowsException_ReturnsInternalServiceError()
         {
             _workflowInstanceService.Setup(w => w.GetAllFailedAsync()).ThrowsAsync(new Exception());
-;
+
             var result = await WorkflowInstanceController.GetFailedAsync();
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             objectResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+
             var responseValue = (ProblemDetails)objectResult.Value;
+
             responseValue.Status.Should().Be((int)HttpStatusCode.InternalServerError);
 
             var problemMessage = "Unexpected error occurred.";
@@ -418,8 +423,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
                 It.Is<EventId>(eventId => eventId.Id == 100006),
                 It.Is<It.IsAnyType>((@object, @type) => @object.ToString() == expectedErrorMessage),
                 It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
     }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 }

@@ -16,10 +16,10 @@
 
 using System;
 using System.Text.RegularExpressions;
-using Monai.Deploy.WorkflowManager.ConditionsResolver.Extensions;
+using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Extensions;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
+namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Tests.Resolver
 {
     public class RegexExtensionsTests
     {
@@ -30,7 +30,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         [InlineData(new string[] { "test ", "( test( test" }, "test ( test( test")]
         public void Regex_WhenSplitOnce_ShouldOnlyHaveArrayOfTwo(string[] expected, string stringToSplit)
         {
-            var regexFindBrackets = new Regex(@"((?<!\[)\()");
+            var regexFindBrackets = new Regex(@"((?<!\[)\()", RegexOptions.None, matchTimeout: TimeSpan.FromSeconds(2));
             var result = regexFindBrackets.SplitOnce(stringToSplit);
             Assert.Equal(expected, result);
             Assert.Equal(2, result.Length);
@@ -40,7 +40,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Tests.Resolver
         public void Regex_WhenSplitOnceProvidedNullInput_ShouldThrowException()
         {
             var expectedErrorMessage = "Value cannot be null. (Parameter 'input')";
-            var regexFindBrackets = new Regex(@"((?<!\[)\()");
+            var regexFindBrackets = new Regex(@"((?<!\[)\()", RegexOptions.None, matchTimeout: TimeSpan.FromSeconds(2));
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             var exception = Assert.Throws<ArgumentNullException>(() => regexFindBrackets.SplitOnce(null));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.

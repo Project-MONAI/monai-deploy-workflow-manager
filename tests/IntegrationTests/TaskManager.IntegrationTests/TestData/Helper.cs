@@ -20,14 +20,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
     {
         public static TaskDispatchTestData GetTaskDispatchByName(string name)
         {
-            var taskDispatchTestData = TaskDispatchesTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));
+            var taskDispatchTestData = TaskDispatchesTestData.TestData.FirstOrDefault(c => c.Name!.Contains(name));
 
             if (taskDispatchTestData != null)
             {
                 return taskDispatchTestData;
             }
 
-            throw new Exception($"workflow {name} does not exist. Please check and try again!");
+            throw new Exception($"Task Dispatch {name} does not exist. Please check and try again!");
         }
     }
 }

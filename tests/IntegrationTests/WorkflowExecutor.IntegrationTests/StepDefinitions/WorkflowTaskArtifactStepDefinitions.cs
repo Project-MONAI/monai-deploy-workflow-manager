@@ -15,10 +15,10 @@
  */
 
 using BoDi;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class WorkflowTaskArtifactStepDefinitions
@@ -29,7 +29,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
         public WorkflowTaskArtifactStepDefinitions(ObjectContainer objectContainer, ScenarioContext scenarioContext, ISpecFlowOutputHelper outputHelper)
         {
-            Assertions = new Assertions(objectContainer);
+            Assertions = new Assertions(objectContainer, outputHelper);
             DataHelper = objectContainer.Resolve<DataHelper>();
             _outputHelper = outputHelper;
         }
@@ -37,24 +37,24 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"Input artifacts are mapped")]
         public void ThenInputArtifactsAreMapped()
         {
-            string PayloadId;
+            string payloadId;
 
             if (DataHelper.SeededWorkflowInstances == null)
             {
-                PayloadId = DataHelper.WorkflowRequestMessage.PayloadId.ToString();
+                payloadId = DataHelper.WorkflowRequestMessage.PayloadId.ToString();
             }
             else
             {
-                PayloadId = DataHelper.WorkflowInstances[0].PayloadId;
+                payloadId = DataHelper.WorkflowInstances[0].PayloadId;
             }
 
-            _outputHelper.WriteLine($"Retrieving updated workflow instance using the payloadid={PayloadId}");
+            _outputHelper.WriteLine($"Retrieving updated workflow instance using the payloadid={payloadId}");
 
-            var workflowInstances = DataHelper.GetWorkflowInstances(1, PayloadId);
+            var workflowInstances = DataHelper.GetWorkflowInstances(1, payloadId);
 
             if (workflowInstances == null)
             {
-                throw new Exception($"WorkflowInstance not found for payloadId {PayloadId}");
+                throw new Exception($"WorkflowInstance not found for payloadId {payloadId}");
             }
 
             _outputHelper.WriteLine("Retrieved workflow instance");
@@ -71,9 +71,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
                     if (seededTask == null)
                     {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                         var workflowTask = workflowRevision.Workflow.Tasks.First(x => x.Id.Equals(task.TaskId));
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
-                        Assertions.AssertInputArtifactsForWorkflowInstance(workflowTask, PayloadId, task);
+                        Assertions.AssertInputArtifactsForWorkflowInstance(workflowTask, payloadId, task);
                     }
                 }
             }

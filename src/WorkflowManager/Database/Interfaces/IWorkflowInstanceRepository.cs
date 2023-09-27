@@ -17,9 +17,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.Database.Interfaces
+namespace Monai.Deploy.WorkflowManager.Common.Database.Interfaces
 {
     public interface IWorkflowInstanceRepository
     {
@@ -57,6 +57,12 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// </summary>
         /// <param name="workflowIds">A list of workflowIds to retrieve.</param>
         Task<IList<WorkflowInstance>> GetByWorkflowsIdsAsync(List<string> workflowIds);
+
+        /// <summary>
+        /// Gets a list of workflow instances for a given set of payloadIds.
+        /// </summary>
+        /// <param name="workflowIds">A list of workflowIds to retrieve.</param>
+        Task<IList<WorkflowInstance>> GetByPayloadIdsAsync(List<string> workflowIds);
 
         /// <summary>
         /// Gets All Workflow Instance.

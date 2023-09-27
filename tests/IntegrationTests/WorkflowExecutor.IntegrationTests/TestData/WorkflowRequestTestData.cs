@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Models;
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.TestData
 {
     public class WorkflowRequestTestData
     {
@@ -39,8 +39,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Basic_AE",
-                    CallingAeTitle = "Basic_AE_3",
+                    DataTrigger = new Messaging.Events.DataOrigin{ Source = "PACS", Destination = "MONAI" },
                 }
             },
             new WorkflowRequestTestData
@@ -53,8 +52,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_1").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "No_AE",
-                    CallingAeTitle = "MWM",
+                    DataTrigger= new Messaging.Events.DataOrigin{Destination = "No_AE" ,Source = "MWM" },
                 }
             },
             new WorkflowRequestTestData
@@ -67,8 +65,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_1").WorkflowRevision.WorkflowId, Helper.GetWorkflowByName("Basic_Workflow_2").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "No_AE",
-                    CallingAeTitle = "MWM",
+                    DataTrigger= new Messaging.Events.DataOrigin{Destination = "No_AE" ,Source = "MWM" },
                 }
             },
             new WorkflowRequestTestData
@@ -81,8 +78,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_1").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Basic_AE_3",
-                    CallingAeTitle = "Basic_AE",
+                    DataTrigger= new Messaging.Events.DataOrigin{Destination = "Basic_AE_3" ,Source = "Basic_AE" },
                 }
             },
             new WorkflowRequestTestData
@@ -95,8 +91,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Multi_Revision",
-                    CallingAeTitle = "MWM",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "MONAI_2" ,Source = "MWM" },
                 }
             },
             new WorkflowRequestTestData
@@ -109,8 +104,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Multi_Rev_Old",
-                    CallingAeTitle = "MWM",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "Multi_Rev_Old", Source = "MWM" },
                 }
             },
             new WorkflowRequestTestData
@@ -123,8 +117,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_Multiple_Revisions_2").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "No_AE",
-                    CallingAeTitle = "MWM",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "No_AE", Source = "MWM" },
                 }
             },
             new WorkflowRequestTestData
@@ -136,8 +129,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_3").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Basic_AE_3",
-                    CallingAeTitle = "MWM",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "Basic_AE_3" ,Source = "MWM" },
                 }
             },
             new WorkflowRequestTestData
@@ -149,8 +141,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_3").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Basic_AE_3",
-                    CallingAeTitle = "MWM",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "Basic_AE_3", Source = "MWM" },
                 }
             },
             new WorkflowRequestTestData
@@ -162,8 +153,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     PayloadId = Guid.NewGuid(),
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_3").WorkflowRevision.WorkflowId },
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Basic_AE_3",
-                    CallingAeTitle = "MWM",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "Basic_AE_3", Source = "MWM" },
                 }
             },
             new WorkflowRequestTestData
@@ -176,7 +166,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_3").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Basic_AE_3",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "Basic_AE_3" },
                 }
             },
             new WorkflowRequestTestData
@@ -189,7 +179,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { Helper.GetWorkflowByName("Basic_Workflow_3").WorkflowRevision.WorkflowId },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CallingAeTitle = "MWM",
+                    DataTrigger = new Messaging.Events.DataOrigin { Source = "MWM" }
                 }
             },
             new WorkflowRequestTestData
@@ -202,8 +192,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Multi_Created",
-                    CallingAeTitle = "MWM",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "Multi_Created", Source = "MWM" },
                 }
             },
             new WorkflowRequestTestData
@@ -216,8 +205,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "MWM",
-                    CallingAeTitle = "Multi_Dispatch",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "MWM" ,Source = "Multi_Dispatch" },
                 }
             },
             new WorkflowRequestTestData
@@ -230,8 +218,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "MWM",
-                    CallingAeTitle = "Complete_Dispatch",
+                        DataTrigger = new Messaging.Events.DataOrigin { Destination = "MWM", Source = "Complete_Dispatch" },
                 }
             },
             new WorkflowRequestTestData
@@ -244,8 +231,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Same_Ae",
-                    CallingAeTitle = "MWM",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "Same_Ae", Source = "MWM" },
                 }
             },
             new WorkflowRequestTestData
@@ -258,8 +244,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "MWM",
-                    CallingAeTitle = "Basic_AE",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "MONAI", Source = "PACS" },
                 }
             },
             new WorkflowRequestTestData
@@ -272,8 +257,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Basic_AE",
-                    CallingAeTitle = "MWM",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "MONAI", Source = "PACS" },
                 }
             },
              new WorkflowRequestTestData
@@ -286,8 +270,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Basic_AE",
-                    CallingAeTitle = "MWM",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "MONAI", Source = "PACS" },
                 }
             },
             new WorkflowRequestTestData
@@ -300,8 +283,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Non_Existant_AE",
-                    CallingAeTitle = "MWM",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "Non_Existant_AE", Source = "MWM" },
                 }
             },
             new WorkflowRequestTestData
@@ -314,8 +296,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Router_1",
-                    CallingAeTitle = "MWM",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "Router_1", Source = "MWM" },
                 }
             },
             new WorkflowRequestTestData
@@ -328,8 +309,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Artifact_AE",
-                    CallingAeTitle = "MWM",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "Artifact_AE", Source = "MWM" },
                 }
             },
             new WorkflowRequestTestData
@@ -342,8 +322,46 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     Workflows = new List<string>() { },
                     CorrelationId = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
-                    CalledAeTitle = "Non_Existent_Called_AE",
-                    CallingAeTitle = "Non_Existent_Calling_AE",
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "Non_Existent_Called_AE", Source = "Non_Existent_Calling_AE" },
+                }
+            },
+            new WorkflowRequestTestData
+            {
+                Name = "Called_AET_AIDE_Calling_AET_TEST",
+                WorkflowRequestMessage = new WorkflowRequestMessage
+                {
+                    Bucket = "bucket1",
+                    PayloadId = Guid.NewGuid(),
+                    Workflows = new List<string>() { },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "AIDE", Source = "TEST" },
+                }
+            },
+            new WorkflowRequestTestData
+            {
+                Name = "Called_AET_AIDE_Calling_AET_PACS1",
+                WorkflowRequestMessage = new WorkflowRequestMessage
+                {
+                    Bucket = "bucket1",
+                    PayloadId = Guid.NewGuid(),
+                    Workflows = new List<string>() { },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "AIDE", Source = "PACS1" },
+                }
+            },
+            new WorkflowRequestTestData
+            {
+                Name = "Called_AET_AIDE_Calling_AET_PACS2",
+                WorkflowRequestMessage = new WorkflowRequestMessage
+                {
+                    Bucket = "bucket1",
+                    PayloadId = Guid.NewGuid(),
+                    Workflows = new List<string>() { },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    DataTrigger = new Messaging.Events.DataOrigin { Destination = "AIDE", Source = "PACS2" },
                 }
             },
         };

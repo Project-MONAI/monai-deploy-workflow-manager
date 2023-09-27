@@ -22,61 +22,39 @@ using Ardalis.GuardClauses;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
-    public interface IArgoClient
+    public class ArgoClient : BaseArgoClient, IArgoClient
     {
-        Task<Workflow> Argo_CreateWorkflowAsync(string argoNamespace, WorkflowCreateRequest body, CancellationToken cancellationToken);
-
-        Task<Workflow> Argo_GetWorkflowAsync(string argoNamespace, string name, string getOptions_resourceVersion, string fields, CancellationToken cancellationToken);
-
-        Task<WorkflowTemplate> Argo_GetWorkflowTemplateAsync(string argoNamespace, string name, string getOptions_resourceVersion);
-
-        Task<Workflow> Argo_StopWorkflowAsync(string argoNamespace, string name, WorkflowStopRequest body);
-
-        Task<Workflow> Argo_TerminateWorkflowAsync(string argoNamespace, string name, WorkflowTerminateRequest body);
-
-        Task<Version?> Argo_GetVersionAsync();
-
-        Task<string?> Argo_Get_WorkflowLogsAsync(string argoNamespace, string name, string podName, string logOptions_container);
-    }
-
-    public class ArgoClient : IArgoClient
-    {
-        private readonly HttpClient _httpClient;
-
-        public string BaseUrl { get; set; } = "http://localhost:2746";
-
-        private string FormattedBaseUrl { get { return BaseUrl != null ? BaseUrl.TrimEnd('/') : ""; } }
-
-        public ArgoClient(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+        public ArgoClient(HttpClient httpClient) : base(httpClient) { }
 
         public async Task<Workflow> Argo_CreateWorkflowAsync(string argoNamespace, WorkflowCreateRequest body, CancellationToken cancellationToken)
         {
-            Guard.Against.NullOrWhiteSpace(argoNamespace);
-            Guard.Against.Null(body);
+            Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
+            Guard.Against.Null(body, nameof(body));
 
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflows/{argoNamespace}");
 
-            var Method = "POST";
+            var method = "POST";
             var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
-            return await SendRequest(content, urlBuilder, Method, cancellationToken).ConfigureAwait(false);
+            return await SendRequest<Workflow>(content, urlBuilder, method, cancellationToken).ConfigureAwait(false);
 
         }
 
-        public async Task<Workflow> Argo_GetWorkflowAsync(string argoNamespace, string name, string getOptions_resourceVersion, string fields, CancellationToken cancellationToken)
+        public async Task<Workflow?> Argo_GetWorkflowAsync(string argoNamespace,
+            string name,
+            string? getOptionsResourceVersion,
+            string? fields,
+            CancellationToken cancellationToken)
         {
-            Guard.Against.NullOrWhiteSpace(argoNamespace);
-            Guard.Against.Null(name);
+            Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
+            Guard.Against.Null(name, nameof(name));
 
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflows/{argoNamespace}/{name}?");
 
-            if (getOptions_resourceVersion != null)
+            if (getOptionsResourceVersion != null)
             {
-                urlBuilder.Append(Uri.EscapeDataString("getOptions.resourceVersion") + "=").Append(Uri.EscapeDataString(ConvertToString(getOptions_resourceVersion, CultureInfo.InvariantCulture))).Append('&');
+                urlBuilder.Append(Uri.EscapeDataString("getOptions.resourceVersion") + "=").Append(Uri.EscapeDataString(ConvertToString(getOptionsResourceVersion, CultureInfo.InvariantCulture))).Append('&');
             }
             if (fields != null)
             {
@@ -90,44 +68,44 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         public async Task<Workflow> Argo_StopWorkflowAsync(string argoNamespace, string name, WorkflowStopRequest body)
         {
-            Guard.Against.NullOrWhiteSpace(argoNamespace);
-            Guard.Against.NullOrWhiteSpace(name);
-            Guard.Against.Null(body);
+            Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
+            Guard.Against.NullOrWhiteSpace(name, nameof(name));
+            Guard.Against.Null(body, nameof(body));
 
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflows/{argoNamespace}/{name}/stop");
 
-            var Method = "PUT";
+            const string method = "PUT";
             var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
-            return await SendRequest(content, urlBuilder, Method, new CancellationToken()).ConfigureAwait(false);
+            return await SendRequest<Workflow>(content, urlBuilder, method, new CancellationToken()).ConfigureAwait(false);
 
         }
 
         public async Task<Workflow> Argo_TerminateWorkflowAsync(string argoNamespace, string name, WorkflowTerminateRequest body)
         {
-            Guard.Against.NullOrWhiteSpace(argoNamespace);
-            Guard.Against.NullOrWhiteSpace(name);
-            Guard.Against.Null(body);
+            Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
+            Guard.Against.NullOrWhiteSpace(name, nameof(name));
+            Guard.Against.Null(body, nameof(body));
 
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflows/{argoNamespace}/{name}/terminate");
 
-            var Method = "PUT";
+            const string method = "PUT";
             var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
-            return await SendRequest(content, urlBuilder, Method, new CancellationToken()).ConfigureAwait(false);
+            return await SendRequest<Workflow>(content, urlBuilder, method, new CancellationToken()).ConfigureAwait(false);
         }
 
-        public async Task<WorkflowTemplate> Argo_GetWorkflowTemplateAsync(string argoNamespace, string name, string getOptions_resourceVersion)
+        public async Task<WorkflowTemplate?> Argo_GetWorkflowTemplateAsync(string argoNamespace, string name, string? getOptionsResourceVersion)
         {
-            Guard.Against.NullOrWhiteSpace(argoNamespace);
-            Guard.Against.Null(name);
+            Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
+            Guard.Against.Null(name, nameof(name));
 
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflow-templates/{argoNamespace}/{name}?");
 
-            if (getOptions_resourceVersion != null)
+            if (getOptionsResourceVersion != null)
             {
-                urlBuilder.Append(Uri.EscapeDataString("getOptions.resourceVersion") + "=").Append(Uri.EscapeDataString(ConvertToString(getOptions_resourceVersion, CultureInfo.InvariantCulture))).Append('&');
+                urlBuilder.Append(Uri.EscapeDataString("getOptions.resourceVersion") + "=").Append(Uri.EscapeDataString(ConvertToString(getOptionsResourceVersion, CultureInfo.InvariantCulture))).Append('&');
             }
             urlBuilder.Length--;
 
@@ -142,214 +120,63 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             return await GetRequest<Version>(urlBuilder).ConfigureAwait(false);
         }
 
-        public async Task<string?> Argo_Get_WorkflowLogsAsync(string argoNamespace, string name, string podName, string logOptions_container)
+        public async Task<string?> Argo_Get_WorkflowLogsAsync(string argoNamespace, string name, string? podName, string logOptionsContainer)
         {
-            Guard.Against.NullOrWhiteSpace(argoNamespace);
-            Guard.Against.Null(name);
+            Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
+            Guard.Against.Null(name, nameof(name));
 
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflows/{argoNamespace}/{name}/log?");
 
-            if (podName != null)
+            if (string.IsNullOrWhiteSpace(podName) is false)
             {
                 urlBuilder.Append(Uri.EscapeDataString("podName") + "=").Append(Uri.EscapeDataString(ConvertToString(podName, CultureInfo.InvariantCulture))).Append('&');
             }
-            if (logOptions_container != null)
+            if (logOptionsContainer != null)
             {
-                urlBuilder.Append(Uri.EscapeDataString("logOptions.container") + "=").Append(Uri.EscapeDataString(ConvertToString(logOptions_container, CultureInfo.InvariantCulture))).Append('&');
+                urlBuilder.Append(Uri.EscapeDataString("logOptions.container") + "=").Append(Uri.EscapeDataString(ConvertToString(logOptionsContainer, CultureInfo.InvariantCulture))).Append('&');
             }
 
             urlBuilder.Length--;
             return await GetRequest<string>(urlBuilder, true).ConfigureAwait(false);
         }
-        private async Task<Workflow> SendRequest(StringContent stringContent, StringBuilder urlBuilder, string Method, CancellationToken cancellationToken)
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async Task<WorkflowTemplate> Argo_CreateWorkflowTemplateAsync(string argoNamespace, WorkflowTemplateCreateRequest body, CancellationToken cancellationToken)
         {
-            using (var request = new HttpRequestMessage())
-            {
-                stringContent.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                request.Content = stringContent;
-                request.Method = new HttpMethod(Method);
-                request.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-                request.RequestUri = new Uri(urlBuilder.ToString(), UriKind.RelativeOrAbsolute);
+            Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
+            Guard.Against.Null(body.Template, nameof(body.Template));
 
-                var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+            var urlBuilder = new StringBuilder();
+            urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflow-templates/{argoNamespace}");
 
-                try
-                {
-                    var headers = Enumerable.ToDictionary(response.Headers, h_ => h_.Key, h_ => h_.Value);
-                    if (response.Content != null && response.Content.Headers != null)
-                    {
-                        foreach (var item_ in response.Content.Headers)
-                            headers[item_.Key] = item_.Value;
-                    }
+            var method = "POST";
+            var stringBody = Newtonsoft.Json.JsonConvert.SerializeObject(body);
+            var content = new StringContent(stringBody);
 
-                    var status = (int)response.StatusCode;
-                    if (status == 200)
-                    {
-                        var objectResponse_ = await ReadObjectResponseAsync<Workflow>(response, headers).ConfigureAwait(false);
-                        if (objectResponse_.Object == null)
-                        {
-                            throw new ApiException("Response was null which was not expected.", status, objectResponse_.Text, headers, null);
-                        }
-                        return objectResponse_.Object;
-                    }
-                    else
-                    {
-                        var objectResponse = await ReadObjectResponseAsync<Error>(response, headers).ConfigureAwait(false);
-                        if (objectResponse.Object == null)
-                        {
-                            throw new ApiException("Response was null which was not expected.", status, objectResponse.Text, headers, null);
-                        }
-                        throw new ApiException<Error>("An unexpected error response.", status, objectResponse.Text, headers, objectResponse.Object, null);
-                    }
-                }
-                finally
-                {
-                    response.Dispose();
-                }
-            }
+            var logger = NLog.LogManager.GetCurrentClassLogger();
+            logger.Debug($"Sending content to Argo :{stringBody.Replace(Environment.NewLine, "")}");
+            return await SendRequest<WorkflowTemplate>(content, urlBuilder, method, cancellationToken).ConfigureAwait(false);
         }
 
-        private async Task<T?> GetRequest<T>(StringBuilder urlBuilder, bool isLogs = false)
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>A successful response.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async Task<bool> Argo_DeleteWorkflowTemplateAsync(string argoNamespace, string templateName, CancellationToken cancellationToken)
         {
+            Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
 
-            using (var request = new HttpRequestMessage())
-            {
-                request.Method = new HttpMethod("GET");
-                request.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-                request.RequestUri = new Uri(urlBuilder.ToString(), UriKind.RelativeOrAbsolute);
+            var urlBuilder = new StringBuilder();
+            urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflow-templates/{argoNamespace}/{templateName}");
 
-                var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
-                try
-                {
-                    var headers_ = Enumerable.ToDictionary(response.Headers, h_ => h_.Key, h_ => h_.Value);
-                    if (response.Content != null && response.Content.Headers != null)
-                    {
-                        foreach (var item_ in response.Content.Headers)
-                            headers_[item_.Key] = item_.Value;
-                    }
-
-                    var status = (int)response.StatusCode;
-                    if (status == 200)
-                    {
-                        ObjectResponseResult<T?> objectResponse_;
-
-                        objectResponse_ = await ReadObjectResponseAsync<T>(response, headers_, isLogs).ConfigureAwait(false);
-
-                        if (objectResponse_.Object == null)
-                        {
-                            throw new ApiException("Response was null which was not expected.", status, objectResponse_.Text, headers_, null);
-                        }
-                        return objectResponse_.Object;
-                    }
-                    else
-                    {
-                        var objectResponse_ = await ReadObjectResponseAsync<Error>(response, headers_, false).ConfigureAwait(false);
-                        if (objectResponse_.Object == null)
-                        {
-                            throw new ApiException("Response was null which was not expected.", status, objectResponse_.Text, headers_, null);
-                        }
-                        throw new ApiException<Error>("An unexpected error response.", status, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                    }
-                }
-                finally
-                {
-                    response.Dispose();
-                }
-            }
+            var method = "DELETE";
+            var response = await HttpClient.SendAsync(new HttpRequestMessage(new HttpMethod(method), urlBuilder.ToString()), cancellationToken).ConfigureAwait(false);
+            return (int)response.StatusCode == 200;
         }
 
-
-        protected virtual async Task<ObjectResponseResult<T?>> ReadObjectResponseAsync<T>(HttpResponseMessage response, IReadOnlyDictionary<string, IEnumerable<string>> headers, bool isLogs = false)
-        {
-            if (response == null || response.Content == null)
-            {
-                return new ObjectResponseResult<T?>(default, string.Empty);
-            }
-
-            try
-            {
-                using var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                using var streamReader = new StreamReader(responseStream);
-                var inBody = await streamReader.ReadToEndAsync();
-
-                T? typedBody;
-
-                if (isLogs)
-                {
-                    typedBody = (T)(object)DecodeLogs(inBody);
-                }
-                else
-                {
-                    typedBody = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(inBody);
-                }
-
-                return new ObjectResponseResult<T?>(typedBody, string.Empty);
-
-            }
-            catch (Newtonsoft.Json.JsonException exception)
-            {
-                var message = "Could not deserialize the response body stream as " + typeof(T).FullName + ".";
-                throw new ApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
-            }
-        }
-
-        protected static string DecodeLogs(string logInput)
-        {
-            var rows = logInput.Split(new String[] { "\n" }, StringSplitOptions.None);
-            var jsonBody = $"[{string.Join(",", rows)}]";
-
-            var typedBody = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<ArgoLogEntryResult>>(jsonBody);
-            if (typedBody is null)
-            {
-                return "";
-            }
-            var outputLogs = string.Join("\n", typedBody.Select(b => b.Result.Content));
-            return outputLogs;
-        }
-
-        protected virtual async Task<ObjectResponseResult<string>> ReadLogResponseAsync(HttpResponseMessage response, IReadOnlyDictionary<string, IEnumerable<string>> headers)
-        {
-            if (response == null || response.Content == null)
-            {
-                return new ObjectResponseResult<string>(default, string.Empty);
-            }
-
-            try
-            {
-                using var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                using var streamReader = new StreamReader(responseStream);
-
-                var inBody = await streamReader.ReadToEndAsync();
-                var rows = inBody.Split(new String[] { "\n" }, StringSplitOptions.None);
-                var jsonBody = $"[{string.Join(",", rows)}]";
-
-                var typedBody = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<ArgoLogEntryResult>>(jsonBody);
-                var outputLogs = string.Join("\n", typedBody.Select(b => b.Result.Content));
-                return new ObjectResponseResult<string>(outputLogs, string.Empty);
-
-            }
-            catch (Newtonsoft.Json.JsonException exception)
-            {
-                var message = "Could not deserialize the response body stream as array of ArgoLogEntryResult.";
-                throw new ApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
-            }
-        }
-
-        protected struct ObjectResponseResult<T>
-        {
-            public ObjectResponseResult(T responseObject, string responseText)
-            {
-                Object = responseObject;
-                Text = responseText;
-            }
-
-            public T Object { get; }
-
-            public string Text { get; }
-        }
-
-        private string ConvertToString(object value, CultureInfo cultureInfo)
+        public static string ConvertToString(object value, CultureInfo cultureInfo)
         {
             if (value == null)
             {
@@ -391,18 +218,226 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             var result = Convert.ToString(value, cultureInfo);
             return result ?? "";
         }
+    }
+
+    /// <summary>
+    /// <see cref="BaseArgoClient"/> generic functions relating to argo requests
+    /// </summary>
+    public class BaseArgoClient
+    {
+        public string BaseUrl { get; set; } = "http://localhost:2746";
+
+        protected string FormattedBaseUrl { get { return BaseUrl != null ? BaseUrl.TrimEnd('/') : ""; } }
+
+        protected readonly HttpClient HttpClient;
+
+        public BaseArgoClient(HttpClient httpClient)
+        {
+            HttpClient = httpClient;
+        }
+
+        protected async Task<T> SendRequest<T>(StringContent stringContent, StringBuilder urlBuilder, string method, CancellationToken cancellationToken)
+        {
+            using (var request = new HttpRequestMessage())
+            {
+                if (stringContent is not null)
+                {
+                    stringContent.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request.Content = stringContent;
+                }
+                request.Method = new HttpMethod(method);
+                request.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                request.RequestUri = new Uri(urlBuilder.ToString(), UriKind.RelativeOrAbsolute);
+
+                HttpResponseMessage? response = null;
+                response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, cancellationToken).ConfigureAwait(false);
+
+                try
+                {
+                    var headers = Enumerable.ToDictionary(response.Headers, h => h.Key, h => h.Value);
+                    if (response.Content != null && response.Content.Headers != null)
+                    {
+                        foreach (var item in response.Content.Headers)
+                            headers[item.Key] = item.Value;
+                    }
+
+                    var status = (int)response.StatusCode;
+                    if (status == 200)
+                    {
+                        var objectResponse = await ReadObjectResponseAsync<T>(response, headers).ConfigureAwait(false);
+                        if (objectResponse.Object == null)
+                        {
+                            throw new ApiException("Response was null which was not expected.", status, objectResponse.Text, headers, null);
+                        }
+                        return objectResponse.Object;
+                    }
+                    else
+                    {
+                        var objectResponse = await ReadObjectResponseAsync<Error>(response, headers).ConfigureAwait(false);
+                        if (objectResponse.Object == null)
+                        {
+                            throw new ApiException("Response was null which was not expected.", status, objectResponse.Text, headers, null);
+                        }
+                        throw new ApiException<Error>("An unexpected error response.", status, objectResponse.Text, headers, objectResponse.Object, null);
+                    }
+                }
+                finally
+                {
+                    response.Dispose();
+                }
+            }
+        }
+
+        protected async Task<T?> GetRequest<T>(StringBuilder urlBuilder, bool isLogs = false)
+        {
+
+            using (var request = new HttpRequestMessage())
+            {
+                request.Method = new HttpMethod("GET");
+                request.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                request.RequestUri = new Uri(urlBuilder.ToString(), UriKind.RelativeOrAbsolute);
+
+                var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+                try
+                {
+                    var headers = Enumerable.ToDictionary(response.Headers, h => h.Key, h => h.Value);
+                    if (response.Content != null && response.Content.Headers != null)
+                    {
+                        foreach (var item in response.Content.Headers)
+                            headers[item.Key] = item.Value;
+                    }
+
+                    var status = (int)response.StatusCode;
+                    if (status == 200)
+                    {
+                        ObjectResponseResult<T?> objectResponse;
+
+                        objectResponse = await ReadObjectResponseAsync<T>(response, headers, isLogs).ConfigureAwait(false);
+
+                        if (objectResponse.Object == null)
+                        {
+                            throw new ApiException("Response was null which was not expected.", status, objectResponse.Text, headers, null);
+                        }
+                        return objectResponse.Object;
+                    }
+                    else
+                    {
+                        var objectResponse = await ReadObjectResponseAsync<Error>(response, headers, false).ConfigureAwait(false);
+                        if (objectResponse.Object == null)
+                        {
+                            throw new ApiException("Response was null which was not expected.", status, objectResponse.Text, headers, null);
+                        }
+                        throw new ApiException<Error>("An unexpected error response.", status, objectResponse.Text, headers, objectResponse.Object, null);
+                    }
+                }
+                finally
+                {
+                    response.Dispose();
+                }
+            }
+        }
+
+        protected virtual async Task<ObjectResponseResult<T?>> ReadObjectResponseAsync<T>(HttpResponseMessage response, IReadOnlyDictionary<string, IEnumerable<string>> headers, bool isLogs = false)
+        {
+            if (response == null || response.Content == null || response.Content.GetType().Name == "EmptyContent")
+            {
+                return new ObjectResponseResult<T?>(default, string.Empty);
+            }
+
+            try
+            {
+                using var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                using var streamReader = new StreamReader(responseStream);
+                var inBody = await streamReader.ReadToEndAsync();
+
+                T? typedBody;
+
+                if (isLogs)
+                {
+                    typedBody = (T)(object)DecodeLogs(inBody);
+                }
+                else
+                {
+                    typedBody = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(inBody);
+                }
+
+                return new ObjectResponseResult<T?>(typedBody, string.Empty);
+
+            }
+            catch (Newtonsoft.Json.JsonException exception)
+            {
+                var message = "Could not deserialize the response body stream as " + typeof(T).FullName + ".";
+                throw new ApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
+            }
+        }
+
+        public static string DecodeLogs(string logInput)
+        {
+            var rows = logInput.Split(new String[] { "\n" }, StringSplitOptions.None);
+            var jsonBody = $"[{string.Join(",", rows)}]";
+
+            var typedBody = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<ArgoLogEntryResult>>(jsonBody);
+            if (typedBody is null)
+            {
+                return "";
+            }
+            var outputLogs = string.Join("\n", typedBody.Select(b => b.Result.Content));
+            return outputLogs;
+        }
+
+        protected virtual async Task<ObjectResponseResult<string>> ReadLogResponseAsync(HttpResponseMessage response, IReadOnlyDictionary<string, IEnumerable<string>> headers)
+        {
+            if (response == null || response.Content == null)
+            {
+                return new ObjectResponseResult<string>(string.Empty, string.Empty);
+            }
+
+            try
+            {
+                using var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                using var streamReader = new StreamReader(responseStream);
+
+                var inBody = await streamReader.ReadToEndAsync();
+                var rows = inBody.Split(new String[] { "\n" }, StringSplitOptions.None);
+                var jsonBody = $"[{string.Join(",", rows)}]";
+
+                var typedBody = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<ArgoLogEntryResult>>(jsonBody);
+                var outputLogs = string.Join("\n", typedBody?.Select(b => b.Result.Content) ?? Array.Empty<string>());
+                return new ObjectResponseResult<string>(outputLogs, string.Empty);
+
+            }
+            catch (Newtonsoft.Json.JsonException exception)
+            {
+                var message = "Could not deserialize the response body stream as array of ArgoLogEntryResult.";
+                throw new ApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
+            }
+        }
+
+        protected readonly struct ObjectResponseResult<T>
+        {
+            public ObjectResponseResult(T responseObject, string responseText)
+            {
+                Object = responseObject;
+                Text = responseText;
+            }
+
+            public T Object { get; }
+
+            public string Text { get; }
+        }
+
         class ArgoLogEntry
         {
             public string Content { get; set; } = "";
 
             public string PodName { get; set; } = "";
         }
+
         class ArgoLogEntryResult
         {
             public ArgoLogEntry Result { get; set; } = new ArgoLogEntry();
         }
     }
-
 
     public class Version
     {

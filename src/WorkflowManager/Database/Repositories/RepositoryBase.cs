@@ -20,11 +20,11 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 
-namespace Monai.Deploy.WorkflowManager.Database.Repositories
+namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 {
     public abstract class RepositoryBase
     {
-        public static async Task<long> CountAsync<T>(IMongoCollection<T> collection, FilterDefinition<T> filter)
+        public static async Task<long> CountAsync<T>(IMongoCollection<T> collection, FilterDefinition<T>? filter)
             => await collection.CountDocumentsAsync(filter ?? Builders<T>.Filter.Empty);
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
         /// <param name="skip">Items to skip.</param>
         /// <param name="limit">Items to limit results by.</param>
         /// <returns></returns>
-        public static async Task<IList<T>> GetAllAsync<T>(IMongoCollection<T> collection, Expression<Func<T, bool>> filterFunction, SortDefinition<T> sortFunction, int? skip = null, int? limit = null)
+        public static async Task<IList<T>> GetAllAsync<T>(IMongoCollection<T> collection, Expression<Func<T, bool>>? filterFunction, SortDefinition<T> sortFunction, int? skip = null, int? limit = null)
         {
             return await collection
                 .Find(filterFunction ?? Builders<T>.Filter.Empty)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,17 +22,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Contracts.Responses;
-using Monai.Deploy.WorkflowManager.Filter;
-using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.Services;
-using Monai.Deploy.WorkflowManager.Validators;
-using Monai.Deploy.WorkflowManager.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Responses;
+using Monai.Deploy.WorkflowManager.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Exceptions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Validators;
 
-namespace Monai.Deploy.WorkflowManager.Controllers
+namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
 {
     /// <summary>
     /// Workflows Controller.
@@ -92,7 +93,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                     validFilter.PageSize);
 
                 var dataTotal = await _workflowService.CountAsync();
-                var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
+                var pagedReponse = CreatePagedResponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
 
                 return Ok(pagedReponse);
             }
@@ -152,14 +153,23 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         {
             var workflow = request.Workflow;
             _workflowValidator.OrignalName = request.OriginalWorkflowName;
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
-            if (errors.Count > 0)
+            try
             {
-                var validationErrors = WorkflowValidator.ErrorsToString(errors);
-                _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+                var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
-                return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", BadRequest);
+                if (errors.Count > 0)
+                {
+                    var validationErrors = WorkflowValidator.ErrorsToString(errors);
+                    _logger.LogDebug($"{nameof(ValidateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+
+                    return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/validate", BadRequest);
+                }
+            }
+            catch (MonaiInternalServerException ex)
+            {
+                _logger.LogDebug($"{nameof(ValidateAsync)} - Internal server error while validating {nameof(workflow)}: {ex.InnerException}");
+                return Problem($"Internal server error while validating {nameof(workflow)}", $"/workflows/validate", InternalServerError);
             }
 
             return StatusCode(StatusCodes.Status204NoContent);
@@ -176,14 +186,22 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateAsync([FromBody] Workflow workflow)
         {
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
-
-            if (errors.Count > 0)
+            try
             {
-                var validationErrors = WorkflowValidator.ErrorsToString(errors);
-                _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+                var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
-                return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", BadRequest);
+                if (errors.Count > 0)
+                {
+                    var validationErrors = WorkflowValidator.ErrorsToString(errors);
+                    _logger.LogDebug($"{nameof(CreateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+
+                    return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows", BadRequest);
+                }
+            }
+            catch (MonaiInternalServerException ex)
+            {
+                _logger.LogDebug($"{nameof(CreateAsync)} - Internal server error while validating {nameof(workflow)}: {ex.InnerException}");
+                return Problem($"Internal server error while validating {nameof(workflow)}", $"/workflows", InternalServerError);
             }
 
             try
@@ -222,19 +240,28 @@ namespace Monai.Deploy.WorkflowManager.Controllers
             }
 
             _workflowValidator.OrignalName = originalName;
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
-            if (errors.Count > 0)
+            try
             {
-                var validationErrors = WorkflowValidator.ErrorsToString(errors);
-                _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+                var errors = await _workflowValidator.ValidateWorkflow(workflow);
 
-                return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/{id}", BadRequest);
+                if (errors.Count > 0)
+                {
+                    var validationErrors = WorkflowValidator.ErrorsToString(errors);
+                    _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to validate {nameof(workflow)}: {validationErrors}");
+
+                    return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/{id}", BadRequest);
+                }
+            }
+            catch (MonaiInternalServerException ex)
+            {
+                _logger.LogDebug($"{nameof(UpdateAsync)} - Internal server error while validating {nameof(workflow)}: {ex.InnerException}");
+                return Problem($"Internal server error while validating {nameof(workflow)}", $"/workflows/{id}", InternalServerError);
             }
 
             try
             {
-                var workflowId = await _workflowService.UpdateAsync(workflow, id);
+                var workflowId = await _workflowService.UpdateAsync(workflow, id, workflow.Name != originalName);
 
                 if (workflowId == null)
                 {
@@ -292,6 +319,53 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 return Problem(
                     $"Unexpected error occurred: {e.Message}",
                     $"/workflows/{nameof(id)}",
+                    InternalServerError);
+            }
+        }
+
+        /// <summary>
+        /// Get by AE Title.
+        /// </summary>
+        /// <param name="title">The AE title.</param>
+        /// <param name="filter">The filter.</param>
+        /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
+        [HttpGet("aetitle/{title}")]
+        [ProducesResponseType(typeof(WorkflowRevision), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetByAeTitle([FromRoute] string title, [FromQuery] PaginationFilter filter)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                _logger.LogDebug($"{nameof(GetByAeTitle)} - Failed to validate {nameof(title)}");
+
+                return Problem($"Failed to validate {nameof(title)}, not a valid AE title", $"/workflows/aetitle/{title}", BadRequest);
+            }
+
+            try
+            {
+                var route = Request?.Path.Value ?? string.Empty;
+                var pageSize = filter.PageSize ?? _options.Value.EndpointSettings.DefaultPageSize;
+                var validFilter = new PaginationFilter(filter.PageNumber, pageSize, _options.Value.EndpointSettings.MaxPageSize);
+
+                var pagedData = await _workflowService.GetByAeTitleAsync(
+                    title,
+                    (validFilter.PageNumber - 1) * validFilter.PageSize,
+                    validFilter.PageSize);
+
+                var dataTotal = await _workflowService.GetCountByAeTitleAsync(title);
+                var pagedReponse = CreatePagedResponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
+
+                return Ok(pagedReponse);
+            }
+            catch (Exception e)
+            {
+                _logger.WorkflowGetAeTitleAsyncError(e);
+
+                return Problem(
+                    $"Unexpected error occurred: {e.Message}",
+                    $"/workflows/aetitle",
                     InternalServerError);
             }
         }

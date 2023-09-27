@@ -15,9 +15,9 @@
  */
 
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.Common.Interfaces
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces
 {
     public interface IWorkflowInstanceService : IPaginatedApi<WorkflowInstance>
     {

@@ -22,13 +22,14 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.Logging;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Database.Options;
+using Monai.Deploy.WorkflowManager.Common.Logging;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
-namespace Monai.Deploy.WorkflowManager.Database.Repositories
+namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 {
     public class WorkflowInstanceRepository : RepositoryBase, IWorkflowInstanceRepository
     {
@@ -47,7 +48,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var mongoDatabase = client.GetDatabase(bookStoreDatabaseSettings.Value.DatabaseName);
-            _workflowInstanceCollection = mongoDatabase.GetCollection<WorkflowInstance>(bookStoreDatabaseSettings.Value.WorkflowInstanceCollectionName);
+            _workflowInstanceCollection = mongoDatabase.GetCollection<WorkflowInstance>("WorkflowInstances");
         }
 
         public async Task<IList<WorkflowInstance>> GetListAsync()
@@ -66,6 +67,26 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
                 var filterDef = new FilterDefinitionBuilder<WorkflowInstance>();
 
                 var filter = filterDef.In(x => x.WorkflowId, workflowIds);
+                var workflowIstances = await _workflowInstanceCollection.Find(filter).ToListAsync();
+
+                return workflowIstances ?? new List<WorkflowInstance>();
+            }
+            catch (Exception e)
+            {
+                _logger.DbGetWorkflowInstancesError(e);
+                return new List<WorkflowInstance>();
+            }
+        }
+
+        public async Task<IList<WorkflowInstance>> GetByPayloadIdsAsync(List<string> workflowIds)
+        {
+            Guard.Against.NullOrEmpty(workflowIds, nameof(workflowIds));
+
+            try
+            {
+                var filterDef = new FilterDefinitionBuilder<WorkflowInstance>();
+
+                var filter = filterDef.In(x => x.PayloadId, workflowIds);
                 var workflowIstances = await _workflowInstanceCollection.Find(filter).ToListAsync();
 
                 return workflowIstances ?? new List<WorkflowInstance>();
@@ -105,7 +126,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             {
                 await _workflowInstanceCollection.FindOneAndUpdateAsync(
                     i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.TaskId == taskId),
-                    Builders<WorkflowInstance>.Update.Set(w => w.Tasks[-1], task));
+                    Builders<WorkflowInstance>.Update.Set(w => w.Tasks.FirstMatchingElement(), task));
 
                 return true;
             }
@@ -126,7 +147,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             try
             {
                 var update = Builders<WorkflowInstance>.Update
-                    .Set(w => w.Tasks[-1].Status, status);
+                    .Set(w => w.Tasks.FirstMatchingElement().Status, status);
 
                 if (status is TaskExecutionStatus.Succeeded
                     || status is TaskExecutionStatus.Failed
@@ -134,8 +155,8 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
                     || status is TaskExecutionStatus.Canceled)
                 {
                     update = Builders<WorkflowInstance>.Update
-                    .Set(w => w.Tasks[-1].Status, status)
-                    .Set(w => w.Tasks[-1].TaskEndTime, DateTime.UtcNow);
+                    .Set(w => w.Tasks.FirstMatchingElement().Status, status)
+                    .Set(w => w.Tasks.FirstMatchingElement().TaskEndTime, DateTime.UtcNow);
                 }
 
                 await _workflowInstanceCollection.FindOneAndUpdateAsync(
@@ -161,7 +182,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             {
                 await _workflowInstanceCollection.FindOneAndUpdateAsync(
                     i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.TaskId == taskId),
-                    Builders<WorkflowInstance>.Update.Set(w => w.Tasks[-1].OutputArtifacts, outputArtifacts));
+                    Builders<WorkflowInstance>.Update.Set(w => w.Tasks.FirstMatchingElement().OutputArtifacts, outputArtifacts));
 
                 return true;
             }
@@ -215,7 +236,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
             var result = await _workflowInstanceCollection.UpdateOneAsync(
                 i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.ExecutionId == executionId && (t.Status == TaskExecutionStatus.Failed || t.Status == TaskExecutionStatus.PartialFail)),
-                Builders<WorkflowInstance>.Update.Set(w => w.Tasks[-1].AcknowledgedTaskErrors, acknowledgedTimeStamp));
+                Builders<WorkflowInstance>.Update.Set(w => w.Tasks.FirstMatchingElement().AcknowledgedTaskErrors, acknowledgedTimeStamp));
 
             return await GetByWorkflowInstanceIdAsync(workflowInstanceId);
         }
@@ -250,7 +271,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             {
                 await _workflowInstanceCollection.UpdateOneAsync(
                     i => i.Id == workflowInstanceId && i.Tasks.Any(t => t.ExecutionId == executionId),
-                    Builders<WorkflowInstance>.Update.Set(w => w.Tasks[-1].ResultMetadata, fileStatuses));
+                    Builders<WorkflowInstance>.Update.Set(w => w.Tasks.FirstMatchingElement().ResultMetadata, fileStatuses));
 
                 return true;
             }

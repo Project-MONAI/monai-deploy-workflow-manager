@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO;
 using MongoDB.Driver;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
 {
     public class MongoClientUtil
     {
@@ -32,6 +32,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         private IMongoCollection<Payload> PayloadCollection { get; set; }
         private RetryPolicy RetryMongo { get; set; }
         private RetryPolicy<List<Payload>> RetryPayload { get; set; }
+        private RetryPolicy<List<ExecutionStats>> RetryExecutionStats { get; set; }
+        private IMongoCollection<ExecutionStats> ExecutionStatsCollection { get; set; }
 
         public MongoClientUtil()
         {
@@ -43,6 +45,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             RetryMongo = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
             RetryPayload = Policy<List<Payload>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
             CreateCollection("dummy");
+            ExecutionStatsCollection = Database.GetCollection<ExecutionStats>($"{TestExecutionConfig.MongoConfig.ExecutionStatsCollection}");
+            RetryExecutionStats = Policy<List<ExecutionStats>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
         }
 
         #region WorkflowRevision
@@ -59,7 +63,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         {
             RetryMongo.Execute(() =>
             {
-                WorkflowRevisionCollection.DeleteOne(x => x.Id.Equals(id));
+                WorkflowRevisionCollection.DeleteOne(x => x.Id!.Equals(id));
             });
         }
 
@@ -116,14 +120,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             return WorkflowInstanceCollection.Find(x => x.PayloadId == payloadId).FirstOrDefault();
         }
 
-        public WorkflowInstance GetWorkflowInstanceById(string Id)
+        public WorkflowInstance GetWorkflowInstanceById(string id)
         {
-            return WorkflowInstanceCollection.Find(x => x.Id == Id).FirstOrDefault();
+            return WorkflowInstanceCollection.Find(x => x.Id == id).FirstOrDefault();
         }
 
-        public WorkflowInstance GetWorkflowInstanceByWorkflowId(string Id)
+        public WorkflowInstance GetWorkflowInstanceByWorkflowId(string id)
         {
-            return WorkflowInstanceCollection.Find(x => x.WorkflowId == Id).FirstOrDefault();
+            return WorkflowInstanceCollection.Find(x => x.WorkflowId == id).FirstOrDefault();
         }
 
         public List<WorkflowInstance> GetWorkflowInstancesByPayloadId(string payloadId)
@@ -215,6 +219,43 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         }
 
         #endregion Payload
+
+        #region ExecutionStats
+
+        internal void DeleteAllExecutionStats()
+        {
+            RetryMongo.Execute(() =>
+            {
+                ExecutionStatsCollection.DeleteMany("{ }");
+
+                var taskDispatch = ExecutionStatsCollection.Find("{ }").ToList();
+
+                if (taskDispatch.Count > 0)
+                {
+                    throw new Exception("All Execution Stats were not deleted!");
+                }
+            });
+        }
+
+        public void CreateExecutionStats(ExecutionStats executionStats)
+        {
+            RetryMongo.Execute(() =>
+            {
+                ExecutionStatsCollection.InsertOne(executionStats);
+            });
+        }
+
+        public List<ExecutionStats> GetExecutionStatsByExecutionId(string executionId)
+        {
+            var res = RetryExecutionStats.Execute(() =>
+            {
+                return ExecutionStatsCollection.Find(x => x.ExecutionId == executionId).ToList();
+            });
+
+            return res;
+        }
+
+        #endregion ExecutionStats
 
         public void DropDatabase(string dbName)
         {

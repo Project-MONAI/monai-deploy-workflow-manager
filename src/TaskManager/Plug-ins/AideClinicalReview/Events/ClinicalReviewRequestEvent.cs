@@ -28,54 +28,61 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events
         /// </summary>
         [JsonProperty(PropertyName = "workflow_instance_id")]
         [Required]
-        public string WorkflowInstanceId { get; set; }
+        public string WorkflowInstanceId { get; set; } = string.Empty;
         /// <summary>
         /// Gets or sets the execution ID representing the instance of the task.
         /// </summary>
         [JsonProperty(PropertyName = "execution_id")]
         [Required]
-        public string ExecutionId { get; set; }
+        public string ExecutionId { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the ID representing the instance of the Task.
         /// </summary>
         [Required]
         [JsonProperty(PropertyName = "task_id")]
-        public string TaskId { get; set; }
+        public string TaskId { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the ID of the reviewed task ID.
         /// </summary>
         [Required]
         [JsonProperty(PropertyName = "reviewed_task_id")]
-        public string ReviewedTaskId { get; set; }
+        public string ReviewedTaskId { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the ID of the reviewed execution ID.
         /// </summary>
         [Required]
         [JsonProperty(PropertyName = "reviewed_execution_id")]
-        public string ReviewedExecutionId { get; set; }
+        public string ReviewedExecutionId { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the correlation ID.
         /// </summary>
         [JsonProperty(PropertyName = "correlation_id")]
         [Required]
-        public string CorrelationId { get; set; }
+        public string CorrelationId { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the name of the workflow.
         /// </summary>
         [JsonProperty(PropertyName = "workflow_name")]
         [Required]
-        public string WorkflowName { get; set; }
+        public string WorkflowName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the name of the workflow.
+        /// </summary>
+        [JsonProperty(PropertyName = "notifications")]
+        [Required]
+        public bool Notifications { get; set; }
 
         /// <summary>
         /// Gets or sets patient metadata.
         /// </summary>
         [JsonProperty(PropertyName = "patient_metadata")]
-        public PatientMetadata PatientMetadata { get; set; }
+        public PatientMetadata? PatientMetadata { get; set; }
 
         /// <summary>
         /// Gets or sets the reviewer roles.
@@ -93,6 +100,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Events
         /// Gets or sets the name of the workflow.
         /// </summary>
         [JsonProperty(PropertyName = "files")]
-        public List<Messaging.Common.Storage> Files { get; set; }
+        public List<Messaging.Common.Storage> Files { get; set; } = new();
     }
 }

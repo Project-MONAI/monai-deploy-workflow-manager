@@ -32,6 +32,17 @@ Note. if you already have docker container for Minio Rabbit etc running Stop the
   - `kubectl apply -n argo -f https://raw.githubusercontent.com/argoproj/argo-workflows/master/manifests/quick-start-postgres.yaml`
   - `kubectl config set-context --current --namespace=argo`
 
+To disable argo authentication run
+
+    kubectl patch deployment \
+      argo-server \
+      --namespace argo \
+      --type='json' \
+      -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/args", "value": [
+      "server",
+      "--auth-mode=server"
+    ]}]'
+
 Note. below Im using bash as its my preferred option, But if you to are using bash and your on windows (wsl2) you MUST make sure you windows .kube/config is also pointing to the same K8's cluster, this is because the code running in vs will look in there for the context to write k8's secrets too!
 
 now in a bash window (can be cmd or powershell)

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.Common.Interfaces
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces
 {
     public interface IWorkflowService : IPaginatedApi<WorkflowRevision>
     {
@@ -43,12 +43,28 @@ namespace Monai.Deploy.WorkflowManager.Common.Interfaces
         /// </summary>
         /// <param name="workflow">Workflow to Update.</param>
         /// <param name="id">Id of the workflow to Update.</param>
-        Task<string?> UpdateAsync(Workflow workflow, string id);
+        Task<string?> UpdateAsync(Workflow workflow, string id, bool isUpdateToWorkflowName = false);
 
         /// <summary>
         /// Soft deletes a given workflow and all revisions
         /// </summary>
         /// <param name="workflow">Workflow to delete.</param>
         Task<DateTime> DeleteWorkflowAsync(WorkflowRevision workflow);
+
+        /// <summary>
+        /// get all workflows with AeTitle
+        /// </summary>
+        /// <param name="aeTitle">the title to get</param>
+        /// <param name="skip">skip x num of records</param>
+        /// <param name="limit">limit to x number</param>
+        /// <returns></returns>
+        Task<IEnumerable<WorkflowRevision>> GetByAeTitleAsync(string aeTitle, int? skip = null, int? limit = null);
+
+        /// <summary>
+        /// returns the number of workflows with this aetitle
+        /// </summary>
+        /// <param name="aeTitle">the title to count</param>
+        /// <returns></returns>
+        Task<long> GetCountByAeTitleAsync(string aeTitle);
     }
 }

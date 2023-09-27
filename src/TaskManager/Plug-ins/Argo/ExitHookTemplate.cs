@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 using Argo;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
@@ -42,41 +41,57 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             _messagingEndpoint = options.Messaging.ArgoCallback.ArgoCallbackOverrideEnabled ?
                 options.Messaging.ArgoCallback.ArgoRabbitOverrideEndpoint :
-                options.Messaging.PublisherSettings[Keys.MessagingEndpoint];
+                options.Messaging.PublisherSettings[ArgoParameters.MessagingEndpoint];
 
-            _messagingUsername = options.Messaging.PublisherSettings[Keys.MessagingUsername];
-            _messagingPassword = options.Messaging.PublisherSettings[Keys.MessagingPassword];
+            _messagingUsername = options.Messaging.PublisherSettings[ArgoParameters.MessagingUsername];
+            _messagingPassword = options.Messaging.PublisherSettings[ArgoParameters.MessagingPassword];
             _messagingTopic = options.Messaging.Topics.TaskCallbackRequest;
-            _messagingExchange = options.Messaging.PublisherSettings[Keys.MessagingExchange];
-            _messagingVhost = options.Messaging.PublisherSettings[Keys.MessagingVhost];
+            _messagingExchange = options.Messaging.PublisherSettings[ArgoParameters.MessagingExchange];
+            _messagingVhost = options.Messaging.PublisherSettings[ArgoParameters.MessagingVhost];
             _messageId = Guid.NewGuid();
             _messageFileName = $"{_messageId}.json";
         }
 
-        public Template2 GenerateMessageTemplate(S3Artifact2 artifact)
+        public Template2 GenerateCallbackMessageTemplate(S3Artifact2 artifact)
         {
             var taskUpdateEvent = GenerateTaskCallbackEvent();
             var taskUpdateEventJson = JsonConvert.SerializeObject(taskUpdateEvent);
-            var message = GenerateTaskCallbackMessage();
-            var messageJson = JsonConvert.SerializeObject(JsonConvert.SerializeObject(message)); // serialize the message 2x
 
             return new Template2()
             {
-                Name = Strings.ExitHookTemplateGenerateTemplateName,
+                Name = Strings.ExitHookTemplateSendTemplateName,
                 Inputs = new Inputs
                 {
                     Parameters = new List<Parameter>()
                     {
                         new Parameter { Name = Strings.ExitHookParameterEvent, Value = taskUpdateEventJson },
-                        new Parameter { Name = Strings.ExitHookParameterMessage, Value = messageJson }
                     }
                 },
                 Container = new Container2
                 {
-                    Image = Strings.ExitHookGenerateMessageContainerImage,
-                    Command = new List<string> { "/bin/sh", "-c" },
-                    Args = new List<string> { $"echo \"{{{{inputs.parameters.message}}}}\" > {Strings.ExitHookOutputPath}{_messageFileName}; cat {Strings.ExitHookOutputPath}{_messageFileName};" }
+                    Image = _options.TaskManager.ArgoExitHookSendMessageContainerImage,
+                    Resources = new ResourceRequirements
+                    {
+                        Limits = new Dictionary<string, string>
+                        {
+                            {"cpu", _options.TaskManager.ArgoPluginArguments.MessageGeneratorContainerCpuLimit},
+                            {"memory", _options.TaskManager.ArgoPluginArguments.MessageGeneratorContainerMemoryLimit}
+                        }
+                    },
+                    Command = new List<string> { "python" },
+                    Args = new List<string> {
+                        "/app/app.py",
+                        "--host", _messagingEndpoint,
+                        "--username", _messagingUsername,
+                        "--password", _messagingPassword,
+                        "--vhost", _messagingVhost,
+                        "--exchange", _messagingExchange,
+                        "--topic", _messagingTopic,
+                        "--correlationId", _taskDispatchEvent.CorrelationId,
+                        "--message", "{{inputs.parameters.event}}"
+                        }
                 },
+                PodSpecPatch = "{\"initContainers\":[{\"name\":\"init\",\"resources\":{\"limits\":{\"cpu\":\"" + _options.TaskManager.ArgoPluginArguments.InitContainerCpuLimit + "\",\"memory\": \"" + _options.TaskManager.ArgoPluginArguments.InitContainerMemoryLimit + "\"},\"requests\":{\"cpu\":\"0\",\"memory\":\"0Mi\"}}}],\"containers\":[{\"name\":\"wait\",\"resources\":{\"limits\":{\"cpu\":\"" + _options.TaskManager.ArgoPluginArguments.WaitContainerCpuLimit + "\",\"memory\":\"" + _options.TaskManager.ArgoPluginArguments.WaitContainerMemoryLimit + "\"},\"requests\":{\"cpu\":\"0\",\"memory\":\"0Mi\"}}}]}",
                 Outputs = new Outputs
                 {
                     Artifacts = new List<Artifact>()
@@ -106,66 +121,5 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 Identity = "{{workflow.name}}",
                 Outputs = _taskDispatchEvent.Outputs ?? new List<Messaging.Common.Storage>()
             };
-
-        private object GenerateTaskCallbackMessage() =>
-             new
-             {
-                 ContentType = Strings.ContentTypeJson,
-                 CorrelationID = _taskDispatchEvent.CorrelationId,
-                 MessageID = _messageId.ToString(),
-                 Type = nameof(TaskCallbackEvent),
-                 AppID = Strings.ApplicationId,
-                 Exchange = _messagingExchange,
-                 RoutingKey = _messagingTopic,
-                 DeliveryMode = 2,
-                 Body = "{{=sprig.b64enc(inputs.parameters.event)}}"
-             };
-
-        public Template2 GenerateSendTemplate(S3Artifact2 artifact)
-        {
-            var copyOfArtifact = new S3Artifact2
-            {
-                AccessKeySecret = artifact.AccessKeySecret,
-                Bucket = artifact.Bucket,
-                Endpoint = artifact.Endpoint,
-                Insecure = artifact.Insecure,
-                Key = $"{artifact.Key}/{_messageFileName}",
-                SecretKeySecret = artifact.SecretKeySecret,
-            };
-
-            return new Template2()
-            {
-                Name = Strings.ExitHookTemplateSendTemplateName,
-                Inputs = new Inputs
-                {
-                    Artifacts = new List<Artifact>()
-                    {
-                        new Artifact
-                        {
-                            Name = "message",
-                            Path  = $"{Strings.ExitHookOutputPath}{_messageFileName}",
-                            Archive = new ArchiveStrategy
-                            {
-                                None = new NoneStrategy()
-                            },
-                            S3 = copyOfArtifact
-                        }
-                    }
-                },
-                Container = new Container2
-                {
-                    Image = _options.TaskManager.ArgoExitHookSendMessageContainerImage,
-                    Command = new List<string> { "/rabtap" },
-                    Args = new List<string> {
-                        "pub",
-                        $"--uri=amqp://{_messagingUsername}:{_messagingPassword}@{_messagingEndpoint}/{_messagingVhost}",
-                        "--format=json",
-                        $"{Strings.ExitHookOutputPath}{_messageFileName}",
-                        "--delay=0s",
-                        "--confirms",
-                        "--mandatory" }
-                }
-            };
-        }
     }
 }

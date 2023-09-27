@@ -16,12 +16,20 @@
 
 using System;
 using System.Collections.Generic;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Migrations;
+using Mongo.Migration.Documents;
+using Mongo.Migration.Documents.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Models
+namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
-    public class WorkflowInstance
+    [CollectionLocation("WorkflowInstances"), RuntimeVersion("1.0.0")]
+    public class WorkflowInstance : IDocument
     {
+        [JsonConverter(typeof(DocumentVersionConvert)), BsonSerializer(typeof(DocumentVersionConverBson))]
+        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 0);
+
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; } = string.Empty;
 

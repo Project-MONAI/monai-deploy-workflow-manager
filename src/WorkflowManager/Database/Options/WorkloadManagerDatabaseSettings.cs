@@ -16,7 +16,7 @@
 
 using Microsoft.Extensions.Configuration;
 
-namespace Monai.Deploy.WorkflowManager.Database.Options
+namespace Monai.Deploy.WorkflowManager.Common.Database.Options
 {
     public class WorkloadManagerDatabaseSettings
     {
@@ -25,14 +25,5 @@ namespace Monai.Deploy.WorkflowManager.Database.Options
 
         [ConfigurationKeyName("DatabaseName")]
         public string DatabaseName { get; set; } = null!;
-
-        [ConfigurationKeyName("PayloadCollectionName")]
-        public string PayloadCollectionName { get; set; } = null!;
-
-        [ConfigurationKeyName("WorkflowCollectionName")]
-        public string WorkflowCollectionName { get; set; } = null!;
-
-        [ConfigurationKeyName("WorkflowInstanceCollectionName")]
-        public string WorkflowInstanceCollectionName { get; set; } = null!;
     }
 }

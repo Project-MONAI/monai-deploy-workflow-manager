@@ -16,9 +16,10 @@
 
 using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Linq;
 
-namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
+// ReSharper disable InconsistentNaming
+
+namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resovler
 {
     public sealed class Conditional
     {
@@ -315,7 +316,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resolver
             return arr.Any(p => CleanString(p).Equals(compare));
         }
 
-        private static string CleanString(string p) => p.Trim().Trim('\"').Trim('\'').Trim('“').Trim('”');
+        private static string CleanString(string p) => p.Trim().Trim('\"').Trim('\'').Trim('ï¿½').Trim('ï¿½');
 
         private static bool EqualsNullOrDefined(string str) =>
             str.Trim().Equals(NULL, StringComparison.InvariantCultureIgnoreCase)

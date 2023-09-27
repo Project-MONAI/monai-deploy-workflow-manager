@@ -22,16 +22,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Filter;
-using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.Models;
-using Monai.Deploy.WorkflowManager.Services;
-using Monai.Deploy.WorkflowManager.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Models;
 
-namespace Monai.Deploy.WorkflowManager.Controllers
+namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
 {
     /// <summary>
     /// Tasks Api endpoint controller.
@@ -87,7 +87,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                     (validFilter.PageNumber - 1) * validFilter.PageSize,
                     validFilter.PageSize);
 
-                var pagedReponse = CreatePagedReponse(pagedData.Tasks.ToList(), validFilter, pagedData.Count, _uriService, route);
+                var pagedReponse = CreatePagedResponse(pagedData.Tasks.ToList(), validFilter, pagedData.Count, _uriService, route);
 
                 return Ok(pagedReponse);
             }
