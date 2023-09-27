@@ -55,6 +55,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         public static readonly string ReviewerRoles = "reviewer_roles";
 
         /// <summary>
+        /// Key for the workflow name.
+        /// </summary>
+        public static readonly string Notifications = "notifications";
+
+        /// <summary>
         /// Key for the queue name to send the clinical review message.
         /// </summary>
         public static readonly string QueueName = "queue_name";
@@ -84,7 +89,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
         /// </summary>
         public static readonly IReadOnlyList<string> RequiredParameters =
             new List<string> {
-                WorkflowName,
                 ReviewedTaskId,
                 ApplicationName,
                 ApplicationVersion,

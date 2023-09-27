@@ -16,13 +16,13 @@
 
 using System.Net;
 using BoDi;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
 using Newtonsoft.Json;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class CommonStepDefinitions
@@ -101,7 +101,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"I will get a health check response status message (.*)")]
         public async Task ThenIWillGetAHealthCheckResponseMessage(string expectedMessage)
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var contentMessage = await ApiHelper.Response?.Content.ReadAsStringAsync();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             contentMessage.Should().NotBeNull();
             var response = JsonConvert.DeserializeObject<HealthCheckResponse>(contentMessage);
             response.Should().NotBeNull();

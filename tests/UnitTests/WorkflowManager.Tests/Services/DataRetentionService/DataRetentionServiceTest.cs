@@ -18,14 +18,14 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.WorkflowManager.Services.DataRetentionService;
-using Monai.Deploy.WorkflowManager.Shared;
+using Monai.Deploy.WorkflowManager.Common.Services.DataRetentionService;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Test.Services.Http
+namespace Monai.Deploy.WorkflowManager.Common.Test.Services.Http
 {
-    public class DataRetentionServiceTest
+    public sealed class DataRetentionServiceTest : IDisposable
     {
         private readonly Mock<ILogger<DataRetentionService>> _logger;
         private readonly CancellationTokenSource _cancellationTokenSource;
@@ -56,6 +56,11 @@ namespace Monai.Deploy.WorkflowManager.Test.Services.Http
 
             service.Dispose();
             Assert.Equal(ServiceStatus.Disposed, service.Status);
+        }
+
+        public void Dispose()
+        {
+            _cancellationTokenSource.Dispose();
         }
     }
 }

@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
+using Monai.Deploy.Messaging.Events;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.Models
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Models
 {
     public class WorkflowRequestMessage
     {
@@ -35,11 +37,9 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Models
         [JsonProperty(PropertyName = "bucket")]
         public string Bucket { get; set; } = default!;
 
-        [JsonProperty(PropertyName = "calling_aetitle")]
-        public string CallingAeTitle { get; set; } = default!;
-
-        [JsonProperty(PropertyName = "called_aetitle")]
-        public string CalledAeTitle { get; set; } = default!;
+        [JsonProperty(PropertyName = "trigger")]
+        [JsonPropertyName("trigger")]
+        public DataOrigin DataTrigger { get; set; } = new DataOrigin { DataService = DataService.DIMSE };
 
         [JsonProperty(PropertyName = "timestamp")]
         public DateTime Timestamp { get; set; }

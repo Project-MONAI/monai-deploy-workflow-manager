@@ -20,13 +20,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Argo;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using Newtonsoft.Json;
 using Xunit;
-using Version = Argo.Version;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
 {

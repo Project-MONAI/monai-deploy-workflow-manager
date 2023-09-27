@@ -42,6 +42,37 @@ Scenario: Get all payloads from API - no payloads
     Then I will get a 200 response
     And I can see no Payloads are returned
 
+@GetPayloads
+Scenario: Get all payloads from API - Workflow Instances Created - PayloadStatus InProgress
+    Given I have an endpoint /payload
+    And I have a payload saved in mongo Payload_PayloadStatus_1
+    And I have a Workflow Instance Workflow_Instance_For_PayloadData_Payload_PayloadStatus_1_1 with no artifacts
+    And I have a Workflow Instance Workflow_Instance_For_PayloadData_Payload_PayloadStatus_1_2 with no artifacts
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see expected Payloads are returned with PayloadStatus InProgress
+
+@GetPayloads
+Scenario: Get all payloads from API - Workflow Instances Succeeded and Failed - PayloadStatus Complete
+    Given I have an endpoint /payload
+    And I have a payload saved in mongo Payload_PayloadStatus_2
+    And I have a Workflow Instance Workflow_Instance_For_PayloadData_Payload_PayloadStatus_2_1 with no artifacts
+    And I have a Workflow Instance Workflow_Instance_For_PayloadData_Payload_PayloadStatus_2_2 with no artifacts
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see expected Payloads are returned with PayloadStatus Complete
+
+@GetPayloads
+Scenario: Get all payloads from API - Workflow Instances Succeeded, Failed, and Created - PayloadStatus InProgress
+    Given I have an endpoint /payload
+    And I have a payload saved in mongo Payload_PayloadStatus_3
+    And I have a Workflow Instance Workflow_Instance_For_PayloadData_Payload_PayloadStatus_3_1 with no artifacts
+    And I have a Workflow Instance Workflow_Instance_For_PayloadData_Payload_PayloadStatus_3_2 with no artifacts
+    And I have a Workflow Instance Workflow_Instance_For_PayloadData_Payload_PayloadStatus_3_3 with no artifacts
+    When I send a GET request
+    Then I will get a 200 response
+    And I can see expected Payloads are returned with PayloadStatus InProgress
+
 @PayloadSearch
 Scenario Outline: Get all payloads from API - Test search query parameters
     Given I have an endpoint /payload/<search_query>
@@ -124,3 +155,32 @@ Scenario Outline: Get payload by Id returns 400
     When I send a GET request
     Then I will get a 400 response
     And I will receive the error message Failed to validate id, not a valid guid
+
+@DeletePayloadById
+Scenario Outline: Delete payload by Id returns 400 with invalid payload ID
+    Given I have an endpoint /payload/invalid-payload-id
+    When I send a DELETE request
+    Then I will get a 400 response
+    And I will receive the error message Failed to validate id, not a valid guid
+
+@DeletePayloadById
+Scenario Outline: Delete payload by ID returns 404 when no payload exists
+    Given I have an endpoint /payload/c5c3635b-81dd-44a9-8c3b-71adec7d47c6
+    When I send a DELETE request
+    Then I will get a 404 response
+    And I will receive the error message Payload with ID: c5c3635b-81dd-44a9-8c3b-71adec7d47c6 not found
+
+@DeletePayloadById
+Scenario Outline: Delete payload by ID returns 400 when PayloadDeleted is already InProgress
+    Given I have an endpoint /payload/c5c3635b-81dd-44a9-8c3b-71adec7d47c6
+    And I have a payload saved in mongo Payload_PayloadDeleted_InProgress
+    When I send a DELETE request
+    Then I will get a 400 response
+    And I will receive the error message Deletion of files for payload ID: c5c3635b-81dd-44a9-8c3b-71adec7d47c6 already in progress or already deleted
+
+@DeletePayloadById
+Scenario Outline: Delete payload by ID returns 202
+    Given I have an endpoint /payload/d5c3633b-41de-44a9-8c3a-71adec3d47c1
+    And I have a payload saved in mongo Payload_PayloadDeleted_No
+    When I send a DELETE request
+    Then I will get a 202 response

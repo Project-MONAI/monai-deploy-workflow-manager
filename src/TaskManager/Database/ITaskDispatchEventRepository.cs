@@ -53,6 +53,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
         /// <param name="taskDispatchEventInfo">A TaskDispatchEvent to update.</param>
         /// <param name="pluginArgs">The plugin arguments to update.</param>
         /// <returns>The updated TaskDispatchEventInfo.</returns>
-        Task<TaskDispatchEventInfo> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEventInfo, Dictionary<string, string> pluginArgs);
+        Task<TaskDispatchEventInfo?> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEventInfo, Dictionary<string, string> pluginArgs);
     }
 }

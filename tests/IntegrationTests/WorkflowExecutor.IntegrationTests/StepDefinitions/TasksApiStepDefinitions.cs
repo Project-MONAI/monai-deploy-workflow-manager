@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,23 @@
  */
 
 using BoDi;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using Monai.Deploy.WorkflowManager.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class TasksApiStepDefinitions
     {
-        public TasksApiStepDefinitions(ObjectContainer objectContainer)
+        public TasksApiStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             DataHelper = objectContainer.Resolve<DataHelper>();
             ApiHelper = objectContainer.Resolve<ApiHelper>();
-            Assertions = new Assertions(objectContainer);
+            Assertions = new Assertions(objectContainer, outputHelper);
         }
 
         public DataHelper DataHelper { get; }
@@ -49,7 +50,9 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var response = JsonConvert.DeserializeObject<PagedResponse<IList<TaskExecution>>>(result);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             Assert.AreEqual(number, response?.Data.Count);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
     }
 }

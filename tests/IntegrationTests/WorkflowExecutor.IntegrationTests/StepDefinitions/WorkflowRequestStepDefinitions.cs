@@ -16,15 +16,15 @@
 
 using BoDi;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Models;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.Support;
 using MongoDB.Driver;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class WorkflowRequestStepDefinitions
@@ -43,7 +43,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             WorkflowPublisher = objectContainer.Resolve<RabbitPublisher>("WorkflowPublisher");
             TaskDispatchConsumer = objectContainer.Resolve<RabbitConsumer>("TaskDispatchConsumer");
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
-            Assertions = new Assertions(objectContainer);
+            Assertions = new Assertions(objectContainer, outputHelper);
             DataHelper = objectContainer.Resolve<DataHelper>();
             _outputHelper = outputHelper;
             MinioDataSeeding = new MinioDataSeeding(objectContainer.Resolve<MinioClientUtil>(), DataHelper, _outputHelper);
@@ -121,12 +121,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
                     if (string.IsNullOrEmpty(DataHelper.TaskUpdateEvent.ExecutionId))
                     {
+#pragma warning disable CS8604 // Possible null reference argument.
                         Assertions.AssertTaskDispatchEvent(taskDispatchEvent, workflowInstance, workflowRevision, DataHelper.WorkflowRequestMessage, null);
                     }
                     else
                     {
                         Assertions.AssertTaskDispatchEvent(taskDispatchEvent, workflowInstance, workflowRevision, null, DataHelper.TaskUpdateEvent);
                     }
+#pragma warning restore CS8604 // Possible null reference argument.
                 }
             });
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 
 using BoDi;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using Monai.Deploy.WorkflowManager.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
 using Newtonsoft.Json;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class PayloadApiStepDefinitions
@@ -32,7 +32,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             DataHelper = objectContainer.Resolve<DataHelper>();
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
             _outputHelper = outputHelper;
-            Assertions = new Assertions(objectContainer);
+            Assertions = new Assertions(objectContainer, outputHelper);
         }
 
         private Assertions Assertions { get; }
@@ -73,6 +73,33 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.StepDef
             var actualPayloads = JsonConvert.DeserializeObject<PagedResponse<List<Payload>>>(result);
             actualPayloads.Should().NotBeNull();
             Assertions.AssertPayloadList(DataHelper.Payload, actualPayloads?.Data);
+        }
+
+        [Then(@"I can see expected Payloads are returned with PayloadStatus (.*)")]
+        public void ThenICanSeeExpectedPayloadsAreReturnedWithPayloadStatus(string payloadStatus)
+        {
+            PayloadStatus status;
+
+            switch (payloadStatus)
+            {
+                case "InProgress":
+                    status = PayloadStatus.InProgress;
+                    break;
+                case "Complete":
+                    status = PayloadStatus.Complete;
+                    break;
+                default:
+                    throw new Exception($"Invalid payload status '{payloadStatus}'. Must be one of: InProgress, Complete");
+            }
+
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+
+            var actualPayloads = JsonConvert.DeserializeObject<PagedResponse<List<PayloadDto>>>(result);
+            actualPayloads.Should().NotBeNull();
+            Assertions.AssertPayloadListWithPayloadStatus(
+                DataHelper.Payload.Select(p => new PayloadDto(p)).ToList(),
+                actualPayloads?.Data,
+                status);
         }
 
         [Then(@"Search is working correctly for the (.*) payload")]

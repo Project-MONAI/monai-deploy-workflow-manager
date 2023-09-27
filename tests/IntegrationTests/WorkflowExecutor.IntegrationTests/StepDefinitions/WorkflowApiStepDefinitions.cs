@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,23 @@
  */
 
 using BoDi;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using Monai.Deploy.WorkflowManager.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
 using Newtonsoft.Json;
+using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class WorkflowApiStepDefinitions
     {
-        public WorkflowApiStepDefinitions(ObjectContainer objectContainer)
+        public WorkflowApiStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             DataHelper = objectContainer.Resolve<DataHelper>();
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
             ApiHelper = objectContainer.Resolve<ApiHelper>();
-            Assertions = new Assertions(objectContainer);
+            Assertions = new Assertions(objectContainer, outputHelper);
         }
 
         private ApiHelper ApiHelper { get; }
@@ -43,7 +44,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var workflowRevisions = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowRevision>>>(result);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
             Assertions.AssertWorkflowList(DataHelper.WorkflowRevisions, workflowRevisions.Data);
+
         }
 
         [Then(@"Pagination is working correctly for the (.*) workflow")]
@@ -83,5 +87,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             var workflowRevisions = JsonConvert.DeserializeObject<PagedResponse<List<WorkflowRevision>>>(result);
             workflowRevisions?.Data.Should().BeNullOrEmpty();
         }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
     }
 }

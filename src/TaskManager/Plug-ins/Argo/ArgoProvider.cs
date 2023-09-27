@@ -15,7 +15,6 @@
  */
 
 using Ardalis.GuardClauses;
-using Argo;
 using IdentityModel.Client;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
@@ -41,11 +40,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             _logger.CreatingArgoClient(baseUrl);
 
-            var ClientName = allowInsecure is true ? "Argo-Insecure" : "Argo";
+            var clientName = allowInsecure ? "Argo-Insecure" : "Argo";
 
-            var httpClient = _httpClientFactory.CreateClient(ClientName);
+            var httpClient = _httpClientFactory.CreateClient(clientName);
 
-            Guard.Against.Null(httpClient);
+            Guard.Against.Null(httpClient, nameof(httpClient));
 
             if (apiToken is not null)
             {

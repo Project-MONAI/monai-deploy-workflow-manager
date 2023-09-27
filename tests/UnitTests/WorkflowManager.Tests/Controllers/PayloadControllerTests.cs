@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,16 +22,18 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Controllers;
-using Monai.Deploy.WorkflowManager.Services;
-using Monai.Deploy.WorkflowManager.Wrappers;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Exceptions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.ControllersShared;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
 using Moq;
 using Xunit;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
 
-namespace Monai.Deploy.WorkflowManager.Test.Controllers
+namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
 {
     public class PayloadControllerTests
     {
@@ -55,9 +57,9 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         [Fact]
         public async Task GetListAsync_PayloadsExist_ReturnsList()
         {
-            var payloads = new List<Payload>
+            var payloads = new List<PayloadDto>
             {
-                new Payload
+                new PayloadDto
                 {
                     Id = Guid.NewGuid().ToString(),
                     PayloadId = Guid.NewGuid().ToString(),
@@ -66,13 +68,16 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
 
             _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(payloads);
             _payloadService.Setup(w => w.CountAsync()).ReturnsAsync(payloads.Count);
-            _uriService.Setup(s => s.GetPageUriString(It.IsAny<Filter.PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
+            _uriService.Setup(s => s.GetPageUriString(It.IsAny<PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
-            var result = await PayloadController.GetAllAsync(new Filter.PaginationFilter());
+            var result = await PayloadController.GetAllAsync(new PaginationFilter());
 
             var objectResult = Assert.IsType<OkObjectResult>(result);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            var responseValue = (PagedResponse<IEnumerable<PayloadDto>>)objectResult.Value;
 
-            var responseValue = (PagedResponse<List<Payload>>)objectResult.Value;
             responseValue.Data.Should().BeEquivalentTo(payloads);
             responseValue.FirstPage.Should().Be("unitTest");
             responseValue.LastPage.Should().Be("unitTest");
@@ -91,7 +96,7 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
         {
             _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
 
-            var result = await PayloadController.GetAllAsync(new Filter.PaginationFilter());
+            var result = await PayloadController.GetAllAsync(new PaginationFilter());
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
@@ -167,5 +172,86 @@ namespace Monai.Deploy.WorkflowManager.Test.Controllers
             const string expectedInstance = "/payload";
             Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
         }
+
+        [Fact]
+        public async Task DeleteAsync_ReturnsAccepted()
+        {
+            var payloadId = Guid.NewGuid().ToString();
+
+            _payloadService.Setup(w => w.DeletePayloadFromStorageAsync(payloadId)).ReturnsAsync(true);
+
+            var result = await PayloadController.DeleteAsync(payloadId);
+
+            Assert.IsType<AcceptedResult>(result);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_InvalidPayloadId_ReturnsProblem()
+        {
+            var payloadId = "invalid";
+
+            var result = await PayloadController.DeleteAsync(payloadId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+
+            const string expectedInstance = "/payload";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_NoPayloadFound_ReturnsProblem()
+        {
+            var payloadId = Guid.NewGuid().ToString();
+
+            _payloadService.Setup(w => w.DeletePayloadFromStorageAsync(payloadId)).ThrowsAsync(new MonaiNotFoundException());
+
+            var result = await PayloadController.DeleteAsync(payloadId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal((int)HttpStatusCode.NotFound, objectResult.StatusCode);
+
+            const string expectedInstance = "/payload";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_PayloadDeletedInProgress_ReturnsProblem()
+        {
+            var payloadId = Guid.NewGuid().ToString();
+
+            _payloadService.Setup(w => w.DeletePayloadFromStorageAsync(payloadId)).ThrowsAsync(new MonaiBadRequestException());
+
+            var result = await PayloadController.DeleteAsync(payloadId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+
+            const string expectedInstance = "/payload";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ErrorThrown_ReturnsProblem()
+        {
+            var payloadId = Guid.NewGuid().ToString();
+
+            _payloadService.Setup(w => w.DeletePayloadFromStorageAsync(payloadId)).ThrowsAsync(new Exception());
+
+            var result = await PayloadController.DeleteAsync(payloadId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            Assert.Equal((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+
+            const string expectedInstance = "/payload";
+            Assert.StartsWith(expectedInstance, ((ProblemDetails)objectResult.Value).Instance);
+        }
     }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 }

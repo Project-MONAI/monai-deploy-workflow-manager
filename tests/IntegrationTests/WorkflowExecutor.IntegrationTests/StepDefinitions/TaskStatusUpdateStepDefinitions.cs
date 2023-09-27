@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-using System.Linq;
 using BoDi;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
-using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.Support;
-using Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.Support;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class TaskStatusUpdateStepDefinitions
@@ -48,7 +46,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             _outputHelper = outputHelper;
             MinioDataSeeding = new MinioDataSeeding(objectContainer.Resolve<MinioClientUtil>(), DataHelper, _outputHelper);
-            Assertions = new Assertions(objectContainer);
+            Assertions = new Assertions(objectContainer, outputHelper);
         }
 
         [When(@"I publish a Task Update Message (.*) with status (.*)")]
@@ -166,7 +164,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Then(@"Clinical Review Metadata is added to workflow instance")]
         public void ClinicalReviewMetadataIsAddedtoWorkflowInstance()
         {
-
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
             RetryPolicy.Execute(() =>
             {
                 _outputHelper.WriteLine($"Retrieving workflow instance by id={DataHelper.TaskUpdateEvent.WorkflowInstanceId}");
@@ -239,8 +238,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             _outputHelper.WriteLine($"Retrieving workflow instance by id={workflowInstanceId}");
             var updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(workflowInstanceId);
             _outputHelper.WriteLine("Retrieved workflow instance");
-            TaskExecutionStatus ExecutionStatus;
-            ExecutionStatus = taskStatus.ToLower() switch
+            TaskExecutionStatus executionStatus;
+            executionStatus = taskStatus.ToLower() switch
             {
                 "accepted" => TaskExecutionStatus.Accepted,
                 "succeeded" => TaskExecutionStatus.Succeeded,
@@ -253,14 +252,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
 
             RetryPolicy.Execute(() =>
                 {
-                    if (updatedWorkflowInstance.Tasks.FirstOrDefault(x => x.TaskId == taskId)?.Status != ExecutionStatus)
+                    if (updatedWorkflowInstance.Tasks.FirstOrDefault(x => x.TaskId == taskId)?.Status != executionStatus)
                     {
                         updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(workflowInstanceId);
-                        throw new Exception($"Task Update Status for the task is {updatedWorkflowInstance.Tasks.FirstOrDefault(x => x.TaskId == taskId)?.Status} and it should be {ExecutionStatus}");
+                        throw new Exception($"Task Update Status for the task is {updatedWorkflowInstance.Tasks.FirstOrDefault(x => x.TaskId == taskId)?.Status} and it should be {executionStatus}");
                     }
                 });
 
-            updatedWorkflowInstance.Tasks.FirstOrDefault(x => x.TaskId == taskId)?.Status.Should().Be(ExecutionStatus);
+            updatedWorkflowInstance.Tasks.FirstOrDefault(x => x.TaskId == taskId)?.Status.Should().Be(executionStatus);
         }
 
         [Then(@"I can see the Metadata is copied to the workflow instance")]
@@ -322,5 +321,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 });
             }
         }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
     }
 }

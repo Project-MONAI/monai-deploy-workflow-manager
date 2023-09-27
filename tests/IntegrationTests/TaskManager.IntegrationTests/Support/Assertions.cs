@@ -36,10 +36,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             clinicalReviewRequestEvent.ExecutionId.Should().Be(taskDispatchEvent.ExecutionId);
             clinicalReviewRequestEvent.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId);
             clinicalReviewRequestEvent.TaskId.Should().Be(taskDispatchEvent.TaskId);
-            clinicalReviewRequestEvent.PatientMetadata.PatientId.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_id"));
-            clinicalReviewRequestEvent.PatientMetadata.PatientName.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_name"));
-            clinicalReviewRequestEvent.PatientMetadata.PatientSex.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_sex"));
-            clinicalReviewRequestEvent.PatientMetadata.PatientDob.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_dob"));
+            clinicalReviewRequestEvent.PatientMetadata!.PatientId.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_id"));
+            clinicalReviewRequestEvent.PatientMetadata!.PatientName.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_name"));
+            clinicalReviewRequestEvent.PatientMetadata!.PatientSex.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_sex"));
+            clinicalReviewRequestEvent.PatientMetadata!.PatientDob.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "patient_dob"));
+
+            if (Boolean.TryParse(GetTaskPluginArguments(taskDispatchEvent, "notifications"), out bool result))
+            {
+                clinicalReviewRequestEvent.Notifications.Should().Be(result);
+            }
+            else
+            {
+                clinicalReviewRequestEvent.Notifications.Should().Be(true);
+            }
+
             clinicalReviewRequestEvent.WorkflowName.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "workflow_name"));
 
             foreach (var file in clinicalReviewRequestEvent.Files)
@@ -53,6 +63,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                 file.RelativeRootPath.Should().Be(taskDispatchFile?.RelativeRootPath);
             }
             Output.WriteLine("Details of ClinicalReviewRequestEvent matches TaskDispatchEvent");
+        }
+
+        public void AssertEmailEvent(EmailRequestEvent emailRequestEvent, TaskDispatchEvent taskDispatchEvent)
+        {
+            Output.WriteLine("Asserting details of EmailRequestEvent with TaskDispatchEvent");
+            emailRequestEvent.TaskId.Should().Be(taskDispatchEvent.TaskId);
+            emailRequestEvent.WorkflowInstanceId.Should().Be(taskDispatchEvent.WorkflowInstanceId);
+            emailRequestEvent.WorkflowName.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "workflow_name", true));
+            emailRequestEvent.Emails.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "recipient_emails", true));
+            emailRequestEvent.Roles.Should().Be(GetTaskPluginArguments(taskDispatchEvent, "recipient_roles", true));
+            string.Join(',', emailRequestEvent.Metadata.Keys).Should().Be(GetTaskPluginArguments(taskDispatchEvent, "metadata_values"));
+            Output.WriteLine("Details of EmailRequestEvent matches TaskDispatchEvent");
         }
 
         public void AssertTaskDispatchEventStoredInMongo(List<TaskDispatchEventInfo> storedTaskDispatchEvent, TaskDispatchEvent taskDispatchEvent)
@@ -112,24 +134,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             Output.WriteLine("Details of TaskUpdateEvent matches TaskCallbackEvent");
         }
 
+        private string? GetTaskPluginArguments(TaskDispatchEvent taskDispatchEvent, string key, bool emptyIfNull = false)
+        {
+            taskDispatchEvent.TaskPluginArguments.TryGetValue(key, out var dictValue);
+
+            return emptyIfNull ? dictValue ?? string.Empty : dictValue;
+        }
+
         public void AssertTaskUpdateEventFromTaskDispatch(TaskUpdateEvent taskUpdateEvent, TaskDispatchEvent taskDispatchEvent, TaskExecutionStatus status)
         {
             Output.WriteLine("Asserting details of TaskUpdateEvent with TaskDispatchEvent");
             taskUpdateEvent.ExecutionId.Should().Be(taskDispatchEvent.ExecutionId);
-            taskUpdateEvent.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId); // - BUG 227 raised
+            taskUpdateEvent.CorrelationId.Should().Be(taskDispatchEvent.CorrelationId);
             taskUpdateEvent.Status.Should().Be(status);
             taskUpdateEvent.TaskId.Should().Be(taskDispatchEvent.TaskId);
             taskUpdateEvent.WorkflowInstanceId.Should().Be(taskDispatchEvent.WorkflowInstanceId);
             Output.WriteLine("Details of TaskUpdateEvent matches TaskDispatchEvent");
-        }
-
-        private string GetTaskPluginArguments(TaskDispatchEvent taskDispatchEvent, string key)
-        {
-            string? dictValue;
-
-            taskDispatchEvent.TaskPluginArguments.TryGetValue(key, out dictValue);
-
-            return dictValue;
         }
     }
 }

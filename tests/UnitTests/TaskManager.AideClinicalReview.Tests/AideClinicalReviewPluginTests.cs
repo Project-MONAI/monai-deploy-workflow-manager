@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Amazon.Runtime.Internal.Transform;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -26,8 +25,8 @@ using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Shared;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Moq;
 using Xunit;
@@ -105,6 +104,21 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Tests
             _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.AideClinicalReviewRequest), It.IsAny<Message>()), Times.Once());
         }
 
+        [Fact(DisplayName = "ExecuteTask - returns ExecutionStatus on success - Notifications false")]
+        public async Task AideClinicalReviewPlugin_ExecuteTask_ReturnsExecutionStatusOnSuccess_NotificatiosnFalse()
+        {
+            var message = GenerateTaskDispatchEventWithValidArguments(true, "false");
+
+            var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message);
+            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+
+            Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
+            Assert.Equal(FailureReason.None, result.FailureReason);
+            Assert.Equal("", result.Errors);
+
+            _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.AideClinicalReviewRequest), It.IsAny<Message>()), Times.Once());
+        }
+
         [Fact(DisplayName = "ExecuteTask - returns ExecutionStatus on success - Missing ReviewerRoles")]
         public async Task AideClinicalReviewPlugin_ExecuteTask_ReturnsExecutionStatusOnSuccessMissingReviewerRoles()
         {
@@ -170,7 +184,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Tests
             Assert.Equal("", result.Errors);
         }
 
-        private static TaskDispatchEvent GenerateTaskDispatchEventWithValidArguments(bool acceptance = true)
+        private static TaskDispatchEvent GenerateTaskDispatchEventWithValidArguments(bool acceptance = true, string notifications = "true")
         {
             var message = GenerateTaskDispatchEvent();
             message.TaskPluginArguments[Keys.WorkflowName] = "workflowName";
@@ -186,6 +200,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Tests
             message.TaskPluginArguments[Keys.ApplicationName] = "applicationname";
             message.TaskPluginArguments[Keys.Mode] = "mode";
             message.TaskPluginArguments[Keys.ReviewerRoles] = "admin,clinician";
+            message.TaskPluginArguments[Keys.Notifications] = notifications;
             message.Metadata[Keys.MetadataAcceptance] = acceptance;
             message.Metadata[Keys.MetadataUserId] = "userid";
             message.Metadata[Keys.MetadataReason] = "reason";

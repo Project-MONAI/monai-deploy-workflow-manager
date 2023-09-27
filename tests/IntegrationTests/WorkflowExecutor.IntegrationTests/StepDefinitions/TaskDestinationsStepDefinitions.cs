@@ -15,12 +15,12 @@
  */
 
 using BoDi;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;
 
-namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
+namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
 {
     [Binding]
     public class TaskDestinationsStepDefinitions
@@ -36,7 +36,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
             DataHelper = objectContainer.Resolve<DataHelper>();
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
-            Assertions = new Assertions(objectContainer);
+            Assertions = new Assertions(objectContainer, outputHelper);
             _outputHelper = outputHelper;
         }
 

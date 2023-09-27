@@ -33,6 +33,8 @@ jobs:
             image: ghcr.io/project-monai/monai-deploy-workflow-manager
           - dockerfile: TaskManager.Dockerfile
             image: ghcr.io/project-monai/monai-deploy-task-manager
+          - dockerfile: CallbackApp.Dockerfile
+            image: ghcr.io/project-monai/monai-deploy-task-manager-callback
     outputs:
       semVer: ${{ steps.gitversion.outputs.semVer }}
       majorMinorPatch: ${{ steps.gitversion.outputs.majorMinorPatch }}
@@ -52,7 +54,7 @@ jobs:
 
       - name: Determine Version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.9.15
+        uses: gittools/actions/gitversion/execute@v0.10.2
         with:
           useConfigFile: true
           updateAssemblyInfo: true
@@ -70,9 +72,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
-        if: ${{ !contains(github.ref, 'refs/heads/main') }}
         id: meta
-        uses: docker/metadata-action@v4.1.1
+        uses: docker/metadata-action@v4.4.0
         with:
           images: ${{ matrix.image }}
           tags: |
@@ -80,7 +81,7 @@ jobs:
             type=raw,value=${{ steps.gitversion.outputs.semVer }}
 
       - name: Build and Push Container Image for ${{ matrix.dockerfile }}
-        uses: docker/build-push-action@v3.2.0
+        uses: docker/build-push-action@v4.0.0
         with:
           context: .
           push: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/develop') ||contains(github.head_ref, 'release/') || contains(github.head_ref, 'feature/') || contains(github.head_ref, 'develop') }}
@@ -98,13 +99,12 @@ jobs:
           report-name: dockle-report
           failure-threshold: fatal
 
-      # Disable upload due to bug https://github.com/erzz/dockle-action/issues/18
-      # - name: Upload Dockle SARIF Report
-      #   uses: github/codeql-action/upload-sarif@v2
-      #   continue-on-error: true
-      #   if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
-      #   with:
-      #     sarif_file: dockle-report.sarif
+      - name: Upload Dockle SARIF Report
+        uses: github/codeql-action/upload-sarif@v2
+        continue-on-error: true
+        if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
+        with:
+          sarif_file: dockle-report.sarif
 
       - name: Trivy Vulnerability Scanner
         uses: aquasecurity/trivy-action@master
@@ -124,7 +124,7 @@ jobs:
 
       - name: Anchore Container Scan
         id: anchore-scan
-        uses: anchore/scan-action@v3.3.2
+        uses: anchore/scan-action@v3.3.5
         continue-on-error: true
         if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
@@ -156,7 +156,7 @@ jobs:
           dotnet-version: "6.0.x"
 
       - name: Enable NuGet cache
-        uses: actions/cache@v3.0.11
+        uses: actions/cache@v3.3.1
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -193,7 +193,7 @@ jobs:
           Get-ChildItem ~\release -Recurse
 
       - name: Upload docs
-        uses: actions/upload-artifact@v3.1.1
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: artifacts
           path: ~/release
@@ -226,12 +226,12 @@ jobs:
           msg: ${{ github.repository }}
 
       - name: Install GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/setup@v0.9.15
+        uses: gittools/actions/gitreleasemanager/setup@v0.10.2
         with:
           versionSpec: "0.13.x"
 
       - name: Create release with GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/create@v0.9.15
+        uses: gittools/actions/gitreleasemanager/create@v0.10.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           owner: ${{ steps.repo.outputs._0 }}
@@ -242,7 +242,7 @@ jobs:
             artifacts/mwm-docs-${{ env.SEMVER }}.zip
 
       - name: Publish release with GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/publish@v0.9.15
+        uses: gittools/actions/gitreleasemanager/publish@v0.10.2
         if: ${{ contains(github.ref, 'refs/heads/main') }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -251,7 +251,7 @@ jobs:
           tagName: ${{ env.MAJORMINORPATCH }}
 
       - name: Close release with GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/close@v0.9.15
+        uses: gittools/actions/gitreleasemanager/close@v0.10.2
         if: ${{ contains(github.ref, 'refs/heads/main') }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

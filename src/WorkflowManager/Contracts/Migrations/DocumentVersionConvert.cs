@@ -16,9 +16,10 @@
 
 using System;
 using Mongo.Migration.Documents;
+using MongoDB.Bson.Serialization;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Migrations
+namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 {
     public class DocumentVersionConvert : JsonConverter
     {
@@ -29,7 +30,7 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Migrations
             var minor = 0;
             var revision = 0;
 
-            var res = (reader.Value as string)?.Split(new char[] { ',' });
+            var res = (reader.Value as string)?.Split(new char[] { ',', '.' });
 
             if (res?.Length == 3)
             {
@@ -43,6 +44,24 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Migrations
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             serializer.Serialize(writer, value?.ToString());
+        }
+    }
+
+    public class DocumentVersionConverBson : IBsonSerializer
+    {
+        public Type ValueType => typeof(DocumentVersion);
+
+        public object Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+        {
+            var versionString = context.Reader.ReadString();
+            return new DocumentVersion(versionString);
+        }
+
+        public void Serialize(BsonSerializationContext context, BsonSerializationArgs args, object value)
+        {
+            var versionObj = (DocumentVersion)value;
+            var versionString = $"{versionObj.Major}.{versionObj.Minor}.{versionObj.Revision}";
+            context.Writer.WriteString(versionString);
         }
     }
 }

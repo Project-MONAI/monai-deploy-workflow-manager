@@ -13,12 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Mongo.Migration.Migrations.Document;
 using MongoDB.Bson;
 
-namespace Monai.Deploy.WorkflowManager.Contracts.Migrations
+namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 {
     public class M001_Payload_addVerion : DocumentMigration<Payload>
     {
@@ -34,8 +33,8 @@ namespace Monai.Deploy.WorkflowManager.Contracts.Migrations
             {
                 document.Remove("Version");
             }
-            catch (Exception)
-            {
+            catch
+            {  // can ignore we dont want failures stopping startup !
             }
         }
     }

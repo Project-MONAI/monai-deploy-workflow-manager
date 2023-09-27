@@ -19,7 +19,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace Monai.Deploy.InformaticsGateway.SharedTest
+namespace Monai.Deploy.WorkflowManager.SharedTest
 {
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.

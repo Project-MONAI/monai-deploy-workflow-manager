@@ -15,33 +15,57 @@
  */
 
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Common.Services;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Storage.Services;
+using Monai.Deploy.Storage.API;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Exceptions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Storage.Services;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
 {
     public class PayloadServiceTests
     {
         private IPayloadService PayloadService { get; set; }
 
-        private readonly Mock<IPayloadRepsitory> _payloadRepository;
+        private readonly Mock<IPayloadRepository> _payloadRepository;
+        private readonly Mock<IWorkflowInstanceRepository> _workflowInstanceRepository;
         private readonly Mock<IDicomService> _dicomService;
+        private readonly Mock<IServiceScopeFactory> _serviceScopeFactory;
+        private readonly Mock<IServiceProvider> _serviceProvider;
+        private readonly Mock<IServiceScope> _serviceScope;
+        private readonly Mock<IStorageService> _storageService;
         private readonly Mock<ILogger<PayloadService>> _logger;
 
         public PayloadServiceTests()
         {
-            _payloadRepository = new Mock<IPayloadRepsitory>();
+            _payloadRepository = new Mock<IPayloadRepository>();
+            _workflowInstanceRepository = new Mock<IWorkflowInstanceRepository>();
             _dicomService = new Mock<IDicomService>();
+            _serviceProvider = new Mock<IServiceProvider>();
+            _storageService = new Mock<IStorageService>();
             _logger = new Mock<ILogger<PayloadService>>();
 
-            PayloadService = new PayloadService(_payloadRepository.Object, _dicomService.Object, _logger.Object);
+            _serviceScopeFactory = new Mock<IServiceScopeFactory>();
+            _serviceScope = new Mock<IServiceScope>();
+
+            _serviceScope.Setup(x => x.ServiceProvider).Returns(_serviceProvider.Object);
+
+            _serviceScopeFactory
+                .Setup(x => x.CreateScope())
+                .Returns(_serviceScope.Object);
+
+            _serviceProvider
+                .Setup(x => x.GetService(typeof(IStorageService)))
+                .Returns(_storageService.Object);
+
+            PayloadService = new PayloadService(_payloadRepository.Object, _dicomService.Object, _workflowInstanceRepository.Object, _serviceScopeFactory.Object, _logger.Object);
         }
 
         [Fact]
@@ -51,8 +75,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
             {
                 Timestamp = DateTime.UtcNow,
                 Bucket = "bucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 PayloadId = Guid.NewGuid(),
                 Workflows = new List<string> { Guid.NewGuid().ToString() },
@@ -72,8 +95,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
                 Timestamp = workflowRequest.Timestamp,
                 Bucket = workflowRequest.Bucket,
                 FileCount = workflowRequest.FileCount,
-                CalledAeTitle = workflowRequest.CalledAeTitle,
-                CallingAeTitle = workflowRequest.CallingAeTitle,
+                DataTrigger = workflowRequest.DataTrigger,
                 CorrelationId = workflowRequest.CorrelationId,
                 PayloadId = workflowRequest.PayloadId.ToString(),
                 PatientDetails = patientDetails,
@@ -97,8 +119,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
             {
                 Timestamp = DateTime.UtcNow,
                 Bucket = "bucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 PayloadId = Guid.NewGuid(),
                 Workflows = new List<string> { Guid.NewGuid().ToString() },
@@ -118,8 +139,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
                 Timestamp = workflowRequest.Timestamp,
                 Bucket = workflowRequest.Bucket,
                 FileCount = workflowRequest.FileCount,
-                CalledAeTitle = workflowRequest.CalledAeTitle,
-                CallingAeTitle = workflowRequest.CallingAeTitle,
+                DataTrigger = workflowRequest.DataTrigger,
                 CorrelationId = workflowRequest.CorrelationId,
                 PayloadId = workflowRequest.PayloadId.ToString(),
                 PatientDetails = patientDetails,
@@ -154,8 +174,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
                 Timestamp = DateTime.UtcNow,
                 PatientDetails = patientDetails,
                 Bucket = "bucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 PayloadId = Guid.NewGuid().ToString(),
                 Workflows = new List<string> { Guid.NewGuid().ToString() },
@@ -172,6 +191,49 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
         public async Task GetByIdAsync_NullId_ReturnsThrowsException() => await Assert.ThrowsAsync<ArgumentNullException>(async () => await PayloadService.GetByIdAsync(null));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         [Fact]
+        public async Task GetAll_ReturnsCompletedPayloads()
+        {
+            var patientDetails = new PatientDetails
+            {
+                PatientDob = new DateTime(1996, 02, 05),
+                PatientId = Guid.NewGuid().ToString(),
+                PatientName = "Steve",
+                PatientSex = "male"
+            };
+
+            var input = new List<Payload>
+            {
+                new Payload
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    PatientDetails = patientDetails,
+                    Bucket = "bucket",
+                    DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Workflows = new List<string> { Guid.NewGuid().ToString() }
+                }
+            };
+
+            var expected = input.Select(payload => new PayloadDto(payload)).ToList();
+            expected.First().PayloadStatus = PayloadStatus.Complete;
+
+            _payloadRepository.Setup(p =>
+                p.GetAllAsync(
+                    It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>())
+                ).ReturnsAsync(() => input);
+            var param = new List<string>() { input.First().Id };
+            _workflowInstanceRepository.Setup(r =>
+                r.GetByPayloadIdsAsync(param)
+                ).ReturnsAsync(() => new List<WorkflowInstance>());
+
+            var result = await PayloadService.GetAllAsync(null, null);
+            result.First().PayloadStatus.Should().Be(PayloadStatus.Complete);
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
         public async Task GetAll_ReturnsPayloads()
         {
             var patientDetails = new PatientDetails
@@ -182,26 +244,133 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests.Services
                 PatientSex = "male"
             };
 
-            var payload = new List<Payload>
+            var input = new List<Payload>
             {
                 new Payload
                 {
+                    Id = Guid.NewGuid().ToString(),
                     Timestamp = DateTime.UtcNow,
                     PatientDetails = patientDetails,
                     Bucket = "bucket",
-                    CalledAeTitle = "aetitle",
-                    CallingAeTitle = "aetitle",
+                    DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Workflows = new List<string> { Guid.NewGuid().ToString() }
+                },
+                new Payload
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    PatientDetails = patientDetails,
+                    Bucket = "bucket",
+                    DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    PayloadId = Guid.NewGuid().ToString(),
+                    Workflows = new List<string> { Guid.NewGuid().ToString() }
+                },
+                new Payload
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Timestamp = DateTime.UtcNow,
+                    PatientDetails = patientDetails,
+                    Bucket = "bucket",
+                    DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                     CorrelationId = Guid.NewGuid().ToString(),
                     PayloadId = Guid.NewGuid().ToString(),
                     Workflows = new List<string> { Guid.NewGuid().ToString() }
                 }
             };
 
-            _payloadRepository.Setup(p => p.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(() => payload);
+            var expected = input.Select(payload => new PayloadDto(payload)).ToList();
+            expected[0].PayloadStatus = PayloadStatus.InProgress;
+            expected[1].PayloadStatus = PayloadStatus.Complete;
+            expected[2].PayloadStatus = PayloadStatus.Complete;
 
-            var result = await PayloadService.GetAllAsync();
+            _payloadRepository.Setup(p =>
+                p.GetAllAsync(
+                    It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>())
+                ).ReturnsAsync(() => input);
+            var param = input.Select(i => i.PayloadId).ToList();
+            _workflowInstanceRepository.Setup(r =>
+                r.GetByPayloadIdsAsync(param)
+                ).ReturnsAsync(() =>
+                {
+                    return new List<WorkflowInstance>()
+                    {
+                        new WorkflowInstance()
+                        {
+                            PayloadId = input.First().PayloadId,
+                            Status = Status.Created
+                        },
+                        new WorkflowInstance()
+                        {
+                            PayloadId = input.Skip(1).First().PayloadId,
+                            Status = Status.Succeeded,
+                        }
+                    };
+                });
 
-            result.Should().BeEquivalentTo(payload);
+            var result = await PayloadService.GetAllAsync(null, null);
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task DeletePayloadFromStorageAsync_ReturnsTrue()
+        {
+            var payloadId = Guid.NewGuid().ToString();
+
+            _payloadRepository.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(() => new Payload());
+            _payloadRepository.Setup(p => p.UpdateAsync(It.IsAny<Payload>())).ReturnsAsync(() => true);
+            _workflowInstanceRepository.Setup(r => r.GetByPayloadIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(() => new List<WorkflowInstance>());
+
+            _storageService.Setup(s => s.RemoveObjectsAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), default));
+
+            var result = await PayloadService.DeletePayloadFromStorageAsync(payloadId);
+
+            result.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task DeletePayloadFromStorageAsync_ThrowsMonaiNotFoundException()
+        {
+            var payloadId = Guid.NewGuid().ToString();
+
+#pragma warning disable CS8603 // Possible null reference return.
+            _payloadRepository.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(() => null);
+#pragma warning restore CS8603 // Possible null reference return.
+
+            await Assert.ThrowsAsync<MonaiNotFoundException>(async () => await PayloadService.DeletePayloadFromStorageAsync(payloadId));
+        }
+
+        [Fact]
+        public async Task DeletePayloadFromStorageAsync_ThrowsMonaiBadRequestExceptionWhenDeletionAlreadyInProgress()
+        {
+            var payloadId = Guid.NewGuid().ToString();
+
+            _payloadRepository.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(() => new Payload
+            {
+                PayloadDeleted = PayloadDeleted.InProgress
+            });
+
+            await Assert.ThrowsAsync<MonaiBadRequestException>(async () => await PayloadService.DeletePayloadFromStorageAsync(payloadId));
+        }
+
+        [Fact]
+        public async Task DeletePayloadFromStorageAsync_ThrowsMonaiBadRequestExceptionWhenWorkflowInstancesInProgress()
+        {
+            var payloadId = Guid.NewGuid().ToString();
+
+            _payloadRepository.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(() => new Payload());
+            _payloadRepository.Setup(p => p.UpdateAsync(It.IsAny<Payload>())).ReturnsAsync(() => true);
+            _workflowInstanceRepository.Setup(r => r.GetByPayloadIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(() => new List<WorkflowInstance>
+            {
+                new WorkflowInstance
+                {
+                    Status = Status.Created,
+                }
+            });
+
+            await Assert.ThrowsAsync<MonaiBadRequestException>(async () => await PayloadService.DeletePayloadFromStorageAsync(payloadId));
         }
     }
 }

@@ -43,6 +43,29 @@ Scenario Outline: Publish a valid workflow request which creates multiple workfl
     | Basic_Workflow_1 | Basic_Workflow_3 | Basic_AeTitle_WF_Request  |
 
 @WorkflowRequest
+Scenario Outline: Publish a workflow request which triggers a worflow based on called_aet and calling_aet
+    Given I have a clinical workflow <workflow>
+    When I publish a Workflow Request Message <workflowRequestMessage> with no artifacts
+    Then I can see 1 Workflow Instance is created
+    And 1 Task Dispatch event is published
+    Examples:
+    | workflow                              | workflowRequestMessage            |
+    | Workflow_Called_AET                   | Called_AET_AIDE_Calling_AET_TEST  |
+    | Workflow_Called_AET_Calling_AET       | Called_AET_AIDE_Calling_AET_PACS1 |
+    | Workflow_Called_AET_Multi_Calling_AET | Called_AET_AIDE_Calling_AET_PACS1 |
+    | Workflow_Called_AET_Multi_Calling_AET | Called_AET_AIDE_Calling_AET_PACS2 |
+
+@WorkflowRequest
+Scenario Outline: Publish a workflow request which doesnt trigger a worflow based calling_aet
+    Given I have a clinical workflow <workflow>
+    When I publish a Workflow Request Message <workflowRequestMessage> with no artifacts
+    Then I can see no Workflow Instances are created
+    Examples:
+    | workflow                              | workflowRequestMessage           |
+    | Workflow_Called_AET_Calling_AET       | Called_AET_AIDE_Calling_AET_TEST |
+    | Workflow_Called_AET_Multi_Calling_AET | Called_AET_AIDE_Calling_AET_TEST |
+
+@WorkflowRequest
 Scenario: Publish a valid workflow request with mismatched AE title and workflow ID
     Given I have a clinical workflow Basic_Workflow_1
     And I have a clinical workflow Basic_Workflow_3

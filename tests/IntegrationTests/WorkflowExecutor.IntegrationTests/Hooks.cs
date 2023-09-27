@@ -17,8 +17,8 @@
 using BoDi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;
@@ -52,6 +52,9 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         private IObjectContainer ObjectContainer { get; set; }
         private static IHost? Host { get; set; }
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+
         /// <summary>
         /// Runs before all tests to create static implementions of Rabbit and Mongo clients as well as starting the WorkflowManager using WebApplicationFactory.
         /// </summary>
@@ -81,6 +84,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             TestExecutionConfig.MongoConfig.WorkflowCollection = "Workflows";
             TestExecutionConfig.MongoConfig.WorkflowInstanceCollection = "WorkflowInstances";
             TestExecutionConfig.MongoConfig.PayloadCollection = "Payloads";
+            TestExecutionConfig.MongoConfig.ExecutionStatsCollection = "ExecutionStats";
 
             TestExecutionConfig.MinioConfig.Endpoint = config.GetValue<string>("WorkflowManager:storage:settings:endpoint");
             TestExecutionConfig.MinioConfig.AccessKey = config.GetValue<string>("WorkflowManager:storage:settings:accessKey");
@@ -175,5 +179,12 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         {
             Host?.StopAsync();
         }
+        [AfterTestRun(Order = 2)]
+        public static void RemoveQueues()
+        {
+            RabbitConnectionFactory.DeleteAllQueues();
+        }
     }
 }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8604 // Possible null reference argument.

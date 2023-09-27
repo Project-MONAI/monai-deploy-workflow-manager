@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+using Monai.Deploy.WorkflowManager.Common.TaskManager.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
 using Polly;
@@ -23,6 +24,9 @@ using Polly.Retry;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
     /// <summary>
     /// Hooks class for setting up the integration tests.
     /// </summary>
@@ -42,12 +46,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         private static RabbitPublisher? TaskCallbackPublisher { get; set; }
         private static RabbitConsumer? TaskUpdateConsumer { get; set; }
         public static RabbitConsumer? ClinicalReviewConsumer { get; private set; }
+        public static RabbitConsumer? EmailConsumer { get; private set; }
         private static MinioClientUtil? MinioClient { get; set; }
         private static MongoClientUtil? MongoClient { get; set; }
-        public static AsyncRetryPolicy RetryPolicy { get; private set; }
+        public static AsyncRetryPolicy? RetryPolicy { get; private set; }
         private IObjectContainer ObjectContainer { get; set; }
-        private static IHost? Host { get; set; }
         private static HttpClient? HttpClient { get; set; }
+        private static WebApplicationFactory<Program>? WebApplicationFactory { get; set; }
 
         /// <summary>
         /// Runs before all tests to create static implementions of Rabbit and Mongo clients as well as starting the WorkflowManager using WebApplicationFactory.
@@ -70,10 +75,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             TestExecutionConfig.RabbitConfig.TaskCallbackQueue = "md.tasks.callback";
             TestExecutionConfig.RabbitConfig.TaskUpdateQueue = "md.tasks.update";
             TestExecutionConfig.RabbitConfig.ClinicalReviewQueue = "aide.clinical_review.request";
+            TestExecutionConfig.RabbitConfig.EmailQueue = "aide.notification_email.request";
+            TestExecutionConfig.RabbitConfig.TaskCancellationQueue = "md.tasks.cancellation";
 
             TestExecutionConfig.MongoConfig.ConnectionString = config.GetValue<string>("WorkloadManagerDatabase:ConnectionString");
             TestExecutionConfig.MongoConfig.Database = config.GetValue<string>("WorkloadManagerDatabase:DatabaseName");
             TestExecutionConfig.MongoConfig.TaskDispatchEventCollection = "TaskDispatchEvents";
+            TestExecutionConfig.MongoConfig.ExecutionStatsCollection = "ExecutionStats";
 
             TestExecutionConfig.MinioConfig.Endpoint = config.GetValue<string>("WorkflowManager:storage:settings:endpoint");
             TestExecutionConfig.MinioConfig.AccessKey = config.GetValue<string>("WorkflowManager:storage:settings:accessKey");
@@ -85,11 +93,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 
             RabbitConnectionFactory.DeleteAllQueues();
 
+            WebApplicationFactory = WebAppFactory.GetWebApplicationFactory();
+            HttpClient = WebApplicationFactory?.CreateClient();
+
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             MongoClient = new MongoClientUtil();
-            HttpClient = new HttpClient();
             MinioClient = new MinioClientUtil();
-            Host = TaskManagerStartup.StartTaskManager();
 
             RabbitConnectionFactory.SetRabbitConnection();
         }
@@ -114,7 +123,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         {
             await RetryPolicy.ExecuteAsync(async () =>
             {
-                var response = await TaskManagerStartup.GetQueueStatus(HttpClient, TestExecutionConfig.RabbitConfig.VirtualHost, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+                var response = await WebAppFactory.GetQueueStatus(HttpClient, TestExecutionConfig.RabbitConfig.VirtualHost, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
                 var content = response.Content.ReadAsStringAsync().Result;
 
                 if (content.Contains("error"))
@@ -131,6 +140,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             TaskCallbackPublisher = new RabbitPublisher(TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
             TaskUpdateConsumer = new RabbitConsumer(TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
             ClinicalReviewConsumer = new RabbitConsumer(TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ClinicalReviewQueue);
+            EmailConsumer = new RabbitConsumer(TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.EmailQueue);
+        }
+
+        [BeforeTestRun(Order = 3)]
+        public static async Task CreateBucket()
+        {
+            await MinioClient.CreateBucket(TestExecutionConfig.MinioConfig.Bucket);
         }
 
         /// <summary>
@@ -143,6 +159,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             ObjectContainer.RegisterInstanceAs(TaskCallbackPublisher, "TaskCallbackPublisher");
             ObjectContainer.RegisterInstanceAs(TaskUpdateConsumer, "TaskUpdateConsumer");
             ObjectContainer.RegisterInstanceAs(ClinicalReviewConsumer, "ClinicalReviewConsumer");
+            ObjectContainer.RegisterInstanceAs(EmailConsumer, "EmailConsumer");
             ObjectContainer.RegisterInstanceAs(MinioClient);
             var dataHelper = new DataHelper(ObjectContainer);
             ObjectContainer.RegisterInstanceAs(dataHelper);
@@ -159,7 +176,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         [AfterTestRun(Order = 1)]
         public static void TearDownRabbit()
         {
-            Host?.StopAsync();
+            RabbitConnectionFactory.DeleteAllQueues();
+            WebApplicationFactory?.Dispose();
         }
     }
 }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.

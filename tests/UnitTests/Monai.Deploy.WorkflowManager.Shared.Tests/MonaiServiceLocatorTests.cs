@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-using Monai.Deploy.WorkflowManager.Shared;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Moq;
 
-namespace Monai.Deploy.InformaticsGateway.Test.Repositories
+namespace Monai.Deploy.WorkflowManager.Test.Repositories
 {
     public class TestServiceA : IMonaiService
     {

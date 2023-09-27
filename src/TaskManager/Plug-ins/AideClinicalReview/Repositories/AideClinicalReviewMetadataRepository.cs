@@ -50,12 +50,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Repositori
 
         private void Validate()
         {
-            Guard.Against.Null(DispatchEvent);
-            Guard.Against.Null(CallbackEvent);
+            Guard.Against.Null(DispatchEvent, nameof(DispatchEvent));
+            Guard.Against.Null(CallbackEvent, nameof(CallbackEvent));
 
-            Guard.Against.NullOrWhiteSpace(DispatchEvent.WorkflowInstanceId);
-            Guard.Against.NullOrWhiteSpace(DispatchEvent.ExecutionId);
-            Guard.Against.NullOrWhiteSpace(DispatchEvent.PayloadId);
+            Guard.Against.NullOrWhiteSpace(DispatchEvent.WorkflowInstanceId, nameof(DispatchEvent.WorkflowInstanceId));
+            Guard.Against.NullOrWhiteSpace(DispatchEvent.ExecutionId, nameof(DispatchEvent.ExecutionId));
+            Guard.Against.NullOrWhiteSpace(DispatchEvent.PayloadId, nameof(DispatchEvent.PayloadId));
         }
 
         public override Task<Dictionary<string, object>> RetrieveMetadata(CancellationToken cancellationToken = default)

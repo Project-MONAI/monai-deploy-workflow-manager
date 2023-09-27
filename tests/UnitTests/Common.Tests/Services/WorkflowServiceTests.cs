@@ -15,10 +15,10 @@
  */
 
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Common.Services;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Moq;
 using Xunit;
 
@@ -42,6 +42,7 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
         [Fact]
         public async Task WorkflowService_NullWorkflow_ThrowsException()
         {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             await Assert.ThrowsAsync<ArgumentNullException>(() => WorkflowService.UpdateAsync(null, null));
         }
 
@@ -52,6 +53,36 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
 
             Assert.Null(result);
         }
+
+        [Fact]
+        public async Task WorkflowService_GetAsync_With_Empty()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => WorkflowService.GetAsync(string.Empty));
+        }
+
+        [Fact]
+        public async Task WorkflowService_GetByNameAsync_With_Empty()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => WorkflowService.GetByNameAsync(string.Empty));
+        }
+
+        [Fact]
+        public async Task WorkflowService_CreateAsync_With_Empty()
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(() => WorkflowService.CreateAsync(null));
+        }
+
+        [Fact]
+        public async Task WorkflowService_CreateAsync_With_ValidReturn()
+        {
+            var expectedResult = "1";
+            _workflowRepository.Setup(w => w.CreateAsync(It.IsAny<Workflow>())).ReturnsAsync(expectedResult);
+            var tasks = new TaskObject[] { new TaskObject() };
+            var result = await WorkflowService.CreateAsync(new Workflow() { Name = "workflow1", Tasks = tasks });
+
+            Assert.Equal(expectedResult, result);
+        }
+
 
         [Fact]
         public async Task WorkflowService_WorkflowExists_ReturnsWorkflowId()
@@ -84,9 +115,44 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowRevision.WorkflowId)).ReturnsAsync(workflowRevision);
             _workflowRepository.Setup(w => w.UpdateAsync(It.IsAny<Workflow>(), workflowRevision)).ReturnsAsync(workflowRevision.WorkflowId);
 
-            var result = await WorkflowService.UpdateAsync(new Workflow(), workflowRevision.WorkflowId);
+            var result = await WorkflowService.UpdateAsync(new Workflow(), workflowRevision.WorkflowId, true);
 
             Assert.Equal(workflowRevision.WorkflowId, result);
         }
+
+        [Fact]
+        public async Task WorkflowService_DeleteWorkflow_With_Empty()
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(() => WorkflowService.DeleteWorkflowAsync(null));
+        }
+
+        [Fact]
+        public async Task WorkflowService_DeleteWorkflow_Calls_SoftDelete()
+        {
+            var result = await WorkflowService.DeleteWorkflowAsync(new WorkflowRevision());
+            _workflowRepository.Verify(r => r.SoftDeleteWorkflow(It.IsAny<WorkflowRevision>()), Times.Once());
+        }
+
+        [Fact]
+        public async Task WorkflowService_Count_Calls_Count()
+        {
+            var result = await WorkflowService.CountAsync();
+            _workflowRepository.Verify(r => r.CountAsync(), Times.Once());
+        }
+
+        [Fact]
+        public async Task WorkflowService_GetCountByAeTitleAsync_Calls_Count()
+        {
+            var result = await WorkflowService.GetCountByAeTitleAsync("string");
+            _workflowRepository.Verify(r => r.GetCountByAeTitleAsync(It.IsAny<string>()), Times.Once());
+        }
+
+        [Fact]
+        public async Task WorkflowService_GetAllAsync_Calls_GetAllAsync()
+        {
+            var result = await WorkflowService.GetAllAsync(1, 2);
+            _workflowRepository.Verify(r => r.GetAllAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Once());
+        }
     }
 }
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.

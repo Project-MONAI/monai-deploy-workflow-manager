@@ -22,15 +22,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Common.Exceptions;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Configuration;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Filter;
-using Monai.Deploy.WorkflowManager.Logging;
-using Monai.Deploy.WorkflowManager.Services;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Exceptions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
 
-namespace Monai.Deploy.WorkflowManager.Controllers
+namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
 {
     /// <summary>
     /// Workflow Instances Controller.
@@ -39,6 +40,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
     [Route("workflowinstances")]
     public class WorkflowInstanceController : AuthenticatedApiControllerBase
     {
+        // ReSharper disable once InconsistentNaming
         private const string ENDPOINT = "/workflowinstances/";
         private readonly IOptions<WorkflowManagerOptions> _options;
         private readonly IWorkflowInstanceService _workflowInstanceService;
@@ -78,7 +80,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
         [ProducesResponseType(typeof(IList<WorkflowInstance>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetListAsync([FromQuery] PaginationFilter filter, [FromQuery] string status = null, [FromQuery] string? payloadId = null, [FromQuery] bool disablePagination = false)
+        public async Task<IActionResult> GetListAsync([FromQuery] PaginationFilter filter, [FromQuery] string status = null, [FromQuery] string payloadId = null, [FromQuery] bool disablePagination = false)
         {
             try
             {
@@ -110,7 +112,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
 
                 var dataTotal = await _workflowInstanceService.FilteredCountAsync(parsedStatus, payloadId);
 
-                var pagedReponse = CreatePagedReponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
+                var pagedReponse = CreatePagedResponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
 
                 return Ok(pagedReponse);
             }
@@ -141,7 +143,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 return Problem($"Failed to validate {nameof(id)}, not a valid GUID", $"{ENDPOINT}{id}", BadRequest);
             }
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["workflowId"] = id,
             });
@@ -219,7 +221,7 @@ namespace Monai.Deploy.WorkflowManager.Controllers
                 return Problem($"Failed to validate {nameof(executionId)}, not a valid GUID", $"/workflows/{id}/executions/{executionId}/acknowledge", BadRequest);
             }
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["workflowId"] = id,
                 ["executionId"] = executionId,

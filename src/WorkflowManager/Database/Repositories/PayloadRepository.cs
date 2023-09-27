@@ -20,16 +20,16 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Database.Options;
-using Monai.Deploy.WorkflowManager.Logging;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Database.Options;
+using Monai.Deploy.WorkflowManager.Common.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace Monai.Deploy.WorkflowManager.Database.Repositories
+namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 {
-    public class PayloadRepository : RepositoryBase, IPayloadRepsitory
+    public class PayloadRepository : RepositoryBase, IPayloadRepository
     {
         private readonly IMongoCollection<Payload> _payloadCollection;
         private readonly ILogger<PayloadRepository> _logger;
@@ -69,7 +69,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             }
         }
 
-        public async Task<IList<Payload>> GetAllAsync(int? skip = null, int? limit = null, string patientId = "", string patientName = "")
+        public async Task<IList<Payload>> GetAllAsync(int? skip = null, int? limit = null, string? patientId = "", string? patientName = "")
         {
             var builder = Builders<Payload>.Filter;
             var filter = builder.Empty;
@@ -91,7 +91,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
         public async Task<Payload> GetByIdAsync(string payloadId)
         {
-            Guard.Against.NullOrWhiteSpace(payloadId);
+            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
 
             var payload = await _payloadCollection
                 .Find(x => x.PayloadId == payloadId)
@@ -100,10 +100,28 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             return payload;
         }
 
+        public async Task<bool> UpdateAsync(Payload payload)
+        {
+            Guard.Against.Null(payload, nameof(payload));
+
+            try
+            {
+                var filter = Builders<Payload>.Filter.Eq(p => p.PayloadId, payload.PayloadId);
+                await _payloadCollection.ReplaceOneAsync(filter, payload);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.DbUpdatePayloadError(payload.PayloadId, ex);
+                return false;
+            }
+        }
+
         public async Task<bool> UpdateAssociatedWorkflowInstancesAsync(string payloadId, IEnumerable<string> workflowInstances)
         {
-            Guard.Against.NullOrEmpty(workflowInstances);
-            Guard.Against.NullOrWhiteSpace(payloadId);
+            Guard.Against.NullOrEmpty(workflowInstances, nameof(workflowInstances));
+            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
 
             try
             {

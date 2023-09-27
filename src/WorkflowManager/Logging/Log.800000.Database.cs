@@ -16,9 +16,9 @@
 
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.Logging
+namespace Monai.Deploy.WorkflowManager.Common.Logging
 {
     public static partial class Log
     {
@@ -57,5 +57,11 @@ namespace Monai.Deploy.WorkflowManager.Logging
 
         [LoggerMessage(EventId = 800012, Level = LogLevel.Error, Message = "Failed to update tasks for workflow instance '{workflowInstanceId}'.")]
         public static partial void DbUpdateTasksError(this ILogger logger, string workflowInstanceId, Exception ex);
+
+        [LoggerMessage(EventId = 800013, Level = LogLevel.Error, Message = "Database call failed in {methodName}.")]
+        public static partial void DatabaseException(this ILogger logger, string methodName, Exception ex);
+
+        [LoggerMessage(EventId = 800014, Level = LogLevel.Error, Message = "Failed to update payload: '{payloadId}'.")]
+        public static partial void DbUpdatePayloadError(this ILogger logger, string payloadId, Exception ex);
     }
 }

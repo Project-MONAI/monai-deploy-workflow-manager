@@ -20,13 +20,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Database.Options;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Database.Options;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-namespace Monai.Deploy.WorkflowManager.Database.Repositories
+namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 {
     public class WorkflowRepository : RepositoryBase, IWorkflowRepository
     {
@@ -43,6 +43,35 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
             var mongoDatabase = client.GetDatabase(databaseSettings.Value.DatabaseName);
             _workflowCollection = mongoDatabase.GetCollection<WorkflowRevision>("Workflows");
+            EnsureIndex().GetAwaiter().GetResult();
+        }
+
+        private async Task EnsureIndex()
+        {
+            Guard.Against.Null(_workflowCollection, "WorkflowCollection");
+
+            var asyncCursor = (await _workflowCollection.Indexes.ListAsync());
+            var bsonDocuments = (await asyncCursor.ToListAsync());
+            var indexes = bsonDocuments.Select(_ => _.GetElement("name").Value.ToString()).ToList();
+
+            // If index not present create it else skip.
+            if (!indexes.Any(i => i is not null && i.Equals("AeTitleIndex")))
+            {
+                // Create Index here
+
+                var options = new CreateIndexOptions()
+                {
+                    Name = "AeTitleIndex"
+                };
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                var model = new CreateIndexModel<WorkflowRevision>(
+                    Builders<WorkflowRevision>.IndexKeys.Ascending(s => s.Workflow.InformaticsGateway.AeTitle),
+                    options
+                    );
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
+                await _workflowCollection.Indexes.CreateOneAsync(model);
+            }
         }
 
         public List<WorkflowRevision> GetWorkflowsList()
@@ -123,6 +152,29 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
             return workflow;
         }
 
+        public async Task<IEnumerable<WorkflowRevision>> GetAllByAeTitleAsync(string aeTitle, int? skip, int? limit)
+        {
+            Guard.Against.NullOrWhiteSpace(aeTitle, nameof(aeTitle));
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            var workflows = await _workflowCollection
+                .Find(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle && x.Deleted == null)
+                .Skip(skip)
+                .Limit(limit)
+                .ToListAsync();
+
+            return workflows
+                .GroupBy(w => w.WorkflowId)
+                .Select(g => g.First())
+                .ToList(); ;
+        }
+
+        public async Task<long> GetCountByAeTitleAsync(string aeTitle)
+        {
+            Guard.Against.NullOrWhiteSpace(aeTitle, nameof(aeTitle));
+            return await _workflowCollection
+                .CountDocumentsAsync(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle && x.Deleted == null);
+        }
+
         public async Task<IList<WorkflowRevision>> GetWorkflowsByAeTitleAsync(List<string> aeTitles)
         {
             Guard.Against.NullOrEmpty(aeTitles, nameof(aeTitles));
@@ -147,6 +199,26 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
                 .ToList();
 
             return workflows;
+        }
+
+        public async Task<IList<WorkflowRevision>> GetWorkflowsForWorkflowRequestAsync(string calledAeTitle, string callingAeTitle)
+        {
+            Guard.Against.NullOrEmpty(calledAeTitle, nameof(calledAeTitle));
+            Guard.Against.NullOrEmpty(callingAeTitle, nameof(callingAeTitle));
+
+            var wfs = await _workflowCollection
+                .Find(x =>
+                    x.Workflow != null &&
+                    x.Workflow.InformaticsGateway != null &&
+                    ((x.Workflow.InformaticsGateway.AeTitle == calledAeTitle &&
+                        (x.Workflow.InformaticsGateway.DataOrigins == null ||
+                        x.Workflow.InformaticsGateway.DataOrigins.Length == 0)) ||
+                    x.Workflow.InformaticsGateway.AeTitle == calledAeTitle &&
+                        x.Workflow.InformaticsGateway.DataOrigins != null &&
+                        x.Workflow.InformaticsGateway.DataOrigins.Any(d => d == callingAeTitle)) &&
+                    x.Deleted == null)
+                .ToListAsync();
+            return wfs;
         }
 
         public async Task<string> CreateAsync(Workflow workflow)
@@ -188,7 +260,7 @@ namespace Monai.Deploy.WorkflowManager.Database.Repositories
 
         public async Task<DateTime> SoftDeleteWorkflow(WorkflowRevision workflow)
         {
-            Guard.Against.Null(workflow);
+            Guard.Against.Null(workflow, nameof(workflow));
 
             var deletedTimeStamp = DateTime.UtcNow;
 

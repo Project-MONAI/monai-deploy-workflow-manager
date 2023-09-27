@@ -1,0 +1,36 @@
+﻿/*
+ * Copyright 2023 MONAI Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+{
+    "periodStart": "2023-01-01T00:00:00",
+    "periodEnd": "2023-04-26T15:01:00.9582693+01:00",
+    "totalExecutions": 0,
+    "totalFailures": 0,
+    "totalInprogress": 1,
+    "averageTotalExecutionSeconds": 0.0,
+    "averageArgoExecutionSeconds": 0.0,
+    "pageNumber": 1,
+    "pageSize": 10,
+    "firstPage": "/tasks/stats?pageNumber=1&pageSize=10",
+    "lastPage": "/tasks/stats?pageNumber=1&pageSize=10",
+    "totalPages": 0,
+    "totalRecords": 0,
+    "nextPage": null,
+    "previousPage": null,
+    "data": [],
+    "succeeded": true,
+    "errors": null,
+    "message": null
+}

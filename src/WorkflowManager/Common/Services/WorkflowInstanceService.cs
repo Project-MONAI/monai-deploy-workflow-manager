@@ -17,13 +17,13 @@
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Common.Exceptions;
-using Monai.Deploy.WorkflowManager.Common.Interfaces;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Logging;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Exceptions;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
+using Monai.Deploy.WorkflowManager.Common.Logging;
 
-namespace Monai.Deploy.WorkflowManager.Common.Services
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 {
     public class WorkflowInstanceService : IWorkflowInstanceService, IPaginatedApi<WorkflowInstance>
     {
@@ -38,15 +38,15 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
 
         public async Task<WorkflowInstance> GetByIdAsync(string id)
         {
-            Guard.Against.NullOrWhiteSpace(id);
+            Guard.Against.NullOrWhiteSpace(id, nameof(id));
 
             return await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(id);
         }
 
         public async Task<WorkflowInstance> AcknowledgeTaskError(string workflowInstanceId, string executionId)
         {
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId);
-            Guard.Against.NullOrWhiteSpace(executionId);
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            Guard.Against.NullOrWhiteSpace(executionId, nameof(executionId));
 
             var workflowInstance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(workflowInstanceId);
 
@@ -79,8 +79,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
 
         public async Task UpdateExportCompleteMetadataAsync(string workflowInstanceId, string executionId, Dictionary<string, FileExportStatus> fileStatuses)
         {
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId);
-            Guard.Against.NullOrWhiteSpace(executionId);
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            Guard.Against.NullOrWhiteSpace(executionId, nameof(executionId));
 
             var resultMetadata = fileStatuses.ToDictionary(f => f.Key, f => f.Value.ToString() as object);
 

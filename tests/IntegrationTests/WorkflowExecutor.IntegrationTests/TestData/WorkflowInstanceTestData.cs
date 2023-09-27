@@ -15,12 +15,12 @@
  */
 
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Contracts.Models;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO;
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8601 // Possible null reference assignment.
 
-namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestData
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.TestData
 {
     public class WorkflowInstanceTestData
     {
@@ -36,6 +36,7 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
             var id = Guid.NewGuid().ToString();
             var payloadId = Guid.NewGuid().ToString();
             var executionId = Guid.NewGuid().ToString();
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             return new WorkflowInstance()
             {
                 Id = id,
@@ -2008,8 +2009,212 @@ namespace Monai.Deploy.WorkflowManager.WorkflowExecutor.IntegrationTests.TestDat
                     }
                 }
             },
+            new WorkflowInstanceTestData()
+            {
+                Name = "Workflow_Instance_For_PayloadData_Payload_PayloadStatus_1_1",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = "Multi_Req",
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Created")?.WorkflowRevision?.WorkflowId ?? "",
+                    PayloadId = "a5c3633b-31dd-44c9-8a1a-71adec3d47c1",
+                    BucketId = "bucket1",
+                    StartTime = DateTime.UtcNow,
+                    Status = Status.Created,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = "d32d5769-4ecf-4639-a048-6ecf2cced04a",
+                            TaskId = "First_Task",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
+                            TaskType = "Multi_task",
+                            Status = TaskExecutionStatus.Failed,
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "Workflow_Instance_For_PayloadData_Payload_PayloadStatus_1_2",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = "Multi_Req",
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Created")?.WorkflowRevision?.WorkflowId ?? "",
+                    PayloadId = "a5c3633b-31dd-44c9-8a1a-71adec3d47c1",
+                    BucketId = "bucket1",
+                    StartTime = DateTime.UtcNow,
+                    Status = Status.Created,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = "d32d5769-4ecf-4639-a048-6ecf2cced04a",
+                            TaskId = "First_Task",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
+                            TaskType = "Multi_task",
+                            Status = TaskExecutionStatus.Failed,
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "Workflow_Instance_For_PayloadData_Payload_PayloadStatus_2_1",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = "Multi_Req",
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Created")?.WorkflowRevision?.WorkflowId ?? "",
+                    PayloadId = "a5c3633b-31dd-44c9-8a1a-71adec3d47c2",
+                    BucketId = "bucket1",
+                    StartTime = DateTime.UtcNow,
+                    Status = Status.Succeeded,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = "d32d5769-4ecf-4639-a048-6ecf2cced04a",
+                            TaskId = "First_Task",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
+                            TaskType = "Multi_task",
+                            Status = TaskExecutionStatus.Failed,
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "Workflow_Instance_For_PayloadData_Payload_PayloadStatus_2_2",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = "Multi_Req",
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Created")?.WorkflowRevision?.WorkflowId ?? "",
+                    PayloadId = "a5c3633b-31dd-44c9-8a1a-71adec3d47c2",
+                    BucketId = "bucket1",
+                    StartTime = DateTime.UtcNow,
+                    Status = Status.Failed,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = "d32d5769-4ecf-4639-a048-6ecf2cced04a",
+                            TaskId = "First_Task",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
+                            TaskType = "Multi_task",
+                            Status = TaskExecutionStatus.Failed,
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "Workflow_Instance_For_PayloadData_Payload_PayloadStatus_3_1",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = "Multi_Req",
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Created")?.WorkflowRevision?.WorkflowId ?? "",
+                    PayloadId = "a5c3633b-31dd-44c9-8a1a-71adec3d47c3",
+                    BucketId = "bucket1",
+                    StartTime = DateTime.UtcNow,
+                    Status = Status.Created,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = "d32d5769-4ecf-4639-a048-6ecf2cced04a",
+                            TaskId = "First_Task",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
+                            TaskType = "Multi_task",
+                            Status = TaskExecutionStatus.Failed,
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "Workflow_Instance_For_PayloadData_Payload_PayloadStatus_3_2",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = "Multi_Req",
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Created")?.WorkflowRevision?.WorkflowId ?? "",
+                    PayloadId = "a5c3633b-31dd-44c9-8a1a-71adec3d47c3",
+                    BucketId = "bucket1",
+                    StartTime = DateTime.UtcNow,
+                    Status = Status.Succeeded,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = "d32d5769-4ecf-4639-a048-6ecf2cced04a",
+                            TaskId = "First_Task",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
+                            TaskType = "Multi_task",
+                            Status = TaskExecutionStatus.Failed,
+                        }
+                    }
+                }
+            },
+            new WorkflowInstanceTestData()
+            {
+                Name = "Workflow_Instance_For_PayloadData_Payload_PayloadStatus_3_3",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AeTitle = "Multi_Req",
+                    WorkflowId = Helper.GetWorkflowByName("Multi_Request_Workflow_Created")?.WorkflowRevision?.WorkflowId ?? "",
+                    PayloadId = "a5c3633b-31dd-44c9-8a1a-71adec3d47c3",
+                    BucketId = "bucket1",
+                    StartTime = DateTime.UtcNow,
+                    Status = Status.Failed,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                        { "", "" }
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = "d32d5769-4ecf-4639-a048-6ecf2cced04a",
+                            TaskId = "First_Task",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
+                            TaskType = "Multi_task",
+                            Status = TaskExecutionStatus.Failed,
+                        }
+                    }
+                }
+            },
         };
     }
 }
 #pragma warning restore CS8601 // Possible null reference assignment.
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
