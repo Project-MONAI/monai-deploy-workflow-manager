@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators;
+using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 using Moq;
 using NUnit.Framework;
 

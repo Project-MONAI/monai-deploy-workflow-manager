@@ -28,9 +28,9 @@ using k8s.Models;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
 using Monai.Deploy.WorkflowManager.Common.SharedTest;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
-using Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues;
 using Moq;
 using Moq.Language.Flow;
 using Newtonsoft.Json;
@@ -67,12 +67,12 @@ public class ArgoPluginTest : ArgoPluginTestBase
         Options.Value.Messaging.PublisherSettings.Remove("password");
         Assert.Throws<ConfigurationException>(() => new ArgoPlugin(ServiceScopeFactory.Object, _logger.Object, Options, message));
 
-        foreach (var key in Keys.RequiredSettings.Take(Keys.RequiredSettings.Count - 1))
+        foreach (var key in ArgoParameters.RequiredSettings.Take(ArgoParameters.RequiredSettings.Count - 1))
         {
             message.TaskPluginArguments.Add(key, Guid.NewGuid().ToString());
             Assert.Throws<ConfigurationException>(() => new ArgoPlugin(ServiceScopeFactory.Object, _logger.Object, Options, message));
         }
-        message.TaskPluginArguments[Keys.RequiredSettings[Keys.RequiredSettings.Count - 1]] = Guid.NewGuid().ToString();
+        message.TaskPluginArguments[ArgoParameters.RequiredSettings[ArgoParameters.RequiredSettings.Count - 1]] = Guid.NewGuid().ToString();
         Assert.Throws<ConfigurationException>(() => new ArgoPlugin(ServiceScopeFactory.Object, _logger.Object, Options, message));
     }
 
@@ -236,7 +236,7 @@ public class ArgoPluginTest : ArgoPluginTestBase
 
         Assert.Equal(TaskExecutionStatus.Failed, result.Status);
         Assert.Equal(FailureReason.PluginError, result.FailureReason);
-        Assert.Equal($"Template '{argoTemplate.Spec.Entrypoint}' cannot be found in the referenced WorkflowTmplate '{message.TaskPluginArguments[Keys.WorkflowTemplateName]}'.", result.Errors);
+        Assert.Equal($"Template '{argoTemplate.Spec.Entrypoint}' cannot be found in the referenced WorkflowTmplate '{message.TaskPluginArguments[ArgoParameters.WorkflowTemplateName]}'.", result.Errors);
 
         ArgoClient.Verify(p => p.Argo_CreateWorkflowAsync(It.IsAny<string>(), It.IsAny<WorkflowCreateRequest>(), It.IsAny<CancellationToken>()), Times.Never());
         K8sCoreOperations.Verify(p => p.CreateNamespacedSecretWithHttpMessagesAsync(
@@ -506,9 +506,9 @@ public class ArgoPluginTest : ArgoPluginTestBase
                         Message = Strings.ArgoPhaseSucceeded,
                         Nodes = new Dictionary<string, NodeStatus>
                         {
-                            { "first", new NodeStatus { Id = "firstId" ,Type="Pod" ,Name="", StartedAt = new DateTime(2023,3,3) , FinishedAt = new DateTime(2023,3,3,8,0,32)} },
-                            { "second", new NodeStatus { Id = "secondId",Type="Pod" ,Name = $"node-{Strings.ExitHookTemplateSendTemplateName}"  , StartedAt = new DateTime(2023,3,4) , FinishedAt = new DateTime(2023,3,4,8,0,32)} },
-                            { "third", new NodeStatus { Id = "thirdId" ,Type="Pod" ,Name="", StartedAt = new DateTime(2023,3,4) , FinishedAt = new DateTime(2023,3,4,8,0,32)}  },
+                            { "first", new NodeStatus { Id = "firstId" ,Type="Pod" ,Name="", StartedAt = DateTime.SpecifyKind(new DateTime(2023,3,3), DateTimeKind.Utc) , FinishedAt = DateTime.SpecifyKind(new DateTime(2023,3,3,8,0,32), DateTimeKind.Utc)} },
+                            { "second", new NodeStatus { Id = "secondId",Type="Pod" ,Name = $"node-{Strings.ExitHookTemplateSendTemplateName}"  , StartedAt = DateTime.SpecifyKind(new DateTime(2023,3,4), DateTimeKind.Utc) , FinishedAt = DateTime.SpecifyKind(new DateTime(2023,3,4,8,0,32), DateTimeKind.Utc)} },
+                            { "third", new NodeStatus { Id = "thirdId" ,Type="Pod" ,Name="", StartedAt = DateTime.SpecifyKind(new DateTime(2023,3,4) , DateTimeKind.Utc), FinishedAt = DateTime.SpecifyKind(new DateTime(2023,3,4,8,0,32), DateTimeKind.Utc)}  },
                         }
                     }
                 };
@@ -528,7 +528,7 @@ public class ArgoPluginTest : ArgoPluginTestBase
         Assert.True(nodeInfo.ContainsKey("podStartTime0"));
         Assert.True(nodeInfo.ContainsKey("podFinishTime0"));
         Assert.True(nodeInfo.ContainsKey("send-messagepodFinishTime1"));
-        Assert.Equal("03/03/2023 08:00:32 +00:00", nodeInfo["podFinishTime0"]);
+        Assert.Equal("2023-03-03 08:00:32Z", nodeInfo["podFinishTime0"]);
 
         ArgoClient.Verify(p => p.Argo_GetWorkflowAsync(It.Is<string>(p => p.Equals("namespace", StringComparison.OrdinalIgnoreCase)), It.Is<string>(p => p.Equals("identity", StringComparison.OrdinalIgnoreCase)), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
     }
@@ -893,15 +893,15 @@ public class ArgoPluginTest : ArgoPluginTestBase
     private static TaskDispatchEvent GenerateTaskDispatchEventWithValidArguments(bool withoutDefaultProperties = false)
     {
         var message = GenerateTaskDispatchEvent();
-        message.TaskPluginArguments[Keys.WorkflowTemplateName] = "workflowTemplate";
-        message.TaskPluginArguments[Keys.TimeoutSeconds] = "50";
-        message.TaskPluginArguments[Keys.ArgoApiToken] = "token";
+        message.TaskPluginArguments[ArgoParameters.WorkflowTemplateName] = "workflowTemplate";
+        message.TaskPluginArguments[ArgoParameters.TimeoutSeconds] = "50";
+        message.TaskPluginArguments[ArgoParameters.ArgoApiToken] = "token";
 
         if (withoutDefaultProperties is false)
         {
-            message.TaskPluginArguments[Keys.BaseUrl] = "http://api-endpoint/";
-            message.TaskPluginArguments[Keys.Namespace] = "namespace";
-            message.TaskPluginArguments[Keys.AllowInsecureseUrl] = "true";
+            message.TaskPluginArguments[ArgoParameters.BaseUrl] = "http://api-endpoint/";
+            message.TaskPluginArguments[ArgoParameters.Namespace] = "namespace";
+            message.TaskPluginArguments[ArgoParameters.AllowInsecureseUrl] = "true";
         }
 
         return message;
@@ -973,7 +973,7 @@ public class ArgoPluginTest : ArgoPluginTestBase
         Kind = "WorkflowTemplate",
         Metadata = new ObjectMeta()
         {
-            Name = taskDispatchEvent.TaskPluginArguments[Keys.WorkflowTemplateName],
+            Name = taskDispatchEvent.TaskPluginArguments[ArgoParameters.WorkflowTemplateName],
         },
         Spec = new WorkflowSpec
         {

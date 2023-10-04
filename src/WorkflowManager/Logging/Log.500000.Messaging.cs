@@ -16,7 +16,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace Monai.Deploy.WorkflowManager.Common.Logging
+namespace Monai.Deploy.WorkflowManager.Logging
 {
     public static partial class Log
     {
@@ -35,40 +35,40 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
         [LoggerMessage(EventId = 500004, Level = LogLevel.Error, Message = "Workflow request message {messageId} is invalid and has been rejected without being requeued.")]
         public static partial void WorkflowRequestRejectValidationError(this ILogger logger, string messageId);
 
-        [LoggerMessage(EventId = 200005, Level = LogLevel.Error, Message = "Workflow request message {messageId} failed unexpectedly and has been requeued.")]
+        [LoggerMessage(EventId = 500005, Level = LogLevel.Error, Message = "Workflow request message {messageId} failed unexpectedly and has been requeued.")]
         public static partial void WorkflowRequestRequeuePayloadCreateError(this ILogger logger, string messageId);
 
-        [LoggerMessage(EventId = 200006, Level = LogLevel.Error, Message = "Workflow request message {messageId} failed unexpectedly and has been requeued.")]
+        [LoggerMessage(EventId = 500006, Level = LogLevel.Error, Message = "Workflow request message {messageId} failed unexpectedly and has been requeued.")]
         public static partial void WorkflowRequestRequeuePayloadProcessError(this ILogger logger, string messageId);
 
-        [LoggerMessage(EventId = 200007, Level = LogLevel.Error, Message = "Workflow request message {messageId} failed unexpectedly and has been requeued.")]
+        [LoggerMessage(EventId = 500007, Level = LogLevel.Error, Message = "Workflow request message {messageId} failed unexpectedly and has been requeued.")]
         public static partial void WorkflowRequestRequeueUnknownError(this ILogger logger, string messageId, Exception ex);
 
-        [LoggerMessage(EventId = 200008, Level = LogLevel.Error, Message = "Task update message {messageId} is invalid and has been rejected without being requeued.")]
+        [LoggerMessage(EventId = 500008, Level = LogLevel.Error, Message = "Task update message {messageId} is invalid and has been rejected without being requeued.")]
         public static partial void TaskUpdateRejectValiationError(this ILogger logger, string messageId);
 
-        [LoggerMessage(EventId = 200009, Level = LogLevel.Error, Message = "Task update message {messageId} failed unexpectedly and has been requeued.")]
+        [LoggerMessage(EventId = 500009, Level = LogLevel.Error, Message = "Task update message {messageId} failed unexpectedly and has been requeued.")]
         public static partial void TaskUpdateRequeueProcessingError(this ILogger logger, string messageId);
 
-        [LoggerMessage(EventId = 200010, Level = LogLevel.Error, Message = "Task update message {messageId} failed unexpectedly and has been requeued.")]
+        [LoggerMessage(EventId = 500010, Level = LogLevel.Error, Message = "Task update message {messageId} failed unexpectedly and has been requeued.")]
         public static partial void TaskUpdateRequeueUnknownError(this ILogger logger, string messageId, Exception ex);
 
-        [LoggerMessage(EventId = 200011, Level = LogLevel.Error, Message = "Export complete message {messageId} is invalid and has been rejected without being requeued.")]
+        [LoggerMessage(EventId = 500011, Level = LogLevel.Error, Message = "Export complete message {messageId} is invalid and has been rejected without being requeued.")]
         public static partial void ExportCompleteRejectValiationError(this ILogger logger, string messageId);
 
-        [LoggerMessage(EventId = 200012, Level = LogLevel.Error, Message = "Export complete message {messageId} failed unexpectedly and has been requeued.")]
+        [LoggerMessage(EventId = 500012, Level = LogLevel.Error, Message = "Export complete message {messageId} failed unexpectedly and has been requeued.")]
         public static partial void ExportCompleteRequeueProcessingError(this ILogger logger, string messageId);
 
-        [LoggerMessage(EventId = 200013, Level = LogLevel.Error, Message = "Export complete message {messageId} failed unexpectedly and has been requeued.")]
+        [LoggerMessage(EventId = 500013, Level = LogLevel.Error, Message = "Export complete message {messageId} failed unexpectedly and has been requeued.")]
         public static partial void ExportCompleteRequeueUnknownError(this ILogger logger, string messageId, Exception ex);
 
-        [LoggerMessage(EventId = 200014, Level = LogLevel.Debug, Message = "Workflow request message received.")]
+        [LoggerMessage(EventId = 500014, Level = LogLevel.Debug, Message = "Workflow request message received.")]
         public static partial void WorkflowRequestReceived(this ILogger logger);
 
-        [LoggerMessage(EventId = 200015, Level = LogLevel.Debug, Message = "Task update message received.")]
+        [LoggerMessage(EventId = 500015, Level = LogLevel.Debug, Message = "Task update message received.")]
         public static partial void TaskUpdateReceived(this ILogger logger);
 
-        [LoggerMessage(EventId = 200016, Level = LogLevel.Debug, Message = "Export complete message received.")]
+        [LoggerMessage(EventId = 500016, Level = LogLevel.Debug, Message = "Export complete message received.")]
         public static partial void ExportCompleteReceived(this ILogger logger);
 
         [LoggerMessage(EventId = 200017, Level = LogLevel.Debug, Message = "Workflow continuation event so not creating payload.")]

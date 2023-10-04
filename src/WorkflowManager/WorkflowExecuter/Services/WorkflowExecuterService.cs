@@ -197,7 +197,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
                 return;
             }
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["workflowInstanceId"] = workflowInstance.Id,
                 ["durationSoFar"] = (DateTime.UtcNow - workflowInstance.StartTime).TotalMilliseconds,
@@ -285,7 +285,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
 
             var currentTask = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId == message.TaskId);
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["workflowInstanceId"] = workflowInstance.Id,
                 ["taskStatus"] = message.Status,
@@ -393,7 +393,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
                 return false;
             }
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["workflowInstanceId"] = workflowInstance.Id,
                 ["durationSoFar"] = (DateTime.UtcNow - workflowInstance.StartTime).TotalMilliseconds,
@@ -628,7 +628,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
 
             foreach (var taskExec in taskExecutions)
             {
-                using var loggingScope = _logger.BeginScope(new Dictionary<string, object> { ["executionId"] = taskExec?.ExecutionId ?? "" });
+                using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object> { ["executionId"] = taskExec?.ExecutionId ?? "" });
 
                 if (taskExec is null)
                 {
@@ -746,7 +746,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
                 return false;
             }
 
-            using (_logger.BeginScope(new Dictionary<string, object> { ["correlationId"] = correlationId, ["taskId"] = task.Id, ["executionId"] = taskExec.ExecutionId }))
+            using (_logger.BeginScope(new LoggingDataDictionary<string, object> { ["correlationId"] = correlationId, ["taskId"] = task.Id, ["executionId"] = taskExec.ExecutionId }))
             {
                 var outputArtifacts = task.Artifacts?.Output;
 

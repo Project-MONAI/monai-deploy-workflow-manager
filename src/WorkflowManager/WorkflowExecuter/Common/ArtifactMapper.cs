@@ -20,6 +20,7 @@ using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Logging;
+using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 
 namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
 {
@@ -41,7 +42,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
 
         public bool TryConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet, out Dictionary<string, string> artifactPaths)
         {
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["payloadId"] = payloadId,
                 ["workflowInstanceId"] = workflowInstanceId,

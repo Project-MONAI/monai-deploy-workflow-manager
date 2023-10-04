@@ -321,10 +321,10 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
             updatedWorkflowInstance.Tasks[0].Status.Should().Be(taskExecutionStatus);
         }
 
-        public static void AssertSearch<T>(int count, string? queries, T? Response)
+        public static void AssertSearch<T>(int count, string? queries, T? response)
         {
-            var responseType = Response?.GetType();
-            GetPropertyValues(Response, responseType, out var data, out var totalPages, out var pageSize, out var totalRecords, out var pageNumber);
+            var responseType = response?.GetType();
+            GetPropertyValues(response, responseType, out var data, out var totalPages, out var pageSize, out var totalRecords, out var pageNumber);
             if (string.IsNullOrWhiteSpace(queries) is false)
             {
                 var splitQuery = queries?.Split("&") ?? Array.Empty<string>();
@@ -361,10 +361,10 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
             data.Count.Should().Be(count);
         }
 
-        public static void AssertPagination<T>(int count, string? queries, T? Response)
+        public static void AssertPagination<T>(int count, string? queries, T? response)
         {
-            var responseType = Response?.GetType();
-            GetPropertyValues(Response, responseType, out var data, out var totalPages, out var pageSize, out var totalRecords, out var pageNumber);
+            var responseType = response?.GetType();
+            GetPropertyValues(response, responseType, out var data, out var totalPages, out var pageSize, out var totalRecords, out var pageNumber);
             var pageNumberQuery = 1;
             var pageSizeQuery = 10;
 
@@ -399,15 +399,15 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
             pageSize.Should().Be(pageSizeQuery);
         }
 
-        private static void GetPropertyValues<T>(T? Response, Type? responseType, out ICollection<Payload> data, out object? totalPages, out object? pageSize, out object? totalRecords, out object? pageNumber)
+        private static void GetPropertyValues<T>(T? response, Type? responseType, out ICollection<Payload> data, out object? totalPages, out object? pageSize, out object? totalRecords, out object? pageNumber)
         {
 #pragma warning disable CS8601 // Possible null reference assignment.
-            data = responseType?.GetProperty("Data")?.GetValue(Response, null) as ICollection<Payload>;
+            data = responseType?.GetProperty("Data")?.GetValue(response, null) as ICollection<Payload>;
 #pragma warning restore CS8601 // Possible null reference assignment.
-            totalPages = responseType?.GetProperty("TotalPages")?.GetValue(Response, null);
-            pageSize = responseType?.GetProperty("PageSize")?.GetValue(Response, null);
-            totalRecords = responseType?.GetProperty("TotalRecords")?.GetValue(Response, null);
-            pageNumber = responseType?.GetProperty("PageNumber")?.GetValue(Response, null);
+            totalPages = responseType?.GetProperty("TotalPages")?.GetValue(response, null);
+            pageSize = responseType?.GetProperty("PageSize")?.GetValue(response, null);
+            totalRecords = responseType?.GetProperty("TotalRecords")?.GetValue(response, null);
+            pageNumber = responseType?.GetProperty("PageNumber")?.GetValue(response, null);
         }
 
         public void WorkflowInstanceIncludesTaskDetails(List<TaskDispatchEvent> taskDispatchEvents, WorkflowInstance workflowInstance, WorkflowRevision workflowRevision)
@@ -484,38 +484,38 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
 
-        private static void AssertDataCount(ICollection<Payload> Data, int pageNumberQuery, int pageSizeQuery, int count)
+        private static void AssertDataCount(ICollection<Payload> data, int pageNumberQuery, int pageSizeQuery, int count)
         {
             if ((pageNumberQuery * pageSizeQuery) > count)
             {
-                Data?.Count.Should().Be(Math.Max(count - ((pageNumberQuery - 1) * pageSizeQuery), 0));
+                data?.Count.Should().Be(Math.Max(count - ((pageNumberQuery - 1) * pageSizeQuery), 0));
             }
             else if ((pageNumberQuery * pageSizeQuery) < count)
             {
-                Data?.Count.Should().Be(pageSizeQuery);
+                data?.Count.Should().Be(pageSizeQuery);
             }
             else if (pageNumberQuery > 1)
             {
-                Data?.Count.Should().Be(Math.Max(count - (pageSizeQuery * (pageNumberQuery - 1)), 0));
+                data?.Count.Should().Be(Math.Max(count - (pageSizeQuery * (pageNumberQuery - 1)), 0));
             }
             else
             {
-                Data?.Count.Should().Be(count);
+                data?.Count.Should().Be(count);
             }
         }
 
-        private static void AssertTotalPages(object? TotalPages, int count, int pageSizeQuery)
+        private static void AssertTotalPages(object? totalPages, int count, int pageSizeQuery)
         {
             int remainder;
             int quotient = Math.DivRem(count, pageSizeQuery, out remainder);
 
             if (remainder == 0)
             {
-                TotalPages.Should().Be(quotient);
+                totalPages.Should().Be(quotient);
             }
             else
             {
-                TotalPages.Should().Be(quotient + 1);
+                totalPages.Should().Be(quotient + 1);
             }
         }
 

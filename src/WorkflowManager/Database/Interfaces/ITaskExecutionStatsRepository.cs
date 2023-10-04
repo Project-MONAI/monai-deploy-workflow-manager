@@ -28,11 +28,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
         /// <summary>
         /// Creates a task dispatch event in the database.
         /// </summary>
-        /// <param name="TaskExecutionInfo"></param>
+        /// <param name="taskExecutionInfo"></param>
         /// <param name="workflowId">workflow id.</param>
         /// <param name="correlationId">task id.</param>
         /// <returns></returns>
-        Task CreateAsync(TaskExecution TaskExecutionInfo, string workflowId, string correlationId);
+        Task CreateAsync(TaskExecution taskExecutionInfo, string workflowId, string correlationId);
 
         /// <summary>
         /// Updates status of a task dispatch event in the database.
@@ -57,12 +57,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
         /// </summary>
         /// <param name="startTime">start of the range.</param>
         /// <param name="endTime">end of the range.</param>
-        /// <param name="PageSize"></param>
-        /// <param name="PageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="pageNumber"></param>
         /// <param name="workflowId">optional workflow id.</param>
         /// <param name="taskId">optional task id.</param>
         /// <returns>a collections of stats</returns>
-        Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int PageSize = 10, int PageNumber = 1, string workflowId = "", string taskId = "");
+        Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int pageSize = 10, int pageNumber = 1, string workflowId = "", string taskId = "");
 
         /// <summary>
         /// Return the count of the entries with this status, or all if no status given.
