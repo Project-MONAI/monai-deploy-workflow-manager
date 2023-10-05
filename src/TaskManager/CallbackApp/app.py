@@ -15,6 +15,7 @@ import argparse
 import pika
 import uuid
 
+from time import perf_counter as pc
 
 def main():
     parser = argparse.ArgumentParser()
@@ -50,4 +51,9 @@ def main():
     print('Message sent.')
 
 if __name__ == "__main__":
-    main()
+    t0 = pc()
+    try:
+        main()
+    except Exception as e:
+        print(e)
+    print(f"Duration: {pc()-t0}")
