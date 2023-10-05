@@ -72,7 +72,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Configuration
         public string DicomTagsDisallowed { get; set; } = string.Empty;
 
         [ConfigurationKeyName("migExternalAppPlugins")]
-        public List<string> MigExternalAppPlugins { get; set; }
+        public string[] MigExternalAppPlugins { get; set; }
 
         public WorkflowManagerOptions()
         {

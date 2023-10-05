@@ -73,21 +73,29 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                     return;
                 }
 
-                var payload = await PayloadService.CreateAsync(requestEvent);
-                if (payload is null)
+                if (string.IsNullOrWhiteSpace(requestEvent.WorkflowInstanceId) || string.IsNullOrWhiteSpace(requestEvent.TaskId))
                 {
-                    Logger.WorkflowRequestRequeuePayloadCreateError(message.Message.MessageId);
-                    await _messageSubscriber.RequeueWithDelay(message.Message);
 
-                    return;
+                    var payload = await PayloadService.CreateAsync(requestEvent);
+                    if (payload is null)
+                    {
+                        Logger.WorkflowRequestRequeuePayloadCreateError(message.Message.MessageId);
+                        await _messageSubscriber.RequeueWithDelay(message.Message);
+
+                        return;
+                    }
+
+                    if (!await WorkflowExecuterService.ProcessPayload(requestEvent, payload))
+                    {
+                        Logger.WorkflowRequestRequeuePayloadProcessError(message.Message.MessageId);
+                        await _messageSubscriber.RequeueWithDelay(message.Message);
+
+                        return;
+                    }
                 }
-
-                if (!await WorkflowExecuterService.ProcessPayload(requestEvent, payload))
+                else
                 {
-                    Logger.WorkflowRequestRequeuePayloadProcessError(message.Message.MessageId);
-                    await _messageSubscriber.RequeueWithDelay(message.Message);
-
-                    return;
+                    Logger.WorkflowContinuation();
                 }
 
                 _messageSubscriber.Acknowledge(message.Message);

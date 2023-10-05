@@ -70,5 +70,8 @@ namespace Monai.Deploy.WorkflowManager.Logging
 
         [LoggerMessage(EventId = 500016, Level = LogLevel.Debug, Message = "Export complete message received.")]
         public static partial void ExportCompleteReceived(this ILogger logger);
+
+        [LoggerMessage(EventId = 200017, Level = LogLevel.Debug, Message = "Workflow continuation event so not creating payload.")]
+        public static partial void WorkflowContinuation(this ILogger logger);
     }
 }

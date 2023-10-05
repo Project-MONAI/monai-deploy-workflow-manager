@@ -104,7 +104,8 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             _logger.EventSubscription(ServiceName, TaskStatusUpdateRoutingKey);
 
             _messageSubscriber.SubscribeAsync(ExportCompleteRoutingKey, ExportCompleteRoutingKey, OnExportCompleteReceivedCallback);
-            _logger.EventSubscription(ServiceName, ExportCompleteRoutingKey);        }
+            _logger.EventSubscription(ServiceName, ExportCompleteRoutingKey);
+        }
         private async Task OnWorkflowRequestReceivedCallbackAsync(MessageReceivedEventArgs eventArgs)
         {
 
