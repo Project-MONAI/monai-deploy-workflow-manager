@@ -51,12 +51,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
             EnsureIndex(_taskExecutionStatsCollection).GetAwaiter().GetResult();
         }
 
-        private static async Task EnsureIndex(IMongoCollection<ExecutionStats> TaskExecutionStatsCollection)
+        private static async Task EnsureIndex(IMongoCollection<ExecutionStats> taskExecutionStatsCollection)
         {
-            Guard.Against.Null(TaskExecutionStatsCollection, "TaskExecutionStatsCollection");
+            Guard.Against.Null(taskExecutionStatsCollection, "TaskExecutionStatsCollection");
 
-            var asyncCursor = (await TaskExecutionStatsCollection.Indexes.ListAsync());
-            var bsonDocuments = (await asyncCursor.ToListAsync());
+            var asyncCursor = await taskExecutionStatsCollection.Indexes.ListAsync();
+            var bsonDocuments = await asyncCursor.ToListAsync();
             var indexes = bsonDocuments.Select(_ => _.GetElement("name").Value.ToString()).ToList();
 
             // If index not present create it else skip.
@@ -73,17 +73,17 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
                     options
                     );
 
-                await TaskExecutionStatsCollection.Indexes.CreateOneAsync(model);
+                await taskExecutionStatsCollection.Indexes.CreateOneAsync(model);
             }
         }
 
-        public async Task CreateAsync(TaskExecution TaskExecutionInfo, string workflowId, string correlationId)
+        public async Task CreateAsync(TaskExecution taskExecutionInfo, string workflowId, string correlationId)
         {
-            Guard.Against.Null(TaskExecutionInfo, "taskDispatchEventInfo");
+            Guard.Against.Null(taskExecutionInfo, "taskDispatchEventInfo");
 
             try
             {
-                var insertMe = new ExecutionStats(TaskExecutionInfo, workflowId, correlationId);
+                var insertMe = new ExecutionStats(taskExecutionInfo, workflowId, correlationId);
 
                 await _taskExecutionStatsCollection.ReplaceOneAsync(doc =>
                      doc.ExecutionId == insertMe.ExecutionId,
@@ -149,15 +149,15 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
             }
         }
 
-        public async Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int PageSize = 10, int PageNumber = 1, string workflowId = "", string taskId = "")
+        public async Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int pageSize = 10, int pageNumber = 1, string workflowId = "", string taskId = "")
         {
             CreateFilter(startTime, endTime, workflowId, taskId, out var builder, out var filter);
 
             filter &= builder.Where(GetExecutedTasksFilter());
 
             var result = await _taskExecutionStatsCollection.Find(filter)
-                .Limit(PageSize)
-                .Skip((PageNumber - 1) * PageSize)
+                .Limit(pageSize)
+                .Skip((pageNumber - 1) * pageSize)
                 .ToListAsync();
             return result;
         }
@@ -183,7 +183,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
         }
 
         /// <summary>
-        /// Calculates and sets ExecutionStats ExecutionTimeSeconds 
+        /// Calculates and sets ExecutionStats ExecutionTimeSeconds
         /// </summary>
         /// <param name="taskExecutionStats"></param>
         /// <param name="taskUpdateEvent"></param>
@@ -196,11 +196,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
             {
                 if (statKey.Contains("StartTime") && DateTime.TryParse(taskUpdateEvent.ExecutionStats[statKey], out var startTime))
                 {
-                    start = (startTime < start ? startTime : start);
+                    start = startTime < start ? startTime : start;
                 }
                 else if (DateTime.TryParse(taskUpdateEvent.ExecutionStats[statKey], out var endTime))
                 {
-                    end = (endTime > end ? endTime : start);
+                    end = endTime > end ? endTime : start;
                 }
             }
             taskExecutionStats.ExecutionTimeSeconds = (end - start).TotalMilliseconds / 1000;
@@ -286,8 +286,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
                 .Match(filter)
                 .Group(g => new { g.Version }, r => new
                 {
-                    avgTotalExecution = r.Average(x => (x.DurationSeconds)),
-                    avgArgoExecution = r.Average(x => (x.ExecutionTimeSeconds))
+                    avgTotalExecution = r.Average(x => x.DurationSeconds),
+                    avgArgoExecution = r.Average(x => x.ExecutionTimeSeconds)
                 }).ToListAsync();
 
             var firstResult = test.FirstOrDefault() ?? new { avgTotalExecution = 0.0, avgArgoExecution = 0.0 };

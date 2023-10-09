@@ -196,7 +196,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         {
             Guard.Against.Null(args, nameof(args));
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new Common.Miscellaneous.LoggingDataDictionary<string, object>
             {
                 ["correlationId"] = args.Message.CorrelationId,
                 ["messageId"] = args.Message.MessageId,
@@ -288,7 +288,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             ITaskPlugin? taskRunner = null;
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new Common.Miscellaneous.LoggingDataDictionary<string, object>
             {
                 ["durationSoFar"] = (DateTime.UtcNow - taskExecution.Started).TotalMilliseconds,
                 ["correlationId"] = taskExecution.Event.CorrelationId,
@@ -404,7 +404,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             var eventInfo = new API.Models.TaskDispatchEventInfo(message.Body);
             try
             {
-                using var messageLoggingScope = _logger.BeginScope(new Dictionary<string, object>
+                using var messageLoggingScope = _logger.BeginScope(new Common.Miscellaneous.LoggingDataDictionary<string, object>
                 {
                     ["workflowInstanceId"] = eventInfo.Event.WorkflowInstanceId,
                     ["taskId"] = eventInfo.Event.TaskId,
@@ -631,7 +631,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 return;
             }
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new Common.Miscellaneous.LoggingDataDictionary<string, object>
             {
                 ["correlationId"] = message.CorrelationId,
                 ["workflowInstanceId"] = workflowInstanceId,

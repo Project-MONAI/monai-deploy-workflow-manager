@@ -24,9 +24,9 @@ using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Common.PayloadListener.Services;
-using Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators;
 using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services;
+using Monai.Deploy.WorkflowManager.PayloadListener.Services;
+using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 using Moq;
 using NUnit.Framework;
 
@@ -274,6 +274,28 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Services
 
             _mockMessageBrokerSubscriberService.Verify(p => p.RequeueWithDelay(It.IsAny<Message>()), Times.Once());
             _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public void ReceiveWorkflowPayload_With_WorkflowId_And_TaskID()
+        {
+
+            var exportRequestMessage = new WorkflowRequestEvent
+            {
+                CorrelationId = Guid.NewGuid().ToString(),
+                WorkflowInstanceId = Guid.NewGuid().ToString(),
+                TaskId = "exporttask"
+            };
+            var jsonMessage = new JsonMessage<WorkflowRequestEvent>(exportRequestMessage, MessageBrokerConfiguration.WorkflowManagerApplicationId, exportRequestMessage.CorrelationId);
+            var message = new MessageReceivedEventArgs(jsonMessage.ToMessage(), CancellationToken.None);
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateWorkflowRequest(It.IsAny<WorkflowRequestEvent>())).Returns(true);
+
+            _workflowExecuterService.Setup(p => p.ProcessPayload(It.IsAny<WorkflowRequestEvent>(), It.IsAny<Payload>())).ReturnsAsync(true);
+
+            _eventPayloadReceiverService.ReceiveWorkflowPayload(message);
+
+            _payloadService.Verify(p => p.CreateAsync(It.IsAny<WorkflowRequestEvent>()), Times.Never());
         }
 
         private static MessageReceivedEventArgs CreateMessageReceivedEventArgs(string[] destinations)

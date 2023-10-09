@@ -102,5 +102,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
 
         [LoggerMessage(EventId = 210006, Level = LogLevel.Information, Message = "Attached PatientMetadata {metadata}.")]
         public static partial void AttachedPatientMetadataToTaskExec(this ILogger logger, string metadata);
+
+        [LoggerMessage(EventId = 210007, Level = LogLevel.Information, Message = "Exporting to MIG task Id {taskid}, export destination {destination} number of files {fileCount} Mig data plugins {plugins}.")]
+        public static partial void LogMigExport(this ILogger logger, string taskid, string destination, int fileCount, string plugins);
     }
 }

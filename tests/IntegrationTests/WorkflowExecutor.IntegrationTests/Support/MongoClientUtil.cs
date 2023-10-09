@@ -120,14 +120,14 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
             return WorkflowInstanceCollection.Find(x => x.PayloadId == payloadId).FirstOrDefault();
         }
 
-        public WorkflowInstance GetWorkflowInstanceById(string Id)
+        public WorkflowInstance GetWorkflowInstanceById(string id)
         {
-            return WorkflowInstanceCollection.Find(x => x.Id == Id).FirstOrDefault();
+            return WorkflowInstanceCollection.Find(x => x.Id == id).FirstOrDefault();
         }
 
-        public WorkflowInstance GetWorkflowInstanceByWorkflowId(string Id)
+        public WorkflowInstance GetWorkflowInstanceByWorkflowId(string id)
         {
-            return WorkflowInstanceCollection.Find(x => x.WorkflowId == Id).FirstOrDefault();
+            return WorkflowInstanceCollection.Find(x => x.WorkflowId == id).FirstOrDefault();
         }
 
         public List<WorkflowInstance> GetWorkflowInstancesByPayloadId(string payloadId)
@@ -237,11 +237,11 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
             });
         }
 
-        public void CreateExecutionStats(ExecutionStats ExecutionStats)
+        public void CreateExecutionStats(ExecutionStats executionStats)
         {
             RetryMongo.Execute(() =>
             {
-                ExecutionStatsCollection.InsertOne(ExecutionStats);
+                ExecutionStatsCollection.InsertOne(executionStats);
             });
         }
 

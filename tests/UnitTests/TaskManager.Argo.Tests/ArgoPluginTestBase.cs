@@ -36,6 +36,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
         protected readonly Mock<IKubernetes> KubernetesClient;
         protected readonly Mock<ITaskDispatchEventService> TaskDispatchEventService;
         protected readonly IOptions<WorkflowManagerOptions> Options;
+        // ReSharper disable once InconsistentNaming
         protected readonly Mock<ICoreV1Operations> K8sCoreOperations;
         protected readonly Mock<IArgoProvider> ArgoProvider;
         protected readonly int ArgoTtlStatergySeconds = 360;
@@ -100,6 +101,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
             Options.Value.TaskManager.ArgoPluginArguments.MessageGeneratorContainerMemoryLimit = MessageGeneratorContainerMemoryLimit;
             Options.Value.TaskManager.ArgoPluginArguments.MessageSenderContainerCpuLimit = MessageSenderContainerCpuLimit;
             Options.Value.TaskManager.ArgoPluginArguments.MessageSenderContainerMemoryLimit = MessageSenderContainerMemoryLimit;
+            Options.Value.TaskManager.ArgoPluginArguments.TaskPriorityClass = "standard";
         }
     }
 }

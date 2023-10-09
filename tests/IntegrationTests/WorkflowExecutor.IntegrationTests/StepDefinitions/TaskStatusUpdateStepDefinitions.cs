@@ -238,8 +238,8 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
             _outputHelper.WriteLine($"Retrieving workflow instance by id={workflowInstanceId}");
             var updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(workflowInstanceId);
             _outputHelper.WriteLine("Retrieved workflow instance");
-            TaskExecutionStatus ExecutionStatus;
-            ExecutionStatus = taskStatus.ToLower() switch
+            TaskExecutionStatus executionStatus;
+            executionStatus = taskStatus.ToLower() switch
             {
                 "accepted" => TaskExecutionStatus.Accepted,
                 "succeeded" => TaskExecutionStatus.Succeeded,
@@ -252,14 +252,14 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
 
             RetryPolicy.Execute(() =>
                 {
-                    if (updatedWorkflowInstance.Tasks.FirstOrDefault(x => x.TaskId == taskId)?.Status != ExecutionStatus)
+                    if (updatedWorkflowInstance.Tasks.FirstOrDefault(x => x.TaskId == taskId)?.Status != executionStatus)
                     {
                         updatedWorkflowInstance = MongoClient.GetWorkflowInstanceById(workflowInstanceId);
-                        throw new Exception($"Task Update Status for the task is {updatedWorkflowInstance.Tasks.FirstOrDefault(x => x.TaskId == taskId)?.Status} and it should be {ExecutionStatus}");
+                        throw new Exception($"Task Update Status for the task is {updatedWorkflowInstance.Tasks.FirstOrDefault(x => x.TaskId == taskId)?.Status} and it should be {executionStatus}");
                     }
                 });
 
-            updatedWorkflowInstance.Tasks.FirstOrDefault(x => x.TaskId == taskId)?.Status.Should().Be(ExecutionStatus);
+            updatedWorkflowInstance.Tasks.FirstOrDefault(x => x.TaskId == taskId)?.Status.Should().Be(executionStatus);
         }
 
         [Then(@"I can see the Metadata is copied to the workflow instance")]

@@ -45,7 +45,6 @@ using Mongo.Migration.Startup;
 using Mongo.Migration.Startup.DotNetCore;
 using MongoDB.Driver;
 using NLog;
-using NLog.LayoutRenderers;
 using NLog.Web;
 
 namespace Monai.Deploy.WorkflowManager.Common
@@ -185,11 +184,14 @@ namespace Monai.Deploy.WorkflowManager.Common
 
         private static Logger ConfigureNLog(string assemblyVersionNumber)
         {
-            LayoutRenderer.Register("servicename", logEvent => typeof(Program).Namespace);
-            LayoutRenderer.Register("serviceversion", logEvent => assemblyVersionNumber);
-            LayoutRenderer.Register("machinename", logEvent => Environment.MachineName);
-
-            return LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+            return LogManager.Setup().SetupExtensions(ext =>
+            {
+                ext.RegisterLayoutRenderer("servicename", logEvent => typeof(Program).Namespace);
+                ext.RegisterLayoutRenderer("serviceversion", logEvent => assemblyVersionNumber);
+                ext.RegisterLayoutRenderer("machinename", logEvent => Environment.MachineName);
+            })
+            .LoadConfigurationFromAppSettings()
+            .GetCurrentClassLogger();
         }
 
 #pragma warning restore SA1600 // Elements should be documented

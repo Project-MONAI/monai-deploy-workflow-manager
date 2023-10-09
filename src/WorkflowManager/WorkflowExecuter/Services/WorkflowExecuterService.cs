@@ -89,7 +89,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
             _defaultPerTaskTypeTimeoutMinutes = configuration.Value.PerTaskTypeTimeoutMinutes;
             TaskDispatchRoutingKey = configuration.Value.Messaging.Topics.TaskDispatchRequest;
             TaskTimeoutRoutingKey = configuration.Value.Messaging.Topics.AideClinicalReviewCancelation;
-            _migExternalAppPlugins = configuration.Value.MigExternalAppPlugins;
+            _migExternalAppPlugins = configuration.Value.MigExternalAppPlugins.ToList();
             ExportRequestRoutingKey = $"{configuration.Value.Messaging.Topics.ExportRequestPrefix}.{configuration.Value.Messaging.DicomAgents.ScuAgentName}";
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -135,7 +135,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
             }
             else
             {
-                var result = await _workflowRepository.GetWorkflowsForWorkflowRequestAsync(message.CalledAeTitle, message.CallingAeTitle);
+                var result = await _workflowRepository.GetWorkflowsForWorkflowRequestAsync(message.DataTrigger.Destination, message.DataTrigger.Source);
                 workflows = new List<WorkflowRevision>(result);
             }
 
@@ -197,7 +197,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
                 return;
             }
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["workflowInstanceId"] = workflowInstance.Id,
                 ["durationSoFar"] = (DateTime.UtcNow - workflowInstance.StartTime).TotalMilliseconds,
@@ -285,7 +285,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
 
             var currentTask = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId == message.TaskId);
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["workflowInstanceId"] = workflowInstance.Id,
                 ["taskStatus"] = message.Status,
@@ -393,7 +393,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
                 return false;
             }
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["workflowInstanceId"] = workflowInstance.Id,
                 ["durationSoFar"] = (DateTime.UtcNow - workflowInstance.StartTime).TotalMilliseconds,
@@ -482,6 +482,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
 
             return true;
         }
+
         private async Task HandleExternalAppAsync(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId)
         {
             var plugins = _migExternalAppPlugins;
@@ -524,7 +525,6 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
 
                 return;
             }
-
             await DispatchDicomExport(workflowInstance, task, exportList, artifactValues, correlationId, plugins);
         }
 
@@ -563,6 +563,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
                 return false;
             }
 
+            _logger.LogMigExport(task.TaskId, string.Join(",", exportDestinations), artifactValues.Length, string.Join(",", plugins));
             await ExportRequest(workflowInstance, task, exportDestinations, artifactValues, correlationId, plugins);
             return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Dispatched);
         }
@@ -627,7 +628,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
 
             foreach (var taskExec in taskExecutions)
             {
-                using var loggingScope = _logger.BeginScope(new Dictionary<string, object> { ["executionId"] = taskExec?.ExecutionId ?? "" });
+                using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object> { ["executionId"] = taskExec?.ExecutionId ?? "" });
 
                 if (taskExec is null)
                 {
@@ -745,7 +746,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
                 return false;
             }
 
-            using (_logger.BeginScope(new Dictionary<string, object> { ["correlationId"] = correlationId, ["taskId"] = task.Id, ["executionId"] = taskExec.ExecutionId }))
+            using (_logger.BeginScope(new LoggingDataDictionary<string, object> { ["correlationId"] = correlationId, ["taskId"] = task.Id, ["executionId"] = taskExec.ExecutionId }))
             {
                 var outputArtifacts = task.Artifacts?.Output;
 
@@ -812,6 +813,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
             var exportRequestEvent = EventMapper.GenerateTaskCancellationEvent("", taskExec.ExecutionId, workflowInstance.Id, taskExec.TaskId, FailureReason.TimedOut, "Timed out");
             var jsonMesssage = new JsonMessage<TaskCancellationEvent>(exportRequestEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, correlationId, Guid.NewGuid().ToString());
 
+            _logger.TaskTimedOut(taskExec.TaskId, workflowInstance.Id, taskExec.Timeout);
             await _messageBrokerPublisherService.Publish(TaskTimeoutRoutingKey, jsonMesssage.ToMessage());
             return true;
         }

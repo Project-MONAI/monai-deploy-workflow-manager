@@ -126,16 +126,16 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
         {
             var startTime = new DateTime(2023, 4, 4);
             var endTime = new DateTime(2023, 4, 5);
-            var PageNumber = 15;
-            var PageSize = 9;
+            const int pageNumber = 15;
+            const int pageSize = 9;
 
-            var result = await StatsController.GetStatsAsync(new TimeFilter { StartTime = startTime, EndTime = endTime, PageNumber = PageNumber, PageSize = PageSize }, "workflow", "task");
+            var result = await StatsController.GetStatsAsync(new TimeFilter { StartTime = startTime, EndTime = endTime, PageNumber = pageNumber, PageSize = pageSize }, "workflow", "task");
 
             _repo.Verify(v => v.GetStatsAsync(
                 It.Is<DateTime>(d => d.Equals(startTime)),
                 It.Is<DateTime>(d => d.Equals(endTime)),
-                It.Is<int>(i => i.Equals(PageSize)),
-                It.Is<int>(i => i.Equals(PageNumber)),
+                It.Is<int>(i => i.Equals(pageSize)),
+                It.Is<int>(i => i.Equals(pageNumber)),
                 It.Is<string>(s => s.Equals("workflow")),
                 It.Is<string>(s => s.Equals("task")))
             );

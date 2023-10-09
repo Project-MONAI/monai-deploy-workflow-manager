@@ -29,10 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="fo-dicom" Version="5.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Configuration\Monai.Deploy.WorkflowManager.Common.Configuration.csproj" />
     <ProjectReference Include="..\..\..\Common\Miscellaneous\Monai.Deploy.WorkflowManager.Common.Miscellaneous.csproj" />
     <ProjectReference Include="..\..\..\TaskManager\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />

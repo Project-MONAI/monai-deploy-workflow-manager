@@ -124,6 +124,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
 
     public class TaskManagerTest
     {
+        // ReSharper disable once InconsistentNaming
         private const string NOT_ARGO = "notArgo";
 
         private readonly Mock<ILogger<TaskManager>> _logger;
@@ -615,7 +616,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(taskDispatchEventMessage))).ConfigureAwait(false);
                 });
 
-            var TaskCallbackEventMessage = GenerateTaskCallbackEvent(taskDispatchEventMessage);
+            var taskCallbackEventMessage = GenerateTaskCallbackEvent(taskDispatchEventMessage);
             _messageBrokerSubscriberService.Setup(
                 p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskCallbackRequest, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
@@ -627,7 +628,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     resetEvent.Reset(2);
                     await Task.Run(() =>
                     {
-                        messageReceivedCallback(CreateMessageReceivedEventArgs(TaskCallbackEventMessage));
+                        messageReceivedCallback(CreateMessageReceivedEventArgs(taskCallbackEventMessage));
                     }).ConfigureAwait(false);
                 });
 
@@ -645,7 +646,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _testRunnerCallback.Verify(p => p.GenerateGetStatusResult(), Times.Once());
             _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == taskDispatchEventMessage.MessageId)), Times.Once());
             _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.TaskUpdateRequest), It.IsAny<Message>()), Times.Exactly(2));
-            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m.MessageId == TaskCallbackEventMessage.MessageId), It.Is<bool>(b => !b)), Times.Once());
+            _messageBrokerSubscriberService.Verify(p => p.Reject(It.Is<MessageBase>(m => m.MessageId == taskCallbackEventMessage.MessageId), It.Is<bool>(b => !b)), Times.Once());
         }
 
         [Fact(DisplayName = "Task Manager - TaskCallbackEvent completes workflow")]
@@ -773,7 +774,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     }).ConfigureAwait(false);
                 });
 
-            var TaskCallbackEventMessage = GenerateTaskCallbackEvent(taskDispatchEventMessage);
+            var taskCallbackEventMessage = GenerateTaskCallbackEvent(taskDispatchEventMessage);
             _messageBrokerSubscriberService.Setup(
                 p => p.SubscribeAsync(It.Is<string>(p => p.Equals(_options.Value.Messaging.Topics.TaskCallbackRequest, StringComparison.OrdinalIgnoreCase)),
                                  It.IsAny<string>(),
@@ -785,7 +786,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     resetEvent.Reset(2);
                     await Task.Run(() =>
                     {
-                        messageReceivedCallback(CreateMessageReceivedEventArgs(TaskCallbackEventMessage));
+                        messageReceivedCallback(CreateMessageReceivedEventArgs(taskCallbackEventMessage));
                     }).ConfigureAwait(false);
                 });
             _messageBrokerSubscriberService
@@ -810,7 +811,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _testRunnerCallback.Verify(p => p.GenerateExecuteTaskResult(), Times.Once());
             _testRunnerCallback.Verify(p => p.GenerateGetStatusResult(), Times.Once());
             _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == taskDispatchEventMessage.MessageId)), Times.Once());
-            _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == TaskCallbackEventMessage.MessageId)), Times.Once());
+            _messageBrokerSubscriberService.Verify(p => p.Acknowledge(It.Is<MessageBase>(m => m.MessageId == taskCallbackEventMessage.MessageId)), Times.Once());
             _messageBrokerPublisherService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.TaskUpdateRequest), It.IsAny<Message>()), Times.Exactly(2));
         }
 
