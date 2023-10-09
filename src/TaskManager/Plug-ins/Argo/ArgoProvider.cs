@@ -27,11 +27,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
     {
         private readonly ILogger<ArgoProvider> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
-
-        public ArgoProvider(ILogger<ArgoProvider> logger, IHttpClientFactory httpClientFactory)
+        private readonly ILogger<ArgoClient> _argoClientLogger;
+        public ArgoProvider(ILogger<ArgoProvider> logger, IHttpClientFactory httpClientFactory, ILogger<ArgoClient> argoClientLogger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            _argoClientLogger = argoClientLogger;
         }
 
         public IArgoClient CreateClient(string baseUrl, string? apiToken, bool allowInsecure = true)
@@ -50,7 +51,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             {
                 httpClient.SetBearerToken(apiToken);
             }
-            return new ArgoClient(httpClient) { BaseUrl = baseUrl };
+            return new ArgoClient(httpClient, _argoClientLogger) { BaseUrl = baseUrl };
         }
     }
 

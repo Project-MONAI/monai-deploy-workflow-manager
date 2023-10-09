@@ -80,5 +80,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging
         [LoggerMessage(EventId = 1019, Level = LogLevel.Error, Message = "Error deleting Template in Argo.")]
         public static partial void ErrorDeletingWorkflowTemplate(this ILogger logger, Exception ex);
 
+        [LoggerMessage(EventId = 1020, Level = LogLevel.Trace, Message = "Calling argo at url {url} : {method} : {stringContent}")]
+        public static partial void CallingArgoHttpInfo(this ILogger logger, string url, string method, string stringContent);
+
     }
 }

@@ -18,13 +18,14 @@ using System.Globalization;
 using System.Text;
 using Argo;
 using Ardalis.GuardClauses;
-
+using Microsoft.Extensions.Logging;
+using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
     public class ArgoClient : BaseArgoClient, IArgoClient
     {
-        public ArgoClient(HttpClient httpClient) : base(httpClient) { }
+        public ArgoClient(HttpClient httpClient, ILogger<ArgoClient> logger) : base(httpClient, logger) { }
 
         public async Task<Workflow> Argo_CreateWorkflowAsync(string argoNamespace, WorkflowCreateRequest body, CancellationToken cancellationToken)
         {
@@ -227,9 +228,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         protected readonly HttpClient HttpClient;
 
-        public BaseArgoClient(HttpClient httpClient)
+        protected readonly ILogger<ArgoClient> Logger;
+        public BaseArgoClient(HttpClient httpClient, ILogger<ArgoClient> logger)
         {
             HttpClient = httpClient;
+            Logger = logger;
         }
 
         protected async Task<T> SendRequest<T>(StringContent stringContent, StringBuilder urlBuilder, string method, CancellationToken cancellationToken)
@@ -246,6 +249,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 request.RequestUri = new Uri(urlBuilder.ToString(), UriKind.RelativeOrAbsolute);
 
                 HttpResponseMessage? response = null;
+                var logStringContent = stringContent == null ? string.Empty : await stringContent.ReadAsStringAsync();
+                Logger.CallingArgoHttpInfo(request.RequestUri.ToString(), method, logStringContent);
                 response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, cancellationToken).ConfigureAwait(false);
 
                 try
