@@ -31,11 +31,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
 {
     public class ArgoClientTest
     {
-        private readonly Mock<ILogger<ArgoClient>> _loggerMock = new Mock<ILogger<ArgoClient>>();
+        private readonly Mock<ILoggerFactory> _loggerMock = new Mock<ILoggerFactory>();
+
+        public ArgoClientTest()
+        {
+            _loggerMock.Setup(l => l.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
+        }
 
         [Fact(DisplayName = "Argo_DeleteWorkflowTemplateAsync - Calls Send Async With Delete")]
         public async Task Argo_DeleteWorkflowTemplateAsync()
         {
+            _loggerMock.Setup(l => l.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
             var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
             mockHttpMessageHandler.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())

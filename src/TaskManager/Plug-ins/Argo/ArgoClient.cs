@@ -25,7 +25,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
     public class ArgoClient : BaseArgoClient, IArgoClient
     {
-        public ArgoClient(HttpClient httpClient, ILogger<ArgoClient> logger) : base(httpClient, logger) { }
+        public ArgoClient(HttpClient httpClient, ILoggerFactory logger) : base(httpClient, logger) { }
 
         public async Task<Workflow> Argo_CreateWorkflowAsync(string argoNamespace, WorkflowCreateRequest body, CancellationToken cancellationToken)
         {
@@ -232,11 +232,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         protected readonly HttpClient HttpClient;
 
-        protected readonly ILogger<ArgoClient> Logger;
-        public BaseArgoClient(HttpClient httpClient, ILogger<ArgoClient> logger)
+        protected readonly ILogger Logger;
+        public BaseArgoClient(HttpClient httpClient, ILoggerFactory loggerFactory)
         {
             HttpClient = httpClient;
-            Logger = logger;
+            Logger = loggerFactory.CreateLogger("BaseArgoClient");
         }
 
         protected async Task<T> SendRequest<T>(StringContent stringContent, StringBuilder urlBuilder, string method, CancellationToken cancellationToken)

@@ -122,5 +122,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Logging
 
         [LoggerMessage(EventId = 120, Level = LogLevel.Error, Message = "Recovering connection to storage service:  {reason}.")]
         public static partial void MessagingServiceErrorRecover(this ILogger logger, string reason);
+
+        [LoggerMessage(EventId = 121, Level = LogLevel.Error, Message = "Exception handling task : '{assemblyName}' timeout.")]
+        public static partial void ExectionTimingOutTask(this ILogger logger, string assemblyName, Exception ex);
     }
 }

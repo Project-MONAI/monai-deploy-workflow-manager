@@ -60,7 +60,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
         [LoggerMessage(EventId = 200012, Level = LogLevel.Error, Message = "The following task: {taskId} in workflow {workflowInstanceId} is currently timed out and not processing anymore updates, timed out at {timedOut}.")]
         public static partial void TaskTimedOut(this ILogger logger, string taskId, string workflowInstanceId, DateTime timedOut);
 
-        [LoggerMessage(EventId = 200013, Level = LogLevel.Critical, Message = "Workflow `{workflowId}` not found.")]
+        [LoggerMessage(EventId = 200013, Level = LogLevel.Critical, Message = "Workflow `{workflowId}` not found or is deleted.")]
         public static partial void WorkflowNotFound(this ILogger logger, string workflowId);
 
         [LoggerMessage(EventId = 200014, Level = LogLevel.Error, Message = "The task execution status for task {taskId} cannot be updated from {oldStatus} to {newStatus}. Payload: {payloadId}")]

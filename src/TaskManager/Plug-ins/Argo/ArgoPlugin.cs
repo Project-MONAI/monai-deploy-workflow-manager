@@ -902,18 +902,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         public override async Task HandleTimeout(string identity)
         {
             var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
-
-            await client.Argo_StopWorkflowAsync(_namespace, identity, new WorkflowStopRequest
+            try
             {
-                Namespace = _namespace,
-                Name = identity,
-            });
+                await client.Argo_StopWorkflowAsync(_namespace, identity, new WorkflowStopRequest
+                {
+                    Namespace = _namespace,
+                    Name = identity,
+                });
 
-            await client.Argo_TerminateWorkflowAsync(_namespace, identity, new WorkflowTerminateRequest
+                await client.Argo_TerminateWorkflowAsync(_namespace, identity, new WorkflowTerminateRequest
+                {
+                    Name = identity,
+                    Namespace = _namespace
+                });
+            }
+            catch (Exception ex)
             {
-                Name = identity,
-                Namespace = _namespace
-            });
+                _logger.ExecptionStoppingArgoWorkflow(identity, ex);
+            }
         }
 
         public async Task<WorkflowTemplate> CreateArgoTemplate(string template)
