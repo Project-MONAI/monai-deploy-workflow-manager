@@ -68,7 +68,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
                     Name = "TasksIndex"
                 };
                 var model = new CreateIndexModel<WorkflowInstance>(
-                    Builders<WorkflowInstance>.IndexKeys.Ascending(s => s.Tasks),
+                    Builders<WorkflowInstance>.IndexKeys.Ascending($"{nameof(WorkflowInstance.Tasks)}.{nameof(Task.Status)}"),
                     options
                     );
 
