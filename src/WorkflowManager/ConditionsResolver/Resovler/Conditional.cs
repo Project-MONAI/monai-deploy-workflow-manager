@@ -92,7 +92,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resovler
             {
                 var pattern = @"(?i:\bnull\b|''|""""|\bundefined\b)";
                 var replace = NULL;
-                input = Regex.Replace(input.ToString(), pattern, replace, RegexOptions.IgnoreCase);
+                input = Regex.Replace(input.ToString(), pattern, replace, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1));
             }
 
             if (input.IsEmpty || input.IsWhiteSpace())
