@@ -22,6 +22,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Argo;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using Xunit;
@@ -30,9 +31,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
 {
     public class ArgoClientTest
     {
+        private readonly Mock<ILoggerFactory> _loggerMock = new Mock<ILoggerFactory>();
+
+        public ArgoClientTest()
+        {
+            _loggerMock.Setup(l => l.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
+        }
+
         [Fact(DisplayName = "Argo_DeleteWorkflowTemplateAsync - Calls Send Async With Delete")]
         public async Task Argo_DeleteWorkflowTemplateAsync()
         {
+            _loggerMock.Setup(l => l.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
             var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
             mockHttpMessageHandler.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
@@ -40,7 +49,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
 
             var httpclient = new HttpClient(mockHttpMessageHandler.Object);
 
-            ArgoClient argoClient = new(httpclient);
+            ArgoClient argoClient = new(httpclient, _loggerMock.Object);
 
             var result = await argoClient.Argo_DeleteWorkflowTemplateAsync("test", "test", new CancellationToken(false));
 
@@ -69,7 +78,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
 
             var httpclient = new HttpClient(mockHttpMessageHandler.Object);
 
-            ArgoClient argoClient = new(httpclient);
+            ArgoClient argoClient = new(httpclient, _loggerMock.Object);
 
             var result = await argoClient.Argo_GetVersionAsync();
 
@@ -95,7 +104,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
 
             var httpclient = new HttpClient(mockHttpMessageHandler.Object);
 
-            ArgoClient argoClient = new(httpclient);
+            ArgoClient argoClient = new(httpclient, _loggerMock.Object);
 
             var result = await argoClient.Argo_CreateWorkflowAsync(
                 "argo",
@@ -118,7 +127,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
 
             var httpclient = new HttpClient(mockHttpMessageHandler.Object);
 
-            ArgoClient argoClient = new(httpclient);
+            ArgoClient argoClient = new(httpclient, _loggerMock.Object);
 
             var result = await argoClient.Argo_GetWorkflowAsync("argo", "name", "version", "fields",
                 CancellationToken.None);
@@ -139,7 +148,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
 
             var httpclient = new HttpClient(mockHttpMessageHandler.Object);
 
-            ArgoClient argoClient = new(httpclient);
+            ArgoClient argoClient = new(httpclient, _loggerMock.Object);
 
             var result = await argoClient.Argo_StopWorkflowAsync("argo", "name",
                 new WorkflowStopRequest { Namespace = "argo" });
@@ -160,7 +169,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
 
             var httpclient = new HttpClient(mockHttpMessageHandler.Object);
 
-            ArgoClient argoClient = new(httpclient);
+            ArgoClient argoClient = new(httpclient, _loggerMock.Object);
 
             var result = await argoClient.Argo_TerminateWorkflowAsync("argo", "name",
                 new WorkflowTerminateRequest { Namespace = "argo" });
@@ -181,7 +190,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
 
             var httpclient = new HttpClient(mockHttpMessageHandler.Object);
 
-            ArgoClient argoClient = new(httpclient);
+            ArgoClient argoClient = new(httpclient, _loggerMock.Object);
 
             var result = await argoClient.Argo_GetWorkflowTemplateAsync("argo", "name", "options");
 
@@ -201,7 +210,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
 
             var httpclient = new HttpClient(mockHttpMessageHandler.Object);
 
-            ArgoClient argoClient = new(httpclient);
+            ArgoClient argoClient = new(httpclient, _loggerMock.Object);
 
             var result = await argoClient.Argo_Get_WorkflowLogsAsync("argo", "name", "pod", "options");
 
@@ -221,7 +230,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
 
             var httpclient = new HttpClient(mockHttpMessageHandler.Object);
 
-            ArgoClient argoClient = new(httpclient);
+            ArgoClient argoClient = new(httpclient, _loggerMock.Object);
 
             var result = await argoClient.Argo_CreateWorkflowTemplateAsync("argo",
                 new WorkflowTemplateCreateRequest { Namespace = "argo", Template = new WorkflowTemplate() },

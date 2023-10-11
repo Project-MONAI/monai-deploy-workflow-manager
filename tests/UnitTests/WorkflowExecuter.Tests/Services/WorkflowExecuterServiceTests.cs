@@ -87,8 +87,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                     Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch", ExportRequestPrefix = "md.export.request" },
                     DicomAgents = new DicomAgentConfiguration { DicomWebAgentName = "monaidicomweb" }
                 },
-                MigExternalAppPlugins = new List<string> { { "examplePlugin" } }
-            });
+                MigExternalAppPlugins = new List<string> { { "examplePlugin" } }.ToArray()
+            }) ;
 
             _storageConfiguration = Options.Create(new StorageServiceConfiguration() { Settings = new Dictionary<string, string> { { "bucket", "testbucket" }, { "endpoint", "localhost" }, { "securedConnection", "False" } } });
 
@@ -175,8 +175,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow
             };
@@ -231,8 +230,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Workflows = new List<string>
@@ -317,8 +315,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Workflows = new List<string>
@@ -413,8 +410,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Workflows = new List<string>
@@ -496,8 +492,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Workflows = new List<string>
@@ -586,8 +581,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Workflows = new List<string>
@@ -659,8 +653,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Workflows = new List<string>
@@ -745,8 +738,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 PayloadId = Guid.NewGuid(),
@@ -2467,8 +2459,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowRequest = new WorkflowRequestEvent
             {
                 Bucket = "testbucket",
-                CalledAeTitle = "aetitle",
-                CallingAeTitle = "aetitle",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Workflows = new List<string>
@@ -2846,6 +2837,122 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 
             _workflowRepository.Verify(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>()), Times.Never());
             _workflowRepository.Verify(w => w.GetWorkflowsForWorkflowRequestAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task ProcessTaskUpdate_Timout_Sends_Sets_WorkflowInstanceStatus()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+
+            var metadata = new Dictionary<string, object>();
+            metadata.Add("a", "b");
+
+            var updateEvent = new TaskUpdateEvent
+            {
+                WorkflowInstanceId = workflowInstanceId,
+                TaskId = "pizza",
+                ExecutionId = Guid.NewGuid().ToString(),
+                Status = TaskExecutionStatus.Failed,
+                Reason = FailureReason.TimedOut,
+                Message = "This is a message",
+                Metadata = metadata,
+                CorrelationId = Guid.NewGuid().ToString()
+            };
+
+            var workflowId = Guid.NewGuid().ToString();
+
+            var workflow = new WorkflowRevision
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = workflowId,
+                Revision = 1,
+                Workflow = new Workflow
+                {
+                    Name = "Workflowname2",
+                    Description = "Workflowdesc2",
+                    Version = "1",
+                }
+            };
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = "pizza",
+                            Status = TaskExecutionStatus.Created
+                        }
+                    }
+            };
+
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
+            var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
+            _workflowInstanceRepository.Verify(r => r.UpdateWorkflowInstanceStatusAsync(It.IsAny<string>(), Status.Failed), Times.AtLeastOnce);
+        }
+
+        [Fact]
+        public async Task ProcessTaskUpdate_Timout_Sends_Sets_Task_Status()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+
+            var metadata = new Dictionary<string, object>();
+            metadata.Add("a", "b");
+
+            var updateEvent = new TaskUpdateEvent
+            {
+                WorkflowInstanceId = workflowInstanceId,
+                TaskId = "pizza",
+                ExecutionId = Guid.NewGuid().ToString(),
+                Status = TaskExecutionStatus.Failed,
+                Reason = FailureReason.TimedOut,
+                Message = "This is a message",
+                Metadata = metadata,
+                CorrelationId = Guid.NewGuid().ToString()
+            };
+
+            var workflowId = Guid.NewGuid().ToString();
+
+            var workflow = new WorkflowRevision
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = workflowId,
+                Revision = 1,
+                Workflow = new Workflow
+                {
+                    Name = "Workflowname2",
+                    Description = "Workflowdesc2",
+                    Version = "1",
+                }
+            };
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = "pizza",
+                            Status = TaskExecutionStatus.Accepted
+                        }
+                    }
+            };
+
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
+            var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
+            _workflowInstanceRepository.Verify(r => r.UpdateTaskStatusAsync(workflowInstance.Id, "pizza", TaskExecutionStatus.Failed), Times.Once);
         }
     }
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.

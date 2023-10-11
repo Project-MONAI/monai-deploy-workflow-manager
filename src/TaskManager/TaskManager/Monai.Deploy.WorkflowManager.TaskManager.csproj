@@ -57,18 +57,18 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="6.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.14" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
-    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.18" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="0.1.25" />
-    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.18" />
-    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="0.1.25" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.22" />
+    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.18">
+      <TreatAsUsed>true</TreatAsUsed>
+    </PackageReference>
+    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="1.0.1">
+      <TreatAsUsed>true</TreatAsUsed>
+    </PackageReference>
     <PackageReference Include="Monai.Deploy.Security" Version="0.1.3" />
-    <PackageReference Include="Mongo.Migration" Version="3.1.4" />
-    <PackageReference Include="NLog" Version="5.1.2" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="5.2.2" />
+    <PackageReference Include="NLog" Version="5.2.4">
+      <TreatAsUsed>true</TreatAsUsed>
+    </PackageReference>
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.4" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -82,10 +82,14 @@
     <ProjectReference Include="..\..\Common\Miscellaneous\Monai.Deploy.WorkflowManager.Common.Miscellaneous.csproj" />
     <ProjectReference Include="..\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />
     <ProjectReference Include="..\Database\Monai.Deploy.WorkflowManager.TaskManager.Database.csproj" />
-    <ProjectReference Include="..\Plug-ins\AideClinicalReview\Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.csproj" />
+    <ProjectReference Include="..\Plug-ins\AideClinicalReview\Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.csproj">
+      <TreatAsUsed>true</TreatAsUsed>
+    </ProjectReference>
     <ProjectReference Include="..\Plug-ins\Argo\Monai.Deploy.WorkflowManager.TaskManager.Argo.csproj" />
     <ProjectReference Include="..\Plug-ins\Docker\Monai.Deploy.WorkflowManager.TaskManager.Docker.csproj" />
-    <ProjectReference Include="..\Plug-ins\Email\Monai.Deploy.WorkflowManager.TaskManager.Email.csproj" />
+    <ProjectReference Include="..\Plug-ins\Email\Monai.Deploy.WorkflowManager.TaskManager.Email.csproj">
+      <TreatAsUsed>true</TreatAsUsed>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>

@@ -14,10 +14,25 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
+using System.Collections.Generic;
+
+namespace Monai.Deploy.WorkflowManager.Common.Configuration
 {
-    internal static class Keys
+    public static class ArgoParameters
     {
+        public struct ResourcesKey
+        {
+            public string TaskKey { get; set; }
+            public string ArgoKey { get; set; }
+        }
+        public static class ResourcesKeys
+        {
+            public static readonly ResourcesKey GpuLimit = new() { TaskKey = GpuRequired, ArgoKey = "nvidia.com/gpu" };
+
+            public static readonly ResourcesKey MemoryLimit = new() { TaskKey = Memory, ArgoKey = "memory" };
+
+            public static readonly ResourcesKey CpuLimit = new() { TaskKey = Cpu, ArgoKey = "cpu" };
+        }
         /// <summary>
         /// Key for the namespace where the Argo workflows are stored and executed.
         /// </summary>
@@ -76,12 +91,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
         /// <summary>
         /// Key for resource limitations
         /// </summary>
-        public static readonly string ArgoResource = "resources";
+        public static readonly string Resources = "resources";
 
         /// <summary>
         /// Key for resource limitations
         /// </summary>
-        public static readonly string ArgoParameters = "parameters";
+        public static readonly string Parameters = "parameters";
 
         /// <summary>
         /// Key for priority classnames on task plugin arguments side
@@ -89,11 +104,50 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.StaticValues
         public static readonly string TaskPriorityClassName = "priority";
 
         /// <summary>
+        /// Key for the CPU.
+        /// </summary>
+        public static readonly string Cpu = "cpu";
+
+        /// <summary>
+        /// Key for the memory.
+        /// </summary>
+        public static readonly string Memory = "memory";
+
+        /// <summary>
+        /// Key for the GPU.
+        /// </summary>
+        public static readonly string GpuRequired = "gpu_required";
+
+        /// <summary>
         /// Required arguments to run the Argo workflow.
         /// </summary>
         public static readonly IReadOnlyList<string> RequiredParameters =
             new List<string> {
                 WorkflowTemplateName
+            };
+
+        /// <summary>
+        /// Required arguments to run the Argo workflow.
+        /// </summary>
+        public static readonly IReadOnlyList<string> VaildParameters =
+            new List<string> {
+                Namespace,
+                BaseUrl,
+                AllowInsecureseUrl,
+                WorkflowTemplateName,
+                TimeoutSeconds,
+                ArgoApiToken,
+                MessagingEndpoint,
+                MessagingUsername,
+                MessagingPassword,
+                MessagingExchange,
+                MessagingVhost,
+                Resources,
+                Parameters,
+                TaskPriorityClassName,
+                Cpu,
+                Memory,
+                GpuRequired,
             };
 
         /// <summary>

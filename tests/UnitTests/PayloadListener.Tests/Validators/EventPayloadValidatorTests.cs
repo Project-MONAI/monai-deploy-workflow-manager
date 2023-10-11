@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators;
+using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 using Moq;
 using NUnit.Framework;
 
@@ -49,7 +49,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
         public void ValidateWorkflowRequest_WorkflowRequestMessageWithCallingAETitleIsMoreThan15Charchaters_ReturnsValidatonFalse()
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
-            message.CalledAeTitle = "abcdefghijklmnop";
+            message.DataTrigger.Destination = "abcdefghijklmnop";
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
@@ -59,7 +59,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
         public void ValidateWorkflowRequest_WorkflowRequestMessageWithCallingAETitleIsNull_ReturnsValidatonFalse()
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
-            message.CalledAeTitle = string.Empty;
+            message.DataTrigger.Destination = string.Empty;
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
@@ -69,7 +69,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
         public void ValidateWorkflowRequest_WorkflowRequestMessageWithCallingAETitleIsWhiteSpace_ReturnsValidatonFalse()
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
-            message.CalledAeTitle = " ";
+            message.DataTrigger.Destination = " ";
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
@@ -79,7 +79,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
         public void ValidateWorkflowRequest_WorkflowRequestMessageWithCallingAETitleIsEmptyString_ReturnsValidatonFalse()
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
-            message.CalledAeTitle = String.Empty;
+            message.DataTrigger.Destination = String.Empty;
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
@@ -89,7 +89,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
         public void ValidateWorkflowRequest_WorkflowRequestMessageWithCalledAETitleIsMoreThan15Charchaters_ReturnsValidatonFalse()
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
-            message.CalledAeTitle = "abcdefghijklmnop";
+            message.DataTrigger.Destination = "abcdefghijklmnop";
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
@@ -99,7 +99,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
         public void ValidateWorkflowRequest_WorkflowRequestMessageWithCalledAETitleIsNull_ReturnsValidatonFalse()
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
-            message.CalledAeTitle = string.Empty;
+            message.DataTrigger.Destination = string.Empty;
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
@@ -109,7 +109,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
         public void ValidateWorkflowRequest_WorkflowRequestMessageWithCalledAETitleIsWhiteSpace_ReturnsValidatonFalse()
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
-            message.CalledAeTitle = " ";
+            message.DataTrigger.Destination = " ";
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
@@ -119,7 +119,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
         public void ValidateWorkflowRequest_WorkflowRequestMessageWithCalledAETitleIsEmptyString_ReturnsValidatonFalse()
         {
             var message = CreateWorkflowRequestMessageWithNoWorkFlow();
-            message.CalledAeTitle = " ";
+            message.DataTrigger.Destination = " ";
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
             Assert.IsFalse(result);
@@ -247,8 +247,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
                 FileCount = 2,
                 CorrelationId = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
-                CalledAeTitle = "AeTitle",
-                CallingAeTitle = "CallingAeTitle",
+                DataTrigger = new Messaging.Events.DataOrigin { Source = "AeTitle", Destination = "CallingAeTitle" },
             };
         }
     }

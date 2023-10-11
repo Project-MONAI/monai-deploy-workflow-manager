@@ -18,7 +18,7 @@ using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Extensions
+namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 {
     public static class ValidationExtensions
     {
@@ -30,8 +30,8 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Extensions
 
             var valid = true;
 
-            valid &= IsAeTitleValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.CallingAeTitle, validationErrors);
-            valid &= IsAeTitleValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.CalledAeTitle, validationErrors);
+            valid &= IsAeTitleValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.DataTrigger.Source, validationErrors);
+            valid &= IsAeTitleValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.DataTrigger.Destination, validationErrors);
             valid &= IsBucketValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.Bucket, validationErrors);
             valid &= IsCorrelationIdValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.CorrelationId, validationErrors);
             valid &= IsPayloadIdValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.PayloadId.ToString(), validationErrors);

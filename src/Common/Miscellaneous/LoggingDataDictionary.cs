@@ -1,5 +1,6 @@
-/*
- * Copyright 2022 MONAI Consortium
+﻿/*
+ * Copyright 2021-2023 MONAI Consortium
+ * Copyright 2021 NVIDIA Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +15,26 @@
  * limitations under the License.
  */
 
+using System.Globalization;
 using System.Runtime.Serialization;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
+namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
 {
     [Serializable]
-    public class ArtifactMappingNotFoundException : Exception
+    public class LoggingDataDictionary<TKey, TValue> : Dictionary<TKey, TValue> where TKey : notnull
     {
-        public ArtifactMappingNotFoundException()
+        public LoggingDataDictionary()
         {
         }
 
-        public ArtifactMappingNotFoundException(string? artifactName) : base($"Storage information cannot be found for artifact '{artifactName}'.")
+        protected LoggingDataDictionary(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
 
-        public ArtifactMappingNotFoundException(string? message, Exception? innerException) : base(message, innerException)
+        public override string ToString()
         {
-        }
-
-        protected ArtifactMappingNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
+            var pairs = this.Select(x => string.Format(CultureInfo.InvariantCulture, "{0}={1}", x.Key, x.Value));
+            return string.Join(", ", pairs);
         }
     }
 }

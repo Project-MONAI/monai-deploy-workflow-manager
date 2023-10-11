@@ -19,11 +19,11 @@ using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
-using Monai.Deploy.WorkflowManager.Common.Logging;
-using Monai.Deploy.WorkflowManager.Common.PayloadListener.Validators;
 using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services;
+using Monai.Deploy.WorkflowManager.Logging;
+using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 
-namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
+namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 {
     public class EventPayloadReceiverService : IEventPayloadReceiverService
     {
@@ -57,11 +57,11 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
             {
                 var requestEvent = message.Message.ConvertTo<WorkflowRequestEvent>();
 
-                using var loggingScope = (Logger.BeginScope(new Dictionary<string, object>
+                using var loggingScope = Logger.BeginScope(new LoggingDataDictionary<string, object>
                 {
                     ["correlationId"] = requestEvent.CorrelationId,
                     ["workflowId"] = requestEvent.Workflows.FirstOrDefault()
-                }));
+                });
 
                 var validation = PayloadValidator.ValidateWorkflowRequest(requestEvent);
 
@@ -73,21 +73,29 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
                     return;
                 }
 
-                var payload = await PayloadService.CreateAsync(requestEvent);
-                if (payload is null)
+                if (string.IsNullOrWhiteSpace(requestEvent.WorkflowInstanceId) || string.IsNullOrWhiteSpace(requestEvent.TaskId))
                 {
-                    Logger.WorkflowRequestRequeuePayloadCreateError(message.Message.MessageId);
-                    await _messageSubscriber.RequeueWithDelay(message.Message);
 
-                    return;
+                    var payload = await PayloadService.CreateAsync(requestEvent);
+                    if (payload is null)
+                    {
+                        Logger.WorkflowRequestRequeuePayloadCreateError(message.Message.MessageId);
+                        await _messageSubscriber.RequeueWithDelay(message.Message);
+
+                        return;
+                    }
+
+                    if (!await WorkflowExecuterService.ProcessPayload(requestEvent, payload))
+                    {
+                        Logger.WorkflowRequestRequeuePayloadProcessError(message.Message.MessageId);
+                        await _messageSubscriber.RequeueWithDelay(message.Message);
+
+                        return;
+                    }
                 }
-
-                if (!await WorkflowExecuterService.ProcessPayload(requestEvent, payload))
+                else
                 {
-                    Logger.WorkflowRequestRequeuePayloadProcessError(message.Message.MessageId);
-                    await _messageSubscriber.RequeueWithDelay(message.Message);
-
-                    return;
+                    Logger.WorkflowContinuation();
                 }
 
                 _messageSubscriber.Acknowledge(message.Message);
@@ -105,7 +113,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
             {
                 var payload = message.Message.ConvertTo<TaskUpdateEvent>();
 
-                using var loggerScope = Logger.BeginScope(new Dictionary<string, object>
+                using var loggerScope = Logger.BeginScope(new LoggingDataDictionary<string, object>
                 {
                     ["correlationId"] = payload.CorrelationId,
                     ["workflowInstanceId"] = payload.WorkflowInstanceId,
@@ -143,7 +151,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Services
             {
                 var payload = message.Message.ConvertTo<ExportCompleteEvent>();
 
-                using var loggerScope = Logger.BeginScope(new Dictionary<string, object> { ["workflowInstanceId"] = payload.WorkflowInstanceId });
+                using var loggerScope = Logger.BeginScope(new LoggingDataDictionary<string, object> { ["workflowInstanceId"] = payload.WorkflowInstanceId });
 
                 if (!PayloadValidator.ValidateExportComplete(payload))
                 {

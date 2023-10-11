@@ -62,7 +62,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
 
             logger.Setup(p => p.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
             httpFactory.Setup(p => p.CreateClient(It.IsAny<string>())).Returns(httpClient);
-            var argo = new ArgoProvider(logger.Object, httpFactory.Object);
+            var argo = new ArgoProvider(logger.Object, httpFactory.Object, new Mock<ILoggerFactory>().Object);
 
             var client = argo.CreateClient(baseUri, token) as ArgoClient;
 

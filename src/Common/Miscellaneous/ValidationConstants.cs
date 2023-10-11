@@ -54,21 +54,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
         public static readonly string Notifications = "notifications";
 
         /// <summary>
-        /// Key for the CPU.
-        /// </summary>
-        public static readonly string Cpu = "cpu";
-
-        /// <summary>
-        /// Key for the memory.
-        /// </summary>
-        public static readonly string Memory = "memory";
-
-        /// <summary>
-        /// Key for the GPU.
-        /// </summary>
-        public static readonly string GpuRequired = "gpu_required";
-
-        /// <summary>
         /// Key for recipient emails.
         /// </summary>
         public static readonly string RecipientEmails = "recipient_emails";
@@ -107,24 +92,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
             Mode
         };
 
-        /// <summary>
-        /// Key for the endpoint where the Argo server is running.
-        /// </summary>
-        public static readonly string BaseUrl = "server_url";
-
-        /// <summary>
-        /// Key for the name of the main 'WorkflowTemplate' stored on the targeted Argo server.
-        /// </summary>
-        public static readonly string WorkflowTemplateName = "workflow_template_name";
-
-        /// <summary>
-        /// Required arguments to run the Argo task args.
-        /// </summary>
-        public static readonly IReadOnlyList<string> ArgoRequiredParameters =
-            new List<string> {
-                BaseUrl,
-                WorkflowTemplateName
-            };
 
 
         /// <summary>

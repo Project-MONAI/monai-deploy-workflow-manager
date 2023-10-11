@@ -21,10 +21,10 @@ using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Constants;
 using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Extensions;
-using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Resolver;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.Logging;
 using Monai.Deploy.WorkflowManager.Common.Storage.Services;
+using Monai.Deploy.WorkflowManager.ConditionsResolver.Resovler;
 
 namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser
 {

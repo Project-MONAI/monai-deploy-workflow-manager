@@ -99,13 +99,12 @@ jobs:
           report-name: dockle-report
           failure-threshold: fatal
 
-      # Disable upload due to bug https://github.com/erzz/dockle-action/issues/18
-      # - name: Upload Dockle SARIF Report
-      #   uses: github/codeql-action/upload-sarif@v2
-      #   continue-on-error: true
-      #   if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
-      #   with:
-      #     sarif_file: dockle-report.sarif
+      - name: Upload Dockle SARIF Report
+        uses: github/codeql-action/upload-sarif@v2
+        continue-on-error: true
+        if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
+        with:
+          sarif_file: dockle-report.sarif
 
       - name: Trivy Vulnerability Scanner
         uses: aquasecurity/trivy-action@master

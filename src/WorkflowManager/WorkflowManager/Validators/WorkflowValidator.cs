@@ -44,11 +44,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
         /// </summary>
         public static readonly string Separator = ";";
 
-        /// <summary>
-        /// the name of the class for priority.
-        /// </summary>
-        public static readonly string TaskPriorityClassName = "priority";
-
         private const string Comma = ", ";
         private readonly ILogger<WorkflowValidator> _logger;
         private readonly IOptions<WorkflowManagerOptions> _options;
@@ -385,22 +380,21 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
 
         private void ValidateArgoTask(TaskObject currentTask)
         {
-            if (!currentTask.Args.ContainsKey(WorkflowTemplateName))
+            if (!currentTask.Args.ContainsKey(ArgoParameters.WorkflowTemplateName))
             {
                 Errors.Add($"Task: '{currentTask.Id}' workflow_template_name must be specified{Comma}this corresponds to an Argo template name.");
             }
 
-            var validKeys = new string[] { WorkflowTemplateName, TaskPriorityClassName, Cpu, Memory, GpuRequired };
-            var invalidKeys = currentTask.Args.Keys.Where(k => !validKeys.Contains(k));
+            var invalidKeys = currentTask.Args.Keys.Where(k => !ArgoParameters.VaildParameters.Contains(k));
             if (invalidKeys.Count() > 0)
             {
-                Errors.Add($"Task: '{currentTask.Id}' args has invalid keys: {string.Join(", ", invalidKeys)}. Please only specify keys from the following list: {string.Join(", ", validKeys)}.");
+                Errors.Add($"Task: '{currentTask.Id}' args has invalid keys: {string.Join(", ", invalidKeys)}. Please only specify keys from the following list: {string.Join(", ", ArgoParameters.VaildParameters)}.");
                 return;
             }
 
-            if (currentTask.Args.ContainsKey(TaskPriorityClassName))
+            if (currentTask.Args.ContainsKey(ArgoParameters.TaskPriorityClassName))
             {
-                switch (currentTask.Args[TaskPriorityClassName].ToLower())
+                switch (currentTask.Args[ArgoParameters.TaskPriorityClassName].ToLower())
                 {
                     case "high" or "standard" or "low":
                         break;
@@ -411,18 +405,18 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
             }
 
             if (
-                currentTask.Args.TryGetValue(Cpu, out var val) &&
+                currentTask.Args.TryGetValue(ArgoParameters.Cpu, out var val) &&
                 (string.IsNullOrEmpty(val) ||
                 (double.TryParse(val, out double parsedVal) && (parsedVal < 1 || Math.Truncate(parsedVal) != parsedVal))))
             {
-                Errors.Add($"Task: '{currentTask.Id}' value '{val}' provided for argument '{Cpu}' is not valid. The value needs to be a whole number greater than 0.");
+                Errors.Add($"Task: '{currentTask.Id}' value '{val}' provided for argument '{ArgoParameters.Cpu}' is not valid. The value needs to be a whole number greater than 0.");
             }
 
             if (
-                currentTask.Args.TryGetValue(GpuRequired, out var gpuRequired) &&
+                currentTask.Args.TryGetValue(ArgoParameters.GpuRequired, out var gpuRequired) &&
                 (string.IsNullOrEmpty(gpuRequired) || !bool.TryParse(gpuRequired, out var _)))
             {
-                Errors.Add($"Task: '{currentTask.Id}' value '{gpuRequired}' provided for argument '{GpuRequired}' is not valid. The value needs to be 'true' or 'false'.");
+                Errors.Add($"Task: '{currentTask.Id}' value '{gpuRequired}' provided for argument '{ArgoParameters.GpuRequired}' is not valid. The value needs to be 'true' or 'false'.");
             }
         }
 

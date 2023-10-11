@@ -74,5 +74,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Configuration
 
         [ConfigurationKeyName("messageSenderContainerMemoryLimit")]
         public string MessageSenderContainerMemoryLimit { get; set; } = "500Mi";
+
+        [ConfigurationKeyName("taskPriorityClass")]
+        public string TaskPriorityClass { get; set; } = string.Empty;
     }
 }
