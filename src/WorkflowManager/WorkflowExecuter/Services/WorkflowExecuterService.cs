@@ -306,8 +306,6 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
             {
                 _logger.TaskTimedOut(message.TaskId, message.WorkflowInstanceId, currentTask.Timeout);
                 await ClinicalReviewTimeOutEvent(workflowInstance, currentTask, message.CorrelationId);
-
-                //return false;
             }
 
             if (!message.Status.IsTaskExecutionStatusUpdateValid(currentTask.Status))
