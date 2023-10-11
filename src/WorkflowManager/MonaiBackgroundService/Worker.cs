@@ -93,19 +93,6 @@ namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService
         {
             _logger.TimingOutTaskCancellationEvent(identity, task.WorkflowInstanceId);
 
-            var updateEvent = EventMapper.GenerateTaskUpdateEvent(new GenerateTaskUpdateEventParams
-            {
-                CorrelationId = correlationId,
-                ExecutionId = task.ExecutionId,
-                WorkflowInstanceId = workflowInstanceId,
-                TaskId = task.TaskId,
-                TaskExecutionStatus = TaskExecutionStatus.Failed,
-                FailureReason = FailureReason.TimedOut,
-                Stats = task.ExecutionStats
-            });
-
-            updateEvent.Validate();
-
             var cancellationEvent = EventMapper.GenerateTaskCancellationEvent(
                 identity,
                 task.ExecutionId,

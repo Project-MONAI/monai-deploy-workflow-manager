@@ -90,7 +90,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Logging
         [LoggerMessage(EventId = 109, Level = LogLevel.Warning, Message = "Unable to query for job status, no activate executor associated with execution ID={executionId}.")]
         public static partial void NoActiveExecutorWithTheId(this ILogger logger, string executionId);
 
-        [LoggerMessage(EventId = 110, Level = LogLevel.Error, Message = "Unsupported type of task runner: '{assemblyName}'.")]
+        [LoggerMessage(EventId = 110, Level = LogLevel.Error, Message = "Exception initialising task runner: '{assemblyName}'.")]
         public static partial void UnsupportedRunner(this ILogger logger, string assemblyName, Exception ex);
 
         [LoggerMessage(EventId = 111, Level = LogLevel.Debug, Message = "Sending acknowledgment message for {eventType}.")]
@@ -122,5 +122,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Logging
 
         [LoggerMessage(EventId = 120, Level = LogLevel.Error, Message = "Recovering connection to storage service:  {reason}.")]
         public static partial void MessagingServiceErrorRecover(this ILogger logger, string reason);
+
+        [LoggerMessage(EventId = 121, Level = LogLevel.Error, Message = "Exception handling task : '{assemblyName}' timeout.")]
+        public static partial void ExectionTimingOutTask(this ILogger logger, string assemblyName, Exception ex);
     }
 }

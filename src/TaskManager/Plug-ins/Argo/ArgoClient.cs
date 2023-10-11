@@ -18,13 +18,16 @@ using System.Globalization;
 using System.Text;
 using Argo;
 using Ardalis.GuardClauses;
-
+using Microsoft.Extensions.Logging;
+using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
+using System.Net;
+using Monai.Deploy.WorkflowManager.TaskManager.Argo.Exceptions;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
     public class ArgoClient : BaseArgoClient, IArgoClient
     {
-        public ArgoClient(HttpClient httpClient) : base(httpClient) { }
+        public ArgoClient(HttpClient httpClient, ILoggerFactory logger) : base(httpClient, logger) { }
 
         public async Task<Workflow> Argo_CreateWorkflowAsync(string argoNamespace, WorkflowCreateRequest body, CancellationToken cancellationToken)
         {
@@ -77,7 +80,23 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             const string method = "PUT";
             var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
-            return await SendRequest<Workflow>(content, urlBuilder, method, new CancellationToken()).ConfigureAwait(false);
+            try
+            {
+                return await SendRequest<Workflow>(content, urlBuilder, method, new CancellationToken()).ConfigureAwait(false);
+            }
+            catch (ApiException<Error> ex)
+            {
+                if (ex.StatusCode == (int)HttpStatusCode.NotFound)
+                {
+                    throw new ArgoWorkflowNotFoundException(body.Name, ex);
+                }
+                throw;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
 
         }
 
@@ -92,7 +111,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             const string method = "PUT";
             var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
-            return await SendRequest<Workflow>(content, urlBuilder, method, new CancellationToken()).ConfigureAwait(false);
+            try
+            {
+                return await SendRequest<Workflow>(content, urlBuilder, method, new CancellationToken()).ConfigureAwait(false);
+            }
+            catch (ApiException<Error> ex)
+            {
+                if (ex.StatusCode == (int)HttpStatusCode.NotFound)
+                {
+                    throw new ArgoWorkflowNotFoundException(body.Name, ex);
+                }
+                throw;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<WorkflowTemplate?> Argo_GetWorkflowTemplateAsync(string argoNamespace, string name, string? getOptionsResourceVersion)
@@ -231,9 +265,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         protected readonly HttpClient HttpClient;
 
-        public BaseArgoClient(HttpClient httpClient)
+        protected readonly ILogger Logger;
+        public BaseArgoClient(HttpClient httpClient, ILoggerFactory loggerFactory)
         {
             HttpClient = httpClient;
+            Logger = loggerFactory.CreateLogger("BaseArgoClient");
         }
 
         protected async Task<T> SendRequest<T>(StringContent stringContent, StringBuilder urlBuilder, string method, CancellationToken cancellationToken)
@@ -250,6 +286,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                 request.RequestUri = new Uri(urlBuilder.ToString(), UriKind.RelativeOrAbsolute);
 
                 HttpResponseMessage? response = null;
+                var logStringContent = stringContent == null ? string.Empty : await stringContent.ReadAsStringAsync();
+                Logger.CallingArgoHttpInfo(request.RequestUri.ToString(), method, logStringContent);
                 response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, cancellationToken).ConfigureAwait(false);
 
                 try
