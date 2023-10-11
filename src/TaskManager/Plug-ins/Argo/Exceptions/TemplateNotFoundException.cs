@@ -16,7 +16,7 @@
 
 using System.Runtime.Serialization;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
+namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Exceptions
 {
     [Serializable]
     public class TemplateNotFoundException : Exception

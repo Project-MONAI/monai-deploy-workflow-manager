@@ -20,6 +20,8 @@ using Argo;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
+using System.Net;
+using Monai.Deploy.WorkflowManager.TaskManager.Argo.Exceptions;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 {
@@ -78,7 +80,23 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             const string method = "PUT";
             var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
-            return await SendRequest<Workflow>(content, urlBuilder, method, new CancellationToken()).ConfigureAwait(false);
+            try
+            {
+                return await SendRequest<Workflow>(content, urlBuilder, method, new CancellationToken()).ConfigureAwait(false);
+            }
+            catch (ApiException<Error> ex)
+            {
+                if (ex.StatusCode == (int)HttpStatusCode.NotFound)
+                {
+                    throw new ArgoWorkflowNotFoundException(body.Name, ex);
+                }
+                throw;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
 
         }
 
@@ -93,7 +111,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             const string method = "PUT";
             var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body));
-            return await SendRequest<Workflow>(content, urlBuilder, method, new CancellationToken()).ConfigureAwait(false);
+            try
+            {
+                return await SendRequest<Workflow>(content, urlBuilder, method, new CancellationToken()).ConfigureAwait(false);
+            }
+            catch (ApiException<Error> ex)
+            {
+                if (ex.StatusCode == (int)HttpStatusCode.NotFound)
+                {
+                    throw new ArgoWorkflowNotFoundException(body.Name, ex);
+                }
+                throw;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<WorkflowTemplate?> Argo_GetWorkflowTemplateAsync(string argoNamespace, string name, string? getOptionsResourceVersion)

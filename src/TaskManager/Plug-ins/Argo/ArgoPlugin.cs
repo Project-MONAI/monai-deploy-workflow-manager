@@ -30,6 +30,7 @@ using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
 using Newtonsoft.Json;
+using Monai.Deploy.WorkflowManager.TaskManager.Argo.Exceptions;
 
 [assembly: PlugIn()]
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
@@ -916,9 +917,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
                     Namespace = _namespace
                 });
             }
-            catch (Exception ex)
+            catch (ArgoWorkflowNotFoundException ex)
             {
                 _logger.ExecptionStoppingArgoWorkflow(identity, ex);
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
