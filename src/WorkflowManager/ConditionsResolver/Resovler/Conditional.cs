@@ -211,7 +211,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resovler
 
         private int ParseExtendedOperators(ReadOnlySpan<char> input, int currentIndex)
         {
-            var currentWord = Regex.Match(input.ToString(), @"\'\w+\'|^\w+").Value;
+            var currentWord = Regex.Match(input.ToString(), @"\'\w+\'|^\w+", new RegexOptions(), TimeSpan.FromSeconds(1)).Value;
 
             if (currentWord.ToUpper() == CONTAINS && currentIndex != 0)
             {
