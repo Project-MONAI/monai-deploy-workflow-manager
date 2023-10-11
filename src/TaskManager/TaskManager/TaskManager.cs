@@ -267,7 +267,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
             catch (Exception ex)
             {
-                // Ignoring exception here as we've asked for the task to be stopped. 
+                // Ignoring exception here as we've asked for the task to be stopped.
                 _logger.ExectionTimingOutTask(pluginAssembly, ex);
             }
             finally
