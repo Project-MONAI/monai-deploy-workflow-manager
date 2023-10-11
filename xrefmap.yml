@@ -397,6 +397,48 @@ references:
   commentId: Overload:Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M002_Payload_addPayloadDeleted.Up
   fullName: Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M002_Payload_addPayloadDeleted.Up
   nameWithType: M002_Payload_addPayloadDeleted.Up
+- uid: Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger
+  name: M003_Payload_addDataTrigger
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.html
+  commentId: T:Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger
+  fullName: Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger
+  nameWithType: M003_Payload_addDataTrigger
+- uid: Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.#ctor
+  name: M003_Payload_addDataTrigger()
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.html#Monai_Deploy_WorkflowManager_Common_Contracts_Migrations_M003_Payload_addDataTrigger__ctor
+  commentId: M:Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.#ctor
+  fullName: Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.M003_Payload_addDataTrigger()
+  nameWithType: M003_Payload_addDataTrigger.M003_Payload_addDataTrigger()
+- uid: Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.#ctor*
+  name: M003_Payload_addDataTrigger
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.html#Monai_Deploy_WorkflowManager_Common_Contracts_Migrations_M003_Payload_addDataTrigger__ctor_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.#ctor
+  fullName: Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.M003_Payload_addDataTrigger
+  nameWithType: M003_Payload_addDataTrigger.M003_Payload_addDataTrigger
+- uid: Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.Down(MongoDB.Bson.BsonDocument)
+  name: Down(BsonDocument)
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.html#Monai_Deploy_WorkflowManager_Common_Contracts_Migrations_M003_Payload_addDataTrigger_Down_MongoDB_Bson_BsonDocument_
+  commentId: M:Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.Down(MongoDB.Bson.BsonDocument)
+  fullName: Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.Down(MongoDB.Bson.BsonDocument)
+  nameWithType: M003_Payload_addDataTrigger.Down(BsonDocument)
+- uid: Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.Down*
+  name: Down
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.html#Monai_Deploy_WorkflowManager_Common_Contracts_Migrations_M003_Payload_addDataTrigger_Down_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.Down
+  fullName: Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.Down
+  nameWithType: M003_Payload_addDataTrigger.Down
+- uid: Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.Up(MongoDB.Bson.BsonDocument)
+  name: Up(BsonDocument)
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.html#Monai_Deploy_WorkflowManager_Common_Contracts_Migrations_M003_Payload_addDataTrigger_Up_MongoDB_Bson_BsonDocument_
+  commentId: M:Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.Up(MongoDB.Bson.BsonDocument)
+  fullName: Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.Up(MongoDB.Bson.BsonDocument)
+  nameWithType: M003_Payload_addDataTrigger.Up(BsonDocument)
+- uid: Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.Up*
+  name: Up
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.html#Monai_Deploy_WorkflowManager_Common_Contracts_Migrations_M003_Payload_addDataTrigger_Up_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.Up
+  fullName: Monai.Deploy.WorkflowManager.Common.Contracts.Migrations.M003_Payload_addDataTrigger.Up
+  nameWithType: M003_Payload_addDataTrigger.Up
 - uid: Monai.Deploy.WorkflowManager.Common.Contracts.Models
   name: Monai.Deploy.WorkflowManager.Common.Contracts.Models
   href: api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.html
@@ -1069,30 +1111,6 @@ references:
   commentId: Overload:Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.Bucket
   fullName: Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.Bucket
   nameWithType: Payload.Bucket
-- uid: Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.CalledAeTitle
-  name: CalledAeTitle
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.html#Monai_Deploy_WorkflowManager_Common_Contracts_Models_Payload_CalledAeTitle
-  commentId: P:Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.CalledAeTitle
-  fullName: Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.CalledAeTitle
-  nameWithType: Payload.CalledAeTitle
-- uid: Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.CalledAeTitle*
-  name: CalledAeTitle
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.html#Monai_Deploy_WorkflowManager_Common_Contracts_Models_Payload_CalledAeTitle_
-  commentId: Overload:Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.CalledAeTitle
-  fullName: Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.CalledAeTitle
-  nameWithType: Payload.CalledAeTitle
-- uid: Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.CallingAeTitle
-  name: CallingAeTitle
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.html#Monai_Deploy_WorkflowManager_Common_Contracts_Models_Payload_CallingAeTitle
-  commentId: P:Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.CallingAeTitle
-  fullName: Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.CallingAeTitle
-  nameWithType: Payload.CallingAeTitle
-- uid: Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.CallingAeTitle*
-  name: CallingAeTitle
-  href: api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.html#Monai_Deploy_WorkflowManager_Common_Contracts_Models_Payload_CallingAeTitle_
-  commentId: Overload:Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.CallingAeTitle
-  fullName: Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.CallingAeTitle
-  nameWithType: Payload.CallingAeTitle
 - uid: Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.CorrelationId
   name: CorrelationId
   href: api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.html#Monai_Deploy_WorkflowManager_Common_Contracts_Models_Payload_CorrelationId
@@ -1105,6 +1123,18 @@ references:
   commentId: Overload:Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.CorrelationId
   fullName: Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.CorrelationId
   nameWithType: Payload.CorrelationId
+- uid: Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.DataTrigger
+  name: DataTrigger
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.html#Monai_Deploy_WorkflowManager_Common_Contracts_Models_Payload_DataTrigger
+  commentId: P:Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.DataTrigger
+  fullName: Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.DataTrigger
+  nameWithType: Payload.DataTrigger
+- uid: Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.DataTrigger*
+  name: DataTrigger
+  href: api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.html#Monai_Deploy_WorkflowManager_Common_Contracts_Models_Payload_DataTrigger_
+  commentId: Overload:Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.DataTrigger
+  fullName: Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.DataTrigger
+  nameWithType: Payload.DataTrigger
 - uid: Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.FileCount
   name: FileCount
   href: api/dotnet/Monai.Deploy.WorkflowManager.Common.Contracts.Models.Payload.html#Monai_Deploy_WorkflowManager_Common_Contracts_Models_Payload_FileCount
