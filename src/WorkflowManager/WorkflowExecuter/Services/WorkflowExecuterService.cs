@@ -531,7 +531,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
             await ExportRequest(workflowInstance, task, exportDestinations, artifactValues, correlationId, plugins);
             return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Dispatched);
         }
-        
+
         private async Task<bool> HandleOutputArtifacts(WorkflowInstance workflowInstance, List<Messaging.Common.Storage> outputs, TaskExecution task, WorkflowRevision workflowRevision)
         {
             var artifactDict = outputs.ToArtifactDictionary();
