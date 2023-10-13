@@ -35,6 +35,7 @@ using Monai.Deploy.WorkflowManager.Common.Database;
 using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Logging;
 using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common;
+using Monai.Deploy.WorkloadManager.WorkfowExecuter.Extensions;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
@@ -204,70 +205,33 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
                 ["executionId"] = task.ExecutionId
             });
 
-            if (string.Equals(task.TaskType, TaskTypeConstants.RouterTask, StringComparison.InvariantCultureIgnoreCase))
-            {
-                await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
-
-                return;
-            }
-
-            if (string.Equals(task.TaskType, TaskTypeConstants.ExportTask, StringComparison.InvariantCultureIgnoreCase))
-            {
-                await HandleDicomExportAsync(workflow, workflowInstance, task, correlationId);
-
-                return;
-            }
-
-            if (string.Equals(task.TaskType, TaskTypeConstants.ExternalAppTask, StringComparison.InvariantCultureIgnoreCase))
-            {
-                await HandleExternalAppAsync(workflow, workflowInstance, task, correlationId);
-
-                return;
-            }
-
-            if (task.Status != TaskExecutionStatus.Created)
-            {
-                _logger.TaskPreviouslyDispatched(workflowInstance.PayloadId, task.TaskId);
-
-                return;
-            }
-
-            await DispatchTask(workflowInstance, workflow, task, correlationId, payload);
+            await SwitchTasksAsync(task,
+                    routerFunc: () => HandleTaskDestinations(workflowInstance, workflow, task, correlationId),
+                    exportFunc: () => HandleDicomExportAsync(workflow, workflowInstance, task, correlationId),
+                    externalFunc: () => HandleExternalAppAsync(workflow, workflowInstance, task, correlationId),
+                    notCreatedStatusFunc: () =>
+                    {
+                        _logger.TaskPreviouslyDispatched(workflowInstance.PayloadId, task.TaskId);
+                        return Task.CompletedTask;
+                    },
+                    defaultFunc: () => DispatchTask(workflowInstance, workflow, task, correlationId, payload)
+            ).ConfigureAwait(false);
         }
 
-        public void AttachPatientMetaData(TaskExecution task, PatientDetails patientDetails)
-        {
-            var attachedData = false;
-            if (string.IsNullOrWhiteSpace(patientDetails.PatientId) is false)
+        private static Task SwitchTasksAsync(TaskExecution task,
+            Func<Task> routerFunc,
+            Func<Task> exportFunc,
+            Func<Task> externalFunc,
+            Func<Task> notCreatedStatusFunc,
+            Func<Task> defaultFunc) =>
+            task switch
             {
-                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientId, patientDetails.PatientId);
-            }
-            if (string.IsNullOrWhiteSpace(patientDetails.PatientAge) is false)
-            {
-                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientAge, patientDetails.PatientAge);
-            }
-            if (string.IsNullOrWhiteSpace(patientDetails.PatientSex) is false)
-            {
-                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientSex, patientDetails.PatientSex);
-            }
-            var patientDob = patientDetails.PatientDob;
-            if (patientDob.HasValue)
-            {
-                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientDob, patientDob.Value.ToString("o", CultureInfo.InvariantCulture));
-            }
-            if (string.IsNullOrWhiteSpace(patientDetails.PatientHospitalId) is false)
-            {
-                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientHospitalId, patientDetails.PatientHospitalId);
-            }
-            if (string.IsNullOrWhiteSpace(patientDetails.PatientName) is false)
-            {
-                attachedData = task.TaskPluginArguments.TryAdd(PatientKeys.PatientName, patientDetails.PatientName);
-            }
-            if (attachedData)
-            {
-                _logger.AttachedPatientMetadataToTaskExec(JsonConvert.SerializeObject(task.TaskPluginArguments));
-            }
-        }
+                {  TaskType: TaskTypeConstants.RouterTask } => routerFunc(),
+                {  TaskType: TaskTypeConstants.ExportTask } => exportFunc(),
+                {  TaskType: TaskTypeConstants.ExternalAppTask } => externalFunc(),
+                { Status: var s } when s != TaskExecutionStatus.Created  => notCreatedStatusFunc(),
+                _ => defaultFunc()
+            };
 
         public async Task<bool> ProcessTaskUpdate(TaskUpdateEvent message)
         {
@@ -568,6 +532,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
             return await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Dispatched);
         }
 
+
+        // UPTO HERE TODO
         private async Task<bool> HandleOutputArtifacts(WorkflowInstance workflowInstance, List<Messaging.Common.Storage> outputs, TaskExecution task, WorkflowRevision workflowRevision)
         {
             var artifactDict = outputs.ToArtifactDictionary();
@@ -783,7 +749,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
                 payload ??= await _payloadService.GetByIdAsync(workflowInstance.PayloadId);
                 if (payload is not null)
                 {
-                    AttachPatientMetaData(taskExec, payload.PatientDetails);
+                    taskExec.AttachPatientMetaData(payload.PatientDetails, _logger.AttachedPatientMetadataToTaskExec);
                 }
 
                 taskExec.TaskPluginArguments["workflow_name"] = workflow!.Workflow!.Name;

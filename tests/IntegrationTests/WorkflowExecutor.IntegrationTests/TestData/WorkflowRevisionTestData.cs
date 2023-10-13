@@ -2842,9 +2842,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                     {
                                         new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
                                     },
-                                    Output = new Artifact[]
+                                    Output = new OutputArtifact[]
                                     {
-                                        new Artifact {
+                                        new OutputArtifact {
                                             Name = "output",
                                             Mandatory = true
                                         },

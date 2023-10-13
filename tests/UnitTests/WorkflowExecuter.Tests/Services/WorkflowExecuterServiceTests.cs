@@ -43,6 +43,7 @@ using Monai.Deploy.WorkflowManager.Common.Storage.Services;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions;
 using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkloadManager.WorkfowExecuter.Extensions;
 
 namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 {
@@ -373,9 +374,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                                 Description = "taskdesc",
                                 Artifacts = new ArtifactMap
                                 {
-                                    Output = new Artifact[]
+                                    Output = new OutputArtifact[]
                                     {
-                                        new Artifact
+                                        new OutputArtifact
                                         {
                                             Name = "output.pdf"
                                         }
@@ -1818,9 +1819,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                             },
                             Artifacts = new ArtifactMap
                             {
-                                Output = new Artifact[]
+                                Output = new OutputArtifact[]
                                 {
-                                    new Artifact
+                                    new OutputArtifact
                                     {
                                         Name = "Artifact Name",
                                         Value = "Artifact Value",
@@ -2388,7 +2389,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                 PatientSex = "Unknown",
             };
 
-            WorkflowExecuterService.AttachPatientMetaData(taskExec, patientDetails);
+            taskExec.AttachPatientMetaData(patientDetails, null);
 
             taskExec.TaskPluginArguments.Should().NotBeNull();
             taskExec.TaskPluginArguments[PatientKeys.PatientId].Should().BeSameAs(patientDetails.PatientId);

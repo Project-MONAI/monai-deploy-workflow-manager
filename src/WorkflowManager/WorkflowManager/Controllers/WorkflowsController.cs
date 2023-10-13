@@ -156,7 +156,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
 
             try
             {
-                var errors = await _workflowValidator.ValidateWorkflow(workflow);
+                var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
                 if (errors.Count > 0)
                 {
@@ -188,7 +188,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
         {
             try
             {
-                var errors = await _workflowValidator.ValidateWorkflow(workflow);
+                var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
                 if (errors.Count > 0)
                 {
@@ -243,7 +243,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
 
             try
             {
-                var errors = await _workflowValidator.ValidateWorkflow(workflow);
+                var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
                 if (errors.Count > 0)
                 {

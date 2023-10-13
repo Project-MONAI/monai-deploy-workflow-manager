@@ -62,6 +62,8 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
         [Then(@"I will get a (.*) response")]
         public void ThenIWillGetAResponse(string expectedCode)
         {
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+
             ApiHelper.Response.StatusCode.Should().Be((HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), expectedCode));
         }
 

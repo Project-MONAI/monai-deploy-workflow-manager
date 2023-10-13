@@ -38,7 +38,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
     /// </summary>
     [ApiController]
     [Route("tasks")]
-    public class TaskStatsController : ApiControllerBase
+    public class TaskStatsController : PaginationApiControllerBase
     {
         private readonly ILogger<TaskStatsController> _logger;
         private readonly IUriService _uriService;
@@ -173,7 +173,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
                     .Select(s => new ExecutionStatDTO(s))
                     .ToArray();
 
-                var res = CreateStatsPagedReponse(statsDto, validFilter, rangeCount.Result, _uriService, route);
+                var res = CreateStatsPagedResponse(statsDto, validFilter, rangeCount.Result, _uriService, route);
 
                 res.PeriodStart = filter.StartTime;
                 res.PeriodEnd = filter.EndTime;

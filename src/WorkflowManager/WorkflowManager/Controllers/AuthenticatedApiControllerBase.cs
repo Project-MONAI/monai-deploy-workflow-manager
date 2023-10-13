@@ -24,12 +24,12 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
     /// Base authenticated api controller base.
     /// </summary>
     [Authorize]
-    public class AuthenticatedApiControllerBase : WFMApiControllerBase
+    public class AuthenticatedApiControllerBase : PaginationApiControllerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticatedApiControllerBase"/> class.
         /// </summary>
-        /// <param name="options">Options</param>
+        /// <param name="options">Options.</param>
         public AuthenticatedApiControllerBase(IOptions<WorkflowManagerOptions> options)
             : base(options)
         {

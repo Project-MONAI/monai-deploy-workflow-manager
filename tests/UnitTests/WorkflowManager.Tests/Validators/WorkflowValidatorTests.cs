@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
@@ -98,15 +99,15 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
                         },
                         Artifacts = new ArtifactMap
                         {
-                            Output = new Artifact[]
+                            Output = new OutputArtifact[]
                             {
-                                new Artifact
+                                new OutputArtifact
                                 {
                                     Name = "non_unique_artifact",
                                     Mandatory = true,
                                     Value = "Example Value"
                                 },
-                                new Artifact
+                                new OutputArtifact
                                 {
                                     Name = "non_unique_artifact",
                                     Mandatory = true,
@@ -604,11 +605,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
             _informaticsGatewayService.Setup(w => w.OriginExists(It.IsAny<string>()))
                 .ReturnsAsync(false);
 
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
             Assert.True(errors.Count > 0);
 
-            Assert.Equal(53, errors.Count);
+            Assert.Equal(56, errors.Count);
 
             var convergingTasksDestinations = "Converging Tasks Destinations in tasks: (test-clinical-review-2, example-task) on task: example-task";
             Assert.Contains(convergingTasksDestinations, errors);
@@ -707,7 +708,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
                 .ReturnsAsync(new WorkflowRevision());
 
             _workflowValidator.OrignalName = "pizza";
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
             Assert.True(errors.Count > 0);
 
@@ -761,9 +762,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
                         },
                         Artifacts = new ArtifactMap
                         {
-                            Output = new Artifact[]
+                            Output = new OutputArtifact[]
                             {
-                                new Artifact
+                                new OutputArtifact
                                 {
                                     Name = "non_unique_artifact",
                                     Mandatory = true,
@@ -815,7 +816,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
 
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
             Assert.True(errors.Count == 0);
 
@@ -859,9 +860,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
                         },
                         Artifacts = new ArtifactMap
                         {
-                            Output = new Artifact[]
+                            Output = new OutputArtifact[]
                             {
-                                new Artifact
+                                new OutputArtifact
                                 {
                                     Name = "non_unique_artifact",
                                     Mandatory = true,
@@ -923,7 +924,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
 
             for (var i = 0; i < 15; i++)
             {
-                var errors = await _workflowValidator.ValidateWorkflow(workflow);
+                var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
                 Assert.True(errors.Count == 0);
             }
@@ -970,7 +971,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
 
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
             Assert.Single(errors);
         }
@@ -1016,7 +1017,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
 
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
             Assert.Empty(errors);
         }
@@ -1078,9 +1079,77 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
 
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
             Assert.NotEmpty(errors);
+        }
+
+        [Fact]
+        public async Task ValidateWorkflow_RemoteAppTaskWithoutTypeSet_ReturnsErrors()
+        {
+            var workflow = new Workflow
+            {
+                Name = "Workflowname1",
+                Description = "Workflowdesc1",
+                Version = "1",
+                InformaticsGateway = new InformaticsGateway
+                {
+                    AeTitle = "aetitle",
+                    ExportDestinations = new string[] { "oneDestination", "twoDestination", "threeDestination" }
+                },
+                Tasks = new TaskObject[]
+                {
+                    new TaskObject
+                    {
+                        Id = "rootTask",
+                        Type = "router",
+                        Description = "TestDesc",
+                        Artifacts = new ArtifactMap
+                        {
+                            Input = new Artifact[] {
+                                new Artifact
+                                {
+                                    Name = "non_unique_artifact",
+                                    Value = "Example Value"
+                                }
+                            }
+                        },
+                        TaskDestinations = new TaskDestination[]
+                        {
+                            new TaskDestination{ Name = "externalTask" }
+                        }
+                    },
+                    new TaskObject
+                    {
+                        Id = "externalTask",
+                        Type = "remote_app_execution",
+                        //ExportDestinations = new ExportDestination[]
+                        //{
+                        //    new ExportDestination { Name = "oneDestination" }
+                        //},
+                        Artifacts = new ArtifactMap()
+                        {
+                            Input = new Artifact[]
+                            {
+                                new Artifact { Name = "output", Value = "{{ context.executions.artifact_task_1.artifacts.output }}" },
+                            },
+                            Output = new OutputArtifact[]
+                            {
+                                new OutputArtifact { Name = "report.pdf" },
+                            },
+                        }
+                    }
+                }
+            };
+
+            _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
+
+            var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
+
+            Assert.NotEmpty(errors);
+            const string expectedError = "Task: 'externalTask' has incorrect artifact output types set on artifacts with following name. report.pdf";
+            errors.Contains(expectedError).Should().BeTrue();
         }
 
         [Fact]
@@ -1141,7 +1210,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
 
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
             Assert.NotEmpty(errors);
         }
@@ -1199,7 +1268,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
 
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
             Assert.NotEmpty(errors);
         }
@@ -1260,7 +1329,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
 
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
             Assert.Single(errors);
         }
@@ -1339,7 +1408,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
 
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
             Assert.NotEmpty(errors.Where(e => e.Contains("Converging Tasks")));
         }
@@ -1396,7 +1465,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
 
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
             Assert.NotEmpty(errors.Where(e => e.Contains("Found duplicate task")));
         }
@@ -1440,7 +1509,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
 
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
             Assert.NotEmpty(errors.Where(e => e.Contains("InformaticsGateway ExportDestinations destinations can not be null")));
         }
@@ -1463,7 +1532,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
 
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
             Assert.NotEmpty(errors.Where(e => e.Contains("AeTitle is required in the InformaticsGateaway section")));
         }
@@ -1507,7 +1576,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Validators
             _workflowService.Setup(w => w.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(null, TimeSpan.FromSeconds(.1));
 
-            var errors = await _workflowValidator.ValidateWorkflow(workflow);
+            var errors = await _workflowValidator.ValidateWorkflowAsync(workflow);
 
             Assert.NotEmpty(errors.Where(e => e.Contains("Input Artifacts must have a Name")));
             Assert.NotEmpty(errors.Where(e => e.Contains("Input Artifacts must have a Value")));
