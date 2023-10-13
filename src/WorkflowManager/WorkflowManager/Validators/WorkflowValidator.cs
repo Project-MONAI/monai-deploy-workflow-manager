@@ -22,6 +22,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.WorkflowManager.Common.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.Logging;
@@ -29,7 +30,6 @@ using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Utilities;
 using Monai.Deploy.WorkflowManager.Common.Services.InformaticsGateway;
-using MongoDB.Driver.Linq;
 using static Monai.Deploy.WorkflowManager.Common.Miscellaneous.ValidationConstants;
 
 namespace Monai.Deploy.WorkflowManager.Common.Validators
