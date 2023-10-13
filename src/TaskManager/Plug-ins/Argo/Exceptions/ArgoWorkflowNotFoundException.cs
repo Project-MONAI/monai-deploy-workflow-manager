@@ -16,24 +16,25 @@
 
 using System.Runtime.Serialization;
 
-namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
+namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Exceptions
 {
     [Serializable]
-    public class ArtifactMappingNotFoundException : Exception
+    public class ArgoWorkflowNotFoundException : Exception
     {
-        public ArtifactMappingNotFoundException()
+        public ArgoWorkflowNotFoundException(string argoWorkflowName)
+            : base($"Argo workflow '{argoWorkflowName}' not found.")
         {
         }
 
-        public ArtifactMappingNotFoundException(string? artifactName) : base($"Storage information cannot be found for artifact '{artifactName}'.")
+        public ArgoWorkflowNotFoundException(string? message, Exception? innerException) : base(message, innerException)
         {
         }
 
-        public ArtifactMappingNotFoundException(string? message, Exception? innerException) : base(message, innerException)
+        protected ArgoWorkflowNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
 
-        protected ArtifactMappingNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
+        public ArgoWorkflowNotFoundException()
         {
         }
     }

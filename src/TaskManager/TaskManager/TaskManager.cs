@@ -181,6 +181,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
         private async Task TaskCancelationEventCallback(MessageReceivedEventArgs args)
         {
+            // Cancelation just stops running tasks and does Not set any status
             await TaskCallBackGeneric<TaskCancellationEvent>(args, HandleCancellationTask);
         }
 
@@ -240,6 +241,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
 
             var pluginAssembly = string.Empty;
+            ITaskPlugin? taskRunner = null;
             try
             {
                 var taskExecution = await _taskDispatchEventService.GetByTaskExecutionIdAsync(message.Body.ExecutionId).ConfigureAwait(false);
@@ -250,16 +252,27 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                     throw new InvalidOperationException("Task Event data not found.");
                 }
 
-                var taskRunner = typeof(ITaskPlugin).CreateInstance<ITaskPlugin>(serviceProvider: _scope.ServiceProvider, typeString: pluginAssembly, _serviceScopeFactory, taskExecEvent);
-                await taskRunner.HandleTimeout(message.Body.Identity);
-
-                AcknowledgeMessage(message);
+                taskRunner = typeof(ITaskPlugin).CreateInstance<ITaskPlugin>(serviceProvider: _scope.ServiceProvider, typeString: pluginAssembly, _serviceScopeFactory, taskExecEvent);
             }
             catch (Exception ex)
             {
                 _logger.UnsupportedRunner(pluginAssembly, ex);
                 await HandleMessageException(message, message.Body.WorkflowInstanceId, message.Body.TaskId, message.Body.ExecutionId, false).ConfigureAwait(false);
                 return;
+            }
+
+            try
+            {
+                await taskRunner.HandleTimeout(message.Body.Identity);
+            }
+            catch (Exception ex)
+            {
+                // Ignoring exception here as we've asked for the task to be stopped.
+                _logger.ExectionTimingOutTask(pluginAssembly, ex);
+            }
+            finally
+            {
+                AcknowledgeMessage(message);
             }
         }
 

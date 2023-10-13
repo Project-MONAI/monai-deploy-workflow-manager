@@ -30,6 +30,7 @@ using Monai.Deploy.WorkflowManager.TaskManager.API.Extensions;
 using Monai.Deploy.WorkflowManager.TaskManager.API.Models;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo.Logging;
 using Newtonsoft.Json;
+using Monai.Deploy.WorkflowManager.TaskManager.Argo.Exceptions;
 
 [assembly: PlugIn()]
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
@@ -902,18 +903,28 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         public override async Task HandleTimeout(string identity)
         {
             var client = _argoProvider.CreateClient(_baseUrl, _apiToken, _allowInsecure);
-
-            await client.Argo_StopWorkflowAsync(_namespace, identity, new WorkflowStopRequest
+            try
             {
-                Namespace = _namespace,
-                Name = identity,
-            });
+                await client.Argo_StopWorkflowAsync(_namespace, identity, new WorkflowStopRequest
+                {
+                    Namespace = _namespace,
+                    Name = identity,
+                });
 
-            await client.Argo_TerminateWorkflowAsync(_namespace, identity, new WorkflowTerminateRequest
+                await client.Argo_TerminateWorkflowAsync(_namespace, identity, new WorkflowTerminateRequest
+                {
+                    Name = identity,
+                    Namespace = _namespace
+                });
+            }
+            catch (ArgoWorkflowNotFoundException ex)
             {
-                Name = identity,
-                Namespace = _namespace
-            });
+                _logger.ExecptionStoppingArgoWorkflow(identity, ex);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<WorkflowTemplate> CreateArgoTemplate(string template)
