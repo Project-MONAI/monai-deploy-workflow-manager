@@ -17,6 +17,7 @@
 
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.WorkflowManager.Common.ControllersShared;
 using Newtonsoft.Json;
 using Xunit;

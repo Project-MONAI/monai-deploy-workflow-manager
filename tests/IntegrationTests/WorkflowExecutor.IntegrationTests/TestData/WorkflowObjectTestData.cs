@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Artifact = Monai.Deploy.WorkflowManager.Common.Contracts.Models.Artifact;
 
 namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.TestData
 {
