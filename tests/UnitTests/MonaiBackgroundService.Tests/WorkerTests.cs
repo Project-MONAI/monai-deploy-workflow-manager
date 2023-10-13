@@ -83,6 +83,7 @@ namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService.Tests
 
             // Verify DoWork publishes TaskCancellationRequest
             _pubService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.TaskCancellationRequest), It.IsAny<Message>()), Times.Once());
+
             // Verify DoWork publishes TaskUpdateRequest
             _pubService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.TaskUpdateRequest), It.IsAny<Message>()), Times.Once());
 
