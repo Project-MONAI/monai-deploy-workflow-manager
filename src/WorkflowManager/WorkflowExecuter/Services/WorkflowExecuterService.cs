@@ -175,19 +175,98 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
         {
             Guard.Against.Null(message, nameof(message));
 
-            var instance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId!);
-            if (instance is not null)
+            var workflowInstanceId = message.WorkflowInstanceId;
+            var taskId = message.TaskId;
+            // As Workflow Manager receives ArtifactsReceivedEvent, it will need logic to determine whether to dispatch the next task.
+            // The logic will need to match the OutputArtifacts (Expected Outputs) against the Results dictionary (TBC).
+            //     Upon consuming an ArtifactsReceivedEvent:
+            // Add the artifact to the Results dict
+            //     Match the type on the ArtifactsReceivedEvent to the expected output by type to get the name
+            //     Compare the Results dict with the OutputArtifacts
+            // If all mandatory artifacts have been received then dispatch next task and mark task as Passed
+            // If not all mandatory artifacts have been received, wait for remaining artifacts
+            // If task times out without receiving all mandatory artifacts then mark task as Failed
+
+            if (string.IsNullOrWhiteSpace(workflowInstanceId) || string.IsNullOrWhiteSpace(taskId))
             {
-                var task = instance.Tasks.First(t => t.TaskId == message.TaskId!);
-                if (task is not null)
-                {
-                    var workflow = await _workflowRepository.GetByWorkflowIdAsync(instance.WorkflowId);
-                    await HandleTaskDestinations(instance, workflow, task, message.CorrelationId);
-                    return true;
-                }
+                return false;
             }
 
-            return false;
+            var workflowInstance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(workflowInstanceId).ConfigureAwait(false);
+            if (workflowInstance is null)
+            {
+                _logger.WorkflowInstanceNotFound(workflowInstanceId);
+                return false;
+            }
+
+            var workflowTemplate = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId)
+                .ConfigureAwait(false);
+
+            if (workflowTemplate is null)
+            {
+                _logger.WorkflowNotFound(workflowInstanceId);
+                return false;
+            }
+
+            var taskTemplate = workflowTemplate.Workflow?.Tasks.FirstOrDefault(t => t.Id == taskId);
+            if (taskTemplate is null)
+            {
+                _logger.TaskNotFoundInWorkfow(message.PayloadId.ToString(), taskId, workflowTemplate.Id);
+                return false;
+            }
+            // Create artifactsRepository
+            // {
+            //     recievedArtifacts: { taskTemplate.Artifacts.Output.Where(a => a.Type), recieved: DateTime, path: string }
+            //     //WorkflowInstance
+            //     //TaskId
+            // }
+            // Get all artifacts from repo.
+            // Save it straight away
+            var requiredArtifacts = taskTemplate.Artifacts.Output.Where(a => a.Mandatory).Select(a => a.Type);
+            var receivedArtifacts = message.Artifacts.Select(a => a.Type).ToList();
+            var missingArtifacts = requiredArtifacts.Except(receivedArtifacts).ToList();
+            var allArtifacts = taskTemplate.Artifacts.Output.Select(a => a.Type);
+            var unexpectedArtifacts = receivedArtifacts.Except(allArtifacts).ToList();
+
+            if (unexpectedArtifacts.Any())
+            {
+                _logger.UnexpectedArtifactsReceived(taskId, workflowInstanceId, string.Join(',', unexpectedArtifacts));
+            }
+
+            if (!missingArtifacts.Any())
+            {
+                return await AllRequiredArtifactsReceivedAsync(message, workflowInstance, taskId, workflowInstanceId, workflowTemplate).ConfigureAwait(false);
+            }
+
+            _logger.MandatoryOutputArtifactsMissingForTask(taskId, string.Join(',', missingArtifacts));
+            return true;
+        }
+
+        private async Task<bool> AllRequiredArtifactsReceivedAsync(ArtifactsReceivedEvent message, WorkflowInstance workflowInstance,
+            string taskId, string workflowInstanceId, WorkflowRevision workflowTemplate)
+        {
+            var taskExecution = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId == taskId);
+
+            if (taskExecution is null)
+            {
+                _logger.TaskNotFoundInWorkfowInstance(taskId, workflowInstanceId);
+                return false;
+            }
+
+            await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstanceId, taskId,
+                TaskExecutionStatus.Succeeded).ConfigureAwait(false);
+
+            // Dispatch Task
+            var taskDispatchedResult =
+                await HandleTaskDestinations(workflowInstance, workflowTemplate, taskExecution, message.CorrelationId).ConfigureAwait(false);
+
+            if (taskDispatchedResult is false)
+            {
+                _logger.LogTaskDispatchFailure(message.PayloadId.ToString(), taskId, workflowInstanceId, workflowTemplate.WorkflowId, JsonConvert.SerializeObject(message.Artifacts));
+                return false;
+            }
+
+            return true;
         }
 
         public async Task ProcessFirstWorkflowTask(WorkflowInstance workflowInstance, string correlationId, Payload payload)
