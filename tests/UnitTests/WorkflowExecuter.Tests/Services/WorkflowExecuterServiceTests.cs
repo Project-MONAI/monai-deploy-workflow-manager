@@ -2971,8 +2971,6 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                 TaskId = TaskId
             };
 
-
-
             var workflows = new List<WorkflowRevision>
             {
                 new WorkflowRevision

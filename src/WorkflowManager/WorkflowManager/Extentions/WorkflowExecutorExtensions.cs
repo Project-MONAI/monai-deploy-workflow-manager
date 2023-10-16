@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser;
+using Monai.Deploy.WorkflowManager.Common.Database.Repositories;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
@@ -54,6 +55,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Extensions
             services.AddTransient<IDicomService, DicomService>();
             services.AddTransient<IInformaticsGatewayService, InformaticsGatewayService>();
 
+            services.AddSingleton<IArtifactsRepository, ArtifactsRepository>();
             services.AddSingleton<IEventPayloadReceiverService, EventPayloadReceiverService>();
             services.AddTransient<IEventPayloadValidator, EventPayloadValidator>();
             services.AddSingleton<IWorkflowExecuterService, WorkflowExecuterService>();
