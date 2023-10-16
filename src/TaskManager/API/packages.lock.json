@@ -4,9 +4,9 @@
     "net6.0": {
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[1.1.0-list-of-modaliti0015, )",
-        "resolved": "1.1.0-list-of-modaliti0015",
-        "contentHash": "LCfQ3JcZTyxXTEUXHBogyqL13dEB8u+GBYQh3J86GtJMNrcGmvb0QQPsToDP8C/r1b2GCHAn+KTgvDARSWqMyQ==",
+        "requested": "[1.0.3, )",
+        "resolved": "1.0.3",
+        "contentHash": "PwlkTi6UIc2EEZhw/+3/0Y9/1AkFR+SKf78f0SGtrqMIlOBgM8qIMCtf5l8qs8QKXkcETexfjVQD21oxQC8Ung==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.1.1",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.21",
