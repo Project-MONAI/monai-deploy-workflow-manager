@@ -67,6 +67,41 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
             return valid;
         }
 
+        public bool ValidateArtifactReceived(ArtifactsReceivedEvent payload)
+        {
+            Guard.Against.Null(payload, nameof(payload));
+
+            using var loggingScope = Logger.BeginScope(new LoggingDataDictionary<string, object>
+            {
+                ["correlationId"] = payload.CorrelationId,
+                ["payloadId"] = payload.PayloadId,
+            });
+
+            var valid = true;
+            var payloadValid = payload.IsValid(out var validationErrors);
+
+            if (!payloadValid)
+            {
+                Log.FailedToValidateWorkflowRequestEvent(Logger, string.Join(Environment.NewLine, validationErrors));
+            }
+
+            valid &= payloadValid;
+
+            foreach (var workflow in payload.Workflows)
+            {
+                var workflowValid = !string.IsNullOrEmpty(workflow);
+
+                if (!workflowValid)
+                {
+                    Log.FailedToValidateWorkflowRequestEvent(Logger, "Workflow id is empty string");
+                }
+
+                valid &= workflowValid;
+            }
+
+            return valid;
+        }
+
         public bool ValidateTaskUpdate(TaskUpdateEvent payload)
         {
             Guard.Against.Null(payload, nameof(payload));

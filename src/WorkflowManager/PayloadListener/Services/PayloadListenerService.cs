@@ -42,6 +42,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         public string WorkflowRequestRoutingKey { get; set; }
         public string TaskStatusUpdateRoutingKey { get; set; }
         public string ExportCompleteRoutingKey { get; set; }
+        public string ArtifactRecievedRoutingKey { get; set; }
         protected int Concurrency { get; set; }
         public ServiceStatus Status { get; set; } = ServiceStatus.Unknown;
         public string ServiceName => "Payload Listener Service";
@@ -65,6 +66,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             TaskStatusUpdateRoutingKey = configuration.Value.Messaging.Topics.TaskUpdateRequest;
             WorkflowRequestRoutingKey = configuration.Value.Messaging.Topics.WorkflowRequest;
             ExportCompleteRoutingKey = configuration.Value.Messaging.Topics.ExportComplete;
+            ArtifactRecievedRoutingKey = configuration.Value.Messaging.Topics.ArtifactRecieved;
 
             Concurrency = 2;
 
@@ -105,7 +107,11 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 
             _messageSubscriber.SubscribeAsync(ExportCompleteRoutingKey, ExportCompleteRoutingKey, OnExportCompleteReceivedCallback);
             _logger.EventSubscription(ServiceName, ExportCompleteRoutingKey);
+
+            _messageSubscriber.SubscribeAsync(ExportCompleteRoutingKey, ArtifactRecievedRoutingKey, OnArtifactReceivedtReceivedCallbackAsync);
+            _logger.EventSubscription(ServiceName, ArtifactRecievedRoutingKey);
         }
+
         private async Task OnWorkflowRequestReceivedCallbackAsync(MessageReceivedEventArgs eventArgs)
         {
 
@@ -150,6 +156,20 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 
         }
 
+        private async Task OnArtifactReceivedtReceivedCallbackAsync(MessageReceivedEventArgs eventArgs)
+        {
+
+            using var loggerScope = _logger.BeginScope(new Common.Miscellaneous.LoggingDataDictionary<string, object>
+            {
+                ["correlationId"] = eventArgs.Message.CorrelationId,
+                ["source"] = eventArgs.Message.ApplicationId,
+                ["messageId"] = eventArgs.Message.MessageId,
+                ["messageDescription"] = eventArgs.Message.MessageDescription,
+            });
+
+            _logger.ArtifactReceivedReceived();
+            await _eventPayloadListenerService.ReceiveWorkflowPayload(eventArgs);
+        }
 
         protected virtual void Dispose(bool disposing)
         {

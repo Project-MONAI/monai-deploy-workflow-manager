@@ -49,5 +49,11 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
         /// <param name="previousTaskId">Previous Tasks Id.</param>
         /// <returns></returns>
         Task<TaskExecution> CreateTaskExecutionAsync(TaskObject task, WorkflowInstance workflowInstance, string? bucketName = null, string? payloadId = null, string? previousTaskId = null);
+
+        /// <summary>
+        /// Processes the artifactReceived payload and continue workflow instance.
+        /// </summary>
+        /// <param name="message">The workflow request message event.</param>
+        Task<bool> ProcessArtifactReceived(ArtifactsReceivedEvent message);
     }
 }

@@ -2955,6 +2955,85 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
             _workflowInstanceRepository.Verify(r => r.UpdateTaskStatusAsync(workflowInstance.Id, "pizza", TaskExecutionStatus.Failed), Times.Once);
         }
+        [Fact]
+        public async Task ArtifactReceveid_Valid_ReturnesTrue()
+        {
+            var TaskId = Guid.NewGuid().ToString();
+            var WorkflowId = Guid.NewGuid().ToString();
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var artifactEvent = new ArtifactsReceivedEvent
+            {
+                Bucket = "testbucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow,
+                WorkflowInstanceId = workflowInstanceId,
+                TaskId = TaskId
+            };
+
+
+
+            var workflows = new List<WorkflowRevision>
+            {
+                new WorkflowRevision
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = WorkflowId,
+                    Revision = 1,
+                    Workflow = new Workflow
+                    {
+                        Name = "Workflowname",
+                        Description = "Workflowdesc",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
+                        {
+                            AeTitle = "aetitle"
+                        },
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject {
+                                Id = TaskId,
+                                Type = "type",
+                                Description = "outgoing",
+                                TaskDestinations = new TaskDestination[] { new TaskDestination { Name = "task2" } }
+                            },
+                            new TaskObject {
+                                Id = "task2",
+                                Type = "type",
+                                Description = "returning",
+                            }
+                        }
+                    }
+                }
+            };
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                BucketId = "BucketId",
+                PayloadId = "PayloadId",
+                WorkflowId = WorkflowId,
+                Tasks = new List<TaskExecution>
+                {
+                    new TaskExecution{
+                        TaskId = TaskId,
+                    }
+                }
+            };
+
+            //_workflowRepository.Setup(w => w.GetWorkflowsByAeTitleAsync(It.IsAny<List<string>>())).ReturnsAsync(workflows);
+            //_workflowRepository.Setup(w => w.GetWorkflowsForWorkflowRequestAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflows[0].WorkflowId)).ReturnsAsync(workflows[0]);
+            //_workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
+            //_workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstanceId)).ReturnsAsync(workflowInstance);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(It.IsAny<string>(), It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            var result = await WorkflowExecuterService.ProcessArtifactReceived(artifactEvent);
+
+            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.TaskDispatchRequest, It.IsAny<Message>()), Times.Once());
+
+            Assert.True(result);
+        }
     }
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 }

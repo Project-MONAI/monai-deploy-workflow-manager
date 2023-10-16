@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Globalization;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -111,20 +110,11 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
 
             using var loggerScope = _logger.BeginScope($"correlationId={message.CorrelationId}, payloadId={payload.PayloadId}");
 
-            // for external App executions then workflowInstanceId will be supplied and we can continue the workflow from that task.
-            if (string.IsNullOrWhiteSpace(message.WorkflowInstanceId) is false)
+            // for external App executions use the ArtifactReceived queue.
+            if (string.IsNullOrWhiteSpace(message.WorkflowInstanceId) is false && string.IsNullOrEmpty(message.TaskId) is false)
             {
-                var instance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId);
-                if (instance is not null)
-                {
-                    var task = instance.Tasks.First(t => t.TaskId == message.TaskId);
-                    if (task is not null)
-                    {
-                        var workflow = await _workflowRepository.GetByWorkflowIdAsync(instance.WorkflowId);
-                        await HandleTaskDestinations(instance, workflow, task, message.CorrelationId);
-                        return true;
-                    }
-                }
+                _logger.DontUseWorkflowReceivedForPayload();
+                return false;
             }
 
             var processed = true;
@@ -181,6 +171,25 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
             return true;
         }
 
+        public async Task<bool> ProcessArtifactReceived(ArtifactsReceivedEvent message)
+        {
+            Guard.Against.Null(message, nameof(message));
+
+            var instance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId!);
+            if (instance is not null)
+            {
+                var task = instance.Tasks.First(t => t.TaskId == message.TaskId!);
+                if (task is not null)
+                {
+                    var workflow = await _workflowRepository.GetByWorkflowIdAsync(instance.WorkflowId);
+                    await HandleTaskDestinations(instance, workflow, task, message.CorrelationId);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public async Task ProcessFirstWorkflowTask(WorkflowInstance workflowInstance, string correlationId, Payload payload)
         {
             if (workflowInstance.Status == Status.Failed)
@@ -226,10 +235,10 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
             Func<Task> defaultFunc) =>
             task switch
             {
-                {  TaskType: TaskTypeConstants.RouterTask } => routerFunc(),
-                {  TaskType: TaskTypeConstants.ExportTask } => exportFunc(),
-                {  TaskType: TaskTypeConstants.ExternalAppTask } => externalFunc(),
-                { Status: var s } when s != TaskExecutionStatus.Created  => notCreatedStatusFunc(),
+                { TaskType: TaskTypeConstants.RouterTask } => routerFunc(),
+                { TaskType: TaskTypeConstants.ExportTask } => exportFunc(),
+                { TaskType: TaskTypeConstants.ExternalAppTask } => externalFunc(),
+                { Status: var s } when s != TaskExecutionStatus.Created => notCreatedStatusFunc(),
                 _ => defaultFunc()
             };
 

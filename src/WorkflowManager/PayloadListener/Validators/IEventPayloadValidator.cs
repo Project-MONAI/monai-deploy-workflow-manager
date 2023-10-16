@@ -37,5 +37,11 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
         /// </summary>
         /// <param name="payload">The workflow message event.</param>
         bool ValidateExportComplete(ExportCompleteEvent payload);
+
+        /// <summary>
+        /// Validates the artifactReceived payload from the RabbitMQ queue.
+        /// </summary>
+        /// <param name="payload">The artifactReceived event.</param>
+        bool ValidateArtifactReceived(ArtifactsReceivedEvent payload);
     }
 }

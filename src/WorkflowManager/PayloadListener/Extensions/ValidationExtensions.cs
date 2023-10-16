@@ -39,6 +39,24 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             return valid;
         }
 
+        public static bool IsValid(this ArtifactsReceivedEvent artifactReceivedMessage, out IList<string> validationErrors)
+        {
+            Guard.Against.Null(artifactReceivedMessage, nameof(artifactReceivedMessage));
+
+            validationErrors = new List<string>();
+
+            var valid = true;
+
+            valid &= IsAeTitleValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.DataTrigger.Source, validationErrors);
+            valid &= IsAeTitleValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.DataTrigger.Destination, validationErrors);
+            valid &= IsBucketValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.Bucket, validationErrors);
+            valid &= IsCorrelationIdValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.CorrelationId, validationErrors);
+            valid &= IsPayloadIdValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.PayloadId.ToString(), validationErrors);
+            valid &= string.IsNullOrEmpty(artifactReceivedMessage.WorkflowInstanceId) is false && string.IsNullOrEmpty(artifactReceivedMessage.TaskId) is false;
+
+            return valid;
+        }
+
         public static bool IsInformaticsGatewayNotNull(string source, InformaticsGateway informaticsGateway, IList<string> validationErrors)
         {
             Guard.Against.NullOrWhiteSpace(source, nameof(source));
