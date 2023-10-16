@@ -14,10 +14,20 @@
  * limitations under the License.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Monai.Deploy.Messaging.Common;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
+    public class OutputArtifact : Artifact
+    {
+        [JsonProperty(PropertyName = "type", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public ArtifactType Type { get; set; } = ArtifactType.Unset;
+    }
+
     public class Artifact
     {
         [JsonProperty(PropertyName = "name")]

@@ -175,7 +175,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
                                    Name = "test",
                                    Value = "{{ context.input.dicom }}"
                                }
-                            }
+                            },
                         },
                         ExportDestinations = new ExportDestination[] {
                             new ExportDestination
@@ -419,9 +419,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
                                 {
                                     new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
                                 },
-                                Output = new Artifact[]
+                                Output = new OutputArtifact[]
                                 {
-                                    new Artifact { Name = "Argo2" }
+                                    new OutputArtifact { Name = "Argo2" }
                                 }
                             },
                             TaskDestinations = new TaskDestination[] {
@@ -451,7 +451,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
                                 {
                                     new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
                                 },
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] { }
                         }
@@ -498,9 +498,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
                                 {
                                     new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
                                 },
-                                Output = new Artifact[]
+                                Output = new OutputArtifact[]
                                 {
-                                    new Artifact { Name = "Argo2" }
+                                    new OutputArtifact { Name = "Argo2" }
                                 }
                             },
                             TaskDestinations = new TaskDestination[] {
@@ -529,7 +529,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
                                 {
                                     new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
                                 },
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] { }
                         }
@@ -580,9 +580,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
                                 {
                                     new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
                                 },
-                                Output = new Artifact[]
+                                Output = new OutputArtifact[]
                                 {
-                                    new Artifact { Name = "Argo2" }
+                                    new OutputArtifact { Name = "Argo2" }
                                 }
                             },
                             TaskDestinations = new TaskDestination[] {
@@ -612,7 +612,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
                                 {
                                     new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
                                 },
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] { }
                         }

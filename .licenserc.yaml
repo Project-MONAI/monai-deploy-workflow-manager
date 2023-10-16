@@ -34,6 +34,7 @@ header:
     - 'src/.vs'
     - 'doc/dependency_decisions.yml'
     - 'docs/templates/**'
+    - 'src/Monai.Deploy.WorkflowManager.sln.DotSettings'
 
   comment: never
 

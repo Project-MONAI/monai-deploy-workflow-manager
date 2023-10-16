@@ -134,7 +134,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
             var objectResult = Assert.IsType<ObjectResult>(result);
 
             var responseValue = (ProblemDetails)objectResult.Value;
-            string expectedErrorMessage = $"Failed to find payload with payload id: {payloadId}";
+            var expectedErrorMessage = $"Failed to find payload with payload id: {payloadId}";
             responseValue.Detail.Should().BeEquivalentTo(expectedErrorMessage);
 
             Assert.Equal((int)HttpStatusCode.NotFound, responseValue.Status);

@@ -14,40 +14,38 @@
  * limitations under the License.
  */
 
-using System.Net;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
-using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
-using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using Monai.Deploy.Messaging.Common;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
 namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
 {
     /// <summary>
-    /// Base Api Controller.
+    /// Artifacts Controller
     /// </summary>
     [ApiController]
-    public class ApiControllerBase : ControllerBase
+    [Route("artifacts/")]
+    public class ArtifactsController : ApiControllerBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ApiControllerBase"/> class.
+        /// Initializes a new instance of the <see cref="ArtifactsController"/> class.
         /// </summary>
-        public ApiControllerBase()
+        public ArtifactsController()
         {
         }
 
         /// <summary>
-        /// Gets internal Server Error 500.
+        /// Get Artifact Types
         /// </summary>
-        protected static int InternalServerError => (int)HttpStatusCode.InternalServerError;
-
-        /// <summary>
-        /// Gets bad Request 400.
-        /// </summary>
-        protected static new int BadRequest => (int)HttpStatusCode.BadRequest;
-
-        /// <summary>
-        /// Gets notFound 404.
-        /// </summary>
-        protected static new int NotFound => (int)HttpStatusCode.NotFound;
+        /// <returns>List of supported artifact types.</returns>
+        [HttpGet]
+        [Route("types")]
+        [ProducesResponseType(typeof(List<Payload>), StatusCodes.Status200OK)]
+        public IActionResult GetArtifactTypes()
+        {
+            return Ok(ArtifactTypes.ListOfModularity);
+        }
     }
 }

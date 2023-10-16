@@ -22,6 +22,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.WorkflowManager.Common.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.Logging;
@@ -29,7 +30,6 @@ using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Utilities;
 using Monai.Deploy.WorkflowManager.Common.Services.InformaticsGateway;
-using MongoDB.Driver.Linq;
 using static Monai.Deploy.WorkflowManager.Common.Miscellaneous.ValidationConstants;
 
 namespace Monai.Deploy.WorkflowManager.Common.Validators
@@ -119,12 +119,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
         /// </summary>
         /// <param name="workflow">Workflow to validate.</param>
         /// <returns>if any validation errors are produced while validating workflow.</returns>
-        public async Task<List<string>> ValidateWorkflow(Workflow workflow)
+        public async Task<List<string>> ValidateWorkflowAsync(Workflow workflow)
         {
             var tasks = workflow.Tasks;
             var firstTask = tasks.FirstOrDefault();
 
-            await ValidateWorkflowSpec(workflow);
+            await ValidateWorkflowSpecAsync(workflow).ConfigureAwait(false);
             if (tasks.Any())
             {
                 ValidateTasks(workflow, firstTask!.Id);
@@ -233,7 +233,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
             }
         }
 
-        private async Task ValidateWorkflowSpec(Workflow workflow)
+        private async Task ValidateWorkflowSpecAsync(Workflow workflow)
         {
             if (string.IsNullOrWhiteSpace(workflow.Name) is true)
             {
@@ -257,7 +257,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
                 Errors.Add("Missing Workflow Version.");
             }
 
-            await ValidateInformaticsGateaway(workflow.InformaticsGateway);
+            await ValidateInformaticsGateawayAsync(workflow.InformaticsGateway);
 
             if (workflow.Tasks is null || workflow.Tasks.Any() is false)
             {
@@ -275,7 +275,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
             }
         }
 
-        private async Task ValidateInformaticsGateaway(InformaticsGateway informaticsGateway)
+        private async Task ValidateInformaticsGateawayAsync(InformaticsGateway informaticsGateway)
         {
             if (informaticsGateway is null)
             {
@@ -303,15 +303,18 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
 
         private void ValidateTaskOutputArtifacts(TaskObject currentTask)
         {
-            if (currentTask.Artifacts != null && currentTask.Artifacts.Output.IsNullOrEmpty() is false)
+            var taskArtifacts = currentTask.Artifacts;
+            if (taskArtifacts == null || taskArtifacts.Output.IsNullOrEmpty())
             {
-                var uniqueOutputNames = new HashSet<string>();
-                var allOutputsUnique = currentTask.Artifacts.Output.All(x => uniqueOutputNames.Add(x.Name));
+                return;
+            }
 
-                if (allOutputsUnique is false)
-                {
-                    Errors.Add($"Task: '{currentTask.Id}' has multiple output names with the same value.");
-                }
+            var uniqueOutputNames = new HashSet<string>();
+            var allOutputsUnique = taskArtifacts.Output.All(x => uniqueOutputNames.Add(x.Name));
+
+            if (allOutputsUnique is false)
+            {
+                Errors.Add($"Task: '{currentTask.Id}' has multiple output names with the same value.");
             }
         }
 
@@ -326,29 +329,23 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
 
             ValidateInputs(currentTask);
 
-            if (currentTask.Type.Equals(ExportTaskType, StringComparison.OrdinalIgnoreCase) is true)
+            switch (currentTask.Type.ToLowerInvariant())
             {
-                ValidateExportTask(workflow, currentTask);
-            }
-
-            if (currentTask.Type.Equals(ExternalAppTaskType, StringComparison.OrdinalIgnoreCase) is true)
-            {
-                ValidateExternalAppTask(workflow, currentTask);
-            }
-
-            if (currentTask.Type.Equals(ArgoTaskType, StringComparison.OrdinalIgnoreCase) is true)
-            {
-                ValidateArgoTask(currentTask);
-            }
-
-            if (currentTask.Type.Equals(ClinicalReviewTaskType, StringComparison.OrdinalIgnoreCase) is true)
-            {
-                ValidateClinicalReviewTask(tasks, currentTask);
-            }
-
-            if (currentTask.Type.Equals(Email, StringComparison.OrdinalIgnoreCase) is true)
-            {
-                ValidateEmailTask(currentTask);
+                case ExportTaskType:
+                    ValidateExportTask(workflow, currentTask);
+                    break;
+                case ExternalAppTaskType:
+                    ValidateExternalAppTask(workflow, currentTask);
+                    break;
+                case ArgoTaskType:
+                    ValidateArgoTask(currentTask);
+                    break;
+                case ClinicalReviewTaskType:
+                    ValidateClinicalReviewTask(tasks, currentTask);
+                    break;
+                case Email:
+                    ValidateEmailTask(currentTask);
+                    break;
             }
         }
 
@@ -541,7 +538,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
             }
 
             var disallowedTags = _options.Value.DicomTagsDisallowed.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-            var intersect = formattedMetadataValues.Intersect(disallowedTags);
+            var intersect = formattedMetadataValues.Intersect(disallowedTags).ToList();
 
             if (intersect.Any())
             {
@@ -577,29 +574,28 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
             if (!currentTask.Args.ContainsKey(ReviewedTaskId))
             {
                 Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id must be specified.");
-                return;
             }
-            else if (tasks.Any(t => t.Id.ToLower() == currentTask.Args[ReviewedTaskId].ToLower()) is false)
+            else
             {
-                Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id: '{currentTask.Args[ReviewedTaskId]}' could not be found in the workflow.");
-                return;
+                if (tasks.Any(t => t.Id.ToLower() == currentTask.Args[ReviewedTaskId].ToLower()) is false)
+                {
+                    Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id: '{currentTask.Args[ReviewedTaskId]}' could not be found in the workflow.");
+                }
+
+                var reviewedTask = tasks.FirstOrDefault(t => t.Id.ToLower() == currentTask.Args[ReviewedTaskId].ToLower());
+                if (reviewedTask is null || AcceptableTasksToReview.Contains(reviewedTask.Type.ToLowerInvariant()) is false)
+                {
+                    Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id: '{currentTask.Args[ReviewedTaskId]}' does not reference an accepted reviewable task type. ({string.Join(Comma, AcceptableTasksToReview)})");
+                }
             }
 
             if (!currentTask.Args.ContainsKey(Notifications))
             {
                 Errors.Add($"Task: '{currentTask.Id}' notifications must be specified.");
-                return;
             }
             else if (!Enum.TryParse(typeof(NotificationValues), currentTask.Args[Notifications], true, out var _))
             {
                 Errors.Add($"Task: '{currentTask.Id}' notifications is incorrectly specified{Comma}please specify 'true' or 'false'");
-            }
-
-            var reviewedTask = tasks.First(t => t.Id.ToLower() == currentTask.Args[ReviewedTaskId].ToLower());
-
-            if (reviewedTask.Type.Equals(ArgoTaskType, StringComparison.OrdinalIgnoreCase) is false)
-            {
-                Errors.Add($"Task: '{currentTask.Id}' reviewed_task_id: '{currentTask.Args[ReviewedTaskId]}' does not reference an Argo task.");
             }
         }
 
@@ -612,7 +608,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
 
             CheckDestinationInMigDestinations(currentTask, workflow.InformaticsGateway);
 
-            if (currentTask.ExportDestinations.Count() != currentTask.ExportDestinations.Select(t => t.Name).Distinct().Count())
+            if (currentTask.ExportDestinations.Length != currentTask.ExportDestinations.Select(t => t.Name).Distinct().Count())
             {
                 Errors.Add($"Task: '{currentTask.Id}' contains duplicate destinations.");
             }
@@ -629,19 +625,31 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
 
             CheckDestinationInMigDestinations(currentTask, workflow.InformaticsGateway);
 
-            if (currentTask.ExportDestinations.Count() != currentTask.ExportDestinations.Select(t => t.Name).Distinct().Count())
+            if (currentTask.ExportDestinations.Length != currentTask.ExportDestinations.Select(t => t.Name).Distinct().Count())
             {
                 Errors.Add($"Task: '{currentTask.Id}' contains duplicate destinations.");
             }
 
             ValidateTaskOutputArtifacts(currentTask);
+            var taskArtifacts = currentTask.Artifacts;
 
-            if (currentTask.Artifacts == null
-                || currentTask.Artifacts.Output.IsNullOrEmpty()
-                || (currentTask.Artifacts.Output.Select(a => a.Name).Any() is false))
+            if (taskArtifacts == null
+                || taskArtifacts.Output.IsNullOrEmpty()
+                || (taskArtifacts.Output.Select(a => a.Name).Any() is false))
             {
                 Errors.Add($"Task: '{currentTask.Id}' must contain at lease a single output.");
             }
+            else
+            {
+                var invalidOutputTypes = taskArtifacts.Output.Where(x =>
+                    ArtifactTypes.Validate(x.Type.ToString()) is false || x.Type == ArtifactType.Unset).ToList();
+                if (invalidOutputTypes.Any())
+                {
+                    var incorrectOutputs = string.Join(Comma, invalidOutputTypes.Select(x => x.Name));
+                    Errors.Add($"Task: '{currentTask.Id}' has incorrect artifact output types set on artifacts with following name. {incorrectOutputs}");
+                }
+            }
+
         }
     }
 }
