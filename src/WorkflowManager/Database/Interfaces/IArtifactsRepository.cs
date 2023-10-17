@@ -28,7 +28,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
         /// <param name="workflowInstance"></param>
         /// <param name="taskId"></param>
         /// <returns></returns>
-        Task<List<ArtifactReceivedItems>> GetAllAsync(string workflowInstance, string taskId);
+        Task<List<ArtifactReceivedItems>?> GetAllAsync(string workflowInstance, string taskId);
 
         /// <summary>
         /// Adds an item to the ArtifactsReceivedItems collection.

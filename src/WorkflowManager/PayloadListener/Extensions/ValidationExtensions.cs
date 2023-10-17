@@ -15,6 +15,7 @@
  */
 
 using Ardalis.GuardClauses;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
@@ -53,6 +54,21 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             valid &= IsCorrelationIdValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.CorrelationId, validationErrors);
             valid &= IsPayloadIdValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.PayloadId.ToString(), validationErrors);
             valid &= string.IsNullOrEmpty(artifactReceivedMessage.WorkflowInstanceId) is false && string.IsNullOrEmpty(artifactReceivedMessage.TaskId) is false;
+            valid &= AllArtifactsAreValid(artifactReceivedMessage, validationErrors);
+            return valid;
+        }
+
+        private static bool AllArtifactsAreValid(this ArtifactsReceivedEvent artifactReceivedMessage, IList<string> validationErrors)
+        {
+            Guard.Against.Null(artifactReceivedMessage, nameof(artifactReceivedMessage));
+
+            var valid = artifactReceivedMessage.Artifacts.All(a => a.Type != ArtifactType.Unset);
+
+            if (valid is false)
+            {
+                var unsetArtifacts = string.Join(',', artifactReceivedMessage.Artifacts.Where(a => a.Type == ArtifactType.Unset).Select(a => a.Path));
+                validationErrors.Add($"The following artifacts are have unset artifact types: {unsetArtifacts}");
+            }
 
             return valid;
         }

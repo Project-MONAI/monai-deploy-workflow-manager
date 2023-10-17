@@ -175,21 +175,12 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
             return true;
         }
 
-        public async Task<bool> ProcessArtifactReceived(ArtifactsReceivedEvent message)
+        public async Task<bool> ProcessArtifactReceivedAsync(ArtifactsReceivedEvent message)
         {
             Guard.Against.Null(message, nameof(message));
 
             var workflowInstanceId = message.WorkflowInstanceId;
             var taskId = message.TaskId;
-            // As Workflow Manager receives ArtifactsReceivedEvent, it will need logic to determine whether to dispatch the next task.
-            // The logic will need to match the OutputArtifacts (Expected Outputs) against the Results dictionary (TBC).
-            //     Upon consuming an ArtifactsReceivedEvent:
-            // Add the artifact to the Results dict
-            //     Match the type on the ArtifactsReceivedEvent to the expected output by type to get the name
-            //     Compare the Results dict with the OutputArtifacts
-            // If all mandatory artifacts have been received then dispatch next task and mark task as Passed
-            // If not all mandatory artifacts have been received, wait for remaining artifacts
-            // If task times out without receiving all mandatory artifacts then mark task as Failed
 
             if (string.IsNullOrWhiteSpace(workflowInstanceId) || string.IsNullOrWhiteSpace(taskId))
             {
@@ -220,7 +211,15 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
             }
 
             var previouslyReceivedArtifactsFromRepo = await _artifactsRepository.GetAllAsync(workflowInstanceId, taskId).ConfigureAwait(false);
-
+            if (previouslyReceivedArtifactsFromRepo is null || previouslyReceivedArtifactsFromRepo.Count == 0)
+            {
+                previouslyReceivedArtifactsFromRepo = new List<ArtifactReceivedItems>() { new ArtifactReceivedItems()
+                {
+                    TaskId = taskId,
+                    WorkflowInstanceId = workflowInstanceId,
+                    Artifacts = message.Artifacts.Select(ArtifactReceivedDetails.FromArtifact).ToList()
+                } };
+            }
             await _artifactsRepository
                 .AddOrUpdateItemAsync(workflowInstanceId, taskId, message.Artifacts).ConfigureAwait(false);
 

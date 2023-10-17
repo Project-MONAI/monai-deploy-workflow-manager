@@ -205,7 +205,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
                     return;
                 }
 
-                if (!await WorkflowExecuterService.ProcessArtifactReceived(requestEvent))
+                if (!await WorkflowExecuterService.ProcessArtifactReceivedAsync(requestEvent))
                 {
                     Logger.ArtifactReceivedRequeuePayloadCreateError(message.Message.MessageId);
                     await _messageSubscriber.RequeueWithDelay(message.Message);

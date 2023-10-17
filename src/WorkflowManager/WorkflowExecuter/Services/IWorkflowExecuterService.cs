@@ -54,6 +54,6 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
         /// Processes the artifactReceived payload and continue workflow instance.
         /// </summary>
         /// <param name="message">The workflow request message event.</param>
-        Task<bool> ProcessArtifactReceived(ArtifactsReceivedEvent message);
+        Task<bool> ProcessArtifactReceivedAsync(ArtifactsReceivedEvent message);
     }
 }

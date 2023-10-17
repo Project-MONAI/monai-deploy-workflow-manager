@@ -32,6 +32,14 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
         /// Gets or Sets LastReceived.
         /// </summary>
         public DateTime? Received { get; set; } = null;
+
+        public static ArtifactReceivedDetails FromArtifact(Artifact artifact) =>
+            new()
+            {
+                Received = DateTime.UtcNow,
+                Type = artifact.Type,
+                Path = artifact.Path
+            };
     }
 
     public class ArtifactReceivedItems
