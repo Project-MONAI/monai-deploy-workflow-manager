@@ -639,13 +639,15 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
             {
                 Errors.Add($"Task: '{currentTask.Id}' must contain at lease a single output.");
             }
-
-            var invalidOutputTypes = taskArtifacts.Output.Where(x =>
-                ArtifactTypes.Validate(x.Type.ToString()) is false || x.Type == ArtifactType.Unset).ToList();
-            if (invalidOutputTypes.Any())
+            else
             {
-                var incorrectOutputs = string.Join(Comma, invalidOutputTypes.Select(x => x.Name));
-                Errors.Add($"Task: '{currentTask.Id}' has incorrect artifact output types set on artifacts with following name. {incorrectOutputs}");
+                var invalidOutputTypes = taskArtifacts.Output.Where(x =>
+                    ArtifactTypes.Validate(x.Type.ToString()) is false || x.Type == ArtifactType.Unset).ToList();
+                if (invalidOutputTypes.Any())
+                {
+                    var incorrectOutputs = string.Join(Comma, invalidOutputTypes.Select(x => x.Name));
+                    Errors.Add($"Task: '{currentTask.Id}' has incorrect artifact output types set on artifacts with following name. {incorrectOutputs}");
+                }
             }
         }
     }
