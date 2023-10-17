@@ -44,6 +44,7 @@ using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions;
 using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkloadManager.WorkfowExecuter.Extensions;
+using Monai.Deploy.WorkflowManager.Common.Database.Repositories;
 
 namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 {
@@ -56,6 +57,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
         private readonly Mock<ILogger<WorkflowExecuterService>> _logger;
         private readonly Mock<IWorkflowInstanceRepository> _workflowInstanceRepository;
         private readonly Mock<IWorkflowInstanceService> _workflowInstanceService;
+        private readonly Mock<IArtifactsRepository> _artifactReceivedRepository;
         private readonly Mock<IMessageBrokerPublisherService> _messageBrokerPublisherService;
         private readonly Mock<IStorageService> _storageService;
         private readonly Mock<IPayloadService> _payloadService;
@@ -69,6 +71,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
         public WorkflowExecuterServiceTests()
         {
             _workflowRepository = new Mock<IWorkflowRepository>();
+            _artifactReceivedRepository = new Mock<IArtifactsRepository>();
             _artifactMapper = new Mock<IArtifactMapper>();
             _logger = new Mock<ILogger<WorkflowExecuterService>>();
             _workflowInstanceRepository = new Mock<IWorkflowInstanceRepository>();
@@ -113,7 +116,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                                                                   _taskExecutionStatsRepository.Object,
                                                                   _artifactMapper.Object,
                                                                   _storageService.Object,
-                                                                  _payloadService.Object);
+                                                                  _payloadService.Object,
+                                                                  _artifactReceivedRepository.Object);
         }
 
         [Fact]
@@ -140,7 +144,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                                                                   _taskExecutionStatsRepository.Object,
                                                                   _artifactMapper.Object,
                                                                   _storageService.Object,
-                                                                  _payloadService.Object));
+                                                                  _payloadService.Object,
+                                                                  _artifactReceivedRepository.Object));
 
         }
 
@@ -167,7 +172,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                                                                   _taskExecutionStatsRepository.Object,
                                                                   _artifactMapper.Object,
                                                                   _storageService.Object,
-                                                                  _payloadService.Object));
+                                                                  _payloadService.Object,
+                                                                  _artifactReceivedRepository.Object));
         }
 
         [Fact]
