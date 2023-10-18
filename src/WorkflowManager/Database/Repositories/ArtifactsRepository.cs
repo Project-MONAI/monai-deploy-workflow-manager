@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Database.Options;
@@ -63,6 +64,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
         /// Gets or Sets Artifacts.
         /// </summary>
         public List<ArtifactReceivedDetails> Artifacts { get; set; } = new();
+
+        /// <summary>
+        /// The date Time this was received
+        /// </summary>
+        public DateTime Received { get; set; } = DateTime.UtcNow;
     }
 
     public class ArtifactsRepository : IArtifactsRepository
@@ -83,9 +89,44 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var mongoDatabase = client.GetDatabase(bookStoreDatabaseSettings.Value.DatabaseName);
             _artifactReceivedItemsCollection = mongoDatabase.GetCollection<ArtifactReceivedItems>("ArtifactReceivedItems");
+            EnsureIndex().GetAwaiter().GetResult();
+        }
+        private async Task EnsureIndex()
+        {
+            var indexName = "ArtifactReceivedWorkflowInstanceIdTaskIdIndex";
+
+            var model = new CreateIndexModel<ArtifactReceivedItems>(
+                    Builders<ArtifactReceivedItems>.IndexKeys.Ascending(s => s.WorkflowInstanceId).Ascending(s => s.TaskId),
+                        new CreateIndexOptions { Name = indexName }
+                    );
+
+            await MakeIndex(_artifactReceivedItemsCollection, indexName, model);
+
+            indexName = "ReceivedTime";
+
+            model = new CreateIndexModel<ArtifactReceivedItems>(
+                    Builders<ArtifactReceivedItems>.IndexKeys.Ascending(s => s.Received),
+                        new CreateIndexOptions { ExpireAfter = TimeSpan.FromDays(7), Name = "ReceivedTime" }
+                    );
+
+            await MakeIndex(_artifactReceivedItemsCollection, indexName, model);
+        }
+        private static async Task MakeIndex<T>(IMongoCollection<T> collection, string indexName, CreateIndexModel<T> model)
+        {
+            Guard.Against.Null(collection, nameof(collection));
+
+            var asyncCursor = (await collection.Indexes.ListAsync());
+            var bsonDocuments = (await asyncCursor.ToListAsync());
+            var indexes = bsonDocuments.Select(_ => _.GetElement("name").Value.ToString()).ToList();
+
+            // If index not present create it else skip.
+            if (!indexes.Any(i => i is not null && i.Equals(indexName)))
+            {
+                await collection.Indexes.CreateOneAsync(model);
+            }
         }
 
-        public async Task<List<ArtifactReceivedItems>> GetAllAsync(string workflowInstance, string taskId)
+        public async Task<List<ArtifactReceivedItems>?> GetAllAsync(string workflowInstance, string taskId)
         {
             var result = await _artifactReceivedItemsCollection.FindAsync(a => a.WorkflowInstanceId == workflowInstance && a.TaskId == taskId).ConfigureAwait(false);
             return await result.ToListAsync().ConfigureAwait(false);

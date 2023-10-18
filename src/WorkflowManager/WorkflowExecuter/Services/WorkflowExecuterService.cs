@@ -338,7 +338,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
                 return false;
             }
 
-            var currentTask = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId == message.TaskId);
+            var currentTask = workflowInstance.Tasks.Find(t => t.TaskId == message.TaskId);
 
             using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
@@ -439,7 +439,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
         public async Task<bool> ProcessExportComplete(ExportCompleteEvent message, string correlationId)
         {
             var workflowInstance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId);
-            var task = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId == message.ExportTaskId);
+            var task = workflowInstance.Tasks.Find(t => t.TaskId == message.ExportTaskId);
 
             if (task is null)
             {
