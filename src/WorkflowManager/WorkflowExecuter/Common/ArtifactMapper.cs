@@ -22,7 +22,7 @@ using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Logging;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 
-namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common
 {
     public class ArtifactMapper : IArtifactMapper
     {

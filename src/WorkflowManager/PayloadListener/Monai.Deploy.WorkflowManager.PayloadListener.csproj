@@ -40,7 +40,7 @@
     <ProjectReference Include="..\..\Common\Miscellaneous\Monai.Deploy.WorkflowManager.Common.Miscellaneous.csproj" />
     <ProjectReference Include="..\Contracts\Monai.Deploy.WorkflowManager.Contracts.csproj" />
     <ProjectReference Include="..\Logging\Monai.Deploy.WorkflowManager.Logging.csproj" />
-    <ProjectReference Include="..\WorkflowExecuter\Monai.Deploy.WorkloadManager.WorkfowExecuter.csproj" />
+    <ProjectReference Include="..\WorkflowExecuter\Monai.Deploy.WorkloadManager.WorkflowExecuter.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

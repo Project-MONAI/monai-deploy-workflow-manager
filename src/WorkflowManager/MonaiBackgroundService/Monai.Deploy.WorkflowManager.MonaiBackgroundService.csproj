@@ -37,6 +37,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Monai.Deploy.WorkflowManager.Common.csproj" />
-    <ProjectReference Include="..\WorkflowExecuter\Monai.Deploy.WorkloadManager.WorkfowExecuter.csproj" />
+    <ProjectReference Include="..\WorkflowExecuter\Monai.Deploy.WorkloadManager.WorkflowExecuter.csproj" />
   </ItemGroup>
 </Project>

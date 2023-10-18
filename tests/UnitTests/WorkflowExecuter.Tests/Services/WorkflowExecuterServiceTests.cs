@@ -28,14 +28,14 @@ using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services;
+using Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
 using Message = Monai.Deploy.Messaging.Messages.Message;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common;
+using Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Database;
@@ -43,7 +43,13 @@ using Monai.Deploy.WorkflowManager.Common.Storage.Services;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions;
 using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+<<<<<<< Updated upstream
 using Monai.Deploy.WorkloadManager.WorkfowExecuter.Extensions;
+=======
+using Monai.Deploy.WorkloadManager.WorkflowExecuter.Extensions;
+using Monai.Deploy.WorkflowManager.Common.Database.Repositories;
+using Artifact = Monai.Deploy.WorkflowManager.Common.Contracts.Models.Artifact;
+>>>>>>> Stashed changes
 
 namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 {
