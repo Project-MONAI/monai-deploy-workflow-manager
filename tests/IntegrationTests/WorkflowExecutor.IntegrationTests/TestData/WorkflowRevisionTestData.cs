@@ -3149,14 +3149,14 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                         {
                             new TaskObject
                             {
-                                Id = Guid.NewGuid().ToString(),
+                                Id = "e545de90-c936-40ab-ad11-19ef07f4960a",
                                 Type = "root_task",
                                 Description = "Basic Workflow 1 Task 1 - root task",
                                 Artifacts = new ArtifactMap(),
                             },
                             new TaskObject
                             {
-                                Id = Guid.NewGuid().ToString(),
+                                Id = "e545de90-c936-40ab-ad11-19ef07f49607",
                                 Type = "remote_task",
                                 Description = "Basic Workflow 1 Task 2 - remote_task",
                                 Artifacts = new ArtifactMap()
@@ -3182,7 +3182,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             },
                             new TaskObject
                             {
-                                Id = Guid.NewGuid().ToString(),
+                                Id = "e545de90-c936-40ab-ad11-19ef07f4960b",
                                 Type = "clinical_review",
                                 Description = "Basic Workflow 1 Task 3 - clinical_review",
                                 Artifacts = new ArtifactMap(),

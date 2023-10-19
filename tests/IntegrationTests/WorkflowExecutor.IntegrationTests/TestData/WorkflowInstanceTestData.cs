@@ -2241,7 +2241,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
                             WorkflowInstanceId = "d32d5769-4ecf-4639-a048-6ecf2cced04a",
-                            TaskId = "d32d5769-4ecf-4639-a048-6ecf2cced04b",
+                            TaskId = "e545de90-c936-40ab-ad11-19ef07f49607",
                             Status = TaskExecutionStatus.Dispatched,
                             TaskType = "remote_task",
                             OutputArtifacts = new Dictionary<string, string>()

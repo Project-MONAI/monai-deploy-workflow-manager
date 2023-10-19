@@ -22,6 +22,7 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Database.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Artifact = Monai.Deploy.Messaging.Common.Artifact;
 
@@ -45,6 +46,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
     public class ArtifactReceivedItems
     {
+        public BsonObjectId Id { get; set; }
+
         /// <summary>
         /// Gets or Sets WorkflowInstanceId.
         /// </summary>

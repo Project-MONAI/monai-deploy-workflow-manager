@@ -576,14 +576,14 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
                     {
                         new()
                         {
-                            Type = ArtifactType.CT,
+                            Type = ArtifactType.AR,
                             Path = "path",
                         }
                     },
                     PayloadId = Guid.NewGuid(),
                     CorrelationId = Guid.NewGuid().ToString(),
                     WorkflowInstanceId = "d32d5769-4ecf-4639-a048-6ecf2cced04a",
-                    TaskId = "d32d5769-4ecf-4639-a048-6ecf2cced04b",
+                    TaskId = "e545de90-c936-40ab-ad11-19ef07f49607",
                     Bucket = "bucket1",
                     Timestamp = DateTime.UtcNow,
                     DataOrigins = { new DataOrigin() { DataService = DataService.DIMSE, ArtifactType = ArtifactType.CT, Destination = "testAe", Source = "testAe" } },
@@ -601,7 +601,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
             new ArtifactReceivedItems()
             {
                 WorkflowInstanceId = "d32d5769-4ecf-4639-a048-6ecf2cced04a",
-                TaskId = "task1",
+                TaskId = "e545de90-c936-40ab-ad11-19ef07f49607",
                 Received = DateTime.UtcNow,
                 Artifacts = new List<ArtifactReceivedDetails>() {
                     new ArtifactReceivedDetails()
