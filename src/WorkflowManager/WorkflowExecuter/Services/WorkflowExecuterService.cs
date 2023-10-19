@@ -215,6 +215,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
             {
                 previouslyReceivedArtifactsFromRepo = new List<ArtifactReceivedItems>() { new ArtifactReceivedItems()
                 {
+                    Id = workflowInstanceId + taskId,
                     TaskId = taskId,
                     WorkflowInstanceId = workflowInstanceId,
                     Artifacts = message.Artifacts.Select(ArtifactReceivedDetails.FromArtifact).ToList()

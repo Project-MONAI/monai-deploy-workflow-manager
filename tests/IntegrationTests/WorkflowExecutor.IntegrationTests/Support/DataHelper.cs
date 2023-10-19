@@ -303,7 +303,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
             {
                 ArtifactsReceivedItems = MongoClient.GetArtifactsReceivedItems(artifactsReceivedEvent);
 
-                if (ArtifactsReceivedItems.Count == count)
+                if (ArtifactsReceivedItems.FirstOrDefault()?.Artifacts.Count == count)
                 {
                     return ArtifactsReceivedItems;
                 }
@@ -600,6 +600,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
         {
             new ArtifactReceivedItems()
             {
+                Id = "e545de90-c936-40ab-ad11-19ef07f49607" + "d32d5769-4ecf-4639-a048-6ecf2cced04a",
                 WorkflowInstanceId = "d32d5769-4ecf-4639-a048-6ecf2cced04a",
                 TaskId = "e545de90-c936-40ab-ad11-19ef07f49607",
                 Received = DateTime.UtcNow,

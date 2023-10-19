@@ -46,7 +46,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
     public class ArtifactReceivedItems
     {
-        public BsonObjectId Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// Gets or Sets WorkflowInstanceId.
@@ -181,6 +181,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
             }
             else
             {
+                item.Artifacts = item.Artifacts.Concat(existing.Artifacts).ToList();
                 var update = Builders<ArtifactReceivedItems>.Update.Set(a => a.Artifacts, item.Artifacts);
                 await _artifactReceivedItemsCollection
                     .UpdateOneAsync(a => a.WorkflowInstanceId == workflowInstanceId && a.TaskId == taskId, update)

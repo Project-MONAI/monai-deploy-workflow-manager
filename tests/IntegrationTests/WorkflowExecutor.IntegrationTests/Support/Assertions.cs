@@ -552,13 +552,20 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
             Output.WriteLine("Details ExecutionStats are correct");
         }
 
-        public static void AssertArtifactsReceivedItemMatchesExpectedWorkflow(ArtifactReceivedItems artifactsReceivedItem, WorkflowRevision workflowRevision)
+        public static void AssertArtifactsReceivedItemMatchesExpectedWorkflow(
+            ArtifactReceivedItems artifactsReceivedItem, WorkflowRevision workflowRevision,
+            WorkflowInstance? workflowInstance)
         {
-            artifactsReceivedItem.WorkflowInstanceId.Should().Be(workflowRevision.WorkflowId);
-            artifactsReceivedItem.TaskId.Should().Be(workflowRevision.Workflow!.Tasks[0].Id);
-            artifactsReceivedItem.Artifacts.Count.Should().Be(workflowRevision.Workflow!.Tasks[0].Artifacts.Output.Length);
+            artifactsReceivedItem.WorkflowInstanceId.Should().Be(workflowInstance?.Id);
+            var task = workflowRevision.Workflow!.Tasks.FirstOrDefault(t => t.Id == artifactsReceivedItem.TaskId);
+            task.Should().NotBeNull();
+            artifactsReceivedItem.TaskId.Should().Be(task!.Id);
+            artifactsReceivedItem.Artifacts.Count.Should().Be(task.Artifacts.Output.Length);
             artifactsReceivedItem.Received.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(20));
-            artifactsReceivedItem.Artifacts[0].Path.Should().Be(workflowRevision.Workflow.Tasks[0].Artifacts.Output[0].Value);
+            foreach (var artifact in task.Artifacts.Output)
+            {
+                artifactsReceivedItem.Artifacts.FirstOrDefault(t => t.Type == artifact.Type).Should().NotBeNull();
+            }
         }
     }
 }

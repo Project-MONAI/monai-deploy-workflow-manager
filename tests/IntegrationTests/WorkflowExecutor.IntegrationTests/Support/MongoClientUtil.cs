@@ -239,6 +239,21 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
             });
         }
 
+        public void DeleteAllArtifactDocuments()
+        {
+            RetryMongo.Execute(() =>
+            {
+                ArtifactsCollection.DeleteMany("{ }");
+
+                var artifacts = ArtifactsCollection.Find("{ }").ToList();
+
+                if (artifacts.Count > 0)
+                {
+                    throw new Exception("All payloads are not deleted!");
+                }
+            });
+        }
+
         #endregion Payload
 
         #region ExecutionStats

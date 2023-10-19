@@ -168,6 +168,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             MongoClient?.DeleteAllWorkflowRevisionDocuments();
             MongoClient?.DeleteAllWorkflowInstances();
             MongoClient?.DeleteAllPayloadDocuments();
+            MongoClient?.DeleteAllArtifactDocuments();
         }
 
         [BeforeTestRun(Order = 3)]

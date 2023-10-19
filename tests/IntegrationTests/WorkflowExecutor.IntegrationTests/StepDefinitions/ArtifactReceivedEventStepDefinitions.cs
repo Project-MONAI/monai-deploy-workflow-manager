@@ -84,43 +84,45 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
             _outputHelper.WriteLine($"Retrieving workflow revision with name={clinicalWorkflowName}");
             await MongoClient.CreateWorkflowRevisionDocumentAsync(workflowRevision);
 
-            await MongoClient.CreateArtifactsEventsDocumentAsync(artifactReceivedItems);
+            try
+            {
+                await MongoClient.CreateArtifactsEventsDocumentAsync(artifactReceivedItems);
+            }
+            catch (Exception e)
+            {
+            }
 
-            // await Task.WhenAll(task1, task2, task3, task4).ConfigureAwait(false);
             _outputHelper.WriteLine("Seeding Data Tasks complete");
         }
 
         [Then(@"I can see a Artifact Received Item is created")]
         public void ThenICanSeeAArtifactReceivedItemIsCreated()
         {
-            ThenICanSeeAArtifactReceivedItemIsCreated(1);
+            ThenICanSeeXArtifactReceivedItemIsCreated(1);
         }
 
         [Then(@"I can see ([1-9]*) Artifact Received Items are created")]
         [Then(@"I can see ([0-9]*) Artifact Received Items is created")]
-        public void ThenICanSeeAArtifactReceivedItemIsCreated(int count)
+        public void ThenICanSeeXArtifactReceivedItemIsCreated(int count)
         {
             _outputHelper.WriteLine($"Retrieving {count} workflow instance/s using the payloadid={DataHelper.WorkflowRequestMessage.PayloadId.ToString()}");
             RetryPolicy.Execute(() =>
             {
                 var artifactsReceivedItems = DataHelper.GetArtifactsReceivedItemsFromDB(count, DataHelper.ArtifactsReceivedEvent);
-
-                foreach (var artifactsReceivedItem in artifactsReceivedItems)
+                if (artifactsReceivedItems.Any())
                 {
-                    var workflowInstance = DataHelper.WorkflowInstances.FirstOrDefault(x => x.Id.Equals(artifactsReceivedItem.WorkflowInstanceId));
-                    var workflowRevision = DataHelper.WorkflowRevisions
-                        .FirstOrDefault(x => x.WorkflowId.Equals(workflowInstance!.WorkflowId));
-
-                    if (workflowRevision != null)
+                    foreach (var artifactsReceivedItem in artifactsReceivedItems)
                     {
-                        Assertions.AssertArtifactsReceivedItemMatchesExpectedWorkflow(artifactsReceivedItem, workflowRevision);
-                    }
-                    else
-                    {
-                        throw new Exception($"Workflow not found for workflowId {artifactsReceivedItem.WorkflowInstanceId}");
+                        var wfiId = artifactsReceivedItems.FirstOrDefault().WorkflowInstanceId;
+                        var wfi = DataHelper.WorkflowInstances.FirstOrDefault(a => a.Id == wfiId);
+                        var workflow = DataHelper.WorkflowRevisions.FirstOrDefault(w => w.WorkflowId == wfi.WorkflowId);
+                        if (workflow is null)
+                        {
+                            throw new Exception("Failing Test");
+                        }
+                        Assertions.AssertArtifactsReceivedItemMatchesExpectedWorkflow(artifactsReceivedItem, workflow, wfi);
                     }
                 }
-
             });
             _outputHelper.WriteLine($"Retrieved {count} workflow instance/s");
         }

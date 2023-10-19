@@ -21,7 +21,7 @@ Publishing a artifact received event is consumed by the Workflow Manager.
     Scenario Outline: Publish a valid Artifact Received Event which creates an entry.
         Given I have a clinical workflow <clinicalWorkflow> I have a Workflow Instance <workflowInstance>
         When I publish a Artifact Received Event <artifactReceivedEvent>
-        Then I can see a Artifact Received Item is created
+        Then I can see 2 Artifact Received Items is created
         Examples:
           | clinicalWorkflow                               | workflowInstance                               | artifactReceivedEvent |
           | Workflow_Revision_For_Artifact_ReceivedEvent_1 | Workflow_Instance_For_Artifact_ReceivedEvent_1 | Test1                 |
