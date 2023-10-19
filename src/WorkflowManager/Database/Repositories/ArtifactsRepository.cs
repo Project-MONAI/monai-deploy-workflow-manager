@@ -46,11 +46,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
     public class ArtifactReceivedItems
     {
         /// <summary>
-        /// Gets or Sets the Id.
-        /// </summary>
-        public double Id { get; set; }
-
-        /// <summary>
         /// Gets or Sets WorkflowInstanceId.
         /// </summary>
         public string WorkflowInstanceId { get; set; } = string.Empty;

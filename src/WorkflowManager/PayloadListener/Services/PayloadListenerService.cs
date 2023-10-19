@@ -108,7 +108,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             _messageSubscriber.SubscribeAsync(ExportCompleteRoutingKey, ExportCompleteRoutingKey, OnExportCompleteReceivedCallback);
             _logger.EventSubscription(ServiceName, ExportCompleteRoutingKey);
 
-            _messageSubscriber.SubscribeAsync(ExportCompleteRoutingKey, ArtifactRecievedRoutingKey, OnArtifactReceivedtReceivedCallbackAsync);
+            _messageSubscriber.SubscribeAsync(ArtifactRecievedRoutingKey, ArtifactRecievedRoutingKey, OnArtifactReceivedtReceivedCallbackAsync);
             _logger.EventSubscription(ServiceName, ArtifactRecievedRoutingKey);
         }
 
@@ -168,7 +168,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             });
 
             _logger.ArtifactReceivedReceived();
-            await _eventPayloadListenerService.ReceiveWorkflowPayload(eventArgs);
+            await _eventPayloadListenerService.ArtifactReceivePayload(eventArgs);
         }
 
         protected virtual void Dispose(bool disposing)

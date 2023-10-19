@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Repositories;
 using Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO;
 using MongoDB.Driver;
 using Polly;
@@ -34,19 +36,32 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
         private RetryPolicy<List<Payload>> RetryPayload { get; set; }
         private RetryPolicy<List<ExecutionStats>> RetryExecutionStats { get; set; }
         private IMongoCollection<ExecutionStats> ExecutionStatsCollection { get; set; }
+        private IMongoCollection<ArtifactReceivedItems> ArtifactsCollection { get; set; }
 
         public MongoClientUtil()
         {
             Client = new MongoClient(TestExecutionConfig.MongoConfig.ConnectionString);
             Database = Client.GetDatabase($"{TestExecutionConfig.MongoConfig.Database}");
+
             WorkflowRevisionCollection = Database.GetCollection<WorkflowRevision>($"{TestExecutionConfig.MongoConfig.WorkflowCollection}");
             WorkflowInstanceCollection = Database.GetCollection<WorkflowInstance>($"{TestExecutionConfig.MongoConfig.WorkflowInstanceCollection}");
             PayloadCollection = Database.GetCollection<Payload>($"{TestExecutionConfig.MongoConfig.PayloadCollection}");
+            ArtifactsCollection = Database.GetCollection<ArtifactReceivedItems>($"{TestExecutionConfig.MongoConfig.ArtifactsCollection}");
+            ExecutionStatsCollection = Database.GetCollection<ExecutionStats>($"{TestExecutionConfig.MongoConfig.ExecutionStatsCollection}");
+
             RetryMongo = Policy.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
             RetryPayload = Policy<List<Payload>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
             CreateCollection("dummy");
-            ExecutionStatsCollection = Database.GetCollection<ExecutionStats>($"{TestExecutionConfig.MongoConfig.ExecutionStatsCollection}");
             RetryExecutionStats = Policy<List<ExecutionStats>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(1000));
+        }
+
+
+        //CreateArtifactsEvents
+        public Task CreateArtifactsEventsDocumentAsync(List<ArtifactReceivedItems> artifactReceivedItems)
+        {
+            return RetryMongo.Execute(() =>
+                Database.GetCollection<ArtifactReceivedItems>($"{TestExecutionConfig.MongoConfig.ArtifactsCollection}")
+                    .InsertManyAsync(artifactReceivedItems));
         }
 
         #region WorkflowRevision
@@ -58,6 +73,9 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
                 WorkflowRevisionCollection.InsertOne(workflowRevision);
             });
         }
+
+        public Task CreateWorkflowRevisionDocumentAsync(WorkflowRevision workflowRevision) =>
+            RetryMongo.Execute(() => WorkflowRevisionCollection.InsertOneAsync(workflowRevision));
 
         public void DeleteWorkflowRevisionDocument(string id)
         {
@@ -114,6 +132,9 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
                 WorkflowInstanceCollection.InsertOne(workflowInstance);
             });
         }
+
+        public Task CreateWorkflowInstanceDocumentAsync(WorkflowInstance workflowInstance) =>
+            RetryMongo.Execute(() => WorkflowInstanceCollection.InsertOneAsync(workflowInstance));
 
         public WorkflowInstance GetWorkflowInstance(string payloadId)
         {
@@ -278,6 +299,14 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
                     Database.CreateCollection(collectionName);
                 }
             });
+        }
+
+        public List<ArtifactReceivedItems> GetArtifactsReceivedItems(ArtifactsReceivedEvent? artifactsReceivedEvent = null)
+        {
+            return artifactsReceivedEvent is null
+                ? ArtifactsCollection.Find(FilterDefinition<ArtifactReceivedItems>.Empty).ToList()
+                : ArtifactsCollection.Find(x => x.WorkflowInstanceId == artifactsReceivedEvent.WorkflowInstanceId)
+                    .ToList();
         }
     }
 }

@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Repositories;
 using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.Common.Models;
 using Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.TestData;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
+using Artifact = Monai.Deploy.Messaging.Common.Artifact;
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 
@@ -29,17 +32,19 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
 {
     public class DataHelper
     {
-        public WorkflowRequestMessage WorkflowRequestMessage = new WorkflowRequestMessage();
-        public List<WorkflowInstance> WorkflowInstances = new List<WorkflowInstance>();
-        public PatientDetails PatientDetails { get; set; } = new PatientDetails();
-        public TaskUpdateEvent TaskUpdateEvent = new TaskUpdateEvent();
-        public ExportCompleteEvent ExportCompleteEvent = new ExportCompleteEvent();
-        public List<TaskDispatchEvent> TaskDispatchEvents = new List<TaskDispatchEvent>();
-        public List<ExportRequestEvent> ExportRequestEvents = new List<ExportRequestEvent>();
-        public List<WorkflowRevision> WorkflowRevisions = new List<WorkflowRevision>();
-        public List<Workflow> Workflows = new List<Workflow>();
-        public List<Payload> Payload = new List<Payload>();
+        public WorkflowRequestMessage WorkflowRequestMessage = new();
+        public ArtifactsReceivedEvent ArtifactsReceivedEvent = new();
+        public List<WorkflowInstance> WorkflowInstances = new();
+        public PatientDetails PatientDetails { get; set; } = new();
+        public TaskUpdateEvent TaskUpdateEvent = new();
+        public ExportCompleteEvent ExportCompleteEvent = new();
+        public List<TaskDispatchEvent> TaskDispatchEvents = new();
+        public List<ExportRequestEvent> ExportRequestEvents = new();
+        public List<WorkflowRevision> WorkflowRevisions = new();
+        public List<Workflow> Workflows = new();
+        public List<Payload> Payload = new();
         private RetryPolicy<List<WorkflowInstance>> RetryWorkflowInstances { get; set; }
+        private RetryPolicy<List<ArtifactReceivedItems>> RetryArtifactReceivedItems { get; set; }
         private RetryPolicy<List<TaskDispatchEvent>> RetryTaskDispatches { get; set; }
         private RetryPolicy<List<ExportRequestEvent>> RetryExportRequests { get; set; }
         private RetryPolicy<List<Payload>> RetryPayloadCollections { get; set; }
@@ -51,6 +56,8 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
         public List<WorkflowInstance> SeededWorkflowInstances { get; internal set; }
         public TaskDispatchEvent TaskDispatchEvent { get; set; }
         public TaskCallbackEvent TaskCallbackEvent { get; set; }
+        public List<ArtifactReceivedItems> ArtifactsReceivedItems { get; set; } = new() { };
+
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public DataHelper(RabbitConsumer taskDispatchConsumer, RabbitConsumer exportRequestConsumer, MongoClientUtil mongoClient)
@@ -59,6 +66,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
             ExportRequestConsumer = exportRequestConsumer;
             TaskDispatchConsumer = taskDispatchConsumer;
             MongoClient = mongoClient;
+            RetryArtifactReceivedItems = Policy<List<ArtifactReceivedItems>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             RetryWorkflowInstances = Policy<List<WorkflowInstance>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             RetryTaskDispatches = Policy<List<TaskDispatchEvent>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             RetryExportRequests = Policy<List<ExportRequestEvent>>.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
@@ -81,22 +89,21 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
         {
             var workflowRevision = WorkflowRevisionsTestData.TestData.FirstOrDefault(c => c.Name.Equals(name));
 
-            if (workflowRevision != null)
+            if (workflowRevision == null)
             {
-                if (workflowRevision.WorkflowRevision != null)
-                {
-                    WorkflowRevisions.Add(workflowRevision.WorkflowRevision);
-                    return workflowRevision.WorkflowRevision;
-                }
-                else
-                {
-                    throw new Exception($"Workflow {name} does not have any applicable test data, please check and try again!");
-                }
+                throw new Exception(
+                    $"Workflow {name} does not have any applicable test data, please check and try again!");
             }
-            else
+
+            if (workflowRevision.WorkflowRevision == null)
             {
-                throw new Exception($"Workflow {name} does not have any applicable test data, please check and try again!");
+                throw new Exception(
+                    $"Workflow {name} does not have any applicable test data, please check and try again!");
             }
+
+            WorkflowRevisions.Add(workflowRevision.WorkflowRevision);
+            return workflowRevision.WorkflowRevision;
+
         }
 
         public WorkflowRevision GetWorkflowRevisionTestDataByIndex(int index)
@@ -147,23 +154,22 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
         {
             var workflowInstance = WorkflowInstancesTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));
 
-            if (workflowInstance != null)
+            if (workflowInstance == null)
             {
-                if (workflowInstance.WorkflowInstance != null)
-                {
-                    WorkflowInstances.Add(workflowInstance.WorkflowInstance);
+                throw new Exception(
+                    $"Workflow Intance {name} does not have any applicable test data, please check and try again!");
+            }
 
-                    return workflowInstance.WorkflowInstance;
-                }
-                else
-                {
-                    throw new Exception($"Workflow Intance {name} does not have any applicable test data, please check and try again!");
-                }
-            }
-            else
+            if (workflowInstance.WorkflowInstance == null)
             {
-                throw new Exception($"Workflow Intance {name} does not have any applicable test data, please check and try again!");
+                throw new Exception(
+                    $"Workflow Intance {name} does not have any applicable test data, please check and try again!");
             }
+
+            WorkflowInstances.Add(workflowInstance.WorkflowInstance);
+
+            return workflowInstance.WorkflowInstance;
+
         }
 
         public WorkflowInstance GetWorkflowInstanceTestDataByIndex(int index)
@@ -209,6 +215,21 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
                 throw new Exception($"Patient Details {name} does not have any applicable test data, please check and try again!");
             }
         }
+
+        public ArtifactsReceivedEvent GetArtifactsReceivedEventTestData(string name)
+        {
+            var artifactsReceivedEvent = ArtifactsReceivedEventTestData.TestData.FirstOrDefault(c => c != null && c.Value.Name.Equals(name));
+
+            if (artifactsReceivedEvent?.Event == null)
+            {
+                throw new Exception(
+                    $"Workflow request {name} does not have any applicable test data, please check and try again!");
+            }
+
+            ArtifactsReceivedEvent = artifactsReceivedEvent.Value.Event;
+            return artifactsReceivedEvent.Value.Event;
+        }
+
 
         public WorkflowRequestMessage GetWorkflowRequestTestData(string name)
         {
@@ -274,6 +295,23 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
             }
 
             throw new Exception($"Export Complete message not found for {name}");
+        }
+
+        public List<ArtifactReceivedItems> GetArtifactsReceivedItemsFromDB(int count, ArtifactsReceivedEvent artifactsReceivedEvent)
+        {
+            var res = RetryArtifactReceivedItems.Execute(() =>
+            {
+                ArtifactsReceivedItems = MongoClient.GetArtifactsReceivedItems(artifactsReceivedEvent);
+
+                if (ArtifactsReceivedItems.Count == count)
+                {
+                    return ArtifactsReceivedItems;
+                }
+
+                throw new Exception($"{count} RetryArtifactReceivedItems could not be found for Artifact {artifactsReceivedEvent.WorkflowInstanceId}. Actual count is {WorkflowInstances.Count}");
+            });
+
+            return res;
         }
 
         public List<WorkflowInstance> GetWorkflowInstances(int count, string payloadId)
@@ -505,5 +543,75 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
             var parsedJson = JsonConvert.DeserializeObject(json);
             return JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
         }
+
+        public (List<ArtifactReceivedItems> ArtifactReceivedItems, WorkflowInstance WorkflowInstance, WorkflowRevision
+            WorkflowRevision) GetArtifactsEventTestData(string clinicalWorkflowName, string wfiName)
+        {
+
+            var workflowInstance = GetWorkflowInstanceTestData(wfiName);
+            var workflow = GetWorkflowRevisionTestData(clinicalWorkflowName);
+
+            var artifacts = ArtifactsEventTestData.TestData.Where(c => c.WorkflowInstanceId == workflowInstance.Id).ToList();
+
+            if (artifacts == null)
+            {
+                throw new Exception(
+                    $"ArtifactsEvent for {wfiName} does not have any applicable test data, please check and try again!");
+            }
+
+            return (artifacts, workflowInstance, workflow);
+        }
+    }
+
+    public class ArtifactsReceivedEventTestData
+    {
+        public static List<(string Name, ArtifactsReceivedEvent Event)?> TestData = new()
+        {
+            (
+                Name: "Test1",
+                Event: new ArtifactsReceivedEvent()
+                {
+                    Workflows = new[] { "C139946F-0FB9-452C-843A-A77F4BAACB8E" },
+                    Artifacts = new List<Artifact>()
+                    {
+                        new()
+                        {
+                            Type = ArtifactType.CT,
+                            Path = "path",
+                        }
+                    },
+                    PayloadId = Guid.NewGuid(),
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    WorkflowInstanceId = "d32d5769-4ecf-4639-a048-6ecf2cced04a",
+                    TaskId = "d32d5769-4ecf-4639-a048-6ecf2cced04b",
+                    Bucket = "bucket1",
+                    Timestamp = DateTime.UtcNow,
+                    DataOrigins = { new DataOrigin() { DataService = DataService.DIMSE, ArtifactType = ArtifactType.CT, Destination = "testAe", Source = "testAe" } },
+                    DataTrigger = new DataOrigin() { DataService = DataService.DIMSE, ArtifactType = ArtifactType.CT, Destination = "testAe", Source = "testAe" },
+                    FileCount = 1,
+                }
+            ),
+        };
+    }
+
+    public class ArtifactsEventTestData
+    {
+        public static List<ArtifactReceivedItems> TestData = new List<ArtifactReceivedItems>()
+        {
+            new ArtifactReceivedItems()
+            {
+                WorkflowInstanceId = "d32d5769-4ecf-4639-a048-6ecf2cced04a",
+                TaskId = "task1",
+                Received = DateTime.UtcNow,
+                Artifacts = new List<ArtifactReceivedDetails>() {
+                    new ArtifactReceivedDetails()
+                    {
+                        Type = ArtifactType.CT,
+                        Received = DateTime.UtcNow,
+                        Path = "path",
+                    }
+                },
+            }
+        };
     }
 }
