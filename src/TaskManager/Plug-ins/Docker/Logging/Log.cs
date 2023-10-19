@@ -100,5 +100,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker.Logging
 
         [LoggerMessage(EventId = 1026, Level = LogLevel.Error, Message = "Error terminating container '{container}'.")]
         public static partial void ErrorTerminatingContainer(this ILogger logger, string container, Exception ex);
+
+        [LoggerMessage(EventId = 1027, Level = LogLevel.Information, Message = "Image does not exist '{image}' locally, attempting to pull.")]
+        public static partial void ImageDoesNotExist(this ILogger logger, string image);
     }
 }

@@ -39,6 +39,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
         public static readonly string Command = "command";
 
         /// <summary>
+        /// Key to indicate whether to always pull the image.
+        /// </summary>
+        public static readonly string AlwaysPull = "always_pull";
+
+        /// <summary>
         /// Key for task timeout value.
         /// </summary>
         public static readonly string TaskTimeoutMinutes = "task_timeout_minutes";

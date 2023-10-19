@@ -15,6 +15,7 @@
  */
 
 using System.Globalization;
+using Amazon.Runtime.Internal.Transform;
 using Ardalis.GuardClauses;
 using Docker.DotNet;
 using Docker.DotNet.Models;
@@ -132,13 +133,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
             try
             {
-                var imageCreateParameters = new ImagesCreateParameters()
+                var alwaysPull = Event.TaskPluginArguments.ContainsKey(Keys.AlwaysPull) && Event.TaskPluginArguments[Keys.AlwaysPull].Equals("true", StringComparison.OrdinalIgnoreCase);
+                if (alwaysPull || !await ImageExistsAsync(cancellationToken).ConfigureAwait(false))
                 {
-                    FromImage = Event.TaskPluginArguments[Keys.ContainerImage],
-                };
-
-                // Pull image.
-                await _dockerClient.Images.CreateImageAsync(imageCreateParameters, new AuthConfig(), new Progress<JSONMessage>(), cancellationToken).ConfigureAwait(false);
+                    // Pull image.
+                    _logger.ImageDoesNotExist(Event.TaskPluginArguments[Keys.ContainerImage]);
+                    var imageCreateParameters = new ImagesCreateParameters()
+                    {
+                        FromImage = Event.TaskPluginArguments[Keys.ContainerImage],
+                    };
+                    await _dockerClient.Images.CreateImageAsync(imageCreateParameters, new AuthConfig(), new Progress<JSONMessage>(), cancellationToken).ConfigureAwait(false);
+                }
             }
             catch (Exception exception)
             {
@@ -197,6 +202,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                 Status = TaskExecutionStatus.Accepted,
                 Stats = new Dictionary<string, string> { { Strings.IdentityKey, containerId } }
             };
+        }
+
+        private async Task<bool> ImageExistsAsync(CancellationToken cancellationToken)
+        {
+            var imageListParameters = new ImagesListParameters();
+            imageListParameters.Filters.Add("reference", new Dictionary<string, bool> { { Event.TaskPluginArguments[Keys.ContainerImage], true } });
+            var results = await _dockerClient.Images.ListImagesAsync(imageListParameters, cancellationToken);
+            return results.Any();
         }
 
         public override async Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent callbackEvent, CancellationToken cancellationToken = default)
