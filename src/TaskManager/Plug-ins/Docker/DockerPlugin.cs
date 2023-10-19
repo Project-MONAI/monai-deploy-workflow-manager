@@ -206,10 +206,16 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
         private async Task<bool> ImageExistsAsync(CancellationToken cancellationToken)
         {
-            var imageListParameters = new ImagesListParameters();
-            imageListParameters.Filters.Add("reference", new Dictionary<string, bool> { { Event.TaskPluginArguments[Keys.ContainerImage], true } });
+            var imageListParameters = new ImagesListParameters
+            {
+                Filters = new Dictionary<string, IDictionary<string, bool>>
+                {
+                    { "reference", new Dictionary<string, bool> { { Event.TaskPluginArguments[Keys.ContainerImage], true } } }
+                }
+            };
+
             var results = await _dockerClient.Images.ListImagesAsync(imageListParameters, cancellationToken);
-            return results.Any();
+            return results?.Any() ?? false;
         }
 
         public override async Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent callbackEvent, CancellationToken cancellationToken = default)
