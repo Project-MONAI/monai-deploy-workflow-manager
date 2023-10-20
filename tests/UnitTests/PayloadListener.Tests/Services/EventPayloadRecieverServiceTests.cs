@@ -298,6 +298,63 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Services
             _payloadService.Verify(p => p.CreateAsync(It.IsAny<WorkflowRequestEvent>()), Times.Never());
         }
 
+
+        [Test]
+        public void ArtifactReceivedPayload_ValidateWorkFlowRequest()
+        {
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
+            _eventPayloadReceiverService.ArtifactReceivePayload(message);
+
+            _mockEventPayloadValidator.Verify(p => p.ValidateArtifactReceived(It.IsAny<ArtifactsReceivedEvent>()), Times.Once());
+        }
+
+
+        [Test]
+        public void ArtifactReceivedPayload_WorkFlowRequestIsNotValid_MessageSubscriberRejectsTheMessage()
+        {
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateArtifactReceived(It.IsAny<ArtifactsReceivedEvent>())).Returns(false);
+
+            _eventPayloadReceiverService.ArtifactReceivePayload(message);
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.Reject(It.IsAny<Message>(), false), Times.Once());
+        }
+
+        [Test]
+        public void ArtifactReceivedPayload_WorkFlowRequestIsValid_MessageSubscriberAcknowledgeTheMessage()
+        {
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateArtifactReceived(It.IsAny<ArtifactsReceivedEvent>())).Returns(true);
+
+            _workflowExecuterService.Setup(p => p.ProcessArtifactReceivedAsync(It.IsAny<ArtifactsReceivedEvent>())).ReturnsAsync(true);
+
+            _eventPayloadReceiverService.ArtifactReceivePayload(message);
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.Acknowledge(It.IsAny<Message>()), Times.Once());
+        }
+
+        [Test]
+        public void ArtifactReceivedPayload_FailsToProcessArtifactReceived_MessageIsRejectedAndRequeued()
+        {
+            // Arrange
+            var message = CreateMessageReceivedEventArgs(new string[] { "destination" });
+
+            _mockEventPayloadValidator.Setup(p => p.ValidateArtifactReceived(It.IsAny<ArtifactsReceivedEvent>())).Returns(true);
+            _workflowExecuterService.Setup(p => p.ProcessArtifactReceivedAsync(It.IsAny<ArtifactsReceivedEvent>())).ReturnsAsync(false);
+
+            // Act
+            _eventPayloadReceiverService.ArtifactReceivePayload(message);
+
+            // Assert
+            _mockEventPayloadValidator.Verify(x => x.ValidateArtifactReceived(It.IsAny<ArtifactsReceivedEvent>()), Times.Once);
+            _mockEventPayloadValidator.VerifyNoOtherCalls();
+
+            _mockMessageBrokerSubscriberService.Verify(p => p.RequeueWithDelay(It.IsAny<Message>()), Times.Once());
+            _mockMessageBrokerSubscriberService.VerifyNoOtherCalls();
+        }
+
         private static MessageReceivedEventArgs CreateMessageReceivedEventArgs(string[] destinations)
         {
             var exportRequestMessage = new ExportRequestEvent

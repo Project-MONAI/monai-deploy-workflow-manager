@@ -18,6 +18,7 @@ using System.Web;
 using BoDi;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkflowManager.Common.Database.Repositories;
 using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO;
 using TechTalk.SpecFlow.Infrastructure;
@@ -549,6 +550,22 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
                 executionStats.DurationSeconds.Should().BeGreaterThan(0);
             }
             Output.WriteLine("Details ExecutionStats are correct");
+        }
+
+        public static void AssertArtifactsReceivedItemMatchesExpectedWorkflow(
+            ArtifactReceivedItems artifactsReceivedItem, WorkflowRevision workflowRevision,
+            WorkflowInstance? workflowInstance)
+        {
+            artifactsReceivedItem.WorkflowInstanceId.Should().Be(workflowInstance?.Id);
+            var task = workflowRevision.Workflow!.Tasks.FirstOrDefault(t => t.Id == artifactsReceivedItem.TaskId);
+            task.Should().NotBeNull();
+            artifactsReceivedItem.TaskId.Should().Be(task!.Id);
+            artifactsReceivedItem.Artifacts.Count.Should().Be(task.Artifacts.Output.Length);
+            artifactsReceivedItem.Received.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(20));
+            foreach (var artifact in task.Artifacts.Output)
+            {
+                artifactsReceivedItem.Artifacts.FirstOrDefault(t => t.Type == artifact.Type).Should().NotBeNull();
+            }
         }
     }
 }

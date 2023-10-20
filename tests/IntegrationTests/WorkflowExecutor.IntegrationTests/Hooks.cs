@@ -43,6 +43,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         private static HttpClient? HttpClient { get; set; }
         public static AsyncRetryPolicy? RetryPolicy { get; private set; }
         private static RabbitPublisher? WorkflowPublisher { get; set; }
+        public static RabbitPublisher? ArtifactsPublisher { get; set; }
         private static RabbitConsumer? TaskDispatchConsumer { get; set; }
         private static RabbitPublisher? TaskUpdatePublisher { get; set; }
         private static RabbitConsumer? ExportRequestConsumer { get; set; }
@@ -76,6 +77,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             TestExecutionConfig.RabbitConfig.TaskDispatchQueue = "md.tasks.dispatch";
             TestExecutionConfig.RabbitConfig.TaskCallbackQueue = "md.tasks.callback";
             TestExecutionConfig.RabbitConfig.TaskUpdateQueue = "md.tasks.update";
+            TestExecutionConfig.RabbitConfig.ArtifactsRequestQueue = "md.workflow.artifactrecieved";
             TestExecutionConfig.RabbitConfig.ExportCompleteQueue = config.GetValue<string>("WorkflowManager:messaging:topics:exportComplete");
             TestExecutionConfig.RabbitConfig.ExportRequestQueue = $"{config.GetValue<string>("WorkflowManager:messaging:topics:exportRequestPrefix")}.{config.GetValue<string>("WorkflowManager:messaging:dicomAgents:scuAgentName")}";
 
@@ -84,6 +86,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             TestExecutionConfig.MongoConfig.WorkflowCollection = "Workflows";
             TestExecutionConfig.MongoConfig.WorkflowInstanceCollection = "WorkflowInstances";
             TestExecutionConfig.MongoConfig.PayloadCollection = "Payloads";
+            TestExecutionConfig.MongoConfig.ArtifactsCollection = "ArtifactReceivedItems";
             TestExecutionConfig.MongoConfig.ExecutionStatsCollection = "ExecutionStats";
 
             TestExecutionConfig.MinioConfig.Endpoint = config.GetValue<string>("WorkflowManager:storage:settings:endpoint");
@@ -126,6 +129,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
                 }
             });
 
+            ArtifactsPublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.ArtifactsRequestQueue);
             WorkflowPublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
             TaskDispatchConsumer = new RabbitConsumer(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
             TaskUpdatePublisher = new RabbitPublisher(RabbitConnectionFactory.GetRabbitConnection(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
@@ -144,6 +148,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             ObjectContainer.RegisterInstanceAs(TaskUpdatePublisher, "TaskUpdatePublisher");
             ObjectContainer.RegisterInstanceAs(ExportCompletePublisher, "ExportCompletePublisher");
             ObjectContainer.RegisterInstanceAs(ExportRequestConsumer, "ExportRequestConsumer");
+            ObjectContainer.RegisterInstanceAs(ArtifactsPublisher, "ArtifactsPublisher");
             ObjectContainer.RegisterInstanceAs(MongoClient);
             ObjectContainer.RegisterInstanceAs(MinioClient);
             var dataHelper = new DataHelper(TaskDispatchConsumer, ExportRequestConsumer, MongoClient);
@@ -163,6 +168,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             MongoClient?.DeleteAllWorkflowRevisionDocuments();
             MongoClient?.DeleteAllWorkflowInstances();
             MongoClient?.DeleteAllPayloadDocuments();
+            MongoClient?.DeleteAllArtifactDocuments();
         }
 
         [BeforeTestRun(Order = 3)]

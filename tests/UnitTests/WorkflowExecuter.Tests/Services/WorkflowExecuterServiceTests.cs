@@ -25,6 +25,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.Configuration;
@@ -44,6 +45,8 @@ using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions;
 using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkloadManager.WorkfowExecuter.Extensions;
+using Monai.Deploy.WorkflowManager.Common.Database.Repositories;
+using Artifact = Monai.Deploy.WorkflowManager.Common.Contracts.Models.Artifact;
 
 namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 {
@@ -56,6 +59,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
         private readonly Mock<ILogger<WorkflowExecuterService>> _logger;
         private readonly Mock<IWorkflowInstanceRepository> _workflowInstanceRepository;
         private readonly Mock<IWorkflowInstanceService> _workflowInstanceService;
+        private readonly Mock<IArtifactsRepository> _artifactReceivedRepository;
         private readonly Mock<IMessageBrokerPublisherService> _messageBrokerPublisherService;
         private readonly Mock<IStorageService> _storageService;
         private readonly Mock<IPayloadService> _payloadService;
@@ -69,6 +73,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
         public WorkflowExecuterServiceTests()
         {
             _workflowRepository = new Mock<IWorkflowRepository>();
+            _artifactReceivedRepository = new Mock<IArtifactsRepository>();
             _artifactMapper = new Mock<IArtifactMapper>();
             _logger = new Mock<ILogger<WorkflowExecuterService>>();
             _workflowInstanceRepository = new Mock<IWorkflowInstanceRepository>();
@@ -89,7 +94,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                     DicomAgents = new DicomAgentConfiguration { DicomWebAgentName = "monaidicomweb" }
                 },
                 MigExternalAppPlugins = new List<string> { { "examplePlugin" } }.ToArray()
-            }) ;
+            });
 
             _storageConfiguration = Options.Create(new StorageServiceConfiguration() { Settings = new Dictionary<string, string> { { "bucket", "testbucket" }, { "endpoint", "localhost" }, { "securedConnection", "False" } } });
 
@@ -113,7 +118,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                                                                   _taskExecutionStatsRepository.Object,
                                                                   _artifactMapper.Object,
                                                                   _storageService.Object,
-                                                                  _payloadService.Object);
+                                                                  _payloadService.Object,
+                                                                  _artifactReceivedRepository.Object);
         }
 
         [Fact]
@@ -140,7 +146,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                                                                   _taskExecutionStatsRepository.Object,
                                                                   _artifactMapper.Object,
                                                                   _storageService.Object,
-                                                                  _payloadService.Object));
+                                                                  _payloadService.Object,
+                                                                  _artifactReceivedRepository.Object));
 
         }
 
@@ -167,7 +174,133 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                                                                   _taskExecutionStatsRepository.Object,
                                                                   _artifactMapper.Object,
                                                                   _storageService.Object,
-                                                                  _payloadService.Object));
+                                                                  _payloadService.Object,
+                                                                  _artifactReceivedRepository.Object));
+        }
+
+        [Fact]
+        public async Task ProcessArtifactReceived_WhenMessageIsNull_ThrowsArgumentNullException()
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(() => WorkflowExecuterService.ProcessArtifactReceivedAsync(null));
+        }
+
+        [Fact]
+        public async Task ProcessArtifactReceived_WhenWorkflowInstanceIdIsNull_ReturnsFalse()
+        {
+            var message = new ArtifactsReceivedEvent { };
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task ProcessArtifactReceived_WhenTaskIdIsNull_ReturnsFalse()
+        {
+            var message = new ArtifactsReceivedEvent { WorkflowInstanceId = "123" };
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task ProcessArtifactReceived_WhenWorkflowInstanceRepositoryReturnsNull_ReturnsFalse()
+        {
+            var message = new ArtifactsReceivedEvent { WorkflowInstanceId = "123", TaskId = "456" };
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
+                .ReturnsAsync((WorkflowInstance)null!);
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task ProcessArtifactReceived_WhenWorkflowRepositoryReturnsNull_ReturnsFalse()
+        {
+            var message = new ArtifactsReceivedEvent { WorkflowInstanceId = "123", TaskId = "456" };
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
+                .ReturnsAsync(new WorkflowInstance { WorkflowId = "789" });
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync("789"))!
+                .ReturnsAsync((WorkflowRevision)null!);
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
+            Assert.False(result);
+        }
+
+        // ProcessArtifactReceived workflowTemplate.Workflow?.Tasks.FirstOrDefault returns null
+        [Fact]
+        public async Task ProcessArtifactReceived_WhenWorkflowTemplateReturnsNull_ReturnsFalse()
+        {
+            var message = new ArtifactsReceivedEvent { WorkflowInstanceId = "123", TaskId = "456" };
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
+                .ReturnsAsync(new WorkflowInstance { WorkflowId = "789" });
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync("789"))!
+                .ReturnsAsync(new WorkflowRevision { Workflow = new Workflow { Tasks = new []
+                    { new TaskObject() { Id = "not456" } }} });
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task ProcessArtifactReceived_WhenStillHasMissingArtifacts_ReturnsTrue()
+        {
+            var message = new ArtifactsReceivedEvent { WorkflowInstanceId = "123", TaskId = "456",
+                Artifacts = new List<Messaging.Common.Artifact>() { new Messaging.Common.Artifact() { Type = ArtifactType.CT } } };
+            var workflowInstance = new WorkflowInstance { WorkflowId = "789", Tasks = new List<TaskExecution>()
+                { new TaskExecution() { TaskId = "456" } } };
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
+                .ReturnsAsync(workflowInstance);
+            var templateArtifacts = new OutputArtifact[] { new OutputArtifact() { Type = ArtifactType.CT }, new OutputArtifact() { Type = ArtifactType.DG } };
+            var taskTemplate = new TaskObject() { Id = "456", Artifacts = new ArtifactMap { Output = templateArtifacts } };
+            var workflowTemplate = new WorkflowRevision { Workflow = new Workflow { Tasks = new [] { taskTemplate }} };
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync("789"))!
+                .ReturnsAsync(workflowTemplate);
+            _artifactReceivedRepository.Setup(r => r.GetAllAsync(workflowInstance.WorkflowId, taskTemplate.Id))
+                .ReturnsAsync((List<ArtifactReceivedItems>?)null);
+
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task ProcessArtifactReceived_WhenAllArtifactsReceivedArtifactsButTaskExecNotFound_ReturnsFalse()
+        {
+            //incoming artifacts
+            var message = new ArtifactsReceivedEvent { WorkflowInstanceId = "123", TaskId = "456",
+                Artifacts = new List<Messaging.Common.Artifact>() { new Messaging.Common.Artifact() { Type = ArtifactType.CT } } };
+            var workflowInstance = new WorkflowInstance { WorkflowId = "789", Tasks = new List<TaskExecution>()
+                { new TaskExecution() { TaskId = "not456" } } };
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
+                .ReturnsAsync(workflowInstance);
+            //expected artifacts
+            var templateArtifacts = new OutputArtifact[]
+            {
+                new OutputArtifact() { Type = ArtifactType.CT },
+            };
+            var taskTemplate = new TaskObject() { Id = "456", Artifacts = new ArtifactMap { Output = templateArtifacts } };
+            var workflowTemplate = new WorkflowRevision { Workflow = new Workflow { Tasks = new [] { taskTemplate }} };
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync("789"))!
+                .ReturnsAsync(workflowTemplate);
+
+            //previously received artifacts
+            _artifactReceivedRepository.Setup(r => r.GetAllAsync(workflowInstance.WorkflowId, taskTemplate.Id))
+                .ReturnsAsync((List<ArtifactReceivedItems>?)null);
+
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task ProcessPayload_WhenWorkflowInstanceAndTaskIdHaveAValue_ReturnsFalse()
+        {
+            var workflowRequest = new WorkflowRequestEvent
+            {
+                Bucket = "testbucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow,
+                WorkflowInstanceId = "123",
+                TaskId = "345"
+            };
+
+            var result = await WorkflowExecuterService.ProcessPayload(workflowRequest, new Payload() { Id = Guid.NewGuid().ToString() });
+
+            Assert.False(result);
         }
 
         [Fact]
@@ -2733,7 +2866,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
         }
 
         [Fact]
-        public async Task ProcessPayload_With_WorkflowInstanceId_Continues()
+        public async Task ArtifactReceived_With_Happy_Path_Continues()
         {
             var workflowInstanceId = Guid.NewGuid().ToString();
             var correlationId = Guid.NewGuid().ToString();
@@ -2817,18 +2950,17 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                     }
             };
 
-            var payload = new Payload { PatientDetails = new PatientDetails { } };
-
             _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
-            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(payload);
 
-            var mess = new WorkflowRequestEvent { WorkflowInstanceId = workflowInstance.Id, TaskId = "coffee" };
+            _artifactReceivedRepository.Setup(w => w.GetAllAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new List<ArtifactReceivedItems>());
+
+            var mess = new ArtifactsReceivedEvent { WorkflowInstanceId = workflowInstance.Id, TaskId = "coffee" };
 
 
-            var response = await WorkflowExecuterService.ProcessPayload(mess, payload);
+            var response = await WorkflowExecuterService.ProcessArtifactReceivedAsync(mess);
 
             _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.TaskDispatchRequest, It.IsAny<Message>()), Times.Exactly(0));
             _taskExecutionStatsRepository.Verify(w => w.UpdateExecutionStatsAsync(It.IsAny<TaskExecution>(), workflowId, TaskExecutionStatus.Succeeded));
@@ -2954,6 +3086,80 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
             _workflowInstanceRepository.Verify(r => r.UpdateTaskStatusAsync(workflowInstance.Id, "pizza", TaskExecutionStatus.Failed), Times.Once);
+        }
+
+        [Fact]
+        public async Task ArtifactReceveid_Valid_ReturnesTrue()
+        {
+            var taskId = Guid.NewGuid().ToString();
+            var workflowId = Guid.NewGuid().ToString();
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var artifactEvent = new ArtifactsReceivedEvent
+            {
+                Bucket = "testbucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow,
+                WorkflowInstanceId = workflowInstanceId,
+                TaskId = taskId
+            };
+
+            var workflows = new List<WorkflowRevision>
+            {
+                new WorkflowRevision
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = workflowId,
+                    Revision = 1,
+                    Workflow = new Workflow
+                    {
+                        Name = "Workflowname",
+                        Description = "Workflowdesc",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
+                        {
+                            AeTitle = "aetitle"
+                        },
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject {
+                                Id = taskId,
+                                Type = "type",
+                                Description = "outgoing",
+                                TaskDestinations = new TaskDestination[] { new TaskDestination { Name = "task2" } }
+                            },
+                            new TaskObject {
+                                Id = "task2",
+                                Type = "type",
+                                Description = "returning",
+                            }
+                        }
+                    }
+                }
+            };
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                BucketId = "BucketId",
+                PayloadId = "PayloadId",
+                WorkflowId = workflowId,
+                Tasks = new List<TaskExecution>
+                {
+                    new TaskExecution{
+                        TaskId = taskId,
+                    }
+                }
+            };
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflows[0].WorkflowId)).ReturnsAsync(workflows[0]);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstanceId)).ReturnsAsync(workflowInstance);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(It.IsAny<string>(), It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _artifactReceivedRepository.Setup(w => w.GetAllAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new List<ArtifactReceivedItems>());
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(artifactEvent);
+
+            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.TaskDispatchRequest, It.IsAny<Message>()), Times.Once());
+
+            Assert.True(result);
         }
     }
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.

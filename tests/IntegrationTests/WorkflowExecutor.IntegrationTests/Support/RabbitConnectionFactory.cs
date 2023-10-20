@@ -67,12 +67,15 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
             DeleteQueue(TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
             DeleteQueue(TestExecutionConfig.RabbitConfig.ExportCompleteQueue);
             DeleteQueue(TestExecutionConfig.RabbitConfig.ExportRequestQueue);
+            DeleteQueue(TestExecutionConfig.RabbitConfig.ArtifactsRequestQueue);
             DeleteQueue($"{TestExecutionConfig.RabbitConfig.WorkflowRequestQueue}-dead-letter");
             DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskDispatchQueue}-dead-letter");
             DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskCallbackQueue}-dead-letter");
             DeleteQueue($"{TestExecutionConfig.RabbitConfig.TaskUpdateQueue}-dead-letter");
             DeleteQueue($"{TestExecutionConfig.RabbitConfig.ExportCompleteQueue}-dead-letter");
             DeleteQueue($"{TestExecutionConfig.RabbitConfig.ExportRequestQueue}-dead-letter");
+            DeleteQueue($"{TestExecutionConfig.RabbitConfig.ArtifactsRequestQueue}-dead-letter");
+            DeleteQueue("-dead-letter");
         }
 
         public static void PurgeAllQueues()

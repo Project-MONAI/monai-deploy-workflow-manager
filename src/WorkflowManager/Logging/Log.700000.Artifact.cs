@@ -44,5 +44,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
 
         [LoggerMessage(EventId = 700007, Level = LogLevel.Information, Message = "Task Dispatch resolved successfully output artifacts: PayloadId: {payloadId}, TaskId: {taskId}, WorkflowInstanceId: {workflowInstanceId}, WorkflowRevisionId: {workflowRevisionId}, output artifact object: {pathOutputArtifacts}")]
         public static partial void LogGeneralTaskDispatchInformation(this ILogger logger, string payloadId, string taskId, string workflowInstanceId, string workflowRevisionId, string pathOutputArtifacts);
+
+        [LoggerMessage(EventId = 700008, Level = LogLevel.Warning, Message = "Unexpected Artifacts output artifacts: TaskId: {taskId}, WorkflowInstanceId: {workflowInstanceId}, output artifact object: {unexpectedArtifacts}")]
+        public static partial void UnexpectedArtifactsReceived(this ILogger logger, string taskId, string workflowInstanceId, string unexpectedArtifacts);
+
+        [LoggerMessage(EventId = 700009, Level = LogLevel.Debug, Message = "Mandatory output artifacts for task {taskId} are missing. waiting for remaining artifacts... {missingArtifacts}")]
+        public static partial void MandatoryOutputArtifactsMissingForTask(this ILogger logger, string taskId, string missingArtifacts);
+
     }
 }

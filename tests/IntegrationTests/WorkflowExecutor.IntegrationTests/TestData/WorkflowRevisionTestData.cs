@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Artifact = Monai.Deploy.WorkflowManager.Common.Contracts.Models.Artifact;
+// ReSharper disable ArrangeObjectCreationWhenTypeEvident
+// ReSharper disable RedundantEmptyObjectCreationArgumentList
 
 namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.TestData
 {
@@ -3117,6 +3121,70 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "Basic_task",
                                 Description = "Basic Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap(),
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "AIDE",
+                            DataOrigins = new string[] { "PACS1", "PACS2" }
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Workflow_Revision_For_Artifact_ReceivedEvent_1",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = "293C95D6-91AE-4417-95CA-D54FF9E592D6",
+                    WorkflowId = "C139946F-0FB9-452C-843A-A77F4BAACB8E",
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Basic workflow 1",
+                        Description = "Basic workflow 1",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = "e545de90-c936-40ab-ad11-19ef07f4960a",
+                                Type = "root_task",
+                                Description = "Basic Workflow 1 Task 1 - root task",
+                                Artifacts = new ArtifactMap(),
+                            },
+                            new TaskObject
+                            {
+                                Id = "e545de90-c936-40ab-ad11-19ef07f49607",
+                                Type = "remote_task",
+                                Description = "Basic Workflow 1 Task 2 - remote_task",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Output = new OutputArtifact[]
+                                    {
+                                        new OutputArtifact()
+                                        {
+                                            Name = "artifact1",
+                                            Type = ArtifactType.CT,
+                                            Value = "artifactPath1",
+                                            Mandatory = true,
+                                        },
+                                        new OutputArtifact()
+                                        {
+                                            Name = "artifact2",
+                                            Type = ArtifactType.AR,
+                                            Value = "artifactPath2",
+                                            Mandatory = true,
+                                        },
+                                    }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = "e545de90-c936-40ab-ad11-19ef07f4960b",
+                                Type = "clinical_review",
+                                Description = "Basic Workflow 1 Task 3 - clinical_review",
                                 Artifacts = new ArtifactMap(),
                             }
                         },

@@ -36,6 +36,12 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
             OutputHelper = outputHelper;
         }
 
+
+        public async Task SeedArtifactRepo(string payloadId, string? folderName = null)
+        {
+
+        }
+
         public async Task SeedWorkflowInputArtifacts(string payloadId, string? folderName = null)
         {
             string localPath;

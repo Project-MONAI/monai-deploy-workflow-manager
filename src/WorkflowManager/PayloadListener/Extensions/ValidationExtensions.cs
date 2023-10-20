@@ -15,6 +15,7 @@
  */
 
 using Ardalis.GuardClauses;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
@@ -35,6 +36,39 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             valid &= IsBucketValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.Bucket, validationErrors);
             valid &= IsCorrelationIdValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.CorrelationId, validationErrors);
             valid &= IsPayloadIdValid(workflowRequestMessage.GetType().Name, workflowRequestMessage.PayloadId.ToString(), validationErrors);
+
+            return valid;
+        }
+
+        public static bool IsValid(this ArtifactsReceivedEvent artifactReceivedMessage, out IList<string> validationErrors)
+        {
+            Guard.Against.Null(artifactReceivedMessage, nameof(artifactReceivedMessage));
+
+            validationErrors = new List<string>();
+
+            var valid = true;
+
+            valid &= IsAeTitleValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.DataTrigger.Source, validationErrors);
+            valid &= IsAeTitleValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.DataTrigger.Destination, validationErrors);
+            valid &= IsBucketValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.Bucket, validationErrors);
+            valid &= IsCorrelationIdValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.CorrelationId, validationErrors);
+            valid &= IsPayloadIdValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.PayloadId.ToString(), validationErrors);
+            valid &= string.IsNullOrEmpty(artifactReceivedMessage.WorkflowInstanceId) is false && string.IsNullOrEmpty(artifactReceivedMessage.TaskId) is false;
+            valid &= AllArtifactsAreValid(artifactReceivedMessage, validationErrors);
+            return valid;
+        }
+
+        private static bool AllArtifactsAreValid(this ArtifactsReceivedEvent artifactReceivedMessage, IList<string> validationErrors)
+        {
+            Guard.Against.Null(artifactReceivedMessage, nameof(artifactReceivedMessage));
+
+            var valid = artifactReceivedMessage.Artifacts.All(a => a.Type != ArtifactType.Unset);
+
+            if (valid is false)
+            {
+                var unsetArtifacts = string.Join(',', artifactReceivedMessage.Artifacts.Where(a => a.Type == ArtifactType.Unset).Select(a => a.Path));
+                validationErrors.Add($"The following artifacts are have unset artifact types: {unsetArtifacts}");
+            }
 
             return valid;
         }

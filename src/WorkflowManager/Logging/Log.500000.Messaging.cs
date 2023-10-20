@@ -71,7 +71,20 @@ namespace Monai.Deploy.WorkflowManager.Logging
         [LoggerMessage(EventId = 500016, Level = LogLevel.Debug, Message = "Export complete message received.")]
         public static partial void ExportCompleteReceived(this ILogger logger);
 
-        [LoggerMessage(EventId = 200017, Level = LogLevel.Debug, Message = "Workflow continuation event so not creating payload.")]
+        [LoggerMessage(EventId = 500017, Level = LogLevel.Debug, Message = "ArtifactReceived message so not creating payload.")]
         public static partial void WorkflowContinuation(this ILogger logger);
+
+        [LoggerMessage(EventId = 500018, Level = LogLevel.Debug, Message = "ArtifactReceived message received.")]
+        public static partial void ArtifactReceivedReceived(this ILogger logger);
+
+        [LoggerMessage(EventId = 500019, Level = LogLevel.Error, Message = "ArtifactReceived message {messageId} failed unexpectedly (no workflowId or TaskId ?) and has been requeued.")]
+        public static partial void ArtifactReceivedRequeuePayloadCreateError(this ILogger logger, string messageId);
+
+        [LoggerMessage(EventId = 500020, Level = LogLevel.Error, Message = "ArtifactReveived message {messageId} failed unexpectedly and has been requeued.")]
+        public static partial void ArtifactReceivedRequeueUnknownError(this ILogger logger, string messageId, Exception ex);
+
+        [LoggerMessage(EventId = 500021, Level = LogLevel.Error, Message = "ArtifactReveived message {messageId} is invalid and has been rejected without being requeued.")]
+        public static partial void ArtifactReceivedRejectValidationError(this ILogger logger, string messageId);
+
     }
 }
