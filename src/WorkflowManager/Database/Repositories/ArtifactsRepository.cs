@@ -166,6 +166,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
             var item = new ArtifactReceivedItems()
             {
+                Id = workflowInstanceId + taskId,
                 WorkflowInstanceId = workflowInstanceId,
                 TaskId = taskId,
                 Artifacts = artifacts.ToList()
@@ -175,18 +176,28 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
                 .FindAsync(a => a.WorkflowInstanceId == workflowInstanceId && a.TaskId == taskId).ConfigureAwait(false);
             var existing = await result.FirstOrDefaultAsync().ConfigureAwait(false);
 
-            if (existing == null)
+            try
             {
-                await _artifactReceivedItemsCollection.InsertOneAsync(item).ConfigureAwait(false);
+                if (existing == null)
+                {
+                    await _artifactReceivedItemsCollection.InsertOneAsync(item).ConfigureAwait(false);
+                }
+                else
+                {
+                    item.Artifacts = item.Artifacts.Concat(existing.Artifacts).ToList();
+                    var update = Builders<ArtifactReceivedItems>.Update.Set(a => a.Artifacts, item.Artifacts);
+                    await _artifactReceivedItemsCollection
+                        .UpdateOneAsync(a => a.WorkflowInstanceId == workflowInstanceId && a.TaskId == taskId, update)
+                        .ConfigureAwait(false);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                item.Artifacts = item.Artifacts.Concat(existing.Artifacts).ToList();
-                var update = Builders<ArtifactReceivedItems>.Update.Set(a => a.Artifacts, item.Artifacts);
-                await _artifactReceivedItemsCollection
-                    .UpdateOneAsync(a => a.WorkflowInstanceId == workflowInstanceId && a.TaskId == taskId, update)
-                    .ConfigureAwait(false);
+
+                throw;
             }
+
+
         }
     }
 }
