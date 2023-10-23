@@ -24,8 +24,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 {
     public abstract class RepositoryBase
     {
-        public static async Task<long> CountAsync<T>(IMongoCollection<T> collection, FilterDefinition<T>? filter)
-            => await collection.CountDocumentsAsync(filter ?? Builders<T>.Filter.Empty);
+        public static Task<long> CountAsync<T>(IMongoCollection<T> collection, FilterDefinition<T>? filter)
+            => collection.CountDocumentsAsync(filter ?? Builders<T>.Filter.Empty);
 
         /// <summary>
         /// Get All T that match filters provided.
@@ -44,7 +44,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
                 .Skip(skip)
                 .Limit(limit)
                 .Sort(sortFunction)
-                .ToListAsync();
+                .ToListAsync().ConfigureAwait(false);
         }
 
         public static async Task<IList<T>> GetAllAsync<T>(IMongoCollection<T> collection, FilterDefinition<T> filterFunction, SortDefinition<T> sortFunction, int? skip = null, int? limit = null)
@@ -54,7 +54,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
                 .Skip(skip)
                 .Limit(limit)
                 .Sort(sortFunction)
-                .ToListAsync();
+                .ToListAsync().ConfigureAwait(false);
         }
     }
 }

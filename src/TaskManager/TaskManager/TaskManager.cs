@@ -241,15 +241,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
 
             var pluginAssembly = string.Empty;
-            ITaskPlugin? taskRunner = null;
+            ITaskPlugin? taskRunner;
             try
             {
                 var taskExecution = await _taskDispatchEventService.GetByTaskExecutionIdAsync(message.Body.ExecutionId).ConfigureAwait(false);
-                pluginAssembly = _options.Value.TaskManager.PluginAssemblyMappings[taskExecution?.Event.TaskPluginType] ?? string.Empty;
-                var taskExecEvent = taskExecution?.Event;
-                if (taskExecEvent == null)
+
+                var taskExecEvent = taskExecution?.Event ?? throw new InvalidOperationException("Task Event data not found.");
+
+                pluginAssembly = string.Empty;
+                if (_options.Value.TaskManager.PluginAssemblyMappings.ContainsKey(taskExecution?.Event.TaskPluginType))
                 {
-                    throw new InvalidOperationException("Task Event data not found.");
+                    pluginAssembly = _options.Value.TaskManager.PluginAssemblyMappings[taskExecution?.Event.TaskPluginType];
                 }
 
                 taskRunner = typeof(ITaskPlugin).CreateInstance<ITaskPlugin>(serviceProvider: _scope.ServiceProvider, typeString: pluginAssembly, _serviceScopeFactory, taskExecEvent);

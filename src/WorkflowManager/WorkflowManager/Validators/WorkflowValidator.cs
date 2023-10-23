@@ -649,7 +649,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
                     Errors.Add($"Task: '{currentTask.Id}' has incorrect artifact output types set on artifacts with following name. {incorrectOutputs}");
                 }
             }
-
         }
     }
 }

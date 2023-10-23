@@ -81,6 +81,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
         [LoggerMessage(EventId = 200019, Level = LogLevel.Debug, Message = "Task destination condition for task {taskId} with resolved condition: {resolvedConditional} resolved to false. initial conditional: {conditions}")]
         public static partial void TaskDestinationConditionFalse(this ILogger logger, string resolvedConditional, string conditions, string taskId);
 
+        [LoggerMessage(EventId = 200020, Level = LogLevel.Warning, Message = "Use new ArtifactReceived Queue for continuation messages.")]
+        public static partial void DontUseWorkflowReceivedForPayload(this ILogger logger);
+
         // Conditions Resolver
         [LoggerMessage(EventId = 210000, Level = LogLevel.Warning, Message = "Failed to parse condition: {condition}. resolvedConditional: {resolvedConditional}")]
         public static partial void FailedToParseCondition(this ILogger logger, string resolvedConditional, string condition, Exception ex);

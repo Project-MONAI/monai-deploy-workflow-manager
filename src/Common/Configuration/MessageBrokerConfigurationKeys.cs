@@ -88,5 +88,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Configuration
 
         [ConfigurationKeyName("notificationEmailCancelation")]
         public string NotificationEmailCancelation { get; set; } = "aide.notification_email.cancellation";
+
+        [ConfigurationKeyName("artifactrecieved")]
+        public string ArtifactRecieved { get; set; } = "md.workflow.artifactrecieved";
     }
 }
