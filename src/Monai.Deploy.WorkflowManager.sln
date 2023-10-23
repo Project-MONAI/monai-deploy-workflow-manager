@@ -50,7 +50,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManage
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager", "WorkflowManager\WorkflowManager\Monai.Deploy.WorkflowManager.csproj", "{23AD27A4-40B2-4090-9409-7BABD383A1CD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkloadManager.WorkfowExecuter", "WorkflowManager\WorkflowExecuter\Monai.Deploy.WorkloadManager.WorkfowExecuter.csproj", "{1E485856-E99F-46E0-A1D5-D56DF1657D84}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkloadManager.WorkflowExecuter", "WorkflowManager\WorkflowExecuter\Monai.Deploy.WorkloadManager.WorkflowExecuter.csproj", "{1E485856-E99F-46E0-A1D5-D56DF1657D84}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.WorkflowManager.PayloadListener", "WorkflowManager\PayloadListener\Monai.Deploy.WorkflowManager.PayloadListener.csproj", "{F1C458DB-3954-4C1C-9294-846DDB68B0DB}"
 EndProject

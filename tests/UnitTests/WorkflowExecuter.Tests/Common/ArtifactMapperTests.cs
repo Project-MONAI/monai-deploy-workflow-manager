@@ -25,7 +25,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common;
+using Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common;
 using Moq;
 using Xunit;
 

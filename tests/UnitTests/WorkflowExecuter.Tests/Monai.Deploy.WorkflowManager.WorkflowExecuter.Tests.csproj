@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\WorkflowManager\WorkflowExecuter\Monai.Deploy.WorkloadManager.WorkfowExecuter.csproj" />
+    <ProjectReference Include="..\..\..\src\WorkflowManager\WorkflowExecuter\Monai.Deploy.WorkloadManager.WorkflowExecuter.csproj" />
   </ItemGroup>
 
 </Project>

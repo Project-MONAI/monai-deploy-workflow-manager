@@ -20,7 +20,7 @@ using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common
 {
     public class GenerateTaskUpdateEventParams
     {

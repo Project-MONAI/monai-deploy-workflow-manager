@@ -1939,7 +1939,7 @@
         "type": "Project",
         "dependencies": {
           "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
-          "Monai.Deploy.WorkloadManager.WorkfowExecuter": "[1.0.0, )"
+          "Monai.Deploy.WorkloadManager.WorkflowExecuter": "[1.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.payloadlistener": {
@@ -1949,7 +1949,7 @@
           "Monai.Deploy.WorkflowManager.Common.Miscellaneous": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Contracts": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Logging": "[1.0.0, )",
-          "Monai.Deploy.WorkloadManager.WorkfowExecuter": "[1.0.0, )"
+          "Monai.Deploy.WorkloadManager.WorkflowExecuter": "[1.0.0, )"
         }
       },
       "monai.deploy.workflowmanager.services": {
@@ -1968,7 +1968,7 @@
           "Monai.Deploy.WorkflowManager.Logging": "[1.0.0, )"
         }
       },
-      "monai.deploy.workloadmanager.workfowexecuter": {
+      "Monai.Deploy.WorkloadManager.WorkflowExecuter": {
         "type": "Project",
         "dependencies": {
           "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",

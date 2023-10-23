@@ -15,7 +15,7 @@
  */
 
 using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common;
+using Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common;
 using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Common

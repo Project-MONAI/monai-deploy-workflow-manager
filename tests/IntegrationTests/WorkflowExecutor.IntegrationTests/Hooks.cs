@@ -125,7 +125,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
                 }
                 else
                 {
-                    Console.WriteLine("Workfow Executor started. Integration Tests will begin.");
+                    Console.WriteLine("Workflow Executor started. Integration Tests will begin.");
                 }
             });
 
