@@ -55,7 +55,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
         public static partial void WorkflowInstanceNotFound(this ILogger logger, string workflowInstanceId);
 
         [LoggerMessage(EventId = 200011, Level = LogLevel.Error, Message = "The following task: {taskId} cannot be found in the workflow instance: {workflowInstanceId}.")]
-        public static partial void TaskNotFoundInWorkfowInstance(this ILogger logger, string taskId, string workflowInstanceId);
+        public static partial void TaskNotFoundInWorkflowInstance(this ILogger logger, string taskId, string workflowInstanceId);
 
         [LoggerMessage(EventId = 200012, Level = LogLevel.Error, Message = "The following task: {taskId} in workflow {workflowInstanceId} is currently timed out and not processing anymore updates, timed out at {timedOut}.")]
         public static partial void TaskTimedOut(this ILogger logger, string taskId, string workflowInstanceId, DateTime timedOut);
@@ -76,7 +76,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
         public static partial void ExportFilesNotFound(this ILogger logger, string taskId, string workflowInstanceId);
 
         [LoggerMessage(EventId = 200018, Level = LogLevel.Error, Message = "The following task: {taskId} cannot be found in the workflow: {workflowId}. Payload: {payloadId}")]
-        public static partial void TaskNotFoundInWorkfow(this ILogger logger, string payloadId, string taskId, string workflowId);
+        public static partial void TaskNotFoundInWorkflow(this ILogger logger, string payloadId, string taskId, string workflowId);
 
         [LoggerMessage(EventId = 200019, Level = LogLevel.Debug, Message = "Task destination condition for task {taskId} with resolved condition: {resolvedConditional} resolved to false. initial conditional: {conditions}")]
         public static partial void TaskDestinationConditionFalse(this ILogger logger, string resolvedConditional, string conditions, string taskId);

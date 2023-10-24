@@ -20,7 +20,7 @@ using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.WorkloadManager.WorkfowExecuter.Extensions
+namespace Monai.Deploy.WorkloadManager.WorkflowExecuter.Extensions
 {
     public static class TaskExecutionExtension
     {

@@ -830,7 +830,7 @@
           "Monai.Deploy.WorkflowManager.Logging": "[1.0.0, )"
         }
       },
-      "monai.deploy.workloadmanager.workfowexecuter": {
+      "Monai.Deploy.WorkloadManager.WorkflowExecuter": {
         "type": "Project",
         "dependencies": {
           "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",

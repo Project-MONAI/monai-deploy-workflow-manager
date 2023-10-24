@@ -17,7 +17,7 @@
 using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
 
-namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common
 {
     public static class TaskExecutionStatusExtensions
     {
