@@ -46,7 +46,7 @@
     <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.18">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
-    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="1.0.4-rc0004">
+    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="1.0.4">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
     <PackageReference Include="Mongo.Migration" Version="3.1.4">
