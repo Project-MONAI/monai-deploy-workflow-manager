@@ -510,8 +510,8 @@
       },
       "Monai.Deploy.Messaging": {
         "type": "Transitive",
-        "resolved": "1.0.3",
-        "contentHash": "DoQrTyztAGmOafiPNhxZ44D50Qcbqv4W94N9LxofyhW2NgSqMOKMbS+6FcomMsCKlLC1E3dyoYdZF8GFunwKUw==",
+        "resolved": "1.0.4-rc0004",
+        "contentHash": "FrNe2mwf7gj5aylCYQ0af5Adv8/xQRRPDPFBp1a/sZP1m9TlWtjjwheDR0HVWjTq4M8LUpKzvt55mhQJxHld7w==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.1.1",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.21",
@@ -521,10 +521,10 @@
       },
       "Monai.Deploy.Messaging.RabbitMQ": {
         "type": "Transitive",
-        "resolved": "1.0.1",
-        "contentHash": "zBVO6HOqyTfDj6YcITy1XtEiqRurFKUrIgLdJYVahhXlUnymn6/WmCuqkX1Z+3IKxy91D4LeF0KahH/rM8u6+w==",
+        "resolved": "1.0.4-rc0004",
+        "contentHash": "eai16hRZ0Z7wqbsWaX5ISg4av2FlLLyDf3JpxEu+YelyAdhXLaaLZqRhDlQo6xqLih6x5Xtrnl71pwIWh9TT4Q==",
         "dependencies": {
-          "Monai.Deploy.Messaging": "1.0.1",
+          "Monai.Deploy.Messaging": "1.0.4-rc0004",
           "Polly": "7.2.4",
           "RabbitMQ.Client": "6.5.0"
         }
@@ -1864,7 +1864,7 @@
         "dependencies": {
           "AspNetCore.HealthChecks.MongoDb": "[6.0.2, )",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "[6.0.22, )",
-          "Monai.Deploy.Messaging.RabbitMQ": "[1.0.1, )",
+          "Monai.Deploy.Messaging.RabbitMQ": "[1.0.4-rc0004, )",
           "Monai.Deploy.Security": "[0.1.3, )",
           "Monai.Deploy.Storage.MinIO": "[0.2.18, )",
           "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
@@ -1892,7 +1892,7 @@
       "monai.deploy.workflowmanager.common.configuration": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[1.0.3, )",
+          "Monai.Deploy.Messaging": "[1.0.4-rc0004, )",
           "Monai.Deploy.Storage": "[0.2.18, )"
         }
       },
@@ -1915,7 +1915,7 @@
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[1.0.3, )",
+          "Monai.Deploy.Messaging": "[1.0.4-rc0004, )",
           "Mongo.Migration": "[3.1.4, )",
           "MongoDB.Bson": "[2.21.0, )"
         }
