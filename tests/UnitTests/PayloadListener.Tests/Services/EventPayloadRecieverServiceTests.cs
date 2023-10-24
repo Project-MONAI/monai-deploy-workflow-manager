@@ -365,6 +365,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Services
                 Files = new[] { "file1" },
                 MessageId = Guid.NewGuid().ToString(),
                 WorkflowInstanceId = Guid.NewGuid().ToString(),
+                PayloadId = Guid.NewGuid().ToString()
             };
             var jsonMessage = new JsonMessage<ExportRequestEvent>(exportRequestMessage, MessageBrokerConfiguration.WorkflowManagerApplicationId, exportRequestMessage.CorrelationId, exportRequestMessage.DeliveryTag);
 

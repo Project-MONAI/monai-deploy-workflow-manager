@@ -762,7 +762,8 @@
     :versions:
         - 1.0.1
         - 1.0.3
-    :when: 2023-29-08 21:43:10.781625468 Z
+        - 1.0.4
+    :when: 2023-24-10 11:43:10.781625468 Z
 - - :approve
   - Monai.Deploy.Messaging.RabbitMQ
   - :who: neildsouth
@@ -770,7 +771,8 @@
     :versions:
         - 1.0.1
         - 1.0.3
-    :when: 2023-29-08 21:43:20.975488411 Z
+        - 1.0.4
+    :when: 2023-24-10 11:43:20.975488411 Z
 - - :approve
   - Monai.Deploy.Security
   - :who: lillie-dae
