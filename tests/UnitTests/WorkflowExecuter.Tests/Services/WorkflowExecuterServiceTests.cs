@@ -3161,6 +3161,43 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 
             Assert.True(result);
         }
+        [Fact]
+        public async Task ProcessArtifactReceived_Calls_WorkflowInstanceRepository_UpdateTaskOutputArtifactsAsync()
+        {
+            var artifactPath = "some path here";
+            //incoming artifacts
+            var message = new ArtifactsReceivedEvent
+            {
+                WorkflowInstanceId = "123", TaskId = "456",
+                Artifacts = new List<Messaging.Common.Artifact>() { new Messaging.Common.Artifact() { Type = ArtifactType.CT, Path = artifactPath } }
+            };
+            var workflowInstance = new WorkflowInstance
+            {
+                WorkflowId = "789", Tasks = new List<TaskExecution>()
+                { new TaskExecution() { TaskId = "not456" } }
+            };
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
+                .ReturnsAsync(workflowInstance);
+            //expected artifacts
+            var templateArtifacts = new OutputArtifact[]
+            {
+                new OutputArtifact() { Type = ArtifactType.CT , Name = "CT scan"},
+            };
+            var taskTemplate = new TaskObject() { Id = "456", Artifacts = new ArtifactMap { Output = templateArtifacts } };
+            var workflowTemplate = new WorkflowRevision { Workflow = new Workflow { Tasks = new[] { taskTemplate } } };
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync("789"))!
+                .ReturnsAsync(workflowTemplate);
+
+            _storageService.Setup(s => s.VerifyObjectsExistAsync(It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<CancellationToken>())).ReturnsAsync(new Dictionary<string, bool> { { artifactPath, true } });
+
+            //previously received artifacts
+            _artifactReceivedRepository.Setup(r => r.GetAllAsync(workflowInstance.WorkflowId, taskTemplate.Id))
+                .ReturnsAsync((List<ArtifactReceivedItems>?)null);
+
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
+
+            _workflowInstanceRepository.Verify(w => w.UpdateTaskOutputArtifactsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, string>>()), Times.Once());
+        }
     }
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 }

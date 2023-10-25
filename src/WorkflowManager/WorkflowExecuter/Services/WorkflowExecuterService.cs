@@ -210,6 +210,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 return false;
             }
 
+            await ProcessArtifactReceivedOutputs(message, workflowInstance, taskTemplate, taskId);
+
             var previouslyReceivedArtifactsFromRepo = await _artifactsRepository.GetAllAsync(workflowInstanceId, taskId).ConfigureAwait(false);
             if (previouslyReceivedArtifactsFromRepo is null || previouslyReceivedArtifactsFromRepo.Count == 0)
             {
@@ -244,6 +246,21 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
             _logger.MandatoryOutputArtifactsMissingForTask(taskId, string.Join(',', missingArtifacts));
             return true;
+        }
+
+        private async Task ProcessArtifactReceivedOutputs(ArtifactsReceivedEvent message, WorkflowInstance workflowInstance, TaskObject task, string taskId)
+        {
+
+            var artifactsInStorage = (await _storageService.VerifyObjectsExistAsync(workflowInstance.BucketId, message.Artifacts.Select(a => a.Path).ToList(), default)) ?? new Dictionary<string, bool>();
+            if (artifactsInStorage.Any())
+            {
+                var messageArtifactsInStorage = message.Artifacts.Where(m => artifactsInStorage.First(a => a.Key == m.Path).Value).ToList();
+
+                var validArtifacts = new Dictionary<string, string>();
+                messageArtifactsInStorage.ForEach(m => validArtifacts.Add(task.Artifacts.Output.First(t => t.Type == m.Type).Name, m.Path));
+
+                await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, taskId, validArtifacts);
+            }
         }
 
         private async Task<bool> AllRequiredArtifactsReceivedAsync(ArtifactsReceivedEvent message, WorkflowInstance workflowInstance,
