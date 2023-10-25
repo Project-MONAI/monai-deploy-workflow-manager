@@ -21,6 +21,7 @@ using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.Support;
 using MongoDB.Driver;
+using NUnit.Framework;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;
@@ -77,6 +78,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
 
             _outputHelper.WriteLine("Seeding minio with workflow input artifacts");
             await MinioDataSeeding.SeedWorkflowInputArtifacts(workflowInstance.PayloadId);
+            await MinioDataSeeding.SeedArtifactRecieviedArtifact(workflowInstance.PayloadId);
 
             _outputHelper.WriteLine($"Retrieving workflow instance with name={wfiName}");
             await MongoClient.CreateWorkflowInstanceDocumentAsync(workflowInstance);
@@ -120,7 +122,9 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
                         {
                             throw new Exception("Failing Test");
                         }
+                        var wfitest = MongoClient.GetWorkflowInstanceById(artifactsReceivedItems.FirstOrDefault().WorkflowInstanceId);
                         Assertions.AssertArtifactsReceivedItemMatchesExpectedWorkflow(artifactsReceivedItem, workflow, wfi);
+                        Assert.AreEqual(wfitest.Tasks[1].OutputArtifacts.First().Value, "path"); // this was passed in the message
                     }
                 }
             });

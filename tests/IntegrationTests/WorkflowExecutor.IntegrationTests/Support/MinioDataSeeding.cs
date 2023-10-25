@@ -64,6 +64,13 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
             OutputHelper.WriteLine($"Objects seeded");
         }
 
+        public async Task SeedArtifactRecieviedArtifact(string payloadId)
+        {
+            var localPath = Path.Combine(GetDirectory() ?? "", "DICOMs", "full_patient_metadata", "dcm");
+
+            await MinioClient.AddFileToStorage(localPath, $"path");
+        }
+
         public async Task SeedTaskOutputArtifacts(string payloadId, string workflowInstanceId, string executionId, string? folderName = null)
         {
             string localPath;
