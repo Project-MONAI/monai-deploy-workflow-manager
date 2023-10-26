@@ -250,17 +250,28 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
         private async Task ProcessArtifactReceivedOutputs(ArtifactsReceivedEvent message, WorkflowInstance workflowInstance, TaskObject task, string taskId)
         {
-
-            var artifactsInStorage = (await _storageService.VerifyObjectsExistAsync(workflowInstance.BucketId, message.Artifacts.Select(a => $"{message.PayloadId}/{a.Path}").ToList(), default)) ?? new Dictionary<string, bool>();
-            if (artifactsInStorage.Any())
+            var artifactList = message.Artifacts.Select(a => $"{message.PayloadId}/{a.Path}").ToList();
+            var artifactsInStorage = (await _storageService.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactList, default)) ?? new Dictionary<string, bool>();
+            if (artifactsInStorage.Any(a => a.Value) is false)
             {
-                var messageArtifactsInStorage = message.Artifacts.Where(m => artifactsInStorage.First(a => a.Key == $"{message.PayloadId}/{m.Path}").Value).ToList();
-
-                var validArtifacts = new Dictionary<string, string>();
-                messageArtifactsInStorage.ForEach(m => validArtifacts.Add(task.Artifacts.Output.First(t => t.Type == m.Type).Name, m.Path));
-
-                await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, taskId, validArtifacts);
+                _logger.LogDebug($"no files exsist in storage {JsonConvert.SerializeObject(artifactList)}");
+                return;
             }
+
+            var messageArtifactsInStorage = message.Artifacts.Where(m => artifactsInStorage.First(a => a.Value && a.Key == $"{message.PayloadId}/{m.Path}").Value).ToList();
+
+            var validArtifacts = new Dictionary<string, string>();
+            foreach (var artifact in messageArtifactsInStorage)
+            {
+                var match = task.Artifacts.Output.First(t => t.Type == artifact.Type);
+                if (validArtifacts.ContainsKey(match.Name) is false)
+                {
+                    validArtifacts.Add(match.Name, $"{message.PayloadId}/{artifact.Path}");
+                }
+            }
+
+            _logger.LogDebug($"adding files to workflowInstance {workflowInstance.Id} :Task {taskId} : {JsonConvert.SerializeObject(validArtifacts)}");
+            await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, taskId, validArtifacts);
         }
 
         private async Task<bool> AllRequiredArtifactsReceivedAsync(ArtifactsReceivedEvent message, WorkflowInstance workflowInstance,

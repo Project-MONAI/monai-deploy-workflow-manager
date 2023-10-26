@@ -159,7 +159,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common
 
             if (variableString.StartsWith("context.executions", StringComparison.InvariantCultureIgnoreCase))
             {
-                var variableWords = variableString.Split(".");
+                var variableWords = variableString.Replace("{{", "").Replace("}}", "").Split(".");
 
                 var variableTaskId = variableWords[2];
                 var variableLocation = variableWords[3];
