@@ -251,10 +251,10 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
         private async Task ProcessArtifactReceivedOutputs(ArtifactsReceivedEvent message, WorkflowInstance workflowInstance, TaskObject task, string taskId)
         {
 
-            var artifactsInStorage = (await _storageService.VerifyObjectsExistAsync(workflowInstance.BucketId, message.Artifacts.Select(a => a.Path).ToList(), default)) ?? new Dictionary<string, bool>();
+            var artifactsInStorage = (await _storageService.VerifyObjectsExistAsync(workflowInstance.BucketId, message.Artifacts.Select(a => $"{message.PayloadId}/{a.Path}").ToList(), default)) ?? new Dictionary<string, bool>();
             if (artifactsInStorage.Any())
             {
-                var messageArtifactsInStorage = message.Artifacts.Where(m => artifactsInStorage.First(a => a.Key == m.Path).Value).ToList();
+                var messageArtifactsInStorage = message.Artifacts.Where(m => artifactsInStorage.First(a => a.Key == $"{message.PayloadId}/{m.Path}").Value).ToList();
 
                 var validArtifacts = new Dictionary<string, string>();
                 messageArtifactsInStorage.ForEach(m => validArtifacts.Add(task.Artifacts.Output.First(t => t.Type == m.Type).Name, m.Path));
