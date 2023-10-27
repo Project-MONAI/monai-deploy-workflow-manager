@@ -3188,7 +3188,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync("789"))!
                 .ReturnsAsync(workflowTemplate);
 
-            _storageService.Setup(s => s.VerifyObjectsExistAsync(It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<CancellationToken>())).ReturnsAsync(new Dictionary<string, bool> { { artifactPath, true } });
+            _storageService.Setup(s => s.VerifyObjectsExistAsync(It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Dictionary<string, bool> { { $"{message.PayloadId}/{artifactPath}", true } });
 
             //previously received artifacts
             _artifactReceivedRepository.Setup(r => r.GetAllAsync(workflowInstance.WorkflowId, taskTemplate.Id))

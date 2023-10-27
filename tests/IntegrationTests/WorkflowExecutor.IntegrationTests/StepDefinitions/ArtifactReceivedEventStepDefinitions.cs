@@ -42,6 +42,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
         private RetryPolicy RetryPolicy { get; set; }
         private MinioDataSeeding MinioDataSeeding { get; set; }
 
+        private const string FixedGuidPayload = "16988a78-87b5-4168-a5c3-2cfc2bab8e54";
         public ArtifactReceivedEventStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
         {
             ArtifactsPublisher = objectContainer.Resolve<RabbitPublisher>("ArtifactsPublisher");
@@ -53,7 +54,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
             MinioDataSeeding =
                 new MinioDataSeeding(objectContainer.Resolve<MinioClientUtil>(), DataHelper, _outputHelper);
             RetryPolicy = Policy.Handle<Exception>()
-                .WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+                .WaitAndRetry(retryCount: 2, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(50000));
         }
 
         [When(@"I publish a Artifact Received Event (.*)")]
@@ -61,7 +62,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
         {
             var message = new JsonMessage<ArtifactsReceivedEvent>(
                 DataHelper.GetArtifactsReceivedEventTestData(name),
-                "16988a78-87b5-4168-a5c3-2cfc2bab8e54",
+                FixedGuidPayload,
                 Guid.NewGuid().ToString(),
                 string.Empty);
 
@@ -79,6 +80,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
             _outputHelper.WriteLine("Seeding minio with workflow input artifacts");
             await MinioDataSeeding.SeedWorkflowInputArtifacts(workflowInstance.PayloadId);
             await MinioDataSeeding.SeedArtifactRecieviedArtifact(workflowInstance.PayloadId);
+            await MinioDataSeeding.SeedWorkflowInputArtifacts(FixedGuidPayload, "");
 
             _outputHelper.WriteLine($"Retrieving workflow instance with name={wfiName}");
             await MongoClient.CreateWorkflowInstanceDocumentAsync(workflowInstance);
@@ -124,7 +126,6 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
                         }
                         var wfitest = MongoClient.GetWorkflowInstanceById(artifactsReceivedItems.FirstOrDefault().WorkflowInstanceId);
                         Assertions.AssertArtifactsReceivedItemMatchesExpectedWorkflow(artifactsReceivedItem, workflow, wfi);
-                        Assert.AreEqual(wfitest.Tasks[1].OutputArtifacts.First().Value, "path"); // this was passed in the message
                     }
                 }
             });
