@@ -447,7 +447,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             try
             {
-                if (PluginStrings.PlugsRequiresPermanentAccoutns.Contains(
+                if (PluginStrings.PlugsRequiresPermanentAccounts.Contains(
                         message.Body.TaskPluginType,
                         StringComparer.InvariantCultureIgnoreCase))
                 {
@@ -559,7 +559,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             foreach (var storage in storages)
             {
-                var credentials = await _storageService.CreateTemporaryCredentialsAsync(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
+                var credentials = await _storageService.CreateTemporaryCredentialsAsync(
+                        storage.Bucket,
+                        ShortenStoragePath(storage.RelativeRootPath),
+                        _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds,
+                        _cancellationToken)
+                    .ConfigureAwait(false);
+
                 storage.Credentials = new Credentials
                 {
                     AccessKey = credentials.AccessKeyId,
@@ -567,6 +573,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                     SessionToken = credentials.SessionToken,
                 };
             }
+        }
+
+        // added because AWS s3 policy creation is by defualt limited to 2048 characters, which
+        // can easily be surpassed with long multipart path names.
+        private string ShortenStoragePath(string path)
+        {
+            var pathParts = path.Split('/');
+            if (pathParts.Length <= 3)
+            {
+                return path;
+            }
+
+            return $"{pathParts[0]}/{pathParts[1]}/{pathParts[2]}";
         }
 
         private void AcknowledgeMessage<T>(JsonMessage<T> message)
