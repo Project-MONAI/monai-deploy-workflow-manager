@@ -579,13 +579,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         // can easily be surpassed with long multipart path names.
         private string ShortenStoragePath(string path)
         {
-            var pathParts = path.Split('/');
+            var pathParts = path.Split('/', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             if (pathParts.Length <= 3)
             {
                 return path;
             }
 
-            return $"{pathParts[0]}/{pathParts[1]}/{pathParts[2]}";
+            var startsWith = path[0] == '/' ? "/" : string.Empty;
+            return $"{startsWith}{pathParts[0]}/{pathParts[1]}/{pathParts[2]}";
         }
 
         private void AcknowledgeMessage<T>(JsonMessage<T> message)
