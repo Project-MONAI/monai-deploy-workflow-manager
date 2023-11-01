@@ -103,5 +103,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker.Logging
 
         [LoggerMessage(EventId = 1027, Level = LogLevel.Information, Message = "Image does not exist '{image}' locally, attempting to pull.")]
         public static partial void ImageDoesNotExist(this ILogger logger, string image);
+
+        [LoggerMessage(EventId = 1028, Level = LogLevel.Information, Message = "Input volume added {hostPath} = {containerPath}.")]
+        public static partial void InputVolumeMountAdded(this ILogger logger, string hostPath, string containerPath);
+
+        [LoggerMessage(EventId = 1029, Level = LogLevel.Information, Message = "Output volume added {hostPath} = {containerPath}.")]
+        public static partial void OutputVolumeMountAdded(this ILogger logger, string hostPath, string containerPath);
+
+        [LoggerMessage(EventId = 1030, Level = LogLevel.Information, Message = "Intermediate volume added {hostPath} = {containerPath}.")]
+        public static partial void IntermediateVolumeMountAdded(this ILogger logger, string hostPath, string containerPath);
+
+        [LoggerMessage(EventId = 1031, Level = LogLevel.Error, Message = "Error setting directory {path} with permission {user}.")]
+        public static partial void ErrorSettingDirectoryPermission(this ILogger logger, string path, string user);
     }
 }
