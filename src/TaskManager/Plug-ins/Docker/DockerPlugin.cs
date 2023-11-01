@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+using System.Diagnostics;
 using System.Globalization;
-using Amazon.Runtime.Internal.Transform;
 using Ardalis.GuardClauses;
 using Docker.DotNet;
 using Docker.DotNet.Models;
@@ -364,8 +364,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                 {
                     Runtime = Strings.RuntimeNvidia,
                     Mounts = volumeMounts,
-                }
+                },
             };
+
+            if (Event.TaskPluginArguments.ContainsKey(Keys.User))
+            {
+                parameters.User = Event.TaskPluginArguments[Keys.User];
+            }
 
             return parameters;
         }
@@ -406,6 +411,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                 // eg: /monai/input
                 var volumeMount = new ContainerVolumeMount(input, Event.TaskPluginArguments[input.Name], inputHostDirRoot, inputContainerDirRoot);
                 volumeMounts.Add(volumeMount);
+                _logger.InputVolumeMountAdded(inputHostDirRoot, inputContainerDirRoot);
 
                 // For each file, download from bucket and store in Task Manager Container.
                 foreach (var obj in objects)
@@ -424,6 +430,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                 }
             }
 
+            SetPermission(containerPath);
+
             return volumeMounts;
         }
 
@@ -436,7 +444,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
                 Directory.CreateDirectory(containerPath);
 
-                return new ContainerVolumeMount(Event.IntermediateStorage, Event.TaskPluginArguments[Keys.WorkingDirectory], hostPath, containerPath);
+                var volumeMount = new ContainerVolumeMount(Event.IntermediateStorage, Event.TaskPluginArguments[Keys.WorkingDirectory], hostPath, containerPath);
+                _logger.IntermediateVolumeMountAdded(hostPath, containerPath);
+                SetPermission(containerPath);
+                return volumeMount;
             }
 
             return default!;
@@ -465,9 +476,30 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                 Directory.CreateDirectory(containerPath);
 
                 volumeMounts.Add(new ContainerVolumeMount(output, Event.TaskPluginArguments[output.Name], hostPath, containerPath));
+                _logger.OutputVolumeMountAdded(hostPath, containerPath);
             }
 
+            SetPermission(containerRootPath);
+
             return volumeMounts;
+        }
+
+        private void SetPermission(string path)
+        {
+            if (Event.TaskPluginArguments.ContainsKey(Keys.User))
+            {
+                if (!System.OperatingSystem.IsWindows())
+                {
+                    var process = Process.Start("chown", $"-R {Event.TaskPluginArguments[Keys.User]} {path}");
+                    process.WaitForExit();
+
+                    if (process.ExitCode != 0)
+                    {
+                        _logger.ErrorSettingDirectoryPermission(path, Event.TaskPluginArguments[Keys.User]);
+                        throw new SetPermissionException($"chown command exited with code {process.ExitCode}");
+                    }
+                }
+            }
         }
 
         protected override void Dispose(bool disposing)
