@@ -2,18 +2,6 @@
   "version": 1,
   "dependencies": {
     "net6.0": {
-      "Monai.Deploy.Messaging": {
-        "type": "Direct",
-        "requested": "[1.0.4, )",
-        "resolved": "1.0.4",
-        "contentHash": "K6RrbDh7upokvt+sKuKEhQ+B1Xj46DF4sHxqwE6ymZazwmRULzsD0u/1IeDDJCGuRs3iG64QWwCt32j30PSZLg==",
-        "dependencies": {
-          "Ardalis.GuardClauses": "4.1.1",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.21",
-          "Newtonsoft.Json": "13.0.3",
-          "System.IO.Abstractions": "17.2.3"
-        }
-      },
       "Monai.Deploy.Storage": {
         "type": "Direct",
         "requested": "[0.2.18, )",
@@ -136,6 +124,15 @@
         "type": "Transitive",
         "resolved": "6.0.0",
         "contentHash": "/iUeP3tq1S0XdNNoMz5C9twLSrM/TH+qElHkXWaPvuNOt+99G75NrV0OS2EqHx5wMN7popYjpc8oTjC1y16DLg=="
+      },
+      "monai.deploy.messaging": {
+        "type": "Project",
+        "dependencies": {
+          "Ardalis.GuardClauses": "[4.1.1, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "[6.0.21, )",
+          "Newtonsoft.Json": "[13.0.3, )",
+          "System.IO.Abstractions": "[17.2.3, )"
+        }
       }
     }
   }

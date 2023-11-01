@@ -192,7 +192,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common
                 ExportTaskId = taskId,
                 CorrelationId = correlationId,
                 Files = dicomImages,
-                Destinations = exportDestinations
+                Destinations = exportDestinations,
+                Target = new DataOrigin { DataService = DataService.DIMSE, Destination = exportDestinations[0] }
             };
             request.PluginAssemblies.AddRange(plugins);
             return request;

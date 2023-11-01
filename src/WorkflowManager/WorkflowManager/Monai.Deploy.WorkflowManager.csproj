@@ -46,9 +46,6 @@
     <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.18">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
-    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="1.0.4">
-      <TreatAsUsed>true</TreatAsUsed>
-    </PackageReference>
     <PackageReference Include="Mongo.Migration" Version="3.1.4">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
@@ -72,6 +69,7 @@
     <ProjectReference Include="..\PayloadListener\Monai.Deploy.WorkflowManager.PayloadListener.csproj" />
     <ProjectReference Include="..\Logging\Monai.Deploy.WorkflowManager.Logging.csproj" />
     <ProjectReference Include="..\Services\Monai.Deploy.WorkflowManager.Services.csproj" />
+    <ProjectReference Include="..\..\..\..\monai-deploy-messaging\src\Plugins\RabbitMQ\Monai.Deploy.Messaging.RabbitMQ.csproj" />
   </ItemGroup>
 
   <ItemGroup>

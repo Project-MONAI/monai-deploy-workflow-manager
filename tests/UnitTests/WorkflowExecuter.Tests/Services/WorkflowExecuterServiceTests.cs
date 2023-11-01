@@ -704,6 +704,11 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var body = Encoding.UTF8.GetString(messageSent?.Body);
             var exportMessageBody = JsonConvert.DeserializeObject<ExportRequestEvent>(body);
             Assert.Empty(exportMessageBody!.PluginAssemblies);
+
+            var exportEventMessage = messageSent.ConvertTo<ExportRequestEvent>();
+            Assert.NotNull(exportEventMessage.Target);
+            Assert.Equal(DataService.DIMSE, exportEventMessage.Target.DataService);
+
 #pragma warning restore CS8604 // Possible null reference argument.
         }
 
