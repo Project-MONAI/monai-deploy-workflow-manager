@@ -63,6 +63,27 @@ namespace Monai.Deploy.WorkflowManager.Common.Services.Http
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MONAI Workflow Manager", Version = "v1" });
                 c.DescribeAllParametersInCamelCase();
+                c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                {
+                    Scheme = "basic",
+                    Name = "basic",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "basic",
+                                },
+                            },
+                        System.Array.Empty<string>()
+                    },
+                });
             });
 
             var serviceProvider = services.BuildServiceProvider();
