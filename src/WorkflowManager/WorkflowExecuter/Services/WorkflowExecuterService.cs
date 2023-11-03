@@ -270,7 +270,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 }
             }
 
-            var currentTask = workflowInstance.Tasks?.FirstOrDefault(t => t.TaskId == taskId);
+            var currentTask = workflowInstance.Tasks?.Find(t => t.TaskId == taskId);
 
             currentTask!.OutputArtifacts = validArtifacts; // added here are the parent function saves the object !
 
@@ -686,7 +686,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 return false;
             }
 
-            var currentTask = workflowInstance.Tasks?.FirstOrDefault(t => t.TaskId == task.TaskId);
+            var currentTask = workflowInstance.Tasks?.Find(t => t.TaskId == task.TaskId);
 
             if (currentTask is not null)
             {
