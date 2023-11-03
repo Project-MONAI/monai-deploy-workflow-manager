@@ -270,6 +270,10 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 }
             }
 
+            var currentTask = workflowInstance.Tasks?.FirstOrDefault(t => t.TaskId == taskId);
+
+            currentTask!.OutputArtifacts = validArtifacts; // added here are the parent function saves the object !
+
             _logger.LogDebug($"adding files to workflowInstance {workflowInstance.Id} :Task {taskId} : {JsonConvert.SerializeObject(validArtifacts)}");
             await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, taskId, validArtifacts);
         }
