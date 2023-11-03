@@ -3161,6 +3161,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 
             Assert.True(result);
         }
+
         [Fact]
         public async Task ProcessArtifactReceived_Calls_WorkflowInstanceRepository_UpdateTaskOutputArtifactsAsync()
         {
@@ -3174,7 +3175,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowInstance = new WorkflowInstance
             {
                 WorkflowId = "789", Tasks = new List<TaskExecution>()
-                { new TaskExecution() { TaskId = "not456" } }
+                { new TaskExecution() { TaskId = "456" } }
             };
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
                 .ReturnsAsync(workflowInstance);
