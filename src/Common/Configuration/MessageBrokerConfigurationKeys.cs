@@ -91,5 +91,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Configuration
 
         [ConfigurationKeyName("artifactrecieved")]
         public string ArtifactRecieved { get; set; } = "md.workflow.artifactrecieved";
+
+        /// <summary>
+        /// Gets or sets the topic for publishing export requests.
+        /// Defaults to `md_export_request`.
+        /// </summary>
+        [ConfigurationKeyName("externalAppRequest")]
+        public string ExternalAppRequest { get; set; } = "md.externalapp.request";
     }
 }
