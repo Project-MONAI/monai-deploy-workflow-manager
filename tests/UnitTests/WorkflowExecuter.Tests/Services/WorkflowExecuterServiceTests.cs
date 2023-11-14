@@ -230,8 +230,14 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
                 .ReturnsAsync(new WorkflowInstance { WorkflowId = "789" });
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync("789"))!
-                .ReturnsAsync(new WorkflowRevision { Workflow = new Workflow { Tasks = new []
-                    { new TaskObject() { Id = "not456" } }} });
+                .ReturnsAsync(new WorkflowRevision
+                {
+                    Workflow = new Workflow
+                    {
+                        Tasks = new[]
+                    { new TaskObject() { Id = "not456" } }
+                    }
+                });
             var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
             Assert.False(result);
         }
@@ -239,15 +245,21 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
         [Fact]
         public async Task ProcessArtifactReceived_WhenStillHasMissingArtifacts_ReturnsTrue()
         {
-            var message = new ArtifactsReceivedEvent { WorkflowInstanceId = "123", TaskId = "456",
-                Artifacts = new List<Messaging.Common.Artifact>() { new Messaging.Common.Artifact() { Type = ArtifactType.CT } } };
-            var workflowInstance = new WorkflowInstance { WorkflowId = "789", Tasks = new List<TaskExecution>()
-                { new TaskExecution() { TaskId = "456" } } };
+            var message = new ArtifactsReceivedEvent
+            {
+                WorkflowInstanceId = "123", TaskId = "456",
+                Artifacts = new List<Messaging.Common.Artifact>() { new Messaging.Common.Artifact() { Type = ArtifactType.CT } }
+            };
+            var workflowInstance = new WorkflowInstance
+            {
+                WorkflowId = "789", Tasks = new List<TaskExecution>()
+                { new TaskExecution() { TaskId = "456" } }
+            };
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
                 .ReturnsAsync(workflowInstance);
             var templateArtifacts = new OutputArtifact[] { new OutputArtifact() { Type = ArtifactType.CT }, new OutputArtifact() { Type = ArtifactType.DG } };
             var taskTemplate = new TaskObject() { Id = "456", Artifacts = new ArtifactMap { Output = templateArtifacts } };
-            var workflowTemplate = new WorkflowRevision { Workflow = new Workflow { Tasks = new [] { taskTemplate }} };
+            var workflowTemplate = new WorkflowRevision { Workflow = new Workflow { Tasks = new[] { taskTemplate } } };
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync("789"))!
                 .ReturnsAsync(workflowTemplate);
             _artifactReceivedRepository.Setup(r => r.GetAllAsync(workflowInstance.WorkflowId, taskTemplate.Id))
@@ -261,10 +273,16 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
         public async Task ProcessArtifactReceived_WhenAllArtifactsReceivedArtifactsButTaskExecNotFound_ReturnsFalse()
         {
             //incoming artifacts
-            var message = new ArtifactsReceivedEvent { WorkflowInstanceId = "123", TaskId = "456",
-                Artifacts = new List<Messaging.Common.Artifact>() { new Messaging.Common.Artifact() { Type = ArtifactType.CT } } };
-            var workflowInstance = new WorkflowInstance { WorkflowId = "789", Tasks = new List<TaskExecution>()
-                { new TaskExecution() { TaskId = "not456" } } };
+            var message = new ArtifactsReceivedEvent
+            {
+                WorkflowInstanceId = "123", TaskId = "456",
+                Artifacts = new List<Messaging.Common.Artifact>() { new Messaging.Common.Artifact() { Type = ArtifactType.CT } }
+            };
+            var workflowInstance = new WorkflowInstance
+            {
+                WorkflowId = "789", Tasks = new List<TaskExecution>()
+                { new TaskExecution() { TaskId = "not456" } }
+            };
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
                 .ReturnsAsync(workflowInstance);
             //expected artifacts
@@ -273,7 +291,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                 new OutputArtifact() { Type = ArtifactType.CT },
             };
             var taskTemplate = new TaskObject() { Id = "456", Artifacts = new ArtifactMap { Output = templateArtifacts } };
-            var workflowTemplate = new WorkflowRevision { Workflow = new Workflow { Tasks = new [] { taskTemplate }} };
+            var workflowTemplate = new WorkflowRevision { Workflow = new Workflow { Tasks = new[] { taskTemplate } } };
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync("789"))!
                 .ReturnsAsync(workflowTemplate);
 
@@ -3179,7 +3197,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowInstance = new WorkflowInstance
             {
                 WorkflowId = "789", Tasks = new List<TaskExecution>()
-                { new TaskExecution() { TaskId = "not456" } }
+                { new TaskExecution() { TaskId = "456" } }
             };
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
                 .ReturnsAsync(workflowInstance);
