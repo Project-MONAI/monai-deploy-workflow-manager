@@ -3184,6 +3184,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 
             Assert.True(result);
         }
+
         [Fact]
         public async Task ProcessArtifactReceived_Calls_WorkflowInstanceRepository_UpdateTaskOutputArtifactsAsync()
         {
