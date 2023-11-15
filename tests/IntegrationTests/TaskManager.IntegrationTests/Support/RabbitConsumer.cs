@@ -33,7 +33,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 
         private string DeadLetterExchange { get; set; } = "monaideploy-dead-letter";
 
-        private int Deliverylimit { get; set; } = 5;
+        private int Deliverylimit { get; set; } = 3;
 
         private string RoutingKey { get; set; }
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
