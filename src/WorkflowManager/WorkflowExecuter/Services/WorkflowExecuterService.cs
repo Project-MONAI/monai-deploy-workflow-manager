@@ -93,7 +93,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             _defaultPerTaskTypeTimeoutMinutes = configuration.Value.PerTaskTypeTimeoutMinutes;
             TaskDispatchRoutingKey = configuration.Value.Messaging.Topics.TaskDispatchRequest;
             ClinicalReviewTimeoutRoutingKey = configuration.Value.Messaging.Topics.AideClinicalReviewCancelation;
-            _migExternalAppPlugins = configuration.Value.MigExternalAppPlugins.ToList();
+            _migExternalAppPlugins = configuration.Value.MigExternalAppPlugins.Select(p => p.Trim()).Where(p => p.Length > 0).ToList();
             ExportRequestRoutingKey = $"{configuration.Value.Messaging.Topics.ExportRequestPrefix}.{configuration.Value.Messaging.DicomAgents.ScuAgentName}";
             ExternalAppRoutingKey = configuration.Value.Messaging.Topics.ExternalAppRequest;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -251,7 +251,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
         private async Task ProcessArtifactReceivedOutputs(ArtifactsReceivedEvent message, WorkflowInstance workflowInstance, TaskObject task, string taskId)
         {
-            var artifactList = message.Artifacts.Select(a => $"{message.PayloadId}/{a.Path}").ToList();
+            var artifactList = message.Artifacts.Select(a => $"{a.Path}").ToList();
             var artifactsInStorage = (await _storageService.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactList, default)) ?? new Dictionary<string, bool>();
             if (artifactsInStorage.Any(a => a.Value) is false)
             {
@@ -259,15 +259,15 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 return;
             }
 
-            var messageArtifactsInStorage = message.Artifacts.Where(m => artifactsInStorage.First(a => a.Value && a.Key == $"{message.PayloadId}/{m.Path}").Value).ToList();
+            var messageArtifactsInStorage = message.Artifacts.Where(m => artifactsInStorage.First(a => a.Value && a.Key == $"{m.Path}").Value).ToList();
 
             var validArtifacts = new Dictionary<string, string>();
             foreach (var artifact in messageArtifactsInStorage)
             {
-                var match = task.Artifacts.Output.First(t => t.Type == artifact.Type);
-                if (validArtifacts.ContainsKey(match.Name) is false)
+                var match = task.Artifacts.Output.FirstOrDefault(t => t.Type == artifact.Type);
+                if (match is not null && validArtifacts.ContainsKey(match!.Name) is false)
                 {
-                    validArtifacts.Add(match.Name, $"{message.PayloadId}/{artifact.Path}");
+                    validArtifacts.Add(match.Name, $"{artifact.Path}");
                 }
             }
 
@@ -592,7 +592,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 return;
             }
 
-            var destinationFolder = $"{workflowInstance.PayloadId}/dcm/{task.TaskId}/";
+            var destinationFolder = $"{workflowInstance.PayloadId}/inference/{task.TaskId}/{exportDestinations.First().Destination}";
 
             _logger.LogMigExport(task.TaskId, string.Join(",", exportDestinations), artifactValues.Length, string.Join(",", plugins));
 
@@ -606,7 +606,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
         {
             var jsonMessage = new JsonMessage<ExternalAppRequestEvent>(externalAppRequestEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, externalAppRequestEvent.CorrelationId, Guid.NewGuid().ToString());
 
-            await _messageBrokerPublisherService.Publish(ExportRequestRoutingKey, jsonMessage.ToMessage());
+            await _messageBrokerPublisherService.Publish(ExternalAppRoutingKey, jsonMessage.ToMessage());
             return true;
         }
 
