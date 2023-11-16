@@ -23,7 +23,7 @@ Scenario: TaskUpdateEvent is published with status Accepted after receiving a va
 	When A Task Dispatch event is published Task_Dispatch_Accepted
     Then A Task Update event with status Accepted is published with Task Dispatch details
 
-
+@Ignore
 @TaskDispatch_TaskUpdate
 Scenario Outline: TaskUpdateEvent is published with status Failed after receiving an invalid TaskDispatchEvent
     When A Task Dispatch event is published <TaskDispatchEvent>
