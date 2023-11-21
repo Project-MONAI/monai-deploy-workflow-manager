@@ -23,5 +23,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Constants
         public const string ExportTask = "export";
 
         public const string ExternalAppTask = "remote_app_execution";
+
+        public const string ExportHl7Task = "export_hl7";
     }
 }

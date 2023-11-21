@@ -1268,7 +1268,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                                 AccessToken = "test",
                             },
                             Bucket = "bucket1",
-                            RelativeRootPath = "//dcm_1"
+                            RelativeRootPath = "dcm_1"
                         },
                     },
                     IntermediateStorage = new Messaging.Common.Storage
@@ -1316,7 +1316,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                                 AccessToken = "test",
                             },
                             Bucket = "bucket1",
-                            RelativeRootPath = "//dcm_1"
+                            RelativeRootPath = "dcm_1"
                         },
                     },
                     IntermediateStorage = new Messaging.Common.Storage
@@ -1363,7 +1363,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                                 AccessToken = "test",
                             },
                             Bucket = "bucket1",
-                            RelativeRootPath = "//dcm_1"
+                            RelativeRootPath = "dcm_1"
                         },
                     },
                     IntermediateStorage = new Messaging.Common.Storage
@@ -1376,7 +1376,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
                             AccessToken = "test",
                         },
                         Bucket = "bucket1",
-                        RelativeRootPath = "//dcm"
+                        RelativeRootPath = "dcm"
                     },
                     TaskPluginArguments = new Dictionary<string, string>()
                     {

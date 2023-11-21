@@ -63,7 +63,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
 
         private string DeadLetterExchange { get; set; } = "monaideploy-dead-letter";
 
-        private int Deliverylimit { get; set; } = 5;
+        private int Deliverylimit { get; set; } = 3;
 
         public T? GetMessage<T>()
         {

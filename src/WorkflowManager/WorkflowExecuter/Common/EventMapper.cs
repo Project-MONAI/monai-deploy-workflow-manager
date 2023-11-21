@@ -192,7 +192,38 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common
                 ExportTaskId = taskId,
                 CorrelationId = correlationId,
                 Files = dicomImages,
-                Destinations = exportDestinations
+                Destinations = exportDestinations,
+                Target = new DataOrigin { DataService = DataService.DIMSE, Destination = exportDestinations[0] }
+            };
+            request.PluginAssemblies.AddRange(plugins);
+            return request;
+        }
+
+        public static ExternalAppRequestEvent ToExternalAppRequestEvent(
+            IList<string> dicomImages,
+            List<DataOrigin> exportDestinations,
+            string taskId,
+            string workflowInstanceId,
+            string correlationId,
+            string destinationFolder,
+            List<string>? plugins = null)
+        {
+            plugins ??= new List<string>();
+
+            Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));
+            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            Guard.Against.NullOrWhiteSpace(correlationId, nameof(correlationId));
+            Guard.Against.NullOrEmpty(dicomImages, nameof(dicomImages));
+            Guard.Against.NullOrEmpty(exportDestinations, nameof(exportDestinations));
+
+            var request = new ExternalAppRequestEvent
+            {
+                WorkflowInstanceId = workflowInstanceId,
+                ExportTaskId = taskId,
+                CorrelationId = correlationId,
+                Files = dicomImages,
+                Targets = exportDestinations,
+                DestinationFolder = destinationFolder
             };
             request.PluginAssemblies.AddRange(plugins);
             return request;
