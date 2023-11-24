@@ -352,7 +352,6 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             Func<Task> externalFunc,
             Func<Task> exportHl7Func,
             Func<Task> notCreatedStatusFunc,
-            Func<Task> exportHl7Func,
             Func<Task> defaultFunc) =>
             task switch
             {
@@ -706,7 +705,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             List<string> plugins)
         {
             _logger.LogMigExport(task.TaskId, string.Join(",", exportDestinations), artifactValues.Length, string.Join(",", plugins));
-            var exportRequestEvent = EventMapper.ToExportRequestEvent(artifactValues, exportDestinations, task.TaskId, workflowInstance.Id, correlationId);
+            var exportRequestEvent = EventMapper.ToExportRequestEvent(artifactValues, exportDestinations, task.TaskId, workflowInstance.Id, correlationId, plugins);
             exportRequestEvent.PayloadId = workflowInstance.PayloadId;
             return exportRequestEvent;
         }

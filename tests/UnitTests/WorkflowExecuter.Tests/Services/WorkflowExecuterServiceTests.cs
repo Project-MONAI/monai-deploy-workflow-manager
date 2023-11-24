@@ -2685,7 +2685,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 
             var result = await WorkflowExecuterService.ProcessPayload(workflowRequest, new Payload() { Id = Guid.NewGuid().ToString() });
 
-            _messageBrokerPublisherService.Verify(w => w.Publish($"{_configuration.Value.Messaging.Topics.ExternalAppRequest}", It.IsAny<Message>()), Times.Exactly(1));
+            _messageBrokerPublisherService.Verify(w => w.Publish($"{_configuration.Value.Messaging.Topics.ExportRequestPrefix}.{_configuration.Value.Messaging.DicomAgents.ScuAgentName}", It.IsAny<Message>()), Times.Exactly(1));
 
             Assert.True(result);
             Assert.NotNull(messageSent);
@@ -3184,7 +3184,6 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 
             Assert.True(result);
         }
-
         [Fact]
         public async Task ProcessArtifactReceived_Calls_WorkflowInstanceRepository_UpdateTaskOutputArtifactsAsync()
         {
@@ -3198,7 +3197,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var workflowInstance = new WorkflowInstance
             {
                 WorkflowId = "789", Tasks = new List<TaskExecution>()
-                { new TaskExecution() { TaskId = "456" } }
+                { new TaskExecution() { TaskId = "not456" } }
             };
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
                 .ReturnsAsync(workflowInstance);
@@ -3213,7 +3212,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                 .ReturnsAsync(workflowTemplate);
 
             _storageService.Setup(s => s.VerifyObjectsExistAsync(It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Dictionary<string, bool> { { $"{artifactPath}", true } });
+                .ReturnsAsync(new Dictionary<string, bool> { { $"{message.PayloadId}/{artifactPath}", true } });
 
             //previously received artifacts
             _artifactReceivedRepository.Setup(r => r.GetAllAsync(workflowInstance.WorkflowId, taskTemplate.Id))
