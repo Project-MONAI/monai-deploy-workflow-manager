@@ -58,6 +58,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Configuration
             valid &= IsStringValueNotNull(nameof(configurationKeys.WorkflowRequest), configurationKeys.WorkflowRequest);
             valid &= IsStringValueNotNull(nameof(configurationKeys.ExportRequestPrefix), configurationKeys.ExportRequestPrefix);
             valid &= IsStringValueNotNull(nameof(configurationKeys.TaskDispatchRequest), configurationKeys.TaskDispatchRequest);
+            valid &= IsStringValueNotNull(nameof(configurationKeys.ExportHL7), configurationKeys.ExportHL7);
 
             return valid;
         }
