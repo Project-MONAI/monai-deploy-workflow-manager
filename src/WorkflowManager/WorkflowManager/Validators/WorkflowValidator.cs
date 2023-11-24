@@ -346,6 +346,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
                 case Email:
                     ValidateEmailTask(currentTask);
                     break;
+                case HL7ExportTask:
+                    ValidateHL7ExportTask(workflow, currentTask);
+                    break;
             }
         }
 
@@ -600,6 +603,23 @@ namespace Monai.Deploy.WorkflowManager.Common.Validators
         }
 
         private void ValidateExportTask(Workflow workflow, TaskObject currentTask)
+        {
+            if (currentTask.ExportDestinations.Any() is false)
+            {
+                Errors.Add($"Task: '{currentTask.Id}' does not contain a destination.");
+            }
+
+            CheckDestinationInMigDestinations(currentTask, workflow.InformaticsGateway);
+
+            if (currentTask.ExportDestinations.Length != currentTask.ExportDestinations.Select(t => t.Name).Distinct().Count())
+            {
+                Errors.Add($"Task: '{currentTask.Id}' contains duplicate destinations.");
+            }
+
+            ValidateInputs(currentTask);
+        }
+
+        private void ValidateHL7ExportTask(Workflow workflow, TaskObject currentTask)
         {
             if (currentTask.ExportDestinations.Any() is false)
             {

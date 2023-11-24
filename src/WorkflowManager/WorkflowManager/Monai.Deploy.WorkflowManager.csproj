@@ -42,6 +42,7 @@
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.22" />
+    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="1.0.5" />
     <PackageReference Include="Monai.Deploy.Security" Version="0.1.3" />
     <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.18">
       <TreatAsUsed>true</TreatAsUsed>
@@ -69,7 +70,6 @@
     <ProjectReference Include="..\PayloadListener\Monai.Deploy.WorkflowManager.PayloadListener.csproj" />
     <ProjectReference Include="..\Logging\Monai.Deploy.WorkflowManager.Logging.csproj" />
     <ProjectReference Include="..\Services\Monai.Deploy.WorkflowManager.Services.csproj" />
-    <ProjectReference Include="..\..\..\..\monai-deploy-messaging\src\Plugins\RabbitMQ\Monai.Deploy.Messaging.RabbitMQ.csproj" />
   </ItemGroup>
 
   <ItemGroup>

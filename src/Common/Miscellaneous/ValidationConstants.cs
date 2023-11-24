@@ -119,6 +119,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
         public const string ExternalAppTaskType = "remote_app_execution";
 
         /// <summary>
+        /// Key for Hl7 export task type.
+        /// </summary>
+        public const string HL7ExportTask = "export_hl7";
+
+        /// <summary>
         /// Key for the export task type.
         /// </summary>
         public const string DockerTaskType = "docker";
@@ -141,7 +146,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
                 ExportTaskType,
                 DockerTaskType,
                 Email,
-                ExternalAppTaskType
+                ExternalAppTaskType,
+                HL7ExportTask
             };
     }
 }

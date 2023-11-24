@@ -366,6 +366,17 @@
         "resolved": "1.1.0",
         "contentHash": "aOZA3BWfz9RXjpzt0sRJJMjAscAUm3Hoa4UWAfceV9UTYxgwZ1lZt5nO2myFf+/jetYQo4uTP7zS8sJY67BBxg=="
       },
+      "Monai.Deploy.Messaging": {
+        "type": "Transitive",
+        "resolved": "1.0.5",
+        "contentHash": "J8Lskfy8PSVQLDE2uLqh53uaPpqpRJuSGVHpR2jrw+GYnTTDv21j/2gxwG8Hq2NgNOkWLNVi+fFnyWd6WFiUTA==",
+        "dependencies": {
+          "Ardalis.GuardClauses": "4.1.1",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.21",
+          "Newtonsoft.Json": "13.0.3",
+          "System.IO.Abstractions": "17.2.3"
+        }
+      },
       "Monai.Deploy.Storage": {
         "type": "Transitive",
         "resolved": "0.2.18",
@@ -857,19 +868,10 @@
         "resolved": "13.3.1",
         "contentHash": "Q2dqDsb0xAlr092grgHk8/vTXI2snIiYM5ND3IXkgJDFIdPnqDYwYnlk+gwzSeRByDLhiSzTog8uT7xFwH68Zg=="
       },
-      "monai.deploy.messaging": {
-        "type": "Project",
-        "dependencies": {
-          "Ardalis.GuardClauses": "[4.1.1, )",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "[6.0.21, )",
-          "Newtonsoft.Json": "[13.0.3, )",
-          "System.IO.Abstractions": "[17.2.3, )"
-        }
-      },
       "monai.deploy.workflowmanager.common.configuration": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.0, )",
+          "Monai.Deploy.Messaging": "[1.0.5, )",
           "Monai.Deploy.Storage": "[0.2.18, )"
         }
       },
@@ -883,7 +885,7 @@
       "monai.deploy.workflowmanager.taskmanager.api": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.0, )",
+          "Monai.Deploy.Messaging": "[1.0.5, )",
           "Mongo.Migration": "[3.1.4, )",
           "MongoDB.Bson": "[2.21.0, )"
         }

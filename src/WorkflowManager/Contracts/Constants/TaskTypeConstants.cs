@@ -20,8 +20,10 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Constants
     {
         public const string RouterTask = "router";
 
-        public const string ExportTask = "export";
+        public const string DicomExportTask = "export";
 
         public const string ExternalAppTask = "remote_app_execution";
+
+        public const string HL7ExportTask = "export_hl7";
     }
 }

@@ -2,6 +2,18 @@
   "version": 1,
   "dependencies": {
     "net6.0": {
+      "Monai.Deploy.Messaging": {
+        "type": "Direct",
+        "requested": "[1.0.5, )",
+        "resolved": "1.0.5",
+        "contentHash": "J8Lskfy8PSVQLDE2uLqh53uaPpqpRJuSGVHpR2jrw+GYnTTDv21j/2gxwG8Hq2NgNOkWLNVi+fFnyWd6WFiUTA==",
+        "dependencies": {
+          "Ardalis.GuardClauses": "4.1.1",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.21",
+          "Newtonsoft.Json": "13.0.3",
+          "System.IO.Abstractions": "17.2.3"
+        }
+      },
       "Ardalis.GuardClauses": {
         "type": "Transitive",
         "resolved": "4.1.1",
@@ -757,15 +769,6 @@
         "resolved": "0.6.2",
         "contentHash": "jPao/LdUNLUz8rn3H1D8W7wQbZsRZM0iayvWI4xGejJg3XJHT56gcmYdgmCGPdJF1UEBqUjucCRrFB+4HbJsbw=="
       },
-      "monai.deploy.messaging": {
-        "type": "Project",
-        "dependencies": {
-          "Ardalis.GuardClauses": "[4.1.1, )",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "[6.0.21, )",
-          "Newtonsoft.Json": "[13.0.3, )",
-          "System.IO.Abstractions": "[17.2.3, )"
-        }
-      },
       "monai.deploy.workflowmanager.common": {
         "type": "Project",
         "dependencies": {
@@ -777,7 +780,7 @@
       "monai.deploy.workflowmanager.common.configuration": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.0, )",
+          "Monai.Deploy.Messaging": "[1.0.5, )",
           "Monai.Deploy.Storage": "[0.2.18, )"
         }
       },
@@ -800,7 +803,7 @@
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[0.1.0, )",
+          "Monai.Deploy.Messaging": "[1.0.5, )",
           "Mongo.Migration": "[3.1.4, )",
           "MongoDB.Bson": "[2.21.0, )"
         }

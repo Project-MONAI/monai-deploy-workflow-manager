@@ -37,6 +37,10 @@
 		<AdditionalFiles Include="..\..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
 	</ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Monai.Deploy.Messaging" Version="1.0.5" />
+  </ItemGroup>
+  
 	<ItemGroup>
 		<ProjectReference Include="..\..\Common\Configuration\Monai.Deploy.WorkflowManager.Common.Configuration.csproj" />
 		<ProjectReference Include="..\..\Common\Miscellaneous\Monai.Deploy.WorkflowManager.Common.Miscellaneous.csproj" />
@@ -46,6 +50,7 @@
 		<ProjectReference Include="..\Database\Monai.Deploy.WorkflowManager.Database.csproj" />
 		<ProjectReference Include="..\Logging\Monai.Deploy.WorkflowManager.Logging.csproj" />
 		<ProjectReference Include="..\Storage\Monai.Deploy.WorkflowManager.Storage.csproj" />
+    
 	</ItemGroup>
 
 	<PropertyGroup>
