@@ -17,11 +17,9 @@
 using BoDi;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Models;
 using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.Support;
 using MongoDB.Driver;
-using NUnit.Framework;
 using Polly;
 using Polly.Retry;
 using TechTalk.SpecFlow.Infrastructure;

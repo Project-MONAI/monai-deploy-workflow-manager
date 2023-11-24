@@ -280,6 +280,17 @@
           "System.Security.Principal.Windows": "5.0.0"
         }
       },
+      "Monai.Deploy.Messaging": {
+        "type": "Transitive",
+        "resolved": "1.0.5-rc0006",
+        "contentHash": "Yr6Ix8AeKdciz7t9aeteYuDAiNpmv3FmpF9bvdvjVh46gBazf+HBdvXdbWWXgzNTd3yevsQGBKazQXN9ecqwog==",
+        "dependencies": {
+          "Ardalis.GuardClauses": "4.1.1",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.21",
+          "Newtonsoft.Json": "13.0.3",
+          "System.IO.Abstractions": "17.2.3"
+        }
+      },
       "Monai.Deploy.Storage": {
         "type": "Transitive",
         "resolved": "0.2.18",

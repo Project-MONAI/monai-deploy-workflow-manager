@@ -94,7 +94,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             _defaultPerTaskTypeTimeoutMinutes = configuration.Value.PerTaskTypeTimeoutMinutes;
             TaskDispatchRoutingKey = configuration.Value.Messaging.Topics.TaskDispatchRequest;
             ClinicalReviewTimeoutRoutingKey = configuration.Value.Messaging.Topics.AideClinicalReviewCancelation;
-            _migExternalAppPlugins = configuration.Value.MigExternalAppPlugins.ToList();
+            _migExternalAppPlugins = configuration.Value.MigExternalAppPlugins.Select(p => p.Trim()).Where(p => p.Length > 0).ToList();
             ExportRequestRoutingKey = $"{configuration.Value.Messaging.Topics.ExportRequestPrefix}.{configuration.Value.Messaging.DicomAgents.ScuAgentName}";
             ExternalAppRoutingKey = configuration.Value.Messaging.Topics.ExternalAppRequest;
             ExportHL7RoutingKey = configuration.Value.Messaging.Topics.ExportHL7;
@@ -253,7 +253,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
         private async Task ProcessArtifactReceivedOutputs(ArtifactsReceivedEvent message, WorkflowInstance workflowInstance, TaskObject task, string taskId)
         {
-            var artifactList = message.Artifacts.Select(a => $"{message.PayloadId}/{a.Path}").ToList();
+            var artifactList = message.Artifacts.Select(a => $"{a.Path}").ToList();
             var artifactsInStorage = (await _storageService.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactList, default)) ?? new Dictionary<string, bool>();
             if (artifactsInStorage.Any(a => a.Value) is false)
             {
@@ -261,17 +261,21 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 return;
             }
 
-            var messageArtifactsInStorage = message.Artifacts.Where(m => artifactsInStorage.First(a => a.Value && a.Key == $"{message.PayloadId}/{m.Path}").Value).ToList();
+            var messageArtifactsInStorage = message.Artifacts.Where(m => artifactsInStorage.First(a => a.Value && a.Key == $"{m.Path}").Value).ToList();
 
             var validArtifacts = new Dictionary<string, string>();
             foreach (var artifact in messageArtifactsInStorage)
             {
-                var match = task.Artifacts.Output.First(t => t.Type == artifact.Type);
-                if (validArtifacts.ContainsKey(match.Name) is false)
+                var match = task.Artifacts.Output.FirstOrDefault(t => t.Type == artifact.Type);
+                if (match is not null && validArtifacts.ContainsKey(match!.Name) is false)
                 {
-                    validArtifacts.Add(match.Name, $"{message.PayloadId}/{artifact.Path}");
+                    validArtifacts.Add(match.Name, $"{artifact.Path}");
                 }
             }
+
+            var currentTask = workflowInstance.Tasks?.Find(t => t.TaskId == taskId);
+
+            currentTask!.OutputArtifacts = validArtifacts; // added here are the parent function saves the object !
 
             _logger.LogDebug($"adding files to workflowInstance {workflowInstance.Id} :Task {taskId} : {JsonConvert.SerializeObject(validArtifacts)}");
             await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, taskId, validArtifacts);
@@ -348,6 +352,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             Func<Task> externalFunc,
             Func<Task> exportHl7Func,
             Func<Task> notCreatedStatusFunc,
+            Func<Task> exportHl7Func,
             Func<Task> defaultFunc) =>
             task switch
             {
@@ -574,7 +579,38 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
         private async Task HandleExternalAppAsync(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId)
         {
             var plugins = _migExternalAppPlugins;
-            await HandleDicomExportAsync(workflow, workflowInstance, task, correlationId, plugins).ConfigureAwait(false);
+
+            var exportDestinations = workflow.Workflow?.Tasks?.FirstOrDefault(t => t.Id == task.TaskId)?.ExportDestinations
+                .Select(e => new DataOrigin { DataService = DataService.DIMSE, Destination = e.Name });
+
+            if (exportDestinations is null || !exportDestinations.Any())
+            {
+                return;
+            }
+
+            var artifactValues = await GetArtifactValues(workflow, workflowInstance, task, exportDestinations.Select(o => o.Destination).ToArray(), correlationId);
+
+            if (artifactValues.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            var destinationFolder = $"{workflowInstance.PayloadId}/inference/{task.TaskId}/{exportDestinations.First().Destination}";
+
+            _logger.LogMigExport(task.TaskId, string.Join(",", exportDestinations), artifactValues.Length, string.Join(",", plugins));
+
+            var exportRequestEvent = EventMapper.ToExternalAppRequestEvent(artifactValues, exportDestinations.ToList(), task.TaskId, workflowInstance.Id, correlationId, destinationFolder, plugins);
+
+            await ExternalAppRequest(exportRequestEvent);
+            await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Dispatched);
+        }
+
+        private async Task<bool> ExternalAppRequest(ExternalAppRequestEvent externalAppRequestEvent)
+        {
+            var jsonMessage = new JsonMessage<ExternalAppRequestEvent>(externalAppRequestEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, externalAppRequestEvent.CorrelationId, Guid.NewGuid().ToString());
+
+            await _messageBrokerPublisherService.Publish(ExternalAppRoutingKey, jsonMessage.ToMessage());
+            return true;
         }
 
         private async Task HandleDicomExportAsync(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId, List<string>? plugins = null)
@@ -635,7 +671,6 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             }
 
             artifactValues = files.Select(f => f.FilePath).ToArray();
-
             if (artifactValues.IsNullOrEmpty())
             {
                 _logger.ExportFilesNotFound(task.TaskId, workflowInstance.Id);
@@ -738,7 +773,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 return false;
             }
 
-            var currentTask = workflowInstance.Tasks?.FirstOrDefault(t => t.TaskId == task.TaskId);
+            var currentTask = workflowInstance.Tasks?.Find(t => t.TaskId == task.TaskId);
 
             if (currentTask is not null)
             {

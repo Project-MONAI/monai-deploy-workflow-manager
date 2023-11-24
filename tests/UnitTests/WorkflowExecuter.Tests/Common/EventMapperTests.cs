@@ -157,10 +157,17 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Common
                 ExportTaskId = task.TaskId,
                 CorrelationId = correlationId,
                 Files = dicomImages,
-                Destinations = exportDestinations
+                Destinations = exportDestinations,
+                Target = new DataOrigin
+                {
+                    Destination = exportDestinations[0],
+                    DataService = DataService.DIMSE,
+                    Source = "WFM"
+                }
             };
 
             var exportRequest = EventMapper.ToExportRequestEvent(dicomImages, exportDestinations, task.TaskId, workflowInstanceId, correlationId);
+            exportRequest.Target!.Source = "WFM";
 
             exportRequest.Should().BeEquivalentTo(expected);
         }
