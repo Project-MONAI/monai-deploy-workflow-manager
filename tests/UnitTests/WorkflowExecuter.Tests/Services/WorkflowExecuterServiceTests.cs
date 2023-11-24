@@ -2685,7 +2685,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 
             var result = await WorkflowExecuterService.ProcessPayload(workflowRequest, new Payload() { Id = Guid.NewGuid().ToString() });
 
-            _messageBrokerPublisherService.Verify(w => w.Publish($"{_configuration.Value.Messaging.Topics.ExportRequestPrefix}.{_configuration.Value.Messaging.DicomAgents.ScuAgentName}", It.IsAny<Message>()), Times.Exactly(1));
+            _messageBrokerPublisherService.Verify(w => w.Publish($"{_configuration.Value.Messaging.Topics.ExternalAppRequest}", It.IsAny<Message>()), Times.Exactly(1));
 
             Assert.True(result);
             Assert.NotNull(messageSent);
@@ -3192,12 +3192,12 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var message = new ArtifactsReceivedEvent
             {
                 WorkflowInstanceId = "123", TaskId = "456",
-                Artifacts = new List<Messaging.Common.Artifact>() { new Messaging.Common.Artifact() { Type = ArtifactType.CT, Path = artifactPath } }
+                Artifacts = new List<Messaging.Common.Artifact>() { new Messaging.Common.Artifact() { Type = ArtifactType.CT, Path = $"{new Guid()}/{artifactPath}" } }
             };
             var workflowInstance = new WorkflowInstance
             {
                 WorkflowId = "789", Tasks = new List<TaskExecution>()
-                { new TaskExecution() { TaskId = "not456" } }
+                { new TaskExecution() { TaskId = "456" } }
             };
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
                 .ReturnsAsync(workflowInstance);
