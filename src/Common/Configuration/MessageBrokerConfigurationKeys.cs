@@ -105,5 +105,13 @@ namespace Monai.Deploy.WorkflowManager.Common.Configuration
         /// </summary>
         [ConfigurationKeyName("exportHl7")]
         public string ExportHL7 { get; set; } = "md.export.hl7";
+
+
+        /// <summary>
+        /// Gets or sets the topic for publishing export complete requests.
+        /// Defaults to `md_export_complete`.
+        /// </summary>
+        [ConfigurationKeyName("exportHl7Complete")]
+        public string ExportHl7Complete { get; set; } = "md.export.hl7complete";
     }
 }
