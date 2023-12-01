@@ -685,6 +685,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
             if (exportList is null || artifactValues is null)
             {
+                _logger.ExportListOrArtifactsAreEmpty(task.TaskId, workflowInstance.Id);
                 return;
             }
 
