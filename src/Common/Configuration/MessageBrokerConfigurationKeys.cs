@@ -36,6 +36,13 @@ namespace Monai.Deploy.WorkflowManager.Common.Configuration
 
         /// <summary>
         /// Gets or sets the topic for publishing workflow requests.
+        /// Defaults to `md.export.complete`.
+        /// </summary>
+        [ConfigurationKeyName("exportHL7Complete")]
+        public string ExportHL7Complete { get; set; } = "md.export.hl7complete";
+
+        /// <summary>
+        /// Gets or sets the topic for publishing workflow requests.
         /// Defaults to `md.export.request`.
         /// </summary>
         [ConfigurationKeyName("exportRequestPrefix")]

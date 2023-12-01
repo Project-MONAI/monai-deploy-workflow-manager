@@ -275,7 +275,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
             var currentTask = workflowInstance.Tasks?.Find(t => t.TaskId == taskId);
 
-            currentTask!.OutputArtifacts = validArtifacts; // added here are the parent function saves the object !
+            currentTask!.OutputArtifacts = validArtifacts; // adding the actual paths here, the parent function does the saving of the changes
 
             _logger.LogDebug($"adding files to workflowInstance {workflowInstance.Id} :Task {taskId} : {JsonConvert.SerializeObject(validArtifacts)}");
             await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, taskId, validArtifacts);
@@ -495,7 +495,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             await _workflowInstanceService.UpdateExportCompleteMetadataAsync(workflowInstance.Id, task.ExecutionId, message.FileStatuses);
 
             var succeededFileCount = message.FileStatuses.Count(f => f.Value == FileExportStatus.Success);
-            var totalFileCount = message.FileStatuses.Count();
+            var totalFileCount = message.FileStatuses.Count;
 
             if (message.Status.Equals(ExportStatus.Success)
                 && TaskExecutionStatus.Succeeded.IsTaskExecutionStatusUpdateValid(task.Status))

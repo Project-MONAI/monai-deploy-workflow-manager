@@ -181,7 +181,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common
                     var artifactName = variableWords[4];
                     var outputArtifact = task.OutputArtifacts?.FirstOrDefault(a => a.Key == artifactName);
 
-                    if (!outputArtifact.HasValue)
+                    if (!outputArtifact.HasValue || string.IsNullOrEmpty(outputArtifact.Value.Value))
                     {
                         return default;
                     }

@@ -43,6 +43,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         public string TaskStatusUpdateRoutingKey { get; set; }
         public string ExportCompleteRoutingKey { get; set; }
         public string ArtifactRecievedRoutingKey { get; set; }
+        public string ExportHL7CompleteRoutingKey { get; set; }
         protected int Concurrency { get; set; }
         public ServiceStatus Status { get; set; } = ServiceStatus.Unknown;
         public string ServiceName => "Payload Listener Service";
@@ -67,6 +68,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             WorkflowRequestRoutingKey = configuration.Value.Messaging.Topics.WorkflowRequest;
             ExportCompleteRoutingKey = configuration.Value.Messaging.Topics.ExportComplete;
             ArtifactRecievedRoutingKey = configuration.Value.Messaging.Topics.ArtifactRecieved;
+            ExportHL7CompleteRoutingKey = configuration.Value.Messaging.Topics.ExportHL7Complete;
 
             Concurrency = 2;
 
@@ -110,6 +112,9 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 
             _messageSubscriber.SubscribeAsync(ArtifactRecievedRoutingKey, ArtifactRecievedRoutingKey, OnArtifactReceivedtReceivedCallbackAsync);
             _logger.EventSubscription(ServiceName, ArtifactRecievedRoutingKey);
+
+            _messageSubscriber.SubscribeAsync(ExportHL7CompleteRoutingKey, ExportHL7CompleteRoutingKey, OnExportHL7CompleteReceivedCallback);
+            _logger.EventSubscription(ServiceName, ExportHL7CompleteRoutingKey);
         }
 
         private async Task OnWorkflowRequestReceivedCallbackAsync(MessageReceivedEventArgs eventArgs)
@@ -142,6 +147,21 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         }
 
         private async Task OnExportCompleteReceivedCallback(MessageReceivedEventArgs eventArgs)
+        {
+            using var loggerScope = _logger.BeginScope(new Common.Miscellaneous.LoggingDataDictionary<string, object>
+            {
+                ["correlationId"] = eventArgs.Message.CorrelationId,
+                ["source"] = eventArgs.Message.ApplicationId,
+                ["messageId"] = eventArgs.Message.MessageId,
+                ["messageDescription"] = eventArgs.Message.MessageDescription,
+            });
+
+            _logger.ExportCompleteReceived();
+            await _eventPayloadListenerService.ExportCompletePayload(eventArgs);
+
+        }
+
+        private async Task OnExportHL7CompleteReceivedCallback(MessageReceivedEventArgs eventArgs)
         {
             using var loggerScope = _logger.BeginScope(new Common.Miscellaneous.LoggingDataDictionary<string, object>
             {

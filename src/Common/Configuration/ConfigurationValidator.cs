@@ -58,7 +58,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Configuration
             valid &= IsStringValueNotNull(nameof(configurationKeys.WorkflowRequest), configurationKeys.WorkflowRequest);
             valid &= IsStringValueNotNull(nameof(configurationKeys.ExportRequestPrefix), configurationKeys.ExportRequestPrefix);
             valid &= IsStringValueNotNull(nameof(configurationKeys.TaskDispatchRequest), configurationKeys.TaskDispatchRequest);
+<<<<<<< Updated upstream
             valid &= IsStringValueNotNull(nameof(configurationKeys.ExportHL7), configurationKeys.ExportHL7);
+||||||| constructed merge base
+=======
+            valid &= IsStringValueNotNull(nameof(configurationKeys.ExportHL7Complete), configurationKeys.ExportHL7Complete);
+>>>>>>> Stashed changes
 
             return valid;
         }
