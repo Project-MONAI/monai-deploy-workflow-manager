@@ -56,7 +56,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
         private readonly IPayloadService _payloadService;
         private readonly StorageServiceConfiguration _storageConfiguration;
         private readonly double _defaultTaskTimeoutMinutes;
-        private readonly Dictionary<string, double> _defaultPerTaskTypeTimeoutMinutes = new Dictionary<string, double>();
+        private readonly Dictionary<string, double> _defaultPerTaskTypeTimeoutMinutes = new();
 
         private string TaskDispatchRoutingKey { get; }
         private string ExportRequestRoutingKey { get; }
@@ -257,7 +257,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             var artifactsInStorage = (await _storageService.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactList, default)) ?? new Dictionary<string, bool>();
             if (artifactsInStorage.Any(a => a.Value) is false)
             {
-                _logger.LogDebug($"no files exsist in storage {JsonConvert.SerializeObject(artifactList)}");
+                _logger.NoFilesExistInStorage(JsonConvert.SerializeObject(artifactList));
                 return;
             }
 
@@ -277,7 +277,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
             currentTask!.OutputArtifacts = validArtifacts; // adding the actual paths here, the parent function does the saving of the changes
 
-            _logger.LogDebug($"adding files to workflowInstance {workflowInstance.Id} :Task {taskId} : {JsonConvert.SerializeObject(validArtifacts)}");
+            _logger.AddingFilesToWorkflowInstance(workflowInstance.Id, taskId, JsonConvert.SerializeObject(validArtifacts));
             await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, taskId, validArtifacts);
         }
 
@@ -710,7 +710,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             return exportRequestEvent;
         }
 
-        private string[] GetDicomExports(WorkflowRevision workflow, TaskExecution task, string[]? exportDestinations)
+        private static string[] GetDicomExports(WorkflowRevision workflow, TaskExecution task, string[]? exportDestinations)
         {
             var validExportDestinations = workflow.Workflow?.InformaticsGateway?.ExportDestinations;
 
