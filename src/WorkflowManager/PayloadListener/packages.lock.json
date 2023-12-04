@@ -833,6 +833,7 @@
       "monai.deploy.workloadmanager.workflowexecuter": {
         "type": "Project",
         "dependencies": {
+          "Monai.Deploy.Messaging": "[1.0.5, )",
           "Monai.Deploy.WorkflowManager.Common": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.Common.Miscellaneous": "[1.0.0, )",

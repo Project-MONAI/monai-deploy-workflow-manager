@@ -51,5 +51,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
         [LoggerMessage(EventId = 700009, Level = LogLevel.Debug, Message = "Mandatory output artifacts for task {taskId} are missing. waiting for remaining artifacts... {missingArtifacts}")]
         public static partial void MandatoryOutputArtifactsMissingForTask(this ILogger logger, string taskId, string missingArtifacts);
 
+        [LoggerMessage(EventId = 700010, Level = LogLevel.Debug, Message = "no files exsist in storage {artifactList}")]
+        public static partial void NoFilesExistInStorage(this ILogger logger, string artifactList);
+
+        [LoggerMessage(EventId = 700011, Level = LogLevel.Debug, Message = "adding files to workflowInstance {workflowInstanceId} :Task {taskId} :  {artifactList}")]
+        public static partial void AddingFilesToWorkflowInstance(this ILogger logger, string workflowInstanceId, string taskId, string artifactList);
+
+
     }
 }

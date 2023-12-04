@@ -181,7 +181,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common
                     var artifactName = variableWords[4];
                     var outputArtifact = task.OutputArtifacts?.FirstOrDefault(a => a.Key == artifactName);
 
-                    if (!outputArtifact.HasValue)
+                    if (!outputArtifact.HasValue || string.IsNullOrEmpty(outputArtifact.Value.Value))
                     {
                         return default;
                     }
@@ -203,7 +203,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common
             if (shouldExistYet)
             {
                 _logger.VerifyArtifactExistence(bucketId, artifact.Key, artifact.Value);
-                artifact = await _storageService.VerifyObjectExistsAsync(bucketId, artifact.Value) ? artifact : default(KeyValuePair<string, string>);
+                artifact = await _storageService.VerifyObjectExistsAsync(bucketId, artifact.Value) ? artifact : default;
             }
 
             return artifact;
