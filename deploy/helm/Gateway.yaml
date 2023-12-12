@@ -14,9 +14,9 @@
 replicaCount: 1
 
 image:
-  repository: registry.gitlab.com/answerdigital/londonai/aide/workflow-manager-images/infomatics-gateway
+  repository: ghcr.io/project-monai/monai-deploy-informatics-gateway
   pullPolicy: IfNotPresent
-  tag: 2022-08-30-01
+  tag: latest
   
 imagePullSecrets:
  - name: gitlab-image-pull

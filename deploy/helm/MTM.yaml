@@ -11,28 +11,35 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-      
+
 replicaCount: 1
 
 image:
-  repository: registry.gitlab.com/answerdigital/londonai/aide/workflow-manager-images/task-manager
+  repository: ghcr.io/project-monai/monai-deploy-task-manager
   pullPolicy: IfNotPresent
-  tag: 2022-09-05-01
-
-imagePullSecrets:
- - name: gitlab-image-pull
+  tag: develop-latest
 
 enviromentVariables:
-  WorkflowManager__storage__settings__endpoint: "minio.monai:9000"
-  WorkflowManager__storage__settings__accessKey: "rootminio"
-  WorkflowManager__storage__settings__accessToken: "rootminio"
+  ASPNETCORE_ENVIRONMENT: "local"
+  DOTNET_ENVIRONMENT: "local"
+  WorkloadManagerDatabase__ConnectionString: "mongodb://root:rootpassword@mongo-monai:27017"
+  WorkflowManager__TaskManager__argoPluginArguments__server_url: "http://argo-workflows-server:2746"
+  WorflowManager__messaging__retryDelays: "localhost"
+  WorkflowManager__storage__settings__endpoint: "minio-monai:9000"
+  WorkflowManager__storage__settings__accessKey: "minioadmin"
+  WorkflowManager__storage__settings__accessToken: "minioadmin"
   WorkflowManager__storage__settings__executableLocation: "mc"
-  WorkflowManager__messaging__publisherSettings__endpoint: "rabbit-monai.argo"
+  WorkflowManager__storage__settings__bucket: "bucket1"
+  # WorkflowManager__storage__settings__region: "eu-west-2"
+  # WorkflowManager__storage__settings__securedConnection: "false"
+  # WorkflowManager__storage__settings__serviceName: "test"
+  WorkflowManager__messaging__publisherSettings__endpoint: "rabbitmq-monai"
   WorkflowManager__messaging__publisherSettings__port: "5672"  
-  WorkflowManager__messaging__subscriberSettings__endpoint: "rabbit-monai.argo"
+  WorkflowManager__messaging__subscriberSettings__endpoint: "rabbitmq-monai"
   WorkflowManager__messaging__subscriberSettings__port: "5672"
   Serilog__WriteTo__0__Args__indexFormat: "index-monai{0:yyyy.MM}"
   Serilog__WriteTo__0__Args__nodeUris: "http://192.168.0.22:9200"
+  Kestrel__EndPoints__Http__Url: "http://::5000"
 
 enviromentVariablesFromSecrets:
   secrets:
