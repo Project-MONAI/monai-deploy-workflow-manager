@@ -248,7 +248,7 @@
       "Monai.Deploy.Messaging": {
         "type": "Transitive",
         "resolved": "1.0.6",
-        "contentHash": "9M8pM2gU+vK73o1ygMrpkyuH2ucxdvebV1wPzZCrfU3tJyNIeAN4SxBS2UGX7tMjMnzx2apyacwR4EUNaP+TLQ==",
+        "contentHash": "A4yyvJ0E01aKcCa8lF0gadiEAqe6AYVdmm3afjom+E89+n6oKydTbXYPYWDtUVPW1iAWtLS/BuOxBHRSljKmig==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.1.1",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "6.0.21",
