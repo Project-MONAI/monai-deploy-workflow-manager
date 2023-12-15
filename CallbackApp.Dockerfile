@@ -12,7 +12,7 @@
 FROM python:3.10-alpine
 
 RUN apk update && apk upgrade
-RUN apk add libcom_err=1.47.0-r2
+RUN apk add libcom_err=1.47.0-r5
 WORKDIR /app
 COPY src/TaskManager/CallbackApp/app.py ./
 COPY src/TaskManager/CallbackApp/requirements.txt ./
