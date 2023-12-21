@@ -15,6 +15,7 @@
  */
 
 using Monai.Deploy.Messaging.Common;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Constants;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Artifact = Monai.Deploy.WorkflowManager.Common.Contracts.Models.Artifact;
 // ReSharper disable ArrangeObjectCreationWhenTypeEvident
@@ -2174,7 +2175,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             new TaskObject
                             {
                                 Id = "export_task_1",
-                                Type = "Export",
+                                Type = TaskTypeConstants.DicomExportTask,
                                 Description = "Export Workflow 1 Task 2",
                                 ExportDestinations = new ExportDestination[]
                                 {
@@ -2235,7 +2236,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             new TaskObject
                             {
                                 Id = "export_task_1",
-                                Type = "Export",
+                                Type = TaskTypeConstants.DicomExportTask,
                                 Description = "Export Workflow 1 Task 2",
                                 ExportDestinations = new ExportDestination[]
                                 {
@@ -2296,7 +2297,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             new TaskObject
                             {
                                 Id = "export_task_1",
-                                Type = "Export",
+                                Type = TaskTypeConstants.DicomExportTask,
                                 Description = "Export Workflow 1 Task 2",
                                 ExportDestinations = new ExportDestination[]
                                 {
@@ -2358,7 +2359,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             new TaskObject
                             {
                                 Id = "export_task_1",
-                                Type = "Export",
+                                Type = TaskTypeConstants.DicomExportTask,
                                 Description = "Export Workflow 1 Task 2",
                                 ExportDestinations = new ExportDestination[]
                                 {
@@ -2375,7 +2376,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             new TaskObject
                             {
                                 Id = "export_task_2",
-                                Type = "Export",
+                                Type = TaskTypeConstants.DicomExportTask,
                                 Description = "Export Workflow 1 Task 3",
                                 ExportDestinations = new ExportDestination[]
                                 {
@@ -2437,7 +2438,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             new TaskObject
                             {
                                 Id = "export_task_1",
-                                Type = "Export",
+                                Type = TaskTypeConstants.DicomExportTask,
                                 Description = "Export Workflow 1 Task 2",
                                 ExportDestinations = new ExportDestination[]
                                 {

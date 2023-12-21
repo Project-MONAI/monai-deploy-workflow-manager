@@ -531,8 +531,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
                 switch (task.TaskType)
                 {
-                    case ValidationConstants.ExportTaskType:
-                    case ValidationConstants.HL7ExportTask:
+                    case TaskTypeConstants.DicomExportTask:
+                    case TaskTypeConstants.HL7ExportTask:
                         return await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
                     default:
                         break;

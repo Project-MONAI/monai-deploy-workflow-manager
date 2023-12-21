@@ -15,6 +15,7 @@
  */
 
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Constants;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO;
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
@@ -209,7 +210,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = "7d7c8b83-6628-413c-9912-a89314e5e2d5",
                             OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
-                            TaskType = "Export",
+                            TaskType = TaskTypeConstants.DicomExportTask,
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
