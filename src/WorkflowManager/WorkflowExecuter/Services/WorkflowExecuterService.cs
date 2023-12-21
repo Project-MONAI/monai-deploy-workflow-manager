@@ -529,9 +529,13 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                     return false;
                 }
 
-                if (string.Compare(task.TaskType, ValidationConstants.ExportTaskType, true) == 0)
+                switch (task.TaskType)
                 {
-                    return await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
+                    case ValidationConstants.ExportTaskType:
+                    case ValidationConstants.HL7ExportTask:
+                        return await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
+                    default:
+                        break;
                 }
             }
 
