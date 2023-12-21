@@ -183,7 +183,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
                 }
                 else
                 {
-                    item.Artifacts = item.Artifacts.Concat(existing.Artifacts).ToList();
+                    item.Artifacts = item.Artifacts.Union(existing.Artifacts).ToList();
                     var update = Builders<ArtifactReceivedItems>.Update.Set(a => a.Artifacts, item.Artifacts);
                     await _artifactReceivedItemsCollection
                         .UpdateOneAsync(a => a.WorkflowInstanceId == workflowInstanceId && a.TaskId == taskId, update)
