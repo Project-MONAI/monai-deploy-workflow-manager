@@ -288,13 +288,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 }
             }
 
-            //if (addedNew)
-            //{
-            //    _logger.AddingFilesToWorkflowInstance(workflowInstance.Id, taskId, JsonConvert.SerializeObject(validArtifacts));
-            //    await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, taskId, validArtifacts);
-            //}
             if (currentTask is not null && addedNew)
             {
+                _logger.AddingFilesToWorkflowInstance(workflowInstance.Id, taskId, JsonConvert.SerializeObject(validArtifacts));
                 await _workflowInstanceRepository.UpdateTaskAsync(workflowInstance.Id, taskId, currentTask);
             }
         }
