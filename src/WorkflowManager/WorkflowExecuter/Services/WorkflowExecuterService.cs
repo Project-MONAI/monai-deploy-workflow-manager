@@ -251,7 +251,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             return true;
         }
 
-        private async Task ProcessArtifactReceivedOutputs(ArtifactsReceivedEvent message, WorkflowInstance workflowInstance, TaskObject task, string taskId)
+        private async Task ProcessArtifactReceivedOutputs(ArtifactsReceivedEvent message, WorkflowInstance workflowInstance, TaskObject taskTemplate, string taskId)
         {
             var artifactList = message.Artifacts.Select(a => $"{a.Path}").ToList();
             var artifactsInStorage = (await _storageService.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactList, default)) ?? new Dictionary<string, bool>();
@@ -263,22 +263,36 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
             var messageArtifactsInStorage = message.Artifacts.Where(m => artifactsInStorage.First(a => a.Value && a.Key == $"{m.Path}").Value).ToList();
 
+            var addedNew = false;
             var validArtifacts = new Dictionary<string, string>();
             foreach (var artifact in messageArtifactsInStorage)
             {
-                var match = task.Artifacts.Output.FirstOrDefault(t => t.Type == artifact.Type);
+                var match = taskTemplate.Artifacts.Output.FirstOrDefault(t => t.Type == artifact.Type);
                 if (match is not null && validArtifacts.ContainsKey(match!.Name) is false)
                 {
                     validArtifacts.Add(match.Name, $"{artifact.Path}");
+
                 }
             }
 
             var currentTask = workflowInstance.Tasks?.Find(t => t.TaskId == taskId);
 
-            currentTask!.OutputArtifacts = validArtifacts; // adding the actual paths here, the parent function does the saving of the changes
 
-            _logger.AddingFilesToWorkflowInstance(workflowInstance.Id, taskId, JsonConvert.SerializeObject(validArtifacts));
-            await _workflowInstanceRepository.UpdateTaskOutputArtifactsAsync(workflowInstance.Id, taskId, validArtifacts);
+            foreach (var artifact in validArtifacts)
+            {
+                if (currentTask?.OutputArtifacts.ContainsKey(artifact.Key) is false)
+                {
+                    // adding the actual paths here, the parent function does the saving of the changes
+                    currentTask?.OutputArtifacts.Add(artifact.Key, artifact.Value);
+                    addedNew = true;
+                }
+            }
+
+            if (currentTask is not null && addedNew)
+            {
+                _logger.AddingFilesToWorkflowInstance(workflowInstance.Id, taskId, JsonConvert.SerializeObject(validArtifacts));
+                await _workflowInstanceRepository.UpdateTaskAsync(workflowInstance.Id, taskId, currentTask);
+            }
         }
 
         private async Task<bool> AllRequiredArtifactsReceivedAsync(ArtifactsReceivedEvent message, WorkflowInstance workflowInstance,
@@ -511,9 +525,13 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                     return false;
                 }
 
-                if (string.Compare(task.TaskType, ValidationConstants.ExportTaskType, true) == 0)
+                switch (task.TaskType)
                 {
-                    return await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
+                    case TaskTypeConstants.DicomExportTask:
+                    case TaskTypeConstants.HL7ExportTask:
+                        return await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
+                    default:
+                        break;
                 }
             }
 
@@ -612,7 +630,12 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             return true;
         }
 
-        private async Task HandleDicomExportAsync(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId, List<string>? plugins = null)
+        private async Task HandleDicomExportAsync(
+            WorkflowRevision workflow,
+            WorkflowInstance workflowInstance,
+            TaskExecution task,
+            string correlationId,
+            List<string>? plugins = null)
         {
             plugins ??= new List<string>();
             var (exportList, artifactValues) = await GetExportsAndArtifcts(workflow, workflowInstance, task, correlationId);
@@ -629,7 +652,12 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstance.Id, task.TaskId, TaskExecutionStatus.Dispatched);
         }
 
-        private async Task<(string[]? exportList, string[]? artifactValues)> GetExportsAndArtifcts(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId)
+        private async Task<(string[]? exportList, string[]? artifactValues)> GetExportsAndArtifcts(
+            WorkflowRevision workflow,
+            WorkflowInstance workflowInstance,
+            TaskExecution task,
+            string correlationId,
+            bool enforceDcmOnly = true)
         {
             var exportList = workflow.Workflow?.Tasks?.FirstOrDefault(t => t.Id == task.TaskId)?.ExportDestinations.Select(e => e.Name).ToArray();
             if (exportList is null || !exportList.Any())
@@ -637,7 +665,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 exportList = null;
             }
 
-            var artifactValues = await GetArtifactValues(workflow, workflowInstance, task, exportList, correlationId);
+            var artifactValues = await GetArtifactValues(workflow, workflowInstance, task, exportList, correlationId, enforceDcmOnly);
 
             if (artifactValues.IsNullOrEmpty())
             {
@@ -646,7 +674,12 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             return (exportList, artifactValues);
         }
 
-        private async Task<string[]> GetArtifactValues(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string[]? exportList, string correlationId)
+        private async Task<string[]> GetArtifactValues(
+            WorkflowRevision workflow, WorkflowInstance workflowInstance,
+            TaskExecution task,
+            string[]? exportList,
+            string correlationId,
+            bool enforceDcmOnly = true)
         {
             var artifactValues = GetDicomExports(workflow, task, exportList);
 
@@ -660,7 +693,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                         artifact,
                         true);
 
-                    var dcmFiles = objects?.Where(o => o.IsValidDicomFile())?.ToList();
+                    var dcmFiles = objects?.Where(o => o.IsValidDicomFile() || enforceDcmOnly is false)?.ToList();
 
                     if (dcmFiles?.IsNullOrEmpty() is false)
                     {
@@ -681,7 +714,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
         private async Task HandleHl7ExportAsync(WorkflowRevision workflow, WorkflowInstance workflowInstance, TaskExecution task, string correlationId)
         {
-            var (exportList, artifactValues) = await GetExportsAndArtifcts(workflow, workflowInstance, task, correlationId);
+            var (exportList, artifactValues) = await GetExportsAndArtifcts(workflow, workflowInstance, task, correlationId, false);
 
             if (exportList is null || artifactValues is null)
             {
