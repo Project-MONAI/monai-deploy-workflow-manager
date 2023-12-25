@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="6.0.2" />
+    <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.22" />
     <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="1.0.6" />
     <PackageReference Include="Monai.Deploy.Security" Version="0.1.3" />
