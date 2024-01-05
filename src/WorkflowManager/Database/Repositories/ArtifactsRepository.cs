@@ -175,6 +175,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
                 .FindAsync(a => a.WorkflowInstanceId == workflowInstanceId && a.TaskId == taskId).ConfigureAwait(false);
             var existing = await result.FirstOrDefaultAsync().ConfigureAwait(false);
 
+#pragma warning disable CS0168 // Variable is declared but never used
             try
             {
                 if (existing == null)
@@ -195,6 +196,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
                 throw;
             }
+#pragma warning restore CS0168 // Variable is declared but never used
 
 
         }

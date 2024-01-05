@@ -13,54 +13,47 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
 -->
-
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Monai.Deploy.WorkflowManager</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
-
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <AdditionalFiles Include="..\..\..\stylecop.json" />
   </ItemGroup>
-
   <ItemGroup>
     <AdditionalFiles Include="..\..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="6.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.22" />
-    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="1.0.6" />
-    <PackageReference Include="Monai.Deploy.Security" Version="0.1.3" />
-    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="0.2.18">
+    <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="8.0.0" />
+    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="2.0.0" />
+    <PackageReference Include="Monai.Deploy.Security" Version="1.0.0" />
+    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="1.0.0">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
     <PackageReference Include="Mongo.Migration" Version="3.1.4">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
-    <PackageReference Include="NLog" Version="5.2.4">
+    <PackageReference Include="NLog" Version="5.2.8">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
-    <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.4" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Configuration\Monai.Deploy.WorkflowManager.Common.Configuration.csproj" />
     <ProjectReference Include="..\..\Common\Miscellaneous\Monai.Deploy.WorkflowManager.Common.Miscellaneous.csproj" />
@@ -71,7 +64,6 @@
     <ProjectReference Include="..\Logging\Monai.Deploy.WorkflowManager.Logging.csproj" />
     <ProjectReference Include="..\Services\Monai.Deploy.WorkflowManager.Services.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="appsettings.Development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -86,13 +78,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
   <PropertyGroup>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     <CodeAnalysisRuleSet>..\..\.sonarlint\project-monai_monai-deploy-workflow-managercsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-
   <Target Name="CopyPlugins" AfterTargets="publish">
     <ItemGroup>
       <PluginDlls Include="$(PublishDir)Monai.Deploy.Messaging.RabbitMQ.dll;$(PublishDir)Monai.Deploy.Storage.MinIO.dll" />
@@ -100,7 +90,6 @@
     <Copy SourceFiles="@(PluginDlls)" DestinationFolder="$(PublishDir)\plug-ins\" SkipUnchangedFiles="true" />
     <Message Text="Files copied successfully to $(PublishDir)\plug-ins\." Importance="high" />
   </Target>
-
   <Target Name="CopyPluginsBuild" AfterTargets="build">
     <ItemGroup>
       <PluginDlls Include="$(OutDir)Monai.Deploy.Messaging.RabbitMQ.dll;$(OutDir)Monai.Deploy.Storage.MinIO.dll" />
@@ -108,5 +97,4 @@
     <Copy SourceFiles="@(PluginDlls)" DestinationFolder="$(OutDir)\plug-ins\" SkipUnchangedFiles="true" />
     <Message Text="Files copied successfully to $(OutDir)\plug-ins\." Importance="high" />
   </Target>
-
 </Project>

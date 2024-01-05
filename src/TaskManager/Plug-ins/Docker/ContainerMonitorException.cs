@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using System.Runtime.Serialization;
-
 namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 {
     [Serializable]
@@ -30,10 +28,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
         }
 
         public ContainerMonitorException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected ContainerMonitorException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

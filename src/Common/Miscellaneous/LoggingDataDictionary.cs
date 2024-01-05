@@ -16,7 +16,6 @@
  */
 
 using System.Globalization;
-using System.Runtime.Serialization;
 
 namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
 {
@@ -24,10 +23,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
     public class LoggingDataDictionary<TKey, TValue> : Dictionary<TKey, TValue> where TKey : notnull
     {
         public LoggingDataDictionary()
-        {
-        }
-
-        protected LoggingDataDictionary(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
 

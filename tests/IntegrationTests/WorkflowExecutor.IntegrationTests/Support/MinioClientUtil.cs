@@ -16,6 +16,7 @@
 
 using System.Reactive.Linq;
 using Minio;
+using Minio.DataModel.Args;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO;
 using Polly;
@@ -27,7 +28,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
     public class MinioClientUtil
     {
         private AsyncRetryPolicy RetryPolicy { get; set; }
-        private MinioClient Client { get; set; }
+        private IMinioClient Client { get; set; }
 
         public MinioClientUtil()
         {

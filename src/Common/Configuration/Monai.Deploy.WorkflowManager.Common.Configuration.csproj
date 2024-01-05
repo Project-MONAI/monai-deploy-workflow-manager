@@ -13,38 +13,30 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
 -->
-
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Monai.Deploy.WorkflowManager.Configuration</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-
   <ItemGroup>
     <AdditionalFiles Include="..\..\..\stylecop.json" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="Monai.Deploy.Messaging" Version="1.0.6" />
-    <PackageReference Include="Monai.Deploy.Storage" Version="0.2.18" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="2.0.0" />
+    <PackageReference Include="Monai.Deploy.Storage" Version="1.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Remove="Test\**" />
     <EmbeddedResource Remove="Test\**" />
     <None Remove="Test\**" />
   </ItemGroup>
-
   <ItemGroup>
     <AdditionalFiles Include="..\..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
-
   <PropertyGroup>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>

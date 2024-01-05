@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using System.Runtime.Serialization;
-
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Exceptions
 {
     [Serializable]
@@ -27,10 +25,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Exceptions
         }
 
         public ArgoWorkflowNotFoundException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected ArgoWorkflowNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
 

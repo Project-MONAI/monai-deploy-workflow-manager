@@ -167,7 +167,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
             .ThrowsAsync(new Exception());
 
             var runner = new EmailPlugin(_serviceScopeFactory.Object, _logger.Object, _options, message);
-            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.Failed, result.Status);
             Assert.Equal(FailureReason.PluginError, result.FailureReason);
@@ -189,7 +189,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
                 });
 
             var runner = new EmailPlugin(_serviceScopeFactory.Object, _logger.Object, _options, messageEvent);
-            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             _messageBrokerPublisherService.Verify(m => m.Publish(It.IsAny<string>(), It.IsAny<Message>()), Times.Once);
             Assert.Contains("fred@fred.com", System.Text.Encoding.UTF8.GetString(messageResult!.Body));

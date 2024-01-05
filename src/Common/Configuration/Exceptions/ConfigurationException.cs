@@ -15,7 +15,6 @@
  */
 
 using System;
-using System.Runtime.Serialization;
 
 namespace Monai.Deploy.WorkflowManager.Common.Configuration.Exceptions
 {
@@ -34,10 +33,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Configuration.Exceptions
         }
 
         public ConfigurationException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected ConfigurationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

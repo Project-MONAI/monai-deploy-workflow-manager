@@ -196,11 +196,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
         public async Task TaskManager_StartStop()
         {
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(ServiceStatus.Running, service.Status);
 
-            await service.StopAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            await service.StopAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
             Assert.Equal(ServiceStatus.Stopped, service.Status);
         }
 
@@ -221,14 +221,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
                 .Callback(() => resetEvent.Set());
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
             Assert.True(resetEvent.WaitOne(5000));
@@ -250,14 +250,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.RequeueWithDelay(It.IsAny<MessageBase>()))
                 .Callback(() => resetEvent.Set());
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
             Assert.True(resetEvent.WaitOne(5000));
@@ -280,7 +280,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
         //                         It.IsAny<ushort>()))
         //        .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
         //        {
-        //            await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
+        //            await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
         //        });
         //    _messageBrokerSubscriberService
         //        .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
@@ -289,7 +289,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
         //        .ThrowsAsync(new Exception("error"));
 
         //    var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Objec);
-        //    await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+        //    await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
         //    Assert.Equal(ServiceStatus.Running, service.Status);
 
         //    Assert.True(resetEvent.WaitOne(5000));
@@ -311,7 +311,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
                 });
 
             _storageAdminService.Setup(a => a.CreateUserAsync(
@@ -334,7 +334,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 });
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
             Assert.True(resetEvent.WaitOne(5000));
@@ -368,7 +368,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
@@ -381,7 +381,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 });
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
             Assert.True(resetEvent.WaitOne(5000));
@@ -416,7 +416,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.RequeueWithDelay(It.IsAny<MessageBase>()))
@@ -432,7 +432,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 });
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
             Assert.True(resetEvent.Wait(5000));
@@ -469,7 +469,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Acknowledge(It.IsAny<MessageBase>()))
@@ -485,7 +485,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 });
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
             Assert.True(resetEvent.Wait(5000));
@@ -512,7 +512,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
@@ -525,7 +525,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 });
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
             Assert.True(resetEvent.WaitOne(5000));
@@ -546,7 +546,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(false);
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(message))).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Reject(It.IsAny<MessageBase>(), It.IsAny<bool>()))
@@ -559,7 +559,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 });
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
             Assert.True(resetEvent.WaitOne(5000));
@@ -613,7 +613,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                                  It.IsAny<ushort>()))
                 .Callback<string, string, Func<MessageReceivedEventArgs, Task>, ushort>(async (topic, queue, messageReceivedCallback, prefetchCount) =>
                 {
-                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(taskDispatchEventMessage))).ConfigureAwait(false);
+                    await Task.Run(() => messageReceivedCallback(CreateMessageReceivedEventArgs(taskDispatchEventMessage))).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
                 });
 
             var taskCallbackEventMessage = GenerateTaskCallbackEvent(taskDispatchEventMessage);
@@ -629,7 +629,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     await Task.Run(() =>
                     {
                         messageReceivedCallback(CreateMessageReceivedEventArgs(taskCallbackEventMessage));
-                    }).ConfigureAwait(false);
+                    }).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
                 });
 
             _messageBrokerPublisherService
@@ -637,7 +637,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 .Callback(() => resetEvent.Signal());
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
             Assert.True(resetEvent.Wait(5000));
@@ -691,7 +691,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                         await Task.Run(() =>
                         {
                             messageReceivedCallback(CreateMessageReceivedEventArgs(taskDispatchEventMessage));
-                        }).ConfigureAwait(false);
+                        }).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
                     });
 
             var taskCallbackEventMessage = GenerateTaskCallbackEvent(taskDispatchEventMessage);
@@ -707,7 +707,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                         await Task.Run(() =>
                         {
                             messageReceivedCallback(CreateMessageReceivedEventArgs(taskCallbackEventMessage));
-                        }).ConfigureAwait(false);
+                        }).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
                     });
             _messageBrokerSubscriberService
                 .Setup(p => p.Acknowledge(It.IsAny<MessageBase>()))
@@ -731,7 +731,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 });
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
             Assert.True(resetEvent.Wait(5000));
@@ -771,7 +771,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     await Task.Run(() =>
                     {
                         messageReceivedCallback(CreateMessageReceivedEventArgs(taskDispatchEventMessage));
-                    }).ConfigureAwait(false);
+                    }).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
                 });
 
             var taskCallbackEventMessage = GenerateTaskCallbackEvent(taskDispatchEventMessage);
@@ -787,7 +787,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     await Task.Run(() =>
                     {
                         messageReceivedCallback(CreateMessageReceivedEventArgs(taskCallbackEventMessage));
-                    }).ConfigureAwait(false);
+                    }).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Acknowledge(It.IsAny<MessageBase>()))
@@ -803,7 +803,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                 });
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
             Assert.True(resetEvent.Wait(5000));
@@ -846,7 +846,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     await Task.Run(() =>
                     {
                         messageReceivedCallback(CreateMessageReceivedEventArgs(taskDispatchEventMessage));
-                    }).ConfigureAwait(false);
+                    }).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
                 });
 
             var taskCallbackEventMessage = GenerateTaskCallbackEvent(taskDispatchEventMessage);
@@ -862,7 +862,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
                     await Task.Run(() =>
                     {
                         messageReceivedCallback(CreateMessageReceivedEventArgs(taskCallbackEventMessage));
-                    }).ConfigureAwait(false);
+                    }).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
                 });
             _messageBrokerSubscriberService
                 .Setup(p => p.Acknowledge(It.IsAny<MessageBase>()))
@@ -891,7 +891,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Tests
             _testMetadataRepositoryCallback.Setup(p => p.GenerateRetrieveMetadataResult()).Throws(new Exception());
 
             var service = new TaskManager(_logger.Object, _options, _serviceScopeFactory.Object);
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
             Assert.True(resetEvent.Wait(5000));

@@ -51,7 +51,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var response = JsonConvert.DeserializeObject<PagedResponse<IList<TaskExecution>>>(result);
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-            Assert.AreEqual(number, response?.Data.Count);
+#pragma warning disable CS8604 // Possible null reference argument.
+            Assert.Equals(number, response?.Data.Count);
+#pragma warning restore CS8604 // Possible null reference argument.
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
     }

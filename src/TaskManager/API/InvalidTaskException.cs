@@ -15,7 +15,6 @@
  */
 
 using System.Diagnostics;
-using System.Runtime.Serialization;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.API
 {
@@ -31,10 +30,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
         }
 
         public InvalidTaskException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected InvalidTaskException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
 

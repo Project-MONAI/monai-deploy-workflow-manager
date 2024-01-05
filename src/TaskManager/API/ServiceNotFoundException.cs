@@ -15,7 +15,6 @@
  */
 
 using System.Globalization;
-using System.Runtime.Serialization;
 using Ardalis.GuardClauses;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.API
@@ -50,10 +49,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
         }
 
         private ServiceNotFoundException()
-        {
-        }
-
-        protected ServiceNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

@@ -50,7 +50,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin.Repositories
 
         public override async Task<Dictionary<string, object>> RetrieveMetadata(CancellationToken cancellationToken = default)
         {
-            return await Task.Run(() => new Dictionary<string, object>()).ConfigureAwait(false);
+            return await Task.Run(() => new Dictionary<string, object>()).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
         }
 
         ~TestPluginRepository() => Dispose(disposing: false);

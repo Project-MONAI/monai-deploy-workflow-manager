@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using System.Runtime.Serialization;
-
 namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 {
     [Serializable]
@@ -30,10 +28,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
         }
 
         public SetPermissionException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected SetPermissionException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

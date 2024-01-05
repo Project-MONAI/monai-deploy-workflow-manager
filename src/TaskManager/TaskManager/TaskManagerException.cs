@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-using System.Runtime.Serialization;
-
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
     [Serializable]
-#pragma warning disable SA1600 // Elements should be documented
     internal class TaskManagerException : Exception
     {
         public TaskManagerException()
@@ -35,11 +32,5 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             : base(message, innerException)
         {
         }
-
-        protected TaskManagerException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-#pragma warning restore SA1600 // Elements should be documented
     }
 }
