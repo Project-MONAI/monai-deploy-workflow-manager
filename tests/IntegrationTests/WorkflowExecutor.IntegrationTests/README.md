@@ -59,5 +59,5 @@ dotnet tool install --global SpecFlow.Plus.LivingDoc.CLI
 Run the integration tests to generate a TestExecution.json
 
 ```bash
-livingdoc test-assembly {$PROJECT_ROOT}\monai-deploy-workflow-manager\tests\IntegrationTests\TaskManager.IntegrationTests\bin\Debug\net6.0\Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.dll -t {$PROJECT_ROOT}\monai-deploy-workflow-manager\tests\IntegrationTests\TaskManager.IntegrationTests\bin\Debug\net6.0\TestExecution.json
+livingdoc test-assembly {$PROJECT_ROOT}\monai-deploy-workflow-manager\tests\IntegrationTests\TaskManager.IntegrationTests\bin\Debug\net8.0\Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.dll -t {$PROJECT_ROOT}\monai-deploy-workflow-manager\tests\IntegrationTests\TaskManager.IntegrationTests\bin\Debug\net6.0\TestExecution.json
 ```
