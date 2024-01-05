@@ -49,7 +49,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
                 return;
             }
 
-            input.Content = new StringContent(JsonSerializer.Serialize(body));
+            input.Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
         }
     }
 }
