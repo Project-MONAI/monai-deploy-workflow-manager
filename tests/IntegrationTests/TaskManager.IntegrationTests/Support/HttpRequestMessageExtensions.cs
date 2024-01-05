@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Text;
-using System.Text.Json;
 
 namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
 {
@@ -49,7 +50,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support
                 return;
             }
 
-            input.Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
+            input.Content = new ObjectContent<T>(body, new JsonMediaTypeFormatter());
         }
     }
 }
