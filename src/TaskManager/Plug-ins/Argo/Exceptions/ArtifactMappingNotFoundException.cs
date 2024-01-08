@@ -16,7 +16,6 @@
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Exceptions
 {
-    [Serializable]
     public class ArtifactMappingNotFoundException : Exception
     {
         public ArtifactMappingNotFoundException()

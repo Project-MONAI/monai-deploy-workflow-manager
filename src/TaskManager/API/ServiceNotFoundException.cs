@@ -33,7 +33,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
         }
     }
 
-    [Serializable]
     public class ServiceNotFoundException : Exception
     {
         private static readonly string MessageFormat = "Required service '{0}' cannot be found or cannot be initialized.";

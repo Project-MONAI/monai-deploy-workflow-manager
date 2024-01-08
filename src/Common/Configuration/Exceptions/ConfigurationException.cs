@@ -21,7 +21,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Configuration.Exceptions
     /// <summary>
     /// Represnets an exception based upon invalid configuration.
     /// </summary>
-    [Serializable]
     public class ConfigurationException : Exception
     {
         public ConfigurationException()

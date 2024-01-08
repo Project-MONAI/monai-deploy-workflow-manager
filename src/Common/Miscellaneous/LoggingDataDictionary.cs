@@ -19,7 +19,6 @@ using System.Globalization;
 
 namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
 {
-    [Serializable]
     public class LoggingDataDictionary<TKey, TValue> : Dictionary<TKey, TValue> where TKey : notnull
     {
         public LoggingDataDictionary()

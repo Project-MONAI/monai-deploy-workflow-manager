@@ -16,7 +16,6 @@
 
 namespace Monai.Deploy.WorkflowManager.TaskManager
 {
-    [Serializable]
     internal class TaskManagerException : Exception
     {
         public TaskManagerException()

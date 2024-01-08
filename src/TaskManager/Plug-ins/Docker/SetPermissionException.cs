@@ -16,7 +16,6 @@
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 {
-    [Serializable]
     internal class SetPermissionException : Exception
     {
         public SetPermissionException()

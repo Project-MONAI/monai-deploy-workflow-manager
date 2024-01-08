@@ -16,7 +16,6 @@
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Exceptions
 {
-    [Serializable]
     public class TemplateNotFoundException : Exception
     {
         public TemplateNotFoundException(string workflowTemplateName)
