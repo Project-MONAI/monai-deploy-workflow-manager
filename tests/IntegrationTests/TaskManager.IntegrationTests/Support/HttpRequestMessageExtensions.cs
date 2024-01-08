@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Text;
 

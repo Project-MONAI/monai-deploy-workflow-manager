@@ -62,7 +62,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             TaskDispatchEvent taskDispatchEvent)
             : base(taskDispatchEvent)
         {
-            Guard.Against.Null(serviceScopeFactory, nameof(serviceScopeFactory));
+            ArgumentNullException.ThrowIfNull(serviceScopeFactory, nameof(serviceScopeFactory));
 
             _scope = serviceScopeFactory.CreateScope();
 
@@ -246,7 +246,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 
         private async Task SendClinicalReviewRequestEvent(JsonMessage<ClinicalReviewRequestEvent> message)
         {
-            Guard.Against.Null(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
 
             var queue = _queueName ?? _options.Value.Messaging.Topics.AideClinicalReviewRequest;
             _logger.SendClinicalReviewRequestMessage(queue, _workflowName ?? string.Empty);

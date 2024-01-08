@@ -118,9 +118,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<bool> UpdateTaskAsync(string workflowInstanceId, string taskId, TaskExecution task)
         {
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
-            Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));
-            Guard.Against.Null(task, nameof(task));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(taskId, nameof(taskId));
+            ArgumentNullException.ThrowIfNull(task, nameof(task));
 
             try
             {
@@ -140,9 +140,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<bool> UpdateTaskStatusAsync(string workflowInstanceId, string taskId, TaskExecutionStatus status)
         {
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
-            Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));
-            Guard.Against.Null(status, nameof(status));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(taskId, nameof(taskId));
+            ArgumentNullException.ThrowIfNull(status, nameof(status));
 
             try
             {
@@ -174,9 +174,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<bool> UpdateTaskOutputArtifactsAsync(string workflowInstanceId, string taskId, Dictionary<string, string> outputArtifacts)
         {
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
-            Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));
-            Guard.Against.Null(outputArtifacts, nameof(outputArtifacts));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(taskId, nameof(taskId));
+            ArgumentNullException.ThrowIfNull(outputArtifacts, nameof(outputArtifacts));
 
             try
             {
@@ -196,8 +196,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<bool> UpdateWorkflowInstanceStatusAsync(string workflowInstanceId, Status status)
         {
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
-            Guard.Against.Null(status, nameof(status));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            ArgumentNullException.ThrowIfNull(status, nameof(status));
 
             try
             {
@@ -216,7 +216,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<WorkflowInstance> AcknowledgeWorkflowInstanceErrors(string workflowInstanceId)
         {
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
 
             var acknowledgedTimeStamp = DateTime.UtcNow;
 
@@ -229,8 +229,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<WorkflowInstance> AcknowledgeTaskError(string workflowInstanceId, string executionId)
         {
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
-            Guard.Against.NullOrWhiteSpace(executionId, nameof(executionId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(executionId, nameof(executionId));
 
             var acknowledgedTimeStamp = DateTime.UtcNow;
 
@@ -243,8 +243,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<TaskExecution?> GetTaskByIdAsync(string workflowInstanceId, string taskId)
         {
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
-            Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(taskId, nameof(taskId));
 
             try
             {
@@ -264,8 +264,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<bool> UpdateExportCompleteMetadataAsync(string workflowInstanceId, string executionId, Dictionary<string, object> fileStatuses)
         {
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
-            Guard.Against.NullOrEmpty(executionId, nameof(executionId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            ArgumentNullException.ThrowIfNullOrEmpty(executionId, nameof(executionId));
 
             try
             {
@@ -284,7 +284,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<bool> UpdateTasksAsync(string workflowInstanceId, List<TaskExecution> tasks)
         {
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
             Guard.Against.NullOrEmpty(tasks, nameof(tasks));
 
             try
@@ -304,7 +304,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<WorkflowInstance> GetByWorkflowInstanceIdAsync(string workflowInstanceId)
         {
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
 
             var workflow = await _workflowInstanceCollection
                             .Find(x => x.Id == workflowInstanceId)

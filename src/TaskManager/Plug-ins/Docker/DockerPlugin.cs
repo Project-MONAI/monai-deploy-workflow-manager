@@ -43,7 +43,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             TaskDispatchEvent taskDispatchEvent)
             : base(taskDispatchEvent)
         {
-            Guard.Against.Null(serviceScopeFactory, nameof(serviceScopeFactory));
+            ArgumentNullException.ThrowIfNull(serviceScopeFactory, nameof(serviceScopeFactory));
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _scope = serviceScopeFactory.CreateScope() ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
@@ -97,7 +97,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
         private void ValidateStorageMappings(Messaging.Common.Storage storage)
         {
-            Guard.Against.Null(storage, nameof(storage));
+            ArgumentNullException.ThrowIfNull(storage, nameof(storage));
 
             if (!Event.TaskPluginArguments.ContainsKey(storage.Name))
             {
@@ -220,7 +220,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
         public override async Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent callbackEvent, CancellationToken cancellationToken = default)
         {
-            Guard.Against.NullOrWhiteSpace(identity, nameof(identity));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(identity, nameof(identity));
 
             try
             {
@@ -282,7 +282,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
         private Dictionary<string, string> GetExecutuionStats(ContainerInspectResponse response)
         {
-            Guard.Against.Null(response, nameof(response));
+            ArgumentNullException.ThrowIfNull(response, nameof(response));
 
             TimeSpan? duration = null;
 

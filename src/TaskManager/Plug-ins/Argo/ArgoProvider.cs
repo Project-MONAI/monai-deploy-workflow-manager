@@ -37,7 +37,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         public IArgoClient CreateClient(string baseUrl, string? apiToken, bool allowInsecure = true)
         {
-            Guard.Against.NullOrWhiteSpace(baseUrl, nameof(baseUrl));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(baseUrl, nameof(baseUrl));
 
             _logger.CreatingArgoClient(baseUrl);
 
@@ -45,7 +45,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
             var httpClient = _httpClientFactory.CreateClient(clientName);
 
-            Guard.Against.Null(httpClient, nameof(httpClient));
+            ArgumentNullException.ThrowIfNull(httpClient, nameof(httpClient));
 
             if (apiToken is not null)
             {

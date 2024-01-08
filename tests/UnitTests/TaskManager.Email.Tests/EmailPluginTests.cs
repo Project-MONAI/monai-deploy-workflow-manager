@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-using Ardalis.GuardClauses;
 using FellowOakDicom.Serialization;
 using FellowOakDicom;
 using System.Text.Json;
@@ -235,7 +234,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email.Tests
 
         private string ToJson(DicomFile dicomFile, bool validateDicom)
         {
-            Guard.Against.Null(dicomFile, nameof(dicomFile));
+            ArgumentNullException.ThrowIfNull(dicomFile, nameof(dicomFile));
 
             var options = new JsonSerializerOptions();
             options.Converters.Add(new DicomJsonConverter(

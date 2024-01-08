@@ -74,9 +74,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             IReadOnlyList<ContainerVolumeMount> outputVolumeMounts,
             CancellationToken cancellationToken = default)
         {
-            Guard.Against.Null(taskDispatchEvent, nameof(taskDispatchEvent));
-            Guard.Against.Null(containerTimeout, nameof(containerTimeout));
-            Guard.Against.NullOrWhiteSpace(containerId, nameof(containerId));
+            ArgumentNullException.ThrowIfNull(taskDispatchEvent, nameof(taskDispatchEvent));
+            ArgumentNullException.ThrowIfNull(containerTimeout, nameof(containerTimeout));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(containerId, nameof(containerId));
 
             var dockerClientFactory = _scope.ServiceProvider.GetService<IDockerClientFactory>() ?? throw new ServiceNotFoundException(nameof(IDockerClientFactory));
             var dockerClient = dockerClientFactory.CreateClient(new Uri(taskDispatchEvent.TaskPluginArguments[Keys.BaseUrl]));
@@ -122,7 +122,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
         private async Task UploadOutputArtifacts(ContainerVolumeMount intermediateVolumeMount, IReadOnlyList<ContainerVolumeMount> outputVolumeMounts, CancellationToken cancellationToken)
         {
-            Guard.Against.Null(outputVolumeMounts, nameof(outputVolumeMounts));
+            ArgumentNullException.ThrowIfNull(outputVolumeMounts, nameof(outputVolumeMounts));
 
             var storageService = _scope.ServiceProvider.GetService<IStorageService>() ?? throw new ServiceNotFoundException(nameof(IStorageService));
             var contentTypeProvider = _scope.ServiceProvider.GetService<IContentTypeProvider>() ?? throw new ServiceNotFoundException(nameof(IContentTypeProvider));
@@ -140,8 +140,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
         private async Task UploadOutputArtifacts(IStorageService storageService, IContentTypeProvider contentTypeProvider, Messaging.Common.Storage destination, string artifactsPath, CancellationToken cancellationToken)
         {
-            Guard.Against.Null(destination, nameof(destination));
-            Guard.Against.NullOrWhiteSpace(artifactsPath, nameof(artifactsPath));
+            ArgumentNullException.ThrowIfNull(destination, nameof(destination));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(artifactsPath, nameof(artifactsPath));
 
             IEnumerable<string> files;
             try
@@ -195,8 +195,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
         private async Task SendCallbackMessage(TaskDispatchEvent taskDispatchEvent, string containerId)
         {
-            Guard.Against.Null(taskDispatchEvent, nameof(taskDispatchEvent));
-            Guard.Against.NullOrWhiteSpace(containerId, nameof(containerId));
+            ArgumentNullException.ThrowIfNull(taskDispatchEvent, nameof(taskDispatchEvent));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(containerId, nameof(containerId));
 
             _logger.SendingCallbackMessage(containerId);
             var message = new JsonMessage<TaskCallbackEvent>(new TaskCallbackEvent

@@ -70,7 +70,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Models
 
         public void AddUserAccount(string username)
         {
-            Guard.Against.NullOrWhiteSpace(username, nameof(username));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(username, nameof(username));
             UserAccounts.Add(username);
         }
     }

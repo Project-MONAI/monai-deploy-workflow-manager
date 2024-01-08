@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Database.Options;
@@ -78,10 +77,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
             IOptions<WorkloadManagerDatabaseSettings> bookStoreDatabaseSettings,
             ILogger<ArtifactsRepository> logger)
         {
-            if (client == null)
-            {
-                throw new ArgumentNullException(nameof(client));
-            }
+            ArgumentNullException.ThrowIfNull(client, nameof(client));
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var mongoDatabase = client.GetDatabase(bookStoreDatabaseSettings.Value.DatabaseName);
@@ -110,7 +106,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
         }
         private static async Task MakeIndex<T>(IMongoCollection<T> collection, string indexName, CreateIndexModel<T> model)
         {
-            Guard.Against.Null(collection, nameof(collection));
+            ArgumentNullException.ThrowIfNull(collection, nameof(collection));
 
             var asyncCursor = (await collection.Indexes.ListAsync());
             var bsonDocuments = (await asyncCursor.ToListAsync());

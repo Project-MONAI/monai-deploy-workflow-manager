@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using Ardalis.GuardClauses;
-
 namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
 {
     public class MonaiServiceLocator : IMonaiServiceLocator
@@ -43,7 +41,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
 
         private IMonaiService? GetService(Type type)
         {
-            Guard.Against.Null(type, nameof(type));
+            ArgumentNullException.ThrowIfNull(type, nameof(type));
 
             return _serviceProvider.GetService(type) as IMonaiService;
         }

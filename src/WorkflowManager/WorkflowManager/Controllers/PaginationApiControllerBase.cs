@@ -80,10 +80,10 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
         /// <returns>Returns <see cref="PagedResponse{T}"/>.</returns>
         protected PagedResponse<IEnumerable<T>> CreatePagedResponse<T>(IEnumerable<T> pagedData, PaginationFilter validFilter, long totalRecords, IUriService uriService, string route)
         {
-            Guard.Against.Null(pagedData, nameof(pagedData));
-            Guard.Against.Null(validFilter, nameof(validFilter));
-            Guard.Against.Null(route, nameof(route));
-            Guard.Against.Null(uriService, nameof(uriService));
+            ArgumentNullException.ThrowIfNull(pagedData, nameof(pagedData));
+            ArgumentNullException.ThrowIfNull(validFilter, nameof(validFilter));
+            ArgumentNullException.ThrowIfNull(route, nameof(route));
+            ArgumentNullException.ThrowIfNull(uriService, nameof(uriService));
 
             var pageSize = validFilter.PageSize ?? Options.Value.EndpointSettings.DefaultPageSize;
             var response = new PagedResponse<IEnumerable<T>>(pagedData, validFilter.PageNumber, pageSize);

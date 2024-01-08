@@ -41,7 +41,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services
 
         public async Task<TaskDispatchEventInfo?> CreateAsync(TaskDispatchEventInfo taskDispatchEvent)
         {
-            Guard.Against.Null(taskDispatchEvent, nameof(taskDispatchEvent));
+            ArgumentNullException.ThrowIfNull(taskDispatchEvent, nameof(taskDispatchEvent));
 
             try
             {
@@ -55,7 +55,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services
 
         public async Task<TaskDispatchEventInfo?> UpdateUserAccountsAsync(TaskDispatchEventInfo taskDispatchEvent)
         {
-            Guard.Against.Null(taskDispatchEvent, nameof(taskDispatchEvent));
+            ArgumentNullException.ThrowIfNull(taskDispatchEvent, nameof(taskDispatchEvent));
 
             try
             {
@@ -69,14 +69,14 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services
 
         public async Task<TaskDispatchEventInfo?> GetByTaskExecutionIdAsync(string taskExecutionId)
         {
-            Guard.Against.NullOrWhiteSpace(taskExecutionId, nameof(taskExecutionId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(taskExecutionId, nameof(taskExecutionId));
             return await _taskDispatchEventRepository.GetByTaskExecutionIdAsync(taskExecutionId).ConfigureAwait(false);
         }
 
         public async Task<TaskDispatchEventInfo?> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEvent, Dictionary<string, string> pluginArgs)
         {
-            Guard.Against.Null(taskDispatchEvent, nameof(taskDispatchEvent));
-            Guard.Against.Null(pluginArgs, nameof(pluginArgs));
+            ArgumentNullException.ThrowIfNull(taskDispatchEvent, nameof(taskDispatchEvent));
+            ArgumentNullException.ThrowIfNull(pluginArgs, nameof(pluginArgs));
 
             try
             {

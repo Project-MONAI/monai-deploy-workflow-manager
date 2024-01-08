@@ -46,7 +46,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
 
         public async Task<TaskDispatchEventInfo?> CreateAsync(TaskDispatchEventInfo taskDispatchEventInfo)
         {
-            Guard.Against.Null(taskDispatchEventInfo, nameof(taskDispatchEventInfo));
+            ArgumentNullException.ThrowIfNull(taskDispatchEventInfo, nameof(taskDispatchEventInfo));
 
             try
             {
@@ -62,7 +62,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
 
         public async Task<TaskDispatchEventInfo?> UpdateUserAccountsAsync(TaskDispatchEventInfo taskDispatchEventInfo)
         {
-            Guard.Against.Null(taskDispatchEventInfo, nameof(taskDispatchEventInfo));
+            ArgumentNullException.ThrowIfNull(taskDispatchEventInfo, nameof(taskDispatchEventInfo));
 
             try
             {
@@ -78,7 +78,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
 
         public async Task<TaskDispatchEventInfo?> GetByTaskExecutionIdAsync(string taskExecutionId)
         {
-            Guard.Against.NullOrWhiteSpace(taskExecutionId, nameof(taskExecutionId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(taskExecutionId, nameof(taskExecutionId));
 
             try
             {
@@ -95,7 +95,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
 
         public async Task<bool> RemoveAsync(string taskExecutionId)
         {
-            Guard.Against.NullOrWhiteSpace(taskExecutionId, nameof(taskExecutionId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(taskExecutionId, nameof(taskExecutionId));
 
             try
             {
@@ -112,8 +112,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Database
 
         public async Task<TaskDispatchEventInfo?> UpdateTaskPluginArgsAsync(TaskDispatchEventInfo taskDispatchEventInfo, Dictionary<string, string> pluginArgs)
         {
-            Guard.Against.Null(taskDispatchEventInfo, nameof(taskDispatchEventInfo));
-            Guard.Against.Null(pluginArgs, nameof(pluginArgs));
+            ArgumentNullException.ThrowIfNull(taskDispatchEventInfo, nameof(taskDispatchEventInfo));
+            ArgumentNullException.ThrowIfNull(pluginArgs, nameof(pluginArgs));
 
             try
             {

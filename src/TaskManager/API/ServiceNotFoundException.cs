@@ -23,8 +23,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
     {
         public static void NullService<T>(this IGuardClause guardClause, T service, string parameterName)
         {
-            Guard.Against.Null(guardClause, nameof(guardClause));
-            Guard.Against.NullOrWhiteSpace(parameterName, nameof(parameterName));
+            ArgumentNullException.ThrowIfNull(guardClause, nameof(guardClause));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(parameterName, nameof(parameterName));
 
             if (service is null)
             {

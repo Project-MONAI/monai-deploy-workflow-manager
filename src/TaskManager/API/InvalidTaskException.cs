@@ -18,7 +18,7 @@ using System.Diagnostics;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.API
 {
-    [Serializable, DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
+    [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
     public class InvalidTaskException : Exception
     {
         public InvalidTaskException()
