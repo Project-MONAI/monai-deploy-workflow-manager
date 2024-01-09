@@ -22,10 +22,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
     {
         public ContainerVolumeMount(Messaging.Common.Storage source, string containerPath, string hostPath, string taskManagerPath)
         {
-            Guard.Against.Null(source, nameof(source));
-            Guard.Against.NullOrWhiteSpace(containerPath, nameof(containerPath));
-            Guard.Against.NullOrWhiteSpace(hostPath, nameof(hostPath));
-            Guard.Against.NullOrWhiteSpace(taskManagerPath, nameof(taskManagerPath));
+            ArgumentNullException.ThrowIfNull(source, nameof(source));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(containerPath, nameof(containerPath));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(hostPath, nameof(hostPath));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(taskManagerPath, nameof(taskManagerPath));
 
             Source = source;
             ContainerPath = containerPath;

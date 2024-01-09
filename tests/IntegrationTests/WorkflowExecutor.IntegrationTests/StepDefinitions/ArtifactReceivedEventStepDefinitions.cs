@@ -41,7 +41,9 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
         private MinioDataSeeding MinioDataSeeding { get; set; }
 
         private const string FixedGuidPayload = "16988a78-87b5-4168-a5c3-2cfc2bab8e54";
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public ArtifactReceivedEventStepDefinitions(ObjectContainer objectContainer, ISpecFlowOutputHelper outputHelper)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             ArtifactsPublisher = objectContainer.Resolve<RabbitPublisher>("ArtifactsPublisher");
             TaskDispatchConsumer = objectContainer.Resolve<RabbitConsumer>("TaskDispatchConsumer");
@@ -56,7 +58,9 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
         }
 
         [When(@"I publish a Artifact Received Event (.*)")]
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task WhenIPublishAArtifactReceivedEvent(string name)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             var message = new JsonMessage<ArtifactsReceivedEvent>(
                 DataHelper.GetArtifactsReceivedEventTestData(name),
@@ -86,6 +90,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
             _outputHelper.WriteLine($"Retrieving workflow revision with name={clinicalWorkflowName}");
             await MongoClient.CreateWorkflowRevisionDocumentAsync(workflowRevision);
 
+#pragma warning disable CS0168 // Variable is declared but never used
             try
             {
                 await MongoClient.CreateArtifactsEventsDocumentAsync(artifactReceivedItems);
@@ -93,6 +98,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
             catch (Exception e)
             {
             }
+#pragma warning restore CS0168 // Variable is declared but never used
 
             _outputHelper.WriteLine("Seeding Data Tasks complete");
         }
@@ -115,14 +121,20 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
                 {
                     foreach (var artifactsReceivedItem in artifactsReceivedItems)
                     {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                         var wfiId = artifactsReceivedItems.FirstOrDefault().WorkflowInstanceId;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                         var wfi = DataHelper.WorkflowInstances.FirstOrDefault(a => a.Id == wfiId);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                         var workflow = DataHelper.WorkflowRevisions.FirstOrDefault(w => w.WorkflowId == wfi.WorkflowId);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                         if (workflow is null)
                         {
                             throw new Exception("Failing Test");
                         }
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                         var wfitest = MongoClient.GetWorkflowInstanceById(artifactsReceivedItems.FirstOrDefault().WorkflowInstanceId);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                         Assertions.AssertArtifactsReceivedItemMatchesExpectedWorkflow(artifactsReceivedItem, workflow, wfi);
                     }
                 }

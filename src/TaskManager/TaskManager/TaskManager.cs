@@ -144,8 +144,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             ExecutionStatus executionStatus,
             List<Messaging.Common.Storage>? outputs = null)
         {
-            Guard.Against.Null(message, nameof(message));
-            Guard.Against.Null(executionStatus, nameof(executionStatus));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(executionStatus, nameof(executionStatus));
 
             var body = new TaskUpdateEvent
             {
@@ -195,7 +195,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         private async Task TaskCallBackGeneric<T>(MessageReceivedEventArgs args, Func<JsonMessage<T>, Task> func)
             where T : EventBase
         {
-            Guard.Against.Null(args, nameof(args));
+            ArgumentNullException.ThrowIfNull(args, nameof(args));
 
             using var loggingScope = _logger.BeginScope(new Common.Miscellaneous.LoggingDataDictionary<string, object>
             {
@@ -227,7 +227,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         private async Task HandleCancellationTask(JsonMessage<TaskCancellationEvent> message)
         {
             _logger.PrecessingTaskCancellationEvent();
-            Guard.Against.Null(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
 
             try
             {
@@ -280,7 +280,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
         private async Task HandleTaskCallback(JsonMessage<TaskCallbackEvent> message)
         {
-            Guard.Against.Null(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
 
             try
             {
@@ -395,7 +395,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
         private async Task RemoveUserAccounts(TaskDispatchEventInfo taskDispatchEventInfo)
         {
-            Guard.Against.Null(taskDispatchEventInfo, nameof(taskDispatchEventInfo));
+            ArgumentNullException.ThrowIfNull(taskDispatchEventInfo, nameof(taskDispatchEventInfo));
 
             foreach (var user in taskDispatchEventInfo.UserAccounts)
             {
@@ -413,7 +413,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         private async Task HandleDispatchTask(JsonMessage<TaskDispatchEvent> message)
         {
             Guard.Against.NullService(_messageBrokerSubscriberService, nameof(IMessageBrokerSubscriberService));
-            Guard.Against.Null(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
 
             var pluginAssembly = string.Empty;
             var eventInfo = new API.Models.TaskDispatchEventInfo(message.Body);
@@ -555,7 +555,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
         private async Task PopulateTemporaryStorageCredentials(params Messaging.Common.Storage[] storages)
         {
-            Guard.Against.Null(storages, nameof(storages));
+            ArgumentNullException.ThrowIfNull(storages, nameof(storages));
 
             foreach (var storage in storages)
             {
@@ -592,7 +592,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         private void AcknowledgeMessage<T>(JsonMessage<T> message)
         {
             Guard.Against.NullService(_messageBrokerSubscriberService, nameof(IMessageBrokerSubscriberService));
-            Guard.Against.Null(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
 
             try
             {
@@ -610,7 +610,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         private async Task SendUpdateEvent(JsonMessage<TaskUpdateEvent> message)
         {
             Guard.Against.NullService(_messageBrokerPublisherService, nameof(IMessageBrokerPublisherService));
-            Guard.Against.Null(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
 
             try
             {

@@ -31,8 +31,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         public async Task<Workflow> Argo_CreateWorkflowAsync(string argoNamespace, WorkflowCreateRequest body, CancellationToken cancellationToken)
         {
-            Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
-            Guard.Against.Null(body, nameof(body));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
+            ArgumentNullException.ThrowIfNull(body, nameof(body));
 
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflows/{argoNamespace}");
@@ -49,8 +49,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             string? fields,
             CancellationToken cancellationToken)
         {
-            Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
-            Guard.Against.Null(name, nameof(name));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
+            ArgumentNullException.ThrowIfNull(name, nameof(name));
 
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflows/{argoNamespace}/{name}?");
@@ -71,9 +71,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         public async Task<Workflow> Argo_StopWorkflowAsync(string argoNamespace, string name, WorkflowStopRequest body)
         {
-            Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
-            Guard.Against.NullOrWhiteSpace(name, nameof(name));
-            Guard.Against.Null(body, nameof(body));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(name, nameof(name));
+            ArgumentNullException.ThrowIfNull(body, nameof(body));
 
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflows/{argoNamespace}/{name}/stop");
@@ -102,9 +102,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         public async Task<Workflow> Argo_TerminateWorkflowAsync(string argoNamespace, string name, WorkflowTerminateRequest body)
         {
-            Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
-            Guard.Against.NullOrWhiteSpace(name, nameof(name));
-            Guard.Against.Null(body, nameof(body));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(name, nameof(name));
+            ArgumentNullException.ThrowIfNull(body, nameof(body));
 
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflows/{argoNamespace}/{name}/terminate");
@@ -131,8 +131,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         public async Task<WorkflowTemplate?> Argo_GetWorkflowTemplateAsync(string argoNamespace, string name, string? getOptionsResourceVersion)
         {
-            Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
-            Guard.Against.Null(name, nameof(name));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
+            ArgumentNullException.ThrowIfNull(name, nameof(name));
 
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflow-templates/{argoNamespace}/{name}?");
@@ -156,8 +156,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         public async Task<string?> Argo_Get_WorkflowLogsAsync(string argoNamespace, string name, string? podName, string logOptionsContainer)
         {
-            Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
-            Guard.Against.Null(name, nameof(name));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
+            ArgumentNullException.ThrowIfNull(name, nameof(name));
 
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflows/{argoNamespace}/{name}/log?");
@@ -180,8 +180,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async Task<WorkflowTemplate> Argo_CreateWorkflowTemplateAsync(string argoNamespace, WorkflowTemplateCreateRequest body, CancellationToken cancellationToken)
         {
-            Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
-            Guard.Against.Null(body.Template, nameof(body.Template));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
+            ArgumentNullException.ThrowIfNull(body.Template, nameof(body.Template));
 
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflow-templates/{argoNamespace}");
@@ -200,7 +200,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async Task<bool> Argo_DeleteWorkflowTemplateAsync(string argoNamespace, string templateName, CancellationToken cancellationToken)
         {
-            Guard.Against.NullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(argoNamespace, nameof(argoNamespace));
 
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(CultureInfo.InvariantCulture, $"{FormattedBaseUrl}/api/v1/workflow-templates/{argoNamespace}/{templateName}");

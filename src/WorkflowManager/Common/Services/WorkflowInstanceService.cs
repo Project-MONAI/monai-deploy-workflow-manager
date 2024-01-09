@@ -38,15 +38,15 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
         public async Task<WorkflowInstance> GetByIdAsync(string id)
         {
-            Guard.Against.NullOrWhiteSpace(id, nameof(id));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(id, nameof(id));
 
             return await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(id);
         }
 
         public async Task<WorkflowInstance> AcknowledgeTaskError(string workflowInstanceId, string executionId)
         {
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
-            Guard.Against.NullOrWhiteSpace(executionId, nameof(executionId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(executionId, nameof(executionId));
 
             var workflowInstance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(workflowInstanceId);
 
@@ -79,8 +79,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
         public async Task UpdateExportCompleteMetadataAsync(string workflowInstanceId, string executionId, Dictionary<string, FileExportStatus> fileStatuses)
         {
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
-            Guard.Against.NullOrWhiteSpace(executionId, nameof(executionId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(executionId, nameof(executionId));
 
             var resultMetadata = fileStatuses.ToDictionary(f => f.Key, f => f.Value.ToString() as object);
 

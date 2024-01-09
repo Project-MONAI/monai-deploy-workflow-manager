@@ -44,9 +44,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests
                 {"Kestrel:LogHttpResponseBody", logResponseBody.ToString()},
                 {"Kestrel:LogHttpRequestQuery", logRequestQuery.ToString()}
             };
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
             var configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(appSettingsStub)
                 .Build();
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
 
             _services.Object.AddHttpLoggingForMonai(configuration);
             var invocation = _services.Invocations.LastOrDefault();
@@ -58,7 +60,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests
             var options = serviceDescriptor!.ImplementationInstance as ConfigureNamedOptions<HttpLoggingOptions>;
             Assert.NotNull(options);
             var httpOptions = new HttpLoggingOptions();
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             options!.Action(httpOptions);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             Assert.True(httpOptions.LoggingFields.HasFlag(HttpLoggingFields.RequestPropertiesAndHeaders));
             Assert.True(httpOptions.LoggingFields.HasFlag(HttpLoggingFields.ResponsePropertiesAndHeaders));

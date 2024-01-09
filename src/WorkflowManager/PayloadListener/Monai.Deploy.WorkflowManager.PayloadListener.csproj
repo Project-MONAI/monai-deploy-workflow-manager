@@ -13,28 +13,21 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
 -->
-
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-
   <ItemGroup>
     <AdditionalFiles Include="..\..\..\stylecop.json" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <AdditionalFiles Include="..\..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
-
-
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Configuration\Monai.Deploy.WorkflowManager.Common.Configuration.csproj" />
     <ProjectReference Include="..\..\Common\Miscellaneous\Monai.Deploy.WorkflowManager.Common.Miscellaneous.csproj" />
@@ -42,11 +35,9 @@
     <ProjectReference Include="..\Logging\Monai.Deploy.WorkflowManager.Logging.csproj" />
     <ProjectReference Include="..\WorkflowExecuter\Monai.Deploy.WorkloadManager.WorkflowExecuter.csproj" />
   </ItemGroup>
-
   <PropertyGroup>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     <CodeAnalysisRuleSet>..\..\.sonarlint\project-monai_monai-deploy-workflow-managercsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-
 </Project>

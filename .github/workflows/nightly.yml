@@ -47,7 +47,7 @@ jobs:
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
 
       - name: Log in to the Container registry
-        uses: docker/login-action@v2.1.0
+        uses: docker/login-action@v3.0.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -55,7 +55,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v4.4.0
+        uses: docker/metadata-action@v5.4.0
         with:
           images: ${{ matrix.image }}
           tags: |
@@ -63,7 +63,7 @@ jobs:
             type=raw,value=develop-nightly-${{ steps.date.outputs.date }}
 
       - name: Build and Push Container Image for ${{ matrix.feature }}
-        uses: docker/build-push-action@v4.0.0
+        uses: docker/build-push-action@v5.1.0
         with:
           context: .
           push: true
@@ -80,7 +80,7 @@ jobs:
 
       - name: Anchore Container Scan
         id: anchore-scan
-        uses: anchore/scan-action@v3.3.5
+        uses: anchore/scan-action@v3.3.8
         with:
           image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           fail-build: true

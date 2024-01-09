@@ -67,33 +67,61 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
                 .AddJsonFile("appsettings.Test.json")
                 .Build();
 
+#pragma warning disable CS8601 // Possible null reference assignment.
             TestExecutionConfig.RabbitConfig.Host = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:endpoint");
+#pragma warning restore CS8601 // Possible null reference assignment.
             TestExecutionConfig.RabbitConfig.WebPort = 15672;
+#pragma warning disable CS8601 // Possible null reference assignment.
             TestExecutionConfig.RabbitConfig.User = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:username");
+#pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning disable CS8601 // Possible null reference assignment.
             TestExecutionConfig.RabbitConfig.Password = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:password");
+#pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning disable CS8601 // Possible null reference assignment.
             TestExecutionConfig.RabbitConfig.VirtualHost = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:virtualHost");
+#pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning disable CS8601 // Possible null reference assignment.
             TestExecutionConfig.RabbitConfig.Exchange = config.GetValue<string>("WorkflowManager:messaging:publisherSettings:exchange");
+#pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning disable CS8601 // Possible null reference assignment.
             TestExecutionConfig.RabbitConfig.WorkflowRequestQueue = config.GetValue<string>("WorkflowManager:messaging:topics:workflowRequest");
+#pragma warning restore CS8601 // Possible null reference assignment.
             TestExecutionConfig.RabbitConfig.TaskDispatchQueue = "md.tasks.dispatch";
             TestExecutionConfig.RabbitConfig.TaskCallbackQueue = "md.tasks.callback";
             TestExecutionConfig.RabbitConfig.TaskUpdateQueue = "md.tasks.update";
             TestExecutionConfig.RabbitConfig.ArtifactsRequestQueue = "md.workflow.artifactrecieved";
+#pragma warning disable CS8601 // Possible null reference assignment.
             TestExecutionConfig.RabbitConfig.ExportCompleteQueue = config.GetValue<string>("WorkflowManager:messaging:topics:exportComplete");
+#pragma warning restore CS8601 // Possible null reference assignment.
             TestExecutionConfig.RabbitConfig.ExportRequestQueue = $"{config.GetValue<string>("WorkflowManager:messaging:topics:exportRequestPrefix")}.{config.GetValue<string>("WorkflowManager:messaging:dicomAgents:scuAgentName")}";
 
+#pragma warning disable CS8601 // Possible null reference assignment.
             TestExecutionConfig.MongoConfig.ConnectionString = config.GetValue<string>("WorkloadManagerDatabase:ConnectionString");
+#pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning disable CS8601 // Possible null reference assignment.
             TestExecutionConfig.MongoConfig.Database = config.GetValue<string>("WorkloadManagerDatabase:DatabaseName");
+#pragma warning restore CS8601 // Possible null reference assignment.
             TestExecutionConfig.MongoConfig.WorkflowCollection = "Workflows";
             TestExecutionConfig.MongoConfig.WorkflowInstanceCollection = "WorkflowInstances";
             TestExecutionConfig.MongoConfig.PayloadCollection = "Payloads";
             TestExecutionConfig.MongoConfig.ArtifactsCollection = "ArtifactReceivedItems";
             TestExecutionConfig.MongoConfig.ExecutionStatsCollection = "ExecutionStats";
 
+#pragma warning disable CS8601 // Possible null reference assignment.
             TestExecutionConfig.MinioConfig.Endpoint = config.GetValue<string>("WorkflowManager:storage:settings:endpoint");
+#pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning disable CS8601 // Possible null reference assignment.
             TestExecutionConfig.MinioConfig.AccessKey = config.GetValue<string>("WorkflowManager:storage:settings:accessKey");
+#pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning disable CS8601 // Possible null reference assignment.
             TestExecutionConfig.MinioConfig.AccessToken = config.GetValue<string>("WorkflowManager:storage:settings:accessToken");
+#pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning disable CS8601 // Possible null reference assignment.
             TestExecutionConfig.MinioConfig.Bucket = config.GetValue<string>("WorkflowManager:storage:settings:bucket");
+#pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning disable CS8601 // Possible null reference assignment.
             TestExecutionConfig.MinioConfig.Region = config.GetValue<string>("WorkflowManager:storage:settings:region");
+#pragma warning restore CS8601 // Possible null reference assignment.
 
             TestExecutionConfig.ApiConfig.BaseUrl = "http://localhost:5000";
 

@@ -50,7 +50,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Tests
     {
         public string Name => "Dummy Messaging Service";
 
+#pragma warning disable CS0067 // The event 'DummyMessagingService.OnConnectionError' is never used
         public event ConnectionErrorHandler? OnConnectionError;
+#pragma warning restore CS0067 // The event 'DummyMessagingService.OnConnectionError' is never used
 
         public void Acknowledge(MessageBase message) => throw new NotImplementedException();
 

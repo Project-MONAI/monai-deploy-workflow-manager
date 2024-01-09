@@ -126,7 +126,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 
         public ExecutionStats(TaskExecution execution, string workflowId, string correlationId)
         {
-            Guard.Against.Null(execution, "dispatchInfo");
+            ArgumentNullException.ThrowIfNull(execution, "dispatchInfo");
             CorrelationId = correlationId;
             WorkflowInstanceId = execution.WorkflowInstanceId;
             ExecutionId = execution.ExecutionId;
@@ -138,7 +138,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 
         public ExecutionStats(TaskUpdateEvent taskUpdateEvent, string workflowId)
         {
-            Guard.Against.Null(taskUpdateEvent, "taskUpdateEvent");
+            ArgumentNullException.ThrowIfNull(taskUpdateEvent, "taskUpdateEvent");
             CorrelationId = taskUpdateEvent.CorrelationId;
             WorkflowInstanceId = taskUpdateEvent.WorkflowInstanceId;
             ExecutionId = taskUpdateEvent.ExecutionId;
@@ -149,7 +149,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 
         public ExecutionStats(TaskCancellationEvent taskCanceledEvent, string workflowId, string correlationId)
         {
-            Guard.Against.Null(taskCanceledEvent, "taskCanceledEvent");
+            ArgumentNullException.ThrowIfNull(taskCanceledEvent, "taskCanceledEvent");
             CorrelationId = correlationId;
             WorkflowInstanceId = taskCanceledEvent.WorkflowInstanceId;
             ExecutionId = taskCanceledEvent.ExecutionId;

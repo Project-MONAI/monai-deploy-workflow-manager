@@ -13,42 +13,31 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
 -->
-
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-
   <ItemGroup>
     <AdditionalFiles Include="..\..\..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="..\..\..\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="KubernetesClient" Version="12.0.16" />
-    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="6.0.22">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="KubernetesClient" Version="12.1.1" />
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="8.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Configuration\Monai.Deploy.WorkflowManager.Common.Configuration.csproj" />
     <ProjectReference Include="..\..\..\Common\Miscellaneous\Monai.Deploy.WorkflowManager.Common.Miscellaneous.csproj" />
     <ProjectReference Include="..\..\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />
   </ItemGroup>
-
   <PropertyGroup>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     <CodeAnalysisRuleSet>..\..\..\.sonarlint\project-monai_monai-deploy-workflow-managercsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-
 </Project>

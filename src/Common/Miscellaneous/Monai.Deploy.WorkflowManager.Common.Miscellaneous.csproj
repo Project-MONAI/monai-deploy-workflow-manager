@@ -13,47 +13,37 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
 -->
-
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Monai.Deploy.WorkflowManager.Common</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
-
   <ItemGroup>
     <AdditionalFiles Include="..\..\..\stylecop.json" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
   </ItemGroup>
-  
   <ItemGroup>
     <Compile Remove="Test\**" />
     <EmbeddedResource Remove="Test\**" />
     <None Remove="Test\**" />
   </ItemGroup>
-  
   <ItemGroup>
     <AdditionalFiles Include="..\..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="fo-dicom" Version="5.1.1" />
+    <PackageReference Include="fo-dicom" Version="5.1.2" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Configuration\Monai.Deploy.WorkflowManager.Common.Configuration.csproj" />
   </ItemGroup>
-
   <PropertyGroup>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>

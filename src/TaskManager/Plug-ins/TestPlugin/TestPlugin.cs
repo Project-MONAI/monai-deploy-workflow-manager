@@ -36,7 +36,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.TestPlugin
             TaskDispatchEvent taskDispatchEvent)
             : base(taskDispatchEvent)
         {
-            Guard.Against.Null(serviceScopeFactory, nameof(serviceScopeFactory));
+            ArgumentNullException.ThrowIfNull(serviceScopeFactory, nameof(serviceScopeFactory));
 
             _scope = serviceScopeFactory.CreateScope();
 

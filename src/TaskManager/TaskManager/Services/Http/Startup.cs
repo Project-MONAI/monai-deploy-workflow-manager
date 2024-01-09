@@ -89,9 +89,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services.Http
             var logger = serviceProvider.GetService<ILogger<Startup>>();
 
             services.AddHttpLoggingForMonai(Configuration);
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8604 // Possible null reference argument.
             services.AddHealthChecks()
                 .AddCheck<MonaiHealthCheck>("Task Manager Services")
                 .AddMongoDb(mongodbConnectionString: Configuration["WorkloadManagerDatabase:ConnectionString"], mongoDatabaseName: Configuration["WorkloadManagerDatabase:DatabaseName"]);
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8604 // Possible null reference argument.
         }
 
         /// <summary>
