@@ -48,5 +48,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
         [JsonIgnore]
         public bool IsDeleted { get => Deleted is not null; }
 
+        [JsonProperty(PropertyName = "dataRetentionDays")]
+        public int? DataRetentionDays { get; set; } = 3;// note. -1 = never delete
+
     }
 }

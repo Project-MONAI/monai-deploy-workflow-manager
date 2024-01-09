@@ -27,7 +27,6 @@ using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Storage.Services;
 using Moq;
 using Xunit;
-using Monai.Deploy.WorkflowManager.Common.Database.Repositories;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Configuration;
 
@@ -394,7 +393,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
             _workflowInstanceRepository.Setup(r =>
                 r.GetByPayloadIdsAsync(It.IsAny<List<string>>())
                 ).ReturnsAsync(() => new List<WorkflowInstance>());
-            var workflow = new WorkflowRevision { Workflow = new Workflow { DataRetentionDays = null } };
+            var workflow = new WorkflowRevision { Workflow = new Workflow(), DataRetentionDays = null };
 
 
             _workflowRepository.Setup(r =>
@@ -412,7 +411,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
             _workflowInstanceRepository.Setup(r =>
                 r.GetByWorkflowInstanceIdAsync(It.IsAny<string>())
                 ).ReturnsAsync(() => new WorkflowInstance());
-            var workflow = new WorkflowRevision { Workflow = new Workflow { DataRetentionDays = -1 } };
+            var workflow = new WorkflowRevision { Workflow = new Workflow(), DataRetentionDays = -1 };
 
 
             _workflowRepository.Setup(r =>
@@ -430,7 +429,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
             _workflowInstanceRepository.Setup(r =>
                     r.GetByWorkflowInstanceIdAsync(It.IsAny<string>())
                     ).ReturnsAsync(() => new WorkflowInstance());
-            var workflow = new WorkflowRevision { Workflow = new Workflow { DataRetentionDays = 4 } };
+            var workflow = new WorkflowRevision { Workflow = new Workflow(), DataRetentionDays = 4 };
 
             _workflowRepository.Setup(r =>
                     r.GetByWorkflowIdAsync(It.IsAny<string>())

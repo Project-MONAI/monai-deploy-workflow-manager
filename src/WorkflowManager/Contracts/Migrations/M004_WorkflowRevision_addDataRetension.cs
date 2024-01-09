@@ -20,13 +20,12 @@ using MongoDB.Bson;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 {
-    public class M004_Workflow_addDataRetension : DocumentMigration<Workflow>
+    public class M004_WorkflowRevision_addDataRetension : DocumentMigration<WorkflowRevision>
     {
-        public M004_Workflow_addDataRetension() : base("1.0.1") { }
+        public M004_WorkflowRevision_addDataRetension() : base("1.0.1") { }
 
         public override void Up(BsonDocument document)
         {
-            // will also add version as it has a default
             document.Add("DataRetentionDays", BsonNull.Create(null).ToJson(), true);
         }
 
@@ -35,7 +34,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
             try
             {
                 document.Remove("DataRetentionDays");
-                document.Remove("Version");
             }
             catch
             {  // can ignore we dont want failures stopping startup !

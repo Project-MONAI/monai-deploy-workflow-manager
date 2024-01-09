@@ -206,6 +206,20 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
             Guard.Against.NullOrEmpty(calledAeTitle, nameof(calledAeTitle));
             Guard.Against.NullOrEmpty(callingAeTitle, nameof(callingAeTitle));
 
+            var t = _workflowCollection
+                .Find(x =>
+                    x.Workflow != null &&
+                    x.Workflow.InformaticsGateway != null &&
+                    ((x.Workflow.InformaticsGateway.AeTitle == calledAeTitle &&
+                        (x.Workflow.InformaticsGateway.DataOrigins == null ||
+                        x.Workflow.InformaticsGateway.DataOrigins.Length == 0)) ||
+                    x.Workflow.InformaticsGateway.AeTitle == calledAeTitle &&
+                        x.Workflow.InformaticsGateway.DataOrigins != null &&
+                        x.Workflow.InformaticsGateway.DataOrigins.Any(d => d == callingAeTitle)) &&
+                    x.Deleted == null);
+
+            var coll = t.ToList();
+
             var wfs = await _workflowCollection
                 .Find(x =>
                     x.Workflow != null &&
@@ -218,6 +232,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
                         x.Workflow.InformaticsGateway.DataOrigins.Any(d => d == callingAeTitle)) &&
                     x.Deleted == null)
                 .ToListAsync();
+
+
             return wfs;
         }
 

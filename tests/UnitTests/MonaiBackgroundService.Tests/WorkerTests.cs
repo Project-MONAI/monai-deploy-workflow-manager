@@ -25,8 +25,6 @@ using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Moq;
 using Monai.Deploy.Storage.API;
-using Monai.Deploy.WorkflowManager.Common.Database.Repositories;
-using System.Threading.Tasks;
 
 namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService.Tests
 {
