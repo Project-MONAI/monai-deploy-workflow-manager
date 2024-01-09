@@ -27,6 +27,9 @@ using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Storage.Services;
 using Moq;
 using Xunit;
+using Monai.Deploy.WorkflowManager.Common.Database.Repositories;
+using Microsoft.Extensions.Options;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
 {
@@ -36,6 +39,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
 
         private readonly Mock<IPayloadRepository> _payloadRepository;
         private readonly Mock<IWorkflowInstanceRepository> _workflowInstanceRepository;
+        private readonly Mock<IWorkflowRepository> _workflowRepository;
         private readonly Mock<IDicomService> _dicomService;
         private readonly Mock<IServiceScopeFactory> _serviceScopeFactory;
         private readonly Mock<IServiceProvider> _serviceProvider;
@@ -47,6 +51,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
         {
             _payloadRepository = new Mock<IPayloadRepository>();
             _workflowInstanceRepository = new Mock<IWorkflowInstanceRepository>();
+            _workflowRepository = new Mock<IWorkflowRepository>();
             _dicomService = new Mock<IDicomService>();
             _serviceProvider = new Mock<IServiceProvider>();
             _storageService = new Mock<IStorageService>();
@@ -65,7 +70,16 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
                 .Setup(x => x.GetService(typeof(IStorageService)))
                 .Returns(_storageService.Object);
 
-            PayloadService = new PayloadService(_payloadRepository.Object, _dicomService.Object, _workflowInstanceRepository.Object, _serviceScopeFactory.Object, _logger.Object);
+            var opts = Options.Create(new WorkflowManagerOptions { DataRetentionDays = 99 });
+
+            PayloadService = new PayloadService(
+                _payloadRepository.Object,
+                _dicomService.Object,
+                _workflowInstanceRepository.Object,
+                _workflowRepository.Object,
+                _serviceScopeFactory.Object,
+                opts,
+                _logger.Object);
         }
 
         [Fact]
@@ -371,6 +385,59 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
             });
 
             await Assert.ThrowsAsync<MonaiBadRequestException>(async () => await PayloadService.DeletePayloadFromStorageAsync(payloadId));
+        }
+
+
+        [Fact]
+        public async Task GetExpiry_Should_use_Config_if_not_set()
+        {
+            _workflowInstanceRepository.Setup(r =>
+                r.GetByPayloadIdsAsync(It.IsAny<List<string>>())
+                ).ReturnsAsync(() => new List<WorkflowInstance>());
+            var workflow = new WorkflowRevision { Workflow = new Workflow { DataRetentionDays = null } };
+
+
+            _workflowRepository.Setup(r =>
+                    r.GetByWorkflowIdAsync(It.IsAny<string>())
+                    ).ReturnsAsync(workflow);
+
+            var now = new DateTime(2021, 1, 1);
+            var expires = await PayloadService.GetExpiry(now, "workflowInstanceId");
+            Assert.Equal(now.AddDays(99), expires);
+        }
+
+        [Fact]
+        public async Task GetExpiry_Should_return_null_if_minusOne()
+        {
+            _workflowInstanceRepository.Setup(r =>
+                r.GetByWorkflowInstanceIdAsync(It.IsAny<string>())
+                ).ReturnsAsync(() => new WorkflowInstance());
+            var workflow = new WorkflowRevision { Workflow = new Workflow { DataRetentionDays = -1 } };
+
+
+            _workflowRepository.Setup(r =>
+                    r.GetByWorkflowIdAsync(It.IsAny<string>())
+                    ).ReturnsAsync(workflow);
+
+            var now = new DateTime(2021, 1, 1);
+            var expires = await PayloadService.GetExpiry(now, "workflowInstanceId");
+            Assert.Null(expires);
+        }
+
+        [Fact]
+        public async Task GetExpiry_Should_use_Workflow_Value_if_set()
+        {
+            _workflowInstanceRepository.Setup(r =>
+                    r.GetByWorkflowInstanceIdAsync(It.IsAny<string>())
+                    ).ReturnsAsync(() => new WorkflowInstance());
+            var workflow = new WorkflowRevision { Workflow = new Workflow { DataRetentionDays = 4 } };
+
+            _workflowRepository.Setup(r =>
+                    r.GetByWorkflowIdAsync(It.IsAny<string>())
+                    ).ReturnsAsync(workflow);
+            var now = new DateTime(2021, 1, 1);
+            var expires = await PayloadService.GetExpiry(now, "workflowInstanceId");
+            Assert.Equal(now.AddDays(4), expires);
         }
     }
 }

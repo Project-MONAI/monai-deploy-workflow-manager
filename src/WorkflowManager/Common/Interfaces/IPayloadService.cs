@@ -54,5 +54,13 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces
         /// <param name="payload"></param>
         /// <returns></returns>
         Task<bool> UpdateWorkflowInstanceIdsAsync(string payloadId, IEnumerable<string> workflowInstances);
+
+        /// <summary>
+        /// Gets the expiry date for a payload.
+        /// </summary>
+        /// <param name="now"></param>
+        /// <param name="workflowInstanceId"></param>
+        /// <returns>date of expiry or null</returns>
+        Task<DateTime?> GetExpiry(DateTime now, string? workflowInstanceId);
     }
 }

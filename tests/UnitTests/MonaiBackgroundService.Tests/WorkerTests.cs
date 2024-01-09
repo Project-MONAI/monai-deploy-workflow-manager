@@ -24,6 +24,9 @@ using Monai.Deploy.WorkflowManager.Common.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Moq;
+using Monai.Deploy.Storage.API;
+using Monai.Deploy.WorkflowManager.Common.Database.Repositories;
+using System.Threading.Tasks;
 
 namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService.Tests
 {
@@ -33,6 +36,8 @@ namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService.Tests
         private readonly Worker _service;
         private readonly Mock<IMessageBrokerPublisherService> _pubService;
         private readonly IOptions<WorkflowManagerOptions> _options;
+        private readonly Mock<IStorageService> _storageService;
+        private readonly Mock<IPayloadRepository> _payloadRepository;
         private readonly Mock<ITasksRepository> _repo;
 
         public WorkerTests()
@@ -42,7 +47,9 @@ namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService.Tests
             var taskService = new TasksService(_repo.Object);
             _pubService = new Mock<IMessageBrokerPublisherService>();
             _options = Options.Create(new WorkflowManagerOptions());
-            _service = new Worker(logger.Object, taskService, _pubService.Object, _options);
+            _storageService = new Mock<IStorageService>();
+            _payloadRepository = new Mock<IPayloadRepository>();
+            _service = new Worker(logger.Object, taskService, _pubService.Object, _payloadRepository.Object, _storageService.Object, _options);
         }
 
         [Fact]
@@ -87,6 +94,23 @@ namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService.Tests
             // Verify DoWork publishes TaskUpdateRequest
             _pubService.Verify(p => p.Publish(It.Is<string>(m => m == _options.Value.Messaging.Topics.TaskUpdateRequest), It.IsAny<Message>()), Times.Once());
 
+            Assert.False(_service.IsRunning);
+        }
+
+        [Fact]
+        public async Task MonaiBackgroundService_DoWork_Should_Delete_Expired_Payload_Files()
+        {
+            var payloadToRemove = new Payload { PayloadId = "removeMe " };
+
+
+            _payloadRepository.Setup(p => p.GetPayloadsToDelete(It.IsAny<DateTime>())).ReturnsAsync(() => new List<Payload> { payloadToRemove });
+            _storageService.Setup(s => s.ListObjectsAsync(It.IsAny<string>(), It.IsAny<string>(), true, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => new List<VirtualFileInfo> { new VirtualFileInfo(payloadToRemove.PayloadId, payloadToRemove.PayloadId, "", 5) });
+
+            await _service.DoWork();
+
+            _storageService.Verify(s => s.RemoveObjectAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
+            _payloadRepository.Verify(p => p.MarkDeletedState(It.IsAny<List<string>>(), It.IsAny<PayloadDeleted>()), Times.Exactly(2)); //once for in-progress once for deleted
             Assert.False(_service.IsRunning);
         }
     }

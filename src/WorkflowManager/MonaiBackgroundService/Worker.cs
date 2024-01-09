@@ -23,6 +23,8 @@ using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.Logging;
 using Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common;
 using Monai.Deploy.WorkflowManager.MonaiBackgroundService.Logging;
+using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
+using Monai.Deploy.Storage.API;
 
 namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService
 {
@@ -33,18 +35,24 @@ namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService
         private readonly ITasksService _tasksService;
         private readonly IMessageBrokerPublisherService _publisherService;
         private readonly IOptions<WorkflowManagerOptions> _options;
+        private readonly IPayloadRepository _payloadRepository;
+        private readonly IStorageService _storageService;
         public bool IsRunning { get; set; } = false;
 
         public Worker(
             ILogger<Worker> logger,
             ITasksService tasksService,
             IMessageBrokerPublisherService publisherService,
+            IPayloadRepository payloadRepository,
+            IStorageService storageService,
             IOptions<WorkflowManagerOptions> options)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _tasksService = tasksService ?? throw new ArgumentNullException(nameof(tasksService));
             _publisherService = publisherService ?? throw new ArgumentNullException(nameof(publisherService));
             _options = options ?? throw new ArgumentNullException(nameof(options));
+            _payloadRepository = payloadRepository ?? throw new ArgumentNullException(nameof(payloadRepository));
+            _storageService = storageService ?? throw new ArgumentNullException(nameof(_storageService));
         }
 
         public static string ServiceName => "Monai Background Service";
@@ -69,6 +77,12 @@ namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService
 
         public async Task DoWork()
         {
+            await ProcessTimedoutTasks().ConfigureAwait(false);
+            await ProcessExpiredPayloads().ConfigureAwait(false);
+        }
+
+        private async Task ProcessTimedoutTasks()
+        {
             try
             {
                 var (tasks, _) = await _tasksService.GetAllAsync();
@@ -87,6 +101,59 @@ namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService
             {
                 _logger.WorkerException(e.Message);
             }
+        }
+
+        private async Task ProcessExpiredPayloads()
+        {
+            var payloads = new List<Payload>();
+            try
+            {
+                payloads = (await _payloadRepository.GetPayloadsToDelete(DateTime.UtcNow).ConfigureAwait(false)).ToList();
+
+                if (payloads.Any())
+                {
+                    var ids = payloads.Select(p => p.PayloadId).ToList();
+
+                    await _payloadRepository.MarkDeletedState(ids, PayloadDeleted.InProgress).ConfigureAwait(false);
+                }
+
+            }
+            catch (Exception e)
+            {
+                _logger.WorkerException(e.Message);
+            }
+
+            try
+            {
+                await RemoveStoredFiles(payloads.ToList());
+            }
+            catch (Exception e)
+            {
+
+                _logger.WorkerException(e.Message);
+            }
+        }
+
+        private async Task RemoveStoredFiles(List<Payload> payloads)
+        {
+            var tasks = new List<Task>();
+
+            foreach (var payload in payloads)
+            {
+                var filepaths = (payload.Files.Select(f => f.Path)).ToList();
+
+                var all = await _storageService.ListObjectsAsync(payload.Bucket, payload.PayloadId, true);
+
+                filepaths.AddRange(all.Select(f => f.FilePath));
+
+                foreach (var filepath in filepaths)
+                {
+                    await _storageService.RemoveObjectAsync(payload.Bucket, filepath);
+                }
+
+                tasks.Add(_payloadRepository.MarkDeletedState(new List<string> { payload.PayloadId }, PayloadDeleted.Yes));
+            }
+            await Task.WhenAll(tasks);
         }
 
         private async Task PublishCancellationEvent(TaskExecution task, string correlationId, string identity, string workflowInstanceId)

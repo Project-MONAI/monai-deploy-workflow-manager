@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
+using Monai.Deploy.WorkflowManager.Common.Contracts.Migrations;
+using Mongo.Migration.Documents;
+using Mongo.Migration.Documents.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
+    [CollectionLocation("Workflows"), RuntimeVersion("1.0.1")]
 
-    public class Workflow
+    public class Workflow : IDocument
     {
+        [JsonConverter(typeof(DocumentVersionConvert)), BsonSerializer(typeof(DocumentVersionConverBson))]
+        DocumentVersion IDocument.Version { get; set; } = new DocumentVersion(1, 0, 1);
+
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; } = string.Empty;
 
@@ -35,6 +43,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 
         [JsonProperty(PropertyName = "tasks")]
         public TaskObject[] Tasks { get; set; } = System.Array.Empty<TaskObject>();
+
+        [JsonProperty(PropertyName = "dataRetentionDays")]
+        public int? DataRetentionDays { get; set; } // note. -1 = never delete
 
     }
 }
