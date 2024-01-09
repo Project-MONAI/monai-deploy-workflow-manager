@@ -9,7 +9,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM python:3.10-alpine
+FROM python:3.12-alpine
 
 RUN apk update && apk upgrade
 RUN apk add libcom_err=1.47.0-r5
