@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-using Mongo.Migration.Documents.Attributes;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
-    [CollectionLocation("Workflows"), RuntimeVersion("1.0.1")]
 
     public class Workflow
     {
@@ -37,5 +35,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 
         [JsonProperty(PropertyName = "tasks")]
         public TaskObject[] Tasks { get; set; } = System.Array.Empty<TaskObject>();
+
+        [JsonProperty(PropertyName = "dataRetentionDays")]
+        public int? DataRetentionDays { get; set; } = 3;// note. -1 = never delete
+
     }
 }

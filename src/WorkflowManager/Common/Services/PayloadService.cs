@@ -137,7 +137,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
             var t = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId);
 
-            return (await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId))?.DataRetentionDays ?? null;
+            return (await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId))?.Workflow?.DataRetentionDays ?? null;
         }
 
         public async Task<Payload> GetByIdAsync(string payloadId)
