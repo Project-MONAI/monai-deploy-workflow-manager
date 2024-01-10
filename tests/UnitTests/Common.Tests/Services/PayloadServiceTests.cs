@@ -438,5 +438,55 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
             var expires = await PayloadService.GetExpiry(now, "workflowInstanceId");
             Assert.Equal(now.AddDays(4), expires);
         }
+
+        [Fact]
+        public void PayloadServiceCreate_Should_Throw_If_No_Options_Passed()
+        {
+            Assert.Throws<ArgumentNullException>(() => new PayloadService(
+                               _payloadRepository.Object,
+                               _dicomService.Object,
+                               _workflowInstanceRepository.Object,
+                               _workflowRepository.Object,
+                               _serviceScopeFactory.Object,
+                               null!,
+                               _logger.Object));
+        }
+
+        [Fact]
+        public void PayloadServiceCreate_Should_Throw_If_No_workflowRepository_Passed()
+        {
+            var opts = Options.Create(new WorkflowManagerOptions { DataRetentionDays = 99 });
+
+            Assert.Throws<ArgumentNullException>(() => new PayloadService(
+                   _payloadRepository.Object,
+                   _dicomService.Object,
+                   _workflowInstanceRepository.Object,
+                   null!,
+                   _serviceScopeFactory.Object,
+                   opts,
+                   _logger.Object));
+        }
+
+        [Fact]
+        public async Task PayloadServiceCreate_Should_Call_GetExpiry()
+        {
+            _payloadRepository.Setup(p => p.CreateAsync(It.IsAny<Payload>())).ReturnsAsync(true);
+
+            var payload = await PayloadService.CreateAsync(new WorkflowRequestEvent
+            {
+                Timestamp = DateTime.UtcNow,
+                Bucket = "bucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                PayloadId = Guid.NewGuid(),
+                Workflows = new List<string> { Guid.NewGuid().ToString() },
+                FileCount = 0
+            });
+
+            var daysdiff = (payload!.Expires - DateTime.UtcNow).Value.TotalDays + 0.5;
+
+            Assert.Equal(99, (int)daysdiff);
+        }
+
     }
 }
