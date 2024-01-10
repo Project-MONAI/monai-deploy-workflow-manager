@@ -109,7 +109,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
         [LoggerMessage(EventId = 210007, Level = LogLevel.Information, Message = "Exporting to MIG task Id {taskid}, export destination {destination} number of files {fileCount} Mig data plugins {plugins}.")]
         public static partial void LogMigExport(this ILogger logger, string taskid, string destination, int fileCount, string plugins);
 
-        [LoggerMessage(EventId = 200018, Level = LogLevel.Error, Message = "ExportList or Artifacts are empty! workflowInstanceId {workflowInstanceId} TaskId {taskId}")]
+        [LoggerMessage(EventId = 210018, Level = LogLevel.Error, Message = "ExportList or Artifacts are empty! workflowInstanceId {workflowInstanceId} TaskId {taskId}")]
         public static partial void ExportListOrArtifactsAreEmpty(this ILogger logger, string taskId, string workflowInstanceId);
     }
 }

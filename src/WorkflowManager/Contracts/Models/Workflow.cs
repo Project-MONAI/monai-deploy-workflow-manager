@@ -36,5 +36,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
         [JsonProperty(PropertyName = "tasks")]
         public TaskObject[] Tasks { get; set; } = System.Array.Empty<TaskObject>();
 
+        [JsonProperty(PropertyName = "dataRetentionDays")]
+        public int? DataRetentionDays { get; set; } = 3;// note. -1 = never delete
+
     }
 }

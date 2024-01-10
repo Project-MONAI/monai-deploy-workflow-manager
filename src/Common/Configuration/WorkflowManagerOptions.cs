@@ -74,6 +74,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Configuration
         [ConfigurationKeyName("migExternalAppPlugins")]
         public string[] MigExternalAppPlugins { get; set; }
 
+        [ConfigurationKeyName("dataRetentionDays")]
+        public int DataRetentionDays { get; set; }
+
         public WorkflowManagerOptions()
         {
             Messaging = new MessageBrokerConfiguration();

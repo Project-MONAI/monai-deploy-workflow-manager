@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
@@ -47,6 +48,28 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var mongoDatabase = client.GetDatabase(databaseSettings.Value.DatabaseName);
             _payloadCollection = mongoDatabase.GetCollection<Payload>("Payloads");
+            EnsureIndex().GetAwaiter().GetResult();
+        }
+
+        private async Task EnsureIndex()
+        {
+            var indexName = "PayloadDeletedIndex";
+
+            var model = new CreateIndexModel<Payload>(
+                    Builders<Payload>.IndexKeys.Ascending(s => s.PayloadDeleted),
+                        new CreateIndexOptions { Name = indexName }
+                    );
+
+
+            var asyncCursor = (await _payloadCollection.Indexes.ListAsync());
+            var bsonDocuments = (await asyncCursor.ToListAsync());
+            var indexes = bsonDocuments.Select(_ => _.GetElement("name").Value.ToString()).ToList();
+
+            // If index not present create it else skip.
+            if (!indexes.Exists(i => i is not null && i.Equals(indexName)))
+            {
+                await _payloadCollection.Indexes.CreateOneAsync(model);
+            }
         }
 
         public Task<long> CountAsync() => CountAsync(_payloadCollection, null);
@@ -135,6 +158,38 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
             {
                 _logger.DbUpdateWorkflowInstanceError(ex);
                 return false;
+            }
+        }
+
+        public async Task<IList<Payload>> GetPayloadsToDelete(DateTime now)
+        {
+            try
+            {
+                var filter = (Builders<Payload>.Filter.Eq(p => p.PayloadDeleted, PayloadDeleted.No) |
+                             Builders<Payload>.Filter.Eq(p => p.PayloadDeleted, PayloadDeleted.Failed)) &
+                             Builders<Payload>.Filter.Lt(p => p.Expires, now);
+
+                return await (await _payloadCollection.FindAsync(filter)).ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                _logger.DbGetPayloadsToDeleteError(ex);
+                return new List<Payload>();
+            }
+        }
+
+        public async Task MarkDeletedState(IList<string> Ids, PayloadDeleted status)
+        {
+            try
+            {
+                var filter = Builders<Payload>.Filter.In(p => p.PayloadId, Ids);
+                var update = Builders<Payload>.Update.Set(p => p.PayloadDeleted, status);
+                await _payloadCollection.UpdateManyAsync(filter, update);
+            }
+            catch (Exception ex)
+            {
+                _logger.DbGetPayloadsToDeleteError(ex);
             }
         }
     }

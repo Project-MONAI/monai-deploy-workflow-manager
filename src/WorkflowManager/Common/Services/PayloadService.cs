@@ -25,6 +25,8 @@ using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Logging;
 using Monai.Deploy.WorkflowManager.Common.Storage.Services;
+using Microsoft.Extensions.Options;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 {
@@ -34,9 +36,13 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
         private readonly IWorkflowInstanceRepository _workflowInstanceRepository;
 
+        private readonly IWorkflowRepository _workflowRepository;
+
         private readonly IDicomService _dicomService;
 
         private readonly IStorageService _storageService;
+
+        private readonly WorkflowManagerOptions _options;
 
         private readonly ILogger<PayloadService> _logger;
 
@@ -44,13 +50,17 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
             IPayloadRepository payloadRepository,
             IDicomService dicomService,
             IWorkflowInstanceRepository workflowInstanceRepository,
+            IWorkflowRepository workflowRepository,
             IServiceScopeFactory serviceScopeFactory,
+            IOptions<WorkflowManagerOptions> options,
             ILogger<PayloadService> logger)
         {
             _payloadRepository = payloadRepository ?? throw new ArgumentNullException(nameof(payloadRepository));
             _workflowInstanceRepository = workflowInstanceRepository ?? throw new ArgumentNullException(nameof(workflowInstanceRepository));
             _dicomService = dicomService ?? throw new ArgumentNullException(nameof(dicomService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _workflowRepository = workflowRepository ?? throw new ArgumentNullException(nameof(workflowRepository));
+            _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
 
             var scopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
             var scope = scopeFactory.CreateScope();
@@ -85,7 +95,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
                     DataTrigger = eventPayload.DataTrigger,
                     Timestamp = eventPayload.Timestamp,
                     PatientDetails = patientDetails,
-                    PayloadDeleted = PayloadDeleted.No
+                    PayloadDeleted = PayloadDeleted.No,
+                    Expires = await GetExpiry(DateTime.UtcNow, eventPayload.WorkflowInstanceId)
                 };
 
                 if (await _payloadRepository.CreateAsync(payload))
@@ -104,6 +115,27 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
             }
 
             return null;
+        }
+
+        public async Task<DateTime?> GetExpiry(DateTime now, string? workflowInstanceId)
+        {
+            var daysToKeep = await GetWorkflowDataExpiry(workflowInstanceId);
+            daysToKeep ??= _options.DataRetentionDays;
+
+            if (daysToKeep == -1) { return null; }
+
+            return now.AddDays(daysToKeep.Value);
+        }
+
+        private async Task<int?> GetWorkflowDataExpiry(string? workflowInstanceId)
+        {
+            if (string.IsNullOrWhiteSpace(workflowInstanceId)) { return null; }
+
+            var workflowInstance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(workflowInstanceId);
+
+            if (workflowInstance is null) { return null; }
+
+            return (await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId))?.Workflow?.DataRetentionDays ?? null;
         }
 
         public async Task<Payload> GetByIdAsync(string payloadId)

@@ -218,6 +218,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
                         x.Workflow.InformaticsGateway.DataOrigins.Any(d => d == callingAeTitle)) &&
                     x.Deleted == null)
                 .ToListAsync();
+
             return wfs;
         }
 
