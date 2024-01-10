@@ -52,7 +52,7 @@ namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService
             _publisherService = publisherService ?? throw new ArgumentNullException(nameof(publisherService));
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _payloadRepository = payloadRepository ?? throw new ArgumentNullException(nameof(payloadRepository));
-            _storageService = storageService ?? throw new ArgumentNullException(nameof(_storageService));
+            _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
         }
 
         public static string ServiceName => "Monai Background Service";
@@ -110,7 +110,7 @@ namespace Monai.Deploy.WorkflowManager.Common.MonaiBackgroundService
             {
                 payloads = (await _payloadRepository.GetPayloadsToDelete(DateTime.UtcNow).ConfigureAwait(false)).ToList();
 
-                if (payloads.Any())
+                if (payloads.Count != 0)
                 {
                     var ids = payloads.Select(p => p.PayloadId).ToList();
 

@@ -20,9 +20,9 @@ using MongoDB.Bson;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 {
-    public class M004_WorkflowRevision_addDataRetension : DocumentMigration<WorkflowRevision>
+    public class M004_WorkflowRevision_AddDataRetension : DocumentMigration<WorkflowRevision>
     {
-        public M004_WorkflowRevision_addDataRetension() : base("1.0.1") { }
+        public M004_WorkflowRevision_AddDataRetension() : base("1.0.1") { }
 
         public override void Up(BsonDocument document)
         {

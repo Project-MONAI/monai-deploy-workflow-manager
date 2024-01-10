@@ -135,8 +135,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
             if (workflowInstance is null) { return null; }
 
-            var t = await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId);
-
             return (await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId))?.Workflow?.DataRetentionDays ?? null;
         }
 

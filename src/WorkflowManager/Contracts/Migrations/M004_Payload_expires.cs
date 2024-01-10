@@ -19,9 +19,9 @@ using MongoDB.Bson;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 {
-    public class M004_Payload_expires : DocumentMigration<Payload>
+    public class M004_Payload_Expires : DocumentMigration<Payload>
     {
-        public M004_Payload_expires() : base("1.0.4") { }
+        public M004_Payload_Expires() : base("1.0.4") { }
 
         public override void Up(BsonDocument document)
         {

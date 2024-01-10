@@ -483,7 +483,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
                 FileCount = 0
             });
 
-            var daysdiff = (payload!.Expires - DateTime.UtcNow).Value.TotalDays + 0.5;
+            var daysdiff = (payload!.Expires! - DateTime.UtcNow).Value.TotalDays + 0.5;
 
             Assert.Equal(99, (int)daysdiff);
         }

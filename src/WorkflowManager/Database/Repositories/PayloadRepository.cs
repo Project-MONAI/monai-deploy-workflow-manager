@@ -66,7 +66,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
             var indexes = bsonDocuments.Select(_ => _.GetElement("name").Value.ToString()).ToList();
 
             // If index not present create it else skip.
-            if (!indexes.Any(i => i is not null && i.Equals(indexName)))
+            if (!indexes.Exists(i => i is not null && i.Equals(indexName)))
             {
                 await _payloadCollection.Indexes.CreateOneAsync(model);
             }
