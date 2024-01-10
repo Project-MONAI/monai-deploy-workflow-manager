@@ -22,6 +22,7 @@ using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 using Moq;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 {
@@ -53,7 +54,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             message.DataTrigger.Destination = "abcdefghijklmnop";
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -63,7 +64,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             message.DataTrigger.Destination = string.Empty;
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -73,7 +74,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             message.DataTrigger.Destination = " ";
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -83,7 +84,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             message.DataTrigger.Destination = String.Empty;
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -93,7 +94,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             message.DataTrigger.Destination = "abcdefghijklmnop";
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -103,7 +104,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             message.DataTrigger.Destination = string.Empty;
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -113,7 +114,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             message.DataTrigger.Destination = " ";
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -123,7 +124,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             message.DataTrigger.Destination = " ";
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -134,7 +135,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -145,7 +146,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsTrue(result);
+            ClassicAssert.IsTrue(result);
         }
 
         [Test]
@@ -165,7 +166,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 
             var result = _eventPayloadValidator!.ValidateTaskUpdate(updateEvent);
 
-            Assert.IsTrue(result);
+            ClassicAssert.IsTrue(result);
         }
 
         [Test]
@@ -185,7 +186,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 
             var result = _eventPayloadValidator!.ValidateTaskUpdate(updateEvent);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -210,7 +211,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 
             var result = _eventPayloadValidator!.ValidateExportComplete(exportEvent);
 
-            Assert.IsTrue(result);
+            ClassicAssert.IsTrue(result);
         }
 
         [Test]
@@ -226,7 +227,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 
             var result = _eventPayloadValidator!.ValidateExportComplete(exportEvent);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -258,7 +259,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 
             var result = _eventPayloadValidator!.ValidateArtifactReceived(artifactsReceivedEvent);
 
-            Assert.IsTrue(result);
+            ClassicAssert.IsTrue(result);
         }
 
         [Test]
@@ -282,7 +283,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 
             var result = _eventPayloadValidator!.ValidateArtifactReceived(artifactsReceivedEvent);
 
-            Assert.IsTrue(result);
+            ClassicAssert.IsTrue(result);
         }
 
         [Test]
@@ -305,7 +306,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 
             var result = _eventPayloadValidator!.ValidateArtifactReceived(artifactsReceivedEvent);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         private static ArtifactsReceivedEvent CreateTestArtifactsReceivedEvent(List<Artifact> artifacts,

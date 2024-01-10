@@ -36,7 +36,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
         public async Task<WorkflowRevision> GetAsync(string id)
         {
-            Guard.Against.NullOrWhiteSpace(id, nameof(id));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(id, nameof(id));
 
             var workflow = await _workflowRepository.GetByWorkflowIdAsync(id);
 
@@ -45,14 +45,14 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
         public async Task<WorkflowRevision> GetByNameAsync(string name)
         {
-            Guard.Against.NullOrWhiteSpace(name, nameof(name));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(name, nameof(name));
 
             return await _workflowRepository.GetByWorkflowNameAsync(name);
         }
 
         public async Task<string> CreateAsync(Workflow workflow)
         {
-            Guard.Against.Null(workflow, nameof(workflow));
+            ArgumentNullException.ThrowIfNull(workflow, nameof(workflow));
 
             var id = await _workflowRepository.CreateAsync(workflow);
             _logger.WorkflowCreated(id, workflow.Name);
@@ -61,8 +61,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
         public async Task<string?> UpdateAsync(Workflow workflow, string id, bool isUpdateToWorkflowName = false)
         {
-            Guard.Against.Null(workflow, nameof(workflow));
-            Guard.Against.NullOrWhiteSpace(id, nameof(id));
+            ArgumentNullException.ThrowIfNull(workflow, nameof(workflow));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(id, nameof(id));
 
             var existingWorkflow = await _workflowRepository.GetByWorkflowIdAsync(id);
 
@@ -78,7 +78,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
         public Task<DateTime> DeleteWorkflowAsync(WorkflowRevision workflow)
         {
-            Guard.Against.Null(workflow, nameof(workflow));
+            ArgumentNullException.ThrowIfNull(workflow, nameof(workflow));
             var result = _workflowRepository.SoftDeleteWorkflow(workflow);
             _logger.WorkflowDeleted(workflow.WorkflowId, workflow.Id, workflow.Workflow?.Name);
             return result;

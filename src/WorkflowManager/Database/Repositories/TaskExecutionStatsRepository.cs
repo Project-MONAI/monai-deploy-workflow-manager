@@ -53,7 +53,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
 
         private static async Task EnsureIndex(IMongoCollection<ExecutionStats> taskExecutionStatsCollection)
         {
-            Guard.Against.Null(taskExecutionStatsCollection, "TaskExecutionStatsCollection");
+            ArgumentNullException.ThrowIfNull(taskExecutionStatsCollection, "TaskExecutionStatsCollection");
 
             var asyncCursor = await taskExecutionStatsCollection.Indexes.ListAsync();
             var bsonDocuments = await asyncCursor.ToListAsync();
@@ -79,7 +79,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
 
         public async Task CreateAsync(TaskExecution taskExecutionInfo, string workflowId, string correlationId)
         {
-            Guard.Against.Null(taskExecutionInfo, "taskDispatchEventInfo");
+            ArgumentNullException.ThrowIfNull(taskExecutionInfo, "taskDispatchEventInfo");
 
             try
             {
@@ -99,7 +99,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
 
         public async Task UpdateExecutionStatsAsync(TaskExecution taskUpdateEvent, string workflowId, TaskExecutionStatus? status = null)
         {
-            Guard.Against.Null(taskUpdateEvent, "taskUpdateEvent");
+            ArgumentNullException.ThrowIfNull(taskUpdateEvent, "taskUpdateEvent");
             var currentStatus = status ?? taskUpdateEvent.Status;
 
             try
@@ -126,7 +126,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
 
         public async Task UpdateExecutionStatsAsync(TaskCancellationEvent taskCanceledEvent, string workflowId, string correlationId)
         {
-            Guard.Against.Null(taskCanceledEvent, "taskCanceledEvent");
+            ArgumentNullException.ThrowIfNull(taskCanceledEvent, "taskCanceledEvent");
 
             try
             {

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,7 +23,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
     {
         public static IServiceCollection AddHttpLoggingForMonai(this IServiceCollection services, IConfiguration configuration)
         {
-            Guard.Against.Null(configuration, nameof(configuration));
+            ArgumentNullException.ThrowIfNull(configuration, nameof(configuration));
 
             services.AddHttpLogging(options =>
             {

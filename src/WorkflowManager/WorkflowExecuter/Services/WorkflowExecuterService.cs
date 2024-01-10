@@ -113,7 +113,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
         public async Task<bool> ProcessPayload(WorkflowRequestEvent message, Payload payload)
         {
-            Guard.Against.Null(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
 
             using var loggerScope = _logger.BeginScope($"correlationId={message.CorrelationId}, payloadId={payload.PayloadId}");
 
@@ -180,7 +180,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
         public async Task<bool> ProcessArtifactReceivedAsync(ArtifactsReceivedEvent message)
         {
-            Guard.Against.Null(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
 
             var workflowInstanceId = message.WorkflowInstanceId;
             var taskId = message.TaskId;
@@ -379,8 +379,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
         public async Task<bool> ProcessTaskUpdate(TaskUpdateEvent message)
         {
-            Guard.Against.Null(message, nameof(message));
-            Guard.Against.Null(message.WorkflowInstanceId, nameof(message.WorkflowInstanceId));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(message.WorkflowInstanceId, nameof(message.WorkflowInstanceId));
 
             var workflowInstance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId);
 
@@ -1026,9 +1026,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
         private async Task<WorkflowInstance> CreateWorkflowInstanceAsync(WorkflowRequestEvent message, WorkflowRevision workflow)
         {
-            Guard.Against.Null(message, nameof(message));
-            Guard.Against.Null(workflow, nameof(workflow));
-            Guard.Against.Null(workflow.Workflow, nameof(workflow.Workflow));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(workflow, nameof(workflow));
+            ArgumentNullException.ThrowIfNull(workflow.Workflow, nameof(workflow.Workflow));
 
             var workflowInstanceId = Guid.NewGuid().ToString();
 
@@ -1075,7 +1075,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                                                   string? payloadId = null,
                                                   string? previousTaskId = null)
         {
-            Guard.Against.Null(workflowInstance, nameof(workflowInstance));
+            ArgumentNullException.ThrowIfNull(workflowInstance, nameof(workflowInstance));
 
             var workflowInstanceId = workflowInstance.Id;
 
@@ -1083,12 +1083,12 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
             payloadId ??= workflowInstance.PayloadId;
 
-            Guard.Against.Null(task, nameof(task));
-            Guard.Against.NullOrWhiteSpace(task.Type, nameof(task.Type));
-            Guard.Against.NullOrWhiteSpace(task.Id, nameof(task.Id));
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
-            Guard.Against.NullOrWhiteSpace(bucketName, nameof(bucketName));
-            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
+            ArgumentNullException.ThrowIfNull(task, nameof(task));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(task.Type, nameof(task.Type));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(task.Id, nameof(task.Id));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(bucketName, nameof(bucketName));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
 
             var executionId = Guid.NewGuid().ToString();
             var newTaskArgs = GetTaskArgs(task, workflowInstance);

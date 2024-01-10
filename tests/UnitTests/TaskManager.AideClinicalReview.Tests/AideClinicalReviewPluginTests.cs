@@ -82,7 +82,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Tests
                 .ThrowsAsync(new Exception());
 
             var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message);
-            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.Failed, result.Status);
             Assert.Equal(FailureReason.PluginError, result.FailureReason);
@@ -95,7 +95,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message);
-            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
             Assert.Equal(FailureReason.None, result.FailureReason);
@@ -110,7 +110,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Tests
             var message = GenerateTaskDispatchEventWithValidArguments(true, "false");
 
             var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message);
-            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
             Assert.Equal(FailureReason.None, result.FailureReason);
@@ -126,7 +126,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Tests
             message.TaskPluginArguments.Remove("reviewer_roles");
 
             var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message);
-            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
             Assert.Equal(FailureReason.None, result.FailureReason);
@@ -150,7 +150,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Tests
                 }
             };
             var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message);
-            var result = await runner.GetStatus(string.Empty, callback, CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.GetStatus(string.Empty, callback, CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.PartialFail, result.Status);
             Assert.Equal(FailureReason.None, result.FailureReason);
@@ -163,7 +163,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message);
-            var result = await runner.GetStatus(string.Empty, new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.GetStatus(string.Empty, new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.Succeeded, result.Status);
             Assert.Equal(FailureReason.None, result.FailureReason);
@@ -177,7 +177,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview.Tests
             message.TaskPluginArguments.Remove("reviewer_roles");
 
             var runner = new AideClinicalReviewPlugin(_serviceScopeFactory.Object, _messageBrokerPublisherService.Object, _options, _logger.Object, message);
-            var result = await runner.GetStatus(string.Empty, new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.GetStatus(string.Empty, new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.Succeeded, result.Status);
             Assert.Equal(FailureReason.None, result.FailureReason);

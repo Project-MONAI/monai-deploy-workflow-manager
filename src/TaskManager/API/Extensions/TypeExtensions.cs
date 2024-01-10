@@ -15,7 +15,6 @@
  */
 
 using System.Reflection;
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.API.Extensions
@@ -24,17 +23,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Extensions
     {
         public static T CreateInstance<T>(this Type type, IServiceProvider serviceProvider, params object[] parameters)
         {
-            Guard.Against.Null(type, nameof(type));
-            Guard.Against.Null(serviceProvider, nameof(serviceProvider));
+            ArgumentNullException.ThrowIfNull(type, nameof(type));
+            ArgumentNullException.ThrowIfNull(serviceProvider, nameof(serviceProvider));
 
             return (T)ActivatorUtilities.CreateInstance(serviceProvider, type, parameters);
         }
 
         public static T CreateInstance<T>(this Type interfaceType, IServiceProvider serviceProvider, string typeString, params object[] parameters)
         {
-            Guard.Against.Null(interfaceType, nameof(interfaceType));
-            Guard.Against.Null(serviceProvider, nameof(serviceProvider));
-            Guard.Against.NullOrWhiteSpace(typeString, nameof(typeString));
+            ArgumentNullException.ThrowIfNull(interfaceType, nameof(interfaceType));
+            ArgumentNullException.ThrowIfNull(serviceProvider, nameof(serviceProvider));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(typeString, nameof(typeString));
 
             var type = interfaceType.GetType(typeString);
             var processor = ActivatorUtilities.CreateInstance(serviceProvider, type, parameters);
@@ -44,8 +43,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API.Extensions
 
         public static Type GetType(this Type interfaceType, string typeString)
         {
-            Guard.Against.Null(interfaceType, nameof(interfaceType));
-            Guard.Against.NullOrWhiteSpace(typeString, nameof(typeString));
+            ArgumentNullException.ThrowIfNull(interfaceType, nameof(interfaceType));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(typeString, nameof(typeString));
 
             var type = Type.GetType(
                       typeString,

@@ -45,7 +45,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Extensions
         {
             var logger = LogManager.GetCurrentClassLogger();
 
-            Guard.Against.Null(hostContext, nameof(hostContext));
+            ArgumentNullException.ThrowIfNull(hostContext, nameof(hostContext));
 
             services.AddTransient<IMonaiServiceLocator, MonaiServiceLocator>();
 

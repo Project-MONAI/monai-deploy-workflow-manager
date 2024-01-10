@@ -40,7 +40,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Repositories
             TaskCallbackEvent taskCallbackEvent)
             : base(taskDispatchEvent, taskCallbackEvent)
         {
-            Guard.Against.Null(serviceScopeFactory, nameof(serviceScopeFactory));
+            ArgumentNullException.ThrowIfNull(serviceScopeFactory, nameof(serviceScopeFactory));
 
             _scope = serviceScopeFactory.CreateScope();
 
@@ -52,12 +52,12 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Repositories
 
         private void Validate()
         {
-            Guard.Against.Null(DispatchEvent, nameof(DispatchEvent));
-            Guard.Against.Null(CallbackEvent, nameof(CallbackEvent));
+            ArgumentNullException.ThrowIfNull(DispatchEvent, nameof(DispatchEvent));
+            ArgumentNullException.ThrowIfNull(CallbackEvent, nameof(CallbackEvent));
 
-            Guard.Against.NullOrWhiteSpace(DispatchEvent.WorkflowInstanceId, nameof(DispatchEvent.WorkflowInstanceId));
-            Guard.Against.NullOrWhiteSpace(DispatchEvent.ExecutionId, nameof(DispatchEvent.ExecutionId));
-            Guard.Against.NullOrWhiteSpace(DispatchEvent.PayloadId, nameof(DispatchEvent.PayloadId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(DispatchEvent.WorkflowInstanceId, nameof(DispatchEvent.WorkflowInstanceId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(DispatchEvent.ExecutionId, nameof(DispatchEvent.ExecutionId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(DispatchEvent.PayloadId, nameof(DispatchEvent.PayloadId));
         }
 
         public override async Task<Dictionary<string, object>> RetrieveMetadata(CancellationToken cancellationToken = default)

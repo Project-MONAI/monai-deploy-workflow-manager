@@ -34,7 +34,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
 
         public bool ValidateArtifactReceivedOrWorkflowRequestEvent(EventBase payload)
         {
-            Guard.Against.Null(payload, nameof(payload));
+            ArgumentNullException.ThrowIfNull(payload, nameof(payload));
 
             if (payload is WorkflowRequestEvent or ArtifactsReceivedEvent)
             {
@@ -104,7 +104,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
 
         public bool ValidateTaskUpdate(TaskUpdateEvent payload)
         {
-            Guard.Against.Null(payload, nameof(payload));
+            ArgumentNullException.ThrowIfNull(payload, nameof(payload));
 
             using var loggingScope = Logger.BeginScope(new LoggingDataDictionary<string, object>
             {
@@ -128,7 +128,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
 
         public bool ValidateExportComplete(ExportCompleteEvent payload)
         {
-            Guard.Against.Null(payload, nameof(payload));
+            ArgumentNullException.ThrowIfNull(payload, nameof(payload));
 
             using var loggingScope = Logger.BeginScope(new LoggingDataDictionary<string, object>
             {

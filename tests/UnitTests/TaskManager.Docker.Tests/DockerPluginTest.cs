@@ -118,7 +118,7 @@ namespace TaskManager.Docker.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new DockerPlugin(_serviceScopeFactory.Object, _logger.Object, message);
-            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.Failed, result.Status);
             Assert.Equal(FailureReason.PluginError, result.FailureReason);
@@ -142,7 +142,7 @@ namespace TaskManager.Docker.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new DockerPlugin(_serviceScopeFactory.Object, _logger.Object, message);
-            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.Failed, result.Status);
             Assert.Equal(FailureReason.PluginError, result.FailureReason);
@@ -178,7 +178,7 @@ namespace TaskManager.Docker.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new DockerPlugin(_serviceScopeFactory.Object, _logger.Object, message);
-            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.Failed, result.Status);
             Assert.Equal(FailureReason.PluginError, result.FailureReason);
@@ -220,7 +220,7 @@ namespace TaskManager.Docker.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new DockerPlugin(_serviceScopeFactory.Object, _logger.Object, message);
-            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
             Assert.Equal(FailureReason.None, result.FailureReason);
@@ -259,7 +259,7 @@ namespace TaskManager.Docker.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new DockerPlugin(_serviceScopeFactory.Object, _logger.Object, message);
-            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             _dockerClient.Verify(p => p.Images.CreateImageAsync(
                 It.IsAny<ImagesCreateParameters>(),
@@ -304,7 +304,7 @@ namespace TaskManager.Docker.Tests
             message.TaskPluginArguments.Add(Keys.AlwaysPull, bool.TrueString);
 
             var runner = new DockerPlugin(_serviceScopeFactory.Object, _logger.Object, message);
-            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             _dockerClient.Verify(p => p.Images.CreateImageAsync(
                 It.IsAny<ImagesCreateParameters>(),
@@ -344,7 +344,7 @@ namespace TaskManager.Docker.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new DockerPlugin(_serviceScopeFactory.Object, _logger.Object, message);
-            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.ExecuteTask(CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.Accepted, result.Status);
             Assert.Equal(FailureReason.None, result.FailureReason);
@@ -371,7 +371,7 @@ namespace TaskManager.Docker.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new DockerPlugin(_serviceScopeFactory.Object, _logger.Object, message);
-            var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.Failed, result.Status);
             Assert.Equal(FailureReason.Unknown, result.FailureReason);
@@ -400,7 +400,7 @@ namespace TaskManager.Docker.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new DockerPlugin(_serviceScopeFactory.Object, _logger.Object, message);
-            var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.Failed, result.Status);
             Assert.Equal(FailureReason.ExternalServiceError, result.FailureReason);
@@ -420,7 +420,7 @@ namespace TaskManager.Docker.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new DockerPlugin(_serviceScopeFactory.Object, _logger.Object, message);
-            var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.Failed, result.Status);
             Assert.Equal(FailureReason.ExternalServiceError, result.FailureReason);
@@ -463,7 +463,7 @@ namespace TaskManager.Docker.Tests
             var message = GenerateTaskDispatchEventWithValidArguments();
 
             var runner = new DockerPlugin(_serviceScopeFactory.Object, _logger.Object, message);
-            var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(false);
+            var result = await runner.GetStatus("identity", new TaskCallbackEvent(), CancellationToken.None).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             Assert.Equal(TaskExecutionStatus.Succeeded, result.Status);
             Assert.Equal(FailureReason.None, result.FailureReason);
@@ -485,7 +485,7 @@ namespace TaskManager.Docker.Tests
 
             var exception = await Record.ExceptionAsync(async () =>
             {
-                await runner.HandleTimeout("identity").ConfigureAwait(false);
+                await runner.HandleTimeout("identity").ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
             });
 
             Assert.Null(exception);

@@ -49,10 +49,10 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Tests.Services
         }
 
         [Fact]
-        public void GetDicomPathsForTask_NullInput_ThrowsException()
+        public async Task GetDicomPathsForTask_NullInput_ThrowsExceptionAsync()
         {
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await DicomService.GetDicomPathsForTaskAsync(null, null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await DicomService.GetDicomPathsForTaskAsync(null, null));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 

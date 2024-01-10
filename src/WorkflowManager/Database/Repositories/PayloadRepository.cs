@@ -76,7 +76,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<bool> CreateAsync(Payload payload)
         {
-            Guard.Against.Null(payload, nameof(payload));
+            ArgumentNullException.ThrowIfNull(payload, nameof(payload));
 
             try
             {
@@ -114,7 +114,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<Payload> GetByIdAsync(string payloadId)
         {
-            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
 
             var payload = await _payloadCollection
                 .Find(x => x.PayloadId == payloadId)
@@ -125,7 +125,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<bool> UpdateAsync(Payload payload)
         {
-            Guard.Against.Null(payload, nameof(payload));
+            ArgumentNullException.ThrowIfNull(payload, nameof(payload));
 
             try
             {
@@ -144,7 +144,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
         public async Task<bool> UpdateAssociatedWorkflowInstancesAsync(string payloadId, IEnumerable<string> workflowInstances)
         {
             Guard.Against.NullOrEmpty(workflowInstances, nameof(workflowInstances));
-            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
 
             try
             {

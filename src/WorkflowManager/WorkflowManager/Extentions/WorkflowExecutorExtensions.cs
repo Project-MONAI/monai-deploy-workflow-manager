@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-using Ardalis.GuardClauses;
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -45,7 +45,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Extensions
         /// <returns>Updated IServiceCollection.</returns>
         public static IServiceCollection AddWorkflowExecutor(this IServiceCollection services, HostBuilderContext hostContext)
         {
-            Guard.Against.Null(hostContext, nameof(hostContext));
+            ArgumentNullException.ThrowIfNull(hostContext, nameof(hostContext));
 
             services.AddTransient<IMonaiServiceLocator, MonaiServiceLocator>();
             services.AddTransient<IWorkflowService, WorkflowService>();

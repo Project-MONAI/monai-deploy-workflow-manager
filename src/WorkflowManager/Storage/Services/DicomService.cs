@@ -66,8 +66,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 
         public async Task<PatientDetails> GetPayloadPatientDetailsAsync(string payloadId, string bucketName)
         {
-            Guard.Against.NullOrWhiteSpace(bucketName, nameof(bucketName));
-            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(bucketName, nameof(bucketName));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
 
             var items = await _storageService.ListObjectsAsync(bucketName, $"{payloadId}/dcm", true);
 
@@ -92,9 +92,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 
         public async Task<string?> GetFirstValueAsync(IList<VirtualFileInfo> items, string payloadId, string bucketId, string keyId)
         {
-            Guard.Against.NullOrWhiteSpace(bucketId, nameof(bucketId));
-            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
-            Guard.Against.NullOrWhiteSpace(keyId, nameof(keyId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(bucketId, nameof(bucketId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(keyId, nameof(keyId));
 
             try
             {
@@ -134,8 +134,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 
         public async Task<IEnumerable<string>> GetDicomPathsForTaskAsync(string outputDirectory, string bucketName)
         {
-            Guard.Against.NullOrWhiteSpace(outputDirectory, nameof(outputDirectory));
-            Guard.Against.NullOrWhiteSpace(bucketName, nameof(bucketName));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(outputDirectory, nameof(outputDirectory));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(bucketName, nameof(bucketName));
 
             var files = await _storageService.ListObjectsAsync(bucketName, outputDirectory, true);
 
@@ -146,9 +146,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 
         public async Task<string> GetAnyValueAsync(string keyId, string payloadId, string bucketId)
         {
-            Guard.Against.NullOrWhiteSpace(keyId, nameof(keyId));
-            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
-            Guard.Against.NullOrWhiteSpace(bucketId, nameof(bucketId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(keyId, nameof(keyId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(bucketId, nameof(bucketId));
 
             var path = $"{payloadId}/dcm";
             var listOfFiles = await _storageService.ListObjectsAsync(bucketId, path, true);
@@ -170,9 +170,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 
         public async Task<string> GetAllValueAsync(string keyId, string payloadId, string bucketId)
         {
-            Guard.Against.NullOrWhiteSpace(keyId, nameof(keyId));
-            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
-            Guard.Against.NullOrWhiteSpace(bucketId, nameof(bucketId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(keyId, nameof(keyId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(bucketId, nameof(bucketId));
 
             var path = $"{payloadId}/dcm";
             var listOfFiles = await _storageService.ListObjectsAsync(bucketId, path, true);
@@ -209,10 +209,10 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
                                                               string keyId,
                                                               List<VirtualFileInfo> items)
         {
-            Guard.Against.NullOrWhiteSpace(bucketId, nameof(bucketId));
-            Guard.Against.NullOrWhiteSpace(path, nameof(path));
-            Guard.Against.NullOrWhiteSpace(keyId, nameof(keyId));
-            Guard.Against.Null(items, nameof(items));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(bucketId, nameof(bucketId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(path, nameof(path));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(keyId, nameof(keyId));
+            ArgumentNullException.ThrowIfNull(items, nameof(items));
 
             if (index > items.Count)
             {

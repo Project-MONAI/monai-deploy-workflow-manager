@@ -22,7 +22,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions
     {
         public static Dictionary<string, string> ToArtifactDictionary(this List<Messaging.Common.Storage> storageList)
         {
-            Guard.Against.Null(storageList, nameof(storageList));
+            ArgumentNullException.ThrowIfNull(storageList, nameof(storageList));
 
             var artifactDict = new Dictionary<string, string>();
 

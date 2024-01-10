@@ -48,7 +48,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         private async Task EnsureIndex()
         {
-            Guard.Against.Null(_workflowCollection, "WorkflowCollection");
+            ArgumentNullException.ThrowIfNull(_workflowCollection, "WorkflowCollection");
 
             var asyncCursor = (await _workflowCollection.Indexes.ListAsync());
             var bsonDocuments = (await asyncCursor.ToListAsync());
@@ -95,7 +95,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<WorkflowRevision> GetByWorkflowIdAsync(string workflowId)
         {
-            Guard.Against.NullOrWhiteSpace(workflowId, nameof(workflowId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowId, nameof(workflowId));
 
             var workflow = await _workflowCollection
                 .Find(x => x.WorkflowId == workflowId && x.Deleted == null)
@@ -130,7 +130,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<WorkflowRevision> GetByWorkflowNameAsync(string name)
         {
-            Guard.Against.NullOrWhiteSpace(name, nameof(name));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(name, nameof(name));
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             var workflow = await _workflowCollection
@@ -142,7 +142,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<WorkflowRevision> GetByAeTitleAsync(string aeTitle)
         {
-            Guard.Against.NullOrWhiteSpace(aeTitle, nameof(aeTitle));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(aeTitle, nameof(aeTitle));
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             var workflow = await _workflowCollection
                 .Find(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle && x.Deleted == null)
@@ -154,7 +154,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<IEnumerable<WorkflowRevision>> GetAllByAeTitleAsync(string aeTitle, int? skip, int? limit)
         {
-            Guard.Against.NullOrWhiteSpace(aeTitle, nameof(aeTitle));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(aeTitle, nameof(aeTitle));
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             var workflows = await _workflowCollection
                 .Find(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle && x.Deleted == null)
@@ -170,7 +170,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<long> GetCountByAeTitleAsync(string aeTitle)
         {
-            Guard.Against.NullOrWhiteSpace(aeTitle, nameof(aeTitle));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(aeTitle, nameof(aeTitle));
             return await _workflowCollection
                 .CountDocumentsAsync(x => x.Workflow.InformaticsGateway.AeTitle == aeTitle && x.Deleted == null);
         }
@@ -203,8 +203,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<IList<WorkflowRevision>> GetWorkflowsForWorkflowRequestAsync(string calledAeTitle, string callingAeTitle)
         {
-            Guard.Against.NullOrEmpty(calledAeTitle, nameof(calledAeTitle));
-            Guard.Against.NullOrEmpty(callingAeTitle, nameof(callingAeTitle));
+            ArgumentNullException.ThrowIfNullOrEmpty(calledAeTitle, nameof(calledAeTitle));
+            ArgumentNullException.ThrowIfNullOrEmpty(callingAeTitle, nameof(callingAeTitle));
 
             var t = _workflowCollection
                 .Find(x =>
@@ -239,7 +239,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<string> CreateAsync(Workflow workflow)
         {
-            Guard.Against.Null(workflow, nameof(workflow));
+            ArgumentNullException.ThrowIfNull(workflow, nameof(workflow));
 
             var workflowRevision = new WorkflowRevision
             {
@@ -256,8 +256,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<string> UpdateAsync(Workflow workflow, WorkflowRevision existingWorkflow)
         {
-            Guard.Against.Null(workflow, nameof(workflow));
-            Guard.Against.Null(existingWorkflow, nameof(existingWorkflow));
+            ArgumentNullException.ThrowIfNull(workflow, nameof(workflow));
+            ArgumentNullException.ThrowIfNull(existingWorkflow, nameof(existingWorkflow));
 
             var workflowRevision = new WorkflowRevision
             {
@@ -276,7 +276,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<DateTime> SoftDeleteWorkflow(WorkflowRevision workflow)
         {
-            Guard.Against.Null(workflow, nameof(workflow));
+            ArgumentNullException.ThrowIfNull(workflow, nameof(workflow));
 
             var deletedTimeStamp = DateTime.UtcNow;
 
