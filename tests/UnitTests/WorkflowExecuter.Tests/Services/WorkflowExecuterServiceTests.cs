@@ -3703,6 +3703,182 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             response.Should().BeTrue();
         }
 
+        [Fact]
+        public async Task ProcessPayload_With_Multiple_Taskdestinations_One_Has_Inputs()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var workflowId1 = Guid.NewGuid().ToString();
+            var workflowId2 = Guid.NewGuid().ToString();
+            var workflowRequest = new WorkflowRequestEvent
+            {
+                Bucket = "testbucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow,
+                Workflows = new List<string>
+                {
+                    workflowId1.ToString()
+                }
+            };
+
+            var workflows = new List<WorkflowRevision>
+            {
+                new WorkflowRevision
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = workflowId1,
+                    Revision = 1,
+                    Workflow = new Workflow
+                    {
+                        Name = "Workflowname1",
+                        Description = "Workflowdesc1",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
+                        {
+                            AeTitle = "aetitle",
+                            ExportDestinations = new string[] { "PROD_PACS" }
+                        },
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject {
+                                Id = "router",
+                                Type = "router",
+                                Description = "router",
+                                Artifacts = new ArtifactMap
+                                {
+                                    Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } },
+                                    Output = new OutputArtifact[]
+                                {
+                                    new OutputArtifact
+                                    {
+                                        Name = "Artifact1",
+                                        Value = "Artifact1Value",
+                                        Mandatory = true,
+                                        Type = ArtifactType.DOC
+                                    },
+                                    new OutputArtifact
+                                    {
+                                        Name = "Artifact2",
+                                        Value = "Artifact2Value",
+                                        Mandatory = true,
+                                        Type = ArtifactType.CT
+                                    }
+                                }
+                                },
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new TaskDestination
+                                    {
+                                        Name = "export1"
+                                    },
+                                    new TaskDestination
+                                    {
+                                        Name = "export2"
+                                    }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id ="export1",
+                                Type = "export",
+                                Artifacts = new ArtifactMap
+                                {
+                                    Input = new Artifact[] { new Artifact { Name = "artifact", Value = "{{ context.executions.router.artifacts.output.Artifact1 }}" } }
+                                },
+                                ExportDestinations = new ExportDestination[]
+                                {
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id ="export2",
+                                Type = "export",
+                                Artifacts = new ArtifactMap
+                                {
+                                    Input = new Artifact[] { new Artifact { Name = "artifact2", Value = "{{ context.executions.router.artifacts.output.Artifact2 }}" } }
+                                },
+                                ExportDestinations = new ExportDestination[]
+                                {
+                                }
+                            },
+                        }
+                    }
+                }
+            };
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId1,
+                WorkflowName = workflows.First()!.Workflow!.Name,
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                {
+                        new TaskExecution
+                        {
+                            TaskId = "router",
+                            Status = TaskExecutionStatus.Created
+                        },
+                        //new TaskExecution
+                        //{
+                        //    TaskId = "export1",
+                        //    Status = TaskExecutionStatus.Created
+                        //},
+                        //new TaskExecution
+                        //{
+                        //    TaskId = "export2",
+                        //    Status = TaskExecutionStatus.Created
+                        //}
+                    }
+            };
+
+            var artifactDict = new List<Messaging.Common.Storage>
+                {
+                    new Messaging.Common.Storage
+                    {
+                        Name = "artifactname",
+                        RelativeRootPath = "path/to/artifact"
+                    }
+                };
+
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
+
+            _workflowRepository.Setup(w => w.GetByWorkflowsIdsAsync(new List<string> { workflowId1.ToString() })).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowId1.ToString())).ReturnsAsync(workflows[0]);
+            _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(It.IsAny<string>(), It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            var dcmInfo = new Dictionary<string, string>() { { "dicomexport", "/dcm" } };
+            _artifactMapper.Setup(a => a.TryConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), out dcmInfo)).Returns(true);
+
+            _messageBrokerPublisherService.Setup(m => m.Publish(It.IsAny<string>(), It.IsAny<Message>()));
+
+            var pathList = artifactDict.Select(a => a.RelativeRootPath).ToList();
+
+            _storageService.Setup(w => w.VerifyObjectsExistAsync(
+                workflowInstance.BucketId, It.Is<IReadOnlyList<string>>(l => l.Any(a => pathList.Any(p => p == a))), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Dictionary<string, bool>() { { pathList.First(), true } });
+
+            var mess = new ArtifactsReceivedEvent
+            {
+                WorkflowInstanceId = workflowInstance.Id,
+                TaskId = "router",
+                Artifacts = [new Messaging.Common.Artifact { Type = ArtifactType.DOC, Path = "path/to/artifact" }]
+            };
+
+
+            var response = await WorkflowExecuterService.ProcessArtifactReceivedAsync(mess);
+
+            Assert.True(response);
+            //_workflowInstanceRepository.Verify(w => w.UpdateTaskStatusAsync(workflowInstanceId, "router", TaskExecutionStatus.Succeeded));
+            _workflowInstanceRepository.Verify(w => w.UpdateTaskStatusAsync(workflowInstanceId, "export1", TaskExecutionStatus.Succeeded));
+
+
+
+#pragma warning restore CS8604 // Possible null reference argument.
+        }
     }
 
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
