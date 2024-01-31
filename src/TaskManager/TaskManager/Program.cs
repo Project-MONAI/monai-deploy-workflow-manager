@@ -154,6 +154,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
                 ext.RegisterLayoutRenderer("servicename", logEvent => typeof(Program).Namespace);
                 ext.RegisterLayoutRenderer("serviceversion", logEvent => assemblyVersionNumber);
                 ext.RegisterLayoutRenderer("machinename", logEvent => Environment.MachineName);
+                ext.RegisterLayoutRenderer("appname", logEvent => "TaskManager");
             })
             .LoadConfigurationFromAppSettings()
             .GetCurrentClassLogger();

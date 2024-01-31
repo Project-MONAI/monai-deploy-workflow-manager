@@ -253,7 +253,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
         private async Task ProcessArtifactReceivedOutputs(ArtifactsReceivedEvent message, WorkflowInstance workflowInstance, TaskObject taskTemplate, string taskId)
         {
-            var artifactList = message.Artifacts.Select(a => $"{a.Path}").ToList();
+            var artifactList = message.Artifacts.Select(a => a.Path).ToList();
             var artifactsInStorage = (await _storageService.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactList, default)) ?? new Dictionary<string, bool>();
             if (artifactsInStorage.Any(a => a.Value) is false)
             {
