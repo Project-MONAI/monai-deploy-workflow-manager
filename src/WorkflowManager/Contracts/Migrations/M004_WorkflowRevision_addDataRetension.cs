@@ -26,9 +26,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 
         public override void Up(BsonDocument document)
         {
-//            document.Add("Workflow.DataRetentionDays", BsonNull.Create(null).ToJson(), true);
             var workflow = document["Workflow"].AsBsonDocument;
-            workflow.Add("DataRetentionDays", BsonNull.Create(null).ToJson(), true);
+            workflow.Add("DataRetentionDays", -1, true);
         }
 
         public override void Down(BsonDocument document)
