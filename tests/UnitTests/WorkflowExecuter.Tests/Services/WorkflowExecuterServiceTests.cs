@@ -234,8 +234,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                 {
                     Workflow = new Workflow
                     {
-                        Tasks = new[]
-                    { new TaskObject() { Id = "not456" } }
+                        Tasks = [new TaskObject() { Id = "not456" }]
                     }
                 });
             var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
@@ -3703,7 +3702,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             response.Should().BeTrue();
         }
 
-        //[Fact]
+        [Fact]
         public async Task ProcessPayload_With_Multiple_Taskdestinations_One_Has_Inputs()
         {
             var workflowInstanceId = Guid.NewGuid().ToString();
@@ -3723,7 +3722,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 
             var workflows = new List<WorkflowRevision>
             {
-                new WorkflowRevision
+                new ()
                 {
                     Id = Guid.NewGuid().ToString(),
                     WorkflowId = workflowId1,
@@ -3736,72 +3735,65 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                         InformaticsGateway = new InformaticsGateway
                         {
                             AeTitle = "aetitle",
-                            ExportDestinations = new string[] { "PROD_PACS" }
+                            ExportDestinations = ["PROD_PACS"]
                         },
-                        Tasks = new TaskObject[]
-                        {
+                        Tasks =
+                        [
                             new TaskObject {
                                 Id = "router",
                                 Type = "router",
                                 Description = "router",
                                 Artifacts = new ArtifactMap
                                 {
-                                    Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } },
-                                    Output = new OutputArtifact[]
-                                {
-                                    new OutputArtifact
+                                    Input = [new Artifact { Name = "dicomexport", Value = "{{ context.input }}" }],
+                                    Output =
+                                [
+                                    new ()
                                     {
                                         Name = "Artifact1",
                                         Value = "Artifact1Value",
                                         Mandatory = true,
                                         Type = ArtifactType.DOC
                                     },
-                                    new OutputArtifact
+                                    new ()
                                     {
                                         Name = "Artifact2",
                                         Value = "Artifact2Value",
                                         Mandatory = true,
                                         Type = ArtifactType.CT
                                     }
-                                }
+                                ]
                                 },
                                 TaskDestinations = new TaskDestination[]
                                 {
-                                    new TaskDestination
-                                    {
+                                    new() {
                                         Name = "export1"
                                     },
-                                    new TaskDestination
+                                    new ()
                                     {
                                         Name = "export2"
                                     }
                                 }
                             },
-                            new TaskObject
-                            {
+                            new() {
                                 Id ="export1",
                                 Type = "export",
                                 Artifacts = new ArtifactMap
                                 {
-                                    Input = new Artifact[] { new Artifact { Name = "artifact", Value = "{{ context.executions.router.artifacts.output.Artifact1 }}" } }
+                                    Input = [new () { Name = "Artifact1", Value = "{{ context.executions.router.artifacts.output.Artifact1 }}", Mandatory = true  }]
                                 },
-                                ExportDestinations = new ExportDestination[]
-                                {
-                                }
+                                ExportDestinations = [new (){Name = "PROD_PACS"}]
                             },
-                            new TaskObject
-                            {
+                            new() {
                                 Id ="export2",
                                 Type = "export",
                                 Artifacts = new ArtifactMap
                                 {
-                                    Input = new Artifact[] { new Artifact { Name = "artifact2", Value = "{{ context.executions.router.artifacts.output.Artifact2 }}" } }
+                                    Input = [new () { Name = "Artifact2", Value = "{{ context.executions.router.artifacts.output.Artifact2 }}", Mandatory = true }]
                                 },
-                                ExportDestinations = new ExportDestination[]
-                                {
-                                }
+                                ExportDestinations = [new (){Name = "PROD_PACS"}]
                             },
-                        }
+                        ]
                     }
                 }
             };
@@ -3813,29 +3805,29 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                 PayloadId = Guid.NewGuid().ToString(),
                 Status = Status.Created,
                 BucketId = "bucket",
-                Tasks = new List<TaskExecution>
-                {
-                        new TaskExecution
-                        {
-                            TaskId = "router",
-                            Status = TaskExecutionStatus.Created
-                        },
-                        //new TaskExecution
-                        //{
-                        //    TaskId = "export1",
-                        //    Status = TaskExecutionStatus.Created
-                        //},
-                        //new TaskExecution
-                        //{
-                        //    TaskId = "export2",
-                        //    Status = TaskExecutionStatus.Created
-                        //}
-                    }
+                Tasks =
+                [
+                    new()
+                    {
+                        TaskId = "router",
+                        Status = TaskExecutionStatus.Created
+                    },
+                    //new TaskExecution
+                    //{
+                    //    TaskId = "export1",
+                    //    Status = TaskExecutionStatus.Created
+                    //},
+                    //new TaskExecution
+                    //{
+                    //    TaskId = "export2",
+                    //    Status = TaskExecutionStatus.Created
+                    //}
+                ]
             };
 
             var artifactDict = new List<Messaging.Common.Storage>
                 {
-                    new Messaging.Common.Storage
+                    new ()
                     {
                         Name = "artifactname",
                         RelativeRootPath = "path/to/artifact"
@@ -3861,11 +3853,18 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                 workflowInstance.BucketId, It.Is<IReadOnlyList<string>>(l => l.Any(a => pathList.Any(p => p == a))), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Dictionary<string, bool>() { { pathList.First(), true } });
 
+            _storageService.Setup(w => w.ListObjectsAsync(It.IsAny<string>(), It.IsAny<string>(), true, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<VirtualFileInfo>()
+                {
+                                new VirtualFileInfo("testfile.dcm", "/dcm/testfile.dcm", "test", ulong.MaxValue)
+                });
+
             var mess = new ArtifactsReceivedEvent
             {
                 WorkflowInstanceId = workflowInstance.Id,
                 TaskId = "router",
-                Artifacts = [new Messaging.Common.Artifact { Type = ArtifactType.DOC, Path = "path/to/artifact" }]
+                Artifacts = [new Messaging.Common.Artifact { Type = ArtifactType.DOC, Path = "path/to/artifact" }],
+                CorrelationId = Guid.NewGuid().ToString()
             };
 
 
@@ -3873,7 +3872,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 
             Assert.True(response);
             //_workflowInstanceRepository.Verify(w => w.UpdateTaskStatusAsync(workflowInstanceId, "router", TaskExecutionStatus.Succeeded));
-            _workflowInstanceRepository.Verify(w => w.UpdateTaskStatusAsync(workflowInstanceId, "export1", TaskExecutionStatus.Succeeded));
+            _workflowInstanceRepository.Verify(w => w.UpdateTaskStatusAsync(workflowInstanceId, "export1", TaskExecutionStatus.Dispatched));
 
 
 

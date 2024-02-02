@@ -49,7 +49,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
             var response = JsonConvert.DeserializeObject<PagedResponse<IList<TaskExecution>>>(result!);
-            number.Should().Be(response.Data.Count);
+            number.Should().Be(response!.Data!.Count);
         }
     }
 }
