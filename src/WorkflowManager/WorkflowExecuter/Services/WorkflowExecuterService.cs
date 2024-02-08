@@ -299,7 +299,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
         private async Task<bool> AllRequiredArtifactsReceivedAsync(ArtifactsReceivedEvent message, WorkflowInstance workflowInstance,
             string taskId, string workflowInstanceId, WorkflowRevision workflowTemplate, IEnumerable<ArtifactType> receivedArtifacts)
         {
-            var taskExecution = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId == taskId);
+            var taskExecution = Array.Find<TaskExecution>([.. workflowInstance.Tasks], t => t.TaskId == taskId);
 
             if (taskExecution is null)
             {
@@ -326,7 +326,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
         private string[] GetTasksWithAllInputs(WorkflowRevision workflowTemplate, string currentTaskId, IEnumerable<ArtifactType> artifactsRecieved)
         {
             var excutableTasks = new List<String>();
-            var task = workflowTemplate.Workflow!.Tasks.FirstOrDefault(t => t.Id == currentTaskId);
+
+            var task = Array.Find<TaskObject>(workflowTemplate.Workflow!.Tasks, t => t.Id == currentTaskId);
             if (task is null)
             {
                 _logger.ErrorFindingTask(currentTaskId);
@@ -354,8 +355,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
         private Dictionary<ArtifactType, bool> GetTasksInput(WorkflowRevision workflowTemplate, string taskId, string previousTaskId)
         {
             var results = new Dictionary<ArtifactType, bool>();
-            var task = workflowTemplate.Workflow!.Tasks.FirstOrDefault(t => t.Id == taskId);
-            var previousTask = workflowTemplate.Workflow!.Tasks.FirstOrDefault(t => t.Id == previousTaskId);
+
+            var task = Array.Find<TaskObject>(workflowTemplate.Workflow!.Tasks, t => t.Id == taskId);
+            var previousTask = Array.Find<TaskObject>(workflowTemplate.Workflow!.Tasks, t => t.Id == previousTaskId);
             if (previousTask is null || task is null)
             {
                 _logger.ErrorFindingTask(taskId);
@@ -969,6 +971,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             string taskId,
             IEnumerable<ArtifactType> receivedArtifacts)
         {
+            _ = workflow ?? throw new ArgumentNullException(nameof(workflow));
+
             var currentTaskDestinations = workflow.Workflow?.Tasks?.SingleOrDefault(t => t.Id == taskId)?.TaskDestinations;
 
             var newTaskExecutions = new List<TaskExecution>();
@@ -981,7 +985,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             foreach (var taskDest in currentTaskDestinations)
             {
                 // have we got all inputs we need ?
-                var neededInputs = GetTasksInput(workflow, taskDest.Name, taskId).Where(t => t.Value);
+                var neededInputs = GetTasksInput(workflow!, taskDest.Name, taskId).Where(t => t.Value);
                 var remainingManditory = neededInputs.Where(i => receivedArtifacts.Any(a => a == i.Key) is false);
                 if (remainingManditory.Count() is not 0)
                 {

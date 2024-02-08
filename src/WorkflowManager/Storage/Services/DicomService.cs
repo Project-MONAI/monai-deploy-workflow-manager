@@ -167,7 +167,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 
             var dicomFiles = files?.Where(f => f.FilePath.EndsWith(".dcm"));
 
-            return dicomFiles?.Select(d => d.FilePath)?.ToList() ?? [];
+            return dicomFiles?.Select(d => d.FilePath) ?? [];
         }
 
         public async Task<string> GetAnyValueAsync(string keyId, string payloadId, string bucketId)
