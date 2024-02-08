@@ -99,11 +99,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 
             try
             {
-                if (dict is null)
-                {
-                    return null;
-                }
-
                 var value = GetValue(dict, keyId);
 
                 if (!string.IsNullOrWhiteSpace(value))
@@ -150,12 +145,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
                     // merge the two dictionaries
                     foreach (var (key, value) in dictCurrent)
                     {
-                        if (dict.ContainsKey(key))
-                        {
-                            continue;
-                        }
-
-                        dict.Add(key, value);
+                        dict.TryAdd(key, value);
                     }
                 }
                 return dict;
@@ -265,11 +255,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 
         public string GetValue(Dictionary<string, DicomValue> dict, string keyId)
         {
-            if (dict.Count == 0)
-            {
-                return string.Empty;
-            }
-
             var result = string.Empty;
 
             if (dict.TryGetValue(keyId, out var value))

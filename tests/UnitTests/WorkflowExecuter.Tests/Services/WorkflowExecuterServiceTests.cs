@@ -3811,17 +3811,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                     {
                         TaskId = "router",
                         Status = TaskExecutionStatus.Created
-                    },
-                    //new TaskExecution
-                    //{
-                    //    TaskId = "export1",
-                    //    Status = TaskExecutionStatus.Created
-                    //},
-                    //new TaskExecution
-                    //{
-                    //    TaskId = "export2",
-                    //    Status = TaskExecutionStatus.Created
-                    //}
+                    }
                 ]
             };
 
