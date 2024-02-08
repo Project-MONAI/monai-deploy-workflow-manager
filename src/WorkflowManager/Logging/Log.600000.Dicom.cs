@@ -40,5 +40,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
 
         [LoggerMessage(EventId = 600006, Level = LogLevel.Debug, Message = "Dicom export marked as failed with {fileStatusCount} files marked as exported.")]
         public static partial void DicomExportFailed(this ILogger logger, string fileStatusCount);
+
+        [LoggerMessage(EventId = 600007, Level = LogLevel.Error, Message = "Failed to get DICOM metadata from bucket {bucketId}. Payload: {payloadId}")]
+        public static partial void FailedToGetDicomMetadataFromBucket(this ILogger logger, string payloadId, string bucketId, Exception ex);
+
+        [LoggerMessage(EventId = 600000, Level = LogLevel.Error, Message = "Failed to get DICOM tag {dicomTag} from dictionary")]
+        public static partial void FailedToGetDicomTagFromDictoionary(this ILogger logger, string dicomTag, Exception ex);
     }
 }

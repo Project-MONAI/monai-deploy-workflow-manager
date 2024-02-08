@@ -27,11 +27,11 @@ using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
-    [CollectionLocation("Payloads"), RuntimeVersion("1.0.4")]
+    [CollectionLocation("Payloads"), RuntimeVersion("1.0.5")]
     public class Payload : IDocument
     {
         [JsonConverter(typeof(DocumentVersionConvert)), BsonSerializer(typeof(DocumentVersionConverBson))]
-        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 4);
+        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 5);
 
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; } = string.Empty;
@@ -70,6 +70,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 
         [JsonProperty(PropertyName = "expires")]
         public DateTime? Expires { get; set; }
+
+        [JsonProperty(PropertyName = "series_instance_uid")]
+        public string? SeriesInstanceUid { get; set; }
 
     }
 

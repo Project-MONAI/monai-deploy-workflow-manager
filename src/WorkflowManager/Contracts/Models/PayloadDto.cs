@@ -36,6 +36,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
             Files = payload.Files;
             PatientDetails = payload.PatientDetails;
             PayloadDeleted = payload.PayloadDeleted;
+            SeriesInstanceUid = payload.SeriesInstanceUid;
         }
 
         [JsonProperty(PropertyName = "payload_status")]
