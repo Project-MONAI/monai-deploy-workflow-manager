@@ -21,7 +21,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 {
     public class M001_Payload_addVerion : DocumentMigration<Payload>
     {
-        public M001_Payload_addVerion() : base("1.0.0") { }
+        public M001_Payload_addVerion() : base("1.0.1") { }
 
         public override void Up(BsonDocument document)
         {

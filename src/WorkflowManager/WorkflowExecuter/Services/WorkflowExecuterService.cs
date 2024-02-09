@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions;
@@ -36,7 +34,8 @@ using Monai.Deploy.WorkflowManager.Common.Database.Repositories;
 using Monai.Deploy.WorkflowManager.Common.Logging;
 using Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common;
 using Monai.Deploy.WorkloadManager.WorkflowExecuter.Extensions;
-using Newtonsoft.Json;
+using Monai.Deploy.Messaging.Common;
+using System.Text.Json;
 
 namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 {
@@ -237,14 +236,16 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             var allArtifacts = taskTemplate.Artifacts.Output.Select(a => a.Type);
             var unexpectedArtifacts = receivedArtifacts.Except(allArtifacts).ToList();
 
+            var tasksThatCanBeTriggered = GetTasksWithAllInputs(workflowTemplate, taskId, receivedArtifacts);
+
             if (unexpectedArtifacts.Any())
             {
                 _logger.UnexpectedArtifactsReceived(taskId, workflowInstanceId, string.Join(',', unexpectedArtifacts));
             }
 
-            if (!missingArtifacts.Any())
+            if (missingArtifacts.Count == 0 || tasksThatCanBeTriggered.Length is not 0)
             {
-                return await AllRequiredArtifactsReceivedAsync(message, workflowInstance, taskId, workflowInstanceId, workflowTemplate).ConfigureAwait(false);
+                return await AllRequiredArtifactsReceivedAsync(message, workflowInstance, taskId, workflowInstanceId, workflowTemplate, receivedArtifacts).ConfigureAwait(false);
             }
 
             _logger.MandatoryOutputArtifactsMissingForTask(taskId, string.Join(',', missingArtifacts));
@@ -257,7 +258,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             var artifactsInStorage = (await _storageService.VerifyObjectsExistAsync(workflowInstance.BucketId, artifactList, default)) ?? new Dictionary<string, bool>();
             if (artifactsInStorage.Any(a => a.Value) is false)
             {
-                _logger.NoFilesExistInStorage(JsonConvert.SerializeObject(artifactList));
+                _logger.NoFilesExistInStorage(JsonSerializer.Serialize(artifactList));
                 return;
             }
 
@@ -290,15 +291,15 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
             if (currentTask is not null && addedNew)
             {
-                _logger.AddingFilesToWorkflowInstance(workflowInstance.Id, taskId, JsonConvert.SerializeObject(validArtifacts));
+                _logger.AddingFilesToWorkflowInstance(workflowInstance.Id, taskId, JsonSerializer.Serialize(validArtifacts));
                 await _workflowInstanceRepository.UpdateTaskAsync(workflowInstance.Id, taskId, currentTask);
             }
         }
 
         private async Task<bool> AllRequiredArtifactsReceivedAsync(ArtifactsReceivedEvent message, WorkflowInstance workflowInstance,
-            string taskId, string workflowInstanceId, WorkflowRevision workflowTemplate)
+            string taskId, string workflowInstanceId, WorkflowRevision workflowTemplate, IEnumerable<ArtifactType> receivedArtifacts)
         {
-            var taskExecution = workflowInstance.Tasks.FirstOrDefault(t => t.TaskId == taskId);
+            var taskExecution = Array.Find<TaskExecution>([.. workflowInstance.Tasks], t => t.TaskId == taskId);
 
             if (taskExecution is null)
             {
@@ -307,19 +308,76 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             }
 
             await _workflowInstanceRepository.UpdateTaskStatusAsync(workflowInstanceId, taskId,
-                TaskExecutionStatus.Succeeded).ConfigureAwait(false);
+                TaskExecutionStatus.Succeeded).ConfigureAwait(false);  // would need to change to be partial success if anot all destination covered
 
             // Dispatch Task
             var taskDispatchedResult =
-                await HandleTaskDestinations(workflowInstance, workflowTemplate, taskExecution, message.CorrelationId).ConfigureAwait(false);
+                await HandleTaskDestinations(workflowInstance, workflowTemplate, taskExecution, message.CorrelationId, receivedArtifacts).ConfigureAwait(false);
 
             if (taskDispatchedResult is false)
             {
-                _logger.LogTaskDispatchFailure(message.PayloadId.ToString(), taskId, workflowInstanceId, workflowTemplate.WorkflowId, JsonConvert.SerializeObject(message.Artifacts));
+                _logger.LogTaskDispatchFailure(message.PayloadId.ToString(), taskId, workflowInstanceId, workflowTemplate.WorkflowId, JsonSerializer.Serialize(message.Artifacts));
                 return false;
             }
 
             return true;
+        }
+
+        private string[] GetTasksWithAllInputs(WorkflowRevision workflowTemplate, string currentTaskId, IEnumerable<ArtifactType> artifactsRecieved)
+        {
+            var excutableTasks = new List<String>();
+
+            var task = Array.Find<TaskObject>(workflowTemplate.Workflow!.Tasks, t => t.Id == currentTaskId);
+            if (task is null)
+            {
+                _logger.ErrorFindingTask(currentTaskId);
+                return [];
+            }
+            var nextTasks = task.TaskDestinations.Select(t => t.Name);
+            foreach (var nextTask in nextTasks)
+            {
+                var neededInputs = GetTasksInput(workflowTemplate, nextTask, currentTaskId).Where(t => t.Value);
+                var remainingManditory = neededInputs.Where(i => artifactsRecieved.Any(a => a == i.Key) is false);
+                if (remainingManditory.Count() is 0)
+                {
+                    // all manditory inputs found
+                    excutableTasks.Add(nextTask);
+                }
+                else
+                {
+                    _logger.ErrorTaskMissingArtifacts(nextTask, System.Text.Json.JsonSerializer.Serialize(remainingManditory));
+                }
+            }
+
+            return [.. excutableTasks];
+        }
+
+        private Dictionary<ArtifactType, bool> GetTasksInput(WorkflowRevision workflowTemplate, string taskId, string previousTaskId)
+        {
+            var results = new Dictionary<ArtifactType, bool>();
+
+            var task = Array.Find<TaskObject>(workflowTemplate.Workflow!.Tasks, t => t.Id == taskId);
+            var previousTask = Array.Find<TaskObject>(workflowTemplate.Workflow!.Tasks, t => t.Id == previousTaskId);
+            if (previousTask is null || task is null)
+            {
+                _logger.ErrorFindingTask(taskId);
+                return results;
+            }
+
+            foreach (var artifact in task.Artifacts.Input)
+            {
+                var matchType = previousTask.Artifacts.Output.FirstOrDefault(t => t.Name == artifact.Name);
+                if (matchType is null)
+                {
+                    _logger.ErrorFindingTaskOrPrevious(taskId, previousTaskId);
+                }
+                else
+                {
+                    results.Add(matchType.Type, artifact.Mandatory);
+                }
+            }
+
+            return results;
         }
 
         public async Task ProcessFirstWorkflowTask(WorkflowInstance workflowInstance, string correlationId, Payload payload)
@@ -339,7 +397,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 return;
             }
 
-            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new Messaging.Common.LoggingDataDictionary<string, object>
             {
                 ["workflowInstanceId"] = workflowInstance.Id,
                 ["durationSoFar"] = (DateTime.UtcNow - workflowInstance.StartTime).TotalMilliseconds,
@@ -347,7 +405,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             });
 
             await SwitchTasksAsync(task,
-                    routerFunc: () => HandleTaskDestinations(workflowInstance, workflow, task, correlationId),
+                    routerFunc: () => HandleTaskDestinations(workflowInstance, workflow, task, correlationId, new List<ArtifactType>()),
                     exportFunc: () => HandleDicomExportAsync(workflow, workflowInstance, task, correlationId),
                     externalFunc: () => HandleExternalAppAsync(workflow, workflowInstance, task, correlationId),
                     exportHl7Func: () => HandleHl7ExportAsync(workflow, workflowInstance, task, correlationId),
@@ -457,7 +515,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 return await CompleteTask(currentTask, workflowInstance, message.CorrelationId, TaskExecutionStatus.Failed);
             }
 
-            return await HandleTaskDestinations(workflowInstance, workflow, currentTask, message.CorrelationId);
+            return await HandleTaskDestinations(workflowInstance, workflow, currentTask, message.CorrelationId, new List<ArtifactType>());
         }
 
         private async Task<bool> HandleUpdatingTaskStatus(TaskExecution taskExecution, string workflowId, TaskExecutionStatus status)
@@ -499,7 +557,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 return false;
             }
 
-            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new Messaging.Common.LoggingDataDictionary<string, object>
             {
                 ["workflowInstanceId"] = workflowInstance.Id,
                 ["durationSoFar"] = (DateTime.UtcNow - workflowInstance.StartTime).TotalMilliseconds,
@@ -529,7 +587,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 {
                     case TaskTypeConstants.DicomExportTask:
                     case TaskTypeConstants.HL7ExportTask:
-                        return await HandleTaskDestinations(workflowInstance, workflow, task, correlationId);
+                        return await HandleTaskDestinations(workflowInstance, workflow, task, correlationId, new List<ArtifactType>());
                     default:
                         break;
                 }
@@ -794,7 +852,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             foreach (var artifact in artifactDict)
             {
                 var outputArtifact = revisionTask.Artifacts.Output.FirstOrDefault(o => o.Name == artifact.Key);
-                _logger.LogArtifactPassing(new Artifact { Name = artifact.Key, Value = artifact.Value, Mandatory = outputArtifact?.Mandatory ?? true }, artifact.Value, "Post-Task Output Artifact", validOutputArtifacts?.ContainsKey(artifact.Key) ?? false);
+                _logger.LogArtifactPassing(new Contracts.Models.Artifact { Name = artifact.Key, Value = artifact.Value, Mandatory = outputArtifact?.Mandatory ?? true }, artifact.Value, "Post-Task Output Artifact", validOutputArtifacts?.ContainsKey(artifact.Key) ?? false);
             }
 
             var missingOutputs = revisionTask.Artifacts.Output.Where(o => validArtifacts.Any(m => m.Key == o.Name) is false);
@@ -843,7 +901,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
                 if (string.Equals(taskExec!.TaskType, TaskTypeConstants.RouterTask, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    await HandleTaskDestinations(workflowInstance, workflow, taskExec!, correlationId);
+                    await HandleTaskDestinations(workflowInstance, workflow, taskExec!, correlationId, new List<ArtifactType>());
 
                     continue;
                 }
@@ -881,9 +939,14 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             return processed;
         }
 
-        private async Task<bool> HandleTaskDestinations(WorkflowInstance workflowInstance, WorkflowRevision workflow, TaskExecution task, string correlationId)
+        private async Task<bool> HandleTaskDestinations(
+            WorkflowInstance workflowInstance,
+            WorkflowRevision workflow,
+            TaskExecution task,
+            string correlationId,
+            IEnumerable<ArtifactType> receivedArtifacts)
         {
-            var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, task.TaskId);
+            var newTaskExecutions = await CreateTaskDestinations(workflowInstance, workflow, task.TaskId, receivedArtifacts);
 
             if (newTaskExecutions.Any(task => task.Status == TaskExecutionStatus.Failed))
             {
@@ -902,8 +965,14 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             return await CompleteTask(task, workflowInstance, correlationId, TaskExecutionStatus.Succeeded);
         }
 
-        private async Task<List<TaskExecution>> CreateTaskDestinations(WorkflowInstance workflowInstance, WorkflowRevision workflow, string taskId)
+        private async Task<List<TaskExecution>> CreateTaskDestinations(
+            WorkflowInstance workflowInstance,
+            WorkflowRevision workflow,
+            string taskId,
+            IEnumerable<ArtifactType> receivedArtifacts)
         {
+            _ = workflow ?? throw new ArgumentNullException(nameof(workflow));
+
             var currentTaskDestinations = workflow.Workflow?.Tasks?.SingleOrDefault(t => t.Id == taskId)?.TaskDestinations;
 
             var newTaskExecutions = new List<TaskExecution>();
@@ -915,10 +984,20 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
             foreach (var taskDest in currentTaskDestinations)
             {
+                // have we got all inputs we need ?
+                var neededInputs = GetTasksInput(workflow!, taskDest.Name, taskId).Where(t => t.Value);
+                var remainingManditory = neededInputs.Where(i => receivedArtifacts.Any(a => a == i.Key) is false);
+                if (remainingManditory.Count() is not 0)
+                {
+                    _logger.TaskIsMissingRequiredInputArtifacts(taskDest.Name, JsonSerializer.Serialize(remainingManditory));
+
+                    continue;
+                }
+
                 //Evaluate Conditional
                 if (taskDest.Conditions.IsNullOrEmpty() is false
-                    && taskDest.Conditions.Any(c => string.IsNullOrWhiteSpace(c) is false)
-                    && _conditionalParameterParser.TryParse(taskDest.Conditions, workflowInstance, out var resolvedConditional) is false)
+                && taskDest.Conditions.Any(c => string.IsNullOrWhiteSpace(c) is false)
+                && _conditionalParameterParser.TryParse(taskDest.Conditions, workflowInstance, out var resolvedConditional) is false)
                 {
                     _logger.TaskDestinationConditionFalse(resolvedConditional, taskDest.Conditions.CombineConditionString(), taskDest.Name);
 
@@ -979,11 +1058,11 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 var pathOutputArtifacts = new Dictionary<string, string>();
                 try
                 {
-                    pathOutputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(outputArtifacts ?? Array.Empty<Artifact>(), workflowInstance.PayloadId, workflowInstance.Id, workflowInstance.BucketId, false);
+                    pathOutputArtifacts = await _artifactMapper.ConvertArtifactVariablesToPath(outputArtifacts ?? Array.Empty<Contracts.Models.Artifact>(), workflowInstance.PayloadId, workflowInstance.Id, workflowInstance.BucketId, false);
                 }
                 catch (FileNotFoundException)
                 {
-                    _logger.LogTaskDispatchFailure(workflowInstance.PayloadId, taskExec.TaskId, workflowInstance.Id, workflow?.Id, JsonConvert.SerializeObject(pathOutputArtifacts));
+                    _logger.LogTaskDispatchFailure(workflowInstance.PayloadId, taskExec.TaskId, workflowInstance.Id, workflow?.Id, JsonSerializer.Serialize(pathOutputArtifacts));
                     workflowInstance.Tasks.Add(taskExec);
                     var updateResult = await HandleUpdatingTaskStatus(taskExec, workflowInstance.WorkflowId, TaskExecutionStatus.Failed);
                     if (updateResult is false)
@@ -1000,7 +1079,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 }
 
                 taskExec.TaskPluginArguments["workflow_name"] = workflow!.Workflow!.Name;
-                _logger.LogGeneralTaskDispatchInformation(workflowInstance.PayloadId, taskExec.TaskId, workflowInstance.Id, workflow?.Id, JsonConvert.SerializeObject(pathOutputArtifacts));
+                _logger.LogGeneralTaskDispatchInformation(workflowInstance.PayloadId, taskExec.TaskId, workflowInstance.Id, workflow?.Id, JsonSerializer.Serialize(pathOutputArtifacts));
                 var taskDispatchEvent = EventMapper.ToTaskDispatchEvent(taskExec, workflowInstance, pathOutputArtifacts, correlationId, _storageConfiguration);
                 var jsonMesssage = new JsonMessage<TaskDispatchEvent>(taskDispatchEvent, MessageBrokerConfiguration.WorkflowManagerApplicationId, taskDispatchEvent.CorrelationId, Guid.NewGuid().ToString());
 
@@ -1107,7 +1186,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             if (task?.Artifacts?.Input.IsNullOrEmpty() is false)
             {
                 artifactFound = _artifactMapper.TryConvertArtifactVariablesToPath(task?.Artifacts?.Input
-                    ?? Array.Empty<Artifact>(), payloadId, workflowInstanceId, bucketName, true, out inputArtifacts);
+                    ?? Array.Empty<Contracts.Models.Artifact>(), payloadId, workflowInstanceId, bucketName, true, out inputArtifacts);
             }
 
             return new TaskExecution()

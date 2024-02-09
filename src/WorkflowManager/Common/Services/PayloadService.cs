@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
@@ -83,6 +82,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
                 }
 
                 var patientDetails = await _dicomService.GetPayloadPatientDetailsAsync(eventPayload.PayloadId.ToString(), eventPayload.Bucket);
+                var dict = await _dicomService.GetMetaData(eventPayload.PayloadId.ToString(), eventPayload.Bucket).ConfigureAwait(false);
 
                 var payload = new Payload
                 {
@@ -96,7 +96,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
                     Timestamp = eventPayload.Timestamp,
                     PatientDetails = patientDetails,
                     PayloadDeleted = PayloadDeleted.No,
-                    Expires = await GetExpiry(DateTime.UtcNow, eventPayload.WorkflowInstanceId)
+                    Expires = await GetExpiry(DateTime.UtcNow, eventPayload.WorkflowInstanceId),
+                    SeriesInstanceUid = _dicomService.GetSeriesInstanceUID(dict)
                 };
 
                 if (await _payloadRepository.CreateAsync(payload))
@@ -197,13 +198,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
         {
             ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
 
-            var payload = await GetByIdAsync(payloadId);
-
-            if (payload is null)
-            {
-                throw new MonaiNotFoundException($"Payload with ID: {payloadId} not found");
-            }
-
+            var payload = await GetByIdAsync(payloadId) ?? throw new MonaiNotFoundException($"Payload with ID: {payloadId} not found");
             if (payload.PayloadDeleted == PayloadDeleted.InProgress || payload.PayloadDeleted == PayloadDeleted.Yes)
             {
                 throw new MonaiBadRequestException($"Deletion of files for payload ID: {payloadId} already in progress or already deleted");

@@ -16,7 +16,6 @@
 
 using System.Globalization;
 using System.Text;
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
@@ -69,18 +68,18 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
             ArgumentNullException.ThrowIfNullOrWhiteSpace(bucketName, nameof(bucketName));
             ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
 
-            var items = await _storageService.ListObjectsAsync(bucketName, $"{payloadId}/dcm", true);
+            var dict = await GetMetaData(payloadId, bucketName);
 
             var patientDetails = new PatientDetails
             {
-                PatientName = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientNameTag),
-                PatientId = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientIdTag),
-                PatientSex = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientSexTag),
-                PatientAge = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientAgeTag),
-                PatientHospitalId = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientHospitalIdTag)
+                PatientName = GetFirstValueAsync(dict, DicomTagConstants.PatientNameTag),
+                PatientId = GetFirstValueAsync(dict, DicomTagConstants.PatientIdTag),
+                PatientSex = GetFirstValueAsync(dict, DicomTagConstants.PatientSexTag),
+                PatientAge = GetFirstValueAsync(dict, DicomTagConstants.PatientAgeTag),
+                PatientHospitalId = GetFirstValueAsync(dict, DicomTagConstants.PatientHospitalIdTag)
             };
 
-            var dob = await GetFirstValueAsync(items, payloadId, bucketName, DicomTagConstants.PatientDateOfBirthTag);
+            var dob = GetFirstValueAsync(dict, DicomTagConstants.PatientDateOfBirthTag);
 
             if (DateTime.TryParseExact(dob, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateOfBirth))
             {
@@ -90,12 +89,38 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
             return patientDetails;
         }
 
-        public async Task<string?> GetFirstValueAsync(IList<VirtualFileInfo> items, string payloadId, string bucketId, string keyId)
+        private string? GetFirstValueAsync(Dictionary<string, DicomValue>? dict, string keyId)
+        {
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(keyId, nameof(keyId));
+            if (dict is null)
+            {
+                return null;
+            }
+
+            try
+            {
+                var value = GetValue(dict, keyId);
+
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    return value;
+                }
+                return null;
+            }
+            catch (Exception e)
+            {
+                _logger.FailedToGetDicomTagFromDictoionary(keyId, e);
+            }
+
+            return null;
+        }
+
+        public async Task<Dictionary<string, DicomValue>?> GetMetaData(string payloadId, string bucketId)
         {
             ArgumentNullException.ThrowIfNullOrWhiteSpace(bucketId, nameof(bucketId));
             ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(keyId, nameof(keyId));
-
+            var items = await _storageService.ListObjectsAsync(bucketId, $"{payloadId}/dcm", true);
+            var dict = new Dictionary<string, DicomValue>(StringComparer.OrdinalIgnoreCase);
             try
             {
                 if (items is null || items.Any() is false)
@@ -113,20 +138,21 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
                     var stream = await _storageService.GetObjectAsync(bucketId, filePath);
                     var jsonStr = Encoding.UTF8.GetString(((MemoryStream)stream).ToArray());
 
-                    var dict = new Dictionary<string, DicomValue>(StringComparer.OrdinalIgnoreCase);
-                    JsonConvert.PopulateObject(jsonStr, dict);
+                    var dictCurrent = new Dictionary<string, DicomValue>(StringComparer.OrdinalIgnoreCase);
+                    JsonConvert.PopulateObject(jsonStr, dictCurrent);
 
-                    var value = GetValue(dict, keyId);
 
-                    if (!string.IsNullOrWhiteSpace(value))
+                    // merge the two dictionaries
+                    foreach (var (key, value) in dictCurrent)
                     {
-                        return value;
+                        dict.TryAdd(key, value);
                     }
                 }
+                return dict;
             }
             catch (Exception e)
             {
-                _logger.FailedToGetDicomTagFromPayload(payloadId, keyId, bucketId, e);
+                _logger.FailedToGetDicomMetadataFromBucket(payloadId, bucketId, e);
             }
 
             return null;
@@ -141,7 +167,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 
             var dicomFiles = files?.Where(f => f.FilePath.EndsWith(".dcm"));
 
-            return dicomFiles?.Select(d => d.FilePath)?.ToList() ?? new List<string>();
+            return dicomFiles?.Select(d => d.FilePath) ?? [];
         }
 
         public async Task<string> GetAnyValueAsync(string keyId, string payloadId, string bucketId)
@@ -180,7 +206,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
             var matchValue = await GetDcmJsonFileValueAtIndexAsync(0, path, bucketId, keyId, listOfJsonFiles);
             var fileCount = listOfJsonFiles.Count;
 
-            for (int i = 0; i < fileCount; i++)
+            for (var i = 0; i < fileCount; i++)
             {
                 if (listOfJsonFiles[i].Filename.EndsWith(".dcm"))
                 {
@@ -229,11 +255,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 
         public string GetValue(Dictionary<string, DicomValue> dict, string keyId)
         {
-            if (dict.Any() is false)
-            {
-                return string.Empty;
-            }
-
             var result = string.Empty;
 
             if (dict.TryGetValue(keyId, out var value))
@@ -259,6 +280,20 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
                 }
             }
             return result;
+        }
+
+        public string? GetSeriesInstanceUID(Dictionary<string, DicomValue>? dict)
+        {
+            if (dict is null)
+            {
+                return null;
+            }
+
+            if (dict.TryGetValue(DicomTagConstants.SeriesInstanceUIDTag, out var value))
+            {
+                return value.Value.ToString();
+            }
+            return null;
         }
 
         private string TryGetValueAndLogSupported(string vrFullString, DicomValue value, string jsonString)

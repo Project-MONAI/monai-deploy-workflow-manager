@@ -19,20 +19,20 @@ using MongoDB.Bson;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 {
-    public class M002_Payload_addPayloadDeleted : DocumentMigration<Payload>
+    public class M005_Payload_seriesUid : DocumentMigration<Payload>
     {
-        public M002_Payload_addPayloadDeleted() : base("1.0.2") { }
+        public M005_Payload_seriesUid() : base("1.0.5") { }
 
         public override void Up(BsonDocument document)
         {
-            document.Add("PayloadDeleted", PayloadDeleted.No);
+            document.Add("SeriesInstanceUid", BsonNull.Create(null).ToJson(), true);
         }
 
         public override void Down(BsonDocument document)
         {
             try
             {
-                document.Remove("PayloadDeleted");
+                document.Remove("SeriesInstanceUid");
             }
             catch
             {  // can ignore we dont want failures stopping startup !

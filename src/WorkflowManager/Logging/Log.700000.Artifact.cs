@@ -57,6 +57,15 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
         [LoggerMessage(EventId = 700011, Level = LogLevel.Debug, Message = "adding files to workflowInstance {workflowInstanceId} :Task {taskId} :  {artifactList}")]
         public static partial void AddingFilesToWorkflowInstance(this ILogger logger, string workflowInstanceId, string taskId, string artifactList);
 
+        [LoggerMessage(EventId = 700012, Level = LogLevel.Error, Message = "Error finding Task :{taskId}")]
+        public static partial void ErrorFindingTask(this ILogger logger, string taskId);
+
+        [LoggerMessage(EventId = 700013, Level = LogLevel.Error, Message = "Error finding Task :{taskId} or previousTask {previousTask}")]
+        public static partial void ErrorFindingTaskOrPrevious(this ILogger logger, string taskId, string previousTask);
+
+        [LoggerMessage(EventId = 700014, Level = LogLevel.Warning, Message = "Error Task :{taskId} cant be trigger as it has missing artifacts {missingtypesJson}")]
+        public static partial void ErrorTaskMissingArtifacts(this ILogger logger, string taskId, string missingtypesJson);
+
 
     }
 }
