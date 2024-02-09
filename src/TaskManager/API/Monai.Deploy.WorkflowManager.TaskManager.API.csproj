@@ -32,7 +32,7 @@
     <AdditionalFiles Include="..\..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Monai.Deploy.Messaging" Version="2.0.0" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="2.0.2" />
     <PackageReference Include="Mongo.Migration" Version="3.1.4" />
     <PackageReference Include="MongoDB.Bson" Version="2.23.1" />
   </ItemGroup>

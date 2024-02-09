@@ -4,9 +4,9 @@
     "net8.0": {
       "Monai.Deploy.Messaging": {
         "type": "Direct",
-        "requested": "[2.0.0, )",
-        "resolved": "2.0.0",
-        "contentHash": "LcerCeHWDSB3Q1Vw0La9pYvXdNNDu4nGUie2bvVlL8lCkxbVNx+rtDorV5cA8KSKW9GZd/RD6SAsIzcjMXqP6Q==",
+        "requested": "[2.0.2, )",
+        "resolved": "2.0.2",
+        "contentHash": "iQsD13BAnpbkv1xIVS4cRT2ZXjtcvHJFXlzvTaXjSEEtgGRR7f/IW/9smM2mZlPAyjmRdzk6hyye2vw6rl/tTw==",
         "dependencies": {
           "Ardalis.GuardClauses": "4.3.0",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.0",
@@ -807,7 +807,7 @@
       "monai.deploy.workflowmanager.common.configuration": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[2.0.0, )",
+          "Monai.Deploy.Messaging": "[2.0.2, )",
           "Monai.Deploy.Storage": "[1.0.0, )"
         }
       },
@@ -830,7 +830,7 @@
       "monai.deploy.workflowmanager.contracts": {
         "type": "Project",
         "dependencies": {
-          "Monai.Deploy.Messaging": "[2.0.0, )",
+          "Monai.Deploy.Messaging": "[2.0.2, )",
           "Mongo.Migration": "[3.1.4, )",
           "MongoDB.Bson": "[2.23.1, )"
         }
