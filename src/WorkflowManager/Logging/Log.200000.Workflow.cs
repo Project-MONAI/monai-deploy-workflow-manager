@@ -114,5 +114,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
 
         [LoggerMessage(EventId = 210019, Level = LogLevel.Error, Message = "Task is missing required input artifacts {taskId} Artifacts {ArtifactsJson}")]
         public static partial void TaskIsMissingRequiredInputArtifacts(this ILogger logger, string taskId, string ArtifactsJson);
+
+        [LoggerMessage(EventId = 200020, Level = LogLevel.Warning, Message = "no workflow to execute for the given workflow request.")]
+        public static partial void DidntToCreateWorkflowInstances(this ILogger logger);
     }
 }

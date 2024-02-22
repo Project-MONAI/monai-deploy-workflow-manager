@@ -146,6 +146,13 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
             var tasks = workflows.Select(workflow => CreateWorkflowInstanceAsync(message, workflow));
             var newInstances = await Task.WhenAll(tasks).ConfigureAwait(false);
+
+            if (newInstances is null || newInstances.Length == 0 || newInstances[0] is null) // if null then it because it didnt meet the conditions needed to create a workflow instance
+            {
+                _logger.DidntToCreateWorkflowInstances();
+                return false;
+            }
+
             workflowInstances.AddRange(newInstances);
 
             var existingInstances = await _workflowInstanceRepository.GetByWorkflowsIdsAsync(workflowInstances.Select(w => w.WorkflowId).ToList());
@@ -1103,29 +1110,34 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             return true;
         }
 
-        private async Task<WorkflowInstance> CreateWorkflowInstanceAsync(WorkflowRequestEvent message, WorkflowRevision workflow)
+        private async Task<WorkflowInstance?> CreateWorkflowInstanceAsync(WorkflowRequestEvent message, WorkflowRevision workflow)
         {
             ArgumentNullException.ThrowIfNull(message, nameof(message));
             ArgumentNullException.ThrowIfNull(workflow, nameof(workflow));
             ArgumentNullException.ThrowIfNull(workflow.Workflow, nameof(workflow.Workflow));
 
-            var workflowInstanceId = Guid.NewGuid().ToString();
+            var workflowInstance = MakeInstance(message, workflow);
 
-            var workflowInstance = new WorkflowInstance()
+            // check if the conditionals allow the workflow to be created
+
+            if (workflow.Workflow.Conditions.Length != 0)
             {
-                Id = workflowInstanceId,
-                WorkflowId = workflow.WorkflowId,
-                WorkflowName = workflow.Workflow.Name,
-                PayloadId = message.PayloadId.ToString(),
-                StartTime = DateTime.UtcNow,
-                Status = Status.Created,
-                AeTitle = workflow.Workflow?.InformaticsGateway?.AeTitle,
-                BucketId = message.Bucket,
-                InputMetaData = { } //Functionality to be added later
-            };
+                var conditionalMet = _conditionalParameterParser.TryParse(workflow.Workflow.Conditions, workflowInstance, out var resolvedConditional);
+                if (conditionalMet is false)
+                {
+                    return null;
+                }
+            }
 
+            await CreateTaskExecutionForFirstTask(message, workflow, workflowInstance);
+
+            return workflowInstance;
+        }
+
+        private async Task CreateTaskExecutionForFirstTask(WorkflowRequestEvent message, WorkflowRevision workflow, WorkflowInstance workflowInstance)
+        {
             var tasks = new List<TaskExecution>();
-            // part of this ticket just take the first task
+
             if (workflow?.Workflow?.Tasks.Length > 0)
             {
                 var firstTask = workflow.Workflow.Tasks.First();
@@ -1141,7 +1153,24 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             }
 
             workflowInstance.Tasks = tasks;
+        }
 
+        private static WorkflowInstance MakeInstance(WorkflowRequestEvent message, WorkflowRevision workflow)
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+
+            var workflowInstance = new WorkflowInstance()
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflow.WorkflowId,
+                WorkflowName = workflow.Workflow.Name,
+                PayloadId = message.PayloadId.ToString(),
+                StartTime = DateTime.UtcNow,
+                Status = Status.Created,
+                AeTitle = workflow.Workflow?.InformaticsGateway?.AeTitle,
+                BucketId = message.Bucket,
+                InputMetaData = { } //Functionality to be added later
+            };
             return workflowInstance;
         }
 
