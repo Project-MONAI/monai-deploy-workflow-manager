@@ -64,6 +64,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
         public static readonly string EnvironmentVariableKeyPrefix = "env_";
 
         /// <summary>
+        /// Key for setting the shm size.
+        /// </summary>
+        public static readonly string ShmSize = "shm_size";
+
+        /// <summary>
         /// Key to the intermediate volume map path.
         /// </summary>
         public static readonly string WorkingDirectory = "env_MONAI_WORKDIR";
@@ -79,5 +84,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                 ContainerImage,
                 TemporaryStorageContainerPath
             };
+
     }
 }

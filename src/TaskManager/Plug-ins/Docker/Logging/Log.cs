@@ -115,5 +115,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker.Logging
 
         [LoggerMessage(EventId = 1031, Level = LogLevel.Error, Message = "Error setting directory {path} with permission {user}.")]
         public static partial void ErrorSettingDirectoryPermission(this ILogger logger, string path, string user);
+
+        [LoggerMessage(EventId = 1032, Level = LogLevel.Error, Message = "Invalid size specified for /dev/shm: {size} Please use value between 1 and 9223372036854775807.")]
+        public static partial void InvalidShmSize(this ILogger logger, string size);
     }
 }
