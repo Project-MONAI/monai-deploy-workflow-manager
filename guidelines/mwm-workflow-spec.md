@@ -120,6 +120,8 @@ This is the top-level object in a workflow spec. It contains the following prope
 |description|Optional[str] (200)|
 |informatics_gateway|[InformaticsGateway](#informatics-gateway)|
 |tasks|list[[Task](#tasks)]|
+|dataRetentionDays|int|
+|predicate|string[]|
 
 The following is an example of the structure of a workflow.
 
@@ -134,8 +136,9 @@ The following is an example of the structure of a workflow.
  ┗ tasks\
 &nbsp;&nbsp;&nbsp; ┣ task1\
 &nbsp;&nbsp;&nbsp; ┣ task2\
-&nbsp;&nbsp;&nbsp; ┗ task3
-
+&nbsp;&nbsp;&nbsp; ┗ task3\
+┣ dataRetentionDays\
+┣ predicate  [A detailed breakdown of predicate logic can be found here.](https://github.com/Project-MONAI/monai-deploy-workflow-manager/blob/develop/guidelines/mwm-conditionals.md)
 
 
 #### Examples
@@ -159,6 +162,8 @@ An example of a workflow with two tasks:
 			"ORTHANC"
 		]
 	},
+    "dataRetentionDays": -1,
+    "predicate" : []
 	"tasks": [
 		{
 			"id": "mean-pixel-calc",
