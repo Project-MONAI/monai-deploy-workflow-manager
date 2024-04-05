@@ -3903,7 +3903,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                                 Description = "taskdesc"
                             }
                         ],
-                        Conditions = ["{{ context.dicom.series.any('0010','0040') }} == 'lordge'"]
+                        Predicate = ["{{ context.dicom.series.any('0010','0040') }} == 'lordge'"]
                     }
                 }
             };
@@ -3956,7 +3956,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                                 Description = "taskdesc"
                             }
                         ],
-                        Conditions = ["{{ context.dicom.series.any('0010','0040') }} == 'lordge'"]
+                        Predicate = ["{{ context.dicom.series.any('0010','0040') }} == 'lordge'"]
                     }
                 }
             };
