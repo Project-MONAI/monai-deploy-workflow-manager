@@ -1120,9 +1120,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
             // check if the conditionals allow the workflow to be created
 
-            if (workflow.Workflow.Conditions.Length != 0)
+            if (workflow.Workflow.Predicate.Length != 0)
             {
-                var conditionalMet = _conditionalParameterParser.TryParse(workflow.Workflow.Conditions, workflowInstance, out var resolvedConditional);
+                var conditionalMet = _conditionalParameterParser.TryParse(workflow.Workflow.Predicate, workflowInstance, out var resolvedConditional);
                 if (conditionalMet is false)
                 {
                     return null;
