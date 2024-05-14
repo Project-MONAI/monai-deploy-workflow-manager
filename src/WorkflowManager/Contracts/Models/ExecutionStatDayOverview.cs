@@ -15,25 +15,25 @@
  */
 
 using System;
+using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
-
-    public class ExecutionStatDTO
+    public class ExecutionStatDayOverview
     {
-        public ExecutionStatDTO(ExecutionStats stats)
-        {
-            ExecutionId = stats.ExecutionId;
-            StartedAt = stats.StartedUTC;
-            FinishedAt = stats.CompletedAtUTC;
-            Status = stats.Status;
-            ExecutionDurationSeconds = stats.ExecutionTimeSeconds;
-        }
-
-        public string ExecutionId { get; set; } = string.Empty;
-        public DateTime StartedAt { get; set; }
-        public DateTime FinishedAt { get; set; }
-        public double ExecutionDurationSeconds { get; set; }
-        public string Status { get; set; } = "Created";
+        [JsonProperty("date")]
+        public DateOnly Date { get; set; }
+        [JsonProperty("total_executions")]
+        public int TotalExecutions { get; set; }
+        [JsonProperty("total_failures")]
+        public int TotalFailures { get; set; }
+        [JsonProperty("total_approvals")]
+        public int TotalApprovals { get; set; }
+        [JsonProperty("total_rejections")]
+        public int TotalRejections { get; set; }
+        [JsonProperty("total_cancelled")]
+        public int TotalCancelled { get; set; }
+        [JsonProperty("total_awaiting_review")]
+        public int TotalAwaitingReview { get; set; }
     }
 }

@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Events;
@@ -40,11 +39,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
             IOptions<ExecutionStatsDatabaseSettings> databaseSettings,
             ILogger<TaskExecutionStatsRepository> logger)
         {
-            if (client == null)
-            {
-                throw new ArgumentNullException(nameof(client));
-            }
-
+            _ = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var mongoDatabase = client.GetDatabase(databaseSettings.Value.DatabaseName, null);
             _taskExecutionStatsCollection = mongoDatabase.GetCollection<ExecutionStats>("ExecutionStats", null);
@@ -149,17 +144,24 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
             }
         }
 
-        public async Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int pageSize = 10, int pageNumber = 1, string workflowId = "", string taskId = "")
+        public async Task<IEnumerable<ExecutionStats>> GetAllStatsAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "")
+        {
+            return await GetStatsAsync(startTime, endTime, null, null, workflowId, taskId);
+        }
+
+        public async Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int? pageSize = 10, int? pageNumber = 1, string workflowId = "", string taskId = "")
         {
             CreateFilter(startTime, endTime, workflowId, taskId, out var builder, out var filter);
 
             filter &= builder.Where(GetExecutedTasksFilter());
 
-            var result = await _taskExecutionStatsCollection.Find(filter)
-                .Limit(pageSize)
-                .Skip((pageNumber - 1) * pageSize)
-                .ToListAsync();
-            return result;
+            var result = _taskExecutionStatsCollection.Find(filter);
+            if (pageSize is not null)
+            {
+                result = result.Limit(pageSize).Skip((pageNumber - 1) * pageSize);
+            }
+
+            return await result.ToListAsync();
         }
 
         private static ExecutionStats ExposeExecutionStats(ExecutionStats taskExecutionStats, TaskExecution taskUpdateEvent)
