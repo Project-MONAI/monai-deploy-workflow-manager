@@ -376,7 +376,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 var matchType = previousTask.Artifacts.Output.FirstOrDefault(t => t.Name == artifact.Name);
                 if (matchType is null)
                 {
-                    _logger.ErrorFindingTaskOrPrevious(taskId, previousTaskId);
+                    _logger.ErrorFindingArtifactInPrevious(taskId, artifact.Name);
                 }
                 else
                 {
@@ -479,6 +479,12 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             {
                 _logger.TaskTimedOut(message.TaskId, message.WorkflowInstanceId, currentTask.Timeout);
                 await ClinicalReviewTimeOutEvent(workflowInstance, currentTask, message.CorrelationId);
+            }
+
+            if (message.Status == currentTask.Status)
+            {
+                _logger.TaskStatusUpdateNotNeeded(workflowInstance.PayloadId, message.TaskId, message.Status.ToString());
+                return true;
             }
 
             if (!message.Status.IsTaskExecutionStatusUpdateValid(currentTask.Status))
