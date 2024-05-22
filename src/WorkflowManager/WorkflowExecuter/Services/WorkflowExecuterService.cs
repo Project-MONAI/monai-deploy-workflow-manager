@@ -180,7 +180,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             {
                 await ProcessFirstWorkflowTask(workflowInstance, message.CorrelationId, payload);
             }
-            payload.WorkflowInstanceIds = workflowInstances.Select(w => w.Id).ToList();
+            payload.WorkflowInstanceIds = workflowInstances.Select(w => w.WorkflowId).ToList();
             payload.TriggeredWorkflowNames = workflowInstances.Select(w => w.WorkflowName).ToList();
 
             return true;
