@@ -153,14 +153,14 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 return false;
             }
 
-            workflowInstances.AddRange(newInstances);
+            workflowInstances.AddRange(newInstances!);
 
             var existingInstances = await _workflowInstanceRepository.GetByWorkflowsIdsAsync(workflowInstances.Select(w => w.WorkflowId).ToList());
 
             workflowInstances.RemoveAll(i => existingInstances.Any(e => e.WorkflowId == i.WorkflowId
                                                                            && e.PayloadId == i.PayloadId));
 
-            if (workflowInstances.Any())
+            if (workflowInstances.Count != 0)
             {
                 processed &= await _workflowInstanceRepository.CreateAsync(workflowInstances);
 
@@ -180,6 +180,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             {
                 await ProcessFirstWorkflowTask(workflowInstance, message.CorrelationId, payload);
             }
+            payload.WorkflowInstanceIds = workflowInstances.Select(w => w.Id).ToList();
+            payload.TriggeredWorkflowNames = workflowInstances.Select(w => w.WorkflowName).ToList();
 
             return true;
         }

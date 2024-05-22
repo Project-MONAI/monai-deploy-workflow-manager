@@ -92,6 +92,11 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 
                         return;
                     }
+
+                    if (string.IsNullOrWhiteSpace(string.Join("", payload.TriggeredWorkflowNames)) is false)
+                    {
+                        await PayloadService.UpdateAsync(payload);
+                    }
                 }
                 else
                 {

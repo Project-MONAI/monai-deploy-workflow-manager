@@ -3977,6 +3977,48 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 
             Assert.True(result);
         }
+
+        [Fact]
+        public async Task ProcessPayload_Payload_Should_Include_triggered_workflow_names()
+        {
+            var workflowRequest = new WorkflowRequestEvent
+            {
+                Bucket = "testbucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow
+            };
+
+            var workflows = new List<WorkflowRevision>
+            {
+                new() {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow
+                    {
+                        Name = "Workflowname",
+                    }
+                }
+            };
+
+            _dicom.Setup(w => w.GetAnyValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(() => "lordge");
+
+            _workflowRepository.Setup(w => w.GetWorkflowsByAeTitleAsync(It.IsAny<List<string>>())).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetWorkflowsForWorkflowRequestAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflows[0].WorkflowId)).ReturnsAsync(workflows[0]);
+            _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            var payload = new Payload() { Id = Guid.NewGuid().ToString() };
+            var result = await WorkflowExecuterService.ProcessPayload(workflowRequest, payload);
+
+
+            Assert.Contains(workflows[0].Workflow!.Name, payload.TriggeredWorkflowNames);
+            Assert.Contains(workflows[0].WorkflowId, payload.WorkflowInstanceIds);
+            Assert.True(result);
+        }
     }
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 }

@@ -259,5 +259,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
                 return false;
             }
         }
+
+        public Task<bool> UpdateAsync(Payload payload)
+        {
+            ArgumentNullException.ThrowIfNull(payload, nameof(payload));
+
+            return _payloadRepository.UpdateAsync(payload);
+        }
     }
 }
