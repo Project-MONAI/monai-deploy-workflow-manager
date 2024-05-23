@@ -39,8 +39,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
         [JsonProperty(PropertyName = "dataRetentionDays")]
         public int? DataRetentionDays { get; set; } = 3;// note. -1 = never delete
 
-        [JsonProperty(PropertyName = "conditions")]
-        public string[] Conditions { get; set; } = [];
+        [JsonProperty(PropertyName = "predicate")]
+        public string[] Predicate { get; set; } = [];
 
     }
 }

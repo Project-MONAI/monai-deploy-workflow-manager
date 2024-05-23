@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
@@ -123,7 +122,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
             return payload;
         }
 
-        public async Task<bool> UpdateAsync(Payload payload)
+        public async Task<bool> UpdateAsyncWorkflowIds(Payload payload)
         {
             ArgumentNullException.ThrowIfNull(payload, nameof(payload));
 
@@ -132,31 +131,17 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
                 var filter = Builders<Payload>.Filter.Eq(p => p.PayloadId, payload.PayloadId);
                 await _payloadCollection.ReplaceOneAsync(filter, payload);
 
+                await _payloadCollection.FindOneAndUpdateAsync(
+                    i => i.Id == payload.Id,
+                    Builders<Payload>.Update
+                        .Set(p => p.TriggeredWorkflowNames, payload.TriggeredWorkflowNames)
+                        .Set(p => p.WorkflowInstanceIds, payload.WorkflowInstanceIds));
+
                 return true;
             }
             catch (Exception ex)
             {
                 _logger.DbUpdatePayloadError(payload.PayloadId, ex);
-                return false;
-            }
-        }
-
-        public async Task<bool> UpdateAssociatedWorkflowInstancesAsync(string payloadId, IEnumerable<string> workflowInstances)
-        {
-            Guard.Against.NullOrEmpty(workflowInstances, nameof(workflowInstances));
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
-
-            try
-            {
-                await _payloadCollection.FindOneAndUpdateAsync(
-                    i => i.Id == payloadId,
-                    Builders<Payload>.Update.Set(p => p.WorkflowInstanceIds, workflowInstances));
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.DbUpdateWorkflowInstanceError(ex);
                 return false;
             }
         }

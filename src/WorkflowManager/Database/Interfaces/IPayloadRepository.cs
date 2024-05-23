@@ -51,15 +51,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Interfaces
         /// </summary>
         /// <param name="payload">The payload to update.</param>
         /// <returns>The updated payload.</returns>
-        Task<bool> UpdateAsync(Payload payload);
-
-        /// <summary>
-        /// Updates a payload in the database.
-        /// </summary>
-        /// <param name="payloadId"></param>
-        /// <param name="workflowInstances"></param>
-        /// <returns></returns>
-        Task<bool> UpdateAssociatedWorkflowInstancesAsync(string payloadId, IEnumerable<string> workflowInstances);
+        Task<bool> UpdateAsyncWorkflowIds(Payload payload);
 
         /// <summary>
         /// Gets all the payloads that might need deleted

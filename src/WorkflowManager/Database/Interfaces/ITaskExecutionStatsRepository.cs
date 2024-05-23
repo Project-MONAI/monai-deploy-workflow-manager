@@ -53,6 +53,15 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
         Task UpdateExecutionStatsAsync(TaskCancellationEvent taskCanceledEvent, string workflowId, string correlationId);
 
         /// <summary>
+        /// Returns all entries between the two given dates
+        /// </summary>
+        /// <param name="startTime">start of the range.</param>
+        /// <param name="endTime">end of the range.</param>
+        /// <param name="workflowId">optional workflow id.</param>
+        /// <param name="taskId">optional task id.</param>
+        /// <returns>a collections of stats</returns>
+        Task<IEnumerable<ExecutionStats>> GetAllStatsAsync(DateTime startTime, DateTime endTime, string workflowId = "", string taskId = "");
+        /// <summary>
         /// Returns paged entries between the two given dates
         /// </summary>
         /// <param name="startTime">start of the range.</param>
@@ -62,7 +71,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
         /// <param name="workflowId">optional workflow id.</param>
         /// <param name="taskId">optional task id.</param>
         /// <returns>a collections of stats</returns>
-        Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int pageSize = 10, int pageNumber = 1, string workflowId = "", string taskId = "");
+        Task<IEnumerable<ExecutionStats>> GetStatsAsync(DateTime startTime, DateTime endTime, int? pageSize = 10, int? pageNumber = 1, string workflowId = "", string taskId = "");
 
         /// <summary>
         /// Return the count of the entries with this status, or all if no status given.

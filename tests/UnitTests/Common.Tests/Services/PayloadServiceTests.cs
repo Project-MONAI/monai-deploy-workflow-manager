@@ -333,7 +333,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
             var payloadId = Guid.NewGuid().ToString();
 
             _payloadRepository.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(() => new Payload());
-            _payloadRepository.Setup(p => p.UpdateAsync(It.IsAny<Payload>())).ReturnsAsync(() => true);
+            _payloadRepository.Setup(p => p.UpdateAsyncWorkflowIds(It.IsAny<Payload>())).ReturnsAsync(() => true);
             _workflowInstanceRepository.Setup(r => r.GetByPayloadIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(() => new List<WorkflowInstance>());
 
             _storageService.Setup(s => s.RemoveObjectsAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), default));
@@ -374,7 +374,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
             var payloadId = Guid.NewGuid().ToString();
 
             _payloadRepository.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(() => new Payload());
-            _payloadRepository.Setup(p => p.UpdateAsync(It.IsAny<Payload>())).ReturnsAsync(() => true);
+            _payloadRepository.Setup(p => p.UpdateAsyncWorkflowIds(It.IsAny<Payload>())).ReturnsAsync(() => true);
             _workflowInstanceRepository.Setup(r => r.GetByPayloadIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(() => new List<WorkflowInstance>
             {
                 new WorkflowInstance
@@ -486,6 +486,21 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
             var daysdiff = (payload!.Expires! - DateTime.UtcNow).Value.TotalDays + 0.5;
 
             Assert.Equal(99, (int)daysdiff);
+        }
+
+
+        [Fact]
+        public async Task UpdateAsync_NullPayload_ThrowsArgumentNullException()
+        {
+
+#pragma warning disable CS8604 // Possible null reference argument.
+            // Arrange
+            Payload payload = null;
+
+            // Act & Assert
+
+            await Assert.ThrowsAsync<ArgumentNullException>(() => PayloadService.UpdateAsyncWorkflowIds(payload));
+#pragma warning restore CS8604 // Possible null reference argument.
         }
 
     }
