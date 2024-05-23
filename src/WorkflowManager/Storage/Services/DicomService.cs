@@ -291,7 +291,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 
             if (dict.TryGetValue(DicomTagConstants.SeriesInstanceUIDTag, out var value))
             {
-                return value.Value.ToString();
+                return JsonConvert.SerializeObject(value.Value);
             }
             return null;
         }

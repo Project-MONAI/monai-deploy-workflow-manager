@@ -42,8 +42,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
         [JsonProperty(PropertyName = "workflows")]
         public IEnumerable<string> Workflows { get; set; } = [];
 
-        [JsonProperty(PropertyName = "workflow_names")]
-        public List<string> TriggeredWorkflowNames { get; set; } = [];
+        [JsonProperty(PropertyName = "triggered_workflow_names")]
+        public IEnumerable<string> TriggeredWorkflowNames { get; set; } = [];
 
         [JsonProperty(PropertyName = "workflow_instance_ids")]
         public IEnumerable<string> WorkflowInstanceIds { get; set; } = [];
