@@ -153,19 +153,16 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 return false;
             }
 
-            workflowInstances.AddRange(newInstances);
+            workflowInstances.AddRange(newInstances!);
 
             var existingInstances = await _workflowInstanceRepository.GetByWorkflowsIdsAsync(workflowInstances.Select(w => w.WorkflowId).ToList());
 
             workflowInstances.RemoveAll(i => existingInstances.Any(e => e.WorkflowId == i.WorkflowId
                                                                            && e.PayloadId == i.PayloadId));
 
-            if (workflowInstances.Any())
+            if (workflowInstances.Count != 0)
             {
                 processed &= await _workflowInstanceRepository.CreateAsync(workflowInstances);
-
-                var workflowInstanceIds = workflowInstances.Select(workflowInstance => workflowInstance.Id);
-                await _payloadService.UpdateWorkflowInstanceIdsAsync(payload.Id, workflowInstanceIds).ConfigureAwait(false);
             }
 
             workflowInstances.AddRange(existingInstances.Where(e => e.PayloadId == message.PayloadId.ToString()));
@@ -180,6 +177,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             {
                 await ProcessFirstWorkflowTask(workflowInstance, message.CorrelationId, payload);
             }
+            payload.WorkflowInstanceIds = workflowInstances.Select(w => w.Id).ToList();
+            payload.TriggeredWorkflowNames = workflowInstances.Select(w => w.WorkflowName).ToList();
 
             return true;
         }
@@ -1169,7 +1168,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             {
                 Id = workflowInstanceId,
                 WorkflowId = workflow.WorkflowId,
-                WorkflowName = workflow.Workflow.Name,
+                WorkflowName = workflow.Workflow?.Name ?? "",
                 PayloadId = message.PayloadId.ToString(),
                 StartTime = DateTime.UtcNow,
                 Status = Status.Created,

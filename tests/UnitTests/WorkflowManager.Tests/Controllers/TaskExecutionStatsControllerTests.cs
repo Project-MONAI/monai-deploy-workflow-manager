@@ -292,7 +292,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
             var objectResult = Assert.IsType<OkObjectResult>(result);
 
             var responseValue = (StatsPagedResponse<IEnumerable<ExecutionStatDayOverview>>)objectResult.Value;
-            responseValue.Data.First().Date.Should().Be(DateOnly.FromDateTime( _startTime));
+            responseValue.Data.First().Date.Should().Be(DateOnly.FromDateTime(_startTime));
             responseValue.FirstPage.Should().Be("unitTest");
             responseValue.LastPage.Should().Be("unitTest");
             responseValue.PageNumber.Should().Be(1);
