@@ -248,7 +248,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
         public Task<bool> UpdateAsyncWorkflowIds(Payload payload)
         {
-            ArgumentNullException.ThrowIfNull(payload, nameof(payload));
+            ArgumentNullException.ThrowIfNull(payload);
 
             return _payloadRepository.UpdateAsyncWorkflowIds(payload);
         }

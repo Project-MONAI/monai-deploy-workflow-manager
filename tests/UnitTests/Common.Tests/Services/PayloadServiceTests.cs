@@ -492,11 +492,15 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
         [Fact]
         public async Task UpdateAsync_NullPayload_ThrowsArgumentNullException()
         {
+
+#pragma warning disable CS8604 // Possible null reference argument.
             // Arrange
             Payload payload = null;
 
             // Act & Assert
+
             await Assert.ThrowsAsync<ArgumentNullException>(() => PayloadService.UpdateAsyncWorkflowIds(payload));
+#pragma warning restore CS8604 // Possible null reference argument.
         }
 
     }
