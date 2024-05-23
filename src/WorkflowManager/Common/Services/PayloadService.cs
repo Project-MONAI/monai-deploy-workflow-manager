@@ -252,12 +252,5 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
             return _payloadRepository.UpdateAsyncWorkflowIds(payload);
         }
-
-        public Task<bool> UpdateAsync(Payload payload)
-        {
-            ArgumentNullException.ThrowIfNull(payload, nameof(payload));
-
-            return _payloadRepository.UpdateAsyncWorkflowIds(payload);
-        }
     }
 }

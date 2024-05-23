@@ -488,5 +488,16 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
             Assert.Equal(99, (int)daysdiff);
         }
 
+
+        [Fact]
+        public async Task UpdateAsync_NullPayload_ThrowsArgumentNullException()
+        {
+            // Arrange
+            Payload payload = null;
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() => PayloadService.UpdateAsyncWorkflowIds(payload));
+        }
+
     }
 }
