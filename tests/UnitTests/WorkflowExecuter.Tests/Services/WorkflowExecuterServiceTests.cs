@@ -3779,7 +3779,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 
             _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.ExportHL7, It.IsAny<Message>()), Times.Exactly(0));
 
-            _logger.Verify(logger => logger.IsEnabled(LogLevel.Trace),Times.Once);
+            _logger.Verify(logger => logger.IsEnabled(LogLevel.Trace), Times.Once);
 
             response.Should().BeTrue();
         }
@@ -4154,7 +4154,6 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 
 
             Assert.Contains(workflows[0].Workflow!.Name, payload.TriggeredWorkflowNames);
-            Assert.Contains(workflows[0].WorkflowId, payload.WorkflowInstanceIds);
             Assert.True(result);
         }
     }

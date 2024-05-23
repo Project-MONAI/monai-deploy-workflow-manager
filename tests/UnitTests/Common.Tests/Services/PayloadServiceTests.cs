@@ -333,7 +333,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
             var payloadId = Guid.NewGuid().ToString();
 
             _payloadRepository.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(() => new Payload());
-            _payloadRepository.Setup(p => p.UpdateAsync(It.IsAny<Payload>())).ReturnsAsync(() => true);
+            _payloadRepository.Setup(p => p.UpdateAsyncWorkflowIds(It.IsAny<Payload>())).ReturnsAsync(() => true);
             _workflowInstanceRepository.Setup(r => r.GetByPayloadIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(() => new List<WorkflowInstance>());
 
             _storageService.Setup(s => s.RemoveObjectsAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), default));
@@ -374,7 +374,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
             var payloadId = Guid.NewGuid().ToString();
 
             _payloadRepository.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(() => new Payload());
-            _payloadRepository.Setup(p => p.UpdateAsync(It.IsAny<Payload>())).ReturnsAsync(() => true);
+            _payloadRepository.Setup(p => p.UpdateAsyncWorkflowIds(It.IsAny<Payload>())).ReturnsAsync(() => true);
             _workflowInstanceRepository.Setup(r => r.GetByPayloadIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(() => new List<WorkflowInstance>
             {
                 new WorkflowInstance
