@@ -143,6 +143,8 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
                         TotalAwaitingReview = g.Count(i => string.Compare(i.Status, ApplicationReviewStatus.AwaitingReview.ToString(), true) == 0),
                     });
 
+
+
                 var pagedStats = statsDto.Skip((filter.PageNumber - 1) * pageSize).Take(pageSize);
 
                 var res = CreateStatsPagedResponse(pagedStats, validFilter, statsDto.Count(), _uriService, route);
@@ -152,7 +154,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
                 res.PeriodEnd = filter.EndTime;
                 res.TotalExecutions = allStats.Count();
                 res.TotalSucceeded = statsDto.Sum(s => s.TotalApprovals);
-                res.TotalFailures = statsDto.Sum(s => s.TotalFailures);
+                res.TotalFailures = statsDto.Sum(s => s.TotalFailures + s.TotalCancelled + s.TotalRejections);
                 res.TotalInprogress = statsDto.Sum(s => s.TotalAwaitingReview);
                 res.AverageTotalExecutionSeconds = Math.Round(avgTotalExecution, 2);
                 res.AverageArgoExecutionSeconds = Math.Round(avgArgoExecution, 2);
