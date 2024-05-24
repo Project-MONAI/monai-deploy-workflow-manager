@@ -136,12 +136,14 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
                     {
                         Date = DateOnly.FromDateTime(g.Key.Date),
                         TotalExecutions = g.Count(),
-                        TotalFailures = g.Count(i => string.Compare(i.Status, "Failed", true) == 0),
-                        TotalApprovals = g.Count(i => string.Compare(i.Status, ApplicationReviewStatus.Approved.ToString(), true) == 0),
-                        TotalRejections = g.Count(i => string.Compare(i.Status, ApplicationReviewStatus.Rejected.ToString(), true) == 0),
-                        TotalCancelled = g.Count(i => string.Compare(i.Status, ApplicationReviewStatus.Cancelled.ToString(), true) == 0),
+                        TotalFailures = g.Count(i => string.Compare(i.Status, "Failed", true) == 0 && i.Reason != FailureReason.TimedOut && i.Reason != FailureReason.Rejected),
+                        TotalApprovals = g.Count(i => string.Compare(i.Status, "Succeeded", true) == 0 && i.Reason == FailureReason.None),
+                        TotalRejections = g.Count(i => string.Compare(i.Status, "Failed", true) == 0 && i.Reason == FailureReason.Rejected),
+                        TotalCancelled = g.Count(i => string.Compare(i.Status, "Failed", true) == 0 && i.Reason == FailureReason.TimedOut),
                         TotalAwaitingReview = g.Count(i => string.Compare(i.Status, ApplicationReviewStatus.AwaitingReview.ToString(), true) == 0),
                     });
+
+
 
                 var pagedStats = statsDto.Skip((filter.PageNumber - 1) * pageSize).Take(pageSize);
 
@@ -152,7 +154,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
                 res.PeriodEnd = filter.EndTime;
                 res.TotalExecutions = allStats.Count();
                 res.TotalSucceeded = statsDto.Sum(s => s.TotalApprovals);
-                res.TotalFailures = statsDto.Sum(s => s.TotalFailures);
+                res.TotalFailures = statsDto.Sum(s => s.TotalFailures + s.TotalCancelled + s.TotalRejections);
                 res.TotalInprogress = statsDto.Sum(s => s.TotalAwaitingReview);
                 res.AverageTotalExecutionSeconds = Math.Round(avgTotalExecution, 2);
                 res.AverageArgoExecutionSeconds = Math.Round(avgArgoExecution, 2);

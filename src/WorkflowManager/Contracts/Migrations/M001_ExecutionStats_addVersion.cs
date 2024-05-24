@@ -22,7 +22,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 {
     public class M001_ExecutionStats_addVersion : DocumentMigration<ExecutionStats>
     {
-        public M001_ExecutionStats_addVersion() : base("1.0.0") { }
+        public M001_ExecutionStats_addVersion() : base("1.0.1") { }
 
         public override void Up(BsonDocument document)
         {

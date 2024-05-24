@@ -110,6 +110,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
                         .Set(w => w.CompletedAtUTC, updateMe.CompletedAtUTC)
                         .Set(w => w.ExecutionTimeSeconds, updateMe.ExecutionTimeSeconds)
                         .Set(w => w.DurationSeconds, duration)
+                        .Set(w => w.Reason, taskUpdateEvent.Reason)
 
                     , new UpdateOptions { IsUpsert = true }).ConfigureAwait(false);
             }
@@ -132,6 +133,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
                         o.ExecutionId == updateMe.ExecutionId,
                     Builders<ExecutionStats>.Update
                         .Set(w => w.Status, updateMe.Status)
+                        .Set(w => w.Reason, taskCanceledEvent.Reason)
                         .Set(w => w.LastUpdatedUTC, DateTime.UtcNow)
                         .Set(w => w.CompletedAtUTC, updateMe.CompletedAtUTC)
                         .Set(w => w.DurationSeconds, duration)
