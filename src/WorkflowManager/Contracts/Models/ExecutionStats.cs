@@ -17,7 +17,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Migrations;
-using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
 using Mongo.Migration.Documents;
 using Mongo.Migration.Documents.Attributes;
@@ -26,7 +25,7 @@ using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
-    [CollectionLocation("ExecutionStats"), RuntimeVersion("1.0.1")]
+    [CollectionLocation("ExecutionStats"), RuntimeVersion("1.0.3")]
     public class ExecutionStats : IDocument
     {
         /// <summary>
@@ -40,7 +39,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
         /// Gets or sets Db version.
         /// </summary>
         [JsonConverter(typeof(DocumentVersionConvert)), BsonSerializer(typeof(DocumentVersionConverBson))]
-        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 1);
+        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 2);
 
         /// <summary>
         /// the correlationId of the event
@@ -111,6 +110,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
         public string Status { get; set; } = TaskExecutionStatus.Created.ToString();
 
         /// <summary>
+        /// Gets or sets the failure reason.
+        /// </summary>
+        [JsonProperty(PropertyName = "reason")]
+        public FailureReason Reason { get; set; }
+
+        /// <summary>
         /// Gets or sets the duration, difference between startedAt and CompletedAt time.
         /// </summary>
         [JsonProperty(PropertyName = "durationSeconds")]
@@ -134,6 +139,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
             StartedUTC = execution.TaskStartTime.ToUniversalTime();
             Status = execution.Status.ToString();
             WorkflowId = workflowId;
+            Reason = execution.Reason;
         }
 
         public ExecutionStats(TaskUpdateEvent taskUpdateEvent, string workflowId)
@@ -145,6 +151,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
             TaskId = taskUpdateEvent.TaskId;
             Status = taskUpdateEvent.Status.ToString();
             WorkflowId = workflowId;
+            Reason = taskUpdateEvent.Reason;
         }
 
         public ExecutionStats(TaskCancellationEvent taskCanceledEvent, string workflowId, string correlationId)
@@ -156,6 +163,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
             TaskId = taskCanceledEvent.TaskId;
             Status = TaskExecutionStatus.Failed.ToString();
             WorkflowId = workflowId;
+            Reason = taskCanceledEvent.Reason;
         }
     }
 }
