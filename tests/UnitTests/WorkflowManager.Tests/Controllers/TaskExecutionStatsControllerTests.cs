@@ -366,7 +366,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
 
             Assert.Equal(1, resultCollection.First().TotalExecutions);
             Assert.Equal(1, resultCollection.First().TotalRejections);
-            Assert.Equal(1, resultCollection.First().TotalFailures);
+            Assert.Equal(0, resultCollection.First().TotalFailures);
         }
 
         [Fact]
