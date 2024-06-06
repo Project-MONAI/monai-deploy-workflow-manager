@@ -146,19 +146,23 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 
             var tasks = workflows.Select(workflow => CreateWorkflowInstanceAsync(message, workflow));
             var newInstances = await Task.WhenAll(tasks).ConfigureAwait(false);
-            workflowInstances.AddRange(newInstances);
+
+            if (newInstances is null || newInstances.Length == 0 || newInstances[0] is null) // if null then it because it didnt meet the conditions needed to create a workflow instance
+            {
+                _logger.DidntToCreateWorkflowInstances();
+                return false;
+            }
+
+            workflowInstances.AddRange(newInstances!);
 
             var existingInstances = await _workflowInstanceRepository.GetByWorkflowsIdsAsync(workflowInstances.Select(w => w.WorkflowId).ToList());
 
             workflowInstances.RemoveAll(i => existingInstances.Any(e => e.WorkflowId == i.WorkflowId
                                                                            && e.PayloadId == i.PayloadId));
 
-            if (workflowInstances.Any())
+            if (workflowInstances.Count != 0)
             {
                 processed &= await _workflowInstanceRepository.CreateAsync(workflowInstances);
-
-                var workflowInstanceIds = workflowInstances.Select(workflowInstance => workflowInstance.Id);
-                await _payloadService.UpdateWorkflowInstanceIdsAsync(payload.Id, workflowInstanceIds).ConfigureAwait(false);
             }
 
             workflowInstances.AddRange(existingInstances.Where(e => e.PayloadId == message.PayloadId.ToString()));
@@ -173,6 +177,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             {
                 await ProcessFirstWorkflowTask(workflowInstance, message.CorrelationId, payload);
             }
+            payload.WorkflowInstanceIds = workflowInstances.Select(w => w.Id).ToList();
+            payload.TriggeredWorkflowNames = workflowInstances.Select(w => w.WorkflowName).ToList();
 
             return true;
         }
@@ -369,7 +375,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
                 var matchType = previousTask.Artifacts.Output.FirstOrDefault(t => t.Name == artifact.Name);
                 if (matchType is null)
                 {
-                    _logger.ErrorFindingTaskOrPrevious(taskId, previousTaskId);
+                    _logger.ErrorFindingArtifactInPrevious(taskId, artifact.Name);
                 }
                 else
                 {
@@ -472,6 +478,12 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             {
                 _logger.TaskTimedOut(message.TaskId, message.WorkflowInstanceId, currentTask.Timeout);
                 await ClinicalReviewTimeOutEvent(workflowInstance, currentTask, message.CorrelationId);
+            }
+
+            if (message.Status == currentTask.Status)
+            {
+                _logger.TaskStatusUpdateNotNeeded(workflowInstance.PayloadId, message.TaskId, message.Status.ToString());
+                return true;
             }
 
             if (!message.Status.IsTaskExecutionStatusUpdateValid(currentTask.Status))
@@ -1103,29 +1115,34 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             return true;
         }
 
-        private async Task<WorkflowInstance> CreateWorkflowInstanceAsync(WorkflowRequestEvent message, WorkflowRevision workflow)
+        private async Task<WorkflowInstance?> CreateWorkflowInstanceAsync(WorkflowRequestEvent message, WorkflowRevision workflow)
         {
             ArgumentNullException.ThrowIfNull(message, nameof(message));
             ArgumentNullException.ThrowIfNull(workflow, nameof(workflow));
             ArgumentNullException.ThrowIfNull(workflow.Workflow, nameof(workflow.Workflow));
 
-            var workflowInstanceId = Guid.NewGuid().ToString();
+            var workflowInstance = MakeInstance(message, workflow);
 
-            var workflowInstance = new WorkflowInstance()
+            // check if the conditionals allow the workflow to be created
+
+            if (workflow.Workflow.Predicate.Length != 0)
             {
-                Id = workflowInstanceId,
-                WorkflowId = workflow.WorkflowId,
-                WorkflowName = workflow.Workflow.Name,
-                PayloadId = message.PayloadId.ToString(),
-                StartTime = DateTime.UtcNow,
-                Status = Status.Created,
-                AeTitle = workflow.Workflow?.InformaticsGateway?.AeTitle,
-                BucketId = message.Bucket,
-                InputMetaData = { } //Functionality to be added later
-            };
+                var conditionalMet = _conditionalParameterParser.TryParse(workflow.Workflow.Predicate, workflowInstance, out var resolvedConditional);
+                if (conditionalMet is false)
+                {
+                    return null;
+                }
+            }
 
+            await CreateTaskExecutionForFirstTask(message, workflow, workflowInstance);
+
+            return workflowInstance;
+        }
+
+        private async Task CreateTaskExecutionForFirstTask(WorkflowRequestEvent message, WorkflowRevision workflow, WorkflowInstance workflowInstance)
+        {
             var tasks = new List<TaskExecution>();
-            // part of this ticket just take the first task
+
             if (workflow?.Workflow?.Tasks.Length > 0)
             {
                 var firstTask = workflow.Workflow.Tasks.First();
@@ -1141,7 +1158,24 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
             }
 
             workflowInstance.Tasks = tasks;
+        }
 
+        private static WorkflowInstance MakeInstance(WorkflowRequestEvent message, WorkflowRevision workflow)
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+
+            var workflowInstance = new WorkflowInstance()
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflow.WorkflowId,
+                WorkflowName = workflow.Workflow?.Name ?? "",
+                PayloadId = message.PayloadId.ToString(),
+                StartTime = DateTime.UtcNow,
+                Status = Status.Created,
+                AeTitle = workflow.Workflow?.InformaticsGateway?.AeTitle,
+                BucketId = message.Bucket,
+                InputMetaData = { } //Functionality to be added later
+            };
             return workflowInstance;
         }
 

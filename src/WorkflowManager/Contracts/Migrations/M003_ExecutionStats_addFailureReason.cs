@@ -20,19 +20,19 @@ using MongoDB.Bson;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 {
-    public class M002_ExecutionStats_addWorkflowId : DocumentMigration<ExecutionStats>
+    public class M003_ExecutionStats_addFailureReason : DocumentMigration<ExecutionStats>
     {
-        public M002_ExecutionStats_addWorkflowId() : base("1.0.2") { }
+        public M003_ExecutionStats_addFailureReason() : base("1.0.3") { }
 
         public override void Up(BsonDocument document)
         {
-            // empty, but this will make all objects re-saved with a workflowId
+            // empty, but this will make all objects re-saved with a reason
         }
         public override void Down(BsonDocument document)
         {
             try
             {
-                document.Remove("WorkflowId");
+                document.Remove("Reason");
             }
             catch
             {  // can ignore we dont want failures stopping startup !

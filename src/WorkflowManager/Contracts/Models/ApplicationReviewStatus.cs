@@ -14,26 +14,13 @@
  * limitations under the License.
  */
 
-using System;
-
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
-
-    public class ExecutionStatDTO
+    public enum ApplicationReviewStatus
     {
-        public ExecutionStatDTO(ExecutionStats stats)
-        {
-            ExecutionId = stats.ExecutionId;
-            StartedAt = stats.StartedUTC;
-            FinishedAt = stats.CompletedAtUTC;
-            Status = stats.Status;
-            ExecutionDurationSeconds = stats.ExecutionTimeSeconds;
-        }
-
-        public string ExecutionId { get; set; } = string.Empty;
-        public DateTime StartedAt { get; set; }
-        public DateTime FinishedAt { get; set; }
-        public double ExecutionDurationSeconds { get; set; }
-        public string Status { get; set; } = "Created";
+        Approved,
+        Rejected,
+        Cancelled,
+        AwaitingReview
     }
 }

@@ -84,6 +84,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
         [LoggerMessage(EventId = 200020, Level = LogLevel.Warning, Message = "Use new ArtifactReceived Queue for continuation messages.")]
         public static partial void DontUseWorkflowReceivedForPayload(this ILogger logger);
 
+        [LoggerMessage(EventId = 200021, Level = LogLevel.Trace, Message = "The task execution status for task {taskId} is already {status}. Payload: {payloadId}")]
+        public static partial void TaskStatusUpdateNotNeeded(this ILogger logger, string payloadId, string taskId, string status);
+
         // Conditions Resolver
         [LoggerMessage(EventId = 210000, Level = LogLevel.Warning, Message = "Failed to parse condition: {condition}. resolvedConditional: {resolvedConditional}")]
         public static partial void FailedToParseCondition(this ILogger logger, string resolvedConditional, string condition, Exception ex);
@@ -114,5 +117,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
 
         [LoggerMessage(EventId = 210019, Level = LogLevel.Error, Message = "Task is missing required input artifacts {taskId} Artifacts {ArtifactsJson}")]
         public static partial void TaskIsMissingRequiredInputArtifacts(this ILogger logger, string taskId, string ArtifactsJson);
+
+        [LoggerMessage(EventId = 200020, Level = LogLevel.Warning, Message = "no workflow to execute for the given workflow request.")]
+        public static partial void DidntToCreateWorkflowInstances(this ILogger logger);
     }
 }

@@ -213,7 +213,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
             // update the payload to in progress before we request deletion from storage
             payload.PayloadDeleted = PayloadDeleted.InProgress;
-            await _payloadRepository.UpdateAsync(payload);
+            await _payloadRepository.UpdateAsyncWorkflowIds(payload);
 
             // run deletion in alternative thread so the user isn't held up
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -238,7 +238,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
                 }
                 finally
                 {
-                    await _payloadRepository.UpdateAsync(payload);
+                    await _payloadRepository.UpdateAsyncWorkflowIds(payload);
                 }
             });
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -246,18 +246,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
             return true;
         }
 
-        public async Task<bool> UpdateWorkflowInstanceIdsAsync(string payloadId, IEnumerable<string> workflowInstances)
+        public Task<bool> UpdateAsyncWorkflowIds(Payload payload)
         {
-            if (await _payloadRepository.UpdateAssociatedWorkflowInstancesAsync(payloadId, workflowInstances))
-            {
-                _logger.PayloadUpdated(payloadId);
-                return true;
-            }
-            else
-            {
-                _logger.PayloadUpdateFailed(payloadId);
-                return false;
-            }
+            ArgumentNullException.ThrowIfNull(payload);
+
+            return _payloadRepository.UpdateAsyncWorkflowIds(payload);
         }
     }
 }

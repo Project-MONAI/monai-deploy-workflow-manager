@@ -20,14 +20,14 @@ using MongoDB.Bson;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 {
-    public class M004_WorkflowRevision_AddDataRetension : DocumentMigration<WorkflowRevision>
+    public class M004_WorkflowRevision_addConditions : DocumentMigration<WorkflowRevision>
     {
-        public M004_WorkflowRevision_AddDataRetension() : base("1.0.1") { }
+        public M004_WorkflowRevision_addConditions() : base("1.0.2") { }
 
         public override void Up(BsonDocument document)
         {
             var workflow = document["Workflow"].AsBsonDocument;
-            workflow.Add("DataRetentionDays", -1, true);
+            workflow.Add("Conditions", new BsonArray { });
         }
 
         public override void Down(BsonDocument document)
@@ -35,7 +35,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
             try
             {
                 var workflow = document["Workflow"].AsBsonDocument;
-                workflow.Remove("DataRetentionDays");
+                workflow.Remove("Conditions");
             }
             catch
             {  // can ignore we dont want failures stopping startup !
