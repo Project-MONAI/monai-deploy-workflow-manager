@@ -367,6 +367,18 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                 },
             };
 
+            if (Event.TaskPluginArguments.ContainsKey(Keys.ShmSize))
+            {
+                if (long.TryParse(Event.TaskPluginArguments[Keys.ShmSize], out var shmsize))
+                {
+                    parameters.HostConfig.ShmSize = shmsize;
+                }
+                else
+                {
+                    _logger.InvalidShmSize(Event.TaskPluginArguments[Keys.ShmSize]);
+                }
+            }
+
             if (Event.TaskPluginArguments.ContainsKey(Keys.User))
             {
                 parameters.User = Event.TaskPluginArguments[Keys.User];
