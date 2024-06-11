@@ -22,7 +22,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 {
     public class M002_ExecutionStats_addWorkflowId : DocumentMigration<ExecutionStats>
     {
-        public M002_ExecutionStats_addWorkflowId() : base("1.0.1") { }
+        public M002_ExecutionStats_addWorkflowId() : base("1.0.2") { }
 
         public override void Up(BsonDocument document)
         {

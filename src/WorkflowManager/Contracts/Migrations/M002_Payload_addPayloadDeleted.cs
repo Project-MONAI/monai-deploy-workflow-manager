@@ -21,7 +21,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 {
     public class M002_Payload_addPayloadDeleted : DocumentMigration<Payload>
     {
-        public M002_Payload_addPayloadDeleted() : base("1.0.1") { }
+        public M002_Payload_addPayloadDeleted() : base("1.0.2") { }
 
         public override void Up(BsonDocument document)
         {

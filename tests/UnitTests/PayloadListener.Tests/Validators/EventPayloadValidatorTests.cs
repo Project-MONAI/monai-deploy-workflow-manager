@@ -17,10 +17,12 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 using Moq;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 {
@@ -52,7 +54,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             message.DataTrigger.Destination = "abcdefghijklmnop";
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -62,7 +64,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             message.DataTrigger.Destination = string.Empty;
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -72,7 +74,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             message.DataTrigger.Destination = " ";
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -82,7 +84,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             message.DataTrigger.Destination = String.Empty;
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -92,7 +94,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             message.DataTrigger.Destination = "abcdefghijklmnop";
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -102,7 +104,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             message.DataTrigger.Destination = string.Empty;
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -112,7 +114,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             message.DataTrigger.Destination = " ";
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -122,7 +124,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             message.DataTrigger.Destination = " ";
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -133,7 +135,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -144,7 +146,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 
             var result = _eventPayloadValidator!.ValidateWorkflowRequest(message);
 
-            Assert.IsTrue(result);
+            ClassicAssert.IsTrue(result);
         }
 
         [Test]
@@ -164,7 +166,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 
             var result = _eventPayloadValidator!.ValidateTaskUpdate(updateEvent);
 
-            Assert.IsTrue(result);
+            ClassicAssert.IsTrue(result);
         }
 
         [Test]
@@ -184,7 +186,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 
             var result = _eventPayloadValidator!.ValidateTaskUpdate(updateEvent);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -209,7 +211,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 
             var result = _eventPayloadValidator!.ValidateExportComplete(exportEvent);
 
-            Assert.IsTrue(result);
+            ClassicAssert.IsTrue(result);
         }
 
         [Test]
@@ -225,7 +227,7 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
 
             var result = _eventPayloadValidator!.ValidateExportComplete(exportEvent);
 
-            Assert.IsFalse(result);
+            ClassicAssert.IsFalse(result);
         }
 
         [Test]
@@ -235,6 +237,104 @@ namespace Monai.Deploy.WorkflowManager.Common.PayloadListener.Tests.Validators
             {
                 _eventPayloadValidator!.ValidateExportComplete(null);
             });
+        }
+
+        [Test]
+        public void ValidateArtifactsReceived_ArtifactsReceivedEventIsValid_ReturnsTrue()
+        {
+            var artifacts = new List<Artifact>
+            {
+                new Artifact()
+                {
+                    Path = "testpath",
+                    Type = ArtifactType.Folder
+                },
+                new Artifact()
+                {
+                    Path = "testdicompath",
+                    Type = ArtifactType.CT
+                }
+            };
+            var artifactsReceivedEvent = CreateTestArtifactsReceivedEvent(artifacts);
+
+            var result = _eventPayloadValidator!.ValidateArtifactReceived(artifactsReceivedEvent);
+
+            ClassicAssert.IsTrue(result);
+        }
+
+        [Test]
+        public void ValidateArtifactsReceived_ArtifactsReceivedEventIsValidWithWorkflows_ReturnsTrue()
+        {
+            var artifacts = new List<Artifact>
+            {
+                new Artifact()
+                {
+                    Path = "testpath",
+                    Type = ArtifactType.Folder
+                },
+                new Artifact()
+                {
+                    Path = "testdicompath",
+                    Type = ArtifactType.CT
+                }
+            };
+            var workflows = new List<string> { "123", "234", "345", "456" };
+            var artifactsReceivedEvent = CreateTestArtifactsReceivedEvent(artifacts, workflows);
+
+            var result = _eventPayloadValidator!.ValidateArtifactReceived(artifactsReceivedEvent);
+
+            ClassicAssert.IsTrue(result);
+        }
+
+        [Test]
+        public void ValidateArtifactsReceived_ArtifactsReceivedEventIsInvalid_ReturnsFalse()
+        {
+            var artifacts = new List<Artifact>
+            {
+                new Artifact()
+                {
+                    Path = "testpath",
+                    Type = ArtifactType.Folder
+                },
+                new Artifact()
+                {
+                    Path = "testdicompath",
+                    Type = ArtifactType.Unset
+                }
+            };
+            var artifactsReceivedEvent = CreateTestArtifactsReceivedEvent(artifacts);
+
+            var result = _eventPayloadValidator!.ValidateArtifactReceived(artifactsReceivedEvent);
+
+            ClassicAssert.IsFalse(result);
+        }
+
+        private static ArtifactsReceivedEvent CreateTestArtifactsReceivedEvent(List<Artifact> artifacts,
+            IEnumerable<string>? workflows = null)
+        {
+            var artifactsReceivedEvent = new ArtifactsReceivedEvent
+            {
+                DataTrigger = new DataOrigin()
+                {
+                    Source = "source",
+                    Destination = "destination",
+                    ArtifactType = ArtifactType.CT
+                },
+                Bucket = "Bucket",
+                PayloadId = Guid.NewGuid(),
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow,
+
+                WorkflowInstanceId = Guid.NewGuid().ToString(),
+                TaskId = Guid.NewGuid().ToString(),
+                Artifacts = artifacts
+            };
+
+            if (workflows is not null)
+            {
+                artifactsReceivedEvent.Workflows = workflows;
+            }
+            return artifactsReceivedEvent;
         }
 
         private static WorkflowRequestEvent CreateWorkflowRequestMessageWithNoWorkFlow()

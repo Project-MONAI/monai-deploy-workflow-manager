@@ -157,7 +157,9 @@ namespace TaskManager.Docker.Tests
             foreach (var file in files)
             {
                 var dir = _fileSystem.Path.GetDirectoryName(file);
+#pragma warning disable CS8604 // Possible null reference argument.
                 _fileSystem.Directory.CreateDirectory(dir);
+#pragma warning restore CS8604 // Possible null reference argument.
                 using var stream = _fileSystem.File.CreateText(file);
                 stream.WriteLine(file);
             }

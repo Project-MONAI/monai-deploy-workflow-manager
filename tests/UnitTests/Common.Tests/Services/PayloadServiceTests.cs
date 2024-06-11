@@ -27,6 +27,8 @@ using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Storage.Services;
 using Moq;
 using Xunit;
+using Microsoft.Extensions.Options;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
 {
@@ -36,6 +38,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
 
         private readonly Mock<IPayloadRepository> _payloadRepository;
         private readonly Mock<IWorkflowInstanceRepository> _workflowInstanceRepository;
+        private readonly Mock<IWorkflowRepository> _workflowRepository;
         private readonly Mock<IDicomService> _dicomService;
         private readonly Mock<IServiceScopeFactory> _serviceScopeFactory;
         private readonly Mock<IServiceProvider> _serviceProvider;
@@ -47,6 +50,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
         {
             _payloadRepository = new Mock<IPayloadRepository>();
             _workflowInstanceRepository = new Mock<IWorkflowInstanceRepository>();
+            _workflowRepository = new Mock<IWorkflowRepository>();
             _dicomService = new Mock<IDicomService>();
             _serviceProvider = new Mock<IServiceProvider>();
             _storageService = new Mock<IStorageService>();
@@ -65,7 +69,16 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
                 .Setup(x => x.GetService(typeof(IStorageService)))
                 .Returns(_storageService.Object);
 
-            PayloadService = new PayloadService(_payloadRepository.Object, _dicomService.Object, _workflowInstanceRepository.Object, _serviceScopeFactory.Object, _logger.Object);
+            var opts = Options.Create(new WorkflowManagerOptions { DataRetentionDays = 99 });
+
+            PayloadService = new PayloadService(
+                _payloadRepository.Object,
+                _dicomService.Object,
+                _workflowInstanceRepository.Object,
+                _workflowRepository.Object,
+                _serviceScopeFactory.Object,
+                opts,
+                _logger.Object);
         }
 
         [Fact]
@@ -320,7 +333,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
             var payloadId = Guid.NewGuid().ToString();
 
             _payloadRepository.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(() => new Payload());
-            _payloadRepository.Setup(p => p.UpdateAsync(It.IsAny<Payload>())).ReturnsAsync(() => true);
+            _payloadRepository.Setup(p => p.UpdateAsyncWorkflowIds(It.IsAny<Payload>())).ReturnsAsync(() => true);
             _workflowInstanceRepository.Setup(r => r.GetByPayloadIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(() => new List<WorkflowInstance>());
 
             _storageService.Setup(s => s.RemoveObjectsAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), default));
@@ -361,7 +374,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
             var payloadId = Guid.NewGuid().ToString();
 
             _payloadRepository.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(() => new Payload());
-            _payloadRepository.Setup(p => p.UpdateAsync(It.IsAny<Payload>())).ReturnsAsync(() => true);
+            _payloadRepository.Setup(p => p.UpdateAsyncWorkflowIds(It.IsAny<Payload>())).ReturnsAsync(() => true);
             _workflowInstanceRepository.Setup(r => r.GetByPayloadIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(() => new List<WorkflowInstance>
             {
                 new WorkflowInstance
@@ -372,5 +385,123 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
 
             await Assert.ThrowsAsync<MonaiBadRequestException>(async () => await PayloadService.DeletePayloadFromStorageAsync(payloadId));
         }
+
+
+        [Fact]
+        public async Task GetExpiry_Should_use_Config_if_not_set()
+        {
+            _workflowInstanceRepository.Setup(r =>
+                r.GetByPayloadIdsAsync(It.IsAny<List<string>>())
+                ).ReturnsAsync(() => new List<WorkflowInstance>());
+            var workflow = new WorkflowRevision { Workflow = new Workflow { DataRetentionDays = null } };
+
+
+            _workflowRepository.Setup(r =>
+                    r.GetByWorkflowIdAsync(It.IsAny<string>())
+                    ).ReturnsAsync(workflow);
+
+            var now = new DateTime(2021, 1, 1);
+            var expires = await PayloadService.GetExpiry(now, "workflowInstanceId");
+            Assert.Equal(now.AddDays(99), expires);
+        }
+
+        [Fact]
+        public async Task GetExpiry_Should_return_null_if_minusOne()
+        {
+            _workflowInstanceRepository.Setup(r =>
+                r.GetByWorkflowInstanceIdAsync(It.IsAny<string>())
+                ).ReturnsAsync(() => new WorkflowInstance());
+            var workflow = new WorkflowRevision { Workflow = new Workflow { DataRetentionDays = -1 } };
+
+
+            _workflowRepository.Setup(r =>
+                    r.GetByWorkflowIdAsync(It.IsAny<string>())
+                    ).ReturnsAsync(workflow);
+
+            var now = new DateTime(2021, 1, 1);
+            var expires = await PayloadService.GetExpiry(now, "workflowInstanceId");
+            Assert.Null(expires);
+        }
+
+        [Fact]
+        public async Task GetExpiry_Should_use_Workflow_Value_if_set()
+        {
+            _workflowInstanceRepository.Setup(r =>
+                    r.GetByWorkflowInstanceIdAsync(It.IsAny<string>())
+                    ).ReturnsAsync(() => new WorkflowInstance());
+            var workflow = new WorkflowRevision { Workflow = new Workflow { DataRetentionDays = 4 } };
+
+            _workflowRepository.Setup(r =>
+                    r.GetByWorkflowIdAsync(It.IsAny<string>())
+                    ).ReturnsAsync(workflow);
+            var now = new DateTime(2021, 1, 1);
+            var expires = await PayloadService.GetExpiry(now, "workflowInstanceId");
+            Assert.Equal(now.AddDays(4), expires);
+        }
+
+        [Fact]
+        public void PayloadServiceCreate_Should_Throw_If_No_Options_Passed()
+        {
+            Assert.Throws<ArgumentNullException>(() => new PayloadService(
+                               _payloadRepository.Object,
+                               _dicomService.Object,
+                               _workflowInstanceRepository.Object,
+                               _workflowRepository.Object,
+                               _serviceScopeFactory.Object,
+                               null!,
+                               _logger.Object));
+        }
+
+        [Fact]
+        public void PayloadServiceCreate_Should_Throw_If_No_workflowRepository_Passed()
+        {
+            var opts = Options.Create(new WorkflowManagerOptions { DataRetentionDays = 99 });
+
+            Assert.Throws<ArgumentNullException>(() => new PayloadService(
+                   _payloadRepository.Object,
+                   _dicomService.Object,
+                   _workflowInstanceRepository.Object,
+                   null!,
+                   _serviceScopeFactory.Object,
+                   opts,
+                   _logger.Object));
+        }
+
+        [Fact]
+        public async Task PayloadServiceCreate_Should_Call_GetExpiry()
+        {
+            _payloadRepository.Setup(p => p.CreateAsync(It.IsAny<Payload>())).ReturnsAsync(true);
+
+            var payload = await PayloadService.CreateAsync(new WorkflowRequestEvent
+            {
+                Timestamp = DateTime.UtcNow,
+                Bucket = "bucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                PayloadId = Guid.NewGuid(),
+                Workflows = new List<string> { Guid.NewGuid().ToString() },
+                FileCount = 0
+            });
+
+            var daysdiff = (payload!.Expires! - DateTime.UtcNow).Value.TotalDays + 0.5;
+
+            Assert.Equal(99, (int)daysdiff);
+        }
+
+
+        [Fact]
+        public async Task UpdateAsync_NullPayload_ThrowsArgumentNullException()
+        {
+
+#pragma warning disable CS8604 // Possible null reference argument.
+            // Arrange
+            Payload payload = null;
+
+            // Act & Assert
+
+            await Assert.ThrowsAsync<ArgumentNullException>(() => PayloadService.UpdateAsyncWorkflowIds(payload));
+#pragma warning restore CS8604 // Possible null reference argument.
+        }
+
     }
 }

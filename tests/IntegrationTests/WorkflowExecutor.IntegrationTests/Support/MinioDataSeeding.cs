@@ -36,6 +36,14 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
             OutputHelper = outputHelper;
         }
 
+
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        public async Task SeedArtifactRepo(string payloadId, string? folderName = null)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        {
+
+        }
+
         public async Task SeedWorkflowInputArtifacts(string payloadId, string? folderName = null)
         {
             string localPath;
@@ -56,6 +64,13 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
             OutputHelper.WriteLine($"Seeding objects to {TestExecutionConfig.MinioConfig.Bucket}/{payloadId}/dcm");
             await MinioClient.AddFileToStorage(localPath, $"{payloadId}/dcm");
             OutputHelper.WriteLine($"Objects seeded");
+        }
+
+        public async Task SeedArtifactRecieviedArtifact(string payloadId)
+        {
+            var localPath = Path.Combine(GetDirectory() ?? "", "DICOMs", "full_patient_metadata", "dcm");
+
+            await MinioClient.AddFileToStorage(localPath, $"path");
         }
 
         public async Task SeedTaskOutputArtifacts(string payloadId, string workflowInstanceId, string executionId, string? folderName = null)

@@ -15,6 +15,7 @@
  */
 
 using Ardalis.GuardClauses;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
@@ -24,7 +25,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
     {
         public static bool IsValid(this WorkflowRequestEvent workflowRequestMessage, out IList<string> validationErrors)
         {
-            Guard.Against.Null(workflowRequestMessage, nameof(workflowRequestMessage));
+            ArgumentNullException.ThrowIfNull(workflowRequestMessage, nameof(workflowRequestMessage));
 
             validationErrors = new List<string>();
 
@@ -39,9 +40,42 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
             return valid;
         }
 
+        public static bool IsValid(this ArtifactsReceivedEvent artifactReceivedMessage, out IList<string> validationErrors)
+        {
+            ArgumentNullException.ThrowIfNull(artifactReceivedMessage, nameof(artifactReceivedMessage));
+
+            validationErrors = new List<string>();
+
+            var valid = true;
+
+            valid &= IsAeTitleValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.DataTrigger.Source, validationErrors);
+            valid &= IsAeTitleValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.DataTrigger.Destination, validationErrors);
+            valid &= IsBucketValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.Bucket, validationErrors);
+            valid &= IsCorrelationIdValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.CorrelationId, validationErrors);
+            valid &= IsPayloadIdValid(artifactReceivedMessage.GetType().Name, artifactReceivedMessage.PayloadId.ToString(), validationErrors);
+            valid &= string.IsNullOrEmpty(artifactReceivedMessage.WorkflowInstanceId) is false && string.IsNullOrEmpty(artifactReceivedMessage.TaskId) is false;
+            valid &= AllArtifactsAreValid(artifactReceivedMessage, validationErrors);
+            return valid;
+        }
+
+        private static bool AllArtifactsAreValid(this ArtifactsReceivedEvent artifactReceivedMessage, IList<string> validationErrors)
+        {
+            ArgumentNullException.ThrowIfNull(artifactReceivedMessage, nameof(artifactReceivedMessage));
+
+            var valid = artifactReceivedMessage.Artifacts.All(a => a.Type != ArtifactType.Unset);
+
+            if (valid is false)
+            {
+                var unsetArtifacts = string.Join(',', artifactReceivedMessage.Artifacts.Where(a => a.Type == ArtifactType.Unset).Select(a => a.Path));
+                validationErrors.Add($"The following artifacts are have unset artifact types: {unsetArtifacts}");
+            }
+
+            return valid;
+        }
+
         public static bool IsInformaticsGatewayNotNull(string source, InformaticsGateway informaticsGateway, IList<string> validationErrors)
         {
-            Guard.Against.NullOrWhiteSpace(source, nameof(source));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(source, nameof(source));
 
             if (informaticsGateway is not null) return true;
 
@@ -51,7 +85,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 
         public static bool IsAeTitleValid(string source, string aeTitle, IList<string> validationErrors)
         {
-            Guard.Against.NullOrWhiteSpace(source, nameof(source));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(source, nameof(source));
 
             if (!string.IsNullOrWhiteSpace(aeTitle) && aeTitle.Length <= 15) return true;
 
@@ -61,7 +95,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 
         public static bool IsBucketValid(string source, string bucket, IList<string> validationErrors = null)
         {
-            Guard.Against.NullOrWhiteSpace(source, nameof(source));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(source, nameof(source));
 
             if (!string.IsNullOrWhiteSpace(bucket) && bucket.Length >= 3 && bucket.Length <= 63) return true;
 
@@ -72,7 +106,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 
         public static bool IsCorrelationIdValid(string source, string correlationId, IList<string> validationErrors = null)
         {
-            Guard.Against.NullOrWhiteSpace(source, nameof(source));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(source, nameof(source));
 
             if (!string.IsNullOrWhiteSpace(correlationId) && Guid.TryParse(correlationId, out var _)) return true;
 
@@ -83,7 +117,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Extensions
 
         public static bool IsPayloadIdValid(string source, string payloadId, IList<string> validationErrors = null)
         {
-            Guard.Against.NullOrWhiteSpace(source, nameof(source));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(source, nameof(source));
 
             var parsed = Guid.TryParse(payloadId, out var parsedGuid);
 

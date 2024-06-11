@@ -62,15 +62,40 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Services.Http
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MONAI Workflow Manager", Version = "v1" });
                 c.DescribeAllParametersInCamelCase();
+                c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                {
+                    Scheme = "basic",
+                    Name = "basic",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "basic",
+                                },
+                            },
+                        System.Array.Empty<string>()
+                    },
+                });
             });
 
             var serviceProvider = services.BuildServiceProvider();
             var logger = serviceProvider.GetService<ILogger<Startup>>();
 
             services.AddHttpLoggingForMonai(Configuration);
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8604 // Possible null reference argument.
             services.AddHealthChecks()
                 .AddCheck<MonaiHealthCheck>("Task Manager Services")
                 .AddMongoDb(mongodbConnectionString: Configuration["WorkloadManagerDatabase:ConnectionString"], mongoDatabaseName: Configuration["WorkloadManagerDatabase:DatabaseName"]);
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8604 // Possible null reference argument.
         }
 
         /// <summary>

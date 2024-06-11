@@ -55,9 +55,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
 
         public VirtualFileInfo(string filename, string filePath, string etag, ulong size)
         {
-            Guard.Against.Null(filename, nameof(filename));
-            Guard.Against.Null(filePath, nameof(filePath));
-            Guard.Against.Null(etag, nameof(etag));
+            ArgumentNullException.ThrowIfNull(filename, nameof(filename));
+            ArgumentNullException.ThrowIfNull(filePath, nameof(filePath));
+            ArgumentNullException.ThrowIfNull(etag, nameof(etag));
 
             Filename = filename;
             FilePath = filePath;

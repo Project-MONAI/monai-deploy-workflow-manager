@@ -122,7 +122,7 @@ Scenario Outline: Update workflow with invalid details
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc'                                                                    |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Dup_Task_Id                        | Found duplicate task id 'liver-seg'                                                                                                                                        |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Workflow_Coverging_Task_Dest                | Converging Tasks Destinations in tasks                                                                                                                                     |
-    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Clinical_Review_Task_Id                     | 'clinical-review' reviewed_task_id: 'router' does not reference an Argo task.                                                                                              |
+    | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Clinical_Review_Task_Id                     | 'clinical-review' reviewed_task_id: 'router' does not reference an accepted reviewable task type. (argo, remote_app_execution)                                                                                              |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Clinical_Review_Multiple_Argo_Inputs        | Invalid input artifact 'Argo2' in task 'clinical-review': Task cannot reference a non-reviewed task artifacts 'argo-task-2'                                                |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Clinical_Review_Missing_Notifications       | notifications must be specified                                                                                                                                            |
     | /workflows/c86a437d-d026-4bdf-b1df-c7a6372b89e3 | Invalid_Clinical_Review_Invalid_Notifications       | notifications is incorrectly specified                                                                                                                                     |
@@ -169,6 +169,13 @@ Scenario: Add workflow with valid details with clinical review task
     Then I will get a 201 response
 
 @AddWorkflows
+Scenario: Add workflow with valid details with remote app task
+    Given I have an endpoint /workflows
+    And I have a workflow body Valid_remote_task
+    When I send a POST request
+    Then I will get a 201 response
+
+@AddWorkflows
 Scenario: Add workflow with valid empty details
     Given I have an endpoint /workflows
     And I have a workflow body Basic_Workflow_2
@@ -205,10 +212,12 @@ Scenario Outline: Add workflow with invalid details
     | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc'                                                                    |
     | Invalid_Workflow_Dup_Task_Id                        | Found duplicate task id 'liver-seg'                                                                                                                                        |
     | Invalid_Workflow_Coverging_Task_Dest                | Converging Tasks Destinations in tasks                                                                                                                                     |
-    | Invalid_Clinical_Review_Task_Id                     | 'clinical-review' reviewed_task_id: 'router' does not reference an Argo task.                                                                                              |
+    | Invalid_Clinical_Review_Task_Id                     | 'clinical-review' reviewed_task_id: 'router' does not reference an accepted reviewable task type. (argo, remote_app_execution)                                                                                              |
     | Invalid_Clinical_Review_Multiple_Argo_Inputs        | Invalid input artifact 'Argo2' in task 'clinical-review': Task cannot reference a non-reviewed task artifacts 'argo-task-2'                                                |
     | Invalid_Clinical_Review_Missing_Notifications       | notifications must be specified                                                                                                                                            |
     | Invalid_Clinical_Review_Invalid_Notifications       | notifications is incorrectly specified                                                                                                                                     |
+    | invalid_remote_task_without_outputs                 | Task: 'invalid_remote_task_step2_remote_app' must contain at lease a single output                                                                                         |
+    | Invalid_remote_task_without_outputs_type_set        | Task: 'invalid_remote_task_step2_remote_app' has incorrect artifact output types set on artifacts with following name.                                                     |
 
 @AddWorkflows
 Scenario Outline: Add workflow with duplicate workflow name
@@ -254,7 +263,7 @@ Scenario Outline: Validate workflow with invalid details
     | Invalid_Workflow_Incorrect_Clinical_Review_Artifact | Invalid input artifact 'test' in task 'Clinical_Review_Task': No matching task for ID 'mean-pixel-calc'                                                                    |
     | Invalid_Workflow_Dup_Task_Id                        | Found duplicate task id 'liver-seg'                                                                                                                                        |
     | Invalid_Workflow_Coverging_Task_Dest                | Converging Tasks Destinations in tasks                                                                                                                                     |
-    | Invalid_Clinical_Review_Task_Id                     | 'clinical-review' reviewed_task_id: 'router' does not reference an Argo task.                                                                                              |
+    | Invalid_Clinical_Review_Task_Id                     | 'clinical-review' reviewed_task_id: 'router' does not reference an accepted reviewable task type. (argo, remote_app_execution)                                                                                              |
     | Invalid_Clinical_Review_Multiple_Argo_Inputs        | Invalid input artifact 'Argo2' in task 'clinical-review': Task cannot reference a non-reviewed task artifacts 'argo-task-2'                                                |
     | Invalid_Clinical_Review_Missing_Notifications       | notifications must be specified                                                                                                                                            |
     | Invalid_Clinical_Review_Invalid_Notifications       | notifications is incorrectly specified                                                                                                                                     |

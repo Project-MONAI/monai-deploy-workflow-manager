@@ -63,5 +63,20 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
         /// <param name="keyId"></param>
         /// <returns></returns>
         string GetValue(Dictionary<string, DicomValue> dict, string keyId);
+
+        /// <summary>
+        /// Gets the first metadata froma payloads folder.
+        /// </summary>
+        /// <param name="payloadId"></param>
+        /// <param name="bucketId"></param>
+        /// <returns>a dictionary of tags and values</returns>
+        Task<Dictionary<string, DicomValue>?> GetMetaData(string payloadId, string bucketId);
+
+        /// <summary>
+        /// Get the seriers instance UID from the metadata.
+        /// </summary>
+        /// <param name="dict"></param>
+        /// <returns>a string containing the seriers instanceUid</returns>
+        string? GetSeriesInstanceUID(Dictionary<string, DicomValue>? dict);
     }
 }

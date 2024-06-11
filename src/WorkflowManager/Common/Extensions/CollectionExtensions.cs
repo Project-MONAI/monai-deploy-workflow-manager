@@ -42,7 +42,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions
         /// <param name="otherArray"></param>
         public static void Append<TKey, TValue>(this Dictionary<TKey, TValue> array, Dictionary<TKey, TValue> otherArray) where TKey : notnull
         {
-            Guard.Against.Null(array, nameof(array));
+            ArgumentNullException.ThrowIfNull(array, nameof(array));
             if (otherArray.IsNullOrEmpty())
             {
                 return;

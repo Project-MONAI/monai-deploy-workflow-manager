@@ -19,7 +19,6 @@ using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.IntegrationTests.Support;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
 using Newtonsoft.Json;
-using NUnit.Framework;
 using TechTalk.SpecFlow.Infrastructure;
 
 namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.StepDefinitions
@@ -49,10 +48,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
         public void ThenICanSeeTasksAreReturned(int number)
         {
             var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
-            var response = JsonConvert.DeserializeObject<PagedResponse<IList<TaskExecution>>>(result);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-            Assert.AreEqual(number, response?.Data.Count);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            var response = JsonConvert.DeserializeObject<PagedResponse<IList<TaskExecution>>>(result!);
+            number.Should().Be(response!.Data!.Count);
         }
     }
 }

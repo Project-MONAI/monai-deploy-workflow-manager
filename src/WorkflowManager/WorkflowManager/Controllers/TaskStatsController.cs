@@ -38,7 +38,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
     /// </summary>
     [ApiController]
     [Route("tasks")]
-    public class TaskStatsController : ApiControllerBase
+    public class TaskStatsController : PaginationApiControllerBase
     {
         private readonly ILogger<TaskStatsController> _logger;
         private readonly IUriService _uriService;
@@ -114,6 +114,61 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
         }
 
         /// <summary>
+        /// Get execution daily stats for a given time period.
+        /// </summary>
+        /// <param name="filter">TimeFiler defining start and end times, plus paging options.</param>
+        /// <param name="workflowId">WorkflowId if you want stats just for a given workflow. (both workflowId and TaskId must be given, if you give one).</param>
+        /// <returns>a paged obect with all the stat details.</returns>
+        [ProducesResponseType(typeof(StatsPagedResponse<List<ExecutionStatDTO>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        [HttpGet("dailystats")]
+        public async Task<IActionResult> GetDailyStatsAsync([FromQuery] TimeFilter filter, string workflowId = "")
+        {
+            SetUpFilter(filter, out var route, out var pageSize, out var validFilter);
+
+            try
+            {
+                var allStats = await _repository.GetAllStatsAsync(filter.StartTime, filter.EndTime, workflowId, string.Empty);
+                var statsDto = allStats
+                    .OrderBy(a => a.StartedUTC)
+                    .GroupBy(s => s.StartedUTC.Date)
+                    .Select(g => new ExecutionStatDayOverview
+                    {
+                        Date = DateOnly.FromDateTime(g.Key.Date),
+                        TotalExecutions = g.Count(),
+                        TotalFailures = g.Count(i => string.Compare(i.Status, "Failed", true) == 0 && i.Reason != FailureReason.TimedOut && i.Reason != FailureReason.Rejected),
+                        TotalApprovals = g.Count(i => string.Compare(i.Status, "Succeeded", true) == 0 && i.Reason == FailureReason.None),
+                        TotalRejections = g.Count(i => string.Compare(i.Status, "Failed", true) == 0 && i.Reason == FailureReason.Rejected),
+                        TotalCancelled = g.Count(i => string.Compare(i.Status, "Failed", true) == 0 && i.Reason == FailureReason.TimedOut),
+                        TotalAwaitingReview = g.Count(i => string.Compare(i.Status, ApplicationReviewStatus.AwaitingReview.ToString(), true) == 0),
+                    });
+
+
+
+                var pagedStats = statsDto.Skip((filter.PageNumber - 1) * pageSize).Take(pageSize);
+
+                var res = CreateStatsPagedResponse(pagedStats, validFilter, statsDto.Count(), _uriService, route);
+                var (avgTotalExecution, avgArgoExecution) = await _repository.GetAverageStats(filter.StartTime, filter.EndTime, workflowId, string.Empty);
+
+                res.PeriodStart = filter.StartTime;
+                res.PeriodEnd = filter.EndTime;
+                res.TotalExecutions = allStats.Count();
+                res.TotalSucceeded = statsDto.Sum(s => s.TotalApprovals);
+                res.TotalFailures = statsDto.Sum(s => s.TotalFailures + s.TotalCancelled + s.TotalRejections);
+                res.TotalInprogress = statsDto.Sum(s => s.TotalAwaitingReview);
+                res.AverageTotalExecutionSeconds = Math.Round(avgTotalExecution, 2);
+                res.AverageArgoExecutionSeconds = Math.Round(avgArgoExecution, 2);
+
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                _logger.GetStatsAsyncError(e);
+                return Problem($"Unexpected error occurred: {e.Message}", $"tasks/stats", InternalServerError);
+            }
+        }
+
+        /// <summary>
         /// Get execution stats for a given time period.
         /// </summary>
         /// <param name="filter">TimeFiler defining start and end times, plus paging options.</param>
@@ -133,6 +188,57 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
                 return Problem("Failed to validate ids, not a valid guid", "tasks/stats/", BadRequest);
             }
 
+            SetUpFilter(filter, out var route, out var pageSize, out var validFilter);
+
+            try
+            {
+                var allStats = await _repository.GetStatsAsync(filter.StartTime, filter.EndTime, pageSize, filter.PageNumber, workflowId, taskId);
+                var statsDto = allStats
+                    .OrderBy(a => a.StartedUTC)
+                    .Select(s => new ExecutionStatDTO(s));
+
+                var res = await GatherPagedStats(filter, workflowId, taskId, route, validFilter, statsDto);
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                _logger.GetStatsAsyncError(e);
+                return Problem($"Unexpected error occurred: {e.Message}", $"tasks/stats", InternalServerError);
+            }
+        }
+
+        private async Task<StatsPagedResponse<IEnumerable<T>>> GatherPagedStats<T>(TimeFilter filter, string workflowId, string taskId, string route, PaginationFilter validFilter, IEnumerable<T> statsDto)
+        {
+            workflowId ??= string.Empty;
+            taskId ??= string.Empty;
+
+            var successes = _repository.GetStatsStatusSucceededCountAsync(filter.StartTime, filter.EndTime, workflowId, taskId);
+
+            var fails = _repository.GetStatsStatusFailedCountAsync(filter.StartTime, filter.EndTime, workflowId, taskId);
+
+            var rangeCount = _repository.GetStatsTotalCompleteExecutionsCountAsync(filter.StartTime, filter.EndTime, workflowId, taskId);
+
+            var stats = _repository.GetAverageStats(filter.StartTime, filter.EndTime, workflowId, taskId);
+
+            var running = _repository.GetStatsStatusCountAsync(filter.StartTime, filter.EndTime, TaskExecutionStatus.Accepted.ToString(), workflowId, taskId);
+
+            await Task.WhenAll(fails, rangeCount, stats, running);
+
+            var res = CreateStatsPagedResponse(statsDto, validFilter, rangeCount.Result, _uriService, route);
+
+            res.PeriodStart = filter.StartTime;
+            res.PeriodEnd = filter.EndTime;
+            res.TotalExecutions = rangeCount.Result;
+            res.TotalSucceeded = successes.Result;
+            res.TotalFailures = fails.Result;
+            res.TotalInprogress = running.Result;
+            res.AverageTotalExecutionSeconds = Math.Round(stats.Result.avgTotalExecution, 2);
+            res.AverageArgoExecutionSeconds = Math.Round(stats.Result.avgArgoExecution, 2);
+            return res;
+        }
+
+        private void SetUpFilter(TimeFilter filter, out string route, out int pageSize, out PaginationFilter validFilter)
+        {
             if (filter.EndTime == default)
             {
                 filter.EndTime = DateTime.Now;
@@ -143,53 +249,10 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
                 filter.StartTime = new DateTime(2023, 1, 1);
             }
 
-            var route = Request?.Path.Value ?? string.Empty;
-            var pageSize = filter.PageSize ?? Options.Value.EndpointSettings?.DefaultPageSize ?? 10;
+            route = Request?.Path.Value ?? string.Empty;
+            pageSize = filter.PageSize ?? Options.Value.EndpointSettings?.DefaultPageSize ?? 10;
             var max = Options.Value.EndpointSettings?.MaxPageSize ?? 20;
-            var validFilter = new PaginationFilter(filter.PageNumber, pageSize, max);
-
-            try
-            {
-                workflowId ??= string.Empty;
-                taskId ??= string.Empty;
-                var allStats = _repository.GetStatsAsync(filter.StartTime, filter.EndTime, pageSize, filter.PageNumber, workflowId, taskId);
-
-                var successes = _repository.GetStatsStatusSucceededCountAsync(filter.StartTime, filter.EndTime, workflowId, taskId);
-
-                var fails = _repository.GetStatsStatusFailedCountAsync(filter.StartTime, filter.EndTime, workflowId, taskId);
-
-                var rangeCount = _repository.GetStatsTotalCompleteExecutionsCountAsync(filter.StartTime, filter.EndTime, workflowId, taskId);
-
-                var stats = _repository.GetAverageStats(filter.StartTime, filter.EndTime, workflowId, taskId);
-
-                var running = _repository.GetStatsStatusCountAsync(filter.StartTime, filter.EndTime, TaskExecutionStatus.Accepted.ToString(), workflowId, taskId);
-
-                await Task.WhenAll(allStats, fails, rangeCount, stats, running);
-
-                ExecutionStatDTO[] statsDto;
-
-                statsDto = allStats.Result
-                    .OrderBy(a => a.StartedUTC)
-                    .Select(s => new ExecutionStatDTO(s))
-                    .ToArray();
-
-                var res = CreateStatsPagedReponse(statsDto, validFilter, rangeCount.Result, _uriService, route);
-
-                res.PeriodStart = filter.StartTime;
-                res.PeriodEnd = filter.EndTime;
-                res.TotalExecutions = rangeCount.Result;
-                res.TotalSucceeded = successes.Result;
-                res.TotalFailures = fails.Result;
-                res.TotalInprogress = running.Result;
-                res.AverageTotalExecutionSeconds = Math.Round(stats.Result.avgTotalExecution, 2);
-                res.AverageArgoExecutionSeconds = Math.Round(stats.Result.avgArgoExecution, 2);
-                return Ok(res);
-            }
-            catch (Exception e)
-            {
-                _logger.GetStatsAsyncError(e);
-                return Problem($"Unexpected error occurred: {e.Message}", $"tasks/stats", InternalServerError);
-            }
+            validFilter = new PaginationFilter(filter.PageNumber, pageSize, max);
         }
     }
 }

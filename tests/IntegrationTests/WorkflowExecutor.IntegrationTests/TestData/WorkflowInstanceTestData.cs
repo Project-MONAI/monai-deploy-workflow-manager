@@ -15,6 +15,7 @@
  */
 
 using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.WorkflowManager.Common.Contracts.Constants;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO;
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
@@ -209,7 +210,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = "7d7c8b83-6628-413c-9912-a89314e5e2d5",
                             OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
-                            TaskType = "Export",
+                            TaskType = TaskTypeConstants.DicomExportTask,
                             Status = TaskExecutionStatus.Dispatched
                         }
                     }
@@ -2212,6 +2213,46 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                     }
                 }
             },
+            new WorkflowInstanceTestData()
+            {
+                Name = "Workflow_Instance_For_Artifact_ReceivedEvent_1",
+                WorkflowInstance = new WorkflowInstance()
+                {
+                    Id = "d32d5769-4ecf-4639-a048-6ecf2cced04a",
+                    AeTitle = "Multi_Req",
+                    WorkflowId = Helper.GetWorkflowByName("Workflow_Revision_For_Artifact_ReceivedEvent_1")?.WorkflowRevision?.WorkflowId ?? "",
+                    PayloadId = "c4c3633b-c1dd-c4c9-8a1a-71adec3d47c3",
+                    BucketId = "bucket1",
+                    StartTime = DateTime.UtcNow,
+                    Status = Status.Created,
+                    InputMetaData = new Dictionary<string, string>()
+                    {
+                    },
+                    Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            TaskId = "root_task",
+                            OutputDirectory = "payloadId/workflows/workflowInstanceId/executionId/",
+                            TaskType = "router_task",
+                            Status = TaskExecutionStatus.Succeeded,
+                        },
+                        new TaskExecution()
+                        {
+                            ExecutionId = Guid.NewGuid().ToString(),
+                            WorkflowInstanceId = "d32d5769-4ecf-4639-a048-6ecf2cced04a",
+                            TaskId = "e545de90-c936-40ab-ad11-19ef07f49607",
+                            Status = TaskExecutionStatus.Dispatched,
+                            TaskType = "remote_task",
+                            OutputArtifacts = new Dictionary<string, string>()
+                            {
+                                { "key1", "value1" }
+                            },
+                        },
+                    }
+                }
+            }
         };
     }
 }

@@ -40,5 +40,12 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
         /// </summary>
         /// <param name="message">The export complete event.</param>
         Task ExportCompletePayload(MessageReceivedEventArgs message);
+
+        /// <summary>
+        /// Receives a artifactReceived payload and validates it,
+        /// either passing it on to the workflow executor or handling the message accordingly.
+        /// </summary>
+        /// <param name="message">The artifactReceived event.</param>
+        Task ArtifactReceivePayload(MessageReceivedEventArgs message);
     }
 }

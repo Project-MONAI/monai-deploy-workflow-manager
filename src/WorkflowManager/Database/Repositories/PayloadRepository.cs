@@ -16,8 +16,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
@@ -47,13 +47,35 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var mongoDatabase = client.GetDatabase(databaseSettings.Value.DatabaseName);
             _payloadCollection = mongoDatabase.GetCollection<Payload>("Payloads");
+            EnsureIndex().GetAwaiter().GetResult();
+        }
+
+        private async Task EnsureIndex()
+        {
+            var indexName = "PayloadDeletedIndex";
+
+            var model = new CreateIndexModel<Payload>(
+                    Builders<Payload>.IndexKeys.Ascending(s => s.PayloadDeleted),
+                        new CreateIndexOptions { Name = indexName }
+                    );
+
+
+            var asyncCursor = (await _payloadCollection.Indexes.ListAsync());
+            var bsonDocuments = (await asyncCursor.ToListAsync());
+            var indexes = bsonDocuments.Select(_ => _.GetElement("name").Value.ToString()).ToList();
+
+            // If index not present create it else skip.
+            if (!indexes.Exists(i => i is not null && i.Equals(indexName)))
+            {
+                await _payloadCollection.Indexes.CreateOneAsync(model);
+            }
         }
 
         public Task<long> CountAsync() => CountAsync(_payloadCollection, null);
 
         public async Task<bool> CreateAsync(Payload payload)
         {
-            Guard.Against.Null(payload, nameof(payload));
+            ArgumentNullException.ThrowIfNull(payload, nameof(payload));
 
             try
             {
@@ -91,7 +113,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
 
         public async Task<Payload> GetByIdAsync(string payloadId)
         {
-            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
 
             var payload = await _payloadCollection
                 .Find(x => x.PayloadId == payloadId)
@@ -100,14 +122,20 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
             return payload;
         }
 
-        public async Task<bool> UpdateAsync(Payload payload)
+        public async Task<bool> UpdateAsyncWorkflowIds(Payload payload)
         {
-            Guard.Against.Null(payload, nameof(payload));
+            ArgumentNullException.ThrowIfNull(payload, nameof(payload));
 
             try
             {
                 var filter = Builders<Payload>.Filter.Eq(p => p.PayloadId, payload.PayloadId);
                 await _payloadCollection.ReplaceOneAsync(filter, payload);
+
+                await _payloadCollection.FindOneAndUpdateAsync(
+                    i => i.Id == payload.Id,
+                    Builders<Payload>.Update
+                        .Set(p => p.TriggeredWorkflowNames, payload.TriggeredWorkflowNames)
+                        .Set(p => p.WorkflowInstanceIds, payload.WorkflowInstanceIds));
 
                 return true;
             }
@@ -118,23 +146,35 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
             }
         }
 
-        public async Task<bool> UpdateAssociatedWorkflowInstancesAsync(string payloadId, IEnumerable<string> workflowInstances)
+        public async Task<IList<Payload>> GetPayloadsToDelete(DateTime now)
         {
-            Guard.Against.NullOrEmpty(workflowInstances, nameof(workflowInstances));
-            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
-
             try
             {
-                await _payloadCollection.FindOneAndUpdateAsync(
-                    i => i.Id == payloadId,
-                    Builders<Payload>.Update.Set(p => p.WorkflowInstanceIds, workflowInstances));
+                var filter = (Builders<Payload>.Filter.Eq(p => p.PayloadDeleted, PayloadDeleted.No) |
+                             Builders<Payload>.Filter.Eq(p => p.PayloadDeleted, PayloadDeleted.Failed)) &
+                             Builders<Payload>.Filter.Lt(p => p.Expires, now);
 
-                return true;
+                return await (await _payloadCollection.FindAsync(filter)).ToListAsync();
+
             }
             catch (Exception ex)
             {
-                _logger.DbUpdateWorkflowInstanceError(ex);
-                return false;
+                _logger.DbGetPayloadsToDeleteError(ex);
+                return new List<Payload>();
+            }
+        }
+
+        public async Task MarkDeletedState(IList<string> Ids, PayloadDeleted status)
+        {
+            try
+            {
+                var filter = Builders<Payload>.Filter.In(p => p.PayloadId, Ids);
+                var update = Builders<Payload>.Update.Set(p => p.PayloadDeleted, status);
+                await _payloadCollection.UpdateManyAsync(filter, update);
+            }
+            catch (Exception ex)
+            {
+                _logger.DbGetPayloadsToDeleteError(ex);
             }
         }
     }

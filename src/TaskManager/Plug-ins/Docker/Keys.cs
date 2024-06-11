@@ -34,9 +34,19 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
         public static readonly string EntryPoint = "entrypoint";
 
         /// <summary>
+        /// Key for specifying the user to the container. Same as -u argument for docker run.
+        /// </summary>
+        public static readonly string User = "user";
+
+        /// <summary>
         /// Key for the command to execute by the container.
         /// </summary>
         public static readonly string Command = "command";
+
+        /// <summary>
+        /// Key to indicate whether to always pull the image.
+        /// </summary>
+        public static readonly string AlwaysPull = "always_pull";
 
         /// <summary>
         /// Key for task timeout value.

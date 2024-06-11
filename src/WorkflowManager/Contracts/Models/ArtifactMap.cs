@@ -24,6 +24,6 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
         public Artifact[] Input { get; set; } = System.Array.Empty<Artifact>();
 
         [JsonProperty(PropertyName = "output")]
-        public Artifact[] Output { get; set; } = System.Array.Empty<Artifact>();
+        public OutputArtifact[] Output { get; set; } = System.Array.Empty<OutputArtifact>();
     }
 }

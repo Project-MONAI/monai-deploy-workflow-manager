@@ -23,7 +23,7 @@ using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
-    [CollectionLocation("Workflows"), RuntimeVersion("1.0.0")]
+    [CollectionLocation("Workflows"), RuntimeVersion("1.0.2")]
     public class WorkflowRevision : ISoftDeleteable, IDocument
     {
         [BsonId]
@@ -31,7 +31,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
         public string? Id { get; set; }
 
         [JsonConverter(typeof(DocumentVersionConvert)), BsonSerializer(typeof(DocumentVersionConverBson))]
-        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 0);
+        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 1);
 
         [JsonProperty(PropertyName = "workflow_id")]
         public string WorkflowId { get; set; } = string.Empty;

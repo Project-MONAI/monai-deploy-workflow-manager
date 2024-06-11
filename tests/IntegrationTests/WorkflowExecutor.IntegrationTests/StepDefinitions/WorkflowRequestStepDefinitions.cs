@@ -50,7 +50,7 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.StepDefinitions
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetry(retryCount: 20, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
         }
 
-        [Given(@"I have a clinical workflow (.*)")]
+        [Given(@"I have a clinical workflow (?!.* )(.*)")]
         public void GivenIHaveClinicalWorkflows(string name)
         {
             _outputHelper.WriteLine($"Retrieving workflow revision with name={name}");

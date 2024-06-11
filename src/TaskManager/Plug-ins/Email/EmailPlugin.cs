@@ -16,7 +16,6 @@
 
 
 using System.Net.Mail;
-using Ardalis.GuardClauses;
 using FellowOakDicom;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -57,7 +56,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _options = options ?? throw new ArgumentNullException(nameof(options));
 
-            Guard.Against.Null(serviceScopeFactory, nameof(serviceScopeFactory));
+            ArgumentNullException.ThrowIfNull(serviceScopeFactory, nameof(serviceScopeFactory));
             _scope = serviceScopeFactory.CreateScope();
 
             _messageBrokerPublisherService = _scope.ServiceProvider.GetService<IMessageBrokerPublisherService>() ?? throw new ServiceNotFoundException(nameof(IMessageBrokerPublisherService));
@@ -176,8 +175,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
             foreach (var file in allFiles)
             {
                 if (file.FilePath.EndsWith(".json", StringComparison.InvariantCultureIgnoreCase)) continue;
-                Guard.Against.NullOrWhiteSpace(bucketName, nameof(bucketName));
-                Guard.Against.NullOrWhiteSpace(path, nameof(path));
+                ArgumentNullException.ThrowIfNullOrWhiteSpace(bucketName, nameof(bucketName));
+                ArgumentNullException.ThrowIfNullOrWhiteSpace(path, nameof(path));
 
                 // load file from Minio !
                 var fileStream = await _storageService.GetObjectAsync(bucketName, $"{file.FilePath}");
@@ -248,7 +247,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Email
 
         private async Task SendEmailRequestEvent(JsonMessage<EmailRequestEvent> message)
         {
-            Guard.Against.Null(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
 
             _logger.SendEmailRequestMessage(_requestQueue);
             await _messageBrokerPublisherService.Publish(_requestQueue, message.ToMessage()).ConfigureAwait(false);

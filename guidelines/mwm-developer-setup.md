@@ -21,7 +21,7 @@
 - python 3 installed.
 - Helm 3 https://helm.sh/docs/intro/install/
 - rabbitmqadmin https://www.rabbitmq.com/management-cli.html
-- mc.exe https://github.com/minio/mc install and add its location to the storage_settings_executableLocation setting (appsettings.local.json) including the name itself ! ie `mc.exe` if its in the folder of the running executable (\bin\Debug\net6.0).
+- mc.exe https://github.com/minio/mc install and add its location to the storage_settings_executableLocation setting (appsettings.local.json) including the name itself ! ie `mc.exe` if its in the folder of the running executable (\bin\Debug\net8.0).
 
 Note. if you already have docker container for Minio Rabbit etc running Stop these.
 
@@ -196,7 +196,7 @@ paste the above (with the proper workflowId) into bash and press enter.
 
 Debug in VisualStudio (if its not already running) and view the progress
 if you see error messages in the debug terminal in vs about mc.exe make sure you've copied it over as mentioned above.
-ie copy mc.exe to `\monai-deploy-workflow-manager\src\TaskManager\TaskManager\bin\Debug\net6.0`
+ie copy mc.exe to `\monai-deploy-workflow-manager\src\TaskManager\TaskManager\bin\Debug\net8.0`
 
 in the argo workflows tab [https://localhost:2746/workflows?limit=50](https://localhost:2746/workflows?limit=50)
 you should see the activity of the argo task running. once complete the code will process the callback and update messages.

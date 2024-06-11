@@ -15,7 +15,6 @@
  */
 
 using System.Globalization;
-using System.Runtime.Serialization;
 using Ardalis.GuardClauses;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.API
@@ -24,8 +23,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
     {
         public static void NullService<T>(this IGuardClause guardClause, T service, string parameterName)
         {
-            Guard.Against.Null(guardClause, nameof(guardClause));
-            Guard.Against.NullOrWhiteSpace(parameterName, nameof(parameterName));
+            ArgumentNullException.ThrowIfNull(guardClause, nameof(guardClause));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(parameterName, nameof(parameterName));
 
             if (service is null)
             {
@@ -34,7 +33,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
         }
     }
 
-    [Serializable]
     public class ServiceNotFoundException : Exception
     {
         private static readonly string MessageFormat = "Required service '{0}' cannot be found or cannot be initialized.";
@@ -50,10 +48,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.API
         }
 
         private ServiceNotFoundException()
-        {
-        }
-
-        protected ServiceNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

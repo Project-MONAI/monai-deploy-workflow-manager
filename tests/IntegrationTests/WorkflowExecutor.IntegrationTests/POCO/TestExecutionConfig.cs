@@ -36,6 +36,8 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO
 
             public static string WorkflowRequestQueue { get; set; } = string.Empty;
 
+            public static string ArtifactsRequestQueue { get; set; } = string.Empty;
+
             public static string TaskDispatchQueue { get; set; } = string.Empty;
 
             public static string TaskCallbackQueue { get; set; } = string.Empty;
@@ -65,6 +67,8 @@ namespace Monai.Deploy.WorkflowManager.Common.IntegrationTests.POCO
             public static string WorkflowInstanceCollection { get; set; } = string.Empty;
 
             public static string PayloadCollection { get; set; } = string.Empty;
+
+            public static string ArtifactsCollection { get; set; } = string.Empty;
 
             public static string ExecutionStatsCollection { get; set; } = string.Empty;
         }

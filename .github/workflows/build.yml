@@ -54,7 +54,7 @@ jobs:
 
       - name: Determine Version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.10.2
+        uses: gittools/actions/gitversion/execute@v1.1.1
         with:
           useConfigFile: true
           updateAssemblyInfo: true
@@ -65,7 +65,7 @@ jobs:
         run: cat src/AssemblyInfo.cs
 
       - name: Log in to the Container registry
-        uses: docker/login-action@v2.1.0
+        uses: docker/login-action@v3.2.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -73,7 +73,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v4.4.0
+        uses: docker/metadata-action@v5.5.1
         with:
           images: ${{ matrix.image }}
           tags: |
@@ -81,7 +81,7 @@ jobs:
             type=raw,value=${{ steps.gitversion.outputs.semVer }}
 
       - name: Build and Push Container Image for ${{ matrix.dockerfile }}
-        uses: docker/build-push-action@v4.0.0
+        uses: docker/build-push-action@v5.4.0
         with:
           context: .
           push: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/develop') ||contains(github.head_ref, 'release/') || contains(github.head_ref, 'feature/') || contains(github.head_ref, 'develop') }}
@@ -124,7 +124,7 @@ jobs:
 
       - name: Anchore Container Scan
         id: anchore-scan
-        uses: anchore/scan-action@v3.3.5
+        uses: anchore/scan-action@v3.6.4
         continue-on-error: true
         if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.head_ref, 'release/') }}
         with:
@@ -153,10 +153,10 @@ jobs:
 
       - uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: "6.0.x"
+          dotnet-version: "8.0.x"
 
       - name: Enable NuGet cache
-        uses: actions/cache@v3.3.1
+        uses: actions/cache@v4.0.2
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -164,7 +164,7 @@ jobs:
             ${{ runner.os }}-nuget
 
       - name: Setup DocFX
-        uses: crazy-max/ghaction-chocolatey@v2
+        uses: crazy-max/ghaction-chocolatey@v3
         with:
           args: install docfx
 
@@ -226,12 +226,12 @@ jobs:
           msg: ${{ github.repository }}
 
       - name: Install GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/setup@v0.10.2
+        uses: gittools/actions/gitreleasemanager/setup@v1.1.1
         with:
           versionSpec: "0.13.x"
 
       - name: Create release with GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/create@v0.10.2
+        uses: gittools/actions/gitreleasemanager/create@v1.1.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           owner: ${{ steps.repo.outputs._0 }}
@@ -242,7 +242,7 @@ jobs:
             artifacts/mwm-docs-${{ env.SEMVER }}.zip
 
       - name: Publish release with GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/publish@v0.10.2
+        uses: gittools/actions/gitreleasemanager/publish@v1.1.1
         if: ${{ contains(github.ref, 'refs/heads/main') }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -251,7 +251,7 @@ jobs:
           tagName: ${{ env.MAJORMINORPATCH }}
 
       - name: Close release with GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/close@v0.10.2
+        uses: gittools/actions/gitreleasemanager/close@v1.1.1
         if: ${{ contains(github.ref, 'refs/heads/main') }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -267,7 +267,7 @@ jobs:
           ls -lR userguide/
 
       - name: Deploy Docs
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         if: ${{ contains(github.ref, 'refs/heads/main') }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

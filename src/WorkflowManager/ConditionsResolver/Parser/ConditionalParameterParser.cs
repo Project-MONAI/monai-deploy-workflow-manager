@@ -98,7 +98,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser
         public bool TryParse(string[] conditions, WorkflowInstance workflowInstance, out string resolvedConditional)
         {
             Guard.Against.NullOrEmpty(conditions, nameof(conditions));
-            Guard.Against.Null(workflowInstance, nameof(workflowInstance));
+            ArgumentNullException.ThrowIfNull(workflowInstance, nameof(workflowInstance));
 
             var joinedConditions = conditions.CombineConditionString();
             return TryParse(joinedConditions, workflowInstance, out resolvedConditional);
@@ -106,8 +106,8 @@ namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser
 
         public bool TryParse(string conditions, WorkflowInstance workflowInstance, out string resolvedConditional)
         {
-            Guard.Against.NullOrEmpty(conditions, nameof(conditions));
-            Guard.Against.Null(workflowInstance, nameof(workflowInstance));
+            ArgumentNullException.ThrowIfNullOrEmpty(conditions, nameof(conditions));
+            ArgumentNullException.ThrowIfNull(workflowInstance, nameof(workflowInstance));
             resolvedConditional = string.Empty;
 
             try
@@ -127,8 +127,8 @@ namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser
 
         public string ResolveParameters(string conditions, WorkflowInstance workflowInstance)
         {
-            Guard.Against.NullOrEmpty(conditions, nameof(conditions));
-            Guard.Against.Null(workflowInstance, nameof(workflowInstance));
+            ArgumentNullException.ThrowIfNullOrEmpty(conditions, nameof(conditions));
+            ArgumentNullException.ThrowIfNull(workflowInstance, nameof(workflowInstance));
 
             WorkflowInstance = workflowInstance;
             return ResolveParameters(conditions, workflowInstance.Id);
@@ -222,7 +222,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser
         /// </returns>
         private (string? Result, ParameterContext Context) ResolveMatch(string value)
         {
-            Guard.Against.NullOrWhiteSpace(value, nameof(value));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(value, nameof(value));
 
             value = value.Substring(2, value.Length - 4).Trim();
 
@@ -252,8 +252,8 @@ namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser
 
         private (string? Result, ParameterContext Context) ResolveDicom(string value)
         {
-            Guard.Against.NullOrWhiteSpace(value, nameof(value));
-            Guard.Against.Null(WorkflowInstance, nameof(WorkflowInstance));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(value, nameof(value));
+            ArgumentNullException.ThrowIfNull(WorkflowInstance, nameof(WorkflowInstance));
 
             var subValue = value.Trim().Substring(ContextDicomSeries.Length, value.Length - ContextDicomSeries.Length);
             var valueArr = subValue.Split('\'');

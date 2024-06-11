@@ -19,7 +19,7 @@ using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
-using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services;
+using Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services;
 using Monai.Deploy.WorkflowManager.Logging;
 using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 
@@ -92,6 +92,12 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
 
                         return;
                     }
+
+                    if (string.IsNullOrWhiteSpace(string.Join("", payload.TriggeredWorkflowNames)) is false)
+                    {
+                        await PayloadService.UpdateAsyncWorkflowIds(payload);
+                    }
+
                 }
                 else
                 {
@@ -175,6 +181,48 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Services
             catch (Exception e)
             {
                 Logger.ExportCompleteRequeueUnknownError(message.Message.MessageId, e);
+                await _messageSubscriber.RequeueWithDelay(message.Message);
+            }
+        }
+
+        public async Task ArtifactReceivePayload(MessageReceivedEventArgs message)
+        {
+            try
+            {
+                var requestEvent = message.Message.ConvertTo<ArtifactsReceivedEvent>();
+
+                using var loggingScope = Logger.BeginScope(new LoggingDataDictionary<string, object>
+                {
+                    ["correlationId"] = requestEvent.CorrelationId,
+                    ["workflowId"] = requestEvent.Workflows.FirstOrDefault(),
+                    ["workflowInstanceId"] = requestEvent.WorkflowInstanceId,
+                    ["taskId"] = requestEvent.TaskId
+                });
+
+                Logger.WorkflowContinuation();
+
+                var validation = PayloadValidator.ValidateArtifactReceived(requestEvent);
+
+                if (!validation)
+                {
+                    Logger.ArtifactReceivedRejectValidationError(message.Message.MessageId);
+                    _messageSubscriber.Reject(message.Message, false);
+
+                    return;
+                }
+
+                if (!await WorkflowExecuterService.ProcessArtifactReceivedAsync(requestEvent))
+                {
+                    Logger.ArtifactReceivedRequeuePayloadCreateError(message.Message.MessageId);
+                    await _messageSubscriber.RequeueWithDelay(message.Message);
+
+                    return;
+                }
+                _messageSubscriber.Acknowledge(message.Message);
+            }
+            catch (Exception e)
+            {
+                Logger.ArtifactReceivedRequeueUnknownError(message.Message.MessageId, e);
                 await _messageSubscriber.RequeueWithDelay(message.Message);
             }
         }

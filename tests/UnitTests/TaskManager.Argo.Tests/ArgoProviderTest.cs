@@ -69,7 +69,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Tests
             Assert.NotNull(client);
             Assert.Equal(baseUri.ToString(), client!.BaseUrl);
 
-            _ = await client!.Argo_GetVersionAsync().ConfigureAwait(false);
+            _ = await client!.Argo_GetVersionAsync().ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
 
             handlerMock.Protected().Verify(
                "SendAsync",

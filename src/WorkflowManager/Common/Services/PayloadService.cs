@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
@@ -25,6 +24,8 @@ using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Logging;
 using Monai.Deploy.WorkflowManager.Common.Storage.Services;
+using Microsoft.Extensions.Options;
+using Monai.Deploy.WorkflowManager.Common.Configuration;
 
 namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 {
@@ -34,9 +35,13 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
         private readonly IWorkflowInstanceRepository _workflowInstanceRepository;
 
+        private readonly IWorkflowRepository _workflowRepository;
+
         private readonly IDicomService _dicomService;
 
         private readonly IStorageService _storageService;
+
+        private readonly WorkflowManagerOptions _options;
 
         private readonly ILogger<PayloadService> _logger;
 
@@ -44,13 +49,17 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
             IPayloadRepository payloadRepository,
             IDicomService dicomService,
             IWorkflowInstanceRepository workflowInstanceRepository,
+            IWorkflowRepository workflowRepository,
             IServiceScopeFactory serviceScopeFactory,
+            IOptions<WorkflowManagerOptions> options,
             ILogger<PayloadService> logger)
         {
             _payloadRepository = payloadRepository ?? throw new ArgumentNullException(nameof(payloadRepository));
             _workflowInstanceRepository = workflowInstanceRepository ?? throw new ArgumentNullException(nameof(workflowInstanceRepository));
             _dicomService = dicomService ?? throw new ArgumentNullException(nameof(dicomService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _workflowRepository = workflowRepository ?? throw new ArgumentNullException(nameof(workflowRepository));
+            _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
 
             var scopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
             var scope = scopeFactory.CreateScope();
@@ -60,7 +69,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
         public async Task<Payload?> CreateAsync(WorkflowRequestEvent eventPayload)
         {
-            Guard.Against.Null(eventPayload, nameof(eventPayload));
+            ArgumentNullException.ThrowIfNull(eventPayload, nameof(eventPayload));
 
             try
             {
@@ -73,6 +82,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
                 }
 
                 var patientDetails = await _dicomService.GetPayloadPatientDetailsAsync(eventPayload.PayloadId.ToString(), eventPayload.Bucket);
+                var dict = await _dicomService.GetMetaData(eventPayload.PayloadId.ToString(), eventPayload.Bucket).ConfigureAwait(false);
 
                 var payload = new Payload
                 {
@@ -85,7 +95,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
                     DataTrigger = eventPayload.DataTrigger,
                     Timestamp = eventPayload.Timestamp,
                     PatientDetails = patientDetails,
-                    PayloadDeleted = PayloadDeleted.No
+                    PayloadDeleted = PayloadDeleted.No,
+                    Expires = await GetExpiry(DateTime.UtcNow, eventPayload.WorkflowInstanceId),
+                    SeriesInstanceUid = _dicomService.GetSeriesInstanceUID(dict)
                 };
 
                 if (await _payloadRepository.CreateAsync(payload))
@@ -106,9 +118,30 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
             return null;
         }
 
+        public async Task<DateTime?> GetExpiry(DateTime now, string? workflowInstanceId)
+        {
+            var daysToKeep = await GetWorkflowDataExpiry(workflowInstanceId);
+            daysToKeep ??= _options.DataRetentionDays;
+
+            if (daysToKeep == -1) { return null; }
+
+            return now.AddDays(daysToKeep.Value);
+        }
+
+        private async Task<int?> GetWorkflowDataExpiry(string? workflowInstanceId)
+        {
+            if (string.IsNullOrWhiteSpace(workflowInstanceId)) { return null; }
+
+            var workflowInstance = await _workflowInstanceRepository.GetByWorkflowInstanceIdAsync(workflowInstanceId);
+
+            if (workflowInstance is null) { return null; }
+
+            return (await _workflowRepository.GetByWorkflowIdAsync(workflowInstance.WorkflowId))?.Workflow?.DataRetentionDays ?? null;
+        }
+
         public async Task<Payload> GetByIdAsync(string payloadId)
         {
-            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
 
             return await _payloadRepository.GetByIdAsync(payloadId);
         }
@@ -163,15 +196,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
         public async Task<bool> DeletePayloadFromStorageAsync(string payloadId)
         {
-            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
 
-            var payload = await GetByIdAsync(payloadId);
-
-            if (payload is null)
-            {
-                throw new MonaiNotFoundException($"Payload with ID: {payloadId} not found");
-            }
-
+            var payload = await GetByIdAsync(payloadId) ?? throw new MonaiNotFoundException($"Payload with ID: {payloadId} not found");
             if (payload.PayloadDeleted == PayloadDeleted.InProgress || payload.PayloadDeleted == PayloadDeleted.Yes)
             {
                 throw new MonaiBadRequestException($"Deletion of files for payload ID: {payloadId} already in progress or already deleted");
@@ -186,7 +213,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
             // update the payload to in progress before we request deletion from storage
             payload.PayloadDeleted = PayloadDeleted.InProgress;
-            await _payloadRepository.UpdateAsync(payload);
+            await _payloadRepository.UpdateAsyncWorkflowIds(payload);
 
             // run deletion in alternative thread so the user isn't held up
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -211,7 +238,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
                 }
                 finally
                 {
-                    await _payloadRepository.UpdateAsync(payload);
+                    await _payloadRepository.UpdateAsyncWorkflowIds(payload);
                 }
             });
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -219,18 +246,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
             return true;
         }
 
-        public async Task<bool> UpdateWorkflowInstanceIdsAsync(string payloadId, IEnumerable<string> workflowInstances)
+        public Task<bool> UpdateAsyncWorkflowIds(Payload payload)
         {
-            if (await _payloadRepository.UpdateAssociatedWorkflowInstancesAsync(payloadId, workflowInstances))
-            {
-                _logger.PayloadUpdated(payloadId);
-                return true;
-            }
-            else
-            {
-                _logger.PayloadUpdateFailed(payloadId);
-                return false;
-            }
+            ArgumentNullException.ThrowIfNull(payload);
+
+            return _payloadRepository.UpdateAsyncWorkflowIds(payload);
         }
     }
 }

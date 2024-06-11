@@ -27,11 +27,11 @@ using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
-    [CollectionLocation("Payloads"), RuntimeVersion("1.0.3")]
+    [CollectionLocation("Payloads"), RuntimeVersion("1.0.6")]
     public class Payload : IDocument
     {
         [JsonConverter(typeof(DocumentVersionConvert)), BsonSerializer(typeof(DocumentVersionConverBson))]
-        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 3);
+        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 5);
 
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; } = string.Empty;
@@ -40,10 +40,13 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
         public string PayloadId { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "workflows")]
-        public IEnumerable<string> Workflows { get; set; } = new List<string>();
+        public IEnumerable<string> Workflows { get; set; } = [];
+
+        [JsonProperty(PropertyName = "triggered_workflow_names")]
+        public IEnumerable<string> TriggeredWorkflowNames { get; set; } = [];
 
         [JsonProperty(PropertyName = "workflow_instance_ids")]
-        public IEnumerable<string> WorkflowInstanceIds { get; set; } = new List<string>();
+        public IEnumerable<string> WorkflowInstanceIds { get; set; } = [];
 
         [JsonProperty(PropertyName = "file_count")]
         public int FileCount { get; set; }
@@ -61,12 +64,19 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
         public PayloadDeleted PayloadDeleted { get; set; } = PayloadDeleted.No;
 
         [JsonProperty(PropertyName = "files")]
-        public IList<BlockStorageInfo> Files { get; set; } = new List<BlockStorageInfo>();
+        public IList<BlockStorageInfo> Files { get; set; } = [];
 
         [JsonProperty(PropertyName = "patient_details")]
-        public PatientDetails PatientDetails { get; set; } = new PatientDetails();
+        public PatientDetails PatientDetails { get; set; } = new();
 
         public DataOrigin DataTrigger { get; set; } = new DataOrigin { DataService = DataService.DIMSE };
+
+        [JsonProperty(PropertyName = "expires")]
+        public DateTime? Expires { get; set; }
+
+        [JsonProperty(PropertyName = "series_instance_uid")]
+        public string? SeriesInstanceUid { get; set; }
+
     }
 
     public enum PayloadDeleted

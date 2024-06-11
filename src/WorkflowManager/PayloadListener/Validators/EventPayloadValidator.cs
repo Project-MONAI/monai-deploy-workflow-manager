@@ -32,44 +32,79 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public bool ValidateWorkflowRequest(WorkflowRequestEvent payload)
+        public bool ValidateArtifactReceivedOrWorkflowRequestEvent(EventBase payload)
         {
-            Guard.Against.Null(payload, nameof(payload));
+            ArgumentNullException.ThrowIfNull(payload, nameof(payload));
 
-            using var loggingScope = Logger.BeginScope(new LoggingDataDictionary<string, object>
+            if (payload is WorkflowRequestEvent or ArtifactsReceivedEvent)
             {
-                ["correlationId"] = payload.CorrelationId,
-                ["payloadId"] = payload.PayloadId,
-            });
+                var correlationId = string.Empty;
+                Guid? payloadId = null;
+                IEnumerable<string> workflows = Array.Empty<string>();
 
-            var valid = true;
-            var payloadValid = payload.IsValid(out var validationErrors);
-
-            if (!payloadValid)
-            {
-                Log.FailedToValidateWorkflowRequestEvent(Logger, string.Join(Environment.NewLine, validationErrors));
-            }
-
-            valid &= payloadValid;
-
-            foreach (var workflow in payload.Workflows)
-            {
-                var workflowValid = !string.IsNullOrEmpty(workflow);
-
-                if (!workflowValid)
+                switch (payload)
                 {
-                    Log.FailedToValidateWorkflowRequestEvent(Logger, "Workflow id is empty string");
+                    case WorkflowRequestEvent wre:
+                        correlationId = wre.CorrelationId;
+                        payloadId = wre.PayloadId;
+                        workflows = wre.Workflows;
+                        break;
+                    case ArtifactsReceivedEvent are:
+                        correlationId = are.CorrelationId;
+                        payloadId = are.PayloadId;
+                        workflows = are.Workflows;
+                        break;
                 }
 
-                valid &= workflowValid;
-            }
+                using var loggingScope = Logger.BeginScope(new LoggingDataDictionary<string, object>
+                {
+                    ["correlationId"] = correlationId,
+                    ["payloadId"] = payloadId,
+                });
 
-            return valid;
+                var valid = true;
+                var payloadValid = false;
+                IList<string> validationErrors;
+                payloadValid = payload switch
+                {
+                    ArtifactsReceivedEvent artifactsReceivedEvent => artifactsReceivedEvent.IsValid(out validationErrors),
+                    WorkflowRequestEvent workflowRequestEvent => workflowRequestEvent.IsValid(out validationErrors),
+                    _ => throw new ArgumentOutOfRangeException(nameof(payload), payload, null)
+                };
+
+                if (!payloadValid)
+                {
+                    Log.FailedToValidateWorkflowRequestEvent(Logger, string.Join(Environment.NewLine, validationErrors));
+                }
+
+                valid &= payloadValid;
+
+                foreach (var workflow in workflows)
+                {
+                    var workflowValid = !string.IsNullOrEmpty(workflow);
+
+                    if (!workflowValid)
+                    {
+                        Log.FailedToValidateWorkflowRequestEvent(Logger, "Workflow id is empty string");
+                    }
+
+                    valid &= workflowValid;
+                }
+
+                return valid;
+            };
+            return false;
         }
+
+        public bool ValidateWorkflowRequest(WorkflowRequestEvent payload)
+            => ValidateArtifactReceivedOrWorkflowRequestEvent(payload);
+
+        public bool ValidateArtifactReceived(ArtifactsReceivedEvent payload)
+            => ValidateArtifactReceivedOrWorkflowRequestEvent(payload);
 
         public bool ValidateTaskUpdate(TaskUpdateEvent payload)
         {
-            Guard.Against.Null(payload, nameof(payload));
+            ArgumentNullException.ThrowIfNull(payload, nameof(payload));
 
             using var loggingScope = Logger.BeginScope(new LoggingDataDictionary<string, object>
             {
@@ -93,7 +128,7 @@ namespace Monai.Deploy.WorkflowManager.PayloadListener.Validators
 
         public bool ValidateExportComplete(ExportCompleteEvent payload)
         {
-            Guard.Against.Null(payload, nameof(payload));
+            ArgumentNullException.ThrowIfNull(payload, nameof(payload));
 
             using var loggingScope = Logger.BeginScope(new LoggingDataDictionary<string, object>
             {

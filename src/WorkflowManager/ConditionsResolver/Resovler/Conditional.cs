@@ -92,7 +92,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resovler
             {
                 var pattern = @"(?i:\bnull\b|''|""""|\bundefined\b)";
                 var replace = NULL;
-                input = Regex.Replace(input.ToString(), pattern, replace, RegexOptions.IgnoreCase);
+                input = Regex.Replace(input.ToString(), pattern, replace, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1));
             }
 
             if (input.IsEmpty || input.IsWhiteSpace())
@@ -211,7 +211,7 @@ namespace Monai.Deploy.WorkflowManager.ConditionsResolver.Resovler
 
         private int ParseExtendedOperators(ReadOnlySpan<char> input, int currentIndex)
         {
-            var currentWord = Regex.Match(input.ToString(), @"\'\w+\'|^\w+").Value;
+            var currentWord = Regex.Match(input.ToString(), @"\'\w+\'|^\w+", new RegexOptions(), TimeSpan.FromSeconds(1)).Value;
 
             if (currentWord.ToUpper() == CONTAINS && currentIndex != 0)
             {

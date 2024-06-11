@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Artifact = Monai.Deploy.WorkflowManager.Common.Contracts.Models.Artifact;
 
 namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.TestData
 {
@@ -48,7 +50,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] {}
                         }
@@ -106,7 +108,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             Args = new Dictionary<string, string> { { "test", "test" } }
                         }
@@ -136,7 +138,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             Args = new Dictionary<string, string> { { "test", "test" } }
                         }
@@ -166,7 +168,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             Args = new Dictionary<string, string> { { "test", "test" } }
                         }
@@ -196,7 +198,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             Args = new Dictionary<string, string> { { "test", "test" } }
                         }
@@ -226,7 +228,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             Args = new Dictionary<string, string> { { "test", "test" } }
                         }
@@ -257,7 +259,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             Args = new Dictionary<string, string> { { "test", "test" } }
                         }
@@ -287,7 +289,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             Args = new Dictionary<string, string> { { "test", "test" } }
                         }
@@ -316,7 +318,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             Description = "Basic Workflow 1 Task 1",
                             Args = new Dictionary<string, string> { { "test", "test" } }
@@ -347,7 +349,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                         }
                     },
@@ -375,7 +377,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             Description = "Basic Workflow 1 Task 1",
                             Args = new Dictionary<string, string> { { "test", "test" } }
@@ -405,7 +407,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             Description = "Basic Workflow 1 Task 1",
                             Args = new Dictionary<string, string> { { "test", "test" } }
@@ -672,15 +674,15 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[]
+                                Output = new OutputArtifact[]
                                 {
-                                new Artifact
+                                new OutputArtifact
                                     {
                                         Name = "non_unique_name",
                                         Value = "{{ context.executions.artifact_task_1.output_dir }}",
                                         Mandatory = true
                                     },
-                                new Artifact
+                                new OutputArtifact
                                     {
                                         Name = "non_unique_name",
                                         Value = "{{ context.executions.artifact_task_1.output_dir }}",
@@ -735,7 +737,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] {}
                         }
@@ -769,7 +771,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] {}
                         }
@@ -804,7 +806,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] {}
                         }
@@ -835,7 +837,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] {}
                         }
@@ -868,7 +870,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] {}
                         }
@@ -901,7 +903,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] {}
                         }
@@ -934,7 +936,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] {}
                         }
@@ -969,7 +971,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] {
                                 new TaskDestination
@@ -987,7 +989,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] { new Artifact { Name = "test", Value = "{{ context.executions.mean-pixel-calc.artifacts.report }}" } },
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] {}
                         }
@@ -1018,7 +1020,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] {}
                         }
@@ -1049,7 +1051,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[]
                             {
@@ -1079,7 +1081,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                 {
                                     new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
                                 },
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] { }
                         }
@@ -1115,9 +1117,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                 {
                                     new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
                                 },
-                                Output = new Artifact[]
+                                Output = new OutputArtifact[]
                                 {
-                                    new Artifact { Name = "Argo1" }
+                                    new OutputArtifact { Name = "Argo1" }
                                 }
                             },
                             TaskDestinations = new TaskDestination[]
@@ -1146,9 +1148,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                 {
                                     new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
                                 },
-                                Output = new Artifact[]
+                                Output = new OutputArtifact[]
                                 {
-                                    new Artifact { Name = "Argo2" }
+                                    new OutputArtifact { Name = "Argo2" }
                                 }
                             },
                             TaskDestinations = new TaskDestination[] {
@@ -1179,7 +1181,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                     new Artifact { Name = "Argo1", Value = "{{ context.executions.argo-task-1.artifacts.Argo1 }}" },
                                     new Artifact { Name = "Argo2", Value = "{{ context.executions.argo-task-2.artifacts.Argo2 }}" },
                                 },
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] {}
                         }
@@ -1216,7 +1218,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                         Name = "Dicom", Value = "{{ context.input.dicom }}"
                                     }
                                 },
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] {}
                         },
@@ -1235,7 +1237,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                         Name = "Dicom", Value = "{{ context.input.dicom }}"
                                     }
                                 },
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] {}
                         }
@@ -1272,7 +1274,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                         Name = "Dicom", Value = "{{ context.input.dicom }}"
                                     }
                                 },
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[]
                             {
@@ -1295,7 +1297,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                         Name = "Dicom", Value = "{{ context.input.dicom }}"
                                     }
                                 },
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[]
                             {
@@ -1317,7 +1319,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                         Name = "Dicom", Value = "{{ context.input.dicom }}"
                                     }
                                 },
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[]
                             {
@@ -1339,7 +1341,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                         Name = "Dicom", Value = "{{ context.input.dicom }}"
                                     }
                                 },
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] { }
                         }
@@ -1375,9 +1377,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                 {
                                     new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
                                 },
-                                Output = new Artifact[]
+                                Output = new OutputArtifact[]
                                 {
-                                    new Artifact { Name = "Argo2" }
+                                    new OutputArtifact { Name = "Argo2" }
                                 }
                             },
                             TaskDestinations = new TaskDestination[] {
@@ -1406,7 +1408,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                 {
                                     new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
                                 },
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] { }
                         }
@@ -1442,9 +1444,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                 {
                                     new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
                                 },
-                                Output = new Artifact[]
+                                Output = new OutputArtifact[]
                                 {
-                                    new Artifact { Name = "Argo2" }
+                                    new OutputArtifact { Name = "Argo2" }
                                 }
                             },
                             TaskDestinations = new TaskDestination[] {
@@ -1474,7 +1476,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                 {
                                     new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
                                 },
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] { }
                         }
@@ -1510,9 +1512,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                 {
                                     new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
                                 },
-                                Output = new Artifact[]
+                                Output = new OutputArtifact[]
                                 {
-                                    new Artifact { Name = "Argo2" }
+                                    new OutputArtifact { Name = "Argo2" }
                                 }
                             },
                             TaskDestinations = new TaskDestination[] {
@@ -1542,7 +1544,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                                 {
                                     new Artifact { Name = "Dicom", Value = "{{ context.input.dicom }}" },
                                 },
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] { }
                         }
@@ -1573,7 +1575,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                             Artifacts = new ArtifactMap()
                             {
                                 Input = new Artifact[] {},
-                                Output = new Artifact[] {}
+                                Output = new OutputArtifact[] {}
                             },
                             TaskDestinations = new TaskDestination[] {}
                         }
@@ -1583,6 +1585,219 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecutor.IntegrationTests.
                         AeTitle = "Update",
                         ExportDestinations = new string[]{"test"},
                         DataOrigins = new string[] { "invalid_source" }
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Valid_remote_task",
+                Workflow = new Workflow()
+                {
+                    Name = "Valid_remote_task",
+                    Description = "Valid remote task",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "Valid_remote_task_step1_router",
+                            Type = "router",
+                            Description = "Valid remote Workflow Basic Workflow update Task update",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new OutputArtifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[]
+                            {
+                                new TaskDestination()
+                                {
+                                    Name = "Valid_remote_task_step2_remote_app"
+                                }
+                            }
+                        },
+                        new TaskObject
+                        {
+                            Id = "Valid_remote_task_step2_remote_app",
+                            Type = "remote_app_execution",
+                            Description = "Valid remote Workflow Basic remote app execution task",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            ExportDestinations = new ExportDestination[] { new ExportDestination { Name = "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact()
+                                    {
+                                        Name = "input.dcm",
+                                        Mandatory = true,
+                                        Value = "input.dcm"
+                                    }
+                                },
+                                Output = new OutputArtifact[]
+                                {
+                                    new OutputArtifact()
+                                    {
+                                        Type = ArtifactType.AU,
+                                        Mandatory = true,
+                                        Name = "output.pdf",
+                                    }
+                                }
+                            },
+                            TaskDestinations = new TaskDestination[]
+                            {
+                                new TaskDestination()
+                                {
+                                    Name = "valid_clinical_review",
+                                }
+                            }
+                        },
+                        new TaskObject
+                        {
+                            Id = "valid_clinical_review",
+                            Type = "aide_clinical_review",
+                            Description = "Valid remote Workflow Clinical Review",
+                            Args = new Dictionary<string, string> {
+                                { "mode", "qa" },
+                                { "application_name", "Name" },
+                                { "application_version", "Version" },
+                                { "reviewed_task_id", "Valid_remote_task_step2_remote_app"},
+                                { "notifications", "false" }
+                            },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[]
+                                {
+                                    new Artifact()
+                                    {
+                                        Name = "input.dcm",
+                                        Mandatory = true,
+                                        Value = "{{ context.executions.Valid_remote_task_step2_remote_app.artifacts.report }}"
+                                    }
+                                },
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "Invalid_remote_task_without_outputs_type_set",
+                Workflow = new Workflow()
+                {
+                    Name = "Invalid_remote_task_without_outputs_type_set",
+                    Description = "Invalid remote task without outputs type set",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "remote_task_without_outputs_type_set_step1_router",
+                            Type = "router",
+                            Description = "Basic Workflow update Task update",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new OutputArtifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        },
+                        new TaskObject
+                        {
+                            Id = "invalid_remote_task_step2_remote_app",
+                            Type = "remote_app_execution",
+                            Description = "Basic remote app execution task",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new OutputArtifact[]
+                                {
+                                    new OutputArtifact()
+                                }
+                            },
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        ExportDestinations = new string[]{"test"}
+                    }
+                }
+            },
+            new WorkflowObjectTestData()
+            {
+                Name = "invalid_remote_task_without_outputs",
+                Workflow = new Workflow()
+                {
+                    Name = "invalid_remote_task_without_outputs",
+                    Description = "invalid remote task without outputs",
+                    Version = "1",
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject
+                        {
+                            Id = "step1_router",
+                            Type = "router",
+                            Description = "Basic Workflow update Task update",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new OutputArtifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        },
+                        new TaskObject
+                        {
+                            Id = "invalid_remote_task_step2_remote_app",
+                            Type = "remote_app_execution",
+                            Description = "Basic remote app execution task",
+                            Args = new Dictionary<string, string> { { "test", "test" } },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new OutputArtifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[]
+                            {
+                                new TaskDestination()
+                                {
+                                    Name = "clinical_review",
+                                }
+                            }
+                        },
+                        new TaskObject
+                        {
+                            Id = "clinical_review",
+                            Type = "aide_clinical_review",
+                            Description = "Clinical Review task missing ReviewedTaskId",
+                            Args = new Dictionary<string, string> {
+                                { "mode", "qa" },
+                                { "application_name", "Name" },
+                                { "application_version", "Version" },
+                                { "reviewed_task_id", "Task ID" }
+                            },
+                            Artifacts = new ArtifactMap()
+                            {
+                                Input = new Artifact[] {},
+                                Output = new OutputArtifact[] {}
+                            },
+                            TaskDestinations = new TaskDestination[] {}
+                        }
+                    },
+                    InformaticsGateway = new InformaticsGateway()
+                    {
+                        AeTitle = "Update",
+                        ExportDestinations = new string[]{"test"}
                     }
                 }
             },

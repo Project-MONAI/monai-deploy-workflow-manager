@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
@@ -50,13 +51,21 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Interfaces
         /// </summary>
         /// <param name="payload">The payload to update.</param>
         /// <returns>The updated payload.</returns>
-        Task<bool> UpdateAsync(Payload payload);
+        Task<bool> UpdateAsyncWorkflowIds(Payload payload);
 
-        /// Updates a payload in the database.
+        /// <summary>
+        /// Gets all the payloads that might need deleted
         /// </summary>
-        /// <param name="payloadId"></param>
-        /// <param name="workflowInstances"></param>
+        /// <param name="now">the current datetime</param>
         /// <returns></returns>
-        Task<bool> UpdateAssociatedWorkflowInstancesAsync(string payloadId, IEnumerable<string> workflowInstances);
+        Task<IList<Payload>> GetPayloadsToDelete(DateTime now);
+
+        /// <summary>
+        /// Marks a bunch of payloads as a new deleted state
+        /// </summary>
+        /// <param name="Ids">a list of payloadIds to mark in new status</param>
+        /// <param name="status">the status to mark as</param>
+        /// <returns></returns>
+        Task MarkDeletedState(IList<string> Ids, PayloadDeleted status);
     }
 }

@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-using System.Runtime.Serialization;
-
 namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Exceptions
 {
-    [Serializable]
     public class ArtifactMappingNotFoundException : Exception
     {
         public ArtifactMappingNotFoundException()
@@ -30,10 +27,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo.Exceptions
         }
 
         public ArtifactMappingNotFoundException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected ArtifactMappingNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

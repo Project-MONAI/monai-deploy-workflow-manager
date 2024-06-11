@@ -25,17 +25,18 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.Storage.Configuration;
-using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services;
+using Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
 using Message = Monai.Deploy.Messaging.Messages.Message;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
-using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common;
+using Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Database;
@@ -43,6 +44,9 @@ using Monai.Deploy.WorkflowManager.Common.Storage.Services;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Extensions;
 using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using Monai.Deploy.WorkloadManager.WorkflowExecuter.Extensions;
+using Monai.Deploy.WorkflowManager.Common.Database.Repositories;
+using Artifact = Monai.Deploy.WorkflowManager.Common.Contracts.Models.Artifact;
 
 namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 {
@@ -55,6 +59,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
         private readonly Mock<ILogger<WorkflowExecuterService>> _logger;
         private readonly Mock<IWorkflowInstanceRepository> _workflowInstanceRepository;
         private readonly Mock<IWorkflowInstanceService> _workflowInstanceService;
+        private readonly Mock<IArtifactsRepository> _artifactReceivedRepository;
         private readonly Mock<IMessageBrokerPublisherService> _messageBrokerPublisherService;
         private readonly Mock<IStorageService> _storageService;
         private readonly Mock<IPayloadService> _payloadService;
@@ -62,12 +67,14 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
         private readonly IOptions<WorkflowManagerOptions> _configuration;
         private readonly IOptions<StorageServiceConfiguration> _storageConfiguration;
         private readonly Mock<ITaskExecutionStatsRepository> _taskExecutionStatsRepository;
+        private readonly Mock<IDicomService> _dicom = new Mock<IDicomService>();
         private readonly int _timeoutForTypeTask = 999;
         private readonly int _timeoutForDefault = 966;
 
         public WorkflowExecuterServiceTests()
         {
             _workflowRepository = new Mock<IWorkflowRepository>();
+            _artifactReceivedRepository = new Mock<IArtifactsRepository>();
             _artifactMapper = new Mock<IArtifactMapper>();
             _logger = new Mock<ILogger<WorkflowExecuterService>>();
             _workflowInstanceRepository = new Mock<IWorkflowInstanceRepository>();
@@ -84,19 +91,18 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                 PerTaskTypeTimeoutMinutes = new Dictionary<string, double> { { "taskType", _timeoutForTypeTask } },
                 Messaging = new MessageBrokerConfiguration
                 {
-                    Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch", ExportRequestPrefix = "md.export.request" },
+                    Topics = new MessageBrokerConfigurationKeys { TaskDispatchRequest = "md.task.dispatch", ExportRequestPrefix = "md.export.request", ExportHL7 = "md.export.hl7" },
                     DicomAgents = new DicomAgentConfiguration { DicomWebAgentName = "monaidicomweb" }
                 },
                 MigExternalAppPlugins = new List<string> { { "examplePlugin" } }.ToArray()
-            }) ;
+            });
 
             _storageConfiguration = Options.Create(new StorageServiceConfiguration() { Settings = new Dictionary<string, string> { { "bucket", "testbucket" }, { "endpoint", "localhost" }, { "securedConnection", "False" } } });
 
-            var dicom = new Mock<IDicomService>();
             var logger = new Mock<ILogger<ConditionalParameterParser>>();
 
             var conditionalParser = new ConditionalParameterParser(logger.Object,
-                                                                   dicom.Object,
+                                                                   _dicom.Object,
                                                                    _workflowInstanceService.Object,
                                                                    _payloadService.Object,
                                                                    _workflowService.Object);
@@ -112,7 +118,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                                                                   _taskExecutionStatsRepository.Object,
                                                                   _artifactMapper.Object,
                                                                   _storageService.Object,
-                                                                  _payloadService.Object);
+                                                                  _payloadService.Object,
+                                                                  _artifactReceivedRepository.Object);
         }
 
         [Fact]
@@ -139,7 +146,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                                                                   _taskExecutionStatsRepository.Object,
                                                                   _artifactMapper.Object,
                                                                   _storageService.Object,
-                                                                  _payloadService.Object));
+                                                                  _payloadService.Object,
+                                                                  _artifactReceivedRepository.Object));
 
         }
 
@@ -166,7 +174,150 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                                                                   _taskExecutionStatsRepository.Object,
                                                                   _artifactMapper.Object,
                                                                   _storageService.Object,
-                                                                  _payloadService.Object));
+                                                                  _payloadService.Object,
+                                                                  _artifactReceivedRepository.Object));
+        }
+
+        [Fact]
+        public async Task ProcessArtifactReceived_WhenMessageIsNull_ThrowsArgumentNullException()
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(() => WorkflowExecuterService.ProcessArtifactReceivedAsync(null));
+        }
+
+        [Fact]
+        public async Task ProcessArtifactReceived_WhenWorkflowInstanceIdIsNull_ReturnsFalse()
+        {
+            var message = new ArtifactsReceivedEvent { };
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task ProcessArtifactReceived_WhenTaskIdIsNull_ReturnsFalse()
+        {
+            var message = new ArtifactsReceivedEvent { WorkflowInstanceId = "123" };
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task ProcessArtifactReceived_WhenWorkflowInstanceRepositoryReturnsNull_ReturnsFalse()
+        {
+            var message = new ArtifactsReceivedEvent { WorkflowInstanceId = "123", TaskId = "456" };
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
+                .ReturnsAsync((WorkflowInstance)null!);
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task ProcessArtifactReceived_WhenWorkflowRepositoryReturnsNull_ReturnsFalse()
+        {
+            var message = new ArtifactsReceivedEvent { WorkflowInstanceId = "123", TaskId = "456" };
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
+                .ReturnsAsync(new WorkflowInstance { WorkflowId = "789" });
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync("789"))!
+                .ReturnsAsync((WorkflowRevision)null!);
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
+            Assert.False(result);
+        }
+
+        // ProcessArtifactReceived workflowTemplate.Workflow?.Tasks.FirstOrDefault returns null
+        [Fact]
+        public async Task ProcessArtifactReceived_WhenWorkflowTemplateReturnsNull_ReturnsFalse()
+        {
+            var message = new ArtifactsReceivedEvent { WorkflowInstanceId = "123", TaskId = "456" };
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
+                .ReturnsAsync(new WorkflowInstance { WorkflowId = "789" });
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync("789"))!
+                .ReturnsAsync(new WorkflowRevision
+                {
+                    Workflow = new Workflow
+                    {
+                        Tasks = [new TaskObject() { Id = "not456" }]
+                    }
+                });
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task ProcessArtifactReceived_WhenStillHasMissingArtifacts_ReturnsTrue()
+        {
+            var message = new ArtifactsReceivedEvent
+            {
+                WorkflowInstanceId = "123", TaskId = "456",
+                Artifacts = new List<Messaging.Common.Artifact>() { new Messaging.Common.Artifact() { Type = ArtifactType.CT } }
+            };
+            var workflowInstance = new WorkflowInstance
+            {
+                WorkflowId = "789", Tasks = new List<TaskExecution>()
+                { new TaskExecution() { TaskId = "456" } }
+            };
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
+                .ReturnsAsync(workflowInstance);
+            var templateArtifacts = new OutputArtifact[] { new OutputArtifact() { Type = ArtifactType.CT }, new OutputArtifact() { Type = ArtifactType.DG } };
+            var taskTemplate = new TaskObject() { Id = "456", Artifacts = new ArtifactMap { Output = templateArtifacts } };
+            var workflowTemplate = new WorkflowRevision { Workflow = new Workflow { Tasks = new[] { taskTemplate } } };
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync("789"))!
+                .ReturnsAsync(workflowTemplate);
+            _artifactReceivedRepository.Setup(r => r.GetAllAsync(workflowInstance.WorkflowId, taskTemplate.Id))
+                .ReturnsAsync((List<ArtifactReceivedItems>?)null);
+
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task ProcessArtifactReceived_WhenAllArtifactsReceivedArtifactsButTaskExecNotFound_ReturnsFalse()
+        {
+            //incoming artifacts
+            var message = new ArtifactsReceivedEvent
+            {
+                WorkflowInstanceId = "123", TaskId = "456",
+                Artifacts = new List<Messaging.Common.Artifact>() { new Messaging.Common.Artifact() { Type = ArtifactType.CT } }
+            };
+            var workflowInstance = new WorkflowInstance
+            {
+                WorkflowId = "789", Tasks = new List<TaskExecution>()
+                { new TaskExecution() { TaskId = "not456" } }
+            };
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(message.WorkflowInstanceId))!
+                .ReturnsAsync(workflowInstance);
+            //expected artifacts
+            var templateArtifacts = new OutputArtifact[]
+            {
+                new OutputArtifact() { Type = ArtifactType.CT },
+            };
+            var taskTemplate = new TaskObject() { Id = "456", Artifacts = new ArtifactMap { Output = templateArtifacts } };
+            var workflowTemplate = new WorkflowRevision { Workflow = new Workflow { Tasks = new[] { taskTemplate } } };
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync("789"))!
+                .ReturnsAsync(workflowTemplate);
+
+            //previously received artifacts
+            _artifactReceivedRepository.Setup(r => r.GetAllAsync(workflowInstance.WorkflowId, taskTemplate.Id))
+                .ReturnsAsync((List<ArtifactReceivedItems>?)null);
+
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(message);
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task ProcessPayload_WhenWorkflowInstanceAndTaskIdHaveAValue_ReturnsFalse()
+        {
+            var workflowRequest = new WorkflowRequestEvent
+            {
+                Bucket = "testbucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow,
+                WorkflowInstanceId = "123",
+                TaskId = "345"
+            };
+
+            var result = await WorkflowExecuterService.ProcessPayload(workflowRequest, new Payload() { Id = Guid.NewGuid().ToString() });
+
+            Assert.False(result);
         }
 
         [Fact]
@@ -373,9 +524,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                                 Description = "taskdesc",
                                 Artifacts = new ArtifactMap
                                 {
-                                    Output = new Artifact[]
+                                    Output = new OutputArtifact[]
                                     {
-                                        new Artifact
+                                        new OutputArtifact
                                         {
                                             Name = "output.pdf"
                                         }
@@ -570,6 +721,11 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var body = Encoding.UTF8.GetString(messageSent?.Body);
             var exportMessageBody = JsonConvert.DeserializeObject<ExportRequestEvent>(body);
             Assert.Empty(exportMessageBody!.PluginAssemblies);
+
+            var exportEventMessage = messageSent.ConvertTo<ExportRequestEvent>();
+            Assert.NotNull(exportEventMessage.Target);
+            Assert.Equal(DataService.DIMSE, exportEventMessage.Target.DataService);
+
 #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -1818,9 +1974,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                             },
                             Artifacts = new ArtifactMap
                             {
-                                Output = new Artifact[]
+                                Output = new OutputArtifact[]
                                 {
-                                    new Artifact
+                                    new OutputArtifact
                                     {
                                         Name = "Artifact Name",
                                         Value = "Artifact Value",
@@ -2388,7 +2544,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                 PatientSex = "Unknown",
             };
 
-            WorkflowExecuterService.AttachPatientMetaData(taskExec, patientDetails);
+            taskExec.AttachPatientMetaData(patientDetails, null);
 
             taskExec.TaskPluginArguments.Should().NotBeNull();
             taskExec.TaskPluginArguments[PatientKeys.PatientId].Should().BeSameAs(patientDetails.PatientId);
@@ -2528,7 +2684,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
 
             var result = await WorkflowExecuterService.ProcessPayload(workflowRequest, new Payload() { Id = Guid.NewGuid().ToString() });
 
-            _messageBrokerPublisherService.Verify(w => w.Publish($"{_configuration.Value.Messaging.Topics.ExportRequestPrefix}.{_configuration.Value.Messaging.DicomAgents.ScuAgentName}", It.IsAny<Message>()), Times.Exactly(1));
+            _messageBrokerPublisherService.Verify(w => w.Publish($"{_configuration.Value.Messaging.Topics.ExternalAppRequest}", It.IsAny<Message>()), Times.Exactly(1));
 
             Assert.True(result);
             Assert.NotNull(messageSent);
@@ -2732,7 +2888,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
         }
 
         [Fact]
-        public async Task ProcessPayload_With_WorkflowInstanceId_Continues()
+        public async Task ArtifactReceived_With_Happy_Path_Continues()
         {
             var workflowInstanceId = Guid.NewGuid().ToString();
             var correlationId = Guid.NewGuid().ToString();
@@ -2816,18 +2972,17 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
                     }
             };
 
-            var payload = new Payload { PatientDetails = new PatientDetails { } };
-
             _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
             _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
-            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(payload);
 
-            var mess = new WorkflowRequestEvent { WorkflowInstanceId = workflowInstance.Id, TaskId = "coffee" };
+            _artifactReceivedRepository.Setup(w => w.GetAllAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new List<ArtifactReceivedItems>());
+
+            var mess = new ArtifactsReceivedEvent { WorkflowInstanceId = workflowInstance.Id, TaskId = "coffee" };
 
 
-            var response = await WorkflowExecuterService.ProcessPayload(mess, payload);
+            var response = await WorkflowExecuterService.ProcessArtifactReceivedAsync(mess);
 
             _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.TaskDispatchRequest, It.IsAny<Message>()), Times.Exactly(0));
             _taskExecutionStatsRepository.Verify(w => w.UpdateExecutionStatsAsync(It.IsAny<TaskExecution>(), workflowId, TaskExecutionStatus.Succeeded));
@@ -2953,6 +3108,1053 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
             var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
             _workflowInstanceRepository.Verify(r => r.UpdateTaskStatusAsync(workflowInstance.Id, "pizza", TaskExecutionStatus.Failed), Times.Once);
+        }
+
+        [Fact]
+        public async Task ArtifactReceveid_Valid_ReturnesTrue()
+        {
+            var taskId = Guid.NewGuid().ToString();
+            var workflowId = Guid.NewGuid().ToString();
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var artifactEvent = new ArtifactsReceivedEvent
+            {
+                Bucket = "testbucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow,
+                WorkflowInstanceId = workflowInstanceId,
+                TaskId = taskId
+            };
+
+            var workflows = new List<WorkflowRevision>
+            {
+                new WorkflowRevision
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = workflowId,
+                    Revision = 1,
+                    Workflow = new Workflow
+                    {
+                        Name = "Workflowname",
+                        Description = "Workflowdesc",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
+                        {
+                            AeTitle = "aetitle"
+                        },
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject {
+                                Id = taskId,
+                                Type = "type",
+                                Description = "outgoing",
+                                TaskDestinations = new TaskDestination[] { new TaskDestination { Name = "task2" } }
+                            },
+                            new TaskObject {
+                                Id = "task2",
+                                Type = "type",
+                                Description = "returning",
+                            }
+                        }
+                    }
+                }
+            };
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                BucketId = "BucketId",
+                PayloadId = "PayloadId",
+                WorkflowId = workflowId,
+                Tasks = new List<TaskExecution>
+                {
+                    new TaskExecution{
+                        TaskId = taskId,
+                    }
+                }
+            };
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflows[0].WorkflowId)).ReturnsAsync(workflows[0]);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstanceId)).ReturnsAsync(workflowInstance);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(It.IsAny<string>(), It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _artifactReceivedRepository.Setup(w => w.GetAllAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new List<ArtifactReceivedItems>());
+            var result = await WorkflowExecuterService.ProcessArtifactReceivedAsync(artifactEvent);
+
+            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.TaskDispatchRequest, It.IsAny<Message>()), Times.Once());
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task ProcessPayload_WithExportTask_NoExportsFails()
+        {
+            var workflowId1 = Guid.NewGuid().ToString();
+            var workflowId2 = Guid.NewGuid().ToString();
+            var workflowRequest = new WorkflowRequestEvent
+            {
+                Bucket = "testbucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow,
+                Workflows = new List<string>
+                {
+                    workflowId1.ToString()
+                }
+            };
+
+            var workflows = new List<WorkflowRevision>
+            {
+                new WorkflowRevision
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = workflowId1,
+                    Revision = 1,
+                    Workflow = new Workflow
+                    {
+                        Name = "Workflowname1",
+                        Description = "Workflowdesc1",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
+                        {
+                            AeTitle = "aetitle",
+                            ExportDestinations = new string[] { "PROD_PACS" }
+                        },
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "export",
+                                Description = "taskdesc",
+                                Artifacts = new ArtifactMap
+                                {
+                                    Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } }
+                                },
+                                TaskDestinations = Array.Empty<TaskDestination>(),
+                                ExportDestinations = new ExportDestination[]
+                                {
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            _workflowRepository.Setup(w => w.GetByWorkflowsIdsAsync(new List<string> { workflowId1.ToString() })).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowId1.ToString())).ReturnsAsync(workflows[0]);
+            _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(It.IsAny<string>(), It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            var dcmInfo = new Dictionary<string, string>() { { "dicomexport", "/dcm" } };
+            _artifactMapper.Setup(a => a.TryConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), out dcmInfo)).Returns(true);
+
+            _messageBrokerPublisherService.Setup(m => m.Publish(It.IsAny<string>(), It.IsAny<Message>()));
+
+            var result = await WorkflowExecuterService.ProcessPayload(workflowRequest, new Payload() { Id = Guid.NewGuid().ToString() });
+
+            _messageBrokerPublisherService.Verify(w => w.Publish($"{_configuration.Value.Messaging.Topics.ExportRequestPrefix}.{_configuration.Value.Messaging.DicomAgents.ScuAgentName}", It.IsAny<Message>()), Times.Exactly(0));
+
+            Assert.True(result);
+
+#pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        [Fact]
+        public async Task ProcessPayload_WithHl7ExportTask_DispatchesExportHl7()
+        {
+            var workflowId1 = Guid.NewGuid().ToString();
+            var workflowId2 = Guid.NewGuid().ToString();
+            var workflowRequest = new WorkflowRequestEvent
+            {
+                Bucket = "testbucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow,
+                Workflows = new List<string>
+                {
+                    workflowId1.ToString()
+                }
+            };
+
+            var workflows = new List<WorkflowRevision>
+            {
+                new WorkflowRevision
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = workflowId1,
+                    Revision = 1,
+                    Workflow = new Workflow
+                    {
+                        Name = "Workflowname1",
+                        Description = "Workflowdesc1",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
+                        {
+                            AeTitle = "aetitle",
+                            ExportDestinations = new string[] { "PROD_PACS" }
+                        },
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "export_hl7",
+                                Description = "taskdesc",
+                                Artifacts = new ArtifactMap
+                                {
+                                    Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } }
+                                },
+                                TaskDestinations = Array.Empty<TaskDestination>(),
+                                ExportDestinations = new ExportDestination[]
+                                {
+                                    new ExportDestination
+                                    {
+                                        Name = "PROD_PACS"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            _workflowRepository.Setup(w => w.GetByWorkflowsIdsAsync(new List<string> { workflowId1.ToString() })).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowId1.ToString())).ReturnsAsync(workflows[0]);
+            _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(It.IsAny<string>(), It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            var dcmInfo = new Dictionary<string, string>() { { "dicomexport", "/dcm" } };
+            _artifactMapper.Setup(a => a.TryConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), out dcmInfo)).Returns(true);
+            _storageService.Setup(w => w.ListObjectsAsync(workflowRequest.Bucket, "/dcm", true, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<VirtualFileInfo>()
+                {
+                    new VirtualFileInfo("testfile.dcm", "/dcm/testfile.dcm", "test", ulong.MaxValue)
+                });
+
+            Message? messageSent = null;
+            _messageBrokerPublisherService.Setup(m => m.Publish(It.IsAny<string>(), It.IsAny<Message>()))
+                .Callback((string topic, Message m) => messageSent = m);
+
+            var result = await WorkflowExecuterService.ProcessPayload(workflowRequest, new Payload() { Id = Guid.NewGuid().ToString() });
+
+            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.ExportHL7, It.IsAny<Message>()), Times.Exactly(1));
+
+            Assert.True(result);
+            Assert.NotNull(messageSent);
+#pragma warning disable CS8604 // Possible null reference argument.
+            var body = Encoding.UTF8.GetString(messageSent?.Body);
+            var exportMessageBody = JsonConvert.DeserializeObject<ExportRequestEvent>(body);
+            Assert.Empty(exportMessageBody!.PluginAssemblies);
+
+            var exportEventMessage = messageSent.ConvertTo<ExportRequestEvent>();
+            Assert.NotNull(exportEventMessage.Target);
+            Assert.Equal(DataService.HL7, exportEventMessage.Target.DataService);
+
+#pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        [Fact]
+        public async Task ProcessPayload_WithHl7ExportTask_NoExportsFails()
+        {
+            var workflowId1 = Guid.NewGuid().ToString();
+            var workflowId2 = Guid.NewGuid().ToString();
+            var workflowRequest = new WorkflowRequestEvent
+            {
+                Bucket = "testbucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow,
+                Workflows = new List<string>
+                {
+                    workflowId1.ToString()
+                }
+            };
+
+            var workflows = new List<WorkflowRevision>
+            {
+                new WorkflowRevision
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = workflowId1,
+                    Revision = 1,
+                    Workflow = new Workflow
+                    {
+                        Name = "Workflowname1",
+                        Description = "Workflowdesc1",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
+                        {
+                            AeTitle = "aetitle",
+                            ExportDestinations = new string[] { "PROD_PACS" }
+                        },
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "export_hl7",
+                                Description = "taskdesc",
+                                Artifacts = new ArtifactMap
+                                {
+                                    Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } }
+                                },
+                                TaskDestinations = Array.Empty<TaskDestination>(),
+                                ExportDestinations = new ExportDestination[]
+                                {
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            _workflowRepository.Setup(w => w.GetByWorkflowsIdsAsync(new List<string> { workflowId1.ToString() })).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowId1.ToString())).ReturnsAsync(workflows[0]);
+            _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(It.IsAny<string>(), It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            var dcmInfo = new Dictionary<string, string>() { { "dicomexport", "/dcm" } };
+            _artifactMapper.Setup(a => a.TryConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), out dcmInfo)).Returns(true);
+
+            _messageBrokerPublisherService.Setup(m => m.Publish(It.IsAny<string>(), It.IsAny<Message>()));
+
+            var result = await WorkflowExecuterService.ProcessPayload(workflowRequest, new Payload() { Id = Guid.NewGuid().ToString() });
+
+            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.ExportHL7, It.IsAny<Message>()), Times.Exactly(0));
+
+            Assert.True(result);
+
+#pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        [Fact]
+        public async Task ProcessPayload_WithInvalidHl7ExportTask_DoesNotDispatchExportHl7()
+        {
+            // because this test has no  _artifactMapper.Setup(a => a.TryConvertArtifactVariablesToPath
+            // it returns no matching artifacts. hence the failure !
+            var workflowId1 = Guid.NewGuid().ToString();
+            var workflowId2 = Guid.NewGuid().ToString();
+            var workflowRequest = new WorkflowRequestEvent
+            {
+                Bucket = "testbucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow,
+                Workflows = new List<string>
+                {
+                    workflowId1.ToString()
+                }
+            };
+
+            var workflows = new List<WorkflowRevision>
+            {
+                new WorkflowRevision
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = workflowId1,
+                    Revision = 1,
+                    Workflow = new Workflow
+                    {
+                        Name = "Workflowname1",
+                        Description = "Workflowdesc1",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
+                        {
+                            AeTitle = "aetitle",
+                            ExportDestinations = new string[] { "PROD_PACS" }
+                        },
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "export_hl7",
+                                Description = "taskdesc",
+                                Artifacts = new ArtifactMap
+                                {
+                                    Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } }
+                                },
+                                TaskDestinations = Array.Empty<TaskDestination>(),
+                                ExportDestinations = new ExportDestination[]
+                                {
+                                    new ExportDestination
+                                    {
+                                        Name = "PROD_PINS"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            _workflowRepository.Setup(w => w.GetByWorkflowsIdsAsync(new List<string> { workflowId1.ToString() })).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowId1.ToString())).ReturnsAsync(workflows[0]);
+            _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(It.IsAny<string>(), It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            _artifactMapper.Setup(a => a.ConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(new Dictionary<string, string>() { { "dicomexport", "/dcm" } });
+
+            var result = await WorkflowExecuterService.ProcessPayload(workflowRequest, new Payload() { Id = Guid.NewGuid().ToString() });
+
+            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.ExportHL7, It.IsAny<Message>()), Times.Exactly(0));
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task ProcessTaskUpdate_ValidTaskUpdateEventWithExportHl7TaskDestination_ReturnsTrue()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var taskId = Guid.NewGuid().ToString();
+
+            var updateEvent = new TaskUpdateEvent
+            {
+                WorkflowInstanceId = workflowInstanceId,
+                TaskId = "pizza",
+                ExecutionId = Guid.NewGuid().ToString(),
+                Status = TaskExecutionStatus.Succeeded,
+                Reason = FailureReason.None,
+                Message = "This is a message",
+                Metadata = new Dictionary<string, object>(),
+                CorrelationId = Guid.NewGuid().ToString()
+            };
+
+            var workflowId = Guid.NewGuid().ToString();
+
+            var workflow = new WorkflowRevision
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = workflowId,
+                Revision = 1,
+                Workflow = new Workflow
+                {
+                    Name = "Workflowname2",
+                    Description = "Workflowdesc2",
+                    Version = "1",
+                    InformaticsGateway = new InformaticsGateway
+                    {
+                        AeTitle = "aetitle",
+                        ExportDestinations = new string[] { "PROD_PACS" }
+                    },
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject {
+                            Id = "pizza",
+                            Type = "type",
+                            Description = "taskdesc",
+                            TaskDestinations = new TaskDestination[]
+                            {
+                                new TaskDestination
+                                {
+                                    Name = "exporttaskid"
+                                },
+                            }
+                        },
+                        new TaskObject {
+                            Id = "exporttaskid",
+                            Type = "export_hl7",
+                            Description = "taskdesc",
+                            Artifacts = new ArtifactMap
+                            {
+                                Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } }
+                            },
+                            TaskDestinations = Array.Empty<TaskDestination>(),
+                            ExportDestinations = new ExportDestination[]
+                            {
+                                new ExportDestination
+                                {
+                                    Name = "PROD_PACS"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = "pizza",
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+            };
+
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Payload { PatientDetails = new PatientDetails { } });
+            var expectedDcmValue = new Dictionary<string, string> { { "dicomexport", "/dcm" } };
+            _artifactMapper.Setup(a => a.TryConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), out expectedDcmValue)).Returns(true);
+            _storageService.Setup(w => w.ListObjectsAsync(It.IsAny<string>(), "/dcm", true, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<VirtualFileInfo>()
+                {
+                    new VirtualFileInfo("testfile.dcm", "/dcm/testfile.dcm", "test", ulong.MaxValue)
+                });
+
+            var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
+
+            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.ExportHL7, It.IsAny<Message>()), Times.Exactly(1));
+
+            response.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ProcessTaskUpdate_ValidTaskUpdateEventWithExportHl7TaskDestination_NoExportDestinations_DoesNotDispatchExport()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var taskId = Guid.NewGuid().ToString();
+
+            var updateEvent = new TaskUpdateEvent
+            {
+                WorkflowInstanceId = workflowInstanceId,
+                TaskId = "pizza",
+                ExecutionId = Guid.NewGuid().ToString(),
+                Status = TaskExecutionStatus.Succeeded,
+                Reason = FailureReason.None,
+                Message = "This is a message",
+                Metadata = new Dictionary<string, object>(),
+                CorrelationId = Guid.NewGuid().ToString()
+            };
+
+            var workflowId = Guid.NewGuid().ToString();
+
+            var workflow = new WorkflowRevision
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = workflowId,
+                Revision = 1,
+                Workflow = new Workflow
+                {
+                    Name = "Workflowname2",
+                    Description = "Workflowdesc2",
+                    Version = "1",
+                    InformaticsGateway = new InformaticsGateway
+                    {
+                        AeTitle = "aetitle"
+                    },
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject {
+                            Id = "pizza",
+                            Type = "type",
+                            Description = "taskdesc",
+                            TaskDestinations = new TaskDestination[]
+                            {
+                                new TaskDestination
+                                {
+                                    Name = "exporttaskid"
+                                },
+                            }
+                        },
+                        new TaskObject {
+                            Id = "exporttaskid",
+                            Type = "export_hl7",
+                            Description = "taskdesc",
+                            Artifacts = new ArtifactMap
+                            {
+                                Input = new Artifact[] { new Artifact { Name = "dicomexport", Value = "{{ context.input }}" } }
+                            },
+                            TaskDestinations = Array.Empty<TaskDestination>()
+                        }
+                    }
+                }
+            };
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = "pizza",
+                            Status = TaskExecutionStatus.Dispatched
+                        }
+                    }
+            };
+
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Payload { PatientDetails = new PatientDetails { } });
+            _artifactMapper.Setup(a => a.ConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(new Dictionary<string, string> { { "dicomexport", "/dcm" } });
+
+            var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
+
+            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.ExportHL7, It.IsAny<Message>()), Times.Exactly(0));
+
+            response.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ProcessTaskUpdate_ValidTaskUpdateEventWith_Same_Status_returns_true()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var taskId = Guid.NewGuid().ToString();
+
+            var updateEvent = new TaskUpdateEvent
+            {
+                WorkflowInstanceId = workflowInstanceId,
+                TaskId = "pizza",
+                ExecutionId = Guid.NewGuid().ToString(),
+                Status = TaskExecutionStatus.Succeeded,
+            };
+
+            var workflowId = Guid.NewGuid().ToString();
+
+            var workflow = new WorkflowRevision
+            {
+                Id = Guid.NewGuid().ToString(),
+                WorkflowId = workflowId,
+                Revision = 1,
+                Workflow = new Workflow
+                {
+                    Name = "Workflowname2",
+                    Description = "Workflowdesc2",
+                    Version = "1",
+                    InformaticsGateway = new InformaticsGateway
+                    {
+                        AeTitle = "aetitle"
+                    },
+                    Tasks = new TaskObject[]
+                    {
+                        new TaskObject {
+                            Id = "pizza",
+                            Type = "type",
+                            Description = "taskdesc",
+                            TaskDestinations = new TaskDestination[]
+                            {
+                                new TaskDestination
+                                {
+                                    Name = "exporttaskid"
+                                },
+                            }
+                        }
+                    }
+                }
+            };
+
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId,
+                WorkflowName = workflow.Workflow.Name,
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks = new List<TaskExecution>
+                    {
+                        new TaskExecution
+                        {
+                            TaskId = "pizza",
+                            Status = TaskExecutionStatus.Succeeded
+                        }
+                    }
+            };
+
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(workflowInstance.Id, It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowInstance.WorkflowId)).ReturnsAsync(workflow);
+            _payloadService.Setup(p => p.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Payload { PatientDetails = new PatientDetails { } });
+            _artifactMapper.Setup(a => a.ConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(new Dictionary<string, string> { { "dicomexport", "/dcm" } });
+
+            var response = await WorkflowExecuterService.ProcessTaskUpdate(updateEvent);
+
+            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.ExportHL7, It.IsAny<Message>()), Times.Exactly(0));
+
+            _logger.Verify(logger => logger.IsEnabled(LogLevel.Trace), Times.Once);
+
+            response.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ProcessPayload_With_Multiple_Taskdestinations_One_Has_Inputs()
+        {
+            var workflowInstanceId = Guid.NewGuid().ToString();
+            var workflowId1 = Guid.NewGuid().ToString();
+            var workflowId2 = Guid.NewGuid().ToString();
+            var workflowRequest = new WorkflowRequestEvent
+            {
+                Bucket = "testbucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow,
+                Workflows = new List<string>
+                {
+                    workflowId1.ToString()
+                }
+            };
+
+            var workflows = new List<WorkflowRevision>
+            {
+                new ()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = workflowId1,
+                    Revision = 1,
+                    Workflow = new Workflow
+                    {
+                        Name = "Workflowname1",
+                        Description = "Workflowdesc1",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
+                        {
+                            AeTitle = "aetitle",
+                            ExportDestinations = ["PROD_PACS"]
+                        },
+                        Tasks =
+                        [
+                            new TaskObject {
+                                Id = "router",
+                                Type = "router",
+                                Description = "router",
+                                Artifacts = new ArtifactMap
+                                {
+                                    Input = [new Artifact { Name = "dicomexport", Value = "{{ context.input }}" }],
+                                    Output =
+                                [
+                                    new ()
+                                    {
+                                        Name = "Artifact1",
+                                        Value = "Artifact1Value",
+                                        Mandatory = true,
+                                        Type = ArtifactType.DOC
+                                    },
+                                    new ()
+                                    {
+                                        Name = "Artifact2",
+                                        Value = "Artifact2Value",
+                                        Mandatory = true,
+                                        Type = ArtifactType.CT
+                                    }
+                                ]
+                                },
+                                TaskDestinations = new TaskDestination[]
+                                {
+                                    new() {
+                                        Name = "export1"
+                                    },
+                                    new ()
+                                    {
+                                        Name = "export2"
+                                    }
+                                }
+                            },
+                            new() {
+                                Id ="export1",
+                                Type = "export",
+                                Artifacts = new ArtifactMap
+                                {
+                                    Input = [new () { Name = "Artifact1", Value = "{{ context.executions.router.artifacts.output.Artifact1 }}", Mandatory = true  }]
+                                },
+                                ExportDestinations = [new (){Name = "PROD_PACS"}]
+                            },
+                            new() {
+                                Id ="export2",
+                                Type = "export",
+                                Artifacts = new ArtifactMap
+                                {
+                                    Input = [new () { Name = "Artifact2", Value = "{{ context.executions.router.artifacts.output.Artifact2 }}", Mandatory = true }]
+                                },
+                                ExportDestinations = [new (){Name = "PROD_PACS"}]
+                            },
+                        ]
+                    }
+                }
+            };
+            var workflowInstance = new WorkflowInstance
+            {
+                Id = workflowInstanceId,
+                WorkflowId = workflowId1,
+                WorkflowName = workflows.First()!.Workflow!.Name,
+                PayloadId = Guid.NewGuid().ToString(),
+                Status = Status.Created,
+                BucketId = "bucket",
+                Tasks =
+                [
+                    new()
+                    {
+                        TaskId = "router",
+                        Status = TaskExecutionStatus.Created
+                    }
+                ]
+            };
+
+            var artifactDict = new List<Messaging.Common.Storage>
+                {
+                    new ()
+                    {
+                        Name = "artifactname",
+                        RelativeRootPath = "path/to/artifact"
+                    }
+                };
+
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowInstanceIdAsync(workflowInstance.Id)).ReturnsAsync(workflowInstance);
+
+            _workflowRepository.Setup(w => w.GetByWorkflowsIdsAsync(new List<string> { workflowId1.ToString() })).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflowId1.ToString())).ReturnsAsync(workflows[0]);
+            _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.UpdateTasksAsync(It.IsAny<string>(), It.IsAny<List<TaskExecution>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            var dcmInfo = new Dictionary<string, string>() { { "dicomexport", "/dcm" } };
+            _artifactMapper.Setup(a => a.TryConvertArtifactVariablesToPath(It.IsAny<Artifact[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), out dcmInfo)).Returns(true);
+
+            _messageBrokerPublisherService.Setup(m => m.Publish(It.IsAny<string>(), It.IsAny<Message>()));
+
+            var pathList = artifactDict.Select(a => a.RelativeRootPath).ToList();
+
+            _storageService.Setup(w => w.VerifyObjectsExistAsync(
+                workflowInstance.BucketId, It.Is<IReadOnlyList<string>>(l => l.Any(a => pathList.Any(p => p == a))), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Dictionary<string, bool>() { { pathList.First(), true } });
+
+            _storageService.Setup(w => w.ListObjectsAsync(It.IsAny<string>(), It.IsAny<string>(), true, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<VirtualFileInfo>()
+                {
+                                new VirtualFileInfo("testfile.dcm", "/dcm/testfile.dcm", "test", ulong.MaxValue)
+                });
+
+            var mess = new ArtifactsReceivedEvent
+            {
+                WorkflowInstanceId = workflowInstance.Id,
+                TaskId = "router",
+                Artifacts = [new Messaging.Common.Artifact { Type = ArtifactType.DOC, Path = "path/to/artifact" }],
+                CorrelationId = Guid.NewGuid().ToString()
+            };
+
+
+            var response = await WorkflowExecuterService.ProcessArtifactReceivedAsync(mess);
+
+            Assert.True(response);
+            //_workflowInstanceRepository.Verify(w => w.UpdateTaskStatusAsync(workflowInstanceId, "router", TaskExecutionStatus.Succeeded));
+            _workflowInstanceRepository.Verify(w => w.UpdateTaskStatusAsync(workflowInstanceId, "export1", TaskExecutionStatus.Dispatched));
+
+
+
+#pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        [Fact]
+        public async Task ProcessPayload_With_Failing_Workflow_Conditional_Should_Not_Procced()
+        {
+            var workflowRequest = new WorkflowRequestEvent
+            {
+                Bucket = "testbucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow
+            };
+
+            var workflows = new List<WorkflowRevision>
+            {
+                new() {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow
+                    {
+                        Name = "Workflowname",
+                        Description = "Workflowdesc",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
+                        {
+                            AeTitle = "aetitle"
+                        },
+                        Tasks =
+                        [
+                            new TaskObject {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "type",
+                                Description = "taskdesc"
+                            }
+                        ],
+                        Predicate = ["{{ context.dicom.series.any('0010','0040') }} == 'lordge'"]
+                    }
+                }
+            };
+
+            _workflowRepository.Setup(w => w.GetWorkflowsByAeTitleAsync(It.IsAny<List<string>>())).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetWorkflowsForWorkflowRequestAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflows[0].WorkflowId)).ReturnsAsync(workflows[0]);
+            _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+
+            var result = await WorkflowExecuterService.ProcessPayload(workflowRequest, new Payload() { Id = Guid.NewGuid().ToString() });
+
+            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.TaskDispatchRequest, It.IsAny<Message>()), Times.Never());
+
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task ProcessPayload_With_Passing_Workflow_Conditional_Should_Procced()
+        {
+            var workflowRequest = new WorkflowRequestEvent
+            {
+                Bucket = "testbucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow
+            };
+
+            var workflows = new List<WorkflowRevision>
+            {
+                new() {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow
+                    {
+                        Name = "Workflowname",
+                        Description = "Workflowdesc",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
+                        {
+                            AeTitle = "aetitle"
+                        },
+                        Tasks =
+                        [
+                            new TaskObject {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "type",
+                                Description = "taskdesc"
+                            }
+                        ],
+                        Predicate = ["{{ context.dicom.series.any('0010','0040') }} == 'lordge'"]
+                    }
+                }
+            };
+
+            _dicom.Setup(w => w.GetAnyValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(() => "lordge");
+
+            _workflowRepository.Setup(w => w.GetWorkflowsByAeTitleAsync(It.IsAny<List<string>>())).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetWorkflowsForWorkflowRequestAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflows[0].WorkflowId)).ReturnsAsync(workflows[0]);
+            _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+
+            var result = await WorkflowExecuterService.ProcessPayload(workflowRequest, new Payload() { Id = Guid.NewGuid().ToString() });
+
+            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.TaskDispatchRequest, It.IsAny<Message>()), Times.Once());
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task ProcessPayload_With_Empty_Workflow_Conditional_Should_Procced()
+        {
+            var workflowRequest = new WorkflowRequestEvent
+            {
+                Bucket = "testbucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow
+            };
+
+            var workflows = new List<WorkflowRevision>
+            {
+                new() {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow
+                    {
+                        Name = "Workflowname",
+                        Description = "Workflowdesc",
+                        Version = "1",
+                        InformaticsGateway = new InformaticsGateway
+                        {
+                            AeTitle = "aetitle"
+                        },
+                        Tasks =
+                        [
+                            new TaskObject {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "type",
+                                Description = "taskdesc"
+                            }
+                        ],
+                        Predicate = []
+                    }
+                }
+            };
+
+            _dicom.Setup(w => w.GetAnyValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(() => "lordge");
+
+            _workflowRepository.Setup(w => w.GetWorkflowsByAeTitleAsync(It.IsAny<List<string>>())).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetWorkflowsForWorkflowRequestAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflows[0].WorkflowId)).ReturnsAsync(workflows[0]);
+            _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+
+            var result = await WorkflowExecuterService.ProcessPayload(workflowRequest, new Payload() { Id = Guid.NewGuid().ToString() });
+
+            _messageBrokerPublisherService.Verify(w => w.Publish(_configuration.Value.Messaging.Topics.TaskDispatchRequest, It.IsAny<Message>()), Times.Once());
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task ProcessPayload_Payload_Should_Include_triggered_workflow_names()
+        {
+            var workflowRequest = new WorkflowRequestEvent
+            {
+                Bucket = "testbucket",
+                DataTrigger = new DataOrigin { Source = "aetitle", Destination = "aetitle" },
+                CorrelationId = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.UtcNow
+            };
+
+            var workflows = new List<WorkflowRevision>
+            {
+                new() {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow
+                    {
+                        Name = "Workflowname",
+                    }
+                }
+            };
+
+            _dicom.Setup(w => w.GetAnyValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(() => "lordge");
+
+            _workflowRepository.Setup(w => w.GetWorkflowsByAeTitleAsync(It.IsAny<List<string>>())).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetWorkflowsForWorkflowRequestAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(workflows);
+            _workflowRepository.Setup(w => w.GetByWorkflowIdAsync(workflows[0].WorkflowId)).ReturnsAsync(workflows[0]);
+            _workflowInstanceRepository.Setup(w => w.CreateAsync(It.IsAny<List<WorkflowInstance>>())).ReturnsAsync(true);
+            _workflowInstanceRepository.Setup(w => w.GetByWorkflowsIdsAsync(It.IsAny<List<string>>())).ReturnsAsync(new List<WorkflowInstance>());
+            _workflowInstanceRepository.Setup(w => w.UpdateTaskStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TaskExecutionStatus>())).ReturnsAsync(true);
+            var payload = new Payload() { Id = Guid.NewGuid().ToString() };
+            var result = await WorkflowExecuterService.ProcessPayload(workflowRequest, payload);
+
+
+            Assert.Contains(workflows[0].Workflow!.Name, payload.TriggeredWorkflowNames);
+            Assert.True(result);
         }
     }
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.

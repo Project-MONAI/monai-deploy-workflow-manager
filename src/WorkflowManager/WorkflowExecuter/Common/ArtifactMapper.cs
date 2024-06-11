@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Storage.API;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
@@ -22,7 +21,7 @@ using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Logging;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 
-namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common
 {
     public class ArtifactMapper : IArtifactMapper
     {
@@ -76,16 +75,16 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
 
         public async Task<Dictionary<string, string>> ConvertArtifactVariablesToPath(Artifact[] artifacts, string payloadId, string workflowInstanceId, string bucketId, bool shouldExistYet = true)
         {
-            Guard.Against.Null(artifacts, nameof(artifacts));
-            Guard.Against.NullOrWhiteSpace(payloadId, nameof(payloadId));
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            ArgumentNullException.ThrowIfNull(artifacts, nameof(artifacts));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
 
             var artifactPathDictionary = new Dictionary<string, string>();
 
             foreach (var artifact in artifacts)
             {
-                Guard.Against.NullOrWhiteSpace(artifact.Value, nameof(artifact.Value));
-                Guard.Against.NullOrWhiteSpace(artifact.Name, nameof(artifact.Name));
+                ArgumentNullException.ThrowIfNullOrWhiteSpace(artifact.Value, nameof(artifact.Value));
+                ArgumentNullException.ThrowIfNullOrWhiteSpace(artifact.Name, nameof(artifact.Name));
 
                 if (!TrimArtifactVariable(artifact.Value, out var variableString))
                 {
@@ -159,7 +158,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
 
             if (variableString.StartsWith("context.executions", StringComparison.InvariantCultureIgnoreCase))
             {
-                var variableWords = variableString.Split(".");
+                var variableWords = variableString.Replace("{", "").Replace("}", "").Split(".");
 
                 var variableTaskId = variableWords[2];
                 var variableLocation = variableWords[3];
@@ -181,7 +180,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
                     var artifactName = variableWords[4];
                     var outputArtifact = task.OutputArtifacts?.FirstOrDefault(a => a.Key == artifactName);
 
-                    if (!outputArtifact.HasValue)
+                    if (!outputArtifact.HasValue || string.IsNullOrEmpty(outputArtifact.Value.Value))
                     {
                         return default;
                     }
@@ -203,7 +202,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
             if (shouldExistYet)
             {
                 _logger.VerifyArtifactExistence(bucketId, artifact.Key, artifact.Value);
-                artifact = await _storageService.VerifyObjectExistsAsync(bucketId, artifact.Value) ? artifact : default(KeyValuePair<string, string>);
+                artifact = await _storageService.VerifyObjectExistsAsync(bucketId, artifact.Value) ? artifact : default;
             }
 
             return artifact;

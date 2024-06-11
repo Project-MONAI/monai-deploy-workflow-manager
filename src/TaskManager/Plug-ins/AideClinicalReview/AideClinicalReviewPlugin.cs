@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -62,7 +61,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             TaskDispatchEvent taskDispatchEvent)
             : base(taskDispatchEvent)
         {
-            Guard.Against.Null(serviceScopeFactory, nameof(serviceScopeFactory));
+            ArgumentNullException.ThrowIfNull(serviceScopeFactory, nameof(serviceScopeFactory));
 
             _scope = serviceScopeFactory.CreateScope();
 
@@ -246,7 +245,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
 
         private async Task SendClinicalReviewRequestEvent(JsonMessage<ClinicalReviewRequestEvent> message)
         {
-            Guard.Against.Null(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
 
             var queue = _queueName ?? _options.Value.Messaging.Topics.AideClinicalReviewRequest;
             _logger.SendClinicalReviewRequestMessage(queue, _workflowName ?? string.Empty);
@@ -321,6 +320,26 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.AideClinicalReview
             GC.SuppressFinalize(this);
         }
 
-        public override Task HandleTimeout(string identity) => Task.CompletedTask; // not implemented
+        public override Task HandleTimeout(string identity)
+        {
+            var message = GenerateCancelationMessage(identity);
+
+            var queue = _queueName ?? _options.Value.Messaging.Topics.AideClinicalReviewCancelation;
+            _logger.SendClinicalReviewRequestMessage(queue, _workflowName ?? string.Empty);
+            return _messageBrokerPublisherService.Publish(queue, message.ToMessage());
+        }
+
+        private JsonMessage<TaskCancellationEvent> GenerateCancelationMessage(string identity)
+        {
+            return new JsonMessage<TaskCancellationEvent>(new TaskCancellationEvent
+            {
+                ExecutionId = identity,
+                WorkflowInstanceId = Event.WorkflowInstanceId,
+                TaskId = Event.TaskId,
+                Reason = FailureReason.TimedOut,
+                Identity = identity,
+                Message = $"{FailureReason.TimedOut} {DateTime.UtcNow}"
+            }, TaskManagerApplicationId, Event.CorrelationId);
+        }
     }
 }

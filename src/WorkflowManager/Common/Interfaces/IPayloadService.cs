@@ -49,10 +49,19 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces
         Task<bool> DeletePayloadFromStorageAsync(string payloadId);
 
         /// <summary>
+        /// Gets the expiry date for a payload.
+        /// </summary>
+        /// <param name="now"></param>
+        /// <param name="workflowInstanceId"></param>
+        /// <returns>date of expiry or null</returns>
+        Task<DateTime?> GetExpiry(DateTime now, string? workflowInstanceId);
+
+        /// <summary>
         /// Updates a payload
         /// </summary>
-        /// <param name="payload"></param>
-        /// <returns></returns>
-        Task<bool> UpdateWorkflowInstanceIdsAsync(string payloadId, IEnumerable<string> workflowInstances);
+        /// <param name="payloadId">payload id to update.</param>
+        /// <param name="payload">updated payload.</param>
+        /// <returns>true if the update is successful, false otherwise.</returns>
+        Task<bool> UpdateAsyncWorkflowIds(Payload payload);
     }
 }

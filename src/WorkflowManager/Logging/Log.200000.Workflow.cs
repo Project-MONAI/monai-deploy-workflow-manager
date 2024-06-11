@@ -55,7 +55,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
         public static partial void WorkflowInstanceNotFound(this ILogger logger, string workflowInstanceId);
 
         [LoggerMessage(EventId = 200011, Level = LogLevel.Error, Message = "The following task: {taskId} cannot be found in the workflow instance: {workflowInstanceId}.")]
-        public static partial void TaskNotFoundInWorkfowInstance(this ILogger logger, string taskId, string workflowInstanceId);
+        public static partial void TaskNotFoundInWorkflowInstance(this ILogger logger, string taskId, string workflowInstanceId);
 
         [LoggerMessage(EventId = 200012, Level = LogLevel.Error, Message = "The following task: {taskId} in workflow {workflowInstanceId} is currently timed out and not processing anymore updates, timed out at {timedOut}.")]
         public static partial void TaskTimedOut(this ILogger logger, string taskId, string workflowInstanceId, DateTime timedOut);
@@ -76,10 +76,16 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
         public static partial void ExportFilesNotFound(this ILogger logger, string taskId, string workflowInstanceId);
 
         [LoggerMessage(EventId = 200018, Level = LogLevel.Error, Message = "The following task: {taskId} cannot be found in the workflow: {workflowId}. Payload: {payloadId}")]
-        public static partial void TaskNotFoundInWorkfow(this ILogger logger, string payloadId, string taskId, string workflowId);
+        public static partial void TaskNotFoundInWorkflow(this ILogger logger, string payloadId, string taskId, string workflowId);
 
         [LoggerMessage(EventId = 200019, Level = LogLevel.Debug, Message = "Task destination condition for task {taskId} with resolved condition: {resolvedConditional} resolved to false. initial conditional: {conditions}")]
         public static partial void TaskDestinationConditionFalse(this ILogger logger, string resolvedConditional, string conditions, string taskId);
+
+        [LoggerMessage(EventId = 200020, Level = LogLevel.Warning, Message = "Use new ArtifactReceived Queue for continuation messages.")]
+        public static partial void DontUseWorkflowReceivedForPayload(this ILogger logger);
+
+        [LoggerMessage(EventId = 200021, Level = LogLevel.Trace, Message = "The task execution status for task {taskId} is already {status}. Payload: {payloadId}")]
+        public static partial void TaskStatusUpdateNotNeeded(this ILogger logger, string payloadId, string taskId, string status);
 
         // Conditions Resolver
         [LoggerMessage(EventId = 210000, Level = LogLevel.Warning, Message = "Failed to parse condition: {condition}. resolvedConditional: {resolvedConditional}")]
@@ -105,5 +111,14 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
 
         [LoggerMessage(EventId = 210007, Level = LogLevel.Information, Message = "Exporting to MIG task Id {taskid}, export destination {destination} number of files {fileCount} Mig data plugins {plugins}.")]
         public static partial void LogMigExport(this ILogger logger, string taskid, string destination, int fileCount, string plugins);
+
+        [LoggerMessage(EventId = 210018, Level = LogLevel.Error, Message = "ExportList or Artifacts are empty! workflowInstanceId {workflowInstanceId} TaskId {taskId}")]
+        public static partial void ExportListOrArtifactsAreEmpty(this ILogger logger, string taskId, string workflowInstanceId);
+
+        [LoggerMessage(EventId = 210019, Level = LogLevel.Error, Message = "Task is missing required input artifacts {taskId} Artifacts {ArtifactsJson}")]
+        public static partial void TaskIsMissingRequiredInputArtifacts(this ILogger logger, string taskId, string ArtifactsJson);
+
+        [LoggerMessage(EventId = 200020, Level = LogLevel.Warning, Message = "no workflow to execute for the given workflow request.")]
+        public static partial void DidntToCreateWorkflowInstances(this ILogger logger);
     }
 }

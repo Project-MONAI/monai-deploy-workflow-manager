@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics;
 using System.Globalization;
 using Ardalis.GuardClauses;
 using Docker.DotNet;
@@ -42,7 +43,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             TaskDispatchEvent taskDispatchEvent)
             : base(taskDispatchEvent)
         {
-            Guard.Against.Null(serviceScopeFactory, nameof(serviceScopeFactory));
+            ArgumentNullException.ThrowIfNull(serviceScopeFactory, nameof(serviceScopeFactory));
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _scope = serviceScopeFactory.CreateScope() ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
@@ -96,7 +97,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
         private void ValidateStorageMappings(Messaging.Common.Storage storage)
         {
-            Guard.Against.Null(storage, nameof(storage));
+            ArgumentNullException.ThrowIfNull(storage, nameof(storage));
 
             if (!Event.TaskPluginArguments.ContainsKey(storage.Name))
             {
@@ -132,13 +133,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
             try
             {
-                var imageCreateParameters = new ImagesCreateParameters()
+                var alwaysPull = Event.TaskPluginArguments.ContainsKey(Keys.AlwaysPull) && Event.TaskPluginArguments[Keys.AlwaysPull].Equals("true", StringComparison.OrdinalIgnoreCase);
+                if (alwaysPull || !await ImageExistsAsync(cancellationToken).ConfigureAwait(false))
                 {
-                    FromImage = Event.TaskPluginArguments[Keys.ContainerImage],
-                };
-
-                // Pull image.
-                await _dockerClient.Images.CreateImageAsync(imageCreateParameters, new AuthConfig(), new Progress<JSONMessage>(), cancellationToken).ConfigureAwait(false);
+                    // Pull image.
+                    _logger.ImageDoesNotExist(Event.TaskPluginArguments[Keys.ContainerImage]);
+                    var imageCreateParameters = new ImagesCreateParameters()
+                    {
+                        FromImage = Event.TaskPluginArguments[Keys.ContainerImage],
+                    };
+                    await _dockerClient.Images.CreateImageAsync(imageCreateParameters, new AuthConfig(), new Progress<JSONMessage>(), cancellationToken).ConfigureAwait(false);
+                }
             }
             catch (Exception exception)
             {
@@ -199,9 +204,23 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
             };
         }
 
+        private async Task<bool> ImageExistsAsync(CancellationToken cancellationToken)
+        {
+            var imageListParameters = new ImagesListParameters
+            {
+                Filters = new Dictionary<string, IDictionary<string, bool>>
+                {
+                    { "reference", new Dictionary<string, bool> { { Event.TaskPluginArguments[Keys.ContainerImage], true } } }
+                }
+            };
+
+            var results = await _dockerClient.Images.ListImagesAsync(imageListParameters, cancellationToken);
+            return results?.Any() ?? false;
+        }
+
         public override async Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent callbackEvent, CancellationToken cancellationToken = default)
         {
-            Guard.Against.NullOrWhiteSpace(identity, nameof(identity));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(identity, nameof(identity));
 
             try
             {
@@ -263,7 +282,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
         private Dictionary<string, string> GetExecutuionStats(ContainerInspectResponse response)
         {
-            Guard.Against.Null(response, nameof(response));
+            ArgumentNullException.ThrowIfNull(response, nameof(response));
 
             TimeSpan? duration = null;
 
@@ -345,8 +364,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                 {
                     Runtime = Strings.RuntimeNvidia,
                     Mounts = volumeMounts,
-                }
+                },
             };
+
+            if (Event.TaskPluginArguments.ContainsKey(Keys.User))
+            {
+                parameters.User = Event.TaskPluginArguments[Keys.User];
+            }
 
             return parameters;
         }
@@ -387,6 +411,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                 // eg: /monai/input
                 var volumeMount = new ContainerVolumeMount(input, Event.TaskPluginArguments[input.Name], inputHostDirRoot, inputContainerDirRoot);
                 volumeMounts.Add(volumeMount);
+                _logger.InputVolumeMountAdded(inputHostDirRoot, inputContainerDirRoot);
 
                 // For each file, download from bucket and store in Task Manager Container.
                 foreach (var obj in objects)
@@ -405,6 +430,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                 }
             }
 
+            SetPermission(containerPath);
+
             return volumeMounts;
         }
 
@@ -417,7 +444,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
 
                 Directory.CreateDirectory(containerPath);
 
-                return new ContainerVolumeMount(Event.IntermediateStorage, Event.TaskPluginArguments[Keys.WorkingDirectory], hostPath, containerPath);
+                var volumeMount = new ContainerVolumeMount(Event.IntermediateStorage, Event.TaskPluginArguments[Keys.WorkingDirectory], hostPath, containerPath);
+                _logger.IntermediateVolumeMountAdded(hostPath, containerPath);
+                SetPermission(containerPath);
+                return volumeMount;
             }
 
             return default!;
@@ -446,9 +476,30 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
                 Directory.CreateDirectory(containerPath);
 
                 volumeMounts.Add(new ContainerVolumeMount(output, Event.TaskPluginArguments[output.Name], hostPath, containerPath));
+                _logger.OutputVolumeMountAdded(hostPath, containerPath);
             }
 
+            SetPermission(containerRootPath);
+
             return volumeMounts;
+        }
+
+        private void SetPermission(string path)
+        {
+            if (Event.TaskPluginArguments.ContainsKey(Keys.User))
+            {
+                if (!System.OperatingSystem.IsWindows())
+                {
+                    var process = Process.Start("chown", $"-R {Event.TaskPluginArguments[Keys.User]} {path}");
+                    process.WaitForExit();
+
+                    if (process.ExitCode != 0)
+                    {
+                        _logger.ErrorSettingDirectoryPermission(path, Event.TaskPluginArguments[Keys.User]);
+                        throw new SetPermissionException($"chown command exited with code {process.ExitCode}");
+                    }
+                }
+            }
         }
 
         protected override void Dispose(bool disposing)

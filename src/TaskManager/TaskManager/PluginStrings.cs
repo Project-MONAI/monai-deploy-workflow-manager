@@ -24,7 +24,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
         public const string Docker = "docker";
 
-        public static readonly IReadOnlyList<string> PlugsRequiresPermanentAccoutns = new List<string>() { Argo, Docker };
+        public static readonly IReadOnlyList<string> PlugsRequiresPermanentAccounts = new List<string>() { Argo, Docker };
     }
 }
 #pragma warning restore SA1600 // Elements should be documented

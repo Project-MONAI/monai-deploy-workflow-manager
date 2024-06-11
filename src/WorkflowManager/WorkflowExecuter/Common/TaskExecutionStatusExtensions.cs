@@ -17,14 +17,14 @@
 using Ardalis.GuardClauses;
 using Monai.Deploy.Messaging.Events;
 
-namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common
 {
     public static class TaskExecutionStatusExtensions
     {
         public static bool IsTaskExecutionStatusUpdateValid(this TaskExecutionStatus newStatus, TaskExecutionStatus oldStatus)
         {
-            Guard.Against.Null(newStatus, nameof(newStatus));
-            Guard.Against.Null(oldStatus, nameof(oldStatus));
+            ArgumentNullException.ThrowIfNull(newStatus, nameof(newStatus));
+            ArgumentNullException.ThrowIfNull(oldStatus, nameof(oldStatus));
 
             return newStatus switch
             {

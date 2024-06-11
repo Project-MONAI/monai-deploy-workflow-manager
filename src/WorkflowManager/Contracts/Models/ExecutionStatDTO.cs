@@ -36,5 +36,4 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
         public double ExecutionDurationSeconds { get; set; }
         public string Status { get; set; } = "Created";
     }
-
 }

@@ -20,7 +20,7 @@ using FluentAssertions;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
-using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common;
+using Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common;
 using Xunit;
 
 namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Common
@@ -157,10 +157,17 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Common
                 ExportTaskId = task.TaskId,
                 CorrelationId = correlationId,
                 Files = dicomImages,
-                Destinations = exportDestinations
+                Destinations = exportDestinations,
+                Target = new DataOrigin
+                {
+                    Destination = exportDestinations[0],
+                    DataService = DataService.DIMSE,
+                    Source = "WFM"
+                }
             };
 
             var exportRequest = EventMapper.ToExportRequestEvent(dicomImages, exportDestinations, task.TaskId, workflowInstanceId, correlationId);
+            exportRequest.Target!.Source = "WFM";
 
             exportRequest.Should().BeEquivalentTo(expected);
         }

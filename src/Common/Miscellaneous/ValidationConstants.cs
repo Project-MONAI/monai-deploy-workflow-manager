@@ -93,41 +93,47 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
         };
 
 
-
         /// <summary>
         /// Key for the argo task type.
         /// </summary>
-        public static readonly string ArgoTaskType = "argo";
+        public const string ArgoTaskType = "argo";
 
         /// <summary>
         /// Key for the clinical review task type.
         /// </summary>
-        public static readonly string ClinicalReviewTaskType = "aide_clinical_review";
+        public const string ClinicalReviewTaskType = "aide_clinical_review";
 
         /// <summary>
         /// Key for the router task type.
         /// </summary>
-        public static readonly string RouterTaskType = "router";
+        public const string RouterTaskType = "router";
 
         /// <summary>
         /// Key for the export task type.
         /// </summary>
-        public static readonly string ExportTaskType = "export";
+        public const string ExportTaskType = "export";
 
         /// <summary>
         /// Key for the export task type.
         /// </summary>
-        public static readonly string ExternalAppTaskType = "remote_app_execution";
+        public const string ExternalAppTaskType = "remote_app_execution";
+
+        /// <summary>
+        /// Key for Hl7 export task type.
+        /// </summary>
+        public const string HL7ExportTask = "export_hl7";
 
         /// <summary>
         /// Key for the export task type.
         /// </summary>
-        public static readonly string DockerTaskType = "docker";
+        public const string DockerTaskType = "docker";
 
         /// <summary>
         /// Key for the email task type.
         /// </summary>
-        public static readonly string Email = "email";
+        public const string Email = "email";
+
+        public static readonly string[] AcceptableTasksToReview = { ArgoTaskType, ExternalAppTaskType };
 
         /// <summary>
         /// Valid task types.
@@ -140,7 +146,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
                 ExportTaskType,
                 DockerTaskType,
                 Email,
-                ExternalAppTaskType
+                ExternalAppTaskType,
+                HL7ExportTask
             };
     }
 }

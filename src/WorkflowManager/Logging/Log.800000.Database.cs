@@ -63,5 +63,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Logging
 
         [LoggerMessage(EventId = 800014, Level = LogLevel.Error, Message = "Failed to update payload: '{payloadId}'.")]
         public static partial void DbUpdatePayloadError(this ILogger logger, string payloadId, Exception ex);
+
+        [LoggerMessage(EventId = 800015, Level = LogLevel.Error, Message = "Failed to get payloads to delete.")]
+        public static partial void DbGetPayloadsToDeleteError(this ILogger logger, Exception ex);
     }
 }

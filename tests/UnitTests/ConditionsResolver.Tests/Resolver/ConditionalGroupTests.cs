@@ -195,7 +195,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Tests.Resolver
         [Fact]
         public void ConditionalGroup_GivenEmptyStringConditionalGroup_ShouldThrowException()
         {
-            var expectedMessage = "Required input input was empty. (Parameter 'input')";
+            var expectedMessage = "The value cannot be an empty string. (Parameter 'input')";
             var exception = Assert.Throws<ArgumentException>(() => ConditionalGroup.Create(""));
             Assert.Equal(expectedMessage, exception.Message);
         }
@@ -203,7 +203,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Tests.Resolver
         [Fact]
         public void ConditionalGroup_GivenEmptyStringConditionalGroupParse_ShouldThrowException()
         {
-            var expectedMessage = "Required input input was empty. (Parameter 'input')";
+            var expectedMessage = "The value cannot be an empty string. (Parameter 'input')";
             var exception = Assert.Throws<ArgumentException>(() => new ConditionalGroup().Parse(""));
             Assert.Equal(expectedMessage, exception.Message);
         }
@@ -211,7 +211,7 @@ namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Tests.Resolver
         [Fact]
         public void ConditionalGroup_GivenEmptyStringConditionalGroupParseBrackets_ShouldThrowException()
         {
-            var expectedMessage = "Required input input was empty. (Parameter 'input')";
+            var expectedMessage = "The value cannot be an empty string or composed entirely of whitespace. (Parameter 'input')";
             var exception = Assert.Throws<ArgumentException>(() => new ConditionalGroup().ParseBrackets(""));
             Assert.Equal(expectedMessage, exception.Message);
         }

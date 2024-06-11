@@ -17,6 +17,7 @@
 using System.Text;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 {
@@ -30,6 +31,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 
         private string Exchange { get; set; }
 
+        private string DeadLetterExchange { get; set; } = "monaideploy-dead-letter";
+
+        private int Deliverylimit { get; set; } = 3;
+
         private string RoutingKey { get; set; }
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -38,9 +43,29 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
         {
             using (var channel = RabbitConnectionFactory.Connection?.CreateModel())
             {
-                var queue = channel.QueueDeclare(queue: RoutingKey, durable: true);
+                var arguments = new Dictionary<string, object>()
+                {
+                    { "x-queue-type", "quorum" },
+                    { "x-delivery-limit", Deliverylimit },
+                    { "x-dead-letter-exchange", DeadLetterExchange }
+                };
+
+                var deadLetterQueue = $"{RoutingKey}-dead-letter";
+                var (exists, _) = QueueExists(deadLetterQueue);
+                if (exists == false)
+                {
+                    channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
+                }
+
+                var queue = channel.QueueDeclare(queue: RoutingKey, durable: true, exclusive: false, autoDelete: false, arguments);
                 channel.QueueBind(queue.QueueName, Exchange, RoutingKey);
+                if (!string.IsNullOrEmpty(deadLetterQueue))
+                {
+                    channel.QueueBind(deadLetterQueue, DeadLetterExchange, RoutingKey);
+                }
+
                 channel.ExchangeDeclare(Exchange, ExchangeType.Topic, durable: true);
+
 
                 var basicGetResult = channel.BasicGet(queue.QueueName, true);
 
@@ -55,6 +80,28 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             }
 
             return default;
+        }
+        private (bool exists, bool accessable) QueueExists(string queueName)
+        {
+            var testChannel = RabbitConnectionFactory.Connection?.CreateModel();
+
+            try
+            {
+                var testRun = testChannel!.QueueDeclarePassive(queue: queueName);
+            }
+            catch (OperationInterruptedException operationInterruptedException)
+            {
+                ///RabbitMQ node that hosts the previously created dead-letter queue is unavailable
+                if (operationInterruptedException.Message.Contains("down or inaccessible"))
+                {
+                    return (true, false);
+                }
+                else
+                {
+                    return (false, true);
+                }
+            }
+            return (true, true);
         }
     }
 #pragma warning restore CS8604 // Possible null reference argument.

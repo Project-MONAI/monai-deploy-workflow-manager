@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-using Ardalis.GuardClauses;
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser;
+using Monai.Deploy.WorkflowManager.Common.Database.Repositories;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
 using Monai.Deploy.WorkflowManager.Common.Services.InformaticsGateway;
 using Monai.Deploy.WorkflowManager.Common.Storage.Services;
-using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common;
-using Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services;
+using Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common;
+using Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services;
 using Monai.Deploy.WorkflowManager.PayloadListener.Services;
 using Monai.Deploy.WorkflowManager.PayloadListener.Validators;
 
@@ -44,7 +45,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Extensions
         /// <returns>Updated IServiceCollection.</returns>
         public static IServiceCollection AddWorkflowExecutor(this IServiceCollection services, HostBuilderContext hostContext)
         {
-            Guard.Against.Null(hostContext, nameof(hostContext));
+            ArgumentNullException.ThrowIfNull(hostContext, nameof(hostContext));
 
             services.AddTransient<IMonaiServiceLocator, MonaiServiceLocator>();
             services.AddTransient<IWorkflowService, WorkflowService>();
@@ -54,6 +55,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Extensions
             services.AddTransient<IDicomService, DicomService>();
             services.AddTransient<IInformaticsGatewayService, InformaticsGatewayService>();
 
+            services.AddSingleton<IArtifactsRepository, ArtifactsRepository>();
             services.AddSingleton<IEventPayloadReceiverService, EventPayloadReceiverService>();
             services.AddTransient<IEventPayloadValidator, EventPayloadValidator>();
             services.AddSingleton<IWorkflowExecuterService, WorkflowExecuterService>();

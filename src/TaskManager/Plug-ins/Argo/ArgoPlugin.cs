@@ -58,7 +58,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
             TaskDispatchEvent taskDispatchEvent)
             : base(taskDispatchEvent)
         {
-            Guard.Against.Null(serviceScopeFactory, nameof(serviceScopeFactory));
+            ArgumentNullException.ThrowIfNull(serviceScopeFactory, nameof(serviceScopeFactory));
 
             _secretStores = new Dictionary<string, string>();
             _intermediaryArtifactStores = new Dictionary<string, Messaging.Common.Storage>();
@@ -232,7 +232,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         public override async Task<ExecutionStatus> GetStatus(string identity, TaskCallbackEvent callbackEvent, CancellationToken cancellationToken = default)
         {
-            Guard.Against.NullOrWhiteSpace(identity, nameof(identity));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(identity, nameof(identity));
             Task? logTask = null;
             try
             {
@@ -304,7 +304,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private Dictionary<string, string> GetExecutuionStats(Workflow workflow)
         {
-            Guard.Against.Null(workflow, nameof(workflow));
+            ArgumentNullException.ThrowIfNull(workflow, nameof(workflow));
 
             TimeSpan? duration = null;
             if (workflow.Status?.StartedAt is not null && workflow.Status?.FinishedAt is not null)
@@ -432,7 +432,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         /// <param name="cancellationToken"></param>
         private void ProcessTaskPluginArguments(Workflow workflow)
         {
-            Guard.Against.Null(workflow, nameof(workflow));
+            ArgumentNullException.ThrowIfNull(workflow, nameof(workflow));
             var priorityClassName = Event.GetTaskPluginArgumentsParameter(ArgoParameters.TaskPriorityClassName) ?? _options.Value.TaskManager.ArgoPluginArguments.TaskPriorityClass;
 
             foreach (var template in workflow.Spec.Templates)
@@ -447,8 +447,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private void AddLimit(Template2 template, ArgoParameters.ResourcesKey key)
         {
-            Guard.Against.Null(template, nameof(template));
-            Guard.Against.Null(key, nameof(key));
+            ArgumentNullException.ThrowIfNull(template, nameof(template));
+            ArgumentNullException.ThrowIfNull(key, nameof(key));
             if (template.Container is null || !Event.TaskPluginArguments.TryGetValue(key.TaskKey, out var value) || string.IsNullOrWhiteSpace(value))
             {
                 return;
@@ -473,7 +473,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private async Task AddMainWorkflowTemplate(Workflow workflow, CancellationToken cancellationToken)
         {
-            Guard.Against.Null(workflow, nameof(workflow));
+            ArgumentNullException.ThrowIfNull(workflow, nameof(workflow));
 
             var workflowTemplate = await LoadWorkflowTemplate(Event.TaskPluginArguments![ArgoParameters.WorkflowTemplateName]).ConfigureAwait(false);
 
@@ -505,7 +505,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private async Task AddExitHookTemplate(Workflow workflow, CancellationToken cancellationToken)
         {
-            Guard.Against.Null(workflow, nameof(workflow));
+            ArgumentNullException.ThrowIfNull(workflow, nameof(workflow));
 
             var temporaryStore = Event.IntermediateStorage.Clone() as Messaging.Common.Storage;
             temporaryStore!.RelativeRootPath = $"{temporaryStore.RelativeRootPath}/messaging";
@@ -536,7 +536,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private async Task<WorkflowTemplate?> LoadWorkflowTemplate(string workflowTemplateName)
         {
-            Guard.Against.NullOrWhiteSpace(workflowTemplateName, nameof(workflowTemplateName));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowTemplateName, nameof(workflowTemplateName));
 
             try
             {
@@ -552,11 +552,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private async Task CopyWorkflowTemplateToWorkflow(WorkflowTemplate workflowTemplate, string name, Workflow workflow, CancellationToken cancellationToken)
         {
-            Guard.Against.Null(workflowTemplate, nameof(workflowTemplate));
-            Guard.Against.Null(workflowTemplate.Spec, nameof(workflowTemplate.Spec));
-            Guard.Against.Null(workflowTemplate.Spec.Templates, nameof(workflowTemplate.Spec.Templates));
-            Guard.Against.NullOrWhiteSpace(name, nameof(name));
-            Guard.Against.Null(workflow, nameof(workflow));
+            ArgumentNullException.ThrowIfNull(workflowTemplate, nameof(workflowTemplate));
+            ArgumentNullException.ThrowIfNull(workflowTemplate.Spec, nameof(workflowTemplate.Spec));
+            ArgumentNullException.ThrowIfNull(workflowTemplate.Spec.Templates, nameof(workflowTemplate.Spec.Templates));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(name, nameof(name));
+            ArgumentNullException.ThrowIfNull(workflow, nameof(workflow));
 
             var template = workflowTemplate.Spec.Templates.FirstOrDefault(p => p.Name == name);
             if (template is null)
@@ -624,7 +624,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         /// <returns></returns>
         private async Task ConfigureInputArtifactStoreForTemplates(ICollection<Template2> templates, CancellationToken cancellationToken)
         {
-            Guard.Against.Null(templates, nameof(templates));
+            ArgumentNullException.ThrowIfNull(templates, nameof(templates));
 
             foreach (var template in templates)
             {
@@ -648,8 +648,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private async Task ConfigureInputArtifactStore(string templateName, ICollection<Template2> templates, IEnumerable<Artifact> artifacts, bool isDagOrStep, CancellationToken cancellationToken)
         {
-            Guard.Against.NullOrWhiteSpace(templateName, nameof(templateName));
-            Guard.Against.Null(templates, nameof(templates));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(templateName, nameof(templateName));
+            ArgumentNullException.ThrowIfNull(templates, nameof(templates));
 
             if (artifacts is null || !artifacts.Any())
             {
@@ -675,9 +675,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private bool IsInputConfiguredInStepOrDag(ICollection<Template2> templates, string referencedTemplateName, string referencedArtifactName)
         {
-            Guard.Against.Null(templates, nameof(templates));
-            Guard.Against.NullOrWhiteSpace(referencedTemplateName, nameof(referencedTemplateName));
-            Guard.Against.NullOrWhiteSpace(referencedArtifactName, nameof(referencedArtifactName));
+            ArgumentNullException.ThrowIfNull(templates, nameof(templates));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(referencedTemplateName, nameof(referencedTemplateName));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(referencedArtifactName, nameof(referencedArtifactName));
 
             List<Artifact> artifacts = new List<Artifact>();
             foreach (var template in templates)
@@ -711,7 +711,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         /// <returns></returns>
         private async Task ConfigureOuputArtifactStoreForTemplates(ICollection<Template2> templates, CancellationToken cancellationToken)
         {
-            Guard.Against.Null(templates, nameof(templates));
+            ArgumentNullException.ThrowIfNull(templates, nameof(templates));
 
             foreach (var template in templates)
             {
@@ -726,7 +726,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private async Task SetupOutputArtifactStoreForTemplate(Template2 template, CancellationToken cancellationToken)
         {
-            Guard.Against.Null(template, nameof(template));
+            ArgumentNullException.ThrowIfNull(template, nameof(template));
 
             if (template.Outputs is null || template.Outputs.Artifacts is null)
             {
@@ -768,7 +768,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private async Task<S3Artifact2> CreateArtifact(Messaging.Common.Storage storageInfo, CancellationToken cancellationToken)
         {
-            Guard.Against.Null(storageInfo, nameof(storageInfo));
+            ArgumentNullException.ThrowIfNull(storageInfo, nameof(storageInfo));
 
             if (!_secretStores.TryGetValue(storageInfo.Name!, out var secret))
             {
@@ -788,9 +788,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private async Task CopyTemplateDags(DAGTemplate dag, WorkflowTemplate workflowTemplate, string name, Workflow workflow, CancellationToken cancellationToken)
         {
-            Guard.Against.Null(workflowTemplate, nameof(workflowTemplate));
-            Guard.Against.NullOrWhiteSpace(name, nameof(name));
-            Guard.Against.Null(workflow, nameof(workflow));
+            ArgumentNullException.ThrowIfNull(workflowTemplate, nameof(workflowTemplate));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(name, nameof(name));
+            ArgumentNullException.ThrowIfNull(workflow, nameof(workflow));
 
             if (dag is not null)
             {
@@ -803,9 +803,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
 
         private async Task CopyTemplateSteps(ICollection<ParallelSteps> steps, WorkflowTemplate workflowTemplate, string name, Workflow workflow, CancellationToken cancellationToken)
         {
-            Guard.Against.Null(workflowTemplate, nameof(workflowTemplate));
-            Guard.Against.NullOrWhiteSpace(name, nameof(name));
-            Guard.Against.Null(workflow, nameof(workflow));
+            ArgumentNullException.ThrowIfNull(workflowTemplate, nameof(workflowTemplate));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(name, nameof(name));
+            ArgumentNullException.ThrowIfNull(workflow, nameof(workflow));
 
             if (steps is not null)
             {
@@ -822,11 +822,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Argo
         // ReSharper disable once InconsistentNaming
         private async Task<string> GenerateK8sSecretFrom(Messaging.Common.Storage storage, CancellationToken cancellationToken)
         {
-            Guard.Against.Null(storage, nameof(storage));
-            Guard.Against.Null(storage.Credentials, nameof(storage.Credentials));
-            Guard.Against.NullOrWhiteSpace(storage.Name, nameof(storage.Name));
-            Guard.Against.NullOrWhiteSpace(storage.Credentials.AccessKey, nameof(storage.Credentials.AccessKey));
-            Guard.Against.NullOrWhiteSpace(storage.Credentials.AccessToken, nameof(storage.Credentials.AccessToken));
+            ArgumentNullException.ThrowIfNull(storage, nameof(storage));
+            ArgumentNullException.ThrowIfNull(storage.Credentials, nameof(storage.Credentials));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(storage.Name, nameof(storage.Name));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(storage.Credentials.AccessKey, nameof(storage.Credentials.AccessKey));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(storage.Credentials.AccessToken, nameof(storage.Credentials.AccessToken));
 
             var client = _kubernetesProvider.CreateClient();
             var secret = new k8s.Models.V1Secret

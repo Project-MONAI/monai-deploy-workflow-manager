@@ -20,7 +20,7 @@ using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.Storage.Configuration;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Common
 {
     public class GenerateTaskUpdateEventParams
     {
@@ -50,7 +50,7 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
 
         public static TaskUpdateEvent GenerateTaskUpdateEvent(GenerateTaskUpdateEventParams eventParams)
         {
-            Guard.Against.Null(eventParams, nameof(eventParams));
+            ArgumentNullException.ThrowIfNull(eventParams, nameof(eventParams));
 
             return new TaskUpdateEvent
             {
@@ -74,8 +74,8 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
             FailureReason failureReason,
             string message)
         {
-            //Guard.Against.Null(identity, nameof(identity));
-            Guard.Against.Null(workflowInstanceId, nameof(workflowInstanceId));
+            //ArgumentNullException.ThrowIfNull(identity, nameof(identity));
+            ArgumentNullException.ThrowIfNull(workflowInstanceId, nameof(workflowInstanceId));
 
             return new TaskCancellationEvent
             {
@@ -94,13 +94,13 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
             string correlationId,
             StorageServiceConfiguration configuration)
         {
-            Guard.Against.Null(task, nameof(task));
-            Guard.Against.Null(workflowInstance, nameof(workflowInstance));
-            Guard.Against.NullOrWhiteSpace(workflowInstance.BucketId, nameof(workflowInstance.BucketId));
-            Guard.Against.NullOrWhiteSpace(workflowInstance.Id, nameof(workflowInstance.Id));
-            Guard.Against.NullOrWhiteSpace(workflowInstance.PayloadId, nameof(workflowInstance.PayloadId));
-            Guard.Against.NullOrWhiteSpace(correlationId, nameof(correlationId));
-            Guard.Against.Null(configuration, nameof(configuration));
+            ArgumentNullException.ThrowIfNull(task, nameof(task));
+            ArgumentNullException.ThrowIfNull(workflowInstance, nameof(workflowInstance));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstance.BucketId, nameof(workflowInstance.BucketId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstance.Id, nameof(workflowInstance.Id));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstance.PayloadId, nameof(workflowInstance.PayloadId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(correlationId, nameof(correlationId));
+            ArgumentNullException.ThrowIfNull(configuration, nameof(configuration));
 
             var inputs = new List<Messaging.Common.Storage>();
             var outputs = new List<Messaging.Common.Storage>();
@@ -180,9 +180,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
         {
             plugins ??= new List<string>();
 
-            Guard.Against.NullOrWhiteSpace(taskId, nameof(taskId));
-            Guard.Against.NullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
-            Guard.Against.NullOrWhiteSpace(correlationId, nameof(correlationId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(taskId, nameof(taskId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(correlationId, nameof(correlationId));
             Guard.Against.NullOrEmpty(dicomImages, nameof(dicomImages));
             Guard.Against.NullOrEmpty(exportDestinations, nameof(exportDestinations));
 
@@ -192,7 +192,38 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Common
                 ExportTaskId = taskId,
                 CorrelationId = correlationId,
                 Files = dicomImages,
-                Destinations = exportDestinations
+                Destinations = exportDestinations,
+                Target = new DataOrigin { DataService = DataService.DIMSE, Destination = exportDestinations[0] }
+            };
+            request.PluginAssemblies.AddRange(plugins);
+            return request;
+        }
+
+        public static ExternalAppRequestEvent ToExternalAppRequestEvent(
+            IList<string> dicomImages,
+            List<DataOrigin> exportDestinations,
+            string taskId,
+            string workflowInstanceId,
+            string correlationId,
+            string destinationFolder,
+            List<string>? plugins = null)
+        {
+            plugins ??= new List<string>();
+
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(taskId, nameof(taskId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(workflowInstanceId, nameof(workflowInstanceId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(correlationId, nameof(correlationId));
+            Guard.Against.NullOrEmpty(dicomImages, nameof(dicomImages));
+            Guard.Against.NullOrEmpty(exportDestinations, nameof(exportDestinations));
+
+            var request = new ExternalAppRequestEvent
+            {
+                WorkflowInstanceId = workflowInstanceId,
+                ExportTaskId = taskId,
+                CorrelationId = correlationId,
+                Files = dicomImages,
+                Targets = exportDestinations,
+                DestinationFolder = destinationFolder
             };
             request.PluginAssemblies.AddRange(plugins);
             return request;

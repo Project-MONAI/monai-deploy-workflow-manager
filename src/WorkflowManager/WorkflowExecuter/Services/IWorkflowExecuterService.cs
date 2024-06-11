@@ -17,7 +17,7 @@
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 
-namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
+namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Services
 {
     public interface IWorkflowExecuterService
     {
@@ -51,10 +51,9 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkfowExecuter.Services
         Task<TaskExecution> CreateTaskExecutionAsync(TaskObject task, WorkflowInstance workflowInstance, string? bucketName = null, string? payloadId = null, string? previousTaskId = null);
 
         /// <summary>
-        /// Attaches patient metadata to task execution plugin arguments.
+        /// Processes the artifactReceived payload and continue workflow instance.
         /// </summary>
-        /// <param name="task"></param>
-        /// <param name="patientDetails"></param>
-        void AttachPatientMetaData(TaskExecution task, PatientDetails patientDetails);
+        /// <param name="message">The workflow request message event.</param>
+        Task<bool> ProcessArtifactReceivedAsync(ArtifactsReceivedEvent message);
     }
 }

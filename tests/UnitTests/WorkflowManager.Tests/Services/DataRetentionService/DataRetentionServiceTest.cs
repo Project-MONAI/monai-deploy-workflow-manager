@@ -48,10 +48,10 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Services.Http
             var service = new DataRetentionService(_logger.Object);
             Assert.Equal(ServiceStatus.Unknown, service.Status);
 
-            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            await service.StartAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
             Assert.Equal(ServiceStatus.Running, service.Status);
 
-            await service.StopAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            await service.StopAsync(_cancellationTokenSource.Token).ConfigureAwait(ConfigureAwaitOptions.ContinueOnCapturedContext);
             Assert.Equal(ServiceStatus.Stopped, service.Status);
 
             service.Dispose();

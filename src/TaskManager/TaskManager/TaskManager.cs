@@ -144,8 +144,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             ExecutionStatus executionStatus,
             List<Messaging.Common.Storage>? outputs = null)
         {
-            Guard.Against.Null(message, nameof(message));
-            Guard.Against.Null(executionStatus, nameof(executionStatus));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(executionStatus, nameof(executionStatus));
 
             var body = new TaskUpdateEvent
             {
@@ -195,7 +195,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         private async Task TaskCallBackGeneric<T>(MessageReceivedEventArgs args, Func<JsonMessage<T>, Task> func)
             where T : EventBase
         {
-            Guard.Against.Null(args, nameof(args));
+            ArgumentNullException.ThrowIfNull(args, nameof(args));
 
             using var loggingScope = _logger.BeginScope(new Common.Miscellaneous.LoggingDataDictionary<string, object>
             {
@@ -227,7 +227,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         private async Task HandleCancellationTask(JsonMessage<TaskCancellationEvent> message)
         {
             _logger.PrecessingTaskCancellationEvent();
-            Guard.Against.Null(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
 
             try
             {
@@ -241,15 +241,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
 
             var pluginAssembly = string.Empty;
-            ITaskPlugin? taskRunner = null;
+            ITaskPlugin? taskRunner;
             try
             {
                 var taskExecution = await _taskDispatchEventService.GetByTaskExecutionIdAsync(message.Body.ExecutionId).ConfigureAwait(false);
-                pluginAssembly = _options.Value.TaskManager.PluginAssemblyMappings[taskExecution?.Event.TaskPluginType] ?? string.Empty;
-                var taskExecEvent = taskExecution?.Event;
-                if (taskExecEvent == null)
+
+                var taskExecEvent = taskExecution?.Event ?? throw new InvalidOperationException("Task Event data not found.");
+
+                pluginAssembly = string.Empty;
+                if (_options.Value.TaskManager.PluginAssemblyMappings.ContainsKey(taskExecution?.Event.TaskPluginType))
                 {
-                    throw new InvalidOperationException("Task Event data not found.");
+                    pluginAssembly = _options.Value.TaskManager.PluginAssemblyMappings[taskExecution?.Event.TaskPluginType];
                 }
 
                 taskRunner = typeof(ITaskPlugin).CreateInstance<ITaskPlugin>(serviceProvider: _scope.ServiceProvider, typeString: pluginAssembly, _serviceScopeFactory, taskExecEvent);
@@ -278,7 +280,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
         private async Task HandleTaskCallback(JsonMessage<TaskCallbackEvent> message)
         {
-            Guard.Against.Null(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
 
             try
             {
@@ -393,7 +395,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
         private async Task RemoveUserAccounts(TaskDispatchEventInfo taskDispatchEventInfo)
         {
-            Guard.Against.Null(taskDispatchEventInfo, nameof(taskDispatchEventInfo));
+            ArgumentNullException.ThrowIfNull(taskDispatchEventInfo, nameof(taskDispatchEventInfo));
 
             foreach (var user in taskDispatchEventInfo.UserAccounts)
             {
@@ -411,7 +413,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         private async Task HandleDispatchTask(JsonMessage<TaskDispatchEvent> message)
         {
             Guard.Against.NullService(_messageBrokerSubscriberService, nameof(IMessageBrokerSubscriberService));
-            Guard.Against.Null(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
 
             var pluginAssembly = string.Empty;
             var eventInfo = new API.Models.TaskDispatchEventInfo(message.Body);
@@ -445,7 +447,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
             try
             {
-                if (PluginStrings.PlugsRequiresPermanentAccoutns.Contains(
+                if (PluginStrings.PlugsRequiresPermanentAccounts.Contains(
                         message.Body.TaskPluginType,
                         StringComparer.InvariantCultureIgnoreCase))
                 {
@@ -553,11 +555,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
 
         private async Task PopulateTemporaryStorageCredentials(params Messaging.Common.Storage[] storages)
         {
-            Guard.Against.Null(storages, nameof(storages));
+            ArgumentNullException.ThrowIfNull(storages, nameof(storages));
 
             foreach (var storage in storages)
             {
-                var credentials = await _storageService.CreateTemporaryCredentialsAsync(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
+                var credentials = await _storageService.CreateTemporaryCredentialsAsync(
+                        storage.Bucket,
+                        ShortenStoragePath(storage.RelativeRootPath),
+                        _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds,
+                        _cancellationToken)
+                    .ConfigureAwait(false);
+
                 storage.Credentials = new Credentials
                 {
                     AccessKey = credentials.AccessKeyId,
@@ -567,10 +575,24 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
             }
         }
 
+        // added because AWS s3 policy creation is by defualt limited to 2048 characters, which
+        // can easily be surpassed with long multipart path names.
+        private string ShortenStoragePath(string path)
+        {
+            var pathParts = path.Split('/', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            if (pathParts.Length <= 3)
+            {
+                return path;
+            }
+
+            var startsWith = path[0] == '/' ? "/" : string.Empty;
+            return $"{startsWith}{pathParts[0]}/{pathParts[1]}/{pathParts[2]}";
+        }
+
         private void AcknowledgeMessage<T>(JsonMessage<T> message)
         {
             Guard.Against.NullService(_messageBrokerSubscriberService, nameof(IMessageBrokerSubscriberService));
-            Guard.Against.Null(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
 
             try
             {
@@ -588,7 +610,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         private async Task SendUpdateEvent(JsonMessage<TaskUpdateEvent> message)
         {
             Guard.Against.NullService(_messageBrokerPublisherService, nameof(IMessageBrokerPublisherService));
-            Guard.Against.Null(message, nameof(message));
+            ArgumentNullException.ThrowIfNull(message, nameof(message));
 
             try
             {
