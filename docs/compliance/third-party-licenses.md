@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2022 MONAI Consortium
+  ~ Copyright 2022-2024 MONAI Consortium
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -1988,27 +1988,27 @@ third-party archives.
 
 
 ```
-Copyright (c) 2013-2022, Daniel Mueller 
+Copyright (c) 2013-2024, Daniel Mueller 
 All rights reserved.
- 
+
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
    list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice, 
-   this list of conditions and the following disclaimer in the documentation 
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
    and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON 
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
 
@@ -2028,9 +2028,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 ```
-The MIT License (MIT)
+MIT License
 
-Copyright (c) Cucumber Ltd, Gaspar Nagy, Björn Rasmusson, Peter Sergeant
+Copyright (c) M.P. Korstanje
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -2039,16 +2039,16 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 ```
 
 </details>
@@ -7185,14 +7185,14 @@ Apache License
 
 
 <details>
-<summary>Monai.Deploy.Messaging 2.0.0</summary>
+<summary>Monai.Deploy.Messaging 2.0.2</summary>
 
 ## Monai.Deploy.Messaging
 
-- Version: 2.0.0
+- Version: 2.0.2
 - Authors: MONAI Consortium
 - Project URL: https://github.com/Project-MONAI/monai-deploy-messaging
-- Source: [NuGet](https://www.nuget.org/packages/Monai.Deploy.Messaging/2.0.0)
+- Source: [NuGet](https://www.nuget.org/packages/Monai.Deploy.Messaging/2.0.2)
 - License: [Apache-2.0](https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
 
 
@@ -7413,14 +7413,14 @@ By downloading this software, you agree to the license terms & all licenses list
 
 
 <details>
-<summary>Monai.Deploy.Messaging.RabbitMQ 2.0.0</summary>
+<summary>Monai.Deploy.Messaging.RabbitMQ 2.0.2</summary>
 
 ## Monai.Deploy.Messaging.RabbitMQ
 
-- Version: 2.0.0
+- Version: 2.0.2
 - Authors: MONAI Consortium
 - Project URL: https://github.com/Project-MONAI/monai-deploy-messaging
-- Source: [NuGet](https://www.nuget.org/packages/Monai.Deploy.Messaging.RabbitMQ/2.0.0)
+- Source: [NuGet](https://www.nuget.org/packages/Monai.Deploy.Messaging.RabbitMQ/2.0.2)
 - License: [Apache-2.0](https://github.com/Project-MONAI/monai-deploy-messaging/raw/main/LICENSE)
 
 
@@ -10837,7 +10837,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 ```
-Copyright (c) 2023 Charlie Poole, Rob Prouse
+Copyright (c) 2024 Charlie Poole, Rob Prouse
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -10876,7 +10876,7 @@ THE SOFTWARE.
 ```
 MIT License
 
-Copyright (c) 2011-2020 Charlie Poole, 2014-2023 Terje Sandstrom
+Copyright (c) 2011-2020 Charlie Poole, 2014-2024 Terje Sandstrom
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -14204,819 +14204,33 @@ consequential or other damages.
 - Owners: microsoft,dotnetframework
 - Project URL: https://dot.net/
 - Source: [NuGet](https://www.nuget.org/packages/System.Buffers/4.3.0)
-- License: [MIT](https://github.com/dotnet/corefx/blob/master/LICENSE.TXT)
+- License: [MIT](https://github.com/dotnet/corefx/raw/master/LICENSE.TXT)
 
 
 ```
-corefx/LICENSE.TXT at master · dotnet/corefx · GitHub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Skip to content
-
-
-
-
-
-
-
-
-
-
-
-
-
-Toggle navigation
-
-
-
-
-
-
-
-
-
-
-          Sign in
-        
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-        Product
-        
-
-
-
-
-
-
-
-
-
-
-
-
-Actions
-        Automate any workflow
-      
-
-
-
-
-
-
-
-Packages
-        Host and manage packages
-      
-
-
-
-
-
-
-
-Security
-        Find and fix vulnerabilities
-      
-
-
-
-
-
-
-
-Codespaces
-        Instant dev environments
-      
-
-
-
-
-
-
-
-Copilot
-        Write better code with AI
-      
-
-
-
-
-
-
-
-Code review
-        Manage code changes
-      
-
-
-
-
-
-
-
-Issues
-        Plan and track work
-      
-
-
-
-
-
-
-
-Discussions
-        Collaborate outside of code
-      
-
-
-
-
-Explore
-
-
-
-      All features
-
-    
-
-
-
-      Documentation
-
-    
-
-
-
-
-
-      GitHub Skills
-
-    
-
-
-
-
-
-      Blog
-
-    
-
-
-
-
-
-
-
-
-
-        Solutions
-        
-
-
-
-
-
-For
-
-
-
-      Enterprise
-
-    
-
-
-
-      Teams
-
-    
-
-
-
-      Startups
-
-    
-
-
-
-      Education
-
-    
-
-
-
-
-
-
-By Solution
-
-
-
-      CI/CD & Automation
-
-    
-
-
-
-      DevOps
-
-    
-
-
-
-
-
-      DevSecOps
-
-    
-
-
-
-
-
-
-Resources
-
-
-
-      Learning Pathways
-
-    
-
-
-
-
-
-      White papers, Ebooks, Webinars
-
-    
-
-
-
-
-
-      Customer Stories
-
-    
-
-
-
-      Partners
-
-    
-
-
-
-
-
-
-
-
-
-        Open Source
-        
-
-
-
-
-
-
-
-
-
-GitHub Sponsors
-        Fund open source developers
-      
-
-
-
-
-
-
-
-
-The ReadME Project
-        GitHub community articles
-      
-
-
-
-
-Repositories
-
-
-
-      Topics
-
-    
-
-
-
-      Trending
-
-    
-
-
-
-      Collections
-
-    
-
-
-
-
-
-
-Pricing
-
-
-
-
-
-
-
-
-
-
-
-
-Search or jump to...
-
-
-
-
-
-
-
-Search code, repositories, users, issues, pull requests...
-
- 
-
-
-
-
-        Search
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-Clear
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-              Search syntax tips
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        Provide feedback
-      
-
-
-
-
-
-
-
-
-
- 
-We read every piece of feedback, and take your input very seriously.
-
-
-Include my email address so I can be contacted
-
-
-     Cancel
-
-    Submit feedback
-
-
-
-
-
-
-
-
-
-
-        Saved searches
-      
-Use saved searches to filter your results more quickly
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-Name
-
-
-
-
-
-
-Query
-
-
-
-            To see all available qualifiers, see our documentation.
-          
- 
-
-
-
-
-
-     Cancel
-
-    Create saved search
-
-
-
-
-
-
-
-
-              Sign in
-            
-
-
-              Sign up
-            
-
-
-
-
-
-
-
-
-
-You signed in with another tab or window. Reload to refresh your session.
-You signed out in another tab or window. Reload to refresh your session.
-You switched accounts on another tab or window. Reload to refresh your session.
- 
-
-
-Dismiss alert
-
-
-
-
-
-
-
-
-
-
-
-
-    This repository has been archived by the owner on Jan 23, 2023. It is now read-only.
-  
-
-
-
-
-
-
-
-
-
-        dotnet
- 
-/
-
-corefx
-
-Public archive
-
-
-
-
-
- 
-
-Notifications
-
-
-
- 
-
-Fork
-    5.1k
-
-
-
-
- 
-
-
-          Star
- 17.8k
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Code
-
-
-
-
-
-
-
-Pull requests
-0
-
-
-
-
-
-
-Security
-
-
-
-
-
-
-
-Insights
-
-
-
- 
-
- 
-
-
-Additional navigation options
-
-
- 
-
-
-
-
-
-
-
-
-
-          Code
-
-
-
-
-
-
-
-
-
-
-          Pull requests
-
-
-
-
-
-
-
-
-
-
-          Security
-
-
-
-
-
-
-
-
-
-
-          Insights
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Footer
-
-
-
-
-
-
-
-
-        © 2024 GitHub, Inc.
-      
-
-
-Footer navigation
-
-
-Terms
-
-
-Privacy
-
-
-Security
-
-
-Status
-
-
-Docs
-
-
-Contact
-
-
-
-
-      Manage cookies
-    
-
-
-
-
-
-      Do not share my personal information
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    You can’t perform that action at this time.
+The MIT License (MIT)
+
+Copyright (c) .NET Foundation and Contributors
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 ```
 
 </details>
@@ -15032,819 +14246,33 @@ Contact
 - Owners: microsoft,dotnetframework
 - Project URL: https://dot.net/
 - Source: [NuGet](https://www.nuget.org/packages/System.Buffers/4.5.1)
-- License: [MIT](https://github.com/dotnet/corefx/blob/master/LICENSE.TXT)
+- License: [MIT](https://github.com/dotnet/corefx/raw/master/LICENSE.TXT)
 
 
 ```
-corefx/LICENSE.TXT at master · dotnet/corefx · GitHub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Skip to content
-
-
-
-
-
-
-
-
-
-
-
-
-
-Toggle navigation
-
-
-
-
-
-
-
-
-
-
-          Sign in
-        
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-        Product
-        
-
-
-
-
-
-
-
-
-
-
-
-
-Actions
-        Automate any workflow
-      
-
-
-
-
-
-
-
-Packages
-        Host and manage packages
-      
-
-
-
-
-
-
-
-Security
-        Find and fix vulnerabilities
-      
-
-
-
-
-
-
-
-Codespaces
-        Instant dev environments
-      
-
-
-
-
-
-
-
-Copilot
-        Write better code with AI
-      
-
-
-
-
-
-
-
-Code review
-        Manage code changes
-      
-
-
-
-
-
-
-
-Issues
-        Plan and track work
-      
-
-
-
-
-
-
-
-Discussions
-        Collaborate outside of code
-      
-
-
-
-
-Explore
-
-
-
-      All features
-
-    
-
-
-
-      Documentation
-
-    
-
-
-
-
-
-      GitHub Skills
-
-    
-
-
-
-
-
-      Blog
-
-    
-
-
-
-
-
-
-
-
-
-        Solutions
-        
-
-
-
-
-
-For
-
-
-
-      Enterprise
-
-    
-
-
-
-      Teams
-
-    
-
-
-
-      Startups
-
-    
-
-
-
-      Education
-
-    
-
-
-
-
-
-
-By Solution
-
-
-
-      CI/CD & Automation
-
-    
-
-
-
-      DevOps
-
-    
-
-
-
-
-
-      DevSecOps
-
-    
-
-
-
-
-
-
-Resources
-
-
-
-      Learning Pathways
-
-    
-
-
-
-
-
-      White papers, Ebooks, Webinars
-
-    
-
-
-
-
-
-      Customer Stories
-
-    
-
-
-
-      Partners
-
-    
-
-
-
-
-
-
-
-
-
-        Open Source
-        
-
-
-
-
-
-
-
-
-
-GitHub Sponsors
-        Fund open source developers
-      
-
-
-
-
-
-
-
-
-The ReadME Project
-        GitHub community articles
-      
-
-
-
-
-Repositories
-
-
-
-      Topics
-
-    
-
-
-
-      Trending
-
-    
-
-
-
-      Collections
-
-    
-
-
-
-
-
-
-Pricing
-
-
-
-
-
-
-
-
-
-
-
-
-Search or jump to...
-
-
-
-
-
-
-
-Search code, repositories, users, issues, pull requests...
-
- 
-
-
-
-
-        Search
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-Clear
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-              Search syntax tips
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        Provide feedback
-      
-
-
-
-
-
-
-
-
-
- 
-We read every piece of feedback, and take your input very seriously.
-
-
-Include my email address so I can be contacted
-
-
-     Cancel
-
-    Submit feedback
-
-
-
-
-
-
-
-
-
-
-        Saved searches
-      
-Use saved searches to filter your results more quickly
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-Name
-
-
-
-
-
-
-Query
-
-
-
-            To see all available qualifiers, see our documentation.
-          
- 
-
-
-
-
-
-     Cancel
-
-    Create saved search
-
-
-
-
-
-
-
-
-              Sign in
-            
-
-
-              Sign up
-            
-
-
-
-
-
-
-
-
-
-You signed in with another tab or window. Reload to refresh your session.
-You signed out in another tab or window. Reload to refresh your session.
-You switched accounts on another tab or window. Reload to refresh your session.
- 
-
-
-Dismiss alert
-
-
-
-
-
-
-
-
-
-
-
-
-    This repository has been archived by the owner on Jan 23, 2023. It is now read-only.
-  
-
-
-
-
-
-
-
-
-
-        dotnet
- 
-/
-
-corefx
-
-Public archive
-
-
-
-
-
- 
-
-Notifications
-
-
-
- 
-
-Fork
-    5.1k
-
-
-
-
- 
-
-
-          Star
- 17.8k
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Code
-
-
-
-
-
-
-
-Pull requests
-0
-
-
-
-
-
-
-Security
-
-
-
-
-
-
-
-Insights
-
-
-
- 
-
- 
-
-
-Additional navigation options
-
-
- 
-
-
-
-
-
-
-
-
-
-          Code
-
-
-
-
-
-
-
-
-
-
-          Pull requests
-
-
-
-
-
-
-
-
-
-
-          Security
-
-
-
-
-
-
-
-
-
-
-          Insights
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Footer
-
-
-
-
-
-
-
-
-        © 2024 GitHub, Inc.
-      
-
-
-Footer navigation
-
-
-Terms
-
-
-Privacy
-
-
-Security
-
-
-Status
-
-
-Docs
-
-
-Contact
-
-
-
-
-      Manage cookies
-    
-
-
-
-
-
-      Do not share my personal information
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    You can’t perform that action at this time.
+The MIT License (MIT)
+
+Copyright (c) .NET Foundation and Contributors
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 ```
 
 </details>
@@ -38098,13 +36526,13 @@ consequential or other damages.
 
 
 <details>
-<summary>xunit 2.6.5</summary>
+<summary>xunit 2.7.0</summary>
 
 ## xunit
 
-- Version: 2.6.5
+- Version: 2.7.0
 - Authors: jnewkirk,bradwilson
-- Source: [NuGet](https://www.nuget.org/packages/xunit/2.6.5)
+- Source: [NuGet](https://www.nuget.org/packages/xunit/2.7.0)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
 
 
@@ -38230,13 +36658,13 @@ Both sets of code are covered by the following license:
 
 
 <details>
-<summary>xunit.analyzers 1.9.0</summary>
+<summary>xunit.analyzers 1.11.0</summary>
 
 ## xunit.analyzers
 
-- Version: 1.9.0
+- Version: 1.11.0
 - Authors: jnewkirk,bradwilson,marcind
-- Source: [NuGet](https://www.nuget.org/packages/xunit.analyzers/1.9.0)
+- Source: [NuGet](https://www.nuget.org/packages/xunit.analyzers/1.11.0)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit.analyzers/master/LICENSE)
 
 
@@ -38261,13 +36689,13 @@ limitations under the License.
 
 
 <details>
-<summary>xunit.assert 2.6.5</summary>
+<summary>xunit.assert 2.7.0</summary>
 
 ## xunit.assert
 
-- Version: 2.6.5
+- Version: 2.7.0
 - Authors: jnewkirk,bradwilson
-- Source: [NuGet](https://www.nuget.org/packages/xunit.assert/2.6.5)
+- Source: [NuGet](https://www.nuget.org/packages/xunit.assert/2.7.0)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
 
 
@@ -38326,13 +36754,13 @@ Both sets of code are covered by the following license:
 
 
 <details>
-<summary>xunit.core 2.6.5</summary>
+<summary>xunit.core 2.7.0</summary>
 
 ## xunit.core
 
-- Version: 2.6.5
+- Version: 2.7.0
 - Authors: jnewkirk,bradwilson
-- Source: [NuGet](https://www.nuget.org/packages/xunit.core/2.6.5)
+- Source: [NuGet](https://www.nuget.org/packages/xunit.core/2.7.0)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
 
 
@@ -38391,13 +36819,13 @@ Both sets of code are covered by the following license:
 
 
 <details>
-<summary>xunit.extensibility.core 2.6.5</summary>
+<summary>xunit.extensibility.core 2.7.0</summary>
 
 ## xunit.extensibility.core
 
-- Version: 2.6.5
+- Version: 2.7.0
 - Authors: jnewkirk,bradwilson
-- Source: [NuGet](https://www.nuget.org/packages/xunit.extensibility.core/2.6.5)
+- Source: [NuGet](https://www.nuget.org/packages/xunit.extensibility.core/2.7.0)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
 
 
@@ -38456,13 +36884,13 @@ Both sets of code are covered by the following license:
 
 
 <details>
-<summary>xunit.extensibility.execution 2.6.5</summary>
+<summary>xunit.extensibility.execution 2.7.0</summary>
 
 ## xunit.extensibility.execution
 
-- Version: 2.6.5
+- Version: 2.7.0
 - Authors: jnewkirk,bradwilson
-- Source: [NuGet](https://www.nuget.org/packages/xunit.extensibility.execution/2.6.5)
+- Source: [NuGet](https://www.nuget.org/packages/xunit.extensibility.execution/2.7.0)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
 
 
