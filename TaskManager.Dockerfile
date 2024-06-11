@@ -23,7 +23,7 @@ RUN echo "Building MONAI Workflow Manager..."
 RUN dotnet publish -c Release -o out --nologo src/TaskManager/TaskManager/Monai.Deploy.WorkflowManager.TaskManager.csproj
 
 RUN echo "Fetching mc executable for minio..."
-RUN wget -O mc https://dl.min.io/client/mc/release/linux-amd64/archive/mc.RELEASE.2023-02-28T00-12-59Z
+RUN wget -O mc https://dl.min.io/client/mc/release/linux-amd64/archive/mc.RELEASE.2024-06-10T16-44-15Z
 RUN chmod +x mc
 
 # Build runtime image
