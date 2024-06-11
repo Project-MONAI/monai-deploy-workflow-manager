@@ -1011,7 +1011,7 @@
       - 4.5.1
     :when: 2022-10-14 23:37:43.563027338 Z
     :who: mocsharp
-    :why: MIT (https://github.com/dotnet/corefx/blob/master/LICENSE.TXT)
+    :why: MIT (https://github.com/dotnet/corefx/raw/master/LICENSE.TXT)
 - - :approve
   - System.Collections
   - :versions:
@@ -1843,7 +1843,7 @@
 - - :approve
   - xunit
   - :versions:
-      - 2.6.5
+      - 2.7.0
     :when: 2022-08-16T21:40:29.166Z
     :who: mocsharp
     :why: Apache-2.0 (
@@ -1859,7 +1859,7 @@
 - - :approve
   - xunit.analyzers
   - :versions:
-      - 1.9.0
+      - 1.11.0
     :when: 2022-08-16T21:40:30.047Z
     :who: mocsharp
     :why: Apache-2.0 (
@@ -1867,7 +1867,7 @@
 - - :approve
   - xunit.assert
   - :versions:
-      - 2.6.5
+      - 2.7.0
     :when: 2022-08-16T21:40:30.526Z
     :who: mocsharp
     :why: Apache-2.0 (
@@ -1875,7 +1875,7 @@
 - - :approve
   - xunit.core
   - :versions:
-      - 2.6.5
+      - 2.7.0
     :when: 2022-08-16T21:40:30.973Z
     :who: mocsharp
     :why: Apache-2.0 (
@@ -1883,7 +1883,7 @@
 - - :approve
   - xunit.extensibility.core
   - :versions:
-      - 2.6.5
+      - 2.7.0
     :when: 2022-08-16T21:40:31.401Z
     :who: mocsharp
     :why: Apache-2.0 (
@@ -1891,7 +1891,7 @@
 - - :approve
   - xunit.extensibility.execution
   - :versions:
-      - 2.6.5
+      - 2.7.0
     :when: 2022-08-16T21:40:31.845Z
     :who: mocsharp
     :why: Apache-2.0 (
