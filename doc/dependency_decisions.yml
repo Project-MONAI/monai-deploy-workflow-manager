@@ -517,7 +517,7 @@
 - - :approve
   - Microsoft.IdentityModel.Abstractions
   - :versions:
-      - 7.0.0
+      - 7.0.3
       - 7.1.2
     :when: 2022-10-14T23:37:14.398Z
     :who: mocsharp
@@ -526,7 +526,7 @@
 - - :approve
   - Microsoft.IdentityModel.JsonWebTokens
   - :versions:
-      - 7.0.0
+      - 7.0.3
       - 7.1.2
     :when: 2022-10-14T23:37:14.398Z
     :who: mocsharp
@@ -535,7 +535,7 @@
 - - :approve
   - Microsoft.IdentityModel.Logging
   - :versions:
-      - 7.0.0
+      - 7.0.3
       - 7.1.2
     :when: 2022-10-14T23:37:15.196Z
     :who: mocsharp
@@ -560,7 +560,7 @@
 - - :approve
   - Microsoft.IdentityModel.Tokens
   - :versions:
-      - 7.0.0
+      - 7.0.3
       - 7.1.2
     :when: 2022-10-14T23:37:16.793Z
     :who: mocsharp
@@ -1143,6 +1143,14 @@
     :why: MICROSOFT .NET LIBRARY License
       (http://go.microsoft.com/fwlink/?LinkId=329770)
 - - :approve
+  - System.IO
+  - :versions:
+      - 4.3.0
+    :when: 2022-08-16T21:40:00.565Z
+    :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License (
+      http://go.microsoft.com/fwlink/?LinkId=329770)
+- - :approve
   - System.IO.Compression
   - :versions:
       - 4.3.0
@@ -1193,7 +1201,7 @@
 - - :approve
   - System.IdentityModel.Tokens.Jwt
   - :versions:
-      - 7.0.0
+      - 7.0.3
       - 7.1.2
     :when: 2022-10-14 23:37:56.206982078 Z
     :who: mocsharp
@@ -1621,6 +1629,13 @@
     :who: mocsharp
     :why: MICROSOFT .NET LIBRARY License
       (http://go.microsoft.com/fwlink/?LinkId=329770)
+- - :approve
+  - System.IO.Abstractions
+  - :versions:
+      - 21.0.2
+    :when: 2022-08-16T21:40:21.430Z
+    :who: mocsharp
+    :why: MIT (https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
 - - :approve
   - TestableIO.System.IO.Abstractions
   - :versions:
