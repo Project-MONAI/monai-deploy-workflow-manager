@@ -1,0 +1,391 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Workflow Instances APIs | MONAI Deploy Workflow Manager v0.2.0 </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Workflow Instances APIs | MONAI Deploy Workflow Manager v0.2.0 ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.ico">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/MONAI-logo-color.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="workflow-instances-apis">Workflow Instances APIs</h1>
+<!--
+  ~ Copyright 2022 MONAI Consortium
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+
+<p>The workflow instances endpoint provides the following APIs to get the running instance of a workflow as well as acknowledge failed tasks.</p>
+<h2 id="get-workflowinstances">GET /workflowinstances</h2>
+<p>Returns a paginated list of workflow instances.</p>
+<h3 id="parameters">Parameters</h3>
+<p>(Query) pageNumber: int</p>
+<p>(Query) pageSize: int</p>
+<p>(Query) maxPageSize: int (default of 10)</p>
+<p>(Query) status: string</p>
+<p>(Query) payloadId: string</p>
+<p>(disablePagination) : boolean (default of false)</p>
+<h3 id="responses">Responses</h3>
+<p>Response Content Type: JSON</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td>List of instances.</td>
+</tr>
+<tr>
+<td>400</td>
+<td>Payload Id is invalid.</td>
+</tr>
+<tr>
+<td>500</td>
+<td>Server error. The response will be a <a href="https://datatracker.ietf.org/doc/html/rfc7807">Problem details</a> object with server error details.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="example-request">Example Request</h3>
+<pre><code class="lang-bash">curl --location --request GET 'http://localhost:5000/workflowinstances'
+</code></pre>
+<h3 id="example-response">Example Response</h3>
+<pre><code class="lang-json">{
+  &quot;pageNumber&quot;: 1,
+  &quot;pageSize&quot;: 10,
+  &quot;firstPage&quot;: &quot;/workflowinstances?pageNumber=1&amp;pageSize=10&quot;,
+  &quot;lastPage&quot;: &quot;/workflowinstances?pageNumber=1&amp;pageSize=10&quot;,
+  &quot;totalPages&quot;: 1,
+  &quot;totalRecords&quot;: 1,
+  &quot;nextPage&quot;: null,
+  &quot;previousPage&quot;: null,
+  &quot;data&quot;: [
+    {
+      &quot;id&quot;: &quot;13cd39b5-7914-4e31-ad29-c9ff74955184&quot;,
+      &quot;ae_title&quot;: &quot;MonaiSCU&quot;,
+      &quot;workflow_name&quot;: &quot;pixel-workflow&quot;,
+      &quot;workflow_id&quot;: &quot;8e039cb2-2338-408b-9a4e-09cfc14f80cd&quot;,
+      &quot;payload_id&quot;: &quot;00000000-1000-0000-0000-000000000000&quot;,
+      &quot;start_time&quot;: &quot;2022-10-19T13:14:35.699Z&quot;,
+      &quot;status&quot;: &quot;Failed&quot;,
+      &quot;bucket_id&quot;: &quot;my-bucket&quot;,
+      &quot;input_metadata&quot;: {},
+      &quot;tasks&quot;: [
+        {
+          &quot;execution_id&quot;: &quot;f57684fc-8b1e-4750-a7eb-a3d2ca05f4f4&quot;,
+          &quot;workflow_instance_id&quot;: &quot;13cd39b5-7914-4e31-ad29-c9ff74955184&quot;,
+          &quot;task_type&quot;: &quot;argo&quot;,
+          &quot;task_start_time&quot;: &quot;2022-10-19T13:14:36.149Z&quot;,
+          &quot;task_end_time&quot;: null,
+          &quot;execution_stats&quot;: {},
+          &quot;task_plugin_arguments&quot;: {
+            &quot;namespace&quot;: &quot;argo&quot;,
+            &quot;workflow_template_name&quot;: &quot;aide-artifact-passing-j5ndx&quot;,
+            &quot;server_url&quot;: &quot;https://localhost:2746&quot;,
+            &quot;allow_insecure&quot;: &quot;true&quot;
+          },
+          &quot;task_id&quot;: &quot;aide-passing&quot;,
+          &quot;previous_task_id&quot;: &quot;&quot;,
+          &quot;status&quot;: &quot;Failed&quot;,
+          &quot;reason&quot;: &quot;ExternalServiceError&quot;,
+          &quot;input_artifacts&quot;: {},
+          &quot;output_artifacts&quot;: {},
+          &quot;output_directory&quot;: &quot;00000000-1000-0000-0000-000000000000/workflows/13cd39b5-7914-4e31-ad29-c9ff74955184/f57684fc-8b1e-4750-a7eb-a3d2ca05f4f4&quot;,
+          &quot;result&quot;: {},
+          &quot;input_parameters&quot;: {},
+          &quot;next_timeout&quot;: &quot;2022-10-19T14:14:36.149Z&quot;,
+          &quot;timeout_interval&quot;: 60,
+          &quot;acknowledged_task_errors&quot;: null
+        }
+      ],
+      &quot;acknowledged_workflow_errors&quot;: null
+    }
+  ],
+  &quot;succeeded&quot;: true,
+  &quot;errors&quot;: null,
+  &quot;message&quot;: null
+}
+</code></pre>
+<hr>
+<h2 id="get-workflowinstancesworkflowid">GET /workflowinstances/{workflowId}</h2>
+<p>Returns an specific workflow instance the provided id.</p>
+<h3 id="parameters-1">Parameters</h3>
+<p>id: guid</p>
+<h3 id="responses-1">Responses</h3>
+<p>Response Content Type: JSON</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td>Returns a workflow instance.</td>
+</tr>
+<tr>
+<td>400</td>
+<td>Provided Id is not a valid Guid.</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Workflow instance not found for given Id.</td>
+</tr>
+<tr>
+<td>500</td>
+<td>Server error. The response will be a <a href="https://datatracker.ietf.org/doc/html/rfc7807">Problem details</a> object with server error details.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="example-request-1">Example Request</h3>
+<pre><code class="lang-bash">curl -X 'GET' \
+  'http://localhost:5000/workflowinstances/13cd39b5-7914-4e31-ad29-c9ff74955184' \
+  -H 'accept: text/plain'
+</code></pre>
+<h3 id="example-response-1">Example Response</h3>
+<pre><code class="lang-json">{
+  &quot;id&quot;: &quot;13cd39b5-7914-4e31-ad29-c9ff74955184&quot;,
+  &quot;ae_title&quot;: &quot;MonaiSCU&quot;,
+  &quot;workflow_name&quot;: &quot;pixel-workflow&quot;,
+  &quot;workflow_id&quot;: &quot;8e039cb2-2338-408b-9a4e-09cfc14f80cd&quot;,
+  &quot;payload_id&quot;: &quot;00000000-1000-0000-0000-000000000000&quot;,
+  &quot;start_time&quot;: &quot;2022-10-19T13:14:35.699Z&quot;,
+  &quot;status&quot;: &quot;Failed&quot;,
+  &quot;bucket_id&quot;: &quot;my-bucket&quot;,
+  &quot;input_metadata&quot;: {},
+  &quot;tasks&quot;: [
+    {
+      &quot;execution_id&quot;: &quot;f57684fc-8b1e-4750-a7eb-a3d2ca05f4f4&quot;,
+      &quot;workflow_instance_id&quot;: &quot;13cd39b5-7914-4e31-ad29-c9ff74955184&quot;,
+      &quot;task_type&quot;: &quot;argo&quot;,
+      &quot;task_start_time&quot;: &quot;2022-10-19T13:14:36.149Z&quot;,
+      &quot;task_end_time&quot;: null,
+      &quot;execution_stats&quot;: {},
+      &quot;task_plugin_arguments&quot;: {
+        &quot;namespace&quot;: &quot;argo&quot;,
+        &quot;workflow_template_name&quot;: &quot;aide-artifact-passing-j5ndx&quot;,
+        &quot;server_url&quot;: &quot;https://localhost:2746&quot;,
+        &quot;allow_insecure&quot;: &quot;true&quot;
+      },
+      &quot;task_id&quot;: &quot;aide-passing&quot;,
+      &quot;previous_task_id&quot;: &quot;&quot;,
+      &quot;status&quot;: &quot;Failed&quot;,
+      &quot;reason&quot;: &quot;ExternalServiceError&quot;,
+      &quot;input_artifacts&quot;: {},
+      &quot;output_artifacts&quot;: {},
+      &quot;output_directory&quot;: &quot;00000000-1000-0000-0000-000000000000/workflows/13cd39b5-7914-4e31-ad29-c9ff74955184/f57684fc-8b1e-4750-a7eb-a3d2ca05f4f4&quot;,
+      &quot;result&quot;: {},
+      &quot;input_parameters&quot;: {},
+      &quot;next_timeout&quot;: &quot;2022-10-19T14:14:36.149Z&quot;,
+      &quot;timeout_interval&quot;: 60,
+      &quot;acknowledged_task_errors&quot;: null
+    }
+  ],
+  &quot;acknowledged_workflow_errors&quot;: null
+}
+</code></pre>
+<hr>
+<h2 id="get-workflowinstancesfailed">GET /workflowinstances/failed</h2>
+<p>Returns an specific workflow instance the provided id.</p>
+<h3 id="parameters-2">Parameters</h3>
+<p>acknowledged: Date (ISO) - Required</p>
+<h3 id="responses-2">Responses</h3>
+<p>Response Content Type: JSON</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td>Returns a list of failed workflows.</td>
+</tr>
+<tr>
+<td>400</td>
+<td>Date missing.</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Workflow instance not found for given Id.</td>
+</tr>
+<tr>
+<td>500</td>
+<td>Server error. The response will be a <a href="https://datatracker.ietf.org/doc/html/rfc7807">Problem details</a> object with server error details.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="example-request-2">Example Request</h3>
+<pre><code class="lang-bash">curl -X 'GET' \
+  'http://localhost:5000/workflowinstances/failed?acknowledged=2022-01-19' \
+  -H 'accept: text/plain'
+</code></pre>
+<h3 id="example-response-2">Example Response</h3>
+<pre><code class="lang-json">{
+  &quot;id&quot;: &quot;13cd39b5-7914-4e31-ad29-c9ff74955184&quot;,
+  &quot;ae_title&quot;: &quot;MonaiSCU&quot;,
+  &quot;workflow_name&quot;: &quot;pixel-workflow&quot;,
+  &quot;workflow_id&quot;: &quot;8e039cb2-2338-408b-9a4e-09cfc14f80cd&quot;,
+  &quot;payload_id&quot;: &quot;00000000-1000-0000-0000-000000000000&quot;,
+  &quot;start_time&quot;: &quot;2022-10-19T13:14:35.699Z&quot;,
+  &quot;status&quot;: &quot;Failed&quot;,
+  &quot;bucket_id&quot;: &quot;my-bucket&quot;,
+  &quot;input_metadata&quot;: {},
+  &quot;tasks&quot;: [
+    {
+      &quot;execution_id&quot;: &quot;f57684fc-8b1e-4750-a7eb-a3d2ca05f4f4&quot;,
+      &quot;workflow_instance_id&quot;: &quot;13cd39b5-7914-4e31-ad29-c9ff74955184&quot;,
+      &quot;task_type&quot;: &quot;argo&quot;,
+      &quot;task_start_time&quot;: &quot;2022-10-19T13:14:36.149Z&quot;,
+      &quot;task_end_time&quot;: null,
+      &quot;execution_stats&quot;: {},
+      &quot;task_plugin_arguments&quot;: {
+        &quot;namespace&quot;: &quot;argo&quot;,
+        &quot;workflow_template_name&quot;: &quot;aide-artifact-passing-j5ndx&quot;,
+        &quot;server_url&quot;: &quot;https://localhost:2746&quot;,
+        &quot;allow_insecure&quot;: &quot;true&quot;
+      },
+      &quot;task_id&quot;: &quot;aide-passing&quot;,
+      &quot;previous_task_id&quot;: &quot;&quot;,
+      &quot;status&quot;: &quot;Failed&quot;,
+      &quot;reason&quot;: &quot;ExternalServiceError&quot;,
+      &quot;input_artifacts&quot;: {},
+      &quot;output_artifacts&quot;: {},
+      &quot;output_directory&quot;: &quot;00000000-1000-0000-0000-000000000000/workflows/13cd39b5-7914-4e31-ad29-c9ff74955184/f57684fc-8b1e-4750-a7eb-a3d2ca05f4f4&quot;,
+      &quot;result&quot;: {},
+      &quot;input_parameters&quot;: {},
+      &quot;next_timeout&quot;: &quot;2022-10-19T14:14:36.149Z&quot;,
+      &quot;timeout_interval&quot;: 60,
+      &quot;acknowledged_task_errors&quot;: null
+    }
+  ],
+  &quot;acknowledged_workflow_errors&quot;: null
+}
+</code></pre>
+<hr>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Project-MONAI/monai-deploy-workflow-manager/blob/main/docs//#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            Copyright © 2022 <a href="https://monai.io/">Project MONAI</a><br>Generated by <strong>DocFX</strong>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>
