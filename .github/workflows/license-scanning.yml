@@ -65,7 +65,7 @@ jobs:
       run: license_finder -r
       
     - name: Check License Header
-      uses: apache/skywalking-eyes@v0.4.0
+      uses: apache/skywalking-eyes@v0.6.0
 
     - name: Check this step to see how to resolve failure with license scanning
       if: ${{ failure() && steps.license_scanning.conclusion == 'failure' }}
