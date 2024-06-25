@@ -253,9 +253,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Database
         {
             var dispatched = TaskExecutionStatus.Dispatched.ToString();
             var created = TaskExecutionStatus.Created.ToString();
-            var accepted = TaskExecutionStatus.Accepted.ToString();
+            //var accepted = TaskExecutionStatus.Accepted.ToString();
 
-            return t => t.Status != dispatched && t.Status != created && t.Status != accepted;
+            return t => t.Status != dispatched && t.Status != created;//&& t.Status != accepted;
         }
 
 
