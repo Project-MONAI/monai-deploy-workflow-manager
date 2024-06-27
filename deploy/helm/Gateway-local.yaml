@@ -14,9 +14,16 @@
 replicaCount: 1
 
 image:
-  repository: registry.gitlab.com/answerdigital/londonai/aide/workflow-manager-images/infomatics-gateway
+  repository: ghcr.io/project-monai/monai-deploy-informatics-gateway
   pullPolicy: IfNotPresent
-  tag: 2022-08-01
+  tag: latest
+  #  command:
+  #  - "bin/sh"
+  #  - "-ce"
+  #  - "mig-cli config init"
+
+# mig-cli config endpoint http://localhost:5000
+
 
 enviromentVariables:
   InformaticsGateway__messaging__publisherSettings__endpoint: "rabbitmq-monai"
@@ -25,10 +32,16 @@ enviromentVariables:
   InformaticsGateway__messaging__subscriberSettings__endpoint: "rabbitmq-monai"
   InformaticsGateway__messaging__subscriberSettings__username: "admin"
   InformaticsGateway__messaging__subscriberSettings__password: "admin"
-  InformaticsGateway__storage__settings__endpoint: "minio.monai:9000" 
-  InformaticsGateway__storage__settings__accessKey: "admin"
-  InformaticsGateway__storage__settings__accessToken: "password"
+  InformaticsGateway__storage__settings__endpoint: "minio-monai:9000" 
+  InformaticsGateway__storage__settings__accessKey: "minioadmin"
+  InformaticsGateway__storage__settings__accessToken: "minioadmin"
   InformaticsGateway__dicom__scp__rejectUnknownSources: false
+  ConnectionStrings__InformaticsGatewayDatabase: "Data Source=/mig.db"
+  InformaticsGateway__storage__localTemporaryStoragePath: "/payloads"
+  InformaticsGateway__dicom__scu__aeTitle: "MONAISCU"
+  # Kestrel__EndPoints__Http__Url: "http://::5000"
+  MonaiDeployAuthentication__bypassAuthentication: true
+
   
 
 service:
