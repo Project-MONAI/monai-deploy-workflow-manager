@@ -27,17 +27,20 @@ using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
-    [CollectionLocation("Payloads"), RuntimeVersion("1.0.6")]
+    [CollectionLocation("Payloads"), RuntimeVersion("1.0.7")]
     public class Payload : IDocument
     {
         [JsonConverter(typeof(DocumentVersionConvert)), BsonSerializer(typeof(DocumentVersionConverBson))]
-        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 5);
+        public DocumentVersion Version { get; set; } = new DocumentVersion(1, 0, 7);
 
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "payload_id")]
         public string PayloadId { get; set; } = string.Empty;
+
+        [JsonProperty(PropertyName = "accession_id")]
+        public string AccessionId { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "workflows")]
         public IEnumerable<string> Workflows { get; set; } = [];

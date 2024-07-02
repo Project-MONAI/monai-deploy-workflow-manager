@@ -97,7 +97,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
                     PatientDetails = patientDetails,
                     PayloadDeleted = PayloadDeleted.No,
                     Expires = await GetExpiry(DateTime.UtcNow, eventPayload.WorkflowInstanceId),
-                    SeriesInstanceUid = _dicomService.GetSeriesInstanceUID(dict)
+                    SeriesInstanceUid = _dicomService.GetSeriesInstanceUID(dict),
+                    AccessionId = _dicomService.GetAccessionID(dict) ?? string.Empty
                 };
 
                 if (await _payloadRepository.CreateAsync(payload))

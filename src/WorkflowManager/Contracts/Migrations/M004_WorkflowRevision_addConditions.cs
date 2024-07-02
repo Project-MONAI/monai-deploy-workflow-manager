@@ -22,7 +22,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 {
     public class M004_WorkflowRevision_addConditions : DocumentMigration<WorkflowRevision>
     {
-        public M004_WorkflowRevision_addConditions() : base("1.0.2") { }
+        public M004_WorkflowRevision_addConditions() : base("1.0.4") { }
 
         public override void Up(BsonDocument document)
         {

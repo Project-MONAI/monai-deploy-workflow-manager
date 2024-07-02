@@ -19,19 +19,20 @@ using MongoDB.Bson;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 {
-    public class M001_WorkflowRevision_addVerion : DocumentMigration<WorkflowRevision>
+    public class M007_Payload_addAccessionId : DocumentMigration<Payload>
     {
-        public M001_WorkflowRevision_addVerion() : base("1.0.0") { }
+        public M007_Payload_addAccessionId() : base("1.0.7") { }
 
         public override void Up(BsonDocument document)
         {
-            // empty, but this will make all objects re-saved with a version
+            document.Add("AccessionId", new BsonString(""), true);
         }
+
         public override void Down(BsonDocument document)
         {
             try
             {
-                document.Remove("Version");
+                document.Remove("AccessionId");
             }
             catch
             {  // can ignore we dont want failures stopping startup !

@@ -76,7 +76,14 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
         /// Get the seriers instance UID from the metadata.
         /// </summary>
         /// <param name="dict"></param>
-        /// <returns>a string containing the seriers instanceUid</returns>
+        /// <returns>a string containing the series instanceUid</returns>
         string? GetSeriesInstanceUID(Dictionary<string, DicomValue>? dict);
+
+        /// <summary>
+        /// Gets the Accession number from the metadata.
+        /// </summary>
+        /// <param name="dict">the metadata from the file</param>
+        /// <returns>a string containing the accession number</returns>
+        string? GetAccessionID(Dictionary<string, DicomValue>? dict);
     }
 }

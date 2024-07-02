@@ -22,7 +22,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 {
     public class M003_WorkflowRevision_addDataRetension : DocumentMigration<WorkflowRevision>
     {
-        public M003_WorkflowRevision_addDataRetension() : base("1.0.1") { }
+        public M003_WorkflowRevision_addDataRetension() : base("1.0.3") { }
 
         public override void Up(BsonDocument document)
         {

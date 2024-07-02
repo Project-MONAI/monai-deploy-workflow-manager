@@ -296,6 +296,20 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
             return null;
         }
 
+        public string? GetAccessionID(Dictionary<string, DicomValue>? dict)
+        {
+            if (dict is null)
+            {
+                return null;
+            }
+
+            if (dict.TryGetValue(DicomTagConstants.AccessionNumberTag, out var value))
+            {
+                return JsonConvert.SerializeObject(value.Value);
+            }
+            return null;
+        }
+
         private string TryGetValueAndLogSupported(string vrFullString, DicomValue value, string jsonString)
         {
             var result = TryGetValue(value);
