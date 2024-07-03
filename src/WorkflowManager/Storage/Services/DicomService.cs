@@ -65,8 +65,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 
         public async Task<PatientDetails> GetPayloadPatientDetailsAsync(string payloadId, string bucketName)
         {
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(bucketName, nameof(bucketName));
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(bucketName);
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId);
 
             var dict = await GetMetaData(payloadId, bucketName);
 
@@ -91,7 +91,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 
         private string? GetFirstValueAsync(Dictionary<string, DicomValue>? dict, string keyId)
         {
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(keyId, nameof(keyId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(keyId);
             if (dict is null)
             {
                 return null;
@@ -117,8 +117,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 
         public async Task<Dictionary<string, DicomValue>?> GetMetaData(string payloadId, string bucketId)
         {
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(bucketId, nameof(bucketId));
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId, nameof(payloadId));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(bucketId);
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(payloadId);
             var items = await _storageService.ListObjectsAsync(bucketId, $"{payloadId}/dcm", true);
             var dict = new Dictionary<string, DicomValue>(StringComparer.OrdinalIgnoreCase);
             try
