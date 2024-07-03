@@ -26,8 +26,15 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 
         public override void Up(BsonDocument document)
         {
-            var workflow = document["Workflow"].AsBsonDocument;
-            workflow.Add("DataRetentionDays", -1, true);
+            try
+            {
+                var workflow = document["Workflow"].AsBsonDocument;
+                workflow.Add("DataRetentionDays", -1, true);
+            }
+            catch
+            {// can ignore we dont want failures stopping startup !
+            }
+
         }
 
         public override void Down(BsonDocument document)

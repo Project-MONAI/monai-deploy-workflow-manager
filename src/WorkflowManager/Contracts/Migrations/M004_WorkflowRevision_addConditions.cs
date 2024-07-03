@@ -26,8 +26,15 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 
         public override void Up(BsonDocument document)
         {
-            var workflow = document["Workflow"].AsBsonDocument;
-            workflow.Add("Conditions", new BsonArray { });
+            try
+            {
+                var workflow = document["Workflow"].AsBsonDocument;
+                workflow.Add("Predicate", new BsonArray { });
+            }
+            catch
+            { // can ignore we dont want failures stopping startup !
+            }
+
         }
 
         public override void Down(BsonDocument document)
@@ -35,7 +42,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
             try
             {
                 var workflow = document["Workflow"].AsBsonDocument;
-                workflow.Remove("Conditions");
+                workflow.Remove("Predicate");
             }
             catch
             {  // can ignore we dont want failures stopping startup !
