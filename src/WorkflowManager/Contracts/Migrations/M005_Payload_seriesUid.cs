@@ -27,7 +27,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
         {
             try
             {
-                document.Add("SeriesInstanceUid", BsonNull.Create(null).ToJson(), true);
+                document.Add("SeriesInstanceUid", new BsonString(""), true);
             }
             catch
             {

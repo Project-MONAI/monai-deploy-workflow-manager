@@ -27,7 +27,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
         {
             try
             {
-                document.Add("TriggeredWorkflowNames", BsonNull.Create(null).ToJson(), true);
+                document.Add("TriggeredWorkflowNames", new BsonArray());
             }
             catch
             {
