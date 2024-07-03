@@ -38,6 +38,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
             PayloadDeleted = payload.PayloadDeleted;
             SeriesInstanceUid = payload.SeriesInstanceUid;
             TriggeredWorkflowNames = payload.TriggeredWorkflowNames;
+            AccessionId = payload.AccessionId;
         }
 
         [JsonProperty(PropertyName = "payload_status")]
