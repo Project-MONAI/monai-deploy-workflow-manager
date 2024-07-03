@@ -31,5 +31,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Constants
         public const string PatientHospitalIdTag = "00100021";
 
         public const string SeriesInstanceUIDTag = "0020000E";
+
+        public const string AccessionNumberTag = "00080050";
     }
 }
