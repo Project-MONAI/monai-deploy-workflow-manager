@@ -305,7 +305,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Storage.Services
 
             if (dict.TryGetValue(DicomTagConstants.AccessionNumberTag, out var value))
             {
-                return JsonConvert.SerializeObject(value.Value);
+                var accession = JsonConvert.SerializeObject(value.Value);
+                accession = accession.Replace("[\"", "").Replace("\"]", "");
+                return accession;
             }
             return null;
         }
