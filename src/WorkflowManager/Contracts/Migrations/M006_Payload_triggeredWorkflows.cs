@@ -25,7 +25,13 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 
         public override void Up(BsonDocument document)
         {
-            document.Add("TriggeredWorkflowNames", BsonNull.Create(null).ToJson(), true);
+            try
+            {
+                document.Add("TriggeredWorkflowNames", BsonNull.Create(null).ToJson(), true);
+            }
+            catch
+            {
+            }
         }
 
         public override void Down(BsonDocument document)

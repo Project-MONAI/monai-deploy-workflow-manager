@@ -25,7 +25,13 @@ namespace Monai.Deploy.WorkflowManager.Common.Contracts.Migrations
 
         public override void Up(BsonDocument document)
         {
-            document.Add("AccessionId", new BsonString(""), true);
+            try
+            {
+                document.Add("AccessionId", new BsonString(""), true);
+            }
+            catch
+            {
+            }
         }
 
         public override void Down(BsonDocument document)
