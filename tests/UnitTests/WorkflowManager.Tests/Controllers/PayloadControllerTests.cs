@@ -33,6 +33,7 @@ using Xunit;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
 using MongoDB.Driver;
+using MongoDB.Bson.Serialization;
 
 namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
 {
@@ -90,6 +91,46 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
             responseValue.PreviousPage.Should().Be(null);
             responseValue.NextPage.Should().Be(null);
             responseValue.Errors.Should().BeNullOrEmpty();
+        }
+
+        [Fact]
+        public async Task GetAllAsync_WithFilter_CallsPayloadServiceCountAsyncWithFilter()
+        {
+
+            // Arrange
+            var filter = new PaginationFilter
+            {
+                PageNumber = 1,
+                PageSize = 10
+            };
+            var patientId = "123";
+            var patientName = "John";
+            var accessionId = "456";
+
+            var pagedData = new List<PayloadDto>();
+            var dataTotal = 5;
+
+            FilterDefinition<Payload> capturedFilter = null; // Declare a variable to capture the filter
+
+            _payloadService.Setup(x => x.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(pagedData);
+
+            _payloadService.Setup(x => x.CountAsync(It.IsAny<FilterDefinition<Payload>>()))
+                .Callback<FilterDefinition<Payload>>(filter => capturedFilter = filter) // Capture the filter
+                .ReturnsAsync(dataTotal);
+
+            // Act
+            var result = await PayloadController.GetAllAsync(filter, patientId, patientName, accessionId);
+
+            // Assert
+            _payloadService.Verify(x => x.CountAsync(It.IsAny<FilterDefinition<Payload>>()), Times.Once);
+            Assert.NotNull(capturedFilter); // Assert that the filter was captured
+            var json = capturedFilter.Render(BsonSerializer.SerializerRegistry.GetSerializer<Payload>(), BsonSerializer.SerializerRegistry);
+            Assert.Contains(patientId, json.ToString());
+            Assert.Contains(patientName, json.ToString());
+            Assert.Contains(accessionId, json.ToString());
+            Assert.Contains("PatientDetails.PatientId", json.ToString());
+            Assert.Contains("PatientDetails.PatientName", json.ToString());
+            Assert.Contains("AccessionId", json.ToString());
         }
 
         [Fact]
