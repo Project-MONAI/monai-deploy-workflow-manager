@@ -16,6 +16,7 @@
 
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces
 {
@@ -38,8 +39,9 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces
         /// </summary>
         Task<IList<PayloadDto>> GetAllAsync(int? skip = null,
                                          int? limit = null,
-                                         string? patientId = "",
-                                         string? patientName = "");
+                                         string? patientId = null,
+                                         string? patientName = null,
+                                         string? accessionId = null);
         new Task<IList<PayloadDto>> GetAllAsync(int? skip = null, int? limit = null);
 
         /// <summary>
@@ -63,5 +65,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces
         /// <param name="payload">updated payload.</param>
         /// <returns>true if the update is successful, false otherwise.</returns>
         Task<bool> UpdateAsyncWorkflowIds(Payload payload);
+
+        Task<long> CountAsync(FilterDefinition<Payload> filter);
     }
 }

@@ -140,11 +140,10 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
                         TotalApprovals = g.Count(i => string.Compare(i.Status, "Succeeded", true) == 0 && i.Reason == FailureReason.None),
                         TotalRejections = g.Count(i => string.Compare(i.Status, "Failed", true) == 0 && i.Reason == FailureReason.Rejected),
                         TotalCancelled = g.Count(i => string.Compare(i.Status, "Failed", true) == 0 && i.Reason == FailureReason.TimedOut),
-                        //TotalAwaitingReview = g.Count(i => string.Compare(i.Status, ApplicationReviewStatus.AwaitingReview.ToString(), true) == 0),
+
+                        // TotalAwaitingReview = g.Count(i => string.Compare(i.Status, ApplicationReviewStatus.AwaitingReview.ToString(), true) == 0),
                         TotalAwaitingReview = g.Count(i => string.Compare(i.Status, TaskExecutionStatus.Accepted.ToString(), true) == 0),
                     });
-
-
 
                 var pagedStats = statsDto.Skip((filter.PageNumber - 1) * pageSize).Take(pageSize);
 

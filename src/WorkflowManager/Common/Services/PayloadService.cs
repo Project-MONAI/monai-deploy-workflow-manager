@@ -26,6 +26,7 @@ using Monai.Deploy.WorkflowManager.Common.Logging;
 using Monai.Deploy.WorkflowManager.Common.Storage.Services;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.WorkflowManager.Common.Configuration;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 {
@@ -149,10 +150,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 
         public async Task<IList<PayloadDto>> GetAllAsync(int? skip = null,
                                                       int? limit = null,
-                                                      string? patientId = "",
-                                                      string? patientName = "")
+                                                      string? patientId = null,
+                                                      string? patientName = null,
+                                                      string? accessionId = null)
             => await CreatePayloadsDto(
-                await _payloadRepository.GetAllAsync(skip, limit, patientId ?? string.Empty, patientName ?? string.Empty)
+                await _payloadRepository.GetAllAsync(skip, limit, patientId, patientName, accessionId)
             );
 
         public async Task<IList<PayloadDto>> GetAllAsync(int? skip = null, int? limit = null)
@@ -193,7 +195,13 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
             return dtos;
         }
 
-        public async Task<long> CountAsync() => await _payloadRepository.CountAsync();
+        public async Task<long> CountAsync(FilterDefinition<Payload> filter)
+            => await _payloadRepository.CountAsync(filter);
+
+
+        // this has to be here because of the base, but dont use it !
+        public Task<long> CountAsync(FilterDefinition<PayloadDto>? filter)
+            => throw new NotImplementedException();
 
         public async Task<bool> DeletePayloadFromStorageAsync(string payloadId)
         {

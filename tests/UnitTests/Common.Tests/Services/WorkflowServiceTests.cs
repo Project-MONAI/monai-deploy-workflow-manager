@@ -21,6 +21,7 @@ using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Moq;
 using Xunit;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
 {
@@ -137,7 +138,7 @@ namespace Monai.Deploy.WorkflowManger.Common.Tests.Services
         public async Task WorkflowService_Count_Calls_Count()
         {
             var result = await WorkflowService.CountAsync();
-            _workflowRepository.Verify(r => r.CountAsync(), Times.Once());
+            _workflowRepository.Verify(r => r.CountAsync(Builders<WorkflowRevision>.Filter.Empty), Times.Once());
         }
 
         [Fact]

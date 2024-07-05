@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Exceptions;
@@ -22,6 +21,7 @@ using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Logging;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 {
@@ -87,7 +87,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
             await _workflowInstanceRepository.UpdateExportCompleteMetadataAsync(workflowInstanceId, executionId, resultMetadata);
         }
 
-        public async Task<long> CountAsync() => await _workflowInstanceRepository.CountAsync();
+        public async Task<long> CountAsync(FilterDefinition<WorkflowInstance>? filter)
+        {
+            filter = filter ?? Builders<WorkflowInstance>.Filter.Empty;
+            return await _workflowInstanceRepository.CountAsync(filter);
+        }
 
         public async Task<IList<WorkflowInstance>> GetAllAsync(int? skip = null, int? limit = null, Status? status = null, string? payloadId = null)
             => await _workflowInstanceRepository.GetAllAsync(skip, limit, status, payloadId);

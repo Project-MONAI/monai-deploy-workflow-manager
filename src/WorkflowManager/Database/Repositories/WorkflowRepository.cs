@@ -272,7 +272,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
             return deletedTimeStamp;
         }
 
-        public async Task<long> CountAsync() => await _workflowCollection.CountDocumentsAsync(x => x.Deleted == null);
+        public async Task<long> CountAsync(FilterDefinition<WorkflowRevision> filter)
+        {
+            var builder = Builders<WorkflowRevision>.Filter;
+            filter &= builder.Eq(p => p.Deleted, null);
+            return await _workflowCollection.CountDocumentsAsync(filter);
+        }
 
         public async Task<IList<WorkflowRevision>> GetAllAsync(int? skip = null, int? limit = null)
             => await GetAllAsync(_workflowCollection,

@@ -35,6 +35,7 @@ using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
 using Moq;
 using Xunit;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
 {
@@ -157,7 +158,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
         public async Task GetListAsync_ServiceException_ReturnProblem()
         {
             _workflowInstanceService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<Status>(), It.IsAny<string>())).ThrowsAsync(new Exception());
-            _workflowInstanceService.Setup(w => w.CountAsync()).ReturnsAsync(0);
+            _workflowInstanceService.Setup(w => w.CountAsync(Builders<WorkflowInstance>.Filter.Empty)).ReturnsAsync(0);
 
             var result = await WorkflowInstanceController.GetListAsync(new PaginationFilter());
 
