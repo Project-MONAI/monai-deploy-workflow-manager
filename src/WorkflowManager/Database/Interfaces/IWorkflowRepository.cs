@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Common.Database.Interfaces
 {
@@ -97,7 +98,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Interfaces
         /// <returns></returns>
         Task<DateTime> SoftDeleteWorkflow(WorkflowRevision workflow);
 
-        Task<long> CountAsync();
+        Task<long> CountAsync(FilterDefinition<WorkflowRevision> filter);
 
         Task<IList<WorkflowRevision>> GetAllAsync(int? skip, int? limit);
 

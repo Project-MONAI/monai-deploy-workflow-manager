@@ -32,6 +32,7 @@ using Moq;
 using Xunit;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
 {
@@ -66,8 +67,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
                 }
             };
 
-            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(payloads);
-            _payloadService.Setup(w => w.CountAsync()).ReturnsAsync(payloads.Count);
+            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(payloads);
+            _payloadService.Setup(w => w.CountAsync(Builders<Payload>.Filter.Empty)).ReturnsAsync(payloads.Count);
             _uriService.Setup(s => s.GetPageUriString(It.IsAny<PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
             var result = await PayloadController.GetAllAsync(new PaginationFilter());
@@ -94,7 +95,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
         [Fact]
         public async Task GetListAsync_ServiceException_ReturnProblem()
         {
-            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
+            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
 
             var result = await PayloadController.GetAllAsync(new PaginationFilter());
 

@@ -34,6 +34,7 @@ using Xunit;
 using Monai.Deploy.WorkflowManager.Common.Services.InformaticsGateway;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Exceptions;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
 {
@@ -108,7 +109,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
             };
 
             _workflowService.Setup(w => w.GetAllAsync(It.IsAny<int?>(), It.IsAny<int?>())).ReturnsAsync(workflows);
-            _workflowService.Setup(w => w.CountAsync()).ReturnsAsync(workflows.Count);
+            _workflowService.Setup(w => w.CountAsync(null)).ReturnsAsync(workflows.Count);
             _uriService.Setup(s => s.GetPageUriString(It.IsAny<PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
             var result = await WorkflowsController.GetList(new PaginationFilter());
