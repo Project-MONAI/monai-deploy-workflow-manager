@@ -17,6 +17,13 @@
 
 # Changelog
 
+
+## 0.2.1
+
+- gh-1022 Address vulnerabilities in .NET (CVE-2024-38229, CVE-2024-35264) 
+
+## 0.2.0
+
 Added a new Email plugin, this pulls together information and sends a Message (rabbitmq) to a queue for processing via an external application (for the actual sending)
 
 Renamed the (Generated) Argo client to ArgoGeneratedClient, added a new ArgoClient using just the methods used by this codebase.
