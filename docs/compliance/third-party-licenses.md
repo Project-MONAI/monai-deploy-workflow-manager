@@ -105948,14 +105948,14 @@ Contact
 
 
 <details>
-<summary>TestableIO.System.IO.Abstractions 20.0.4</summary>
+<summary>TestableIO.System.IO.Abstractions 21.3.1</summary>
 
 ## TestableIO.System.IO.Abstractions
 
-- Version: 20.0.4
+- Version: 21.3.1
 - Authors: Tatham Oddie & friends
 - Project URL: https://github.com/TestableIO/System.IO.Abstractions
-- Source: [NuGet](https://www.nuget.org/packages/TestableIO.System.IO.Abstractions/20.0.4)
+- Source: [NuGet](https://www.nuget.org/packages/TestableIO.System.IO.Abstractions/21.3.1)
 - License: [MIT](https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
 
 
@@ -106030,14 +106030,14 @@ SOFTWARE.
 
 
 <details>
-<summary>TestableIO.System.IO.Abstractions.TestingHelpers 20.0.4</summary>
+<summary>TestableIO.System.IO.Abstractions.TestingHelpers 21.3.1</summary>
 
 ## TestableIO.System.IO.Abstractions.TestingHelpers
 
-- Version: 20.0.4
+- Version: 21.3.1
 - Authors: Tatham Oddie & friends
 - Project URL: https://github.com/TestableIO/System.IO.Abstractions
-- Source: [NuGet](https://www.nuget.org/packages/TestableIO.System.IO.Abstractions.TestingHelpers/20.0.4)
+- Source: [NuGet](https://www.nuget.org/packages/TestableIO.System.IO.Abstractions.TestingHelpers/21.3.1)
 - License: [MIT](https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
 
 
@@ -106112,14 +106112,14 @@ SOFTWARE.
 
 
 <details>
-<summary>TestableIO.System.IO.Abstractions.Wrappers 20.0.4</summary>
+<summary>TestableIO.System.IO.Abstractions.Wrappers 21.3.1</summary>
 
 ## TestableIO.System.IO.Abstractions.Wrappers
 
-- Version: 20.0.4
+- Version: 21.3.1
 - Authors: Tatham Oddie & friends
 - Project URL: https://github.com/TestableIO/System.IO.Abstractions
-- Source: [NuGet](https://www.nuget.org/packages/TestableIO.System.IO.Abstractions.Wrappers/20.0.4)
+- Source: [NuGet](https://www.nuget.org/packages/TestableIO.System.IO.Abstractions.Wrappers/21.3.1)
 - License: [MIT](https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
 
 

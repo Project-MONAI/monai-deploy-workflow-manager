@@ -1228,7 +1228,7 @@
 - - :approve
   - System.IO.Abstractions.TestingHelpers
   - :versions:
-      - 20.0.34
+      - 21.3.1
     :when: 2022-08-16T21:40:21.430Z
     :who: mocsharp
     :why: MIT (https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
@@ -1723,14 +1723,14 @@
 - - :approve
   - TestableIO.System.IO.Abstractions.TestingHelpers
   - :versions:
-      - 20.0.34
+      - 21.3.1
     :when: 2022-08-16T21:40:21.430Z
     :who: mocsharp
     :why: MIT (https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
 - - :approve
   - TestableIO.System.IO.Abstractions.Wrappers
   - :versions:
-      - 20.0.4
+      - 21.3.1
       - 21.3.1
       - 22.0.12
     :when: 2022-08-16T21:40:21.430Z
