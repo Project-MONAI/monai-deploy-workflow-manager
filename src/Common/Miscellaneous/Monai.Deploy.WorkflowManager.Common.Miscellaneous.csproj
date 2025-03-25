@@ -39,7 +39,7 @@
     <AdditionalFiles Include="..\..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="fo-dicom" Version="5.1.2" />
+    <PackageReference Include="fo-dicom" Version="5.2.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Configuration\Monai.Deploy.WorkflowManager.Common.Configuration.csproj" />

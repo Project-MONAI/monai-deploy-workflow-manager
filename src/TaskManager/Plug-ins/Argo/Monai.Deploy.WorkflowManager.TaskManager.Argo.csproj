@@ -28,7 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="KubernetesClient" Version="12.1.1" />
-    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="8.0.14" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Configuration\Monai.Deploy.WorkflowManager.Common.Configuration.csproj" />

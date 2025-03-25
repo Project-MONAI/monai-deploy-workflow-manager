@@ -32,7 +32,7 @@
     <AdditionalFiles Include="..\..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Monai.Deploy.Messaging" Version="2.0.2" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="2.0.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Configuration\Monai.Deploy.WorkflowManager.Common.Configuration.csproj" />
