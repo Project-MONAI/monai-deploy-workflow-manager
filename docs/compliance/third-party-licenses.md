@@ -3755,6 +3755,8 @@ specific language governing permissions and limitations under the License.
 
 
 ```
+The MIT License (MIT)
+
 Copyright (c) .NET Foundation and Contributors
 
 All rights reserved.
@@ -5340,7 +5342,7 @@ SOFTWARE.
 <details>
 <summary>Microsoft.Extensions.DependencyModel 8.0.2</summary>
 
-## Microsoft.Extensions.DependencyModel
+## Microsoft.Extensions.Diagnostics
 
 - Version: 8.0.2
 - Authors: Microsoft
@@ -7100,7 +7102,7 @@ SOFTWARE.
 <details>
 <summary>Microsoft.Extensions.Primitives 8.0.0</summary>
 
-## Microsoft.Extensions.Primitives
+## Microsoft.Extensions.Options.ConfigurationExtensions
 
 - Version: 8.0.0
 - Authors: Microsoft
@@ -12318,7 +12320,7 @@ Contact
 
 ## Microsoft.OpenApi
 
-- Version: 1.2.3
+- Version: 1.6.14
 - Authors: Microsoft
 - Project URL: https://github.com/Microsoft/OpenAPI.NET
 - Source: [NuGet](https://www.nuget.org/packages/Microsoft.OpenApi/1.2.3)
@@ -17195,8 +17197,9 @@ Apache License
    limitations under the License.
 ```
 
-</details>
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
+   1. Definitions.
 
 <details>
 <summary>MongoDB.Bson 2.30.0</summary>
@@ -17209,6 +17212,8 @@ Apache License
 - Source: [NuGet](https://www.nuget.org/packages/MongoDB.Bson/2.30.0)
 - License: [Apache-2.0](https://raw.githubusercontent.com/mongodb/mongo-csharp-driver/master/LICENSE.md)
 
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
 
 ```
 Apache License
@@ -24710,15 +24715,15 @@ SOFTWARE.
 
 
 <details>
-<summary>Swashbuckle.AspNetCore 6.5.0</summary>
+<summary>Swashbuckle.AspNetCore 6.6.2</summary>
 
 ## Swashbuckle.AspNetCore
 
-- Version: 6.5.0
-- Authors: Swashbuckle.AspNetCore
-- Owners: Swashbuckle.AspNetCore
+- Version: 6.6.2
+- Authors: domaindrivendev
+- Owners: domaindrivendev
 - Project URL: https://github.com/domaindrivendev/Swashbuckle.AspNetCore
-- Source: [NuGet](https://www.nuget.org/packages/Swashbuckle.AspNetCore/6.5.0)
+- Source: [NuGet](https://www.nuget.org/packages/Swashbuckle.AspNetCore/6.6.2)
 - License: [MIT](https://github.com/domaindrivendev/Swashbuckle.AspNetCore/raw/master/LICENSE)
 
 
@@ -24794,10 +24799,10 @@ SOFTWARE.
 
 ## Swashbuckle.AspNetCore.Swagger
 
-- Version: 6.5.0
-- Authors: Swashbuckle.AspNetCore.Swagger
+- Version: 6.6.2
+- Authors: domaindrivendev
 - Project URL: https://github.com/domaindrivendev/Swashbuckle.AspNetCore
-- Source: [NuGet](https://www.nuget.org/packages/Swashbuckle.AspNetCore.Swagger/6.5.0)
+- Source: [NuGet](https://www.nuget.org/packages/Swashbuckle.AspNetCore.Swagger/6.6.2)
 - License: [MIT](https://github.com/domaindrivendev/Swashbuckle.AspNetCore/raw/master/LICENSE)
 
 
@@ -24872,10 +24877,10 @@ SOFTWARE.
 
 ## Swashbuckle.AspNetCore.SwaggerGen
 
-- Version: 6.5.0
-- Authors: Swashbuckle.AspNetCore.SwaggerGen
+- Version: 6.6.2
+- Authors: domaindrivendev
 - Project URL: https://github.com/domaindrivendev/Swashbuckle.AspNetCore
-- Source: [NuGet](https://www.nuget.org/packages/Swashbuckle.AspNetCore.SwaggerGen/6.5.0)
+- Source: [NuGet](https://www.nuget.org/packages/Swashbuckle.AspNetCore.SwaggerGen/6.6.2)
 - License: [MIT](https://github.com/domaindrivendev/Swashbuckle.AspNetCore/raw/master/LICENSE)
 
 
@@ -24950,10 +24955,10 @@ SOFTWARE.
 
 ## Swashbuckle.AspNetCore.SwaggerUI
 
-- Version: 6.5.0
-- Authors: Swashbuckle.AspNetCore.SwaggerUI
+- Version: 6.6.2
+- Authors: domaindrivendev
 - Project URL: https://github.com/domaindrivendev/Swashbuckle.AspNetCore
-- Source: [NuGet](https://www.nuget.org/packages/Swashbuckle.AspNetCore.SwaggerUI/6.5.0)
+- Source: [NuGet](https://www.nuget.org/packages/Swashbuckle.AspNetCore.SwaggerUI/6.6.2)
 - License: [MIT](https://github.com/domaindrivendev/Swashbuckle.AspNetCore/raw/master/LICENSE)
 
 
@@ -36417,14 +36422,14 @@ SOFTWARE.
 
 
 <details>
-<summary>System.Diagnostics.DiagnosticSource 6.0.0</summary>
+<summary>System.Diagnostics.DiagnosticSource 8.0.0</summary>
 
 ## System.Diagnostics.DiagnosticSource
 
-- Version: 6.0.0
+- Version: 8.0.0
 - Authors: Microsoft
 - Project URL: https://dot.net/
-- Source: [NuGet](https://www.nuget.org/packages/System.Diagnostics.DiagnosticSource/6.0.0)
+- Source: [NuGet](https://www.nuget.org/packages/System.Diagnostics.DiagnosticSource/8.0.0)
 - License: [MIT](https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
 
 
@@ -106401,6 +106406,199 @@ SOFTWARE.
 
 
 ```
+Fellow Oak DICOM
+
+Copyright (c) 2012-2021 fo-dicom contributors
+
+This software is licensed under the Microsoft Public License (MS-PL)
+
+Microsoft Public License (MS-PL)
+
+This license governs use of the accompanying software. If you use the software, you
+accept this license. If you do not accept the license, do not use the software.
+
+1. Definitions
+The terms "reproduce," "reproduction," "derivative works," and "distribution" have the
+same meaning here as under U.S. copyright law.
+A "contribution" is the original software, or any additions or changes to the software.
+A "contributor" is any person that distributes its contribution under this license.
+"Licensed patents" are a contributor's patent claims that read directly on its contribution.
+
+2. Grant of Rights
+(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
+    and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
+	royalty-free copyright license to reproduce its contribution, prepare derivative works 
+	of its contribution, and distribute its contribution or any derivative works that you create.
+(B) Patent Grant- Subject to the terms of this license, including the license conditions and 
+    limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free 
+	license under its licensed patents to make, have made, use, sell, offer for sale, import, 
+	and/or otherwise dispose of its contribution in the software or derivative works of the 
+	contribution in the software.
+
+3. Conditions and Limitations
+(A) No Trademark License- This license does not grant you rights to use any contributors' name, 
+    logo, or trademarks.
+(B) If you bring a patent claim against any contributor over patents that you claim are infringed 
+    by the software, your patent license from such contributor to the software ends automatically.
+(C) If you distribute any portion of the software, you must retain all copyright, patent, trademark, 
+    and attribution notices that are present in the software.
+(D) If you distribute any portion of the software in source code form, you may do so only under this 
+    license by including a complete copy of this license with your distribution. If you distribute 
+	any portion of the software in compiled or object code form, you may only do so under a license 
+	that complies with this license.
+(E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express 
+    warranties, guarantees or conditions. You may have additional consumer rights under your local 
+	laws which this license cannot change. To the extent permitted under your local laws, the 
+	contributors exclude the implied warranties of merchantability, fitness for a particular purpose 
+	and non-infringement.
+
+
+
+---- libijg (from DCMTK 3.5.4 COPYRIGHT) ----
+
+Unless otherwise specified, the DCMTK software package has the
+following copyright:
+
+/*
+ *  Copyright (C) 1994-2004, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Copyright of the software  and  supporting  documentation  is,  unless
+ *  otherwise stated, owned by OFFIS, and free access is hereby granted as
+ *  a license to  use  this  software,  copy  this  software  and  prepare
+ *  derivative works based upon this software.  However, any  distribution
+ *  of this software source code or supporting documentation or derivative
+ *  works  (source code and  supporting documentation)  must  include  the
+ *  three paragraphs of this copyright notice.
+ *
+ */
+
+The dcmjpeg sub-package includes an adapted version of the Independent JPEG
+Group Toolkit Version 6b, which is contained in dcmjpeg/libijg8,
+dcmjpeg/libijg12 and dcmjpeg/libijg16.  This toolkit is covered by the
+following copyright.  The original README file for the Independent JPEG
+Group Toolkit is located in dcmjpeg/docs/ijg_readme.txt.
+
+/*
+ *  The authors make NO WARRANTY or representation, either express or implied,
+ *  with respect to this software, its quality, accuracy, merchantability, or
+ *  fitness for a particular purpose.  This software is provided "AS IS", and you,
+ *  its user, assume the entire risk as to its quality and accuracy.
+ *
+ *  This software is copyright (C) 1991-1998, Thomas G. Lane.
+ *  All Rights Reserved except as specified below.
+ *
+ *  Permission is hereby granted to use, copy, modify, and distribute this
+ *  software (or portions thereof) for any purpose, without fee, subject to these
+ *  conditions:
+ *  (1) If any part of the source code for this software is distributed, then this
+ *  README file must be included, with this copyright and no-warranty notice
+ *  unaltered; and any additions, deletions, or changes to the original files
+ *  must be clearly indicated in accompanying documentation.
+ *  (2) If only executable code is distributed, then the accompanying
+ *  documentation must state that "this software is based in part on the work of
+ *  the Independent JPEG Group".
+ *  (3) Permission for use of this software is granted only if the user accepts
+ *  full responsibility for any undesirable consequences; the authors accept
+ *  NO LIABILITY for damages of any kind.
+ *
+ *  These conditions apply to any software derived from or based on the IJG code,
+ *  not just to the unmodified library.  If you use our work, you ought to
+ *  acknowledge us.
+ *
+ *  Permission is NOT granted for the use of any IJG author's name or company name
+ *  in advertising or publicity relating to this software or products derived from
+ *  it.  This software may be referred to only as "the Independent JPEG Group's
+ *  software".
+ *
+ *  We specifically permit and encourage the use of this software as the basis of
+ *  commercial products, provided that all warranty or liability claims are
+ *  assumed by the product vendor.
+ */
+
+
+
+---- OpenJPEG JPEG 2000 codec (from license.txt) ----
+
+/*
+ * Copyright (c) 2002-2007, Communications and Remote Sensing Laboratory, Universite catholique de Louvain (UCL), Belgium
+ * Copyright (c) 2002-2007, Professor Benoit Macq
+ * Copyright (c) 2001-2003, David Janssens
+ * Copyright (c) 2002-2003, Yannick Verschueren
+ * Copyright (c) 2003-2007, Francois-Olivier Devaux and Antonin Descampe
+ * Copyright (c) 2005, Herve Drolon, FreeImage Team
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS `AS IS'
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
+
+---- CharLS JPEG-LS codec (from License.txt) ----
+
+Copyright (c) 2007-2009, Jan de Vaan
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without 
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this 
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice, 
+  this list of conditions and the following disclaimer in the documentation 
+  and/or other materials provided with the distribution.
+
+* Neither the name of my employer, nor the names of its contributors may be 
+  used to endorse or promote products derived from this software without 
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON 
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+
+
+---- Unity.IO.Compression (from LICENSE.TXT and PATENTS.TXT) ----
+
 The MIT License (MIT)
 
 Copyright (c) 2018 Toni Solarin-Sodara
