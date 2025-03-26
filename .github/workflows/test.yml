@@ -29,17 +29,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
     - name: Install Dotnet
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Enable NuGet cache
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.2.3
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -62,7 +62,7 @@ jobs:
       working-directory: ./tests
 
     - name: Archive code coverage results
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4.6.2
       with:
         name: code-coverage-reports
         path: ./tests/**/coverage.opencover.xml
@@ -100,12 +100,12 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
     - name: Install Dotnet
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -113,7 +113,7 @@ jobs:
       run: dotnet tool install --global SpecFlow.Plus.LivingDoc.CLI
 
     - name: Enable NuGet cache
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.2.3
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -139,7 +139,7 @@ jobs:
 
     - name: Publish report
       if: always()
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4.6.2
       with:
         name: WorkflowExecutorIntegrationTestReport
         path: ./tests/IntegrationTests/WorkflowExecutor.IntegrationTests/bin/Debug/net8.0/LivingDoc.html
@@ -177,12 +177,12 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
     - name: Install Dotnet
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -190,7 +190,7 @@ jobs:
       run: dotnet tool install --global SpecFlow.Plus.LivingDoc.CLI
 
     - name: Enable NuGet cache
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.2.3
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -216,7 +216,7 @@ jobs:
 
     - name: Publish report
       if: always()
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4.6.2
       with:
         name: TaskManagerIntegrationTestReport
         path: ./tests/IntegrationTests/TaskManager.IntegrationTests/bin/Debug/net8.0/LivingDoc.html
@@ -232,17 +232,17 @@ jobs:
         distribution: 'zulu' # Alternative distribution options are available.
 
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
     - name: Install Dotnet
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Enable NuGet cache
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.2.3
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -269,7 +269,7 @@ jobs:
       working-directory: ./src
 
     - name: Download code coverage from unit tests
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: code-coverage-reports
 

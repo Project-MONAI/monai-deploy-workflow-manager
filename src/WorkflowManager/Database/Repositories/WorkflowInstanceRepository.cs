@@ -313,7 +313,10 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
             return workflow;
         }
 
-        public async Task<long> CountAsync() => await CountAsync(_workflowInstanceCollection, null);
+        public async Task<long> CountAsync(FilterDefinition<WorkflowInstance> filter)
+        {
+            return await CountAsync(_workflowInstanceCollection, filter);
+        }
 
         public async Task<long> FilteredCountAsync(Status? status = null, string? payloadId = null)
         {

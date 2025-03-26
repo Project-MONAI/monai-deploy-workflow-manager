@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Common.Database.Interfaces
 {
@@ -44,7 +45,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Interfaces
         /// Gets count of Workflow Instances.
         /// </summary>
         /// <returns></returns>
-        Task<long> CountAsync();
+        Task<long> CountAsync(FilterDefinition<WorkflowInstance> filter);
 
         /// <summary>
         /// Gets the count of workflow instances with a filter.

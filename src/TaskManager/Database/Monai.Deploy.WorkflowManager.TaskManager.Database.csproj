@@ -27,7 +27,7 @@
     <AdditionalFiles Include="..\..\.sonarlint\project-monai_monai-deploy-workflow-manager\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MongoDB.Driver" Version="2.25.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.30.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\API\Monai.Deploy.WorkflowManager.TaskManager.API.csproj" />

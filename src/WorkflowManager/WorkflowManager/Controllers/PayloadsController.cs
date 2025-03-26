@@ -30,6 +30,8 @@ using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Wrappers;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
 {
@@ -72,11 +74,16 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
         /// <param name="filter">Filters.</param>
         /// <param name="patientId">Optional patient Id.</param>
         /// <param name="patientName">Optional patient name.</param>
+        /// <param name="accessionId">Optional accession Id.</param>
         /// <returns>paged response of subset of all workflows.</returns>
         [HttpGet]
         [ProducesResponseType(typeof(PagedResponse<List<Payload>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllAsync([FromQuery] PaginationFilter filter, [FromQuery] string patientId = "", [FromQuery] string patientName = "")
+        public async Task<IActionResult> GetAllAsync(
+            [FromQuery] PaginationFilter filter,
+            [FromQuery] string patientId = null,
+            [FromQuery] string patientName = null,
+            [FromQuery] string accessionId = null)
         {
             try
             {
@@ -88,9 +95,28 @@ namespace Monai.Deploy.WorkflowManager.Common.ControllersShared
                     (validFilter.PageNumber - 1) * validFilter.PageSize,
                     validFilter.PageSize,
                     patientId,
-                    patientName);
+                    patientName,
+                    accessionId);
 
-                var dataTotal = await _payloadService.CountAsync();
+                var builder = Builders<Payload>.Filter;
+                var dbFilter = builder.Empty;
+
+                if (!string.IsNullOrEmpty(patientId))
+                {
+                    dbFilter &= builder.Regex(p => p.PatientDetails.PatientId, new BsonRegularExpression($"/{patientId}/i"));
+                }
+
+                if (!string.IsNullOrEmpty(patientName))
+                {
+                    dbFilter &= builder.Regex(p => p.PatientDetails.PatientName, new BsonRegularExpression($"/{patientName}/i"));
+                }
+
+                if (!string.IsNullOrWhiteSpace(accessionId))
+                {
+                    dbFilter &= builder.Regex(p => p.AccessionId, new BsonRegularExpression($"/{accessionId}/i"));
+                }
+
+                var dataTotal = await _payloadService.CountAsync(dbFilter);
                 var pagedReponse = CreatePagedResponse(pagedData.ToList(), validFilter, dataTotal, _uriService, route);
 
                 return Ok(pagedReponse);

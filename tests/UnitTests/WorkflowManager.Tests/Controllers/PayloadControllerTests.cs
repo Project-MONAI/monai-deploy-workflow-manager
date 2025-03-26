@@ -32,6 +32,8 @@ using Moq;
 using Xunit;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Filter;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services;
+using MongoDB.Driver;
+using MongoDB.Bson.Serialization;
 
 namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
 {
@@ -66,8 +68,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
                 }
             };
 
-            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(payloads);
-            _payloadService.Setup(w => w.CountAsync()).ReturnsAsync(payloads.Count);
+            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(payloads);
+            _payloadService.Setup(w => w.CountAsync(Builders<Payload>.Filter.Empty)).ReturnsAsync(payloads.Count);
             _uriService.Setup(s => s.GetPageUriString(It.IsAny<PaginationFilter>(), It.IsAny<string>())).Returns(() => "unitTest");
 
             var result = await PayloadController.GetAllAsync(new PaginationFilter());
@@ -92,9 +94,49 @@ namespace Monai.Deploy.WorkflowManager.Common.Test.Controllers
         }
 
         [Fact]
+        public async Task GetAllAsync_WithFilter_CallsPayloadServiceCountAsyncWithFilter()
+        {
+
+            // Arrange
+            var filter = new PaginationFilter
+            {
+                PageNumber = 1,
+                PageSize = 10
+            };
+            var patientId = "123";
+            var patientName = "John";
+            var accessionId = "456";
+
+            var pagedData = new List<PayloadDto>();
+            var dataTotal = 5;
+
+            FilterDefinition<Payload> capturedFilter = null; // Declare a variable to capture the filter
+
+            _payloadService.Setup(x => x.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(pagedData);
+
+            _payloadService.Setup(x => x.CountAsync(It.IsAny<FilterDefinition<Payload>>()))
+                .Callback<FilterDefinition<Payload>>(filter => capturedFilter = filter) // Capture the filter
+                .ReturnsAsync(dataTotal);
+
+            // Act
+            var result = await PayloadController.GetAllAsync(filter, patientId, patientName, accessionId);
+
+            // Assert
+            _payloadService.Verify(x => x.CountAsync(It.IsAny<FilterDefinition<Payload>>()), Times.Once);
+            Assert.NotNull(capturedFilter); // Assert that the filter was captured
+            var json = capturedFilter.Render(BsonSerializer.SerializerRegistry.GetSerializer<Payload>(), BsonSerializer.SerializerRegistry);
+            Assert.Contains(patientId, json.ToString());
+            Assert.Contains(patientName, json.ToString());
+            Assert.Contains(accessionId, json.ToString());
+            Assert.Contains("PatientDetails.PatientId", json.ToString());
+            Assert.Contains("PatientDetails.PatientName", json.ToString());
+            Assert.Contains("AccessionId", json.ToString());
+        }
+
+        [Fact]
         public async Task GetListAsync_ServiceException_ReturnProblem()
         {
-            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
+            _payloadService.Setup(w => w.GetAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
 
             var result = await PayloadController.GetAllAsync(new PaginationFilter());
 

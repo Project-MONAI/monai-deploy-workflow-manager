@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Common.Database.Interfaces
 {
@@ -32,7 +33,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Interfaces
         /// <summary>
         /// Retrieves a list of payloads in the database.
         /// </summary>
-        Task<IList<Payload>> GetAllAsync(int? skip = null, int? limit = null, string patientId = "", string patientName = "");
+        Task<IList<Payload>> GetAllAsync(int? skip = null, int? limit = null, string? patientId = null, string? patientName = null, string? accessionId = null);
 
         /// <summary>
         /// Retrieves a payload by id in the database.
@@ -44,7 +45,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Interfaces
         /// Gets count of objects
         /// </summary>
         /// <returns>Count of objects.</returns>
-        Task<long> CountAsync();
+        Task<long> CountAsync(FilterDefinition<Payload> filter);
 
         /// <summary>
         /// Updates a payload in the database.

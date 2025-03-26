@@ -19,6 +19,7 @@ using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Contracts.Models;
 using Monai.Deploy.WorkflowManager.Common.Database.Interfaces;
 using Monai.Deploy.WorkflowManager.Common.Logging;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
 {
@@ -83,7 +84,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Services
             return result;
         }
 
-        public async Task<long> CountAsync() => await _workflowRepository.CountAsync();
+        public async Task<long> CountAsync(FilterDefinition<WorkflowRevision>? filter)
+            => await _workflowRepository.CountAsync(filter ?? Builders<WorkflowRevision>.Filter.Empty);
 
         public async Task<IList<WorkflowRevision>> GetAllAsync(int? skip = null, int? limit = null)
             => await _workflowRepository.GetAllAsync(skip, limit);

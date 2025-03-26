@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+using MongoDB.Driver;
+
 namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces
 {
     public interface IPaginatedApi<T>
     {
-        Task<long> CountAsync();
+        Task<long> CountAsync(FilterDefinition<T>? filter = null);
 
         Task<IList<T>> GetAllAsync(int? skip = null, int? limit = null);
     }

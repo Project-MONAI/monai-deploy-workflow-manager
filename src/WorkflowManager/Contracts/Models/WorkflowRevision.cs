@@ -23,7 +23,7 @@ using Newtonsoft.Json;
 
 namespace Monai.Deploy.WorkflowManager.Common.Contracts.Models
 {
-    [CollectionLocation("Workflows"), RuntimeVersion("1.0.2")]
+    [CollectionLocation("Workflows"), RuntimeVersion("1.0.4")]
     public class WorkflowRevision : ISoftDeleteable, IDocument
     {
         [BsonId]

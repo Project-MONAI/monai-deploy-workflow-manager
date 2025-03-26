@@ -234,7 +234,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
 
             _payloadRepository.Setup(p =>
                 p.GetAllAsync(
-                    It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>())
+                    It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())
                 ).ReturnsAsync(() => input);
             var param = new List<string>() { input.First().Id };
             _workflowInstanceRepository.Setup(r =>
@@ -301,7 +301,7 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous.Tests.Services
 
             _payloadRepository.Setup(p =>
                 p.GetAllAsync(
-                    It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>())
+                    It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())
                 ).ReturnsAsync(() => input);
             var param = input.Select(i => i.PayloadId).ToList();
             _workflowInstanceRepository.Setup(r =>

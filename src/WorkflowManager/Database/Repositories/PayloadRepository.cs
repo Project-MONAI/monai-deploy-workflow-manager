@@ -71,7 +71,10 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
             }
         }
 
-        public Task<long> CountAsync() => CountAsync(_payloadCollection, null);
+        public Task<long> CountAsync(FilterDefinition<Payload> filter)
+        {
+            return CountAsync(_payloadCollection, filter);
+        }
 
         public async Task<bool> CreateAsync(Payload payload)
         {
@@ -91,18 +94,19 @@ namespace Monai.Deploy.WorkflowManager.Common.Database.Repositories
             }
         }
 
-        public async Task<IList<Payload>> GetAllAsync(int? skip = null, int? limit = null, string? patientId = "", string? patientName = "")
+        public async Task<IList<Payload>> GetAllAsync(int? skip = null, int? limit = null, string? patientId = null, string? patientName = null, string? accessionId = null)
         {
             var builder = Builders<Payload>.Filter;
             var filter = builder.Empty;
-            if (!string.IsNullOrEmpty(patientId))
-            {
-                filter &= builder.Regex(p => p.PatientDetails.PatientId, new BsonRegularExpression($"/{patientId}/i"));
-            }
-            if (!string.IsNullOrEmpty(patientName))
-            {
-                filter &= builder.Regex(p => p.PatientDetails.PatientName, new BsonRegularExpression($"/{patientName}/i"));
-            }
+            if (!string.IsNullOrEmpty(patientId)) filter
+                    &= builder.Regex(p => p.PatientDetails.PatientId, new BsonRegularExpression($"/{patientId}/i"));
+
+            if (!string.IsNullOrEmpty(patientName)) filter
+                    &= builder.Regex(p => p.PatientDetails.PatientName, new BsonRegularExpression($"/{patientName}/i"));
+
+            if (!string.IsNullOrWhiteSpace(accessionId)) filter
+                    &= builder.Regex(p => p.AccessionId, new BsonRegularExpression($"/{accessionId}/i"));
+
 
             return await GetAllAsync(_payloadCollection,
                                       filter,

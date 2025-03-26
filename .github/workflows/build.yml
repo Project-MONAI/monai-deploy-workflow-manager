@@ -45,16 +45,18 @@ jobs:
       security-events: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Install GitVersion
-        run: dotnet tool install --global GitVersion.Tool
+      - name: Setup GitVersion
+        uses: gittools/actions/gitversion/setup@v3.1.11
+        with:
+          versionSpec: '6.0.5'
 
       - name: Determine Version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v1.1.1
+        uses: gittools/actions/gitversion/execute@v3.1.11
         with:
           useConfigFile: true
           updateAssemblyInfo: true
@@ -147,16 +149,16 @@ jobs:
     env:
       SEMVER: ${{ needs.build-and-deploy.outputs.semVer }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-dotnet@v3
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
 
       - name: Enable NuGet cache
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4.2.3
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -193,7 +195,7 @@ jobs:
           Get-ChildItem ~\release -Recurse
 
       - name: Upload docs
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: artifacts
           path: ~/release
@@ -208,11 +210,11 @@ jobs:
       MAJORMINORPATCH: ${{ needs.build-and-deploy.outputs.majorMinorPatch }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         id: download
 
       - name: List artifacts
@@ -241,12 +243,12 @@ jobs:
           publish_branch: docs
 
       - name: Install GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/setup@v1.1.1
+        uses: gittools/actions/gitreleasemanager/setup@v3.1.11
         with:
-          versionSpec: "0.13.x"
+          versionSpec: '0.18.x'
 
       - name: Create release with GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/create@v1.1.1
+        uses: gittools/actions/gitreleasemanager/create@v3.1.11
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           owner: ${{ steps.repo.outputs._0 }}
@@ -257,7 +259,7 @@ jobs:
             artifacts/mwm-docs-${{ env.SEMVER }}.zip
 
       - name: Publish release with GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/publish@v1.1.1
+        uses: gittools/actions/gitreleasemanager/publish@v3.1.11
         if: ${{ contains(github.ref, 'refs/heads/main') }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -266,10 +268,25 @@ jobs:
           tagName: ${{ env.MAJORMINORPATCH }}
 
       - name: Close release with GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/close@v1.1.1
+        uses: gittools/actions/gitreleasemanager/close@v3.1.11
         if: ${{ contains(github.ref, 'refs/heads/main') }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           owner: ${{ steps.repo.outputs._0 }}
           repository: ${{ steps.repo.outputs._1 }}
           milestone: ${{ env.MAJORMINORPATCH }}
+
+      - name: Unzip docs
+        if: ${{ contains(github.ref, 'refs/heads/main') }}
+        run: |
+          mkdir userguide
+          unzip artifacts/mwm-docs-${{ env.SEMVER }}.zip -d userguide/
+          ls -lR userguide/
+
+      - name: Deploy Docs
+        uses: peaceiris/actions-gh-pages@v4
+        if: ${{ contains(github.ref, 'refs/heads/main') }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: userguide/
+          publish_branch: docs
