@@ -265,7 +265,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           owner: ${{ steps.repo.outputs._0 }}
           repository: ${{ steps.repo.outputs._1 }}
-          tagName: ${{ env.MAJORMINORPATCH }}
+          milestone: ${{ env.MAJORMINORPATCH }}
 
       - name: Close release with GitReleaseManager
         uses: gittools/actions/gitreleasemanager/close@v3.1.11
