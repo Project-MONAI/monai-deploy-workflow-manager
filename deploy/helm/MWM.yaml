@@ -15,21 +15,20 @@
 replicaCount: 1
 
 image:
-  repository: registry.gitlab.com/answerdigital/londonai/aide/workflow-manager-images/workflow-manager
+  repository: ghcr.io/project-monai/monai-deploy-workflow-manager
   pullPolicy: IfNotPresent
-  tag: 2022-07-27-02
-
-imagePullSecrets:
- - name: gitlab-image-pull
+  tag: develop-latest
 
 enviromentVariables:
-  WorkflowManager__storage__settings__endpoint: "minio.monai:9000"
-  WorkflowManager__storage__settings__accessKey: "rootminio"
-  WorkflowManager__storage__settings__accessToken: "rootminio"
+  ASPNETCORE_ENVIRONMENT: "local"
+  DOTNET_ENVIRONMENT: "local"
+  WorkflowManager__storage__settings__endpoint: "minio-monai:9000"
+  WorkflowManager__storage__settings__accessKey: "minioadmin"
+  WorkflowManager__storage__settings__accessToken: "minioadmin"
   WorkflowManager__storage__settings__executableLocation: "mc"
-  WorkflowManager__messaging__publisherSettings__endpoint: "rabbitmq-monai.monai"
-  WorkflowManager__messaging__subscriberSettings__endpoint: "rabbitmq-monai.monai"
-  WorkloadManagerDatabase__ConnectionString: "mongodb://root:rootpassword@mongo-monai.monai:27017"
+  WorkflowManager__messaging__publisherSettings__endpoint: "rabbitmq-monai"
+  WorkflowManager__messaging__subscriberSettings__endpoint: "rabbitmq-monai"
+  WorkloadManagerDatabase__ConnectionString: "mongodb://root:rootpassword@mongo-monai:27017"
   Kestrel__EndPoints__Http__Url: "http://::5000"
 
 enviromentVariablesFromSecrets:
@@ -46,7 +45,7 @@ enviromentVariablesFromSecrets:
     - name: WorkflowManager__messaging__publisherSettings__password
       secretName: rabbit-secret-master
       secretKey: password
-      
+
 service:
   type: ClusterIP
   port: 5000
