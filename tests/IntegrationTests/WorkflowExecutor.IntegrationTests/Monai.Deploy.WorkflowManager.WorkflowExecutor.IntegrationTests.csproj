@@ -28,19 +28,19 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageReference Include="Minio" Version="6.0.1" />
-    <PackageReference Include="Monai.Deploy.Messaging" Version="2.0.2" />
-    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="2.0.2" />
-    <PackageReference Include="Monai.Deploy.Storage" Version="1.0.0" />
-    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="1.0.0" />
-    <PackageReference Include="Polly" Version="8.2.1" />
-    <PackageReference Include="Snapshooter.NUnit" Version="0.14.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="Minio" Version="6.0.2" />
+    <PackageReference Include="Monai.Deploy.Messaging" Version="2.0.4" />
+    <PackageReference Include="Monai.Deploy.Messaging.RabbitMQ" Version="2.0.4" />
+    <PackageReference Include="Monai.Deploy.Storage" Version="1.0.2" />
+    <PackageReference Include="Monai.Deploy.Storage.MinIO" Version="1.0.2" />
+    <PackageReference Include="Polly" Version="8.5.2" />
+    <PackageReference Include="Snapshooter.NUnit" Version="0.15.0" />
     <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
     <PackageReference Include="SpecFlow.NUnit" Version="3.9.74" />
     <PackageReference Include="nunit" Version="4.0.1" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
-    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+    <PackageReference Include="FluentAssertions" Version="6.12.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\WorkflowManager\Contracts\Monai.Deploy.WorkflowManager.Contracts.csproj" />
