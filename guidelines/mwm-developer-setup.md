@@ -26,7 +26,7 @@
 Note. if you already have docker container for Minio Rabbit etc running Stop these.
 
 ### steps
-- following the qickstart here https://argoproj.github.io/argo-workflows/quick-start/ but change to namespace to suit. ie 
+- following the quickstart here https://argoproj.github.io/argo-workflows/quick-start/ but change to namespace to suit. ie 
 
   - `kubectl create ns argo`
   - `kubectl apply -n argo -f https://raw.githubusercontent.com/argoproj/argo-workflows/master/manifests/quick-start-postgres.yaml`
@@ -286,7 +286,7 @@ Although it has its own repo and is separate from the Workflow Manager, I have i
 
 Once deployed
 - exec into the running container ie `kubectl -n monai exec -it mig-monai-797f584bf9-9tw8j -- bash`
-- install curl `apt update;apy install curl -y` 
+- install curl `apt update;apt install curl -y` 
 - add the default AETitle `curl -H 'Content-Type: application/json-patch+json' -d '{"aeTitle": "MonaiSCU","name": "Monai WFM"}' mig-monai:5000/config/ae`
 - `exit`
 
