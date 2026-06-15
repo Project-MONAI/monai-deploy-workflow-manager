@@ -74,6 +74,7 @@
     </ProjectReference>
     <ProjectReference Include="..\Plug-ins\Argo\Monai.Deploy.WorkflowManager.TaskManager.Argo.csproj" />
     <ProjectReference Include="..\Plug-ins\Docker\Monai.Deploy.WorkflowManager.TaskManager.Docker.csproj" />
+    <ProjectReference Include="..\Plug-ins\Podman\Monai.Deploy.WorkflowManager.TaskManager.Podman.csproj" />
     <ProjectReference Include="..\Plug-ins\Email\Monai.Deploy.WorkflowManager.TaskManager.Email.csproj" />
   </ItemGroup>
   <ItemGroup>

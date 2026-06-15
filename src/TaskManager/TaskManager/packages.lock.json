@@ -1184,6 +1184,15 @@
           "Monai.Deploy.WorkflowManager.Common.Miscellaneous": "[1.0.0, )",
           "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )"
         }
+      },
+      "monai.deploy.workflowmanager.taskmanager.podman": {
+        "type": "Project",
+        "dependencies": {
+          "Docker.DotNet": "[3.125.15, )",
+          "Monai.Deploy.WorkflowManager.Common.Configuration": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.Common.Miscellaneous": "[1.0.0, )",
+          "Monai.Deploy.WorkflowManager.TaskManager.API": "[1.0.0, )"
+        }
       }
     }
   }

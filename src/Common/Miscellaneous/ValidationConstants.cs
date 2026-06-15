@@ -133,6 +133,11 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
         /// </summary>
         public const string Email = "email";
 
+        /// <summary>
+        /// Key for the podman task type.
+        /// </summary>
+        public const string PodmanTaskType = "podman";
+
         public static readonly string[] AcceptableTasksToReview = { ArgoTaskType, ExternalAppTaskType };
 
         /// <summary>
@@ -147,7 +152,8 @@ namespace Monai.Deploy.WorkflowManager.Common.Miscellaneous
                 DockerTaskType,
                 Email,
                 ExternalAppTaskType,
-                HL7ExportTask
+                HL7ExportTask,
+                PodmanTaskType
             };
     }
 }

@@ -59,6 +59,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Docker
         public static readonly string TemporaryStorageContainerPath = "temp_storage_container_path";
 
         /// <summary>
+        /// Key for setting the shm size.
+        /// </summary>
+        public static readonly string ShmSize = "shm_size";
+
+        /// <summary>
         /// Prefix for envrionment variables.
         /// </summary>
         public static readonly string EnvironmentVariableKeyPrefix = "env_";

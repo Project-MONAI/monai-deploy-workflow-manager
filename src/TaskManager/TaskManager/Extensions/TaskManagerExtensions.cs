@@ -25,6 +25,7 @@ using Monai.Deploy.WorkflowManager.Common.Miscellaneous;
 using Monai.Deploy.WorkflowManager.TaskManager.API;
 using Monai.Deploy.WorkflowManager.TaskManager.Argo;
 using Monai.Deploy.WorkflowManager.TaskManager.Docker;
+using Monai.Deploy.WorkflowManager.TaskManager.Podman;
 using Monai.Deploy.WorkflowManager.TaskManager.Services;
 using NLog;
 
@@ -54,7 +55,11 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.Extensions
             services.AddSingleton<IKubernetesProvider, KubernetesProvider>();
 
             services.AddTransient<IDockerClientFactory, DockerClientFactory>();
-            services.AddTransient<IContainerStatusMonitor, ContainerStatusMonitor>();
+            services.AddTransient<Docker.IContainerStatusMonitor, Docker.ContainerStatusMonitor>();
+
+            services.AddTransient<IPodmanClientFactory, PodmanClientFactory>();
+            services.AddTransient<IPodmanContainerCreator, PodmanContainerCreator>();
+            services.AddTransient<Podman.IContainerStatusMonitor, Podman.ContainerStatusMonitor>();
 
             services.AddTransient<ITaskDispatchEventService, TaskDispatchEventService>();
 
