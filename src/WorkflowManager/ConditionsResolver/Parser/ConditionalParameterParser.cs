@@ -56,6 +56,11 @@ namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser
         private WorkflowInstance? _workflowInstance = null;
         private string? _workflowInstanceId = null;
 
+        // Registered as a singleton but keeps the current workflow instance in the fields above, so
+        // concurrent evaluations (parallel workflow instances) overwrite each other's state. Serialise
+        // the public entry points; Monitor locks are re-entrant, so nested calls are fine.
+        private readonly object _sync = new();
+
         public ConditionalParameterParser(ILogger<ConditionalParameterParser> logger,
                                           IDicomService dicomService,
                                           IWorkflowInstanceService workflowInstanceService,
@@ -106,75 +111,84 @@ namespace Monai.Deploy.WorkflowManager.Common.ConditionsResolver.Parser
 
         public bool TryParse(string conditions, WorkflowInstance workflowInstance, out string resolvedConditional)
         {
-            ArgumentNullException.ThrowIfNullOrEmpty(conditions, nameof(conditions));
-            ArgumentNullException.ThrowIfNull(workflowInstance, nameof(workflowInstance));
-            resolvedConditional = string.Empty;
+            lock (_sync)
+            {
+                ArgumentNullException.ThrowIfNullOrEmpty(conditions, nameof(conditions));
+                ArgumentNullException.ThrowIfNull(workflowInstance, nameof(workflowInstance));
+                resolvedConditional = string.Empty;
 
-            try
-            {
-                resolvedConditional = ResolveParameters(conditions, workflowInstance);
-                var conditionalGroup = ConditionalGroup.Create(resolvedConditional);
-                var result = conditionalGroup.Evaluate();
-                _logger.ConditionalParserResult(conditions, resolvedConditional, result.ToString());
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.FailedToParseCondition(resolvedConditional, conditions, ex);
-                return false;
+                try
+                {
+                    resolvedConditional = ResolveParameters(conditions, workflowInstance);
+                    var conditionalGroup = ConditionalGroup.Create(resolvedConditional);
+                    var result = conditionalGroup.Evaluate();
+                    _logger.ConditionalParserResult(conditions, resolvedConditional, result.ToString());
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    _logger.FailedToParseCondition(resolvedConditional, conditions, ex);
+                    return false;
+                }
             }
         }
 
         public string ResolveParameters(string conditions, WorkflowInstance workflowInstance)
         {
-            ArgumentNullException.ThrowIfNullOrEmpty(conditions, nameof(conditions));
-            ArgumentNullException.ThrowIfNull(workflowInstance, nameof(workflowInstance));
+            lock (_sync)
+            {
+                ArgumentNullException.ThrowIfNullOrEmpty(conditions, nameof(conditions));
+                ArgumentNullException.ThrowIfNull(workflowInstance, nameof(workflowInstance));
 
-            WorkflowInstance = workflowInstance;
-            return ResolveParameters(conditions, workflowInstance.Id);
+                WorkflowInstance = workflowInstance;
+                return ResolveParameters(conditions, workflowInstance.Id);
+            }
         }
 
         public string ResolveParameters(string conditions, string workflowInstanceId)
         {
-            _workflowInstanceId = workflowInstanceId;
-            try
+            lock (_sync)
             {
-                var matches = _squigglyBracketsRegex.Matches(conditions);
-                if (!matches.Any())
+                _workflowInstanceId = workflowInstanceId;
+                try
                 {
+                    var matches = _squigglyBracketsRegex.Matches(conditions);
+                    if (!matches.Any())
+                    {
+                        ClearWorkflowParser();
+                        return conditions;
+                    }
+
+                    var parameters = ParseMatches(matches).Reverse();
+                    foreach (var parameter in parameters)
+                    {
+                        var result = parameter.Value.Result ?? "";
+                        if (ResultNullCheck(result.Trim()))
+                        {
+                            result = "NULL";
+                        }
+                        if (result.StartsWith('[') && result.EndsWith(']'))
+                        {
+                            conditions = conditions
+                                .Remove(parameter.Key.Index, parameter.Key.Length)
+                                .Insert(parameter.Key.Index, $"{result}");
+                        }
+                        else
+                        {
+                            conditions = conditions
+                                .Remove(parameter.Key.Index, parameter.Key.Length)
+                                .Insert(parameter.Key.Index, $"'{result}'");
+                        }
+                    }
+
                     ClearWorkflowParser();
                     return conditions;
                 }
-
-                var parameters = ParseMatches(matches).Reverse();
-                foreach (var parameter in parameters)
+                catch
                 {
-                    var result = parameter.Value.Result ?? "";
-                    if (ResultNullCheck(result.Trim()))
-                    {
-                        result = "NULL";
-                    }
-                    if (result.StartsWith('[') && result.EndsWith(']'))
-                    {
-                        conditions = conditions
-                            .Remove(parameter.Key.Index, parameter.Key.Length)
-                            .Insert(parameter.Key.Index, $"{result}");
-                    }
-                    else
-                    {
-                        conditions = conditions
-                            .Remove(parameter.Key.Index, parameter.Key.Length)
-                            .Insert(parameter.Key.Index, $"'{result}'");
-                    }
+                    ClearWorkflowParser();
+                    throw;
                 }
-
-                ClearWorkflowParser();
-                return conditions;
-            }
-            catch
-            {
-                ClearWorkflowParser();
-                throw;
             }
         }
 

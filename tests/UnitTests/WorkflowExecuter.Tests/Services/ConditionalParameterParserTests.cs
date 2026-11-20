@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Events;
 using Monai.Deploy.WorkflowManager.Common.Miscellaneous.Interfaces;
@@ -201,6 +202,40 @@ namespace Monai.Deploy.WorkflowManager.Common.WorkflowExecuter.Tests.Services
             var actualResult = conditionalParameterParser.ResolveParameters(input, workflow);
 
             Assert.Equal(expectedResult, actualResult);
+        }
+
+        [Fact]
+        public async Task ConditionalParameterParser_WhenEvaluatedConcurrently_EachInstanceResolvesItsOwnPayload()
+        {
+            // The parser is registered as a singleton (WorkflowExecutorExtensions) but keeps the workflow instance
+            // being evaluated in fields. Routing several workflow instances at once must not mix them up.
+            const int instances = 32;
+
+            _dicom.Setup(w => w.GetAnyValueAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(async (string key, string payloadId, string bucketId) =>
+                {
+                    await Task.Delay(5); // a real lookup reads from storage; widen the window
+                    return key.Contains("0060") ? "OP" : "['ORIGINAL','PRIMARY','','COLOR']";
+                });
+
+            var parser = new ConditionalParameterParser(_logger.Object, _dicom.Object, _workflowInstanceService.Object, _payloadService.Object, _workflowService.Object);
+            const string condition = "{{ context.dicom.series.any('0008','0060') }} == 'OP' AND {{ context.dicom.series.any('0008','0008') }} CONTAINS ['COLOR']";
+
+            var results = await Task.WhenAll(Enumerable.Range(0, instances).Select(i => Task.Run(() =>
+            {
+                var workflowInstance = CreateTestData().First();
+                workflowInstance.Id = Guid.NewGuid().ToString();
+                workflowInstance.PayloadId = $"payload-{i}";
+                workflowInstance.BucketId = "bucket1";
+                return parser.TryParse(condition, workflowInstance, out _);
+            })));
+
+            Assert.All(results, Assert.True);
+            _dicom.Verify(w => w.GetAnyValueAsync(It.IsAny<string>(), It.Is<string>(p => p == null), It.IsAny<string>()), Times.Never);
+            for (var i = 0; i < instances; i++)
+            {
+                _dicom.Verify(w => w.GetAnyValueAsync(It.IsAny<string>(), $"payload-{i}", "bucket1"), Times.Exactly(2));
+            }
         }
 
         public List<WorkflowInstance> CreateTestData()
